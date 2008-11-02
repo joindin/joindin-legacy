@@ -1,5 +1,5 @@
 <html>
-	<title>Joind.in</title>
+	<title>Joind.in </title>
 <head>
 	<link rel="stylesheet" type="text/css" href="/inc/css/site.css">
 	<script language="JavaScript" src="/inc/js/jquery.js"></script>
