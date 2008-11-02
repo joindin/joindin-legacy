@@ -1,6 +1,6 @@
 <html>
+	<title>Joind.in</title>
 <head>
-	<title>conf</title>
 	<link rel="stylesheet" type="text/css" href="/inc/css/site.css">
 	<script language="JavaScript" src="/inc/js/jquery.js"></script>
 	<script language="JavaScript" src="/inc/js/site.js"></script>
