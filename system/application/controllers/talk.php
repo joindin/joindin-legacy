@@ -152,6 +152,11 @@ class Talk extends Controller {
 			);
 			$this->db->insert('talk_comments',$arr);
 			
+			//send an email when a comment's made
+			$msg='';
+			foreach($arr as $ak=>$av){ $msg.='['.$ak.'] => '.$av."\n"; }
+			mail('enygma@phpdeveloper.org','Comment on talk '.$id,$msg,'From: comments@joind.in');
+			
 			$this->session->set_flashdata('msg', 'Comment added!');
 		}
 		$cap = create_captcha($cap_arr);
