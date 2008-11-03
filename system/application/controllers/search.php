@@ -50,7 +50,7 @@ class Search extends Controller {
 					$this->input->post('end_yr')
 				);
 			}else{ $end=0; }
-			echo $start.' - '.$end;
+			//echo $start.' - '.$end;
 			
 			//check to see if they entered a date and set that first
 			$results=array(

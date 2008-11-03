@@ -1,7 +1,7 @@
 <?php
 //echo '<pre>'; print_r($talks); echo '</pre>';
 ?>
-<h3>My Comments</h3>
+<img src="/inc/img/my_comments.gif"/><br/>
 <table cellpadding="3" cellspacing="0" border="0">
 <?php
 foreach($comments as $k=>$v){
@@ -12,8 +12,8 @@ foreach($comments as $k=>$v){
 //print_r($comments);
 ?>
 </table>
-
-<h3>My Talks</h3>
+<br/>
+<img src="/inc/img/my_talks.gif"/><br/>
 <table cellpadding="3" cellspacing="0" border="0">
 <?php
 if(!empty($talks)){
@@ -25,13 +25,13 @@ if(!empty($talks)){
 		echo '<td><a href="/event/view/'.$v->tid.'">'.$v->talk_title.'</a> <br/>('.$v->event_name.' - '.date('m.d.Y',$v->date_given).')</td>';
 		echo '</tr>';
 	}
-}
+}else{ echo 'No current talks...'; }
 ?>
 </table>
 
 <br/>
 
-<h3>Claim a Talk</h3>
+<img src="/inc/img/claim_talk.gif"/><br/>
 <p>
 Enter your talk code below to claim your talk and have access to private comments from visitors.
 </p>

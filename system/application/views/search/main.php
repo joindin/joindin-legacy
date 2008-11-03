@@ -54,7 +54,7 @@ echo form_open('/search');
 echo form_close(); 
 
 if(!empty($results)){
-	echo '<h2>Events</h2>';
+	echo '<img src="/inc/img/sr_events.gif"/><br/><br/>';
 	if(isset($results['events'])){
 		foreach($results['events'] as $k=>$v){
 			$str='';
@@ -66,7 +66,8 @@ if(!empty($results)){
 			',$v->ID,$v->event_name,trim($str).'...');
 		}
 	}
-	echo '<h2>Talks</h2>';
+	echo '<hr/><br/>';
+	echo '<img src="/inc/img/sr_talks.gif"/><br/><br/>';
 	if(isset($results['talks'])){
 		foreach($results['talks'] as $k=>$v){
 			$str='';

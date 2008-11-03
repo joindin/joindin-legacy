@@ -1,3 +1,5 @@
+
+<img src="/inc/img/contact.gif"/>
 <p>
 Submit the contact form below to send us a note or ask a question.
 </p>
