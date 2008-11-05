@@ -1,8 +1,14 @@
 <?php
-echo $this->validation->error_string;
+$msg=$this->session->flashdata('msg');
+if($msg && !empty($msg)){ echo '<div class="notice">'.$msg.'</div><br/>'; }
 ?>
 
 <h1 class="title">Register a New Account</h1>
+<?php 
+if(!empty($this->validation->error_string)){
+	echo '<div class="err">'.$this->validation->error_string.'</div>';
+}
+?>
 <p>
 Use the form below to register a new account for the site. 
 Username, password and email address fields are required.

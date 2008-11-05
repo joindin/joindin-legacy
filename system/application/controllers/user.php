@@ -64,7 +64,7 @@ class User extends Controller {
 				'cinput'	=> 'Captcha'				
 			);
 			$rules=array(
-				'user'	=> 'required|trim|xss_clean',
+				'user'	=> 'required|trim|callback_usern_check|xss_clean',
 				'pass'	=> 'required|trim|matches[passc]|md5',
 				'passc'	=> 'required|trim',
 				'email'	=> 'required|trim|valid_email',
@@ -73,15 +73,12 @@ class User extends Controller {
 			$this->validation->set_rules($rules);
 			$this->validation->set_fields($fields);
 			
-			$cap=create_captcha($cap_arr);
-			$this->session->set_userdata(array('cinput'=>$cap['word']));			
-			$carr=array('captcha'=>$cap);
-			
 			if($this->validation->run()==FALSE){
 				//$this->load->view('talk/add',array('events'=>$events));
 			}else{
 				//success!
-				echo 'Success!';
+				//echo 'Success!';
+				$this->session->set_flashdata('msg', 'Account successfully created!');
 				$arr=array(
 					'username'	=> $this->input->post('user'),
 					'password'	=> $this->input->post('pass'),
@@ -89,6 +86,10 @@ class User extends Controller {
 				);
 				$this->db->insert('user',$arr);
 			}
+			$cap=create_captcha($cap_arr);
+                        $this->session->set_userdata(array('cinput'=>$cap['word']));
+                        $carr=array('captcha'=>$cap);
+
 			$this->template->write_view('content','user/register',$carr);
 			$this->template->render();
 	}
@@ -139,5 +140,12 @@ class User extends Controller {
 			$this->validation->_error_messages['cinput_check'] = 'Incorrect Captcha characters.';
 			return FALSE;                            
 		}else{ return TRUE; }
+	}
+	function usern_check($str){
+		$ret=$this->user_model->getUser($str);
+		if(!empty($ret)){
+			$this->validation->_error_messages['usern_check'] = 'Username already exists!';
+			return false;
+		}else{ return true; }
 	}
 }
