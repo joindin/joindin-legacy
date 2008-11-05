@@ -2,6 +2,18 @@
 //echo '<pre>'; print_r($talks); echo '</pre>';
 //echo '<pre>'; print_r($events); echo '</pre>';
 ?>
+<center>
+<div style="width:90%;background-color:#E4F1E8;padding:5px">
+<p>
+<b>Welcome to Joind.in</b> linking those presenting with their audience. Forget those paper slips or not even getting feedback, we're here to help you and those interested attendees connect. 
+</p>
+<p>
+If you have an event that you'd like to post, <a href="/about/contact">let us know!</a>.
+</p>
+</div>
+</center>
+
+<br/>
 <img src="/inc/img/curr_up.gif"/><br/>
 <br/>
 <table cellpadding="0" cellspacing="0" border="0" width="95%">

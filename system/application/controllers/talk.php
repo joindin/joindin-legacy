@@ -117,7 +117,7 @@ class Talk extends Controller {
 
 		$cap_arr=array(
 			'img_path'		=>$_SERVER['DOCUMENT_ROOT'].'/inc/img/captcha/',
-			'img_url'		=>'http://conf.localhost/inc/img/captcha/',
+			'img_url'		=>'http://joind.in/inc/img/captcha/',
 			'img_width'		=>'130',
 			'img_height'	=>'30'
 		);
