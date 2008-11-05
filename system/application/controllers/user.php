@@ -50,7 +50,7 @@ class User extends Controller {
 
 			$cap_arr=array(
 				'img_path'		=>$_SERVER['DOCUMENT_ROOT'].'/inc/img/captcha/',
-				'img_url'		=>'http://joind.in/inc/img/captcha/',
+				'img_url'		=>'/inc/img/captcha/',
 				'img_width'		=>'130',
 				'img_height'	=>'30'
 			);
@@ -73,13 +73,11 @@ class User extends Controller {
 			$this->validation->set_rules($rules);
 			$this->validation->set_fields($fields);
 			
+			$cap=create_captcha($cap_arr);
+			$this->session->set_userdata(array('cinput'=>$cap['word']));			
+			$carr=array('captcha'=>$cap);
+			
 			if($this->validation->run()==FALSE){
-				$cap = create_captcha($cap_arr);
-				$this->session->set_userdata(array('cinput'=>$cap['word']));
-				
-				$carr=array(
-					'captcha'	=> $cap
-				);
 				//$this->load->view('talk/add',array('events'=>$events));
 			}else{
 				//success!

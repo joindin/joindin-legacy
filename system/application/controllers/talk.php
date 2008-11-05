@@ -117,21 +117,23 @@ class Talk extends Controller {
 
 		$cap_arr=array(
 			'img_path'		=>$_SERVER['DOCUMENT_ROOT'].'/inc/img/captcha/',
-			'img_url'		=>'http://joind.in/inc/img/captcha/',
+			'img_url'		=>'/inc/img/captcha/',
 			'img_width'		=>'130',
 			'img_height'	=>'30'
 		);
 		
 		$rules	=array(
 			'comment'	=> 'required',
-			'rating'	=> 'required',
-			'cinput'	=> 'required|callback_cinput_check'
+			'rating'	=> 'required'
 		);
 		$fields	=array(
 			'comment'	=> 'Comment',
-			'rating'	=> 'Rating',
-			'cinput'	=> 'Captcha'
+			'rating'	=> 'Rating'
 		);
+		if(!$this->user_model->isAuth()){
+			$rules['cinput']	= 'required|callback_cinput_check';
+			$fields['cinput']	= 'Captcha';
+		}
 		$this->validation->set_rules($rules);
 		$this->validation->set_fields($fields);
 		
