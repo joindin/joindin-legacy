@@ -43,7 +43,7 @@ foreach(array('mc'=>$comments,'an'=>$anon) as $mk=>$mv){
 		$disp=';display:none';
 	}elseif(isset($mv[0])){ 
 		$disp=';display:block'; 
-	}
+	}else{ $disp=';display:block'; }
 	foreach($mv as $k=>$v){
 		$an=($mk=='an') ? '_anon' : '';
 		$rowid='com'.$an.'_'.$v->talk_id.'_'.$v->ID;

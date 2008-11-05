@@ -44,6 +44,7 @@ echo '</table>';
 	echo '</table>';
 	form_close();
 	?>
+	Don't have an account? <a href="/user/register">Signup now!</a>
 	</div>
 </td>
 </tr>
