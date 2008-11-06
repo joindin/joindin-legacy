@@ -167,6 +167,7 @@ class Talks_model extends Model {
 		
 		$this->db->like('talk_title',$term);
 		$this->db->or_like('talk_desc',$term);
+		$this->db->or_like('speaker',$term);
 		$this->db->limit(10);
 		$q=$this->db->get();
 		return $q->result();

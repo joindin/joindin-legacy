@@ -22,7 +22,7 @@ if(!empty($talks)){
 		echo '<td valign="top">';
 		for($i=1;$i<=$v->tavg;$i++){ echo '<img src="/inc/img/thumbs_up.jpg" height="20"/>'; }
 		echo '</td>';
-		echo '<td><a href="/event/view/'.$v->tid.'">'.$v->talk_title.'</a> <br/>('.$v->event_name.' - '.date('m.d.Y',$v->date_given).')</td>';
+		echo '<td><a href="/talk/view/'.$v->tid.'">'.$v->talk_title.'</a> <br/>('.$v->event_name.' - '.date('m.d.Y',$v->date_given).')</td>';
 		echo '</tr>';
 	}
 }else{ echo 'No current talks...'; }

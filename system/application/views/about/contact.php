@@ -3,6 +3,14 @@
 <p>
 Submit the contact form below to send us a note or ask a question.
 </p>
+<?php 
+//$msg=$this->session->flashdata('msg');
+if(isset($msg) && !empty($msg)){ echo '<div class="notice">'.$msg.'</div><br/>'; }
+
+echo $this->validation->error_string;
+
+echo form_open('about/contact'); 
+?>
 <table cellpadding="4" cellspacing="0" border="0">
 <tr>
 	<td class="title">Your Name:</td>
@@ -27,3 +35,4 @@ Submit the contact form below to send us a note or ask a question.
 </tr>
 <tr><td colspan="2" align="right"><?php echo form_submit('sub','Submit'); ?></td></tr>
 </table>
+<?php echo form_close(); ?>
