@@ -20,7 +20,7 @@ foreach($comments as $k=>$v){
 $total+=$anon_total;
 $total_count=count($comments)+count($anon);
 //$avg=(count($comments)>0) ? $total/$total_count : 0;
-$avg=$total/$total_count;
+$avg=($total_count>0) ? $total/$total_count : 0;
 for($i=1;$i<=round($avg);$i++){ $rstr.='<img src="/inc/img/thumbs_up.jpg" height="20"/>'; }
 
 echo '<div style="padding:10px;border:0px solid #B86F09;background-color:#E4F1E8">';
