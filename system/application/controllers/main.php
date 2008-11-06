@@ -13,7 +13,8 @@ class Main extends Controller {
 		
 		$arr=array(
 			'talks'	=> $this->talks_model->getPopularTalks(),
-			'events'=> $this->event_model->getUpcomingEvents()
+			'events'=> $this->event_model->getUpcomingEvents(),
+			'logged'=> $this->user_model->isAuth()
 		);
 		
 		$this->template->write_view('content','main/index',$arr,TRUE);

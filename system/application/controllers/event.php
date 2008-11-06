@@ -124,7 +124,9 @@ class Event extends Controller {
 		$this->load->library('validation');
 		$this->load->model('event_model');
 		$talks	= $this->event_model->getEventTalks($id);
-		$events	= $this->event_model->getEventDetail($id);	
+		$events	= $this->event_model->getEventDetail($id);
+		if(empty($events)){ redirect('event'); }
+		
 		$arr=array(
 			'events' =>$events,
 			'talks'  =>$talks,
@@ -195,7 +197,7 @@ class Event extends Controller {
 				$chk=$this->input->post('email_chk_'.$v->ID);
 				if(!empty($pv) && $chk==1){
 					//these are the ones we need to send the email to these
-					$this->events->sendCodeEmail($pv,$codes[$k]);
+					$this->events->sendCodeEmail($pv,$codes[$k],$arr['details'],$v->ID);
 				}
 			}
 		}else{ /*echo 'fail';*/ }

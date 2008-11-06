@@ -169,9 +169,11 @@ class Talk extends Controller {
 			'detail'	=> $this->talks_model->getTalks($id),
 			'comments'	=> $this->talks_model->getTalkComments($id),
 			'admin'	 	=> ($this->user_model->isAdminTalk($id)) ? true : false,
+			'site_admin'=> ($this->user_model->isSiteAdmin()) ? true : false,
 			'auth'		=> $this->auth,
 			'captcha'	=> $cap
 		);
+		if(empty($arr['detail'])){ redirect('talk'); }
 		
 		$this->template->write('feedurl','/feed/talk/'.$id);
 		$this->template->write_view('content','talk/detail',$arr,TRUE);

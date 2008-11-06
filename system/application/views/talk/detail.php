@@ -28,8 +28,10 @@ echo '<h1 style="margin-top:0px;margin-bottom:2px;color:#B86F09">'.$det->talk_ti
 echo '<p>'.$det->speaker.' ('.date('m.d.Y',$det->date_given).')<br/>';
 echo 'at <a href="/event/view/'.$det->event_id.'">'.$det->event_name.'</a></p>'.$rstr;
 echo '<p style="color:#37382F">'.nl2br($det->talk_desc).'</p>';
-if($admin){
+if($site_admin){
 	echo '<a href="/talk/delete/'.$det->tid.'"><img src="/inc/img/redx.png" border="0" alt="Delete talk"/></a>';	
+}
+if($admin){
 	echo '<a href="/talk/edit/'.$det->tid.'"><img src="/inc/img/sticky.gif" border="0" alt="Edit talk"/></a>';
 }
 echo '</div><br/>';

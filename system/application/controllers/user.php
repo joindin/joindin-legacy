@@ -85,6 +85,11 @@ class User extends Controller {
 					'email'		=> $this->input->post('email')
 				);
 				$this->db->insert('user',$arr);
+				
+				//now, since they're set up, log them in a push them to the main page
+				$ret=$this->user_model->getUser($arr['username']);
+				$this->session->set_userdata((array)$ret[0]);
+				redirect('user/main');
 			}
 			$cap=create_captcha($cap_arr);
                         $this->session->set_userdata(array('cinput'=>$cap['word']));
@@ -107,11 +112,6 @@ class User extends Controller {
 		$this->validation->set_rules($rules);
 		$this->validation->set_fields($fields);
 		
-		$arr=array(
-			'talks'		=> $this->talks_model->getUserTalks($this->session->userdata('ID')),
-			'comments'	=> $this->talks_model->getUserComments($this->session->userdata('ID'))
-		);
-		
 		if($this->validation->run()!=FALSE){
 			$code=$this->input->post('talk_code');
 			$ret=$this->talks_model->getTalkByCode($code); //print_r($ret);
@@ -120,9 +120,12 @@ class User extends Controller {
 				$uid=$this->session->userdata('ID');
 				$rid=$ret[0]->ID;
 				$this->talks_model->linkUserRes($uid,$rid,'talk');
+				$arr['msg']='Talk claimed successfully!';
 			}
 		}
-
+		$arr['talks']	= $this->talks_model->getUserTalks($this->session->userdata('ID'));
+		$arr['comments']= $this->talks_model->getUserComments($this->session->userdata('ID'));
+		
 		$this->template->write_view('content','user/main',$arr);
 		$this->template->render();
 	}

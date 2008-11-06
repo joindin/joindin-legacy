@@ -1,7 +1,13 @@
-<?php
-//echo '<pre>'; print_r($talks); echo '</pre>';
-?>
+<br/>
 <img src="/inc/img/my_comments.gif"/><br/>
+<?php
+$fmsg=$this->session->flashdata('msg');
+if(isset($msg) && !empty($msg)){ 
+	echo '<div class="notice">'.$msg.'</div><br/>';
+}elseif(!empty($fmsg)){
+	echo '<div class="notice">'.$fmsg.'</div><br/>';	
+}
+?>
 <table cellpadding="3" cellspacing="0" border="0">
 <?php
 foreach($comments as $k=>$v){

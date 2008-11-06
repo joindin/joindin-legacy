@@ -38,6 +38,11 @@ class About extends Controller {
 
 			mail($to,$subj,$cont,'From: feedback@joind.in');
 			$arr=array('msg'=>'Comments sent! Thanks for the feedback!');
+			
+			//clear out the values so they know it was sent..
+			$this->validation->your_name	='';
+			$this->validation->your_email	='';
+			$this->validation->your_com		='';						
 		}
 		
 		$this->template->write_view('content','about/contact',$arr);

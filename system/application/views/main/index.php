@@ -2,11 +2,11 @@
 //echo '<pre>'; print_r($talks); echo '</pre>';
 //echo '<pre>'; print_r($events); echo '</pre>';
 ?>
-<img src="/inc/img/curr_up.gif"/><br/>
 <br/>
-<table cellpadding="0" cellspacing="0" border="0" width="95%">
+<table cellpadding="0" cellspacing="0" border="0" width="98%">
 <tr>
 <td width="60%">
+<img src="/inc/img/curr_up.gif"/><br/>
 <?php
 foreach($events as $k=>$v){
 	echo '<div>';
@@ -32,6 +32,7 @@ foreach($talks as $k=>$v){
 echo '</table>';
 ?>
 </td>
+<?php if(isset($logged) && !$logged){ ?>
 <td width="40%" valign="top" align="right">
 	<div>
 	<?php
@@ -40,12 +41,14 @@ echo '</table>';
 	echo '<tr><td colspan="2"><img src="/inc/img/login.gif"/></td></tr>';
 	echo '<tr><td>User:</td><td>'.form_input('user').'</td></tr>';
 	echo '<tr><td>Pass:</td><td>'.form_password('pass').'</td></tr>';
-	echo '<tr><td colspan="2">'.form_submit('sub','login').'</td></tr>';
+	echo '<tr><td align="right" colspan="2">'.form_submit('sub','login').'</td></tr>';
 	echo '</table>';
 	form_close();
 	?>
+	<span style="font-size:10px">Need an account? <a href="/user/register">Register now!</a></span>
 	</div>
 </td>
+<?php } ?>
 </tr>
 </table>
 <br/>
