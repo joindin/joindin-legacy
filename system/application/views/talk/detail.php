@@ -18,7 +18,9 @@ foreach($comments as $k=>$v){
 }
 //add the whole total from our anonymous comments
 $total+=$anon_total;
-$avg=(count($comments)>0) ? $total/count($comments) : 0;
+$total_count=count($comments)+count($anon);
+//$avg=(count($comments)>0) ? $total/$total_count : 0;
+$avg=$total/$total_count;
 for($i=1;$i<=round($avg);$i++){ $rstr.='<img src="/inc/img/thumbs_up.jpg" height="20"/>'; }
 
 echo '<div style="padding:10px;border:0px solid #B86F09;background-color:#E4F1E8">';

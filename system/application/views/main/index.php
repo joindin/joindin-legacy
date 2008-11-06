@@ -2,18 +2,6 @@
 //echo '<pre>'; print_r($talks); echo '</pre>';
 //echo '<pre>'; print_r($events); echo '</pre>';
 ?>
-<center>
-<div style="width:90%;background-color:#E4F1E8;padding:5px">
-<p>
-<b>Welcome to Joind.in</b> linking those presenting with their audience. Forget those paper slips or not even getting feedback, we're here to help you and those interested attendees connect. 
-</p>
-<p>
-If you have an event that you'd like to post, <a href="/about/contact">let us know!</a>.
-</p>
-</div>
-</center>
-
-<br/>
 <img src="/inc/img/curr_up.gif"/><br/>
 <br/>
 <table cellpadding="0" cellspacing="0" border="0" width="95%">
@@ -39,7 +27,7 @@ foreach($talks as $k=>$v){
 		echo '<a href="#" onClick="setVote('.$i.')"><img id="rate_'.$i.'" src="/inc/img/thumbs_up.jpg" height="20" border="0"/></a>';
 	}
 	echo '<td/>';
-	echo '<td><a href="/talk/view/'.$v->ID.'">'.$v->talk_title.'</a> ('.$ccount.')</td></tr>';
+	echo '<td><a style="font-size:12px" href="/talk/view/'.$v->ID.'">'.$v->talk_title.'</a><br/><span style="color:#999999;font-size:10px">('.$ccount.')</span></td></tr>';
 }
 echo '</table>';
 ?>
@@ -56,7 +44,6 @@ echo '</table>';
 	echo '</table>';
 	form_close();
 	?>
-	Don't have an account? <a href="/user/register">Signup now!</a>
 	</div>
 </td>
 </tr>
