@@ -126,6 +126,16 @@ class User extends Controller {
 		$this->template->write_view('content','user/main',$arr);
 		$this->template->render();
 	}
+	function view($uid){
+		$this->load->model('talks_model');
+		$arr=array(
+			'details'	=> $this->user_model->getUser($uid),
+			'comments'	=> $this->talks_model->getUserComments($uid)
+		);
+
+		$this->template->write_view('content','user/view',$arr);
+		$this->template->render();
+	}
 	//--------------------
 	function start_up_check($p){
 		$u=$this->input->post('user');

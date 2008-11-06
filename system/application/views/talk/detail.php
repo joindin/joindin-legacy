@@ -43,9 +43,14 @@ foreach(array('mc'=>$comments,'an'=>$anon) as $mk=>$mv){
 	if($mk=='an' && isset($mv[0])){ 
 		echo '<tr><td colspan="2" align="center"><a href="#" id="anonLink" onClick="toggleAnon('.$mv[0]->talk_id.');return false;">Click here to show '.count($mv).' anonymous comments</a></td></tr>';
 		$disp=';display:none';
+		$uname='';
 	}elseif(isset($mv[0])){ 
 		$disp=';display:block'; 
-	}else{ $disp=';display:block'; }
+		$uname='<a href="/user/view/'.$v->user_id.'">'.$v->uname.'</a> ';
+	}else{ 
+		$disp=';display:block'; 
+		$uname='';
+	}
 	foreach($mv as $k=>$v){
 		$an=($mk=='an') ? '_anon' : '';
 		$rowid='com'.$an.'_'.$v->talk_id.'_'.$v->ID;
@@ -65,7 +70,7 @@ foreach(array('mc'=>$comments,'an'=>$anon) as $mk=>$mv){
 		for($i=1;$i<=$v->rating;$i++){ echo '<img src="/inc/img/thumbs_up.jpg" height="20"/>'; }
 	
 		echo '<td><p style="font-size:12px;color:#37382F">'.$an.$v->comment.'</p>';
-		echo '<span style="font-size:10px;color:#A1A58A">'.date('m.d.Y H:i:s',$v->date_made).'</span></td>';
+		echo '<span style="font-size:10px;color:#A1A58A">'.$uname.' '.date('m.d.Y H:i:s',$v->date_made).'</span></td>';
 		echo '</tr>'."\n".'<tr><td colspan="2"></td></tr>';
 	}
 }

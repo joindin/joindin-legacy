@@ -55,11 +55,32 @@ class Talks_model extends Model {
 		return $q->result();
 	}
 	function getTalkComments($tid){
+		/*
 		$this->db->from('talk_comments');
 		$this->db->where('talk_id',$tid);
 		$this->db->where('active','1');
 		$this->db->order_by('date_made','desc');
 		$q=$this->db->get();
+		*/
+		$sql=sprintf('
+			select
+				tc.talk_id,
+				tc.rating,
+				tc.comment,
+				tc.date_made,
+				tc.ID,
+				tc.private,
+				tc.active,
+				tc.user_id,
+				(select username from user where user.ID=tc.user_id) uname
+			from
+				talk_comments tc
+			where
+				tc.active=1 and
+				tc.talk_id=%s
+			order by tc.date_made desc
+		',$tid);
+		$q=$this->db->query($sql);
 		return $q->result();
 	}
 	function getPopularTalks($len=5){
