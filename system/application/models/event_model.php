@@ -69,6 +69,28 @@ class Event_model extends Model {
 		$q=$this->db->get_where('events',array('event_stub'=>$name));
 		return $q->result();
 	}
+	function getClaimedTalks($eid){
+		$ids=array();
+		$ret=$this->getEventTalks($eid); //echo '<pre>'; print_r($ret); echo '</pre>';
+		foreach($ret as $k=>$v){ $ids[]=$v->ID; }
+		
+		$sql=sprintf('
+			select
+				ua.uid,
+				ua.rid,
+				ua.rtype,
+				ua.ID,
+				u.email
+			from
+				user_admin ua,
+				user u
+			where
+				ua.uid=u.ID and 
+				ua.rid in (%s)
+		',implode(',',$ids));
+		$q=$this->db->query($sql);
+		return $q->result();
+	}
 	//----------------------
 	function search($term,$start,$end){
 		$arr=array();

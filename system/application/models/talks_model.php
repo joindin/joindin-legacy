@@ -9,6 +9,23 @@ class Talks_model extends Model {
 	function deleteTalk($id){
 		$this->db->delete('talks',array('ID'=>$id));
 	}
+	function isTalkClaimed($tid){
+		$sql=sprintf('
+			select
+				u.username,
+				ua.uid,
+				ua.rid,
+				u.ID userid
+			from
+				user u,
+				user_admin ua
+			where
+				u.ID=ua.uid and
+				ua.rid=%s
+		',$tid);
+		$q=$this->db->query($sql);
+		return $q->result();
+	}
 	//---------------
 	function getTalks($tid=null){
 		if($tid){

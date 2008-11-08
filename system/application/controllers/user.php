@@ -133,7 +133,8 @@ class User extends Controller {
 		$this->load->model('talks_model');
 		$arr=array(
 			'details'	=> $this->user_model->getUser($uid),
-			'comments'	=> $this->talks_model->getUserComments($uid)
+			'comments'	=> $this->talks_model->getUserComments($uid),
+			'talks'		=> $this->talks_model->getUserTalks($uid)
 		);
 
 		$this->template->write_view('content','user/view',$arr);

@@ -171,7 +171,8 @@ class Talk extends Controller {
 			'admin'	 	=> ($this->user_model->isAdminTalk($id)) ? true : false,
 			'site_admin'=> ($this->user_model->isSiteAdmin()) ? true : false,
 			'auth'		=> $this->auth,
-			'captcha'	=> $cap
+			'captcha'	=> $cap,
+			'claimed'	=> $this->talks_model->isTalkClaimed($id)
 		);
 		if(empty($arr['detail'])){ redirect('talk'); }
 		

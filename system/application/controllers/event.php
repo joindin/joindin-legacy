@@ -189,7 +189,8 @@ class Event extends Controller {
 		$arr=array(
 			'talks'		=> $talks,
 			'codes'		=> $codes,
-			'details'	=> $this->event_model->getEventDetail($id)
+			'details'	=> $this->event_model->getEventDetail($id),
+			'claimed'	=> $this->event_model->getClaimedTalks($id)
 		);
 		if($this->validation->run()!=FALSE){
 			foreach($talks as $k=>$v){

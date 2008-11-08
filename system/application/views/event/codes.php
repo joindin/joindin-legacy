@@ -1,7 +1,8 @@
 <?php
 
 //echo '<pre>'; print_r($talks); print_r($codes); echo '</pre>';
-//print_r($details);
+$cl=array();
+foreach($claimed as $k=>$v){ $cl[$v->rid]=$v->email; }
 ?>
 <style>
 tr.tbl_header {
@@ -10,6 +11,7 @@ tr.tbl_header {
 tr.tbl_header td {
 	font-weight: bold;
 }
+tr.claimed { background-color: #DEDEDE; }
 </style>
 
 <h1 class="title">Send Codes: <?=$details[0]->event_name?></h1>
@@ -28,6 +30,10 @@ foreach($talks as $k=>$v){
 	$email_id	= 'email_'.$v->ID;
 	$email_chk	= 'email_chk_'.$v->ID;
 	$chk_post	= $this->input->post($email_chk);
+	if(array_key_exists((string)$v->ID,$cl)){
+		$this->validation->$email_id=$cl[$v->ID];
+		$rs='class="claimed"';
+	}else{ $rs=''; }
 	$chk=array(
 		'name'	=> $email_chk,
 		'id'	=> $email_chk,
@@ -35,12 +41,12 @@ foreach($talks as $k=>$v){
 		'checked'=>(!empty($chk_post) && $chk_post==1) ? true : false
 	);
 	echo sprintf('
-		<tr>
+		<tr %s>
 			<td>%s<br/<span style="color:#888888">%s</span></td>
 			<td>%s</td>
 			<td>%s</td><td>%s</td>
 		</tr>
-	',$v->talk_title,$v->speaker,$codes[$k],form_checkbox($chk),
+	',$rs,$v->talk_title,$v->speaker,$codes[$k],form_checkbox($chk),
 	form_input($email_id,$this->validation->$email_id));
 }
 echo '<tr><td></td><td></td><td colspan="3">'.form_submit('sub','Send Emails').'</td></tr>';

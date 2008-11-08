@@ -1,5 +1,6 @@
 <?php
 //echo '<pre>'; print_r($detail); print_r($comments); echo '</pre>';
+//print_r($claimed);
 $det=$detail[0];
 
 $total	= 0;
@@ -23,9 +24,14 @@ $total_count=count($comments)+count($anon);
 $avg=($total_count>0) ? $total/$total_count : 0;
 for($i=1;$i<=round($avg);$i++){ $rstr.='<img src="/inc/img/thumbs_up.jpg" height="20"/>'; }
 
+//change up our string if this is a confirmed, clamed talk
+if(!empty($claimed)){
+	$speaker='<a href="/user/view/'.$claimed[0]->userid.'">'.$det->speaker.'</a>';
+}else{ $speaker=$det->speaker; }
+
 echo '<div style="padding:10px;border:0px solid #B86F09;background-color:#E4F1E8">';
 echo '<h1 style="margin-top:0px;margin-bottom:2px;color:#B86F09">'.$det->talk_title.'</h1>';
-echo '<p>'.$det->speaker.' ('.date('m.d.Y',$det->date_given).')<br/>';
+echo '<p>'.$speaker.' ('.date('m.d.Y',$det->date_given).')<br/>';
 echo 'at <a href="/event/view/'.$det->event_id.'">'.$det->event_name.'</a></p>'.$rstr;
 echo '<p style="color:#37382F">'.nl2br($det->talk_desc).'</p>';
 if($admin){
