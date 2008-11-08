@@ -39,7 +39,7 @@ if(!empty($talks)){
 
 <img src="/inc/img/claim_talk.gif"/><br/>
 <p>
-Enter your talk code below to claim your talk and have access to private comments from visitors.
+Enter your talk code below to claim your talk and have access to private comments from visitors. <a href="/about/contact">Contact Us</a> to have the code for your talk sent via email.
 </p>
 <?php
 if(!empty($this->validation->error_string)){
