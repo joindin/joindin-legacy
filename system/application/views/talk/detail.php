@@ -28,14 +28,22 @@ echo '<h1 style="margin-top:0px;margin-bottom:2px;color:#B86F09">'.$det->talk_ti
 echo '<p>'.$det->speaker.' ('.date('m.d.Y',$det->date_given).')<br/>';
 echo 'at <a href="/event/view/'.$det->event_id.'">'.$det->event_name.'</a></p>'.$rstr;
 echo '<p style="color:#37382F">'.nl2br($det->talk_desc).'</p>';
-if($site_admin){
-	echo '<a href="/talk/delete/'.$det->tid.'"><img src="/inc/img/redx.png" border="0" alt="Delete talk"/></a>';	
-}
 if($admin){
+	echo '<a href="/talk/delete/'.$det->tid.'"><img src="/inc/img/redx.png" border="0" alt="Delete talk"/></a>';	
 	echo '<a href="/talk/edit/'.$det->tid.'"><img src="/inc/img/sticky.gif" border="0" alt="Edit talk"/></a>';
 }
 echo '</div><br/>';
-
+?>
+<center>
+<script type="text/javascript"><!--
+google_ad_client = "pub-2135094760032194";
+/* 468x60, created 11/5/08 */
+google_ad_slot = "4582459016"; google_ad_width = 468; google_ad_height = 60; //-->
+</script>
+<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
+</center>
+<br/>
+<?php
 $msg=$this->session->flashdata('msg');
 if($msg && !empty($msg)){ echo '<div class="notice">'.$msg.'</div><br/>'; }
 
@@ -131,7 +139,7 @@ if($det->date_given<=time()){
 form_close(); 
 /* close if for date */
 }else{
-	echo '<center>Currently not open for comment.</center>';
+	echo '<center><span style="font-size:13px;font-weight:bold;color:#4282C4">Currently not open for comment.</span></center>';
 }
 
 }else{

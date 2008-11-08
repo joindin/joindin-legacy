@@ -11,8 +11,8 @@
 |	http://example.com/
 |
 */
-$config['base_url']	= "http://conf.localhost/";
-#$cnfig['base_url']	= 'http://joind.in/';
+$config['base_url']	= 'http://joind.in/';
+//$config['base_url']	= "http://conf.localhost/";
 
 /*
 |--------------------------------------------------------------------------
