@@ -28,6 +28,8 @@ div.notice {
 	color: #252E14;
 	margin: 3px;
 }
+tr.row1 { background-color: #ECECEC; }
+tr.row2 { background-color: #FFFFFF; }
 
 #layout {
 	height: 100%;
