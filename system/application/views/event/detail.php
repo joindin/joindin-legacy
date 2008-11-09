@@ -1,5 +1,7 @@
 <?php
 $det=$events[0]; //print_r($det);
+$cl=array();
+foreach($claimed as $k=>$v){ $cl[$v->rid]=$v->uid; }
 ?>
 
 <div style="padding:10px;border:0px solid #B86F09;background-color:#E4F1E8">
@@ -39,15 +41,20 @@ foreach($talks as $v){
 	$by_day[$day][]=$v;
 }
 ksort($by_day);
-echo '<table cellpadding="3" cellspacing="0" border="0">';
+$ct=0;
+
+echo '<table cellpadding="3" cellspacing="0" border="0" width="100%">';
 foreach($by_day as $k=>$v){
 	echo '<tr><td colspan="2"><b>'.str_replace('_','.',$k).'</b></td></tr>';
 	foreach($v as $ik=>$iv){
+		$style=($ct%2==0) ? 'row1' : 'row2';
 		//echo '<tr><td align="right">'.str_repeat('*',$iv->rank).'</td>';
-		echo '<tr><td align="right">';
+		echo '<tr class="'.$style.'"><td align="right">';
 		for($i=1;$i<=$iv->rank;$i++){ echo '<img src="/inc/img/thumbs_up.jpg" height="20"/>'; }
 		echo '</td>';
-		echo '<td><a href="/talk/view/'.$iv->ID.'">'.$iv->talk_title.' ('.$iv->speaker.')</a></td><tr/>';
+		$sp=(array_key_exists((string)$iv->ID,$cl)) ? '<a href="/user/view/'.$cl[$iv->ID].'">'.$iv->speaker.'</a>' : $iv->speaker;
+		echo '<td><a href="/talk/view/'.$iv->ID.'">'.$iv->talk_title.'</a></td><td>'.$sp.'</td><tr/>';
+		$ct++;
 	}
 }
 echo '</table>';

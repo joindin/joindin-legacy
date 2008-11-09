@@ -130,7 +130,8 @@ class Event extends Controller {
 		$arr=array(
 			'events' =>$events,
 			'talks'  =>$talks,
-			'admin'	 =>($this->user_model->isAdminEvent($id)) ? true : false
+			'admin'	 =>($this->user_model->isAdminEvent($id)) ? true : false,
+			'claimed'=>$this->event_model->getClaimedTalks($id)
 		);
 		
 		$this->template->write_view('content','event/detail',$arr,TRUE);
