@@ -45,7 +45,7 @@ $ct=0;
 
 echo '<table cellpadding="3" cellspacing="0" border="0" width="100%">';
 foreach($by_day as $k=>$v){
-	echo '<tr><td colspan="2"><b>'.str_replace('_','.',$k).'</b></td></tr>';
+	echo '<tr><td colspan="2"><a name="'.$k.'"></a><b>'.str_replace('_','.',$k).'</b></td></tr>';
 	foreach($v as $ik=>$iv){
 		$style=($ct%2==0) ? 'row1' : 'row2';
 		//echo '<tr><td align="right">'.str_repeat('*',$iv->rank).'</td>';
