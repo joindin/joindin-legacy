@@ -38,6 +38,7 @@ if($admin){
 	echo '<a href="/talk/delete/'.$det->tid.'"><img src="/inc/img/redx.png" border="0" alt="Delete talk"/></a>';	
 	echo '<a href="/talk/edit/'.$det->tid.'"><img src="/inc/img/sticky.gif" border="0" alt="Edit talk"/></a>';
 }
+echo '<b style="color:#37382F">quicklink:</b> <a href="http://joind.in/'.$det->tid.'">http://joind.in/'.$det->tid.'</a>';
 echo '</div><br/>';
 ?>
 <center>
