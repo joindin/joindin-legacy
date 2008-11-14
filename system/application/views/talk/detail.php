@@ -69,6 +69,10 @@ foreach(array('mc'=>$comments,'an'=>$anon) as $mk=>$mv){
 		$uname='';
 	}
 	foreach($mv as $k=>$v){
+		if(isset($mv[0])){ 
+			$uname='<a href="/user/view/'.$v->user_id.'">'.$v->uname.'</a> ';
+		}
+		
 		$an=($mk=='an') ? '_anon' : '';
 		$rowid='com'.$an.'_'.$v->talk_id.'_'.$v->ID;
 		
