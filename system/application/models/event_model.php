@@ -57,9 +57,10 @@ class Event_model extends Model {
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
-	function getUpcomingEvents(){
+	function getUpcomingEvents($inc_curr=false){
 		$this->db->from('events');
 		$this->db->where('event_start>=',time());
+		if($inc_curr){ $this->db->or_where('event_end>=',time()); }
 		$this->db->order_by('event_start','desc');
 		$this->db->limit(10);
 		$q=$this->db->get();
