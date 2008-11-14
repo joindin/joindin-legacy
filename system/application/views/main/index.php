@@ -6,7 +6,7 @@
 <table cellpadding="0" cellspacing="0" border="0" width="98%">
 <tr>
 <td width="60%">
-<img src="/inc/img/curr_up.gif"/><br/>
+<img src="/inc/img/curr_up.gif"/><br/><br/>
 <?php
 foreach($events as $k=>$v){
 	echo '<div>';
@@ -18,13 +18,13 @@ foreach($events as $k=>$v){
 	echo '</div><br/>';
 }
 echo '<br/>';
-echo '<img src="/inc/img/pop_talk.gif"/>';
+echo '<img src="/inc/img/pop_talk.gif"/><br/><br/>';
 echo '<table cellpadding="3" cellspacing="0" border="0">';
 foreach($talks as $k=>$v){
 	$ccount=($v->ccount>1) ? $v->ccount.' comments' : '1 comment';
 	echo '<tr><td align="right" valign="top">';
 	for($i=1;$i<=$v->tavg;$i++){
-		echo '<a href="#" onClick="setVote('.$i.')"><img id="rate_'.$i.'" src="/inc/img/thumbs_up.jpg" height="20" border="0"/></a>';
+		echo '<img id="rate_'.$i.'" src="/inc/img/thumbs_up.jpg" height="20" border="0"/>';
 	}
 	echo '<td/>';
 	echo '<td><a style="font-size:12px" href="/talk/view/'.$v->ID.'">'.$v->talk_title.'</a><br/><span style="color:#999999;font-size:10px">('.$ccount.')</span></td></tr>';

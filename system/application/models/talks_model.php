@@ -27,7 +27,7 @@ class Talks_model extends Model {
 		return $q->result();
 	}
 	//---------------
-	function getTalks($tid=null){
+	function getTalks($tid=null,$latest=false){
 		if($tid){
 			$sql=sprintf('
 				select
@@ -51,6 +51,10 @@ class Talks_model extends Model {
 			',$tid);
 			$q=$this->db->query($sql);
 		}else{
+			if($latest){ 
+				$wh=' date_given<='.time().' and ';
+				$ob=' order by date_given desc';
+			}else{ $wh=''; $ob=''; }
 			$sql=sprintf('
 				select
 					talk_title,
@@ -65,8 +69,10 @@ class Talks_model extends Model {
 				from
 					talks
 				where
+					%s
 					active=1
-			');
+				%s
+			',$wh,$ob);
 			$q=$this->db->query($sql);
 		}
 		return $q->result();
@@ -115,6 +121,10 @@ class Talks_model extends Model {
 				t.active=1
 			group by
 				t.ID
+			order by 
+				ccount desc
+			limit
+				7
 		');
 		$q=$this->db->query($sql);
 		return $q->result();
