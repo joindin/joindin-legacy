@@ -57,8 +57,9 @@ echo '<table cellpadding="4" cellspacing="0" border="0" width="100%">';
 
 foreach(array('mc'=>$comments,'an'=>$anon) as $mk=>$mv){
 	if($mk=='an' && isset($mv[0])){ 
-		echo '<tr><td colspan="2" align="center"><a href="#" id="anonLink" onClick="toggleAnon('.$mv[0]->talk_id.');return false;">Click here to show '.count($mv).' anonymous comments</a></td></tr>';
-		$disp=';display:none';
+		//echo '<tr><td colspan="2" align="center"><a href="#" id="anonLink" onClick="toggleAnon('.$mv[0]->talk_id.');return false;">Click here to show '.count($mv).' anonymous comments</a></td></tr>';
+		//$disp=';display:none';
+		$disp=';display:block';
 		$uname='';
 	}elseif(isset($mv[0])){ 
 		$disp=';display:block'; 

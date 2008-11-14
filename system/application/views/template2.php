@@ -2,6 +2,7 @@
 	<title>Joind.in </title>
 <head>
 	<link rel="stylesheet" type="text/css" href="/inc/css/site.css">
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" /> 
 	<script language="JavaScript" src="/inc/js/jquery.js"></script>
 	<script language="JavaScript" src="/inc/js/site.js"></script>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
