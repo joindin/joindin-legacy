@@ -6,7 +6,7 @@ class Main extends Controller {
 		parent::Controller();		
 		$this->user_model->logStatus();
 	}
-	function index()){
+	function index(){
 		$this->load->helper('form');
 		$this->load->model('talks_model');
 		$this->load->model('event_model');
