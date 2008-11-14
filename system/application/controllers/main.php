@@ -6,14 +6,19 @@ class Main extends Controller {
 		parent::Controller();		
 		$this->user_model->logStatus();
 	}
-	function index(){
+	function index($tid){
 		$this->load->helper('form');
 		$this->load->model('talks_model');
 		$this->load->model('event_model');
 		
+		if($tid){
+			$det=$this->talks_model->getTalks($tid);
+			if($det){ redirect('talk/view/'.$tid); }
+		}
+		
 		$arr=array(
 			'talks'	=> $this->talks_model->getPopularTalks(),
-			'events'=> $this->event_model->getUpcomingEvents(),
+			'events'=> $this->event_model->getUpcomingEvents(true),
 			'logged'=> $this->user_model->isAuth()
 		);
 		

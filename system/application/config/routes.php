@@ -51,6 +51,7 @@ $route['event/delete/(:num)']	= 'event/delete/$1';
 $route['event/codes/(:num)']	= 'event/codes/$1';
 //now our catch all...
 $route['event/(:any)']			= 'event/cust/$1';
+$route['(:num)']				= 'talk/view/$1';
 
 
 /* End of file routes.php */
