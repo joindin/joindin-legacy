@@ -136,6 +136,7 @@ if($det->date_given<=time()){
 	<td class="title">Mark as private?</td>
 	<td><?php echo form_checkbox('private','1'); ?></td>
 </tr>
+<?php if(!$this->auth){ ?>
 <tr>
 	<td class="title" valign="top">Type in the code:</td>
 	<td>
@@ -143,6 +144,7 @@ if($det->date_given<=time()){
 	<?php echo $captcha['image']; ?>
 	</td>
 </tr>
+<? } ?>
 <tr>
 	<td align="right" colspan="2"><?php echo form_submit('Comment','Comment'); ?></td>
 </tr>
