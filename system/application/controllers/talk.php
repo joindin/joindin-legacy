@@ -137,6 +137,10 @@ class Talk extends Controller {
 		$this->validation->set_rules($rules);
 		$this->validation->set_fields($fields);
 		
+		$cl=($r=$this->talks_model->isTalkClaimed($id)) ? $r : false; //print_r($cl);
+		
+		$talk_detail=$this->talks_model->getTalks($id);
+		
 		if($this->validation->run()==FALSE){
 			//echo 'error!';
 		}else{ 
@@ -159,6 +163,18 @@ class Talk extends Controller {
 			foreach($arr as $ak=>$av){ $msg.='['.$ak.'] => '.$av."\n"; }
 			mail('enygma@phpdeveloper.org','Comment on talk '.$id,$msg,'From: comments@joind.in');
 			
+			//if its claimed, be sure to send an email to the person to tell them
+			if($cl){
+				//$to=$cl->email;
+				$to		= 'enygma@phpdeveloper.org';
+				$subj	= 'A comment has been posted on your talk!';
+				$msg	= sprintf("
+A comment has been posted to your talk: %s\n
+Click here to view it: http://joind.in/talk/view/%s
+				",$talk_detail->talk_title,$id);
+				mail($to,$subj,$msg,'From: comments@joind.in');
+			}
+			
 			$this->session->set_flashdata('msg', 'Comment added!');
 		}
 		$cap = create_captcha($cap_arr);
@@ -166,7 +182,7 @@ class Talk extends Controller {
 			
 		$this->load->model('talks_model');
 		$arr=array(
-			'detail'	=> $this->talks_model->getTalks($id),
+			'detail'	=> $talk_detail,
 			'comments'	=> $this->talks_model->getTalkComments($id),
 			'admin'	 	=> ($this->user_model->isAdminTalk($id)) ? true : false,
 			'site_admin'=> ($this->user_model->isSiteAdmin()) ? true : false,

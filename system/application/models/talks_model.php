@@ -13,6 +13,7 @@ class Talks_model extends Model {
 		$sql=sprintf('
 			select
 				u.username,
+				u.email,
 				ua.uid,
 				ua.rid,
 				u.ID userid
