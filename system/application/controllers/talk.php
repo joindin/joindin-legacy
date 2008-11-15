@@ -165,13 +165,12 @@ class Talk extends Controller {
 			
 			//if its claimed, be sure to send an email to the person to tell them
 			if($cl){
-				//$to=$cl->email;
-				$to		= 'enygma@phpdeveloper.org';
-				$subj	= 'A comment has been posted on your talk!';
+				$to=$cl[0]->email;
+				$subj	= 'A new comment has been posted on your talk!';
 				$msg	= sprintf("
-A comment has been posted to your talk: %s\n
+A comment has been posted to your talk on joind.in: \n%s\n
 Click here to view it: http://joind.in/talk/view/%s
-				",$talk_detail->talk_title,$id);
+				",$talk_detail[0]->talk_title,$id);
 				mail($to,$subj,$msg,'From: comments@joind.in');
 			}
 			
