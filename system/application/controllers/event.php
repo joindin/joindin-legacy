@@ -240,11 +240,11 @@ class Event extends Controller {
 			);
 			$to		= 'enygma@phpdeveloper.org';
 			$subj	= 'Event submission from Joind.in';
-			$msg='Event Title: '.$this->input->post('event_title')."\n";
-			$msg.='Event Description: '.$this->input->post('event_desc')."\n";
-			$msg.='Event Date: '.date('m.d.Y H:i:s',$t)."\n";
-			$msg.='Event Contact Name: '.$this->input->post('event_contact_name')."\n";
-			$msg.='Event Contact Email: '.$this->input->post('event_contact_email')."\n";
+			$msg='Event Title: '.$this->input->post('event_title')."\n\n";
+			$msg.='Event Description: '.$this->input->post('event_desc')."\n\n";
+			$msg.='Event Date: '.date('m.d.Y H:i:s',$t)."\n\n";
+			$msg.='Event Contact Name: '.$this->input->post('event_contact_name')."\n\n";
+			$msg.='Event Contact Email: '.$this->input->post('event_contact_email')."\n\n";
 			
 			mail($to,$subj,$msg,'From: submissions@joind.in');
 			$arr['msg']='Event successfully submitted! We\'ll get back with you soon!';
