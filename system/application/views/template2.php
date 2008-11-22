@@ -41,6 +41,11 @@
 	</td>
 </tr>
 <tr>
+	<td colspan="2" align="center" style="background-color:#EEEEEE;padding:1px">
+		<a href="/event/submit" style="color:#B86F09;text-decoration:none;font-weight:bold">Submit your event today!</a>
+	</td>
+</tr>
+<tr>
 	<td colspan="2" valign="top" style="padding:8px;border:0px solid #C4C9A7"><?=$content?></td>
 </tr>
 <tr>
