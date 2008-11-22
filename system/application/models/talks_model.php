@@ -102,7 +102,7 @@ class Talks_model extends Model {
 			where
 				tc.active=1 and
 				tc.talk_id=%s
-			order by tc.date_made desc
+			order by tc.date_made asc
 		',$tid);
 		$q=$this->db->query($sql);
 		return $q->result();

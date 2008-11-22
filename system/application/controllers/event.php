@@ -206,6 +206,52 @@ class Event extends Controller {
 		$this->template->write_view('content','event/codes',$arr,TRUE);
 		$this->template->render();
 	}
+	function submit(){
+		$arr=array();
+		$this->load->helper('form');
+		$this->load->library('validation');
+		
+		$fields=array(
+			'event_title'			=> 'Event Title',
+			'event_contact_name'	=> 'Event Contact Name',
+			'event_contact_email'	=> 'Event Contact Email',
+			'event_desc'			=> 'Event Description',
+			'start_mo'				=> 'Event Start Month',
+			'start_day'				=> 'Event Start Day',
+			'start_yr'				=> 'Event Start Year'
+		);
+		$rules=array(
+			'event_title'			=> 'required',
+			'event_contact_name'	=> 'required',
+			'event_contact_email'	=> 'required|valid_email',
+			'event_desc'			=> 'required',
+			'start_mo'				=> 'callback_start_mo_check',
+		);
+		$this->validation->set_rules($rules);
+		$this->validation->set_fields($fields);
+		
+		if($this->validation->run()!=FALSE){
+			//send the information via email...
+			$t=mktime(
+				0,0,0,
+				$this->input->post('start_mo'),
+				$this->input->post('start_day'),
+				$this->input->post('start_yr')
+			);
+			$to		= 'enygma@phpdeveloper.org';
+			$subj	= 'Event submission from Joind.in';
+			$msg='Event Title: '.$this->input->post('event_title')."\n";
+			$msg.='Event Description: '.$this->input->post('event_desc')."\n";
+			$msg.='Event Date: '.date('m.d.Y H:i:s',$t)."\n";
+			$msg.='Event Contact Name: '.$this->input->post('event_contact_name')."\n";
+			$msg.='Event Contact Email: '.$this->input->post('event_contact_email')."\n";
+			
+			mail($to,$subj,$msg,'From: submissions@joind.in');
+			$arr['msg']='Event successfully submitted! We\'ll get back with you soon!';
+		}
+		$this->template->write_view('content','event/submit',$arr);
+		$this->template->render();
+	}
 	//----------------------
 	function start_mo_check($str){
 		$t=mktime(

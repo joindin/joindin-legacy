@@ -203,12 +203,15 @@ Click here to view it: http://joind.in/talk/view/%s
 			$this->validation->given_mo,
 			$this->validation->given_day,
 			$this->validation->given_yr
-		); echo $t.' '.date('m.d.Y H:i:s',$t);
+		); //echo $t.' '.date('m.d.Y H:i:s',$t);
 		//get the duration of the selected event
 		$det=$this->event_model->getEventDetail($this->validation->event_id);
 		$det=$det[0];
-		echo '<pre>'; print_r($det); echo '</pre>';
-		if($t>=$det->event_start && $t<=$det->event_end){
+		//echo '<pre>'; print_r($det); echo '</pre>';
+		$day_start	= mktime(0,0,0,date('m',$det->event_start),date('d',$det->event_start),date('Y',$det->event_start));
+		$day_end	= mktime(23,59,59,date('m',$det->event_end),date('d',$det->event_end),date('Y',$det->event_end));
+		//if($t>=$det->event_start && $t<=$det->event_end){
+		if($t>=$day_start && $t<=$day_end){
 			return true;
 		}else{
 			$this->validation->set_message('given_mo_check','Talk date must be during the event!');
