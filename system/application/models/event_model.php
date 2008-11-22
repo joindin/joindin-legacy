@@ -75,6 +75,8 @@ class Event_model extends Model {
 		$ret=$this->getEventTalks($eid); //echo '<pre>'; print_r($ret); echo '</pre>';
 		foreach($ret as $k=>$v){ $ids[]=$v->ID; }
 		
+		$uids=implode(',',$ids);
+		if(empty($uids)){ return array(); }
 		$sql=sprintf('
 			select
 				ua.uid,
@@ -88,7 +90,7 @@ class Event_model extends Model {
 			where
 				ua.uid=u.ID and 
 				ua.rid in (%s)
-		',implode(',',$ids));
+		',$uids);
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
