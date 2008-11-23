@@ -11,12 +11,14 @@ $anon_total = 0;
 foreach($comments as $k=>$v){ 
 	if($v->user_id==0 && strlen($v->user_id)>=1){
 		$anon[]=$v;
-		unset($comments[$k]);
+		//unset($comments[$k]);
 		$anon_total+=$v->rating; 
 	}else{
 		$total+=$v->rating; 
 	}
 }
+$anon=array();
+
 //add the whole total from our anonymous comments
 $total+=$anon_total;
 $total_count=count($comments)+count($anon);
@@ -71,16 +73,16 @@ foreach(array('mc'=>$comments,'an'=>$anon) as $mk=>$mv){
 		$uname='';
 	}
 	foreach($mv as $k=>$v){
-		if(isset($mv[0])){ 
+		if(isset($v->user_id) && $v->user_id!=0){ 
 			$uname='<a href="/user/view/'.$v->user_id.'">'.$v->uname.'</a> ';
-		}
+		}else{ $disp=';display:block'; $uname=''; }
 		
 		$an=($mk=='an') ? '_anon' : '';
 		$rowid='com'.$an.'_'.$v->talk_id.'_'.$v->ID;
 		
 		if($v->private && !$admin){ continue; }
 	
-		if($mk=='an'){
+		if($mk=='an' || $v->user_id==0){
 			$bg=($v->private==1) ? 'EEEEEE':'F8F8F8';
 			$an='<span style="font-size:9px;font-weight:bold;color:#747474">ANONYMOUS</span><br/>';
 		}else{ 
