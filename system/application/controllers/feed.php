@@ -21,9 +21,9 @@ class Feed extends Controller {
 		
 		foreach($com as $k=>$v){
 			$items[]=array(
-				'guid'			=> '/talk/view/'.$v->talk_id,
+				'guid'			=> 'http://joind.in/talk/view/'.$v->talk_id,
 				'title'			=> 'Comment on: '.$tlk[0]->talk_title,
-				'link'			=> '/talks/view/'.$v->talk_id,
+				'link'			=> 'http://joind.in/talk/view/'.$v->talk_id,
 				'description'	=> $v->comment,
 				'pubDate'		=> date('r',$v->date_made)
 			);
