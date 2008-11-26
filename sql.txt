@@ -52,3 +52,17 @@ create table user_admin (
 	ID INT NOT NULL AUTO_INCREMENT,
 	PRIMARY KEY(ID)
 );
+
+create table talk_cat (
+	talk_id INT,
+	cat_id INT,
+	ID INT NOT NULL AUTO_INCREMENT,
+	PRIMARY KEY(ID)
+);
+create table categories (
+	cat_title VARCHAR(200),
+	cat_desc TEXT,
+	ID INT NOT NULL AUTO_INCREMENT,
+	PRIMARY KEY(ID)
+);
+

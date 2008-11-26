@@ -1,9 +1,14 @@
 <?php
-$event_list=array(); 
-//echo '<pre>'; print_r($events); echo '</pre>';
+$event_list	= array(); 
+$cat_list	= array();
+//echo '<pre>'; print_r($cats); echo '</pre>';
 
 foreach($events as $k=>$v){
 	$event_list[$v->ID]=$v->event_name.' ('.date('m.d.Y',$v->event_start).'-'.date('m.d.Y',$v->event_end).')';
+}
+foreach($cats as $k=>$v){
+	$cat_list[$v->ID]=$v->cat_title;
+	
 }
 
 echo $this->validation->error_string;
@@ -44,6 +49,12 @@ echo '<h2>'.$sub.'</h2>';
 		echo form_dropdown('given_day',$given_day,$this->validation->given_day);
 		echo form_dropdown('given_yr',$given_yr,$this->validation->given_yr);
 		?>
+	</td>
+</tr>
+<tr>
+	<td class="title">Session Type:</td>
+	<td>
+		<?php echo form_dropdown('session_type',$cat_list,$this->validation->session_type); ?>
 	</td>
 </tr>
 <tr>

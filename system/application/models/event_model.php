@@ -45,7 +45,14 @@ class Event_model extends Model {
 				event_id,
 				ID,
 				talk_desc,
-				(select floor(avg(rating)) from talk_comments where talk_id=talks.ID) rank
+				(select floor(avg(rating)) from talk_comments where talk_id=talks.ID) rank,
+				(select 
+					cat.cat_title
+				from 
+					talk_cat tac,categories cat 
+				where 
+					tac.talk_id=talks.ID and tac.cat_id=cat.ID
+				) tcid
 			from
 				talks
 			where

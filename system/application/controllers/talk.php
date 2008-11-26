@@ -25,27 +25,31 @@ class Talk extends Controller {
 		if($id){ $this->edit_id=$id; }
 		$this->load->model('talks_model');
 		$this->load->model('event_model');
+		$this->load->model('categories_model');		
 		$this->load->helper('form');
 		$this->load->library('validation');
 
-		$events=$this->event_model->getEventDetail();
+		$events	= $this->event_model->getEventDetail();
+		$cats	= $this->categories_model->getCats();
 		
 		$rules=array(
-			'event_id'	=>'required',
-			'talk_title'=>'required',
-			'talk_desc'	=>'required',
-			'speaker'	=>'required',
-			'given_mo'	=>'callback_given_mo_check'
+			'event_id'		=>'required',
+			'talk_title'	=>'required',
+			'talk_desc'		=>'required',
+			'speaker'		=>'required',
+			'session_type'	=>'required',
+			'given_mo'		=>'callback_given_mo_check'
 		);
 		$fields=array(
-			'event_id'	=>'Event Name',
-			'talk_title'=>'Talk Title',
-			'speaker'	=>'Speaker',
-			'given_mo'	=>'Given Month',
-			'given_day'	=>'Given Day',
-			'given_yr'	=>'Given Year',
-			'slides_link'=>'Slides Link',
-			'talk_desc'	=>'Talk Description'
+			'event_id'		=>'Event Name',
+			'talk_title'	=>'Talk Title',
+			'speaker'		=>'Speaker',
+			'given_mo'		=>'Given Month',
+			'given_day'		=>'Given Day',
+			'given_yr'		=>'Given Year',
+			'slides_link'	=>'Slides Link',
+			'talk_desc'		=>'Talk Description',
+			'session_type'	=>'Session Type'
 		);
 		$this->validation->set_rules($rules);
 		$this->validation->set_fields($fields);
@@ -83,12 +87,23 @@ class Talk extends Controller {
 			if($id){
 				$this->db->where('id',$id);
 				$this->db->update('talks',$arr);
+				//remove the current reference for the talk and add a new one
+				
+				$this->db->delete('talk_cat',array('talk_id'=>$id));
+				$tc_id=$id;
 			}else{
 				$this->db->insert('talks',$arr);
+				$tc_id=$this->db->insert_id();
 			}
+			//now make the link between the talk and the category
+			$tc_arr=array(
+				'talk_id'	=> $tc_id,
+				'cat_id'	=> $this->input->post('session_type')
+			);
+			$this->db->insert('talk_cat',$tc_arr);
 		}
 		
-		$this->template->write_view('content','talk/add',array('events'=>$events),TRUE);
+		$this->template->write_view('content','talk/add',array('events'=>$events,'cats'=>$cats),TRUE);
 		$this->template->render();
 	}
 	function edit($id){
