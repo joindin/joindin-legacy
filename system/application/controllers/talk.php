@@ -64,6 +64,10 @@ class Talk extends Controller {
 			$this->validation->given_day= date('d',$det[0]->date_given);
 			$this->validation->given_yr = date('Y',$det[0]->date_given);
 		}
+		//check the referrer, if there's an event in it, default the select to that value
+		if(preg_match('/\/event\/view\/([0-9]+)/',$_SERVER['HTTP_REFERER'],$m)){
+			$this->validation->event_id=$m[1];
+		}
 		
 		
 		if($this->validation->run()==FALSE){

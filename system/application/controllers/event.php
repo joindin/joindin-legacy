@@ -175,7 +175,7 @@ class Event extends Controller {
 		$codes=array();
 		$talks=$this->event_model->getEventTalks($id);
 		foreach($talks as $k=>$v){
-			$str='ec'.str_pad($v->ID,2,0,STR_PAD_LEFT).str_pad($v->event_id,2,0,STR_PAD_LEFT);
+			$str='ec'.str_pad(substr($v->ID,0,2),2,0,STR_PAD_LEFT).str_pad($v->event_id,2,0,STR_PAD_LEFT);
 			$str.=substr(md5($v->talk_title),5,5);
 			
 			$codes[]=$str;
@@ -210,6 +210,14 @@ class Event extends Controller {
 		$arr=array();
 		$this->load->helper('form');
 		$this->load->library('validation');
+		$this->load->plugin('captcha');
+		
+		$cap_arr=array(
+			'img_path'		=>$_SERVER['DOCUMENT_ROOT'].'/inc/img/captcha/',
+			'img_url'		=>'/inc/img/captcha/',
+			'img_width'		=>'130',
+			'img_height'	=>'30'
+		);
 		
 		$fields=array(
 			'event_title'			=> 'Event Title',
@@ -218,7 +226,8 @@ class Event extends Controller {
 			'event_desc'			=> 'Event Description',
 			'start_mo'				=> 'Event Start Month',
 			'start_day'				=> 'Event Start Day',
-			'start_yr'				=> 'Event Start Year'
+			'start_yr'				=> 'Event Start Year',
+			'cinput'				=> 'Captcha'
 		);
 		$rules=array(
 			'event_title'			=> 'required',
@@ -226,6 +235,7 @@ class Event extends Controller {
 			'event_contact_email'	=> 'required|valid_email',
 			'event_desc'			=> 'required',
 			'start_mo'				=> 'callback_start_mo_check',
+			'cinput'				=> 'required|callback_cinput_check'
 		);
 		$this->validation->set_rules($rules);
 		$this->validation->set_fields($fields);
@@ -249,6 +259,10 @@ class Event extends Controller {
 			mail($to,$subj,$msg,'From: submissions@joind.in');
 			$arr['msg']='Event successfully submitted! We\'ll get back with you soon!';
 		}
+		$cap = create_captcha($cap_arr);
+		$this->session->set_userdata(array('cinput'=>$cap['word']));
+		$arr['cap']=$cap;
+		
 		$this->template->write_view('content','event/submit',$arr);
 		$this->template->render();
 	}
@@ -290,6 +304,12 @@ class Event extends Controller {
 			$this->validation->set_message('chk_email_check','Email address invalid!');
 			return false;
 		}else{ return true; }
+	}
+	function cinput_check($str){
+		if($this->input->post('cinput') != $this->session->userdata('cinput')){
+			$this->validation->_error_messages['cinput_check'] = 'Incorrect Captcha characters.';
+			return FALSE;                            
+		}else{ return TRUE; }
 	}
 	//----------------------
 }

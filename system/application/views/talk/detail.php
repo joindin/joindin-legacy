@@ -37,11 +37,16 @@ echo '<h1 style="margin-top:0px;margin-bottom:2px;color:#B86F09">'.$det->talk_ti
 echo '<p>'.$speaker.' ('.date('m.d.Y',$det->date_given).')<br/>';
 echo $det->tcid.' at <a href="/event/view/'.$det->event_id.'">'.$det->event_name.'</a></p>'.$rstr;
 echo '<p style="color:#37382F">'.nl2br($det->talk_desc).'</p>';
+echo '<b style="color:#37382F">quicklink:</b> <a href="http://joind.in/'.$det->tid.'">http://joind.in/'.$det->tid.'</a>';
 if($admin){
+	echo '<div>';
 	echo '<a href="/talk/delete/'.$det->tid.'"><img src="/inc/img/redx.png" border="0" alt="Delete talk"/></a>';	
 	echo '<a href="/talk/edit/'.$det->tid.'"><img src="/inc/img/sticky.gif" border="0" alt="Edit talk"/></a>';
+	echo '</div>';
 }
-echo '<b style="color:#37382F">quicklink:</b> <a href="http://joind.in/'.$det->tid.'">http://joind.in/'.$det->tid.'</a>';
+if($this->session->userdata('ID')==$claimed[0]->userid){
+	echo '<a href="/user/comemail/talk/'.$det->tid.'">email me my comments</a>';
+}
 echo '</div><br/>';
 ?>
 <center>

@@ -49,6 +49,13 @@ if(isset($msg)){ echo '<div class="notice">'.$msg.'</div>'; } echo '<br/>';
 	?></td>
 </tr>
 <tr>
+	<td class="title" valign="top">Type in the code:</td>
+	<td>
+	<input type="text" name="cinput" id="Captcha" value="" /><br/>
+	<?php echo $cap['image']; ?>
+	</td>
+</tr>
+<tr>
 	<td align="right" colspan="2"><?php echo form_submit('sub','Submit Event'); ?></td>
 </tr>
 </table>
