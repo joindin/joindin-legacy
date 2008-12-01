@@ -46,6 +46,7 @@ $route['scaffolding_trigger'] = "";
 //$route['event/([^add|view|edit|delete])'] = 'event/cust/$1';
 $route['event/add']='event/add';
 $route['event/submit']='event/submit';
+$route['event/export/(:num)']='event/export/$1';
 $route['event/edit/(:num)']		= 'event/edit/$1';
 $route['event/view/(:num)']		= 'event/view/$1';
 $route['event/delete/(:num)']	= 'event/delete/$1';

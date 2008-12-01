@@ -266,6 +266,25 @@ class Event extends Controller {
 		$this->template->write_view('content','event/submit',$arr);
 		$this->template->render();
 	}
+	function export($eid){
+		//export the speakers and their ratings/comments for an entire event
+		//push it out as a CSV file...
+		$this->load->model('event_model');
+		$talks=$this->event_model->getEventFeedback($eid);
+		
+		$fp=fopen('php://memory','w+');
+		foreach($talks as $k=>$v){
+			fputcsv($fp,(array)$v);
+		}
+		//print_r($talks);
+		rewind($fp);
+		$out=stream_get_contents($fp);
+		fclose($fp);
+		
+		header('Content-type: application/octet-stream');
+		header('Content-Disposition: attachment; filename="Event_Comments_'.$eid.'.csv"');
+		echo $out;
+	}
 	//----------------------
 	function start_mo_check($str){
 		$t=mktime(

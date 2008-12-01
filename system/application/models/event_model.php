@@ -101,6 +101,24 @@ class Event_model extends Model {
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
+	function getEventFeedback($eid){
+		$sql=sprintf('
+			select
+				t.talk_title,
+				t.speaker,
+				t.date_given,
+				tc.rating,
+				tc.comment
+			from
+				talks t,
+				talk_comments tc
+			where
+				t.ID=tc.talk_id and
+				t.event_id=%s
+		',$eid);
+		$q=$this->db->query($sql);
+		return $q->result();
+	}
 	//----------------------
 	function search($term,$start,$end){
 		$arr=array();
