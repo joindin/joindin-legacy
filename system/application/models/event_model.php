@@ -115,6 +115,8 @@ class Event_model extends Model {
 			where
 				t.ID=tc.talk_id and
 				t.event_id=%s
+			group by
+				t.talk_title
 		',$eid);
 		$q=$this->db->query($sql);
 		return $q->result();
