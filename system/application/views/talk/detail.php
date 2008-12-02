@@ -44,7 +44,7 @@ if($admin){
 	echo '<a href="/talk/edit/'.$det->tid.'"><img src="/inc/img/sticky.gif" border="0" alt="Edit talk"/></a>';
 	echo '</div>';
 }
-if($this->session->userdata('ID')==$claimed[0]->userid){
+if(isset($claimed[0]) && $this->session->userdata('ID')==$claimed[0]->userid){
 	echo '<a href="/user/comemail/talk/'.$det->tid.'">email me my comments</a>';
 }
 echo '</div><br/>';
