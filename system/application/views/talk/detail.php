@@ -35,7 +35,7 @@ if(!empty($claimed)){
 echo '<div style="padding:10px;border:0px solid #B86F09;background-color:#E4F1E8">';
 echo '<h1 style="margin-top:0px;margin-bottom:2px;color:#B86F09">'.$det->talk_title.'</h1>';
 echo '<p>'.$speaker.' ('.date('m.d.Y',$det->date_given).')<br/>';
-echo $det->tcid.' at <a href="/event/view/'.$det->event_id.'">'.$det->event_name.'</a></p>'.$rstr;
+echo $det->tcid.' at <a href="/event/view/'.$det->event_id.'">'.$det->event_name.'</a> ('.$det->lang_name.')</p>'.$rstr;
 echo '<p style="color:#37382F">'.nl2br($det->talk_desc).'</p>';
 echo '<b style="color:#37382F">quicklink:</b> <a href="http://joind.in/'.$det->tid.'">http://joind.in/'.$det->tid.'</a>';
 if($admin){

@@ -1,15 +1,15 @@
 <?php
 $event_list	= array(); 
 $cat_list	= array();
+$lang_list	= array();
+
 //echo '<pre>'; print_r($cats); echo '</pre>';
 
 foreach($events as $k=>$v){
 	$event_list[$v->ID]=$v->event_name.' ('.date('m.d.Y',$v->event_start).'-'.date('m.d.Y',$v->event_end).')';
 }
-foreach($cats as $k=>$v){
-	$cat_list[$v->ID]=$v->cat_title;
-	
-}
+foreach($cats as $k=>$v){ $cat_list[$v->ID]=$v->cat_title; }
+foreach($langs as $k=>$v){ $lang_list[$v->ID]=$v->lang_name; }
 
 echo $this->validation->error_string;
 
@@ -55,6 +55,12 @@ echo '<h2>'.$sub.'</h2>';
 	<td class="title">Session Type:</td>
 	<td>
 		<?php echo form_dropdown('session_type',$cat_list,$this->validation->session_type); ?>
+	</td>
+</tr>
+<tr>
+	<td class="title">Session Language:</td>
+	<td>
+		<?php echo form_dropdown('session_lang',$lang_list,$this->validation->session_lang); ?>
 	</td>
 </tr>
 <tr>

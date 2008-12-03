@@ -45,6 +45,7 @@ class Event_model extends Model {
 				event_id,
 				ID,
 				talk_desc,
+				(select l.lang_abbr from lang l where talks.lang=l.ID) lang,
 				(select floor(avg(rating)) from talk_comments where talk_id=talks.ID) rank,
 				(select 
 					cat.cat_title

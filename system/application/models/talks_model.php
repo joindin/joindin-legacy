@@ -40,22 +40,27 @@ class Talks_model extends Model {
 					t.date_given,
 					t.event_id,
 					t.talk_desc,
+					l.lang_name,
+					l.lang_abbr,
+					t.lang,
 					e.event_name,
 					(select floor(avg(tc.rating)) from talk_comments tc where tc.talk_id=t.ID) as tavg,
 					(select 
 						cat.cat_title
 					from 
-						talk_cat tac,categories cat 
+						talk_cat tac,categories cat
 					where 
 						tac.talk_id=t.ID and tac.cat_id=cat.ID
 					) tcid
 				from
 					talks t,
-					events e
+					events e,
+					lang l
 				where
 					t.ID=%s and
 					e.ID=t.event_id and
-					t.active=1
+					t.active=1 and
+					l.ID=t.lang
 			',$tid);
 			$q=$this->db->query($sql);
 		}else{
@@ -72,12 +77,16 @@ class Talks_model extends Model {
 					event_id,
 					ID,
 					talk_desc,
+					lang_name,
+					lang_abbr,
+					lang,
 					(select floor(avg(rating)) from talk_comments where talk_id=talks.ID) as tavg,
 					(select event_name from events where events.ID=talks.event_id) as ename
 				from
-					talks
+					talks,lang
 				where
 					%s
+					lang.ID=talks.ID and
 					active=1
 				%s
 			',$wh,$ob);

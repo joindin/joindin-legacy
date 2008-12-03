@@ -25,12 +25,14 @@ class Talk extends Controller {
 		if($id){ $this->edit_id=$id; }
 		$this->load->model('talks_model');
 		$this->load->model('event_model');
-		$this->load->model('categories_model');		
+		$this->load->model('categories_model');	
+		$this->load->model('lang_model');				
 		$this->load->helper('form');
 		$this->load->library('validation');
 
 		$events	= $this->event_model->getEventDetail();
 		$cats	= $this->categories_model->getCats();
+		$langs	= $this->lang_model->getLangs();
 		
 		$rules=array(
 			'event_id'		=>'required',
@@ -38,6 +40,7 @@ class Talk extends Controller {
 			'talk_desc'		=>'required',
 			'speaker'		=>'required',
 			'session_type'	=>'required',
+			'session_lang'	=>'required',
 			'given_mo'		=>'callback_given_mo_check'
 		);
 		$fields=array(
@@ -49,7 +52,8 @@ class Talk extends Controller {
 			'given_yr'		=>'Given Year',
 			'slides_link'	=>'Slides Link',
 			'talk_desc'		=>'Talk Description',
-			'session_type'	=>'Session Type'
+			'session_type'	=>'Session Type',
+			'session_lang'	=>'Session Language'
 		);
 		$this->validation->set_rules($rules);
 		$this->validation->set_fields($fields);
@@ -63,6 +67,8 @@ class Talk extends Controller {
 			$this->validation->given_mo = date('m',$det[0]->date_given);
 			$this->validation->given_day= date('d',$det[0]->date_given);
 			$this->validation->given_yr = date('Y',$det[0]->date_given);
+			
+			$this->validation->session_lang=$det[0]->lang;
 		}
 		//check the referrer, if there's an event in it, default the select to that value
 		if(preg_match('/\/event\/view\/([0-9]+)/',$_SERVER['HTTP_REFERER'],$m)){
@@ -86,7 +92,8 @@ class Talk extends Controller {
 				),
 				'event_id'		=> $this->input->post('event_id'),
 				'talk_desc'		=> $this->input->post('talk_desc'),
-				'active'		=> '1'
+				'active'		=> '1',
+				'lang'			=> $this->input->post('session_lang')
 			);
 			if($id){
 				$this->db->where('id',$id);
@@ -107,7 +114,7 @@ class Talk extends Controller {
 			$this->db->insert('talk_cat',$tc_arr);
 		}
 		
-		$this->template->write_view('content','talk/add',array('events'=>$events,'cats'=>$cats),TRUE);
+		$this->template->write_view('content','talk/add',array('events'=>$events,'cats'=>$cats,'langs'=>$langs),TRUE);
 		$this->template->render();
 	}
 	function edit($id){

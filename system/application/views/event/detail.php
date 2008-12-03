@@ -53,7 +53,8 @@ foreach($by_day as $k=>$v){
 		for($i=1;$i<=$iv->rank;$i++){ echo '<img src="/inc/img/thumbs_up.jpg" height="20"/>'; }
 		echo '</td>';
 		$sp=(array_key_exists((string)$iv->ID,$cl)) ? '<a href="/user/view/'.$cl[$iv->ID].'">'.$iv->speaker.'</a>' : $iv->speaker;
-		echo '<td><a href="/talk/view/'.$iv->ID.'">'.$iv->talk_title.'</a></td><td>'.$iv->tcid.'</td><td>'.$sp.'</td><tr/>';
+		echo '<td><a href="/talk/view/'.$iv->ID.'">'.$iv->talk_title.'</a></td><td style="font-size:10px;font-weight:bold;color:#858585">'.strtoupper($iv->tcid).'</td><td>';
+		echo '<img src="/inc/img/flags/'.$iv->lang.'.gif"/></td><td>'.$sp.'</td><tr/>';
 		$ct++;
 	}
 }
