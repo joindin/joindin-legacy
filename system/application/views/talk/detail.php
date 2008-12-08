@@ -19,6 +19,15 @@ foreach($comments as $k=>$v){
 }
 $anon=array();
 
+//--------------------
+$gmt=mktime(
+	gmdate('h'),gmdate('i'),gmdate('s'),
+	gmdate('m'),gmdate('d'),gmdate('Y')
+);
+$gmt+=(3600*$det->event_tz);
+//echo '<br/> woo! gmt: '.date('m.d.Y H:i:s',$gmt).'<br/>';
+//--------------------
+
 //add the whole total from our anonymous comments
 $total+=$anon_total;
 $total_count=count($comments)+count($anon);
@@ -111,7 +120,8 @@ echo $this->validation->error_string;
 echo form_open('talk/view/'.$det->tid);
 
 //only show the form if the time for the talk has passed
-if($det->date_given<=time()){
+//if($det->date_given<=time()){
+if($det->date_given>=$gmt){
 ?>
 
 <table cellpadding="3" cellspacing="0" border="0">

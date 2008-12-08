@@ -14,7 +14,7 @@ foreach($events as $k=>$v){
 	echo date('m.d.Y',$v->event_start).' - '.date('m.d.Y',$v->event_end).'<br/>';
 	$p=explode(' ',$v->event_desc);
 	$str='';
-	for($i=0;$i<20;$i++){ $str.=$p[$i].' '; } echo trim($str).'...';
+	for($i=0;$i<20;$i++){ if(isset($p[$i])){ $str.=$p[$i].' '; } } echo trim($str).'...';
 	echo '</div><br/>';
 }
 echo '<br/>';

@@ -44,6 +44,7 @@ class Talks_model extends Model {
 					l.lang_abbr,
 					t.lang,
 					e.event_name,
+					e.event_tz,
 					(select floor(avg(tc.rating)) from talk_comments tc where tc.talk_id=t.ID) as tavg,
 					(select 
 						cat.cat_title

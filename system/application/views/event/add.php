@@ -1,4 +1,16 @@
 <?php
+//$tz_list=array('Select Continent');
+//foreach($tz as $k=>$v){ $tz_list[(string)$v->offset]=floor((string)$v->offset/3600); }
+
+$offset_list=array_merge(range(-12,12),range(0,12));
+foreach($offset_list as $k=>$v){ 
+	if($v<0){ 
+		$tz_list[$v]='UTC '.$v.' hours'; 
+	}elseif($v>0){
+		$tz_list[$v]='UTC +'.$v.' hours'; 
+	}else{ $tz_list[$v]='UTC 0 hours'; }
+}
+
 echo $this->validation->error_string;
 if(isset($this->edit_id) && $this->edit_id){
 	echo form_open('event/edit/'.$this->edit_id);
@@ -46,6 +58,12 @@ if(isset($msg)){ echo '<div class="notice">'.$msg.'</div>'; }
 	<td class="title">Event Location:</td>
 	<td><?php echo form_input('event_loc',$this->validation->event_loc); ?></td>
 </tr>
+	<tr>
+		<td class="title">Event Timezone:</td>
+		<td>
+			<?php echo form_dropdown('event_tz',$tz_list,$this->validation->event_tz); ?>
+		</td>
+	</tr>
 <tr>
 	<td valign="top" class="title">Event Description:</td>
 	<td>

@@ -44,12 +44,14 @@ class Event extends Controller {
 		$this->load->helper('form');
 		$this->load->library('validation');
 		$this->load->model('event_model');
+		$this->load->model('tz_model');
 		
 		$rules=array(
-			'event_name'=>'required',
-			'event_loc'	=>'required',
-			'start_mo'	=>'callback_start_mo_check',
-			'end_mo'	=>'callback_end_mo_check'
+			'event_name'	=> 'required',
+			'event_loc'		=> 'required',
+			'event_tz'		=> 'required',
+			'start_mo'		=> 'callback_start_mo_check',
+			'end_mo'		=> 'callback_end_mo_check'
 		);
 		$this->validation->set_rules($rules);
 		
@@ -62,7 +64,8 @@ class Event extends Controller {
 			'end_day'	=>'End Day',
 			'end_yr'	=>'End Year',
 			'event_loc'	=>'Event Location',
-			'event_desc'=>'Event Description'
+			'event_desc'=>'Event Description',
+			'event_tz'	=>'Event Timezone'
 		);
 		$this->validation->set_fields($fields);
 		
@@ -82,7 +85,10 @@ class Event extends Controller {
 					}else{ $this->validation->$k=$v; }
 				}
 			}
-			$this->template->write_view('content','event/add');
+			$arr=array(
+				'tz'	=> $this->tz_model->getOffsetInfo()
+			);
+			$this->template->write_view('content','event/add',$arr);
 			$this->template->render();
 		}else{ 
 			//success...
@@ -102,7 +108,8 @@ class Event extends Controller {
 				),
 				'event_loc'		=>$this->input->post('event_loc'),
 				'event_desc'	=>$this->input->post('event_desc'),
-				'active'		=>'1'
+				'active'		=>'1',
+				'event_tz'		=>$this->input->post('event_tz')
 			);
 			if($id){
 				//edit...
@@ -110,7 +117,11 @@ class Event extends Controller {
 				$this->db->update('events',$arr);
 			}else{ $this->db->insert('events',$arr); }
 			
-			$arr=array('msg'=>'Data saved! <a href="/event/view/'.$id.'">View event</a>');
+			$arr=array(
+				'msg'	=> 'Data saved! <a href="/event/view/'.$id.'">View event</a>',
+				'tz'	=> $this->tz_model->getContInfo()
+			);
+			echo 'here';
 			$this->template->write_view('content','event/add',$arr);
 			$this->template->render();
 		}
