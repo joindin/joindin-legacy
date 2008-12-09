@@ -80,14 +80,13 @@ class Talks_model extends Model {
 					talk_desc,
 					lang_name,
 					lang_abbr,
-					lang,
 					(select floor(avg(rating)) from talk_comments where talk_id=talks.ID) as tavg,
 					(select event_name from events where events.ID=talks.event_id) as ename
 				from
 					talks,lang
 				where
 					%s
-					lang.ID=talks.ID and
+					lang.ID=talks.lang and
 					active=1
 				%s
 			',$wh,$ob);
