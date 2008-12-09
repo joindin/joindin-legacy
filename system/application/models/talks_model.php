@@ -76,7 +76,7 @@ class Talks_model extends Model {
 					slides_link,
 					date_given,
 					event_id,
-					ID,
+					talks.ID,
 					talk_desc,
 					lang_name,
 					lang_abbr,
