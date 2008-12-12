@@ -79,3 +79,46 @@ tr.row2 { background-color: #FFFFFF; }
 #search_cell input {
 	font-size: 9px;
 }
+
+//----------------
+table.cal_tbl {
+	border-collapse: collapse;
+}
+table.cal_tbl td {
+	height: 30px;
+	width: 30px;
+	padding: 3px;
+	border: 1px solid #CCCCCC;
+}
+table.cal_tbl td.cal_day_abbr {
+	background-color: #CCCCCC;
+	color: #FFFFFF;
+	font-weight: bold;
+	text-align: center;
+}
+table.cal_tbl td.cal_day {
+}
+table.cal_tbl td.cal_sel_day {
+	background-color: #5181C1;
+	border: 1px solid #5181C1;;
+	color: #FFFFFF;
+}
+table.cal_tbl td.cal_sel_day a {
+	color: #FFFFFF;
+}
+table.cal_tbl td.cal_nday {
+	background-color: #EEEEEE;
+}
+table.cal_tbl td.cal_nav {
+	border: 0px;
+	height: 9px;
+	padding: 2px;
+}
+table.cal_tbl td.cal_nav a {
+	font-size: 10px;
+	text-decoration: none;
+}
+table.cal_tbl td.cal_nav a:hover {
+	text-decoration: underline;
+}
+//----------------

@@ -20,3 +20,20 @@ function toggleAnon(tid){
 		}
 	});
 }
+function getArea(field){
+	obj = document.getElementsByName(field);
+	cont= obj[0][obj[0].selectedIndex].value; //alert(cont);
+	$.getJSON(
+		'/api/tz/'+cont,
+		function(data){ //alert(data);
+			obj = document.getElementsByName('event_tz_area');
+			//clear it out first...
+			obj[0].options.length=-1;
+			$.each(data,function(k,v){
+				//alert(k+' : '+v['area']);
+				area=v['area'].replace(/_/,' ');
+				obj[0].options[k]=new Option(area,area);
+			});
+		}
+	);
+}
