@@ -27,12 +27,19 @@ class Event_model extends Model {
 		}
 	}
 	//---------------------
-	function getEventDetail($id=null){
+	function getEventDetail($id=null,$start_dt=null,$end_dt=null){
+		$this->db->from('events');
+		$this->db->where('active=1');
 		if($id){
-			$q=$this->db->get_where('events',array('ID'=>$id,'active'=>1));
+			//looking for a specific one...
+			$this->db->where('ID='.$id);
 		}else{
-			$q=$this->db->get_where('events',array('active'=>1));
+			if($start_dt && $end_dt){
+				$this->db->where('event_start>='.$start_dt);
+				$this->db->where('event_start<='.$end_dt);
+			}
 		}
+		$q=$this->db->get();
 		return $q->result();
 	}
 	function getEventTalks($id){

@@ -25,16 +25,42 @@ class Event extends Controller {
 		$this->load->helper('form');
 		//$this->load->library('calendar',$prefs);
 		$this->load->model('event_model');
+		$this->load->helper('mycal');
 		
 		$events=$this->event_model->getEventDetail();
 		$arr=array(
 			'events' =>$events,
 			//'admin'	 =>($this->user_model->isAdminEvent($id)) ? true : false
+			'mo'	=>date('m'),
+			'day'	=>0,
+			'yr'	=>date('Y'),
+			'all'	=>true
 		);	
 		$this->template->write_view('content','event/main',$arr,TRUE);
 		$this->template->render();
 		
 		//$this->load->view('event/main',array('events'=>$events));
+	}
+	function calendar($date=null){
+		$this->load->model('event_model');
+		$this->load->helper('mycal');
+		
+		if(!$date){ $date=date('m_d_Y'); }
+		
+		$date_p	= explode('_',$date);
+		$start	= mktime(0,0,0,$date_p[0],1,$date_p[2]);
+		$end	= mktime(0,0,0,$date_p[0],date('t',$start),$date_p[2]);
+		
+		$events	= $this->event_model->getEventDetail(null,$start,$end);
+		
+		$arr=array(
+			'events'=>$events,
+			'mo'	=>$date_p[0],
+			'day'	=>$date_p[1],
+			'yr'	=>$date_p[2]
+		);	
+		$this->template->write_view('content','event/main',$arr,TRUE);
+		$this->template->render();
 	}
 	function add($id=null){
 		//check for admin
