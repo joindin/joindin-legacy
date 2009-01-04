@@ -5,6 +5,11 @@ class Event_model extends Model {
 	function Event_model(){
 		parent::Model();
 	}
+	function isUnique($data){
+		$q=$this->db->get_where('events',$data);
+		$ret=$q->result();
+		return (empty($ret)) ? true : false;
+	}
 	//---------------------
 	function deleteEvent($id){
 		//we don't actually delete them...just make them inactive

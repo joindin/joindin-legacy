@@ -52,7 +52,8 @@ class User_model extends Model {
 		if(is_numeric($in)){
 			$q=$this->db->get_where('user',array('ID'=>$in));
 		}else{ 
-			$q=$this->db->get_where('user',array('username'=>$in));
+			$w="username='".$in."'";
+			$q=$this->db->get_where('user',$w);
 		}
 		return $q->result();
 	}
