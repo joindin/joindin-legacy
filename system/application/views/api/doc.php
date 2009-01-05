@@ -44,7 +44,11 @@ By default, responses will be made in an XML format. There is an optional attrib
 <div style="padding:3px;border:1px solid #000000;background-color:#F8F8F8">
 <pre>
 &lt;response>
-        
+	&lt;item>
+		&lt;talk_title>My Test Talk&lt;/talk_title>
+		&lt;talk_desc>This is a sample talk description&lt;/talk_desc>
+		&lt;ID>42&lt;/ID>
+	&lt;/item>
 &lt;/response>
 </pre>
 </div>
