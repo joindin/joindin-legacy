@@ -41,7 +41,7 @@ class Addevent {
 			);
 			$this->CI->db->insert('events',$arr);
 			
-			return array('msg'=>'valid');
+			return array('msg'=>'Event added successfully!');
 		}else{ 
 			if(!$unique){ $ret='Non-unique entry!'; }
 			return array('errors'=>$ret); 

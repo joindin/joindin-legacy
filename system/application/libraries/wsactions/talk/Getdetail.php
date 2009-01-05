@@ -11,7 +11,7 @@ class Getdetail {
 	}
 	//-----------------------
 	function run(){
-		$id=$this->xml->action->id;
+		$id=$this->xml->action->talk_id;
 		
 		$this->CI->load->model('talks_model');
 		$ret=$this->CI->talks_model->getTalks($id);

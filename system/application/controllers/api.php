@@ -7,7 +7,9 @@ class Api extends Controller {
 		$this->user_model->logStatus();
 	}
 	function index(){
-		//echo 'error';
+		//show our docs
+		$this->template->write_view('content','api/doc');
+		$this->template->render();
 	}
 	//function _output($out){ var_dump($out); echo json_encode($out); }
 	//---------------------
@@ -16,23 +18,27 @@ class Api extends Controller {
 		//$data=array('action'=>$act,'data'=>array('foo','bar'));
 		$data=file_get_contents('php://input');
 		$ret=array('data'=>$this->service->handle('event',$data));
-		$this->load->view('api/out',$ret);
-		
+		$this->output($ret);
 	}
 	function talk($act=null){
 		$this->load->library('service');
 		$data=file_get_contents('php://input');
 		$ret=array('data'=>$this->service->handle('talk',$data));
-		$this->load->view('api/out',$ret);
+		$this->output($ret);
 	}
 	function comment($act=null){
 		$this->load->library('service');
 		$data=file_get_contents('php://input');
 		$ret=array('data'=>$this->service->handle('comment',$data));
-		$this->load->view('api/out',$ret);
+		$this->output($ret);
 	}
 	
 	//---------------------
+	function output($ret){
+		$out=(string)$ret['data']['output'];
+		$out=(!empty($out)) ? 'out_'.$out : 'out_xml';
+		$this->load->view('api/'.$out,$ret['data']);
+	}
 	function tz($cont){
 		$this->load->model('tz_model');
 		

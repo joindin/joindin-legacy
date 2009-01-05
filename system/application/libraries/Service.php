@@ -33,7 +33,8 @@ class Service {
 				if(is_file($class_file)){
 					include_once($class_file);
 					$obj=new $class($xml);
-					$ret=$obj->run();
+					$ret['data']=$obj->run();
+					$ret['output']=$xml->action['output'];
 				}else{ $ret=array('msg'=>'Invalid action!'); }
 			}else{
 				$ret=array('msg'=>'Access denied!');
