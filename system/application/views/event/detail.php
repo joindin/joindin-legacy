@@ -50,14 +50,14 @@ td.selected {
 	background-color: #5181C1;
 	font-weight: bold;
 	font-size: 12px;
-	width: 90px;
+	width: 130px;
 	text-align: center;
 }
 td.nselected {
 	background-color: #EEEEEE;
 	font-weight: bold;
 	font-size: 12px;
-	width: 90px;
+	width: 130px;
 	text-align: center;
 }
 td.selected a {
@@ -89,8 +89,8 @@ function switchCell(n){
 <center>
 <table cellpadding="4" cellspacing="0" border="0">
 <tr>
-	<td class="selected" id="cell_talks"><a href="#" onClick="switchCell('talks');return false;">Talks</a></td>
-	<td class="nselected" id="cell_comments"><a href="#" onClick="switchCell('comments');return false;">Comments</a></td>
+	<td class="selected" id="cell_talks"><a href="#" onClick="switchCell('talks');return false;">Talks (<?=count($talks)?>)</a></td>
+	<td class="nselected" id="cell_comments"><a href="#" onClick="switchCell('comments');return false;">Comments (<?=count($comments)?>)</a></td>
 </tr>
 </table>
 </center>
