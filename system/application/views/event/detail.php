@@ -180,6 +180,11 @@ foreach($by_day as $k=>$v){
 <script>
 if(window.location.hash=='#comments'){
 	switchCell('comments');
-}else{ switchCell('talks'); }
+}else{ 
+	var talk_num=<?=count($talks)?>;
+	if(talk_num<=0){
+		switchCell('comments'); 
+	}else{ switchCell('talks'); }
+}
 </script>
 	
