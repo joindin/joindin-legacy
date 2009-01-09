@@ -122,3 +122,9 @@ table.cal_tbl td.cal_nav a:hover {
 	text-decoration: underline;
 }
 //----------------
+table.event_comments { }
+table.event_comments td {
+	padding: 4 4 4 13;
+}
+table.event_comments td span.comment { font-size: 12px; } 
+table.event_comments td span.meta { font-size: 10px; color: #6C6C6C; } 
