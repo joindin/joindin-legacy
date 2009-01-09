@@ -163,14 +163,14 @@ foreach($by_day as $k=>$v){
 	
 	//print_r($comments);
 	$ct=0;
-	echo '<table cellpadding="0" cellspacing="2" border="0" width="100%">';
+	echo '<table cellpadding="0" cellspacing="2" border="0" width="100%" class="event_comments">';
 	foreach($comments as $k=>$v){
 		$class  = ($ct%2==0) ? 'row1' : 'row2';
 		$name	= ($v->user_id!=0) ? '<a href="/user/view/'.$v->user_id.'">'.$v->cname.'</a>' : $v->cname;
 		$type	= ($det->event_start>time()) ? 'Suggestion' : 'Feedback';
 		
-		echo '<tr class="'.$class.'"><td style="padding:3px"><span style="font-size:12px">'.$v->comment.'</span><br/>';
-		echo '<span style="color:#6C6C6C">'.$name.', '.date('m.d.Y H:i:s',$v->date_made).' ('.$type.')</td></tr>';
+		echo '<tr class="'.$class.'"><td><span class="comment">'.$v->comment.'</span><br/>';
+		echo '<span class="meta">'.$name.', '.date('m.d.Y H:i:s',$v->date_made).' ('.$type.')</td></tr>';
 		$ct++;
 	}
 	echo '</table><br/>';
