@@ -30,6 +30,7 @@ google_ad_slot = "4582459016"; google_ad_width = 468; google_ad_height = 60; //-
 <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
 </center>
 <br/>
+
 <?php
 }
 echo '<br/>';
@@ -43,6 +44,59 @@ foreach($talks as $v){
 ksort($by_day);
 $ct=0;
 
+?>
+<style>
+td.selected {
+	background-color: #5181C1;
+	font-weight: bold;
+	font-size: 12px;
+	width: 90px;
+	text-align: center;
+}
+td.nselected {
+	background-color: #EEEEEE;
+	font-weight: bold;
+	font-size: 12px;
+	width: 90px;
+	text-align: center;
+}
+td.selected a {
+	color: #FFFFFF;
+	text-decoration: none;
+}
+td.nselected a {
+	color: #5181C1;
+	text-decoration: none;
+}
+</style>
+<script>
+function switchCell(n){
+	if(n=='talks'){
+		document.getElementById('cell_comments').className='nselected';
+		document.getElementById('cell_talks').className='selected';
+		$('#talks_div').css('display','block');
+		$('#comments_div').css('display','none');		
+	}else{
+		document.getElementById('cell_comments').className='selected';
+		document.getElementById('cell_talks').className='nselected';
+		$('#talks_div').css('display','none');
+		$('#comments_div').css('display','block');
+	}
+	return false;
+}
+</script>
+
+<center>
+<table cellpadding="4" cellspacing="0" border="0">
+<tr>
+	<td class="selected" id="cell_talks"><a href="#" onClick="switchCell('talks');return false;">Talks</a></td>
+	<td class="nselected" id="cell_comments"><a href="#" onClick="switchCell('comments');return false;">Comments</a></td>
+</tr>
+</table>
+</center>
+
+<?php
+echo '<div style="border:2px solid #5181C1;padding:3px;" id="talks_div">';
 echo '<table cellpadding="3" cellspacing="0" border="0" width="100%">';
 foreach($by_day as $k=>$v){
 	echo '<tr><td colspan="2"><a name="'.$k.'"></a><b>'.str_replace('_','.',$k).'</b></td></tr>';
@@ -58,5 +112,74 @@ foreach($by_day as $k=>$v){
 		$ct++;
 	}
 }
-echo '</table>';
 ?>
+</table></div>
+
+<div style="border:2px solid #5181C1;padding:3px;" id="comments_div">
+	<?php
+	if(isset($msg)){ echo '<div class="notice">'.$msg.'</div>'; }
+	
+	echo $this->validation->error_string;
+	echo form_open('event/view/'.$det->ID.'#comments');
+	
+	$types=array(
+		'Suggestion'		=> 'Suggestion',
+		'General Comment'	=> 'General Comment',
+		'Feedback'			=> 'Feedback'
+	);
+	$type=($det->event_start>time()) ? 'Suggestion':'Feedback';
+	?>
+	<table cellpadding="3" cellspacing="0" border="0">
+	<?php
+	if($user_id==0){
+	?>
+	<tr>
+		<td>Name:</td>
+		<td><?php echo form_input('cname',$this->validation->cname); ?></td>
+	</tr>
+	<?php } ?>
+	<tr>
+		<td>Type:</td>
+		<td><?=$type?></td>
+	</tr>
+	<tr>
+		<td valign="top">Comment:</td>
+		<td>
+		<?php 
+		$arr=array(
+			'name'=>'event_comment',
+			'value'=>$this->validation->event_comment,
+			'cols'=>50,
+			'rows'=>8
+		);
+		echo form_textarea($arr);
+		?>
+		</td>
+	</tr>
+	<tr><td colspan="2" align="right"><?php echo form_submit('sub','Submit'); ?></td></tr>
+	</table>
+	<?php 
+	echo form_close(); 
+	
+	//print_r($comments);
+	$ct=0;
+	echo '<table cellpadding="0" cellspacing="2" border="0" width="100%">';
+	foreach($comments as $k=>$v){
+		$class  = ($ct%2==0) ? 'row1' : 'row2';
+		$name	= ($v->user_id!=0) ? '<a href="/user/view/'.$v->user_id.'">'.$v->cname.'</a>' : $v->cname;
+		$type	= ($det->event_start>time()) ? 'Suggestion' : 'Feedback';
+		
+		echo '<tr class="'.$class.'"><td style="padding:3px"><span style="font-size:12px">'.$v->comment.'</span><br/>';
+		echo '<span style="color:#6C6C6C">'.$name.', '.date('m.d.Y H:i:s',$v->date_made).' ('.$type.')</td></tr>';
+		$ct++;
+	}
+	echo '</table><br/>';
+	?>
+</div>
+
+<script>
+if(window.location.hash=='#comments'){
+	switchCell('comments');
+}else{ switchCell('talks'); }
+</script>
+	

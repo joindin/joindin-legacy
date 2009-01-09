@@ -160,16 +160,56 @@ class Event extends Controller {
 		$this->load->helper('form');
 		$this->load->library('validation');
 		$this->load->model('event_model');
+		$this->load->model('event_comments_model');
+		
 		$talks	= $this->event_model->getEventTalks($id);
 		$events	= $this->event_model->getEventDetail($id);
+		$is_auth= $this->user_model->isAuth();
+		
 		if(empty($events)){ redirect('event'); }
 		
 		$arr=array(
 			'events' =>$events,
 			'talks'  =>$talks,
 			'admin'	 =>($this->user_model->isAdminEvent($id)) ? true : false,
-			'claimed'=>$this->event_model->getClaimedTalks($id)
+			'claimed'=>$this->event_model->getClaimedTalks($id),
+			'user_id'=>($is_auth) ? $this->session->userdata('ID') : '0'
 		);
+		
+		//our event comment form
+		$rules=array(
+			'event_comment'	=> 'required'
+		);
+		$fields=array(
+			'event_comment'	=>'Event Comment'
+		);
+		if(!$is_auth){
+			$rules['cname']	= 'required';
+			$fields['cname']= 'Name';
+		}
+		$this->validation->set_fields($fields);
+		$this->validation->set_rules($rules);
+		
+		if($this->validation->run()!=FALSE){
+			$ec=array(
+				'event_id'	=> $id,
+				'comment'	=> $this->input->post('event_comment'),
+				'date_made'	=> time(),
+				'active'	=> 1
+			);
+			if($is_auth){
+				$ec['user_id']	= $this->session->userdata('ID');
+				$ec['cname']	= $this->session->userdata('username');
+			}else{
+				$ec['user_id']	= 0;
+				$ec['cname']	= $this->input->post('cname');
+			}
+			
+			$this->db->insert('event_comments',$ec);
+			$arr['msg']='Comment inserted successfully!';
+		}
+		
+		$arr['comments']=$this->event_comments_model->getEventComments($id);
 		
 		$this->template->write_view('content','event/detail',$arr,TRUE);
 		$this->template->render();
