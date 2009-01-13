@@ -29,16 +29,16 @@
 </tr>
 <tr><td colspan="2" style="background-color:#4282C4;height:2px;font-size:0px;padding:4px">&nbsp;</td></tr>
 <tr>
-	<td colspan="2" id="nav_cell">
+	<td id="nav_cell">
 		<ul>
 		<li><a href="/event">events</a>
 		<li><a href="/talk">talks</a>
 		<li><a href="/search">search</a>
 		<li><a href="/about">about</a>
 		<li>&nbsp;
-		<li><?=$logged?>
 		</ul>
 	</td>
+	<td id="nav_cell"><ul><li><?=$logged?></ul></td>
 </tr>
 <tr>
 	<td colspan="2" align="center" style="background-color:#EEEEEE;padding:1px;height:20px">

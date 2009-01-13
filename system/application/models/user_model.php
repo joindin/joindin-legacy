@@ -57,5 +57,9 @@ class User_model extends Model {
 		}
 		return $q->result();
 	}
+	function getAllUsers(){
+		$q=$this->db->get('user');
+		return $q->result();
+	}
 }
 ?>

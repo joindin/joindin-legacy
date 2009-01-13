@@ -31,9 +31,14 @@ class User extends Controller {
 			$this->template->write_view('content','user/login');
 			$this->template->render();
 		}else{
-			//success!
+			//success! get our data and update our login time
 			$ret=$this->user_model->getUser($this->input->post('user')); //print_r($ret);
 			$this->session->set_userdata((array)$ret[0]);
+			
+			//update login time
+			$this->db->where('id',$ret[0]->ID);
+			$this->db->update('user',array('last_login'=>time()));
+			
 			redirect('user/main');
 		}
 	}
@@ -82,7 +87,8 @@ class User extends Controller {
 				$arr=array(
 					'username'	=> $this->input->post('user'),
 					'password'	=> $this->input->post('pass'),
-					'email'		=> $this->input->post('email')
+					'email'		=> $this->input->post('email'),
+					'full_name'	=> $this->input->post('full_name')
 				);
 				$this->db->insert('user',$arr);
 				
@@ -125,6 +131,7 @@ class User extends Controller {
 		}
 		$arr['talks']	= $this->talks_model->getUserTalks($this->session->userdata('ID'));
 		$arr['comments']= $this->talks_model->getUserComments($this->session->userdata('ID'));
+		$arr['is_admin']= $this->user_model->isSiteAdmin();
 		
 		$this->template->write_view('content','user/main',$arr);
 		$this->template->render();
@@ -138,6 +145,53 @@ class User extends Controller {
 		);
 
 		$this->template->write_view('content','user/view',$arr);
+		$this->template->render();
+	}
+	function manage(){
+		$this->load->helper('form');
+		$this->load->library('validation');
+		$uid=$this->session->userdata('ID');
+		$arr=array(
+			'curr_data'=>$this->user_model->getUser($uid)
+		);
+		
+		$rules=array(
+			'full_name'	=>'required',
+			'email'		=>'required',
+			'pass'		=>'trim|matches[pass_conf]|md5',
+			'pass_conf'	=>'trim',
+		);
+		$fields=array(
+			'full_name'	=>'Full Name',
+			'email'		=>'Email',
+			'pass'		=>'Password',
+			'pass_conf'	=>'Confirm Password'
+		);
+		$this->validation->set_rules($rules);
+		$this->validation->set_fields($fields);
+		
+		if($this->validation->run()!=FALSE){
+			echo 'pass!';
+			$data=array(
+				'full_name'	=> $this->input->post('full_name'),
+				'email'		=> $this->input->post('email')
+			);
+			$pass=$this->input->post('pass');
+			if(!empty($pass)){ echo 'password!'; }else{ echo 'no pass!'; }
+			echo '<pre>'; print_r($data); echo '</pre>';
+			//$this->db->where('ID',$uid);
+			//$this->db->update('user',$data);
+		}
+		
+		$this->template->write_view('content','user/manage',$arr);
+		$this->template->render();
+	}
+	function admin(){
+		$arr=array(
+			'users'=>$this->user_model->getAllUsers()
+		);
+		
+		$this->template->write_view('content','user/admin',$arr);
 		$this->template->render();
 	}
 	//--------------------

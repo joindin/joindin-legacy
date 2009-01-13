@@ -59,7 +59,7 @@ if(!empty($results)){
 		foreach($results['events'] as $k=>$v){
 			$str='';
 			$tmp=explode(' ',$v->event_desc);
-			for($i=0;$i<=20;$i++){ $str.=$tmp[$i].' '; }
+			for($i=0;$i<=20;$i++){ if(isset($tmp[$i])){ $str.=$tmp[$i].' '; } }
 			echo sprintf('
 				<a href="/event/view/%s">%s</a><br/>
 				%s<br/>
