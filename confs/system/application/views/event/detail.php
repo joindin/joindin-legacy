@@ -35,9 +35,15 @@ if($attend){
 </div>
 
 <?php if($admin){ ?>
-<a href="/event/delete/<?=$det->ID?>"><img src="/inc/img/redx.png" border="0" alt="Delete event"/></a>
-<a href="/event/edit/<?=$det->ID?>"><img src="/inc/img/sticky.gif" border="0" alt="Edit event"/></a>
-<a href="/talk/add"><img src="/inc/img/pending.png" border="0" alt="Add new talk"/></a>
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr>
+	<td width="20"><a href="/talk/add"><img src="/inc/img/pending.png" border="0" alt="Add new talk"/></a></td>
+	<td width="20"><a href="/event/edit/<?=$det->ID?>"><img src="/inc/img/sticky.gif" border="0" alt="Edit event"/></a></td>
+	<td>&nbsp;</td>
+	<td width="20"><a href="/event/delete/<?=$det->ID?>"><img src="/inc/img/redx.png" border="0" alt="Delete event"/></a></td>
+</tr>
+</table>
+
 <br/>
 <a href="/event/codes/<?=$det->ID?>">get talk codes</a>
 <br/>
