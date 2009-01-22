@@ -9,10 +9,15 @@ foreach($chk as $k=>$v){
 $sub='Submit New Post';
 
 echo $this->validation->error_string;
+if(isset($msg)){ echo '<div class="notice">'.$msg.'</div>'; }
 ?>
 
 <h2>Add Blog Post</h2>
-<?php echo form_open('blog/add'); ?>
+<?php 
+if($edit_id){ 
+	echo form_open('blog/edit/'.$edit_id); 
+}else{ echo form_open('blog/add'); }
+?>
 <table cellpadding="3" cellspacing="0" border="0">
 <tr>
 	<td class="title">Title:</td>
@@ -21,7 +26,8 @@ echo $this->validation->error_string;
 	$p=array(
 		'name'	=>'title',
 		'id'	=>'title',
-		'size'	=>30
+		'size'	=>30,
+		'value'	=>$this->validation->title
 	);
 	echo form_input($p);
 	?>
@@ -34,7 +40,8 @@ echo $this->validation->error_string;
 			'name'	=>'story',
 			'id'	=>'story',
 			'cols'	=>60,
-			'rows'	=>15
+			'rows'	=>15,
+			'value'	=>$this->validation->story
 		);
 		echo form_textarea($p); 
 	?></td>
