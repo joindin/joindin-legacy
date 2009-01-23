@@ -38,9 +38,9 @@ $active_group = "default";
 $active_record = TRUE;
 
 $db['default']['hostname'] = "localhost";
-$db['default']['username'] = "root";
-$db['default']['password'] = "development";
-$db['default']['database'] = "joindin";
+$db['default']['username'] = "enygma";
+$db['default']['password'] = "zaphod42";
+$db['default']['database'] = "confs";
 $db['default']['dbdriver'] = "mysql";
 $db['default']['dbprefix'] = "";
 $db['default']['pconnect'] = TRUE;

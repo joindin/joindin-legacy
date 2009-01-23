@@ -12,7 +12,7 @@
 |
 */
 //$config['base_url']	= 'http://joind.in/';
-$config['base_url']	= "http://joindin/";
+$config['base_url']	= "http://conf.localhost/";
 
 /*
 |--------------------------------------------------------------------------
@@ -317,7 +317,7 @@ $config['rewrite_short_tags'] = FALSE;
 |--------------------------------------------------------------------------
 */
 $config['token'] = 'th1st0k3n';
-$config['token_dir'] = '/home/jsor/Zend/workspaces/DefaultWorkspace/joindin/system/cache/ctokens';
+$config['token_dir'] = '/www/htdocs/ctokens';
 $config['token_rm'] = 5; //time in minutes
 
 /* End of file config.php */
