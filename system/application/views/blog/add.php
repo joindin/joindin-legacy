@@ -59,6 +59,16 @@ if($edit_id){
 	?>
 	</td>
 </tr>
+<tr>
+	<td class="title">Category:</td>
+	<td>
+	<?php
+	$cat_list=array();
+	foreach($cats as $v){ $cat_list[$v->ID]=$v->name; }
+	echo form_dropdown('category',$cat_list,$this->validation->category);
+	?>
+	</td>
+</tr>
 <tr><td colspan="2" align="right"><?php echo form_submit('sub',$sub); ?></td></tr>
 </table>
 <?php echo form_close(); ?>

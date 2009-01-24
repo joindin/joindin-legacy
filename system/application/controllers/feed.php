@@ -32,6 +32,22 @@ class Feed extends Controller {
 		//$this->template->render();
 		$this->load->view('feed/feed',array('items'=>$items));
 	}
+	function blog(){
+		$this->load->model('blog_posts_model','bpm');
+		$items=array();
+		
+		foreach($this->bpm->getPostDetail() as $k=>$v){
+			//print_r($v);
+			$items[]=array(
+				'guid'			=>'http://joind.in/blog/view/'.$v->ID,
+				'title'			=>$v->title,
+				'link'			=>'http://joind.in/blog/view/'.$v->ID,
+				'description'	=>$v->content,
+				'pubDate'		=>date('r',$v->date_posted)
+			);
+		}
+		$this->load->view('feed/feed',array('items'=>$items));
+	}
 }
 
 ?>

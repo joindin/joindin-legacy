@@ -37,6 +37,7 @@
 		<li><a href="/talk">talks</a>
 		<li><a href="/search">search</a>
 		<li><a href="/about">about</a>
+		<li><a href="/blog">blog</a>
 		<li>&nbsp;
 		</ul>
 	</td>

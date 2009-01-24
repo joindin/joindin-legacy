@@ -7,11 +7,15 @@ class Blog extends Controller {
 		$this->user_model->logStatus();
 	}
 	function index(){
-		$this->load->model('blog_posts_model');
+		$this->load->model('blog_posts_model','bpm');
 		$arr=array();
 				
-		$arr['posts']=$this->blog_posts_model->getPostDetail(); //print_r($ret);
+		$arr=array(
+			'posts'		=> $this->bpm->getPostDetail(),
+			'is_admin'	=> $this->user_model->isSiteAdmin()
+		);
 		
+		$this->template->write('feedurl','/feed/blog');
 		$this->template->write_view('content','blog/main',$arr);
 		$this->template->render();
 	}
@@ -19,6 +23,8 @@ class Blog extends Controller {
 		$this->load->helper('form');
 		$this->load->library('validation');
 		$this->load->model('blog_posts_model');
+		$this->load->model('blog_cats_model');
+		$this->load->model('blog_post_cat_model','bpcat');
 		$arr=array();
 		
 		$fields=array(
@@ -28,7 +34,8 @@ class Blog extends Controller {
 			'post_day'	=> 'Post Day',
 			'post_yr'	=> 'Post Year',
 			'post_hr'	=> 'Post Hour',
-			'post_mi'	=> 'Post Minute'
+			'post_mi'	=> 'Post Minute',
+			'category'	=> 'Category'
 		);
 		$rules=array(
 			'title'		=> 'required',
@@ -37,13 +44,13 @@ class Blog extends Controller {
 			'post_day'	=> 'required',
 			'post_yr'	=> 'required',
 			'post_hr'	=> 'required',
-			'post_mi'	=> 'required'
+			'post_mi'	=> 'required',
+			'category'	=> 'required'
 		);
 		$this->validation->set_rules($rules);
 		$this->validation->set_fields($fields);
-		
+				
 		if($this->validation->run()!=FALSE){
-			echo 'success!';
 			$post_date=mktime(
 				$this->input->post('post_hr'),$this->input->post('post_mi'),0,
 				$this->input->post('post_mo'),$this->input->post('post_day'),
@@ -55,13 +62,17 @@ class Blog extends Controller {
 				'date_posted'=> $post_date,
 				'author_id'	 => ''
 			);
-			echo '<pre>'; print_r($arr); echo '</pre>';
+			//echo '<pre>'; print_r($arr); echo '</pre>';
 			if($id){
 				$this->db->where('ID',$id);	
 				$this->db->update('blog_posts',$arr);
-			}else{ $this->db->insert('blog_posts',$arr); }
+			}else{ 
+				$this->db->insert('blog_posts',$arr); 
+				$id=$this->db->insert_id();
+			}
+			$this->bpcat->setPostCat($id,$this->input->post('category'));
 			
-			$arr=array('msg'=>'Post inserted successfully!');
+			$arr=array('msg'=>'Post inserted successfully! <a href="/blog/view/'.$id.'">View post</a>');
 		}else{
 			if($id){
 				$det=$this->blog_posts_model->getPostDetail(); //print_r($det);
@@ -76,7 +87,8 @@ class Blog extends Controller {
 				$this->validation->post_mi	= date('i',$det[0]->date_posted);
 			}
 		}
-		$arr['edit_id']=($id) ? $id : null;
+		$arr['edit_id']	= ($id) ? $id : null;
+		$arr['cats']	= $this->blog_cats_model->getCategories();
 		
 		$this->template->write_view('content','blog/add',$arr);
 		$this->template->render();
@@ -85,11 +97,45 @@ class Blog extends Controller {
 		//if(!$this->user_model->isSiteAdmin()){ redirect(); }
 		$this->add($id);
 	}
-	function view(){
+	function view($id){
+		$this->load->helper('form');
+		$this->load->library('validation');
 		$this->load->model('blog_posts_model');
+		$this->load->model('blog_comments_model');
 		
-		$arr=array();
-		$this->template->write_view('content','blog/main',$arr);
+		$fields=array(
+			'title'		=> 'Title',
+			'comment'	=> 'Comment'
+		);
+		$rules=array(
+			'title'		=> 'required',
+			'comment'	=> 'required'
+		);
+		$this->validation->set_rules($rules);
+		$this->validation->set_fields($fields);
+		
+		if($this->validation->run()!=FALSE){
+			//passed...;
+			$arr=array(
+				'title'			=> $this->input->post('title'),
+				'author_id'		=> '0',
+				'content'		=> $this->input->post('comment'),
+				'blog_post_id'	=> $id
+			);
+			//print_r($arr);
+			$this->db->insert('blog_comments',$arr); 
+		}else{
+			//failed...
+		}
+		
+		$arr=array(
+			'details'	=> $this->blog_posts_model->getPostDetail($id),
+			'is_admin'	=> $this->user_model->isSiteAdmin(),
+			'comments'	=> $this->blog_comments_model->getPostComments($id),
+			'pid'		=> $id
+		);
+		$this->template->write('feedurl','/feed/blog');
+		$this->template->write_view('content','blog/view',$arr);
 		$this->template->render();
 	}
 }
