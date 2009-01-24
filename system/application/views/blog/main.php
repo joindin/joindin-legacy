@@ -1,7 +1,7 @@
 <?php
 //echo '<pre>'; print_r($posts); echo '</pre>';
 
-if(count($posts)>0){
+if(isset($posts) && count($posts)>0){
 	foreach($posts as $k=>$v){
 		if($is_admin){
 			$add='<a class="admin_link" href="/blog/edit/'.$v->ID.'">edit</a> ';
