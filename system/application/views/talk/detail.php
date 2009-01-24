@@ -21,7 +21,8 @@ $anon=array();
 
 //--------------------
 $gmt=mktime(
-	gmdate('h'),gmdate('i'),gmdate('s'),
+	//gmdate('h'),gmdate('i'),gmdate('s'),
+	0,0,0,
 	gmdate('m'),gmdate('d'),gmdate('Y')
 );
 //$gmt+=(3600*$det->event_tz);
