@@ -24,7 +24,7 @@ $gmt=mktime(
 	gmdate('h'),gmdate('i'),gmdate('s'),
 	gmdate('m'),gmdate('d'),gmdate('Y')
 );
-$gmt+=(3600*$det->event_tz);
+//$gmt+=(3600*$det->event_tz);
 //echo '<br/> woo! gmt: '.date('m.d.Y H:i:s',$gmt).'<br/>';
 //--------------------
 
