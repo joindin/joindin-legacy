@@ -128,3 +128,51 @@ table.event_comments td {
 }
 table.event_comments td span.comment { font-size: 12px; } 
 table.event_comments td span.meta { font-size: 10px; color: #6C6C6C; } 
+
+.blog_post td.title a {
+	font-size: 14px;
+	font-weight: bold;
+	padding-bottom: 4px;
+	color: #B86F09;
+}
+.blog_post td.content {
+	padding-left: 5px;
+}
+.blog_post td.byline {
+	padding-left: 5px;
+	padding-top: 3px;
+	font-size: 10px;
+	color: #A2A2A2;
+}
+.blog_post td a {
+	text-decoration: none;
+}
+.blog_post td a:hover {
+	text-decoration: underline;
+}
+.blog_post td a.comments_link {
+	color: #B86F09;
+	font-weight: bold;
+	font-size: 11px;
+}
+span.comments_title {
+	font-size: 13px;
+	font-weight: bold;
+	color: #5181C1;
+}
+
+table.blog_comment_tbl {
+	width: 400px;
+}
+table.blog_comment_tbl td {
+	padding: 3px;
+}
+table.blog_comment_tbl td span.title {
+	font-size: 13px;
+	font-weight: bold;
+}
+table.blog_comment_tbl td span.byline {
+	font-size: 10px;
+	color: #A2A2A2;
+}
+
