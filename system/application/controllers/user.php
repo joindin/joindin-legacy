@@ -71,14 +71,14 @@ class User extends Controller {
 				'passc'	=> 'Confirm Password',
 				'email'	=> 'Email',
 				'full_name'=>'Full Name',
-				'cinput'	=> 'Captcha'				
+			//	'cinput'	=> 'Captcha'				
 			);
 			$rules=array(
 				'user'	=> 'required|trim|callback_usern_check|xss_clean',
 				'pass'	=> 'required|trim|matches[passc]|md5',
 				'passc'	=> 'required|trim',
 				'email'	=> 'required|trim|valid_email',
-				'cinput'	=> 'required|callback_cinput_check'
+			//	'cinput'	=> 'required|callback_cinput_check'
 			);
 			$this->validation->set_rules($rules);
 			$this->validation->set_fields($fields);
@@ -102,9 +102,10 @@ class User extends Controller {
 				$this->session->set_userdata((array)$ret[0]);
 				redirect('user/main');
 			}
-			$cap=create_captcha($cap_arr);
-                        $this->session->set_userdata(array('cinput'=>$cap['word']));
-                        $carr=array('captcha'=>$cap);
+			//$cap=create_captcha($cap_arr);
+			//$this->session->set_userdata(array('cinput'=>$cap['word']));
+			//$carr=array('captcha'=>$cap);
+			$carr=array();
 
 			$this->template->write_view('content','user/register',$carr);
 			$this->template->render();

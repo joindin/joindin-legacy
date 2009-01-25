@@ -39,6 +39,7 @@ echo form_open('user/register');
 	<td class="title">Full Name:</td>
 	<td><?php echo form_input('full_name'); ?></td>
 </tr>
+<!--
 <tr>
 	<td class="title" valign="top">Type in the code:</td>
 	<td>
@@ -46,6 +47,7 @@ echo form_open('user/register');
 	<?php echo $captcha['image']; ?>
 	</td>
 </tr>
+-->
 <tr>
 	<td align="right" colspan="2">
 		<?php echo form_submit('sub','Register'); ?>
