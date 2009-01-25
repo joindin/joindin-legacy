@@ -15,6 +15,7 @@ class About extends Controller {
 	function contact(){
 		$arr=array();
 		$this->load->helper('form');
+		$this->load->library('akismet');
 		$this->load->library('validation');
 		
 		$fields=array(
@@ -30,6 +31,17 @@ class About extends Controller {
 		$this->validation->set_fields($fields);
 
 		if($this->validation->run()!=FALSE){
+			$arr=array(
+				'key'					=>'',
+				'blog'					=>'',
+				'comment_type'			=>'comment',
+				'comment_author'		=>$this->input->post('your_name'),
+				'comment_author_email'	=>$this->input->post('your_email'),
+				'comment_content'		=>$this->input->post('your_com')
+			);
+			$ret=$this->akismet->send('/submit-spam',$arr);
+			echo 'ak: '; print_r($ret);
+			
 			$to='enygma@phpdeveloper.org';
 			$subj='Feedback from joind.in';
 			$cont= 'Name: '.$this->input->post('your_name')."\n\n";

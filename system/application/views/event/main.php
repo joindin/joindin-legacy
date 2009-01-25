@@ -5,29 +5,28 @@ $admin=false;
 <br/><br/>
 <?php
 //echo '<pre>'; print_r($events); echo '</pre>'; 
-
-$evt=array();
-foreach($events as $k=>$v){
-	$evt[]=array(
-		'day_start'	=> date('d',$v->event_start),
-		'day_end'	=> date('d',$v->event_end),
-		'title'		=> $v->event_name,
-		'link'		=> '/event/view/'.$v->ID
-	);
-}
-
-/*$evt=array(
-	array('day_start'=>2,'title'=>'foo','link'=>'http://foo.com'),
-	array('day_start'=>4,'day_end'=>6,'title'=>'foo 2','link'=>'http://foo.com')
-);*/
 $estart	= mktime(0,0,0,$mo,$day,$yr);
 $eend	= mktime(23,59,59,$mo,$day,$yr);
+$evt	= array();
+
+foreach($events as $k=>$v){
+	if(date('m',$v->event_start)==$mo){
+		$evt[]=array(
+			'day_start'	=> date('d',$v->event_start),
+			'day_end'	=> date('d',$v->event_end),
+			'title'		=> $v->event_name,
+			'link'		=> '/event/view/'.$v->ID
+		);
+	}
+}
+
 ?>
 
 <div style="float:left;padding-right:15px"><?php buildCal($mo,$day,$yr,$evt); ?></div>
 <?php
 $style='';
 foreach($events as $k=>$v){
+	if(date('m',$v->event_start)!=$mo){ continue; }
 	if(isset($all) && $all==false){
 		$style=($estart>=$v->event_start && $eend<=$v->event_end) ? 'color:#5181C1;background-color:#EEEEEE;padding:4px' : 'color:#CCCCCC';
 	}

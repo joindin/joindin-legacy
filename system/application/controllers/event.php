@@ -45,20 +45,26 @@ class Event extends Controller {
 		$this->load->model('event_model');
 		$this->load->helper('mycal');
 		
-		if(!$date){ $date=date('m_d_Y'); }
+		if(!$date){ $date=date('m_Y'); }
 		
 		$date_p	= explode('_',$date);
-		$start	= mktime(0,0,0,$date_p[0],1,$date_p[2]);
-		$end	= mktime(0,0,0,$date_p[0],date('t',$start),$date_p[2]);
-		
+		if(count($date_p)==2){
+			$start	= mktime(0,0,0,$date_p[0],1,$date_p[1]);
+			$end	= mktime(0,0,0,$date_p[0],date('t',$start),$date_p[1]);	
+		}else{
+			$start	= mktime(0,0,0,$date_p[0],1,$date_p[2]);
+			$end	= mktime(0,0,0,$date_p[0],date('t',$start),$date_p[2]);
+		}		
 		$events	= $this->event_model->getEventDetail(null,$start,$end);
 		
-		$arr=array(
-			'events'=>$events,
-			'mo'	=>$date_p[0],
-			'day'	=>$date_p[1],
-			'yr'	=>$date_p[2]
-		);	
+		$arr=array('events'=>$events,'mo'=>$date_p[0]);
+		if(count($date_p)==2){
+			$arr['day']	= 1;
+			$arr['yr']	= $date_p[1];
+		}else{ 
+			$arr['day']	= $date_p[1];
+			$arr['yr']	= $date_p[2];
+		}
 		$this->template->write_view('content','event/main',$arr,TRUE);
 		$this->template->render();
 	}

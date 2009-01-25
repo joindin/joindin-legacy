@@ -21,12 +21,13 @@ $anon=array();
 
 //--------------------
 $gmt=mktime(
-	//gmdate('h'),gmdate('i'),gmdate('s'),
-	0,0,0,
+	gmdate('h'),gmdate('i'),gmdate('s'),
+	//0,0,0,
 	gmdate('m'),gmdate('d'),gmdate('Y')
 );
-//$gmt+=(3600*$det->event_tz);
-//echo '<br/> woo! gmt: '.date('m.d.Y H:i:s',$gmt).'<br/>';
+//so now we know what time it is GMT
+//lets use the offset of the event to figure out what time it is there
+$time_at_event=$gmt+(3600*$det->event_tz);
 //--------------------
 
 //add the whole total from our anonymous comments
@@ -121,8 +122,7 @@ echo $this->validation->error_string;
 echo form_open('talk/view/'.$det->tid);
 
 //only show the form if the time for the talk has passed
-//if($det->date_given<=time()){
-if($det->date_given>=$gmt){
+if($det->date_given<=$time_at_event){
 ?>
 
 <table cellpadding="3" cellspacing="0" border="0">

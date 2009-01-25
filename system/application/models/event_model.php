@@ -44,6 +44,7 @@ class Event_model extends Model {
 				$this->db->where('event_start<='.$end_dt);
 			}
 		}
+		$this->db->order_by('event_start','desc');
 		$q=$this->db->get();
 		return $q->result();
 	}

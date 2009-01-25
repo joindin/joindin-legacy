@@ -25,9 +25,9 @@ function buildCal($mo,$day,$yr,$events){
 	$day_ct=0;
 	echo '<table cellpadding="0" cellspacing="0" border="0" class="cal_tbl">'."\n";
 	echo '<tr>'; foreach($day_abbr as $v){ echo '<td class="cal_day_abbr">'.$v.'</td>'; } echo '</tr>';
-	echo '<tr><td class="cal_nav" colspan="2"><a href="/event/calendar/'.$prev_mo.'_1_'.$prev_yr.'"><<</a></td>';
+	echo '<tr><td class="cal_nav" colspan="2"><a href="/event/calendar/'.$prev_mo.'_'.$prev_yr.'"><<</a></td>';
 	echo '<td class="cal_nav" colspan="3" align="center">'.date('F Y',$mo_start).'</td>';
-	echo '<td class="cal_nav" colspan="2" align="right"><a href="/event/calendar/'.$next_mo.'_1_'.$next_yr.'">>></a></td></tr>';
+	echo '<td class="cal_nav" colspan="2" align="right"><a href="/event/calendar/'.$next_mo.'_'.$next_yr.'">>></a></td></tr>';
 	echo '<tr>';
 	for($i=1;$i<=$total_days;$i++){
 		if($i>=$start_dow && $day_ct<=$days_mo){ $day_ct++; }
