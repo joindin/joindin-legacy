@@ -312,6 +312,7 @@ class Event extends Controller {
 		$this->load->helper('form');
 		$this->load->library('validation');
 		$this->load->plugin('captcha');
+		$this->load->library('akismet');
 		
 		$cap_arr=array(
 			'img_path'		=>$_SERVER['DOCUMENT_ROOT'].'/inc/img/captcha/',
