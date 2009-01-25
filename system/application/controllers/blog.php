@@ -21,7 +21,7 @@ class Blog extends Controller {
 	}
 	function add($id=null){
 		if(!$this->user_model->isSiteAdmin()){ redirect(); }
-		
+
 		$this->load->helper('form');
 		$this->load->library('validation');
 		$this->load->model('blog_posts_model');
@@ -102,6 +102,7 @@ class Blog extends Controller {
 	function view($id){
 		$this->load->helper('form');
 		$this->load->library('validation');
+		$this->load->library('akismet');
 		$this->load->model('blog_posts_model');
 		$this->load->model('blog_comments_model');
 		
@@ -117,6 +118,12 @@ class Blog extends Controller {
 		$this->validation->set_fields($fields);
 		
 		if($this->validation->run()!=FALSE){
+			$arr=array(
+				'comment_type'			=>'comment',
+				'comment_content'		=>$this->input->post('comment')
+			);
+			$ret=$this->akismet->send('/1.1/comment-check',$arr);
+			
 			//passed...;
 			$arr=array(
 				'title'			=> $this->input->post('title'),
@@ -125,7 +132,17 @@ class Blog extends Controller {
 				'blog_post_id'	=> $id
 			);
 			//print_r($arr);
-			$this->db->insert('blog_comments',$arr); 
+			$this->db->insert('blog_comments',$arr);
+			
+			$to='enygma@phpdeveloper.org';
+			$subj='Blog comment on entry '.$id.' from joind.in';
+			$cont= 'Title: '.$this->input->post('title')."\n\n";
+			$cont.='Content: '.$this->input->post('content')."\n\n";
+			$cont.='Post: http://joind.in/blog/view/'.$id."\n\n";
+			$cont.='Spam check: '.($ret=='false') ? 'not spam' : 'spam caught';
+
+			mail($to,$subj,$cont,'From: feedback@joind.in');
+			
 		}else{
 			//failed...
 		}
