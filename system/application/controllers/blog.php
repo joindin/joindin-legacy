@@ -20,6 +20,8 @@ class Blog extends Controller {
 		$this->template->render();
 	}
 	function add($id=null){
+		if(!$this->user_model->isSiteAdmin()){ redirect(); }
+		
 		$this->load->helper('form');
 		$this->load->library('validation');
 		$this->load->model('blog_posts_model');
@@ -94,7 +96,7 @@ class Blog extends Controller {
 		$this->template->render();
 	}
 	function edit($id){
-		//if(!$this->user_model->isSiteAdmin()){ redirect(); }
+		if(!$this->user_model->isSiteAdmin()){ redirect(); }
 		$this->add($id);
 	}
 	function view($id){
