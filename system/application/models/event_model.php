@@ -82,7 +82,7 @@ class Event_model extends Model {
 		$this->db->from('events');
 		$this->db->where('event_start>=',time());
 		if($inc_curr){ $this->db->or_where('event_end>=',time()); }
-		$this->db->order_by('event_start','desc');
+		$this->db->order_by('event_start','asc');
 		$this->db->limit(10);
 		$q=$this->db->get();
 		return $q->result();

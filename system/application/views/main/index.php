@@ -1,6 +1,7 @@
 <?php
 //echo '<pre>'; print_r($talks); echo '</pre>';
 //echo '<pre>'; print_r($events); echo '</pre>';
+//echo '<pre>'; print_r($latest_blog); echo '</pre>';
 ?>
 <br/>
 <table cellpadding="0" cellspacing="0" border="0" width="98%">
@@ -32,8 +33,8 @@ foreach($talks as $k=>$v){
 echo '</table>';
 ?>
 </td>
-<?php if(isset($logged) && !$logged){ ?>
 <td width="40%" valign="top" align="right">
+<?php if(isset($logged) && !$logged){ ?>
 	<div>
 	<?php
 	echo form_open('/user/login');
@@ -47,8 +48,13 @@ echo '</table>';
 	?>
 	<span style="font-size:10px">Need an account? <a href="/user/register">Register now!</a></span>
 	</div>
-</td>
 <?php } ?>
+<br/>
+
+<h3 class="title">Latest blog post:</h3>
+<a style="font-size:13px" href="/blog/view/<?=$latest_blog[0]->ID?>"><?=$latest_blog[0]->title?></a><br/>
+<?php echo 'posted '.date('m.d.Y',$latest_blog[0]->date_posted); ?>
+</td>
 </tr>
 </table>
 <br/>

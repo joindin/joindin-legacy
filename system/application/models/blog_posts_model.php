@@ -30,6 +30,13 @@ class Blog_posts_model extends Model {
 		$sql='update blog_posts set views=views+1';
 		$this->db->query($sql);
 	}
+	function getLatestPost(){
+		$this->db->from('blog_posts');
+		$this->db->order_by('date_posted','desc');
+		$this->db->limit(1);
+		$q=$this->db->get();
+		return $q->result();
+	}
 }
 
 ?>
