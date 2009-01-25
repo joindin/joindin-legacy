@@ -20,6 +20,12 @@ class User_attend_model extends Model {
 			$this->db->insert('user_attend',array('uid'=>$uid,'eid'=>$eid));
 		}
 	}
+	function getAttendCount($eid){
+		$sql='select count(ID) attend_ct from user_attend where eid='.$eid;
+		$q=$this->db->query($sql);
+		$res=$q->result();
+		return (isset($res[0]->attend_ct)) ? $res[0]->attend_ct : 0;
+	}
 	
 }
 ?>

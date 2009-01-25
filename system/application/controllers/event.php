@@ -168,7 +168,7 @@ class Event extends Controller {
 		$this->load->library('validation');
 		$this->load->model('event_model');
 		$this->load->model('event_comments_model');
-		$this->load->model('user_attend_model');
+		$this->load->model('user_attend_model','uam');
 		
 		$talks	= $this->event_model->getEventTalks($id);
 		$events	= $this->event_model->getEventDetail($id);
@@ -176,7 +176,7 @@ class Event extends Controller {
 		
 		if($is_auth){ 
 			$uid=$this->session->userdata('ID');
-			$chk_attend=($this->user_attend_model->chkAttend($uid,$id)) ? true : false;
+			$chk_attend=($this->uam->chkAttend($uid,$id)) ? true : false;
 			
 		}else{ $chk_attend=false; }
 		
@@ -191,7 +191,8 @@ class Event extends Controller {
 			'user_id'=>($is_auth) ? $this->session->userdata('ID') : '0',
 			'attend' =>$chk_attend,
 			'reqkey' =>$reqkey,
-			'seckey' =>buildSecFile($reqkey)
+			'seckey' =>buildSecFile($reqkey),
+			'attend' =>$this->uam->getAttendCount($id)
 		);
 		
 		//our event comment form

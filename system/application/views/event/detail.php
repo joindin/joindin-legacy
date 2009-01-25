@@ -3,7 +3,6 @@ $det=$events[0]; //print_r($det);
 $cl=array();
 foreach($claimed as $k=>$v){ $cl[$v->rid]=$v->uid; }
 
-//print_r($_COOKIE);
 ?>
 
 <div style="padding:10px;border:0px solid #B86F09;background-color:#E4F1E8">
@@ -32,6 +31,7 @@ if($attend){
 }
 ?>
 <b>::></b> <a href="#" id="attend_link" onClick="markAttending(<?=$det->ID?>,<?=$showt?>);return false;"><?=$link_txt?></a>
+(<?=$attend?> attending so far)
 </div>
 
 <?php if($admin){ ?>
