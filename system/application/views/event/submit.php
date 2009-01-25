@@ -48,6 +48,7 @@ if(isset($msg)){ echo '<div class="notice">'.$msg.'</div>'; } echo '<br/>';
 		echo form_textarea($attr); 
 	?></td>
 </tr>
+<!--
 <tr>
 	<td class="title" valign="top">Type in the code:</td>
 	<td>
@@ -55,6 +56,7 @@ if(isset($msg)){ echo '<div class="notice">'.$msg.'</div>'; } echo '<br/>';
 	<?php echo $cap['image']; ?>
 	</td>
 </tr>
+-->
 <tr>
 	<td align="right" colspan="2"><?php echo form_submit('sub','Submit Event'); ?></td>
 </tr>

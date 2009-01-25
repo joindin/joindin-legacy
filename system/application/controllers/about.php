@@ -32,21 +32,19 @@ class About extends Controller {
 
 		if($this->validation->run()!=FALSE){
 			$arr=array(
-				'key'					=>'',
-				'blog'					=>'',
 				'comment_type'			=>'comment',
 				'comment_author'		=>$this->input->post('your_name'),
 				'comment_author_email'	=>$this->input->post('your_email'),
 				'comment_content'		=>$this->input->post('your_com')
 			);
-			$ret=$this->akismet->send('/submit-spam',$arr);
-			echo 'ak: '; print_r($ret);
+			$ret=$this->akismet->send('/1.1/comment-check',$arr);
 			
 			$to='enygma@phpdeveloper.org';
 			$subj='Feedback from joind.in';
 			$cont= 'Name: '.$this->input->post('your_name')."\n\n";
 			$cont.='Email: '.$this->input->post('your_email')."\n\n";
-			$cont.='Comment: '.$this->input->post('your_com');
+			$cont.='Comment: '.$this->input->post('your_com')."\n\n";
+			$cont.='Spam check: '.($ret=='false') ? 'not spam' : 'spam caught';
 
 			mail($to,$subj,$cont,'From: feedback@joind.in');
 			$arr=array('msg'=>'Comments sent! Thanks for the feedback!');

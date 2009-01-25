@@ -328,7 +328,7 @@ class Event extends Controller {
 			'start_mo'				=> 'Event Start Month',
 			'start_day'				=> 'Event Start Day',
 			'start_yr'				=> 'Event Start Year',
-			'cinput'				=> 'Captcha'
+		//	'cinput'				=> 'Captcha'
 		);
 		$rules=array(
 			'event_title'			=> 'required',
@@ -336,12 +336,20 @@ class Event extends Controller {
 			'event_contact_email'	=> 'required|valid_email',
 			'event_desc'			=> 'required',
 			'start_mo'				=> 'callback_start_mo_check',
-			'cinput'				=> 'required|callback_cinput_check'
+		//	'cinput'				=> 'required|callback_cinput_check'
 		);
 		$this->validation->set_rules($rules);
 		$this->validation->set_fields($fields);
 		
 		if($this->validation->run()!=FALSE){
+			$arr=array(
+				'comment_type'			=>'comment',
+				'comment_author'		=>$this->input->post('your_name'),
+				'comment_author_email'	=>$this->input->post('your_email'),
+				'comment_content'		=>$this->input->post('your_com')
+			);
+			$ret=$this->akismet->send('/1.1/comment-check',$arr);
+			
 			//send the information via email...
 			$t=mktime(
 				0,0,0,
@@ -356,13 +364,14 @@ class Event extends Controller {
 			$msg.='Event Date: '.date('m.d.Y H:i:s',$t)."\n\n";
 			$msg.='Event Contact Name: '.$this->input->post('event_contact_name')."\n\n";
 			$msg.='Event Contact Email: '.$this->input->post('event_contact_email')."\n\n";
+			$msg.='Spam check: '.($ret=='false') ? 'not spam' : 'spam';
 			
 			mail($to,$subj,$msg,'From: submissions@joind.in');
 			$arr['msg']='Event successfully submitted! We\'ll get back with you soon!';
 		}
-		$cap = create_captcha($cap_arr);
-		$this->session->set_userdata(array('cinput'=>$cap['word']));
-		$arr['cap']=$cap;
+		//$cap = create_captcha($cap_arr);
+		//$this->session->set_userdata(array('cinput'=>$cap['word']));
+		//$arr['cap']=$cap;
 		
 		$this->template->write_view('content','event/submit',$arr);
 		$this->template->render();
