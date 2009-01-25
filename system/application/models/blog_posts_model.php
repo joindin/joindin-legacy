@@ -26,6 +26,10 @@ class Blog_posts_model extends Model {
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
+	function updatePostViews($id){
+		$sql='update blog_posts set views=views+1';
+		$this->db->query($sql);
+	}
 }
 
 ?>

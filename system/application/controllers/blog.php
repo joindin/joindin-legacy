@@ -62,7 +62,8 @@ class Blog extends Controller {
 				'title'		 => $this->input->post('title'),
 				'content'	 => $this->input->post('story'),
 				'date_posted'=> $post_date,
-				'author_id'	 => ''
+				'author_id'	 => '',
+				'views'		 => 0
 			);
 			//echo '<pre>'; print_r($arr); echo '</pre>';
 			if($id){
@@ -103,8 +104,8 @@ class Blog extends Controller {
 		$this->load->helper('form');
 		$this->load->library('validation');
 		$this->load->library('akismet');
-		$this->load->model('blog_posts_model');
-		$this->load->model('blog_comments_model');
+		$this->load->model('blog_posts_model','bpm');
+		$this->load->model('blog_comments_model','bcm');
 		
 		$fields=array(
 			'title'		=> 'Title',
@@ -148,9 +149,9 @@ class Blog extends Controller {
 		}
 		
 		$arr=array(
-			'details'	=> $this->blog_posts_model->getPostDetail($id),
+			'details'	=> $this->bpm->getPostDetail($id),
 			'is_admin'	=> $this->user_model->isSiteAdmin(),
-			'comments'	=> $this->blog_comments_model->getPostComments($id),
+			'comments'	=> $this->bcm->getPostComments($id),
 			'pid'		=> $id
 		);
 		$this->template->write('feedurl','/feed/blog');
