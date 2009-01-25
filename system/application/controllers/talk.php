@@ -140,6 +140,7 @@ class Talk extends Controller {
 		$this->load->helper('form');
 		$this->load->library('validation');
 		$this->load->plugin('captcha');
+		$this->load->library('akismet');
 
 		$cap_arr=array(
 			'img_path'		=>$_SERVER['DOCUMENT_ROOT'].'/inc/img/captcha/',
@@ -157,8 +158,8 @@ class Talk extends Controller {
 			'rating'	=> 'Rating'
 		);
 		if(!$this->user_model->isAuth()){
-			$rules['cinput']	= 'required|callback_cinput_check';
-			$fields['cinput']	= 'Captcha';
+		//	$rules['cinput']	= 'required|callback_cinput_check';
+		//	$fields['cinput']	= 'Captcha';
 		}
 		$this->validation->set_rules($rules);
 		$this->validation->set_fields($fields);
@@ -170,6 +171,12 @@ class Talk extends Controller {
 		if($this->validation->run()==FALSE){
 			//echo 'error!';
 		}else{ 
+			$arr=array(
+				'comment_type'			=>'comment',
+				'comment_content'		=>$this->input->post('your_com')
+			);
+			$ret=$this->akismet->send('/1.1/comment-check',$arr);
+			
 			$priv=$this->input->post('private');
 			$priv=(empty($priv)) ? 0 : 1;
 			
@@ -186,6 +193,7 @@ class Talk extends Controller {
 			
 			//send an email when a comment's made
 			$msg='';
+			$arr['spam']=($ret=='false') ? 'spam' : 'not spam';
 			foreach($arr as $ak=>$av){ $msg.='['.$ak.'] => '.$av."\n"; }
 			mail('enygma@phpdeveloper.org','Comment on talk '.$id,$msg,'From: comments@joind.in');
 			
@@ -202,8 +210,8 @@ Click here to view it: http://joind.in/talk/view/%s
 			
 			$this->session->set_flashdata('msg', 'Comment added!');
 		}
-		$cap = create_captcha($cap_arr);
-		$this->session->set_userdata(array('cinput'=>$cap['word']));
+		//$cap = create_captcha($cap_arr);
+		//$this->session->set_userdata(array('cinput'=>$cap['word']));
 			
 		$this->load->model('talks_model');
 		$arr=array(
@@ -212,7 +220,7 @@ Click here to view it: http://joind.in/talk/view/%s
 			'admin'	 	=> ($this->user_model->isAdminTalk($id)) ? true : false,
 			'site_admin'=> ($this->user_model->isSiteAdmin()) ? true : false,
 			'auth'		=> $this->auth,
-			'captcha'	=> $cap,
+		//	'captcha'	=> $cap,
 			'claimed'	=> $this->talks_model->isTalkClaimed($id)
 		);
 		if(empty($arr['detail'])){ redirect('talk'); }
