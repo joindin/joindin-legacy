@@ -31,7 +31,7 @@ if($attend){
 }
 ?>
 <b>::></b> <a href="#" id="attend_link" onClick="markAttending(<?=$det->ID?>,<?=$showt?>);return false;"><?=$link_txt?></a>
-(<?php echo $attend; echo ($det->event_end<time()) ? 'attending so far':'said they attended'; ?>)
+(<?php echo $attend; echo (time()>=$det->event_end) ? ' attending so far':' said they attended'; ?>)
 </div>
 
 <?php if($admin){ ?>
