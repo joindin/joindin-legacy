@@ -107,6 +107,8 @@ class Blog extends Controller {
 		$this->load->model('blog_posts_model','bpm');
 		$this->load->model('blog_comments_model','bcm');
 		
+		$this->bpm->updatePostViews($id);
+		
 		$fields=array(
 			'title'		=> 'Title',
 			'comment'	=> 'Comment'
