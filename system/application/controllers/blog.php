@@ -137,7 +137,7 @@ class Blog extends Controller {
 			$to='enygma@phpdeveloper.org';
 			$subj='Blog comment on entry '.$id.' from joind.in';
 			$cont= 'Title: '.$this->input->post('title')."\n\n";
-			$cont.='Content: '.$this->input->post('content')."\n\n";
+			$cont.='Content: '.$this->input->post('comment')."\n\n";
 			$cont.='Post: http://joind.in/blog/view/'.$id."\n\n";
 			$cont.='Spam check: '.($ret=='false') ? 'not spam' : 'spam caught';
 
