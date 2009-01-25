@@ -82,6 +82,6 @@ function markAttending(eid,showt){
 		case 4: link_txt="I'll be there!"; break;
 	}
 	$('#attend_link').html(link_txt);
-	alert('Thanks for letting us know!');
+	//alert('Thanks for letting us know!');
 }
 
