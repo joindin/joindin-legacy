@@ -19,7 +19,13 @@
 <div id="hd" class="clearfix">
     <div class="container_12 usr">
     	<div class="grid_12" class="clearfix">
-    		<div class="bar"><?=$logged?></div>
+    		<div class="bar">
+    		<?php if (user_is_auth()): ?>
+    			<a href="/user/main"><?php echo htmlspecialchars(user_get_username()); ?></a> <a href="/user/logout">[Logout]</a>
+    		<?php else: ?>
+    			<a href="/user/login">Login</a> or <a href="/user/register">Register</a>
+    		<?php endif; ?>
+    		</div>
     	</div>
     </div>
     <div class="container_12 nav">
