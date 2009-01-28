@@ -1,8 +1,7 @@
 <?php
 $admin=false;
 ?>
-<img src="/inc/img/current_events.gif"/>
-<br/><br/>
+<h1>Events</h1>
 <?php
 //echo '<pre>'; print_r($events); echo '</pre>'; 
 

@@ -14,17 +14,19 @@
 	if(isset($seckey)){ echo "\n\t<script>var seck='".$seckey."';</script>"; }
 	?>
 </head>
-<body id="events2">
+<body id="<?= menu_get_current_area(); ?>">
 
 <div id="hd" class="clearfix">
-    <div class="container_12 usr">
+    <div class="container_12">
     	<div class="grid_12" class="clearfix">
-    		<div class="bar">
-    		<?php if (user_is_auth()): ?>
-    			<a href="/user/main"><?php echo htmlspecialchars(user_get_username()); ?></a> <a href="/user/logout">[Logout]</a>
-    		<?php else: ?>
-    			<a href="/user/login">Login</a> or <a href="/user/register">Register</a>
-    		<?php endif; ?>
+    		<div class="usr">
+    			<div class="wrapper">
+        		<?php if (user_is_auth()): ?>
+        			Logged in as <a href="/user/main"><?php echo htmlspecialchars(user_get_username()); ?></a> | <a href="/user/logout">Logout</a>
+        		<?php else: ?>
+        			<a href="/user/login">Login</a> or <a href="/user/register">Register</a>
+        		<?php endif; ?>
+    			</div>
     		</div>
     	</div>
     </div>
@@ -32,29 +34,71 @@
     	<div class="grid_3 logo">
     		<a href="/"><img src="/inc/img/logo.gif" border="0" alt="joind.in Logo"/></a>
     	</div>
-    	<div class="grid_7 menu">
-    		<ul>
-				<li id="menu-events"><a href="/event">Events</a>
-				<li id="menu-talks"><a href="/talk">Talks</a>
+    	<div class="grid_6 menu">
+    		<ul class="clearfix">
+				<li id="menu-event"><a href="/event">Events</a>
+				<li id="menu-talk"><a href="/talk">Talks</a>
 				<li id="menu-search"><a href="/search">Search</a>
 				<li id="menu-about" class="sep"><a href="/about">About</a>
 				<li id="menu-blog"><a href="/blog">Blog</a>
     		</ul>
     	</div>
-    	<div class="grid_2 search">
+    	<div class="grid_3 search">
+    		<form id="top-search" method="get" action="/search">
+    			<label id="top-search-label" accesskey="2" for="top-search-input">Search joind.in...</label>
+    			<input type="text" value="" id="top-search-input" name="search_term"/>
+    			<input type="image" alt="Search" src="/inc/img/top-search-submit.gif" id="top-search-submit"/>
+    		</form>
     	</div>
     </div>
 </div>
 
+<?php if (menu_get_current_area() == 'home'): ?>
+
+<div id="splash" class="clearfix">
+    <div class="container_12">
+    	<div class="grid_12">
+    		<a href="/user/register"><img src="/inc/img/splash.jpg" border="0" alt="Join joind.in now!"/></a>
+    	</div>
+	</div>
+</div>
+<?php endif; ?>
+
 <div id="ctn" class="clearfix">
-    <div class="container_12 usr">
-    	<div class="grid_8"><?=$content?></div>
-		<div class="grid_4">&nbsp;</div>
+    <div class="container_12 container clearfix">
+        <div class="grid_8"><?=$content?></div>
+    	<div class="grid_4">
+        	<div class="sidebar">
+        	<?php if (!user_is_auth()): ?>
+            	<div class="box">
+                	<h4>Sign in</h4>
+                	<div>
+    	<?php
+    	echo form_open('/user/login');
+    	echo '<table cellpadding="3" cellspcing="0" border="0">';
+    	echo '<tr><td>User:</td><td>'.form_input('user').'</td></tr>';
+    	echo '<tr><td>Pass:</td><td>'.form_password('pass').'</td></tr>';
+    	echo '<tr><td align="right" colspan="2">'.form_submit('sub','login').'</td></tr>';
+    	echo '</table>';
+    	form_close();
+    	?>
+    	<small>Need an account? <a href="/user/register">Register now!</a></small>
+            		</div>
+            	</div>
+            	<?php endif; ?>
+            	<div class="box">
+                	<h4>Submit your event</h4>
+                	<p>
+                		Submit your event now!
+                	</p>
+            	</div>
+            </div>
+    	</div>
 	</div>
 </div>
 
 <div id="ftr" class="clearfix">
-    <div class="container_12 usr">
+    <div class="container_12">
     	<div class="grid_12">&copy; joind.in <?=date('Y')?></div>
 	</div>
 </div>
