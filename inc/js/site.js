@@ -81,6 +81,11 @@ function markAttending(eid,showt){
 		case 3: link_txt='I was there!'; break;
 		case 4: link_txt="I'll be there!"; break;
 	}
+	if (showt == 1 || showt == 2) {
+		$('#attend_link').removeClass('btn-success');
+	} else {
+		$('#attend_link').addClass('btn-success');
+	}
 	$('#attend_link').html(link_txt);
 	alert('Thanks for letting us know!');
 }

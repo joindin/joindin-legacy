@@ -1,3 +1,4 @@
+<h1 class="icon-event">Events</h1>
 <?php
 $det=$events[0]; //print_r($det);
 $cl=array();
@@ -7,7 +8,7 @@ foreach($claimed as $k=>$v){ $cl[$v->rid]=$v->uid; }
 ?>
 
 <div style="padding:10px;border:0px solid #B86F09;background-color:#E4F1E8">
-<h1 class="title"><?=$det->event_name?></h1>
+<h2><?=$det->event_name?></h2>
 <span style=";font-size:10px">
 <?=$det->event_loc?><br/>
 <?=date('m.d.Y',$det->event_start).' - '.date('m.d.Y',$det->event_end)?>
@@ -31,7 +32,7 @@ if($attend){
 	}else{ $link_txt="Will you be there?"; $showt=4; }
 }
 ?>
-<b>::></b> <a href="#" id="attend_link" onClick="markAttending(<?=$det->ID?>,<?=$showt?>);return false;"><?=$link_txt?></a>
+<a class="btn<?php echo $attend ? ' btn-success' : ''; ?>" href="#" id="attend_link" onClick="markAttending(<?=$det->ID?>,<?=$showt?>);return false;"><?=$link_txt?></a>
 </div>
 
 <?php if($admin){ ?>

@@ -1,9 +1,4 @@
-<?php
-//echo 'about';
-?>
-<img src="/inc/img/about.gif"/>
-<br/><br/>
-
+<h1 class="icon-about">About</h1>
 <h3 style="color:#5181C1">Like the talk? Let 'em know!</h3>
 <p>
 Joind.in provides the missing link between the people attending a conference and the ones that presented. 

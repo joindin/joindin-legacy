@@ -1,8 +1,8 @@
 <?php
 //echo '<pre>'; print_r($talks); echo '</pre>';
 ?>
-<img src="/inc/img/latest_talks.gif"/>
-<br/><br/>
+<h1 class="icon-talk">Talks</h1>
+
 <table cellpadding="3" cellspacing="0" border="0">
 <?php
 foreach(array_slice($talks,0,10) as $v){

@@ -1,6 +1,5 @@
 
-<img src="/inc/img/search.gif"/>
-<br/><br/>
+<h1 class="icon-search">Search</h1>
 <?php
 echo $this->validation->error_string;
 
@@ -8,10 +7,9 @@ echo $this->validation->error_string;
 
 echo form_open('/search');
 ?>
-<center>
+
 <table cellpadding="3" cellspacing="0" border="0">
 <tr>
-	<td><b>SEARCH:</b></td>
 	<td>
 		<?php 
 		$arr=array(
@@ -25,7 +23,7 @@ echo form_open('/search');
 	</td>
 </tr>
 <tr>
-	<td colspan="2" align="right">
+	<td>
 		<?php
 		foreach(range(1,12) as $v){ $start_mo[$v]=$v; }
 		foreach(range(1,32) as $v){ $start_day[$v]=$v; }
@@ -46,10 +44,10 @@ echo form_open('/search');
 	</td>
 </tr>
 <tr>
-	<td align="right" colspan="2"><?php echo form_submit('sub','search'); ?></td>
+	<td><?php echo form_submit('sub','search'); ?></td>
 </tr>
 </table>
-</center>
+
 <?php 
 echo form_close(); 
 

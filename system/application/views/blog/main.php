@@ -1,3 +1,1 @@
-<?php
-echo 'main';
-?>
+<h1 class="icon-blog">Blog</h1>

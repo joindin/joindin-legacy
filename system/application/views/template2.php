@@ -1,6 +1,9 @@
-<html>
-	<title>Joind.in </title>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr">
+
 <head>
+	<title>Joind.in </title>
+
 	<link media="all" rel="stylesheet" type="text/css" href="/inc/css/site.css">
 	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" /> 
 	<script type="text/javascript" src="/inc/js/jquery.js"></script>
@@ -16,9 +19,9 @@
 </head>
 <body id="<?= menu_get_current_area(); ?>">
 
-<div id="hd" class="clearfix">
-    <div class="container_12">
-    	<div class="grid_12" class="clearfix">
+<div id="hd">
+    <div class="container_12 top">
+    	<div class="grid_12">
     		<div class="usr">
     			<div class="wrapper">
         		<?php if (user_is_auth()): ?>
@@ -27,21 +30,25 @@
         			<a href="/user/login">Login</a> or <a href="/user/register">Register</a>
         		<?php endif; ?>
     			</div>
+    			<div class="clear"></div>
     		</div>
     	</div>
+    	<div class="clear"></div>
     </div>
+
     <div class="container_12 nav">
     	<div class="grid_3 logo">
     		<a href="/"><img src="/inc/img/logo.gif" border="0" alt="joind.in Logo"/></a>
     	</div>
     	<div class="grid_6 menu">
-    		<ul class="clearfix">
+    		<ul>
 				<li id="menu-event"><a href="/event">Events</a>
 				<li id="menu-talk"><a href="/talk">Talks</a>
 				<li id="menu-search"><a href="/search">Search</a>
 				<li id="menu-about" class="sep"><a href="/about">About</a>
 				<li id="menu-blog"><a href="/blog">Blog</a>
     		</ul>
+    		<div class="clear"></div>
     	</div>
     	<div class="grid_3 search">
     		<form id="top-search" method="get" action="/search">
@@ -49,24 +56,31 @@
     			<input type="text" value="" id="top-search-input" name="search_term"/>
     			<input type="image" alt="Search" src="/inc/img/top-search-submit.gif" id="top-search-submit"/>
     		</form>
+    		<div class="clear"></div>
     	</div>
+    	<div class="clear"></div>
     </div>
 </div>
 
 <?php if (menu_get_current_area() == 'home'): ?>
 
-<div id="splash" class="clearfix">
+<div id="splash">
     <div class="container_12">
     	<div class="grid_12">
     		<a href="/user/register"><img src="/inc/img/splash.jpg" border="0" alt="Join joind.in now!"/></a>
     	</div>
+    	<div class="clear"></div>
 	</div>
 </div>
 <?php endif; ?>
 
-<div id="ctn" class="clearfix">
-    <div class="container_12 container clearfix">
-        <div class="grid_8"><?=$content?></div>
+<div id="ctn">
+    <div class="container_12 container">
+        <div class="grid_8">
+			<div class="main">            
+                <?=$content?>
+            </div>
+        </div>
     	<div class="grid_4">
         	<div class="sidebar">
         	<?php if (!user_is_auth()): ?>
@@ -89,17 +103,32 @@
             	<div class="box">
                 	<h4>Submit your event</h4>
                 	<p>
-                		Submit your event now!
+                		Know of an event happening? Let us know! We love to get the word out about events the community would be interested in and you can help us spread the word!
+                	</p>
+                	<p>
+                		<a href="/event/submit"><img src="/inc/img/btn-submit-your-event.gif" alt="Submit your event!"/></a>
                 	</p>
             	</div>
             </div>
     	</div>
+    	<div class="clear"></div>
 	</div>
 </div>
 
-<div id="ftr" class="clearfix">
+<div id="ftr">
     <div class="container_12">
-    	<div class="grid_12">&copy; joind.in <?=date('Y')?></div>
+    	<div class="grid_6">
+        	<a href="/events">Events</a> | 
+        	<a href="/talks">Talks</a> | 
+        	<a href="/search">Search</a> | 
+        	<a href="/about">About</a> | 
+        	<a href="/blog">Blog</a> | 
+        	<a href="/contact">Contact</a>
+    	</div>
+    	<div class="grid_6 rgt">
+    		&copy; joind.in <?=date('Y')?>
+    	</div>
+    	<div class="clear"></div>
 	</div>
 </div>
 

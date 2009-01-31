@@ -78,11 +78,15 @@ class Event_model extends Model {
 		return $q->result();
 	}
 	function getUpcomingEvents($inc_curr=false){
-		$this->db->from('events');
+		$this->db->select('events.*, COUNT(user_attend.ID) AS num_attend, COUNT(event_comments.ID) AS num_comments');
+	    $this->db->from('events');
+		$this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
+		$this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');
 		$this->db->where('event_start>=',time());
 		if($inc_curr){ $this->db->or_where('event_end>=',time()); }
 		$this->db->order_by('event_start','desc');
 		$this->db->limit(10);
+		$this->db->group_by('events.ID');
 		$q=$this->db->get();
 		return $q->result();
 	}

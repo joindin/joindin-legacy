@@ -1,7 +1,7 @@
 <?php
 $admin=false;
 ?>
-<h1>Events</h1>
+<h1 class="icon-event">Events</h1>
 <?php
 //echo '<pre>'; print_r($events); echo '</pre>'; 
 

@@ -1,5 +1,4 @@
-
-<img src="/inc/img/contact.gif"/>
+<h1 class="icon-about">Contact</h1>
 <p>
 Submit the contact form below to send us a note or ask a question.
 </p>
