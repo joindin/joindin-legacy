@@ -92,9 +92,25 @@ class Event_model extends Model {
 		return $q->result();
 	}
 	function getClaimedTalks($eid){
-		$ids=array();
-		$ret=$this->getEventTalks($eid); //echo '<pre>'; print_r($ret); echo '</pre>';
-		foreach($ret as $k=>$v){ $ids[]=$v->ID; }
+		$this->load->helper('events');
+		$ids	= array();
+		$tdata	= array();
+		$ret 	= $this->getEventTalks($eid); //echo '<pre>'; print_r($ret); echo '</pre>';
+		foreach($ret as $k=>$v){
+			$p=explode(',',$v->speaker);
+			$codes=array();
+			foreach($p as $ik=>$iv){
+				$codes[]=buildCode($v->ID,$v->event_id,$v->talk_title,trim($iv));
+			}
+			
+			$tdata[$v->ID]=array(
+				'talk_title'=> $v->talk_title,
+				'event_id'	=> $v->event_id,
+				'speaker'	=> $v->speaker,
+				'codes'		=> $codes
+			);
+			$ids[]=$v->ID; 
+		}
 		
 		$uids=implode(',',$ids);
 		if(empty($uids)){ return array(); }
@@ -104,6 +120,7 @@ class Event_model extends Model {
 				ua.rid,
 				ua.rtype,
 				ua.ID,
+				ua.rcode,
 				u.email
 			from
 				user_admin ua,
@@ -113,7 +130,11 @@ class Event_model extends Model {
 				ua.rid in (%s)
 		',$uids);
 		$q=$this->db->query($sql);
-		return $q->result();
+		$ret=$q->result();
+		foreach($ret as $k=>$v){ 
+			$ret[$k]->tdata=$tdata[$v->rid];
+		}
+		return $ret;
 	}
 	function getEventFeedback($eid){
 		$sql=sprintf('

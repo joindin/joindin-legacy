@@ -1,6 +1,7 @@
 <?php
 //echo '<pre>'; print_r($detail); print_r($comments); echo '</pre>';
 //print_r($claimed);
+
 $det=$detail[0];
 
 $total	= 0;
@@ -29,6 +30,11 @@ $gmt=mktime(
 //lets use the offset of the event to figure out what time it is there
 $time_at_event=$gmt+(3600*$det->event_tz);
 //--------------------
+
+if(!empty($claim_msg)){
+	$class=($claim_status) ? 'notice' : 'err';
+	if($claim_msg && !empty($claim_msg)){ echo '<div class="'.$class.'">'.$claim_msg.'</div><br/>'; }
+}
 
 //add the whole total from our anonymous comments
 $total+=$anon_total;

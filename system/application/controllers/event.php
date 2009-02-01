@@ -165,6 +165,7 @@ class Event extends Controller {
 	function view($id){
 		$this->load->helper('form');
 		$this->load->helper('reqkey');
+		$this->load->helper('events');
 		$this->load->library('validation');
 		$this->load->model('event_model');
 		$this->load->model('event_comments_model');
@@ -173,6 +174,15 @@ class Event extends Controller {
 		$talks	= $this->event_model->getEventTalks($id);
 		$events	= $this->event_model->getEventDetail($id);
 		$is_auth= $this->user_model->isAuth();
+		
+		foreach($talks as $k=>$v){
+			$codes=array();
+			$p=explode(',',$v->speaker);
+			foreach($p as $ik=>$iv){
+				$val=trim($iv);
+				$talks[$k]->codes[$val]=buildCode($v->ID,$v->event_id,$v->talk_title,$val);
+			}
+		}
 		
 		if($is_auth){ 
 			$uid=$this->session->userdata('ID');
@@ -264,6 +274,7 @@ class Event extends Controller {
 		$this->load->library('validation');
 		$this->load->library('events');
 		$this->load->helper('url');
+		$this->load->helper('events');
 		
 		if($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($id)){ 
 			//they're okay
@@ -274,26 +285,56 @@ class Event extends Controller {
 		
 		//make our code list for the talks
 		$this->load->model('event_model');
-		$codes=array();
+		$codes		= array();
+		$full_talks	= array();
 		$talks=$this->event_model->getEventTalks($id);
 		foreach($talks as $k=>$v){
-			$str='ec'.str_pad(substr($v->ID,0,2),2,0,STR_PAD_LEFT).str_pad($v->event_id,2,0,STR_PAD_LEFT);
-			$str.=substr(md5($v->talk_title),5,5);
+			$sp=explode(',',$v->speaker); //echo '<pre>'; print_r($sp); echo '</pre>';
 			
-			$codes[]=$str;
+			foreach($sp as $sk=>$sv){				
+				//$str='ec'.str_pad(substr($v->ID,0,2),2,0,STR_PAD_LEFT).str_pad($v->event_id,2,0,STR_PAD_LEFT);
+				//$str.=substr(md5($v->talk_title.$sk),5,5);
+				$str=buildCode($v->ID,$v->event_id,$v->talk_title,trim($sv));
 			
-			//$rules['email_'.$v->ID]='trim|valid_email';
-			$rules['email_'.$v->ID]	='callback_chk_email_check';
-			$fields['email_'.$v->ID]='speaker email';
+				$codes[]		= $str;
+
+				$obj=clone $v;
+				$obj->code		= $str;
+				$obj->speaker	= trim($sv);
+				$full_talks[]	= $obj;
+			
+				//$rules['email_'.$v->ID]='trim|valid_email';
+				$rules['email_'.$v->ID]	='callback_chk_email_check';
+				$fields['email_'.$v->ID]='speaker email';
+			}
 		}
+		//echo '<pre>'; print_r($full_talks); echo '</pre>';
+		
 		$this->validation->set_rules($rules);
 		$this->validation->set_fields($fields);
 		
+		$claimed=array();
+		
+		$cl=$this->event_model->getClaimedTalks($id); //echo '<pre>'; print_r($cl); echo '</pre>';
+		foreach($cl as $k=>$v){
+			//$cstr='ec'.str_pad(substr($v->rid,0,2),2,0,STR_PAD_LEFT).str_pad($v->tdata['event_id'],2,0,STR_PAD_LEFT);
+			//$cstr.=substr(md5($v->tdata['talk_title'].$sk),5,5);
+			$cds=array();
+			$sp=explode(',',$v->tdata['speaker']); //print_r($sp);
+			foreach($sp as $spk=>$spv){
+				$code=buildCode($v->rid,$v->tdata['event_id'],$v->tdata['talk_title'],trim($spv));
+				if($code==$v->rcode){ $cl[$k]->code=$code; }
+			}
+			//$cl[$k]->codes=$cds;
+		}
+		//echo '<pre>'; print_r($cl); echo '</pre>';
+		
 		$arr=array(
 			'talks'		=> $talks,
+			'full_talks'=> $full_talks,
 			'codes'		=> $codes,
 			'details'	=> $this->event_model->getEventDetail($id),
-			'claimed'	=> $this->event_model->getClaimedTalks($id)
+			'claimed'	=> $cl
 		);
 		if($this->validation->run()!=FALSE){
 			foreach($talks as $k=>$v){

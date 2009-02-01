@@ -1,7 +1,10 @@
 <?php
 $det=$events[0]; //print_r($det);
 $cl=array();
-foreach($claimed as $k=>$v){ $cl[$v->rid]=$v->uid; }
+foreach($claimed as $k=>$v){ 
+	//echo '<pre>'; print_r($v); echo '</pre>';
+	$cl[$v->rcode]=array('rid'=>$v->rid,'uid'=>$v->uid); 
+}
 
 ?>
 
@@ -127,6 +130,8 @@ function switchCell(n){
 </center>
 
 <?php
+//echo '<pre>'; print_r($cl); /*print_r($by_day);*/ echo '</pre>';
+
 echo '<div style="border:2px solid #5181C1;padding:3px;" id="talks_div">';
 echo '<table cellpadding="3" cellspacing="0" border="0" width="100%">';
 foreach($by_day as $k=>$v){
@@ -137,7 +142,16 @@ foreach($by_day as $k=>$v){
 		echo '<tr class="'.$style.'"><td align="right">';
 		for($i=1;$i<=$iv->rank;$i++){ echo '<img src="/inc/img/thumbs_up.jpg" height="20"/>'; }
 		echo '</td>';
-		$sp=(array_key_exists((string)$iv->ID,$cl)) ? '<a href="/user/view/'.$cl[$iv->ID].'">'.$iv->speaker.'</a>' : $iv->speaker;
+		
+		$sp='';
+		foreach($iv->codes as $ck=>$cv){
+			if(array_key_exists($cv,$cl)){
+				$id=$cl[$cv]['uid'];
+				$sp.='<a href="/user/view/'.$id.'">'.$ck.'</a>, ';
+			}else{ $sp.=$ck.', '; }
+		}
+		$sp=substr($sp,0,strlen($sp)-2);
+		//print_r($iv); echo '<br/><br/>';
 		echo '<td><a href="/talk/view/'.$iv->ID.'">'.$iv->talk_title.'</a></td><td style="font-size:10px;font-weight:bold;color:#858585">'.strtoupper($iv->tcid).'</td><td>';
 		echo '<img src="/inc/img/flags/'.$iv->lang.'.gif"/></td><td>'.$sp.'</td><tr/>';
 		$ct++;

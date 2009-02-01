@@ -1,8 +1,15 @@
 <?php
+//echo '<pre>'; print_r($full_talks); echo '</pre>';
 
 //echo '<pre>'; print_r($talks); print_r($codes); echo '</pre>';
+
+//print_r($codes);
+
 $cl=array();
-foreach($claimed as $k=>$v){ $cl[$v->rid]=$v->email; }
+foreach($claimed as $k=>$v){ 
+	$cl[$v->code]=$v->email;
+}
+echo '<pre>'; print_r($claimed); print_r($cl); /*print_r($full_talks);*/ echo '</pre>';
 ?>
 <style>
 tr.tbl_header {
@@ -26,14 +33,16 @@ if(!empty($this->validation->error_string)){
 echo form_open('event/codes/'.$details[0]->ID);
 echo '<table cellpadding="3" cellspacing="0" border="0">';
 echo '<tr class="tbl_header"><td>Talk/Speaker</td><td>Code:</td><td colspan="2">Email to:</d></tr>';
-foreach($talks as $k=>$v){
+foreach($full_talks as $k=>$v){
 	$email_id	= 'email_'.$v->ID;
 	$email_chk	= 'email_chk_'.$v->ID;
 	$chk_post	= $this->input->post($email_chk);
-	if(array_key_exists((string)$v->ID,$cl)){
-		$this->validation->$email_id=$cl[$v->ID];
+	
+	if(array_key_exists((string)$v->code,$cl)){
+		$this->validation->$email_id=$cl[$v->code];
 		$rs='class="claimed"';
 	}else{ $rs=''; }
+	
 	$chk=array(
 		'name'	=> $email_chk,
 		'id'	=> $email_chk,
@@ -42,13 +51,15 @@ foreach($talks as $k=>$v){
 	);
 	echo sprintf('
 		<tr %s>
-			<td>%s<br/<span style="color:#888888">%s</span></td>
-			<td>%s</td>
+			<td><a href="/talk/view/%s">%s</a><br/><span style="color:#888888">%s</span></td>
+			<td><a href="/talk/view/%s/claim/%s">%s</a></td>
 			<td>%s</td><td>%s</td>
 		</tr>
-	',$rs,$v->talk_title,$v->speaker,$codes[$k],form_checkbox($chk),
-	form_input($email_id,$this->validation->$email_id));
+	',$rs,$v->ID,$v->talk_title,$v->speaker,
+		$v->ID,$codes[$k],$codes[$k],
+		form_checkbox($chk),form_input($email_id,$this->validation->$email_id));
 }
+
 echo '<tr><td></td><td></td><td colspan="3">'.form_submit('sub','Send Emails').'</td></tr>';
 echo '</table>';
 echo form_close();

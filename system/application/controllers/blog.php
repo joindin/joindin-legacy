@@ -62,14 +62,14 @@ class Blog extends Controller {
 				'title'		 => $this->input->post('title'),
 				'content'	 => $this->input->post('story'),
 				'date_posted'=> $post_date,
-				'author_id'	 => '',
-				'views'		 => 0
+				'author_id'	 => ''
 			);
 			//echo '<pre>'; print_r($arr); echo '</pre>';
 			if($id){
 				$this->db->where('ID',$id);	
 				$this->db->update('blog_posts',$arr);
 			}else{ 
+				$arr['views']=0;
 				$this->db->insert('blog_posts',$arr); 
 				$id=$this->db->insert_id();
 			}

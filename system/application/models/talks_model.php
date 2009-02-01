@@ -195,13 +195,21 @@ class Talks_model extends Model {
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
-	function linkUserRes($uid,$rid,$type){
+	function linkUserRes($uid,$rid,$type,$code=null){		
 		$arr=array(
 			'uid'	=> $uid,
 			'rid'	=> $rid,
 			'rtype'	=> $type
 		);
-		$this->db->insert('user_admin',$arr);
+		if($code){ $arr['rcode']=$code; }
+		
+		//check to be sure its not already claimed first...
+		$q=$this->db->get_where('user_admin',$arr);
+		$ret=$q->result();
+		if(empty($ret)){
+			$this->db->insert('user_admin',$arr);
+			return true;
+		}else{ return false; }
 	}
 	//---------------
 	function search($term,$start,$end){

@@ -135,12 +135,60 @@ class Talk extends Controller {
 		$this->template->write_view('content','talk/delete',$arr,TRUE);
 		$this->template->render();
 	}
-	function view($id){
+	function view($id,$add_act=null,$code=null){
 		$this->load->model('talks_model');
 		$this->load->helper('form');
-		$this->load->library('validation');
+		$this->load->helper('events');
 		$this->load->plugin('captcha');
 		$this->load->library('akismet');
+		$this->load->library('validation');
+		
+		$talk_detail=$this->talks_model->getTalks($id);
+		
+		$claim_status	= false;
+		$claim_msg		= '';
+		if(isset($add_act) && $add_act=='claim'){
+			//be sure they're loged in first...
+			if(!$this->user_model->isAuth()){
+				//redirect to the login form
+				$this->session->set_userdata('ref_url','/talk/view/'.$id.'/claim/'.$code);
+				redirect('user/login');
+			}else{
+				$sp=explode(',',$talk_detail[0]->speaker);
+				
+				$codes=array();
+				//loop through the speakers to make the codes
+				foreach($sp as $k=>$v){
+					//we should be logged in now...lets check and see if the code is right
+					//$str='ec'.str_pad(substr($id,0,2),2,0,STR_PAD_LEFT).str_pad($talk_detail[0]->event_id,2,0,STR_PAD_LEFT);
+					//$str.=substr(md5($talk_detail[0]->talk_title.$k),5,5);
+					
+					$str=buildCode($id,$talk_detail[0]->event_id,$talk_detail[0]->talk_title,trim($v));
+					
+					$codes[]=$str;
+				}
+				//echo $code.'<br/>'; print_r($codes);
+				
+				//$ret=$this->talks_model->getTalkByCode($code); print_r($ret);
+				
+				//if(isset($ret[0]) && $ret[0]->ID==$id && in_array($code,$codes)){
+				if(in_array($code,$codes)){
+					//TODO: linking on the display side to the right user
+					$uid=$this->session->userdata('ID');
+					$ret=$this->talks_model->linkUserRes($uid,$id,'talk',$code);
+					if(!$ret){
+						$claim_status	= false;
+						$claim_msg		= 'There was an error claiming your talk!';
+					}else{
+						$claim_status	= true;
+						$claim_msg		= 'Talk claimed successfully!';
+					}
+				}else{
+					$claim_status	= false;
+					$claim_msg		= 'There was an error claiming your talk!';
+				}
+			}
+		}
 
 		$cap_arr=array(
 			'img_path'		=>$_SERVER['DOCUMENT_ROOT'].'/inc/img/captcha/',
@@ -165,8 +213,6 @@ class Talk extends Controller {
 		$this->validation->set_fields($fields);
 		
 		$cl=($r=$this->talks_model->isTalkClaimed($id)) ? $r : false; //print_r($cl);
-		
-		$talk_detail=$this->talks_model->getTalks($id);
 		
 		if($this->validation->run()==FALSE){
 			//echo 'error!';
@@ -215,13 +261,15 @@ Click here to view it: http://joind.in/talk/view/%s
 			
 		$this->load->model('talks_model');
 		$arr=array(
-			'detail'	=> $talk_detail,
-			'comments'	=> $this->talks_model->getTalkComments($id),
-			'admin'	 	=> ($this->user_model->isAdminTalk($id)) ? true : false,
-			'site_admin'=> ($this->user_model->isSiteAdmin()) ? true : false,
-			'auth'		=> $this->auth,
-		//	'captcha'	=> $cap,
-			'claimed'	=> $this->talks_model->isTalkClaimed($id)
+			'detail'		=> $talk_detail,
+			'comments'		=> $this->talks_model->getTalkComments($id),
+			'admin'	 		=> ($this->user_model->isAdminTalk($id)) ? true : false,
+			'site_admin'	=> ($this->user_model->isSiteAdmin()) ? true : false,
+			'auth'			=> $this->auth,
+		//	'captcha'		=> $cap,
+			'claimed'		=> $this->talks_model->isTalkClaimed($id),
+			'claim_status'	=> $claim_status,
+			'claim_msg'		=> $claim_msg
 		);
 		if(empty($arr['detail'])){ redirect('talk'); }
 		
