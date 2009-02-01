@@ -7,8 +7,8 @@
 <?php
 foreach($events as $k=>$v){
 ?>
-<div class="row-event">
-	<div class="img">
+<div class="row">
+	<div class="rating">
 		<img src="/inc/img/_event.gif"/>
 	</div>
 	<div class="text">
@@ -36,6 +36,25 @@ foreach($events as $k=>$v){
 
 <div class="box">
 <h2 class="h1 icon-talk">Popular Talks</h2>
+<?php 
+foreach($talks as $k=>$v){
+?>
+<div class="row">
+	<div class="img">
+		<img src="/inc/img/_rating.png"/>
+	</div>
+	<div class="text">
+    	<h3><a href="/talk/view/<?php echo $v->ID; ?>"><?php echo htmlspecialchars($v->talk_title); ?></a></h3>
+    	<p class="opts">
+    		at <a href="/event/view/<?php echo $v->ID; ?>"><?php echo htmlspecialchars($v->event_name); ?></a> |
+    		<a href="/event/view/<?php echo $v->ID; ?>#comments"><?php echo $v->ccount; ?> comment<?php echo $v->ccount == 1 ? '' : 's'?></a>
+    	</p>
+	</div>
+	<div class="clear"></div>
+</div>
+<?php 
+}
+?>
 <?php 
 echo '<table cellpadding="3" cellspacing="0" border="0">';
 foreach($talks as $k=>$v){

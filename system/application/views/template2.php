@@ -106,7 +106,7 @@
                 		Know of an event happening? Let us know! We love to get the word out about events the community would be interested in and you can help us spread the word!
                 	</p>
                 	<p>
-                		<a href="/event/submit"><img src="/inc/img/btn-submit-your-event.gif" alt="Submit your event!"/></a>
+                		<a href="/event/submit" class="btn-big">Submit your event!</a>
                 	</p>
             	</div>
             </div>

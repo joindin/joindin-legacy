@@ -69,7 +69,7 @@ a.btn {
 	text-decoration: none;
 	border: 1px solid #d1881c;
 	
-	padding: 3px 18px;
+	padding: 2px 18px;
 	-moz-border-radius: 5px;
 }
 
@@ -83,6 +83,20 @@ a.btn-small {
 	
 	padding: 1px 6px;
 	-moz-border-radius: 3px;
+}
+
+a.btn-big {
+	color: #fff !important;
+	font-weight: bold;
+	font-size: 135%;
+	background: #ff9900 url(/inc/img/bg-btn.gif) 0 50% repeat-x;
+	text-decoration: none;
+	border: 1px solid #d1881c;
+	
+	display: block;
+	text-align: center;
+	padding: 3px 24px;
+	-moz-border-radius: 5px;
 }
 
 a.btn-success {
@@ -282,29 +296,30 @@ a.btn-success {
 	margin-bottom: 30px;
 }
 
-.row-event {
+.row {
 	margin-bottom: 17px;
 	padding-bottom: 10px;
 	border-bottom: 1px dotted #d7dcdf;
 }
 
-.row-event .img {
+.row .img,
+.row .rating {
 	float: left;
 	margin-right: 10px;
-	width: 13%;
+	width: 15%;
 }
 
-.row-event .text {
+.row .text {
 	float: left;
-	width: 85%;
+	width: 83%;
 }
 
-.row-event .desc {
+.row .desc {
 	margin-bottom: 7px;
 }
 
-.row-event .info,
-.row-event .opts {
+.row .info,
+.row .opts {
 	font-size: 85%;
 	color: #333;
 	margin-bottom: 7px;

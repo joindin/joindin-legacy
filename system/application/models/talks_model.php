@@ -129,12 +129,16 @@ class Talks_model extends Model {
 				t.talk_title,
 				t.ID,
 				count(tc.ID) as ccount,
-				(select floor(avg(rating)) from talk_comments where talk_id=t.ID) as tavg
+				(select floor(avg(rating)) from talk_comments where talk_id=t.ID) as tavg,
+				e.event_name,
+				e.event_tz
 			from
 				talks t,
-				talk_comments tc
+				talk_comments tc,
+				events e
 			where
 				tc.talk_id=t.ID and
+				e.ID=t.event_id and
 				t.active=1
 			group by
 				t.ID

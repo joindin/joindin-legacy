@@ -3,7 +3,7 @@
 echo form_open('event/submit');
 ?>
 
-<h1 style="margin-top:0px;margin-bottom:2px;color:#B86F09">Submit an Event</h1>
+<h1 class="icon-event">Submit an Event</h1>
 <?php 
 echo $this->validation->error_string;
 if(isset($msg)){ echo '<div class="notice">'.$msg.'</div>'; } echo '<br/>'; 

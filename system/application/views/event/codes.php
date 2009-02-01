@@ -14,7 +14,7 @@ tr.tbl_header td {
 tr.claimed { background-color: #DEDEDE; }
 </style>
 
-<h1 class="title">Send Codes: <?=$details[0]->event_name?></h1>
+<h1 class="icon-event">Send Codes: <?=$details[0]->event_name?></h1>
 <p>
 To claim their talks, speakers will need the codes below. To send the codes, put the speaker's email address in the field and check the box to signify you want to send to them. If there are multiple speakers for a talk, seperate the addresses with a comma and an email will be sent to both.
 </p>
