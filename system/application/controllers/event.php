@@ -167,6 +167,7 @@ class Event extends Controller {
 		$this->load->helper('reqkey');
 		$this->load->helper('events');
 		$this->load->library('validation');
+		$this->load->library('defensio');
 		$this->load->model('event_model');
 		$this->load->model('event_comments_model');
 		$this->load->model('user_attend_model','uam');
@@ -233,6 +234,8 @@ class Event extends Controller {
 				$ec['user_id']	= 0;
 				$ec['cname']	= $this->input->post('cname');
 			}
+			
+			$ec['def_resp']=$this->defensio->check($ec['cname'],$ec['comment'],$is_auth,'/event/view/'.$id);
 			
 			$this->db->insert('event_comments',$ec);
 			$arr['msg']='Comment inserted successfully!';
