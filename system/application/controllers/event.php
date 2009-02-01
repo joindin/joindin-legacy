@@ -235,7 +235,7 @@ class Event extends Controller {
 				$ec['cname']	= $this->input->post('cname');
 			}
 			
-			$ec['def_resp']=$this->defensio->check($ec['cname'],$ec['comment'],$is_auth,'/event/view/'.$id);
+			//$ec['def_resp']=$this->defensio->check($ec['cname'],$ec['comment'],$is_auth,'/event/view/'.$id);
 			
 			$this->db->insert('event_comments',$ec);
 			$arr['msg']='Comment inserted successfully!';
