@@ -7,15 +7,16 @@ class Defensio {
 	var $owner	= 'http://joind.in';
 	
 	function check($name,$comment,$trust,$url){
-		$loc='/app/1.2/audit-comment/'.$this->key.'.yaml';
+		$resp='';
+		$loc='/app/1.2/audit-comment/'.$this->key.'.xml';
 		$arr=array(
 			'user-ip'		=>$_SERVER['REMOTE_ADDR'],
 			'owner-url'		=>$this->owner,
-			'article-date'	=>'',
+			'article-date'	=>date('Y/m/d'),
 			'comment-author'=>$name,
 			'comment-type'	=>'comment',
 			'comment-content'=>$comment,
-			'permalink'		=>$owner.$url
+			'permalink'		=>$this->owner.$url
 		);
 		if(isset($_SERVER['HTTP_REFERER'])){
 			$arr['referrer']=$_SERVER['HTTP_REFERER'];
@@ -24,28 +25,26 @@ class Defensio {
 		foreach($arr as $k=>$v){
 			$msg.=$k.'='.urlencode($v).'&';
 		}
-		
+		$str= "POST ".$loc." HTTP/1.0\r\n";
+		$str.="Host: api.defensio.com\r\n";
+		$str.="Content-type: application/x-www-form-urlencoded\r\n";
+		$str.="Content-length: ".strlen($msg)."\r\n";
+		$str.="Connection: close\r\n";
+		$str.="\r\n";
+		$str.=$msg;
+
 		$fp=fsockopen('api.defensio.com',80,$errno,$errstr);
 		if($fp){
-			$str= "POST ".$loc." HTTP/1.0\r\n";
-			$str.="Host: api.defensio.com\r\n";
-			$str.="Content-type: application/x-www-form-urlencoded\r\n";
-			$str.="Content-length: ".strlen($msg)."\r\n";
-			$str.="Connection: close\r\n";
-			$str.="\r\n";
-			$str.=$msg;
-			
-			fwrite($str);
-			echo 'request: <pre>'.$str.'</pre>';
-			
-			$resp='';
-			while(!feof($fp)){ $resp.=fgets($fp,1024); }
+			fwrite($fp,$str);
+			while(!feof($fp)){ $resp.=fread($fp,1024); }
 			fclose($fp);
 		}
-		
-		echo 'response: <pre>'.$resp.'</pre>';
-		return $resp;
-		
+		if($resp){
+			$p=explode("\r\n\r\n",$resp);
+			$xml=simplexml_load_string($p[1]);
+			//echo 'response: <pre>'; print_r($xml); echo '</pre>';
+			return $xml;
+		}else{ return false; }
 	}
 	
 }
