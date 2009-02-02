@@ -34,8 +34,11 @@ $total+=$anon_total;
 $total_count=count($comments)+count($anon);
 //$avg=(count($comments)>0) ? $total/$total_count : 0;
 //$avg=($total_count>0) ? $total/$total_count : 0;
-$avg=$detail[0]->tavg;
-for($i=1;$i<=round($avg);$i++){ $rstr.='<img src="/inc/img/thumbs_up.jpg" height="20"/>'; }
+//$avg=$detail[0]->tavg;
+//for($i=1;$i<=round($avg);$i++){ $rstr.='<img src="/inc/img/thumbs_up.jpg" height="20"/>'; }
+
+$avg=floor($detail[0]->tavg);
+$rstr = '<img src="/inc/img/rating-' . $avg . '.gif" alt="Rating: ' . $avg . '"/>';
 
 //change up our string if this is a confirmed, clamed talk
 if(!empty($claimed)){
@@ -107,7 +110,8 @@ foreach(array('mc'=>$comments,'an'=>$anon) as $mk=>$mv){
 		echo '<tr id="'.$rowid.'" style="background-color:#'.$bg.''.$disp.'">';
 		echo '<td width="110" valign="top" align="right" style="padding-top:5px;">';
 		echo '<a name="'.$v->ID.'"></a>';
-		for($i=1;$i<=$v->rating;$i++){ echo '<img src="/inc/img/thumbs_up.jpg" height="20"/>'; }
+		//for($i=1;$i<=$v->rating;$i++){ echo '<img src="/inc/img/thumbs_up.jpg" height="20"/>'; }
+        echo '<img src="/inc/img/rating-' . $v->rating . '.gif" alt="Rating: ' . $v->rating . '"/>';
 	
 		echo '<td><p style="font-size:12px;color:#37382F">'.$an.nl2br($v->comment).'</p>';
 		echo '<span style="font-size:10px;color:#A1A58A">'.$uname.' '.date('m.d.Y H:i:s',$v->date_made).'</span></td>';

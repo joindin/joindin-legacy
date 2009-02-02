@@ -41,7 +41,7 @@ foreach($talks as $k=>$v){
 ?>
 <div class="row">
 	<div class="img">
-		<img src="/inc/img/_rating.png"/>
+		<img src="/inc/img/rating-<?php echo $v->tavg;?>.gif" alt="Rating: <?php echo $v->tavg;?>"/>
 	</div>
 	<div class="text">
     	<h3><a href="/talk/view/<?php echo $v->ID; ?>"><?php echo htmlspecialchars($v->talk_title); ?></a></h3>
@@ -55,20 +55,6 @@ foreach($talks as $k=>$v){
 <?php 
 }
 ?>
-<?php 
-echo '<table cellpadding="3" cellspacing="0" border="0">';
-foreach($talks as $k=>$v){
-	$ccount=($v->ccount>1) ? $v->ccount.' comments' : '1 comment';
-	echo '<tr><td align="right" valign="top" width="100">';
-	for($i=1;$i<=$v->tavg;$i++){
-		echo '<img id="rate_'.$i.'" src="/inc/img/thumbs_up.jpg" height="20" width="20" border="0"/>';
-	}
-	echo '<td/>';
-	echo '<td><h3><a href="/talk/view/'.$v->ID.'">'.$v->talk_title.'</a></h3><span style="color:#999999;font-size:10px">('.$ccount.')</span></td></tr>';
-}
-echo '</table>';
-?>
-
 </div>
 
 <script type="text/javascript"><!--

@@ -93,7 +93,7 @@ a.btn-big {
 	text-decoration: none;
 	border: 1px solid #d1881c;
 	
-	display: block;
+	display: inline-block;
 	text-align: center;
 	padding: 3px 24px;
 	-moz-border-radius: 5px;
@@ -306,12 +306,12 @@ a.btn-success {
 .row .rating {
 	float: left;
 	margin-right: 10px;
-	width: 15%;
+	width: 20%;
 }
 
 .row .text {
 	float: left;
-	width: 83%;
+	width: 78%;
 }
 
 .row .desc {
