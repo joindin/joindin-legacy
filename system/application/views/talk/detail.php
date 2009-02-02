@@ -1,4 +1,3 @@
-<h1 class="icon-talk">Talks</h1>
 <?php
 //echo '<pre>'; print_r($detail); print_r($comments); echo '</pre>';
 //print_r($claimed);
@@ -44,23 +43,43 @@ if(!empty($claimed)){
 	$speaker='<a href="/user/view/'.$claimed[0]->userid.'">'.$det->speaker.'</a>';
 }else{ $speaker=$det->speaker; }
 
-echo '<div style="padding:10px;border:0px solid #B86F09;background-color:#E4F1E8">';
-echo '<h2>'.$det->talk_title.'</h2>';
-echo '<p>'.$speaker.' ('.date('m.d.Y',$det->date_given).')<br/>';
-echo $det->tcid.' at <a href="/event/view/'.$det->event_id.'">'.$det->event_name.'</a> ('.$det->lang_name.')</p>'.$rstr;
-echo '<p style="color:#37382F">'.nl2br($det->talk_desc).'</p>';
-echo '<b style="color:#37382F">quicklink:</b> <a href="http://joind.in/'.$det->tid.'">http://joind.in/'.$det->tid.'</a>';
-if($admin){
-	echo '<div>';
-	echo '<a href="/talk/delete/'.$det->tid.'"><img src="/inc/img/redx.png" border="0" alt="Delete talk"/></a>';	
-	echo '<a href="/talk/edit/'.$det->tid.'"><img src="/inc/img/sticky.gif" border="0" alt="Edit talk"/></a>';
-	echo '</div>';
-}
-if(isset($claimed[0]) && $this->session->userdata('ID')==$claimed[0]->userid){
-	echo '<a href="/user/comemail/talk/'.$det->tid.'">email me my comments</a>';
-}
-echo '</div><br/>';
 ?>
+<div class="detail">
+	<h1><?=$det->talk_title?></h1>
+
+	<p class="info">
+		<strong><?php echo $speaker; ?></strong> (<?php echo date('M j, Y',$det->date_given); ?>)
+		<br/> 
+		<?php echo $det->tcid; ?> at <strong><a href="/event/view/<?php echo $det->event_id; ?>"><?php echo $det->event_name; ?></a></strong> (<?php echo $det->lang_name;?>)
+	</p>
+	
+	<p class="rating">
+		<?php echo $rstr; ?>
+	</p>
+
+	<p class="desc">
+		<?=nl2br($det->talk_desc)?>
+	</p>
+	
+	<p class="quicklink">
+		Quicklink: <strong><a href="http://joind.in/<?php echo $det->tid; ?>">http://joind.in/<?php echo $det->tid; ?></a></strong>
+	</p>
+	
+	<p class="opts">
+	<?php if(isset($claimed[0]) && $this->session->userdata('ID')==$claimed[0]->userid): ?>
+		<a class="btn-small" href="/user/comemail/talk/<?php echo $det->tid; ?>">Email me my comments</a>
+	<?php endif; ?>
+	</p>
+	<div class="clear"></div>
+</div>
+
+<?php if($admin):?>
+<p class="admin">
+	<a class="btn-small" href="/talk/delete/<?php echo $det->tid; ?>">Delete talk</a>	
+	<a class="btn-small" href="/talk/edit/<?php echo $det->tid; ?>">Edit talk</a>
+</p>
+<?php endif; ?>
+
 <center>
 <script type="text/javascript"><!--
 google_ad_client = "pub-2135094760032194";

@@ -1,4 +1,3 @@
-<h1 class="icon-event">Events</h1>
 <?php
 $det=$events[0]; //print_r($det);
 $cl=array();
@@ -7,41 +6,54 @@ foreach($claimed as $k=>$v){ $cl[$v->rid]=$v->uid; }
 //print_r($_COOKIE);
 ?>
 
-<div style="padding:10px;border:0px solid #B86F09;background-color:#E4F1E8">
-<h2><?=$det->event_name?></h2>
-<span style=";font-size:10px">
-<?=$det->event_loc?><br/>
-<?=date('m.d.Y',$det->event_start).' - '.date('m.d.Y',$det->event_end)?>
-<br/><br/>
-<?=nl2br($det->event_desc)?><br/>
-</span>
-<br/>
-<?php 
-/*
-if its set, but the event was in the past, just show the text "I was there!"
-if its set, but the event is in the future, show a link for "I'll be there!"
-if its not set show the "I'll be there/I was there" based on time
-*/
-if($attend){
-	if($det->event_end<time()){
-		$link_txt="I was there!"; $showt=1;
-	}else{ $link_txt="I'll be there!"; $showt=2; }
-}else{
-	if($det->event_end<time()){
-		$link_txt="Were you there?"; $showt=3; 
-	}else{ $link_txt="Will you be there?"; $showt=4; }
-}
-?>
-<a class="btn<?php echo $attend ? ' btn-success' : ''; ?>" href="#" id="attend_link" onClick="markAttending(<?=$det->ID?>,<?=$showt?>);return false;"><?=$link_txt?></a>
+<div class="detail">
+	<div class="img">
+		<div class="frame"><img src="/inc/img/_event<?php echo mt_rand(1,4); ?>.gif"/></div>
+	</div>
+	
+	<h1><?=$det->event_name?></h1>
+
+	<p class="info">
+		<strong><?php echo date('M j, Y',$det->event_start); ?></strong> - <strong><?php echo date('M j, Y',$det->event_end); ?></strong>
+		<br/> 
+		<strong><?php echo htmlspecialchars($det->event_loc); ?></strong>
+	</p>
+
+	<p class="desc">
+		<?=nl2br($det->event_desc)?>
+	</p>
+	
+	<p class="opts">
+	<?php 
+	/*
+	if its set, but the event was in the past, just show the text "I was there!"
+	if its set, but the event is in the future, show a link for "I'll be there!"
+	if its not set show the "I'll be there/I was there" based on time
+	*/
+	if($attend){
+		if($det->event_end<time()){
+			$link_txt="I was there!"; $showt=1;
+		}else{ $link_txt="I'll be there!"; $showt=2; }
+	}else{
+		if($det->event_end<time()){
+			$link_txt="Were you there?"; $showt=3; 
+		}else{ $link_txt="Will you be there?"; $showt=4; }
+	}
+	?>
+		<a class="btn<?php echo $attend ? ' btn-success' : ''; ?>" href="#" id="attend_link" onClick="markAttending(<?=$det->ID?>,<?=$showt?>);return false;"><?=$link_txt?></a>
+	</p>
+	<div class="clear"></div>
 </div>
 
-<?php if($admin){ ?>
-<a href="/event/delete/<?=$det->ID?>"><img src="/inc/img/redx.png" border="0" alt="Delete event"/></a>
-<a href="/event/edit/<?=$det->ID?>"><img src="/inc/img/sticky.gif" border="0" alt="Edit event"/></a>
-<a href="/talk/add"><img src="/inc/img/pending.png" border="0" alt="Add new talk"/></a>
-<br/>
-<a href="/event/codes/<?=$det->ID?>">get talk codes</a>
-<br/>
+<?php if($admin): ?>
+<p class="admin">
+	<a class="btn-small" href="/event/delete/<?=$det->ID?>">Delete event</a>
+	<a class="btn-small" href="/event/edit/<?=$det->ID?>">Edit event</a>
+	<a class="btn-small" href="/talk/add">Add new talk</a>
+	&nbsp;
+	<a class="btn-small" href="/event/codes/<?=$det->ID?>">Get talk codes</a>
+</p>
+<?php endif; ?>
 <center>
 <script type="text/javascript"><!--
 google_ad_client = "pub-2135094760032194";
@@ -53,8 +65,7 @@ google_ad_slot = "4582459016"; google_ad_width = 468; google_ad_height = 60; //-
 <br/>
 
 <?php
-}
-echo '<br/>';
+
 $by_day=array();
 //echo '<pre>'; print_r($talks); echo '</pre>';
 foreach($talks as $v){

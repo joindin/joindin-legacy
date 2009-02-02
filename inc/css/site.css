@@ -277,6 +277,11 @@ a.btn-success {
 	padding: 40px 0;
 }
 
+#ctn .admin {
+	margin: 20px 0;
+	text-align: center;
+}
+
 #ctn .main .box {
 	margin-bottom: 40px;
 }
@@ -299,19 +304,19 @@ a.btn-success {
 	margin-bottom: 30px;
 }
 
-.row {
+#ctn .main .row {
 	margin-bottom: 17px;
 	padding-bottom: 10px;
 	border-bottom: 1px dotted #d7dcdf;
 }
 
-.row .img {
+#ctn .main .row .img {
 	float: left;
 	margin-right: 10px;
 	width: 20%;
 }
 
-.row .img .frame {
+#ctn .main .row .img .frame {
 	border: 1px solid #d7dcdf;
 	background: #d7dcdf;
 	-moz-border-radius: 4px;
@@ -320,20 +325,51 @@ a.btn-success {
 	text-align: center;
 }
 
-.row .text {
+#ctn .main .row .text {
 	float: left;
 	width: 78%;
 }
 
-.row .desc {
+#ctn .row .main .desc {
 	margin-bottom: 7px;
 }
 
-.row .info,
-.row .opts {
+#ctn .main .row .info,
+#ctn .main .row .opts {
 	font-size: 85%;
 	color: #333;
 	margin-bottom: 7px;
+}
+
+#ctn .main .detail {
+	margin-bottom: 17px;
+	padding: 10px 20px;
+	background:#f4f7f9;
+	-moz-border-radius: 6px;
+}
+
+#ctn .main .detail h1 {
+	border: 0;
+	margin-bottom: 5px;
+}
+
+#ctn .main .detail .img {
+	float: right;
+	margin-left: 10px;
+	margin-right: -10px;
+}
+
+#ctn .main .detail .img .frame {
+	border: 1px solid #d7dcdf;
+	background: #d7dcdf;
+	-moz-border-radius: 4px;
+	padding: 5px;
+	display: inline-block;
+	text-align: center;
+}
+
+#ctn .main .detail .opts {
+	margin-top: 20px;
 }
 
 /***/
