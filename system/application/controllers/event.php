@@ -234,11 +234,14 @@ class Event extends Controller {
 				$ec['user_id']	= 0;
 				$ec['cname']	= $this->input->post('cname');
 			}
-			
-			$this->db->insert('event_comments',$ec);
-			$arr['msg']='Comment inserted successfully!';
-			
 			$def_ret=$this->defensio->check($ec['cname'],$ec['comment'],$is_auth,'/event/view/'.$id);
+			
+			$is_spam=(string)$def_ret->spam;
+			if($is_spam=='false'){
+				$this->db->insert('event_comments',$ec);
+				$arr['msg']='Comment inserted successfully!';
+			}
+			
 			if($def_ret){
 				$ec['def_resp_spamn']=(string)$def_ret->spaminess;
 				$ec['def_resp_spamr']=(string)$def_ret->spam;
