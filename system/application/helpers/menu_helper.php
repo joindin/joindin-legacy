@@ -25,4 +25,18 @@ function menu_set_current_area()
 	return $currentArea;
 }
 
+function menu_sidebar()
+{
+    static $sidebar = array();
+
+    if (func_num_args() > 0) {
+        $sidebar[] = array(
+            'title'   => func_get_arg(0),
+            'content' => func_get_arg(1)
+        );
+    }
+
+	return $sidebar;
+}
+
 ?>

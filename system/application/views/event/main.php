@@ -1,7 +1,19 @@
 <?php
 $admin=false;
 ?>
-<h1 class="icon-event">Events</h1>
+<h1 class="icon-event">
+	<?php if(user_is_admin()){ ?>
+	<span style="float:left">
+	<?php } ?>
+	Events
+	<?php if(user_is_admin()){ ?>
+	</span>
+	<?php } ?>
+	<?php if(user_is_admin()){ ?>
+	<a class="btn" style="float:right" href="/event/add">Add new event</a>
+	<div class="clear"></div>
+    <?php } ?>
+</h1>
 <?php
 //echo '<pre>'; print_r($events); echo '</pre>'; 
 
@@ -21,20 +33,23 @@ foreach($events as $k=>$v){
 );*/
 $estart	= mktime(0,0,0,$mo,$day,$yr);
 $eend	= mktime(23,59,59,$mo,$day,$yr);
+
+menu_sidebar('Calendar', mycal_calendar($mo,$day,$yr,$evt));
+
 ?>
 
-<div style="float:left;padding-right:15px"><?php buildCal($mo,$day,$yr,$evt); ?></div>
 <?php
 $style='';
 foreach($events as $k=>$v){
-	if(isset($all) && $all==false){
+    if(isset($all) && $all==false){
 		$style=($estart>=$v->event_start && $eend<=$v->event_end) ? 'color:#5181C1;background-color:#EEEEEE;padding:4px' : 'color:#CCCCCC';
 	}
 	
-	echo '<a style="font-size:13px;font-weight:bold;'.$style.'" href="/event/view/'.$v->ID.'">'.$v->event_name.'</a><br/><div style="padding-left:8px;padding-top:5px">'.$v->event_desc.'<br/>';
-	echo '<span style="color:#A2A2A2">'.date('m.d.Y',$v->event_start).'-'.date('m.d.Y',$v->event_end).'</span><br/>';
-	echo '</div><br/>';
+	$this->load->view('event/_event-row', array('event'=>$v, 'style' => $style));
+?>
+<?php
 }
+
 if(count($events)==0){ 
 	echo sprintf('
 		<h2>No events found for this month!</h2>
@@ -46,7 +61,3 @@ if(count($events)==0){
 	'); 
 }
 ?>
-
-<?php if($admin){ ?>
-<a href="/event/add">add new event</a>
-<?php } ?>

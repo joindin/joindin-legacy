@@ -64,11 +64,12 @@ a {
 a.btn {
 	color: #fff !important;
 	font-weight: bold;
-	font-size: 95%;
 	background: #ff9900 url(/inc/img/bg-btn.gif) 0 50% repeat-x;
 	text-decoration: none;
 	border: 1px solid #d1881c;
 	
+	font-size: 12px;
+	line-height: 12px;
 	padding: 2px 18px;
 	-moz-border-radius: 5px;
 }
@@ -76,11 +77,12 @@ a.btn {
 a.btn-small {
 	color: #fff !important;
 	font-weight: bold;
-	font-size: 95%;
 	background: #ff9900 url(/inc/img/bg-btn.gif) 0 50% repeat-x;
 	text-decoration: none;
 	border: 1px solid #d1881c;
 	
+	font-size: 11px;
+	line-height: 11px;
 	padding: 1px 6px;
 	-moz-border-radius: 3px;
 }
@@ -88,14 +90,15 @@ a.btn-small {
 a.btn-big {
 	color: #fff !important;
 	font-weight: bold;
-	font-size: 135%;
 	background: #ff9900 url(/inc/img/bg-btn.gif) 0 50% repeat-x;
 	text-decoration: none;
 	border: 1px solid #d1881c;
 	
+	font-size: 17px;
+	line-height: 17px;
 	display: inline-block;
 	text-align: center;
-	padding: 3px 24px;
+	padding: 5px 24px;
 	-moz-border-radius: 5px;
 }
 
@@ -306,6 +309,15 @@ a.btn-success {
 	float: left;
 	margin-right: 10px;
 	width: 20%;
+}
+
+.row .img .frame {
+	border: 1px solid #d7dcdf;
+	background: #d7dcdf;
+	-moz-border-radius: 4px;
+	padding: 5px;
+	display: inline-block;
+	text-align: center;
 }
 
 .row .text {

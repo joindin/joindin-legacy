@@ -18,4 +18,10 @@ function user_is_admin()
 	return (bool)$CI->user_model->isSiteAdmin();
 }
 
+function user_is_admin_event($eventId)
+{
+	$CI =& get_instance();
+	return (bool)$CI->user_model->isAdminEvent($eventId);
+}
+
 ?>

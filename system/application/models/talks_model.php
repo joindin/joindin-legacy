@@ -66,28 +66,28 @@ class Talks_model extends Model {
 			$q=$this->db->query($sql);
 		}else{
 			if($latest){ 
-				$wh=' date_given<='.time().' and ';
-				$ob=' order by date_given desc';
+				$wh=' talks.date_given<='.time().' and ';
+				$ob=' order by talks.date_given desc';
 			}else{ $wh=''; $ob=''; }
 			$sql=sprintf('
 				select
-					talk_title,
-					speaker,
-					slides_link,
-					date_given,
-					event_id,
-					talks.ID,
-					talk_desc,
-					lang_name,
-					lang_abbr,
-					(select floor(avg(rating)) from talk_comments where talk_id=talks.ID) as tavg,
-					(select event_name from events where events.ID=talks.event_id) as ename
+					talks.*,
+					events.event_name,
+					events.event_tz,
+					lang.lang_name,
+					lang.lang_abbr,
+					count(talk_comments.ID) as ccount,
+					(select floor(avg(rating)) from talk_comments where talk_id=talks.ID) as tavg
 				from
-					talks,lang
+					talks
+				left join talk_comments on (talk_comments.talk_id = talks.ID)
+				inner join events on (events.ID = talks.event_id)
+				inner join lang on (lang.ID = talks.lang)
 				where
 					%s
-					lang.ID=talks.lang and
-					active=1
+					talks.active=1
+				group by
+					talks.ID
 				%s
 			',$wh,$ob);
 			$q=$this->db->query($sql);

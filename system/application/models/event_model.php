@@ -33,15 +33,21 @@ class Event_model extends Model {
 	}
 	//---------------------
 	function getEventDetail($id=null,$start_dt=null,$end_dt=null){
-		$this->db->from('events');
-		$this->db->where('active=1');
+		$this->db->select('events.*, COUNT(user_attend.ID) AS num_attend, COUNT(event_comments.ID) AS num_comments');
+	    $this->db->from('events');
+		$this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
+		$this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');
+		$this->db->group_by('events.ID');
+		
+		$this->db->where('events.active=1');
 		if($id){
 			//looking for a specific one...
-			$this->db->where('ID='.$id);
+			$this->db->where('events.ID='.$id);
 		}else{
 			if($start_dt && $end_dt){
-				$this->db->where('event_start>='.$start_dt);
-				$this->db->where('event_start<='.$end_dt);
+				$this->db->where('events.event_start>='.$start_dt);
+				$this->db->where('events.event_start<='.$end_dt);
+				$this->db->order_by('events.event_start','desc');
 			}
 		}
 		$q=$this->db->get();
@@ -82,9 +88,9 @@ class Event_model extends Model {
 	    $this->db->from('events');
 		$this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
 		$this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');
-		$this->db->where('event_start>=',time());
-		if($inc_curr){ $this->db->or_where('event_end>=',time()); }
-		$this->db->order_by('event_start','desc');
+		$this->db->where('events.event_start>=',time());
+		if($inc_curr){ $this->db->or_where('events.event_end>=',time()); }
+		$this->db->order_by('events.event_start','desc');
 		$this->db->limit(10);
 		$this->db->group_by('events.ID');
 		$q=$this->db->get();

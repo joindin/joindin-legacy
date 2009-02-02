@@ -83,7 +83,13 @@
         </div>
     	<div class="grid_4">
         	<div class="sidebar">
-        	<?php if (!user_is_auth()): ?>
+        	<?php foreach (menu_sidebar() as $box): ?>
+        		<div class="box">
+                	<h4><?php echo $box['title']; ?></h4>
+                	<?php echo $box['content']; ?>
+                </div>
+        	<?php endforeach; ?>
+            <?php if (!user_is_auth()): ?>
             	<div class="box">
                 	<h4>Sign in</h4>
                 	<div>
