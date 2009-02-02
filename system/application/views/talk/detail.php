@@ -37,8 +37,7 @@ $total_count=count($comments)+count($anon);
 //$avg=$detail[0]->tavg;
 //for($i=1;$i<=round($avg);$i++){ $rstr.='<img src="/inc/img/thumbs_up.jpg" height="20"/>'; }
 
-$avg=floor($detail[0]->tavg);
-$rstr = '<img src="/inc/img/rating-' . $avg . '.gif" alt="Rating: ' . $avg . '"/>';
+$rstr = rating_image($detail[0]->tavg);
 
 //change up our string if this is a confirmed, clamed talk
 if(!empty($claimed)){
@@ -111,7 +110,7 @@ foreach(array('mc'=>$comments,'an'=>$anon) as $mk=>$mv){
 		echo '<td width="110" valign="top" align="right" style="padding-top:5px;">';
 		echo '<a name="'.$v->ID.'"></a>';
 		//for($i=1;$i<=$v->rating;$i++){ echo '<img src="/inc/img/thumbs_up.jpg" height="20"/>'; }
-        echo '<img src="/inc/img/rating-' . $v->rating . '.gif" alt="Rating: ' . $v->rating . '"/>';
+        echo rating_image($v->rating);
 	
 		echo '<td><p style="font-size:12px;color:#37382F">'.$an.nl2br($v->comment).'</p>';
 		echo '<span style="font-size:10px;color:#A1A58A">'.$uname.' '.date('m.d.Y H:i:s',$v->date_made).'</span></td>';
@@ -126,7 +125,7 @@ echo form_open('talk/view/'.$det->tid);
 
 //only show the form if the time for the talk has passed
 //if($det->date_given<=time()){
-if($det->date_given>=$gmt){
+if(true || $det->date_given>=$gmt){
 ?>
 
 <table cellpadding="3" cellspacing="0" border="0">
@@ -148,10 +147,12 @@ if($det->date_given>=$gmt){
 	<td class="title">Rating:</td>
 	<td>
 		<?php
-		for($i=1;$i<=5;$i++){
+		echo rating_form('rating');
+		/*for($i=1;$i<=5;$i++){
 			echo '<a href="#" onClick="setVote('.$i.');return false;"><img id="rate_'.$i.'" src="/inc/img/thumbs_up.jpg" height="20" border="0"/></a>';
 		}
 		echo form_hidden('rating',$this->validation->rating);
+		*/
 		?>
 	</td>
 </tr>

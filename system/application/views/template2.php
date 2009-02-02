@@ -118,8 +118,8 @@
 <div id="ftr">
     <div class="container_12">
     	<div class="grid_6">
-        	<a href="/events">Events</a> | 
-        	<a href="/talks">Talks</a> | 
+        	<a href="/event">Events</a> | 
+        	<a href="/talk">Talks</a> | 
         	<a href="/search">Search</a> | 
         	<a href="/about">About</a> | 
         	<a href="/blog">Blog</a> | 

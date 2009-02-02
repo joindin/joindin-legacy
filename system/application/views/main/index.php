@@ -8,7 +8,7 @@
 foreach($events as $k=>$v){
 ?>
 <div class="row">
-	<div class="rating">
+	<div class="img">
 		<img src="/inc/img/_event.gif"/>
 	</div>
 	<div class="text">
@@ -41,7 +41,7 @@ foreach($talks as $k=>$v){
 ?>
 <div class="row">
 	<div class="img">
-		<img src="/inc/img/rating-<?php echo $v->tavg;?>.gif" alt="Rating: <?php echo $v->tavg;?>"/>
+		<?php echo rating_image($v->tavg); ?>
 	</div>
 	<div class="text">
     	<h3><a href="/talk/view/<?php echo $v->ID; ?>"><?php echo htmlspecialchars($v->talk_title); ?></a></h3>
