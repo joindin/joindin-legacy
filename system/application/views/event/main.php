@@ -34,7 +34,9 @@ foreach($events as $k=>$v){
 $estart	= mktime(0,0,0,$mo,$day,$yr);
 $eend	= mktime(23,59,59,$mo,$day,$yr);
 
-menu_sidebar('Calendar', mycal_calendar($mo,$day,$yr,$evt));
+ob_start();
+buildCal($mo,$day,$yr,$evt);
+menu_sidebar('Calendar', ob_get_clean());
 
 ?>
 
