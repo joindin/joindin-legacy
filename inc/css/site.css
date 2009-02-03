@@ -70,11 +70,12 @@ a {
 	background: #ff9900 url(/inc/img/bg-btn.gif) 0 50% repeat-x;
 	text-decoration: none;
 	border: 1px solid #d1881c;
-	
+
 	font-size: 12px;
 	line-height: 12px;
 	padding: 2px 18px;
 	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
 }
 
 .btn-small {
@@ -83,11 +84,12 @@ a {
 	background: #ff9900 url(/inc/img/bg-btn.gif) 0 50% repeat-x;
 	text-decoration: none;
 	border: 1px solid #d1881c;
-	
+
 	font-size: 11px;
 	line-height: 11px;
 	padding: 1px 6px;
 	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
 }
 
 .btn-big {
@@ -96,13 +98,14 @@ a {
 	background: #ff9900 url(/inc/img/bg-btn.gif) 0 50% repeat-x;
 	text-decoration: none;
 	border: 1px solid #d1881c;
-	
+
 	font-size: 17px;
 	line-height: 17px;
 	display: inline-block;
 	text-align: center;
 	padding: 5px 24px;
 	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
 }
 
 .btn-success {
@@ -207,17 +210,17 @@ a {
       color:#ff9900;
 }
 
-#event #menu-event, 
+#event #menu-event,
 #talk #menu-talk,
-#search #menu-search, 
+#search #menu-search,
 #about #menu-about,
 #blog #menu-blog {
       background-position:0 -150px;
       border-width:0;
 }
-#event #menu-event a, 
+#event #menu-event a,
 #talk #menu-talk a,
-#search #menu-search a, 
+#search #menu-search a,
 #about #menu-about a,
 #blog #menu-blog a {
       background-position:100% -150px;
@@ -329,6 +332,7 @@ a {
 	border: 1px solid #d7dcdf;
 	background: #d7dcdf;
 	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
 	padding: 5px;
 	display: inline-block;
 	text-align: center;
@@ -371,6 +375,7 @@ a {
 	background: #f4f7f9;
 	border: 1px solid #d7dcdf;
 	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
 }
 
 #ctn .main .detail h1 {
@@ -388,6 +393,7 @@ a {
 	border: 1px solid #d7dcdf;
 	background: #d7dcdf;
 	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
 	padding: 5px;
 	display: inline-block;
 	text-align: center;
@@ -407,6 +413,7 @@ a {
 	background: #f4f7f9;
 	border: 1px solid #d7dcdf;
 	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
 }
 
 #ctn .main form {
@@ -414,6 +421,7 @@ a {
 	background: #f4f7f9;
 	border: 1px solid #d7dcdf;
 	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
 }
 
 #ctn .main form .row {
@@ -475,6 +483,23 @@ a {
 
 #ctn .main form .errors p {
 	margin: 0;
+}
+
+#ctn .list td,
+#ctn .list th {
+	padding: 7px 5px 7px 0;
+	border-bottom: 1px dotted #d7dcdf;
+	border-top: 1px dotted #d7dcdf;
+	border-collapse: collapse;
+}
+
+#ctn .list th {
+	border-top: 0;
+	text-align: left;
+}
+
+#ctn .list th h4 {
+
 }
 
 /***/

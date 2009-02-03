@@ -54,15 +54,16 @@ foreach($claimed as $k=>$v){ $cl[$v->rid]=$v->uid; }
 	<a class="btn-small" href="/event/codes/<?=$det->ID?>">Get talk codes</a>
 </p>
 <?php endif; ?>
-<center>
-<script type="text/javascript"><!--
-google_ad_client = "pub-2135094760032194";
-/* 468x60, created 11/5/08 */
-google_ad_slot = "4582459016"; google_ad_width = 468; google_ad_height = 60; //-->
-</script>
-<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
-</center>
-<br/>
+
+<p class="ad">
+    <script type="text/javascript"><!--
+    google_ad_client = "pub-2135094760032194";
+    /* 468x60, created 11/5/08 */
+    google_ad_slot = "4582459016"; google_ad_width = 468; google_ad_height = 60; //-->
+    </script>
+    <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
+</p>
+
 
 <?php
 
@@ -70,85 +71,56 @@ $by_day=array();
 //echo '<pre>'; print_r($talks); echo '</pre>';
 foreach($talks as $v){
 	//echo '<a href="/talk/view/'.$v->ID.'">'.$v->talk_title.' ('.$v->speaker.')</a><br/>';
-	$day=date('m_d_Y',$v->date_given);
+	$day=date('Y-m-d',$v->date_given);
 	$by_day[$day][]=$v;
 }
 ksort($by_day);
 $ct=0;
 
 ?>
-<style>
-td.selected {
-	background-color: #5181C1;
-	font-weight: bold;
-	font-size: 12px;
-	width: 130px;
-	text-align: center;
-}
-td.nselected {
-	background-color: #EEEEEE;
-	font-weight: bold;
-	font-size: 12px;
-	width: 130px;
-	text-align: center;
-}
-td.selected a {
-	color: #FFFFFF;
-	text-decoration: none;
-}
-td.nselected a {
-	color: #5181C1;
-	text-decoration: none;
-}
-</style>
-<script>
-function switchCell(n){
-	if(n=='talks'){
-		document.getElementById('cell_comments').className='nselected';
-		document.getElementById('cell_talks').className='selected';
-		$('#talks_div').css('display','block');
-		$('#comments_div').css('display','none');		
-	}else{
-		document.getElementById('cell_comments').className='selected';
-		document.getElementById('cell_talks').className='nselected';
-		$('#talks_div').css('display','none');
-		$('#comments_div').css('display','block');
-	}
-	return false;
-}
-</script>
 
-<center>
-<table cellpadding="4" cellspacing="0" border="0">
-<tr>
-	<td class="selected" id="cell_talks"><a href="#" onClick="switchCell('talks');return false;">Talks (<?=count($talks)?>)</a></td>
-	<td class="nselected" id="cell_comments"><a href="#" onClick="switchCell('comments');return false;">Comments (<?=count($comments)?>)</a></td>
-</tr>
-</table>
-</center>
-
-<?php
-echo '<div style="border:2px solid #5181C1;padding:3px;" id="talks_div">';
-echo '<table cellpadding="3" cellspacing="0" border="0" width="100%">';
-foreach($by_day as $k=>$v){
-	echo '<tr><td colspan="2"><a name="'.$k.'"></a><b>'.str_replace('_','.',$k).'</b></td></tr>';
-	foreach($v as $ik=>$iv){
-		$style=($ct%2==0) ? 'row1' : 'row2';
-		//echo '<tr><td align="right">'.str_repeat('*',$iv->rank).'</td>';
-		echo '<tr class="'.$style.'"><td align="right">';
-		for($i=1;$i<=$iv->rank;$i++){ echo '<img src="/inc/img/thumbs_up.jpg" height="20"/>'; }
-		echo '</td>';
-		$sp=(array_key_exists((string)$iv->ID,$cl)) ? '<a href="/user/view/'.$cl[$iv->ID].'">'.$iv->speaker.'</a>' : $iv->speaker;
-		echo '<td><a href="/talk/view/'.$iv->ID.'">'.$iv->talk_title.'</a></td><td style="font-size:10px;font-weight:bold;color:#858585">'.strtoupper($iv->tcid).'</td><td>';
-		echo '<img src="/inc/img/flags/'.$iv->lang.'.gif"/></td><td>'.$sp.'</td><tr/>';
-		$ct++;
-	}
-}
-?>
-</table></div>
-
-<div style="border:2px solid #5181C1;padding:3px;" id="comments_div">
-	<?php
+<div id="event-tabs">
+	<ul>
+		<li><a href="#talks">Talks (<?=count($talks)?>)</a></li>
+		<li><a href="#comments">Comments (<?=count($comments)?>)</a></li>
+	</ul>
+	<div id="talks">
+		<table cellpadding="0" cellspacing="0" border="0" width="100%" class="list">
+        <?php 
+        foreach ($by_day as $k=>$v):
+            $ct = 0;
+        ?>
+        	<tr>
+        		<th colspan="4">
+        			<h4 id="talks-<?php echo $k; ?>"><?php echo date('M j, Y', strtotime($k)); ?></h4>
+        		</th>
+        	</tr>
+        	<?php foreach($v as $ik=>$iv): ?>
+        	<tr class="<?php echo ($ct%2==0) ? 'row1' : 'row2'; ?>">
+        		<?php $sp=(array_key_exists((string)$iv->ID,$cl)) ? '<a href="/user/view/'.$cl[$iv->ID].'">'.$iv->speaker.'</a>' : $iv->speaker; ?>
+        		<td>
+        			<a href="/talk/view/'.$iv->ID.'"><?php echo $iv->talk_title; ?></a>
+        		</td>
+        		<td style="font-size:10px;font-weight:bold;color:#858585">
+        			<?php echo strtoupper($iv->tcid); ?>
+        		</td>
+        		<td>
+        			<img src="/inc/img/flags/<?php echo $iv->lang; ?>.gif"/>
+        		</td>
+        		<td nowrap="nowrap">
+        			<?php echo $sp; ?>
+        		</td>
+        	<tr/>
+        <?php
+        	    $ct++;
+            endforeach;
+        endforeach;
+        ?>
+        </table>
+	</div>
+	<div id="comments">
+	
+    <?php
 	if(isset($msg)){ echo '<div class="notice">'.$msg.'</div>'; }
 	
 	echo $this->validation->error_string;
@@ -205,9 +177,32 @@ foreach($by_day as $k=>$v){
 		echo '<span class="meta">'.$name.', '.date('m.d.Y H:i:s',$v->date_made).' ('.$type.')</td></tr>';
 		$ct++;
 	}
-	echo '</table><br/>';
+	echo '</table>';
 	?>
+	
+	</div>
 </div>
+
+<script type="text/javascript">
+$(function() { $('#event-tabs').tabs(); });
+</script>
+
+<script>
+function switchCell(n){
+	if(n=='talks'){
+		document.getElementById('cell_comments').className='nselected';
+		document.getElementById('cell_talks').className='selected';
+		$('#talks_div').css('display','block');
+		$('#comments_div').css('display','none');		
+	}else{
+		document.getElementById('cell_comments').className='selected';
+		document.getElementById('cell_talks').className='nselected';
+		$('#talks_div').css('display','none');
+		$('#comments_div').css('display','block');
+	}
+	return false;
+}
+</script>
 
 <script>
 if(window.location.hash=='#comments'){

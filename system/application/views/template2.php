@@ -5,8 +5,10 @@
 	<title>Joind.in </title>
 
 	<link media="all" rel="stylesheet" type="text/css" href="/inc/css/site.css">
+	<link type="text/css" href="/inc/css/jquery-ui/theme/ui.all.css" rel="Stylesheet" />
 	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" /> 
 	<script type="text/javascript" src="/inc/js/jquery.js"></script>
+	<script type="text/javascript" src="/inc/js/jquery-ui.js"></script>
 	<script type="text/javascript" src="/inc/js/site.js"></script>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8">
 	<?php
