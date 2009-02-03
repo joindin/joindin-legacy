@@ -25,13 +25,13 @@ echo form_open('/search');
 <tr>
 	<td>
 		<?php
-		foreach(range(1,12) as $v){ $start_mo[$v]=$v; }
-		foreach(range(1,32) as $v){ $start_day[$v]=$v; }
+		foreach(range(1,12) as $v){ $start_mo[$v]=strftime('%B', strtotime('2000-' . $v . '-01')); }
+		foreach(range(1,31) as $v){ $start_day[$v]=$v; }
 		foreach(range(date('Y')-5,date('Y')+5) as $v){ $start_yr[$v]=$v; }
 		
-		$start_mo	= array_merge(array(''=>''),$start_mo);
-		$start_day	= array_merge(array(''=>''),$start_day);
-		$start_yr	= array_merge(array(''=>''),$start_yr);
+		$start_mo	= array_merge(array(''=>'Month'),$start_mo);
+		$start_day	= array_merge(array(''=>'Day'),$start_day);
+		$start_yr	= array_merge(array(''=>'Year'),$start_yr);
 		
 		echo form_dropdown('start_mo',$start_mo,$this->validation->start_mo);
 		echo form_dropdown('start_day',$start_day,$this->validation->start_day);

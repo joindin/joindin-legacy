@@ -65,11 +65,11 @@ if(!empty($claimed)){
 		Quicklink: <strong><a href="http://joind.in/<?php echo $det->tid; ?>">http://joind.in/<?php echo $det->tid; ?></a></strong>
 	</p>
 	
-	<p class="opts">
 	<?php if(isset($claimed[0]) && $this->session->userdata('ID')==$claimed[0]->userid): ?>
+	<p class="opts">
 		<a class="btn-small" href="/user/comemail/talk/<?php echo $det->tid; ?>">Email me my comments</a>
-	<?php endif; ?>
 	</p>
+	<?php endif; ?>
 	<div class="clear"></div>
 </div>
 
@@ -80,52 +80,77 @@ if(!empty($claimed)){
 </p>
 <?php endif; ?>
 
-<center>
-<script type="text/javascript"><!--
-google_ad_client = "pub-2135094760032194";
-/* 468x60, created 11/5/08 */
-google_ad_slot = "4582459016"; google_ad_width = 468; google_ad_height = 60; //-->
-</script>
-<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
-</center>
-<br/>
+<p class="ad">
+    <script type="text/javascript"><!--
+    google_ad_client = "pub-2135094760032194";
+    /* 468x60, created 11/5/08 */
+    google_ad_slot = "4582459016"; google_ad_width = 468; google_ad_height = 60; //-->
+    </script>
+    <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
+</p>
+
+
 <?php
 $msg=$this->session->flashdata('msg');
-if($msg && !empty($msg)){ echo '<div class="notice">'.$msg.'</div><br/>'; }
+if (!empty($msg)):
+?>
+<p class="notice"><?php echo $msg; ?></p>
+<?php endif; ?>
 
-echo '<table cellpadding="4" cellspacing="0" border="0" width="100%">';
+<div class="box">
 
-foreach(array('mc'=>$comments,'an'=>$anon) as $mk=>$mv){
-	if($mk=='an' && isset($mv[0])){ 
-		//echo '<tr><td colspan="2" align="center"><a href="#" id="anonLink" onClick="toggleAnon('.$mv[0]->talk_id.');return false;">Click here to show '.count($mv).' anonymous comments</a></td></tr>';
-		//$disp=';display:none';
-		$disp=';display:block';
-		$uname='';
-	}elseif(isset($mv[0])){ 
-		$disp=';display:block'; 
-		$uname='<a href="/user/view/'.$v->user_id.'">'.$v->uname.'</a> ';
-	}else{ 
-		$disp=';display:block'; 
-		$uname='';
-	}
-	foreach($mv as $k=>$v){
-		if(isset($v->user_id) && $v->user_id!=0){ 
-			$uname='<a href="/user/view/'.$v->user_id.'">'.$v->uname.'</a> ';
-		}else{ $disp=';display:block'; $uname=''; }
-		
-		$an=($mk=='an') ? '_anon' : '';
-		$rowid='com'.$an.'_'.$v->talk_id.'_'.$v->ID;
-		
-		if($v->private && !$admin){ continue; }
-	
-		if($mk=='an' || $v->user_id==0){
-			$bg=($v->private==1) ? 'EEEEEE':'F8F8F8';
-			$an='<span style="font-size:9px;font-weight:bold;color:#747474">ANONYMOUS</span><br/>';
-		}else{ 
-			$bg=($v->private==1) ? 'EEEEEE':'E0E7C8'; 
-			$an='';
-		}
-		echo '<tr id="'.$rowid.'" style="background-color:#'.$bg.''.$disp.'">';
+<h2 id="comments">Comments</h2>
+
+<?php
+
+if (empty($comments)) {
+?>
+<p class="info">No comments.</p>
+<?php
+    
+} else {
+
+    foreach ($comments as $k => $v) {
+        if ($v->private && !$admin){ 
+            continue; 
+        }
+    
+        if (isset($v->user_id) && $v->user_id != 0){ 
+    		$uname = '<a href="/user/view/'.$v->user_id.'">'.$v->uname.'</a> ';
+    	}else{ 
+    		$uname = '<span class="anonymous">Anonymous</span>'; 
+    	}
+
+    	$class = '';
+
+    	if ($v->user_id == 0) {
+    	    $class .= ' row-talk-comment-anonymous';
+    	}
+
+        if ($v->private == 1) {
+    	    $class .= ' row-talk-comment-private';
+    	}
+
+?>
+<div id="comment-<?php echo $v->ID ?>" class="row row-talk-comment<?php echo $class?>">
+	<div class="img">
+		<?php echo rating_image($v->rating); ?>
+	</div>
+	<div class="text">
+    	<p class="info">
+    		<strong><?php echo date('M j, Y, H:i',$v->date_made); ?></strong> by <strong><?php echo $uname; ?></strong>
+    	<?php if ($v->private == 1): ?>
+    		<span class="private">Private</span>
+    	<?php endif; ?>
+    	</p>
+    	<p class="desc">
+    		<?php echo nl2br($v->comment); ?>
+    	</p>
+	</div>
+	<div class="clear"></div>
+</div>
+<?php
+		/*echo '<tr id="'.$rowid.'" style="background-color:#'.$bg.''.$disp.'">';
 		echo '<td width="110" valign="top" align="right" style="padding-top:5px;">';
 		echo '<a name="'.$v->ID.'"></a>';
 		//for($i=1;$i<=$v->rating;$i++){ echo '<img src="/inc/img/thumbs_up.jpg" height="20"/>'; }
@@ -133,73 +158,72 @@ foreach(array('mc'=>$comments,'an'=>$anon) as $mk=>$mv){
 	
 		echo '<td><p style="font-size:12px;color:#37382F">'.$an.nl2br($v->comment).'</p>';
 		echo '<span style="font-size:10px;color:#A1A58A">'.$uname.' '.date('m.d.Y H:i:s',$v->date_made).'</span></td>';
-		echo '</tr>'."\n".'<tr><td colspan="2"></td></tr>';
-	}
+		echo '</tr>'."\n".'<tr><td colspan="2"></td></tr>';*/
+    }
 }
-echo '</table><br/>';
-
-if(true || $auth){
-echo $this->validation->error_string;
-echo form_open('talk/view/'.$det->tid);
-
-//only show the form if the time for the talk has passed
-//if($det->date_given<=time()){
-if(true || $det->date_given>=$gmt){
 ?>
+</div>
+<?php
+//only show the form if the time for the talk has passed
+if (false && $det->date_given < $gmt) {
+?>
+<p class="info">Currently not open for comment.</p>
+<?php
+} else {
+    if (false && !$auth) {
+?>
+<p class="info">Want to comment on this talk? <a href="/user/login">Log in</a> or <a href="/user/register">create a new account</a>.</p>
+<?php 
+    } else {
+?>
+<h3 id="comment-form">Write a comment</h3>
+<?php echo form_open('talk/view/'.$det->tid . '#comment-form', array('class' => 'form-talk')); ?>
 
-<table cellpadding="3" cellspacing="0" border="0">
-<tr>
-	<td valign="top" class="title">Comment:</td>
-	<td>
-		<?php 
-		$arr=array(
+<?php if (!empty($this->validation->error_string)): ?>
+<div class="errors">
+	<h4>The following errors occured:</h4>
+    <?php echo $this->validation->error_string; ?>
+</div>
+<?php endif; ?>
+<div class="row">
+	<label for="comment">Comment</label>
+	<?php 
+    $arr = array(
 			'name'=>'comment',
+            'id'=>'comment',
 			'value'=>$this->validation->comment,
 			'cols'=>40,
 			'rows'=>10
-		);
-		echo form_textarea($arr);
-		?>
-	</td>
-</tr>
-<tr>
-	<td class="title">Rating:</td>
-	<td>
-		<?php
-		echo rating_form('rating');
-		/*for($i=1;$i<=5;$i++){
-			echo '<a href="#" onClick="setVote('.$i.');return false;"><img id="rate_'.$i.'" src="/inc/img/thumbs_up.jpg" height="20" border="0"/></a>';
-		}
-		echo form_hidden('rating',$this->validation->rating);
-		*/
-		?>
-	</td>
-</tr>
-<tr>
-	<td class="title">Mark as private?</td>
-	<td><?php echo form_checkbox('private','1'); ?></td>
-</tr>
-<?php if(!$this->auth){ ?>
-<tr>
-	<td class="title" valign="top">Type in the code:</td>
-	<td>
-	<input type="text" name="cinput" id="Captcha" value="" /><br/>
-	<?php echo $captcha['image']; ?>
-	</td>
-</tr>
-<? } ?>
-<tr>
-	<td align="right" colspan="2"><?php echo form_submit('Comment','Comment'); ?></td>
-</tr>
-</table>
+    );
+    echo form_textarea($arr);
+    ?>
+    <label class="checkbox">
+        <?php echo form_checkbox('private','1'); ?>
+        Mark as private?
+    </label>
+    <div class="clear"></div>
+</div>
+<div class="row">
+	<label for="rating">Rating</label>
+	<div class="rating">
+	    <?php echo rating_form('rating', $this->validation->rating); ?>
+	</div>
+	<div class="clear"></div>
+</div>
+<div class="row">
+	<label for="captcha">Type in the code</label>
+	<div class="captcha">
+    	<input type="text" name="cinput" id="captcha" value="" />
+    	<?php echo $captcha['image']; ?>
+	</div>
+	<div class="clear"></div>
+</div>
+<div class="row row-buttons">
+	<?php echo form_submit(array('class' => 'btn-big'),'Submit Comment'); ?>
+</div>
 <?php 
-form_close(); 
-/* close if for date */
-}else{
-	echo '<center><span style="font-size:13px;font-weight:bold;color:#4282C4">Currently not open for comment.</span></center>';
-}
-
-}else{
-	echo '<center>Want to comment on this talk? <a href="/user/login">Log in</a> or <a href="/user/register">create a new account</a>.</center>';
+        echo form_close(); 
+        /* close if for date */
+    }
 }
 ?>

@@ -32,36 +32,32 @@ class Talks_model extends Model {
 		if($tid){
 			$sql=sprintf('
 				select
-					t.talk_title,
-					t.speaker,
-					t.ID as tid,
-					e.ID eid,
-					t.slides_link,
-					t.date_given,
-					t.event_id,
-					t.talk_desc,
-					l.lang_name,
-					l.lang_abbr,
-					t.lang,
-					e.event_name,
-					e.event_tz,
-					(select floor(avg(tc.rating)) from talk_comments tc where tc.talk_id=t.ID) as tavg,
+					talks.*,
+					talks.ID tid,
+					events.ID eid,
+					events.event_name,
+					events.event_tz,
+					lang.lang_name,
+					lang.lang_abbr,
+					count(talk_comments.ID) as ccount,
+					(select floor(avg(tc.rating)) from talk_comments tc where tc.talk_id=talks.ID) as tavg,
 					(select 
 						cat.cat_title
 					from 
 						talk_cat tac,categories cat
 					where 
-						tac.talk_id=t.ID and tac.cat_id=cat.ID
+						tac.talk_id=talks.ID and tac.cat_id=cat.ID
 					) tcid
 				from
-					talks t,
-					events e,
-					lang l
+					talks
+				left join talk_comments on (talk_comments.talk_id = talks.ID)
+				inner join events on (events.ID = talks.event_id)
+				inner join lang on (lang.ID = talks.lang)
 				where
-					t.ID=%s and
-					e.ID=t.event_id and
-					t.active=1 and
-					l.ID=t.lang
+					talks.ID=%s and
+					talks.active=1
+				group by
+					talks.ID
 			',$tid);
 			$q=$this->db->query($sql);
 		}else{
@@ -72,6 +68,8 @@ class Talks_model extends Model {
 			$sql=sprintf('
 				select
 					talks.*,
+					talks.ID tid,
+					events.ID eid,
 					events.event_name,
 					events.event_tz,
 					lang.lang_name,
