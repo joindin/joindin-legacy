@@ -28,7 +28,7 @@ class User extends Controller {
 		$this->validation->set_fields($fields);
 		
 		if($this->validation->run()==FALSE){
-			$this->session->set_userdata('ref_url',$_SERVER['HTTP_REFERER']);
+			$this->session->set_userdata('ref_url',@$_SERVER['HTTP_REFERER']);
 			$this->template->write_view('content','user/login');
 			$this->template->render();
 		}else{

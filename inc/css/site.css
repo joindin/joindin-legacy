@@ -453,6 +453,12 @@ a {
 }
 
 #ctn .main form input[type=text],
+#ctn .main form input[type=password] {
+	display: block;
+	width: 350px;
+	margin-bottom: 5px;
+}
+
 #ctn .main form textarea {
 	display: block;
 	width: 95%;

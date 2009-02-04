@@ -131,7 +131,7 @@
         	<a href="/search">Search</a> | 
         	<a href="/about">About</a> | 
         	<a href="/blog">Blog</a> | 
-        	<a href="/contact">Contact</a>
+        	<a href="/about/contact">Contact</a>
     	</div>
     	<div class="grid_6 rgt">
     		&copy; joind.in <?=date('Y')?>
