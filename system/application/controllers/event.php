@@ -218,13 +218,16 @@ class Event extends Controller {
 			}
 			
 			$this->db->insert('event_comments',$ec);
-			$arr['msg']='Comment inserted successfully!';
-			
+
 			$to		='enygma@phpdeveloper.org';
 			$subj	='Joind.in: Event feedback - '.$id;
 			$content='';
 			foreach($ec as $k=>$v){ $content.='['.$k.'] => '.$v."\n\n"; }
-			mail($to,$subj,$content,'From:feedback@joind.in');
+			@mail($to,$subj,$content,'From:feedback@joind.in');
+			
+			$this->session->set_flashdata('msg', 'Comment inserted successfully!');
+			
+			redirect('event/view/'.$events[0]->ID . '#comments', 'location', 302);
 		}
 		
 		$arr['comments']=$this->event_comments_model->getEventComments($id);

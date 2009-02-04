@@ -92,9 +92,9 @@ if(!empty($claimed)){
 
 <?php
 $msg=$this->session->flashdata('msg');
-if (!empty($msg)):
+if (!empty($msg)): 
 ?>
-<p class="notice"><?php echo $msg; ?></p>
+    <?php $this->load->view('msg_info', array('msg' => $msg)); ?>
 <?php endif; ?>
 
 <div class="box">
@@ -105,7 +105,7 @@ if (!empty($msg)):
 
 if (empty($comments)) {
 ?>
-<p class="info">No comments.</p>
+<?php $this->load->view('msg_info', array('msg' => 'No comments yet.')); ?>
 <?php
     
 } else {
@@ -180,11 +180,9 @@ if (false && $det->date_given < $gmt) {
 <?php echo form_open('talk/view/'.$det->tid . '#comment-form', array('class' => 'form-talk')); ?>
 
 <?php if (!empty($this->validation->error_string)): ?>
-<div class="errors">
-	<h4>The following errors occured:</h4>
-    <?php echo $this->validation->error_string; ?>
-</div>
+    <?php $this->load->view('msg_error', array('msg' => $this->validation->error_string)); ?>
 <?php endif; ?>
+
 <div class="row">
 	<label for="comment">Comment</label>
 	<?php 
@@ -219,7 +217,7 @@ if (false && $det->date_given < $gmt) {
 	<div class="clear"></div>
 </div>
 <div class="row row-buttons">
-	<?php echo form_submit(array('class' => 'btn-big'),'Submit Comment'); ?>
+	<?php echo form_submit(array('class' => 'btn'), 'Submit Comment'); ?>
 </div>
 <?php 
         echo form_close(); 

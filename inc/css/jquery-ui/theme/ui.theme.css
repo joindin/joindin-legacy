@@ -15,7 +15,7 @@
 .ui-widget-header { border: 1px solid #d7dcdf; background: #f4f7f9 url(images/ui-bg_glass_0_f4f7f9_1x400.png) 50% 50% repeat-x; color: #ffffff; font-weight: bold; }
 .ui-widget-header a { color: #ffffff; }
 .ui-widget-content { border: 1px solid #d7dcdf; background: #ffffff url(images/ui-bg_flat_100_ffffff_40x100.png) 50% 50% repeat-x; color: #666666; }
-.ui-widget-content a { color: #666666; }
+.ui-widget-content a { color: #2368af; }
 
 /* Interaction states
 ----------------------------------*/

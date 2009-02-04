@@ -203,7 +203,6 @@ Click here to view it: http://joind.in/talk/view/%s
 			$this->session->set_flashdata('msg', 'Comment added!');
 
 			redirect('talk/view/'.$talk_detail[0]->tid . '#comments', 'location', 302);
-			exit;
 		}
 		$cap = create_captcha($cap_arr);
 		$this->session->set_userdata(array('cinput'=>$cap['word']));

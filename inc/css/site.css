@@ -31,27 +31,29 @@ h1,
 	color:#ff9900;
 	font-weight: normal;
 	border-bottom: 1px dotted #d7dcdf;
+	margin-bottom: 15px;
 }
 
 h2,
-h2 {
+.h2 {
 	font-size: 22px;
 	line-height: 22px;
 	padding-bottom: 5px;
 	font-weight: normal;
 	color:#555;
 	border-bottom: 1px dotted #d7dcdf;
+	margin-bottom: 15px;
 }
 
 h3,
-h3 {
+.h3 {
 	font-size: 16px;
 	color:#5a8dc3;
 	margin: 0 0 4px 0;
 }
 
 h4,
-h4 {
+.h4 {
 	font-size: 14px;
 	margin: 0;
 }
@@ -316,8 +318,8 @@ a {
 }
 
 #ctn .main .row {
-	margin-bottom: 17px;
-	padding-bottom: 10px;
+	margin-bottom: 15px;
+	padding-bottom: 5px;
 	border-bottom: 1px dotted #d7dcdf;
 }
 
@@ -345,6 +347,7 @@ a {
 
 #ctn .main .row .desc {
 	margin-bottom: 7px;
+	font-size: 12px;
 }
 
 #ctn .main .row-talk-comment .desc {
@@ -353,7 +356,7 @@ a {
 
 #ctn .main .row .info,
 #ctn .main .row .opts {
-	font-size: 85%;
+	font-size: 11px;
 	color: #333;
 	margin-bottom: 7px;
 }
@@ -462,6 +465,7 @@ a {
 	padding: 2px 18px;
 	*padding: 2px 0;
 	font-family: Arial,Helvetica,'Liberation Sans',FreeSans,sans-serif;
+	font-size: 12px;
 }
 
 #ctn .main form .rating {
@@ -513,6 +517,33 @@ a {
 
 #ftr .rgt {
 	text-align: right;
+}
+
+/***/
+
+.ui-state-highlight,
+.ui-state-error {
+	padding: 5px 7px 5px 7px;
+	margin-bottom: 10px;
+}
+
+.ui-state-highlight .msg,
+.ui-state-error .msg {
+	margin:0;
+	line-height: 16px;
+	float: left;
+	width: 75%;
+}
+
+.ui-state-highlight p,
+.ui-state-error p {
+	margin-bottom: 0;
+}
+
+.ui-state-highlight .ui-icon,
+.ui-state-error .ui-icon {
+	float: left; 
+	margin-right: 5px;
 }
 
 /***/

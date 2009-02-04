@@ -150,13 +150,19 @@ class Event_model extends Model {
 		
 		//if we have the dates, limit by them
 		
-		$this->db->from('events');
+		$this->db->select('events.*, COUNT(user_attend.ID) AS num_attend, COUNT(event_comments.ID) AS num_comments');
+	    $this->db->from('events');
+		$this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
+		$this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');
+		
 		if($start>0){ $this->db->where('event_start>='.$start); }
 		if($end>0){ $this->db->where('event_start<='.$end); }
 		
 		$this->db->like('event_name',$term);
 		$this->db->or_like('event_desc',$term);
 		$this->db->limit(10);
+		$this->db->group_by('events.ID');
+
 		$q=$this->db->get();
 		return $q->result();
 	}

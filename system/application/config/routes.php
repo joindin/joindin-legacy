@@ -56,6 +56,8 @@ $route['event/codes/(:num)']	= 'event/codes/$1';
 $route['event/(:any)']			= 'event/cust/$1';
 $route['(:num)']				= 'talk/view/$1';
 
+$route['search/(:any)']			= 'search/index/$1';
+
 
 /* End of file routes.php */
 /* Location: ./system/application/config/routes.php */

@@ -121,7 +121,7 @@ class Talks_model extends Model {
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
-	function getPopularTalks($len=5){
+	function getPopularTalks($len=7){
 		$sql=sprintf('
 			select
 				t.talk_title,
@@ -143,7 +143,7 @@ class Talks_model extends Model {
 			order by 
 				ccount desc
 			limit
-				7
+				' . $len . '
 		');
 		$q=$this->db->query($sql);
 		return $q->result();
@@ -205,9 +205,15 @@ class Talks_model extends Model {
 		);
 		$this->db->insert('user_admin',$arr);
 	}
+
 	//---------------
 	function search($term,$start,$end){
-		$this->db->from('talks');
+		$this->db->select('talks.*, count(talk_comments.ID) as ccount, (select floor(avg(rating)) from talk_comments where talk_id=talks.ID) as tavg, events.event_name, events.event_tz');
+	    $this->db->from('talks');
+	    
+	    $this->db->join('talk_comments', 'talk_comments.talk_id=talks.ID', 'left');
+		$this->db->join('events', 'events.ID=talks.event_id', 'left');
+	    
 		if($start>0){ $this->db->where('date_given>='.$start); }
 		if($end>0){ $this->db->where('date_given<='.$end); }
 		
@@ -215,6 +221,7 @@ class Talks_model extends Model {
 		$this->db->or_like('talk_desc',$term);
 		$this->db->or_like('speaker',$term);
 		$this->db->limit(10);
+		$this->db->group_by('talks.ID');
 		$q=$this->db->get();
 		return $q->result();
 	}
