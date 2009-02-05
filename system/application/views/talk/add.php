@@ -4,10 +4,7 @@ $cat_list	= array();
 $lang_list	= array();
 
 //echo '<pre>'; print_r($cats); echo '</pre>';
-
-foreach($events as $k=>$v){
-	$event_list[$v->ID]=$v->event_name.' ('.date('m.d.Y',$v->event_start).'-'.date('m.d.Y',$v->event_end).')';
-}
+$ev=$events[0];
 foreach($cats as $k=>$v){ $cat_list[$v->ID]=$v->cat_title; }
 foreach($langs as $k=>$v){ $lang_list[$v->ID]=$v->lang_name; }
 
@@ -17,17 +14,23 @@ if(isset($this->edit_id)){
 	echo form_open('talk/edit/'.$this->edit_id);
 	$sub='Edit Talk';
 }else{ 
-	echo form_open('talk/add');
+	echo form_open('talk/add/event/'.$ev->ID);
 	$sub='Add Talk';
 }
 echo '<h2>'.$sub.'</h2>';
+
+if(isset($msg) && !empty($msg)){ echo '<div class="notice">'.$msg.'</div>'; }
+if(isset($err) && !empty($err)){ echo '<div class="err">'.$err.'</div>'; }
 ?>
 
 <table cellpadding="3" cellspacing="0" border="0">
 <tr>
 	<td class="title">Event:</td>
 	<td>
-		<?php echo form_dropdown('event_id',$event_list,$this->validation->event_id); ?>
+		<?php 
+		echo form_hidden('event_id',$ev->ID);
+		echo '<b>'.$ev->event_name.' ('.date('m.d.Y',$ev->event_start).'-'.date('m.d.Y',$ev->event_end).')</b>';
+		?>
 	</td>
 </tr>
 <tr>

@@ -45,7 +45,7 @@ if($attend){
 <tr>
 	<td>
 		<a href="/event/edit/<?=$det->ID?>"><img src="/inc/img/sticky.gif" border="0" alt="Edit event"/></a>
-		<a href="/talk/add"><img src="/inc/img/pending.png" border="0" alt="Add new talk"/></a>
+		<a href="/talk/add/event/<?=$det->ID?>"><img src="/inc/img/pending.png" border="0" alt="Add new talk"/></a>
 	</td>
 	<td width="50" align="right">
 		<a href="/event/delete/<?=$det->ID?>"><img src="/inc/img/redx.png" border="0" alt="Delete event"/></a>

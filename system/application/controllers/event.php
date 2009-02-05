@@ -147,13 +147,15 @@ class Event extends Controller {
 				//edit...
 				$this->db->where('id',$this->edit_id);
 				$this->db->update('events',$arr);
-			}else{ $this->db->insert('events',$arr); }
+			}else{ 
+				$this->db->insert('events',$arr); 
+				$id=$this->db->insert_id();				
+			}
 			
 			$arr=array(
 				'msg'	=> 'Data saved! <a href="/event/view/'.$id.'">View event</a>',
 				'tz'	=> $this->tz_model->getContInfo()
 			);
-			echo 'here';
 			$this->template->write_view('content','event/add',$arr);
 			$this->template->render();
 		}

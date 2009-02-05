@@ -21,8 +21,17 @@ class Talk extends Controller {
 		//$this->load->view('talk/main',array('talks'=>$talks));
 	}
 	//-------------------
-	function add($id=null){
-		if($id){ $this->edit_id=$id; }
+	function add($id=null,$opt=null){
+		if(isset($id) && $id=='event'){
+			$eid	= $opt; 
+			$id		= null; 
+			$type	= null;
+		}elseif($id){ 
+			$this->edit_id=$id;
+			$eid	= null;
+		}
+		$pass=true;
+		
 		$this->load->model('talks_model');
 		$this->load->model('event_model');
 		$this->load->model('categories_model');	
@@ -30,7 +39,7 @@ class Talk extends Controller {
 		$this->load->helper('form');
 		$this->load->library('validation');
 
-		$events	= $this->event_model->getEventDetail();
+		$events	= $this->event_model->getEventDetail($eid);
 		$cats	= $this->categories_model->getCats();
 		$langs	= $this->lang_model->getLangs();
 		
@@ -69,17 +78,15 @@ class Talk extends Controller {
 			$this->validation->given_yr = date('Y',$det[0]->date_given);
 			
 			$this->validation->session_lang=$det[0]->lang;
+		}else{
+			//set the date to the start date of the event
+			$this->validation->given_mo = date('m',$events[0]->event_start);
+			$this->validation->given_day= date('d',$events[0]->event_start);
+			$this->validation->given_yr = date('Y',$events[0]->event_start);
 		}
-		//check the referrer, if there's an event in it, default the select to that value
-		if(preg_match('/\/event\/view\/([0-9]+)/',$_SERVER['HTTP_REFERER'],$m)){
-			$this->validation->event_id=$m[1];
-		}
+		if(isset($eid)){ $this->validation->event_id=$eid; }
 		
-		
-		if($this->validation->run()==FALSE){
-			//$this->load->view('talk/add',array('events'=>$events));
-		}else{ 
-			echo 'Success!';
+		if($this->validation->run()!=FALSE){
 			$arr=array(
 				'talk_title'	=> $this->input->post('talk_title'),
 				'speaker'		=> $this->input->post('speaker'),
@@ -95,26 +102,50 @@ class Talk extends Controller {
 				'active'		=> '1',
 				'lang'			=> $this->input->post('session_lang')
 			);
+
 			if($id){
 				$this->db->where('id',$id);
 				$this->db->update('talks',$arr);
-				//remove the current reference for the talk and add a new one
-				
+				//remove the current reference for the talk category and add a new one				
 				$this->db->delete('talk_cat',array('talk_id'=>$id));
-				$tc_id=$id;
+				
+				$tc_id	= $id;
+				$msg	= 'Talk information successfully updated!';
+				$pass	= true;
 			}else{
-				$this->db->insert('talks',$arr);
-				$tc_id=$this->db->insert_id();
+				//check to be sure its unique
+				$q=$this->db->get_where('talks',$arr);
+				$ret=$q->result();
+				if(count($ret)==0){
+					$this->db->insert('talks',$arr);
+					$tc_id=$this->db->insert_id();
+				
+					$msg='Talk information successfully added!</br><a href="/talk/add/event/'.$events[0]->ID.'">Add another</a> ';
+					$msg.='or <a href="/event/view/'.$events[0]->ID.'">View Event</a>';
+					$pass=true;
+				}else{
+					$err='There was an error adding the talk information! (Duplicate talk)<br/>';
+					$err.='<a href="/event/view/'.$events[0]->ID.'">View Event</a>';
+					$pass=false;
+				}
 			}
-			//now make the link between the talk and the category
-			$tc_arr=array(
-				'talk_id'	=> $tc_id,
-				'cat_id'	=> $this->input->post('session_type')
-			);
-			$this->db->insert('talk_cat',$tc_arr);
+			if($pass){
+				//now make the link between the talk and the category
+				$tc_arr=array(
+					'talk_id'	=> $tc_id,
+					'cat_id'	=> $this->input->post('session_type')
+					);
+				$this->db->insert('talk_cat',$tc_arr);
+			}
 		}
-		
-		$this->template->write_view('content','talk/add',array('events'=>$events,'cats'=>$cats,'langs'=>$langs),TRUE);
+		$out=array(
+			'msg'	=>(isset($msg)) ? $msg : '',
+			'err'	=>(isset($err)) ? $err : '',
+			'events'=>$events,
+			'cats'	=>$cats,
+			'langs'	=>$langs
+		);
+		$this->template->write_view('content','talk/add',$out,TRUE);
 		$this->template->render();
 	}
 	function edit($id){

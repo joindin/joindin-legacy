@@ -9,7 +9,7 @@ $cl=array();
 foreach($claimed as $k=>$v){ 
 	$cl[$v->code]=$v->email;
 }
-echo '<pre>'; print_r($claimed); print_r($cl); /*print_r($full_talks);*/ echo '</pre>';
+//echo '<pre>'; print_r($claimed); print_r($cl); /*print_r($full_talks);*/ echo '</pre>';
 ?>
 <style>
 tr.tbl_header {
@@ -31,7 +31,7 @@ if(!empty($this->validation->error_string)){
 }
 
 echo form_open('event/codes/'.$details[0]->ID);
-echo '<table cellpadding="3" cellspacing="0" border="0">';
+echo '<table cellpadding="3" cellspacing="0" border="0" width="100%">';
 echo '<tr class="tbl_header"><td>Talk/Speaker</td><td>Code:</td><td colspan="2">Email to:</d></tr>';
 foreach($full_talks as $k=>$v){
 	$email_id	= 'email_'.$v->ID;

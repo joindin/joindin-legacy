@@ -94,7 +94,8 @@ class User extends Controller {
 					'username'	=> $this->input->post('user'),
 					'password'	=> $this->input->post('pass'),
 					'email'		=> $this->input->post('email'),
-					'full_name'	=> $this->input->post('full_name')
+					'full_name'	=> $this->input->post('full_name'),
+					'active'	=> 1
 				);
 				$this->db->insert('user',$arr);
 				
