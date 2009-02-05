@@ -217,7 +217,7 @@ if (false && $det->date_given < $gmt) {
 	<div class="clear"></div>
 </div>
 <div class="row row-buttons">
-	<?php echo form_submit(array('class' => 'btn'), 'Submit Comment'); ?>
+	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Submit Comment'); ?>
 </div>
 <?php 
         echo form_close(); 

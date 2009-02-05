@@ -28,7 +28,7 @@
     </div>
     
     <div class="row row-buttons">
-    	<?php echo form_submit(array('class' => 'btn'), 'Login'); ?>
+    	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Login'); ?>
     </div>
     
     <?php echo form_close(); ?>

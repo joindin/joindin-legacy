@@ -4,22 +4,22 @@
 <head>
 	<title>Joind.in </title>
 
-	<link media="all" rel="stylesheet" type="text/css" href="/inc/css/site.css">
-	<link type="text/css" href="/inc/css/jquery-ui/theme/ui.all.css" rel="Stylesheet" />
+	<link media="all" rel="stylesheet" type="text/css" href="/inc/css/jquery-ui/theme/ui.all.css"/>
+	<link media="all" rel="stylesheet" type="text/css" href="/inc/css/site.css"/>
 	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" /> 
 	<script type="text/javascript" src="/inc/js/jquery.js"></script>
 	<script type="text/javascript" src="/inc/js/jquery-ui.js"></script>
 	<script type="text/javascript" src="/inc/js/site.js"></script>
-	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 	<?php
-	if(isset($feedurl)){
+	if(!empty($feedurl)){
 		echo '<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="'.$feedurl.'" />';
 	}
-	if(isset($reqkey)){ echo "\n\t<script>var reqk='".$reqkey."';</script>"; }
-	if(isset($seckey)){ echo "\n\t<script>var seck='".$seckey."';</script>"; }
+	if(isset($reqkey)){ echo "\n\t" . '<script type="text/javascript">var reqk="'.$reqkey.'";</script>'; }
+	if(isset($seckey)){ echo "\n\t" . '<script type="text/javascript">var seck="'.$seckey.'";</script>'; }
 	?>
 </head>
-<body id="<?= menu_get_current_area(); ?>">
+<body id="page-<?= menu_get_current_area(); ?>">
 
 <div id="hd">
     <div class="container_12 top">
@@ -88,33 +88,53 @@
         	<?php foreach (menu_sidebar() as $box): ?>
         		<div class="box">
                 	<h4><?php echo $box['title']; ?></h4>
-                	<?php echo $box['content']; ?>
+                	<div class="ctn">
+                	    <?php echo $box['content']; ?>
+                	</div>
                 </div>
         	<?php endforeach; ?>
             <?php if (!user_is_auth()): ?>
             	<div class="box">
                 	<h4>Sign in</h4>
-                	<div>
-    	<?php
-    	echo form_open('/user/login');
-    	echo '<table cellpadding="3" cellspcing="0" border="0">';
-    	echo '<tr><td>User:</td><td>'.form_input('user').'</td></tr>';
-    	echo '<tr><td>Pass:</td><td>'.form_password('pass').'</td></tr>';
-    	echo '<tr><td align="right" colspan="2">'.form_submit('sub','login').'</td></tr>';
-    	echo '</table>';
-    	form_close();
-    	?>
-    	<small>Need an account? <a href="/user/register">Register now!</a></small>
+                	<div class="ctn">
+                	
+                    	<?php echo form_open('user/login', array('class' => 'form-login')); ?>
+    
+                        <div class="row">
+                        	<label for="sidebar_user">Username</label>
+                        	<?php echo form_input(array('name' => 'user', 'id' => 'sidebar_user')); ?>
+                        
+                            <div class="clear"></div>
+                        </div>
+                        
+                        <div class="row">
+                        	<label for="sidebar_pass">Password</label>
+                        	<?php echo form_input(array('name' => 'pass', 'id' => 'sidebar_pass', 'type' => 'password')); ?>
+                        
+                            <div class="clear"></div>
+                        </div>
+                        
+                        <div class="row row-buttons">
+                        	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn'), 'Login'); ?> 
+                        	<a style="margin-left:10px" href="/user">Forgot your password?</a>
+                        </div>
+                        
+                        <?php echo form_close(); ?>
+
+    					<p><small>Need an account? <a href="/user/register">Register now!</a></small></p>
             		</div>
             	</div>
             	<?php endif; ?>
             	<div class="box">
                 	<h4>Submit your event</h4>
-                	<p>
-                		Know of an event happening? Let us know! We love to get the word out about events the community would be interested in and you can help us spread the word!
-                	</p>
-
-                		<a href="/event/submit" class="btn-big">Submit your event!</a>
+                	<div class="ctn">
+                    	<p>
+                    		Know of an event happening? Let us know! We love to get the word out about events the community would be interested in and you can help us spread the word!
+                    	</p>
+    					<p style="text-align:center">
+                    		<a href="/event/submit" class="btn-big">Submit your event!</a>
+                    	</p>
+                	</div>
 
             	</div>
             </div>

@@ -65,9 +65,9 @@ if (!empty($msg)):
     </div>
 	
 	<div class="row row-buttons">
-    	<?php echo form_submit(array('class' => 'btn'), 'Register'); ?>
+    	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Register'); ?>
     </div>
     
-    <?php form_close(); ?>
+    <?php echo form_close(); ?>
 </div>
 
