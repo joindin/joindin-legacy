@@ -11,6 +11,7 @@ class Search extends Controller {
 		$this->load->library('validation');
 		$this->load->model('talks_model');
 		$this->load->model('event_model');
+		$this->load->helper('reqkey');
 		$results=array();
 		
 		$rules=array(
@@ -125,7 +126,15 @@ class Search extends Controller {
     		}
 		}
 		
-		$this->template->write_view('content','search/main',array('results'=>$results),TRUE);
+		$reqkey = buildReqKey();
+		
+		$arr=array(
+			'results'=>$results,
+		    'reqkey' => $reqkey,
+			'seckey' => buildSecFile($reqkey)
+		);	
+		
+		$this->template->write_view('content','search/main',$arr,TRUE);
 		$this->template->render();
 	}
 
