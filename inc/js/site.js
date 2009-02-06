@@ -38,7 +38,7 @@ function getArea(field){
 	);
 }
 //-------------------------
-function apiRequest(rtype,raction,data){
+function apiRequest(rtype,raction,data,callback){
 	var xml_str='';
 	$.each(data,function(k,v){
 		xml_str+='<'+k+'>'+v+'</'+k+'>';
@@ -63,6 +63,8 @@ function apiRequest(rtype,raction,data){
 			}else{
 				//maybe add some callback method here 
 				//alert('normal'); 
+				if ($.isFunction(callback))
+					callback(obj);
 			}
 		}
 		
@@ -71,23 +73,35 @@ function apiRequest(rtype,raction,data){
 //-------------------------
 
 
-function markAttending(eid,showt){
+function markAttending(el,eid,isPast){
+	if (!$(el).next().is('.loading'))
+		$(el).after('<span class="loading">Loading...</span>');
+
 	var obj=new Object();
 	obj.eid=eid;
-	apiRequest('event','attend',obj);
-	switch(showt){
-		case 1: link_txt='Were you there?'; break;
-		case 2: link_txt='Will you be there?'; break;
-		case 3: link_txt='I was there!'; break;
-		case 4: link_txt="I'll be there!"; break;
-	}
-	if (showt == 1 || showt == 2) {
-		$('#attend_link').removeClass('btn-success');
-	} else {
-		$('#attend_link').addClass('btn-success');
-	}
-	$('#attend_link').html(link_txt);
-	alert('Thanks for letting us know!');
+	apiRequest('event','attend',obj, function(obj) {
+		if ($(el).is('.btn-success')) {
+			$(el).removeClass('btn-success');
+			link_txt=isPast ? 'Were you there?' : 'Will you be there?';
+			adjustAttendCount(eid, -1);
+		} else {
+			$(el).addClass('btn-success');
+			link_txt=isPast ? 'I was there!' : 'I\'ll be there!';
+			adjustAttendCount(eid, 1);
+		}
+		$(el).html(link_txt);
+		
+		$(el).next().addClass('loading-complete').html('Thanks for letting us know!').pause(2000).fadeOut(function() { $(this).remove() });
+		//alert('Thanks for letting us know!');
+	});
+	return false;
+}
+
+function adjustAttendCount(eid, num)
+{
+	$('.event-attend-count-' + eid).each(function() {
+		$(this).text(parseInt($(this).text()) + num);
+	});
 }
 
 //-------------------------

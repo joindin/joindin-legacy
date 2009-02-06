@@ -74,7 +74,7 @@ a {
 	border: 1px solid #d1881c;
 
 	font-size: 12px;
-	line-height: 12px;
+	line-height: 15px;
 	padding: 2px 18px;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
@@ -88,7 +88,7 @@ a {
 	border: 1px solid #d1881c;
 
 	font-size: 11px;
-	line-height: 11px;
+	line-height: 13px;
 	padding: 1px 6px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
@@ -102,7 +102,7 @@ a {
 	border: 1px solid #d1881c;
 
 	font-size: 17px;
-	line-height: 17px;
+	line-height: 19px;
 	display: inline-block;
 	text-align: center;
 	padding: 5px 24px;
@@ -113,6 +113,20 @@ a {
 .btn-success {
 	background: #66cc00 url(/inc/img/bg-btn-success.gif) 0 50% repeat-x;
 	border-color: #57ae00;
+}
+
+.loading {
+	display: inline;
+	background: transparent url(/inc/img/loading.gif) right 50% no-repeat;
+	padding: 0 20px 0 10px;
+	font-size: 11px;
+	font-style: italic;
+}
+
+.loading-complete {
+	background-image: none;
+	color: #333;
+	font-style: normal;
 }
 
 /*.icon-event {
@@ -149,9 +163,9 @@ a {
 #hd .usr {
 	float: right;
 	background: #2368af url(/inc/img/usr-lft.gif) bottom left no-repeat;
-	font-size: 80%;
 	color: #fff;
 	margin-top: 5px;
+	/*min-width: 216px;*/
 }
 
 #hd .usr a {
@@ -161,7 +175,9 @@ a {
 #hd .usr .wrapper {
 	display: block;
 	padding: 0px 20px 4px 20px;
+	font-size: 11px;
 	background: transparent url(/inc/img/usr-rgt.gif) bottom right no-repeat;
+	text-align: center;
 }
 
 #hd .nav {
@@ -169,32 +185,34 @@ a {
 	min-height: 60px;
 }
 
-#hd .menu {
+.menu {
 	position: relative;
-	min-height: 60px;
+	min-height: 25px;
+	border-bottom: 1px solid #d7dcdf;
 }
 
-#hd .menu ul {
+.menu ul {
       position: absolute;
-      bottom: 0;
-	  *bottom: -3px;
+      bottom: -1px;
+	  *bottom: -4px;
       margin:0;
       /*padding:10px 10px 0;*/
       padding: 0;
       list-style:none;
-      font-size: 105%;
+      font-size: 11px;
 }
-#hd .menu li {
+
+.menu li {
       float:left;
       background:url("/inc/img/bg-menu-lft.gif") no-repeat left top;
       margin:0 1px;
       padding:0 0 0 11px;
       border-bottom:1px solid #d7dcdf;
 }
-#hd .menu li.sep {
+.menu li.sep {
       margin-left: 10px;
 }
-#hd .menu a {
+.menu a {
       float:left;
       display:block;
       width:.1em;
@@ -205,12 +223,43 @@ a {
       color: #5a8ec3;
 }
 
-#hd .menu > ul a {width:auto;}
+.menu > ul a {width:auto;}
     /* Commented Backslash Hack hides rule from IE5-Mac \*/
-#hd .menu a {float:none;}
+.menu a {float:none;}
     /* End IE5-Mac hack */
-#hd .menu a:hover {
+.menu a:hover {
       color:#ff9900;
+}
+
+.menu li:hover, 
+.menu li:hover a {
+      /*background-position:0% -150px;*/
+      color:#ff9900;
+}
+
+.menu li.active {
+      background-position:0 -150px;
+      border-width:0;
+}
+
+.menu li.active a {
+      background-position:100% -150px;
+      padding-bottom:4px;
+      color:#ff9900;
+}
+
+/*
+.menu li:hover a {
+      background-position:100% -150px;
+}*/
+
+#hd .menu {
+	position: relative;
+	min-height: 60px;
+}
+
+#hd .menu ul {
+      font-size: 105%;
 }
 
 #page-event #menu-event,
@@ -230,14 +279,13 @@ a {
       padding-bottom:4px;
       color:#ff9900;
 }
-#hd .menu li:hover, #hd .menu li:hover a {
-      /*background-position:0% -150px;*/
-      color:#ff9900;
+
+#ctn .menu {
+	margin-bottom: 20px;
+	padding-left: 5px;
 }
-/*
-#hd .menu li:hover a {
-      background-position:100% -150px;
-}*/
+
+/***/
 
 #hd .search {
 	position: relative;
@@ -435,8 +483,7 @@ a {
 	margin-top: 20px;
 }
 
-#ctn .list td,
-#ctn .list th {
+#ctn .list td {
 	padding: 7px 5px 7px 0;
 	border-bottom: 1px dotted #d7dcdf;
 	border-top: 1px dotted #d7dcdf;
@@ -444,8 +491,12 @@ a {
 }
 
 #ctn .list th {
+	padding: 5px;
 	border-top: 0;
 	text-align: left;
+	font-size: 11px;
+	background: #f1f4f8;
+	margin-bottom: 5px;
 }
 
 #ctn .list th h4 {
@@ -549,6 +600,7 @@ a {
 #ctn .main form .row-buttons {
 	text-align: right;
 	border: 0;
+	margin-bottom: 0;
 }
 
 /***/
@@ -593,7 +645,7 @@ a {
 
 /***/
 
-.cal_tbl {
+.calendar {
 	width: 100%;
 	border-collapse: separate;
 	border-spacing: 1px;
@@ -604,22 +656,55 @@ a {
 	margin: 0;
 }
 
-.cal_day_abbr {
+.calendar caption {
+	background: #f1f4f8;
+	margin-bottom: 2px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	padding: 5px;
+}
+
+.calendar .calendar-title {
+	display: block;
+	font-weight: bold;
+	color: #2368af;
+	float:left;
+	width: 71%;
+	text-align: center;
+	padding: 2px 0;
+}
+
+.calendar .calendar-prev {
+	float:left;
+}
+
+.calendar .calendar-next {
+	float: right;
+}
+
+.calendar .calendar-prev,
+.calendar .calendar-next {
+	display: block;
+	width: 14.28%;
+	padding: 1px 0 3px 0;
+	background: #d5dfea;
+	text-decoration: none;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}
+
+.calendar th {
 	text-align: center;
 	background: #2368af;
 	color: #fff;
 	font-size: 10px;
 	width: 14.28%;
-	padding: 2px 0;
+	padding: 3px 0;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
 }
 
-.cal_nav {
-	padding: 2px 0;
-}
-
-.cal_day {
+.calendar .calendar-day {
 	text-align: center;
 	background: #fff;
 	color: #666;
@@ -628,11 +713,11 @@ a {
 	-webkit-border-radius: 4px;
 }
 
-.cal_day a {
+.calendar .calendar-day a {
 	display: block;
 }
 
-.cal_nday {
+.calendar .calendar-empty {
 	text-align: center;
 	background: #f6f9fb;
 	color: #666;
@@ -641,13 +726,22 @@ a {
 	-webkit-border-radius: 4px;
 }
 
-.cal_sel_day,
-.cal_sel_day a {
-	font-weight: bold;
-	color: #ff9900;
+.calendar .calendar-day-events {
+	background: #d5dfea;
 }
 
-f6f9fb
+.calendar .calendar-day-events a {
+	color: #333;
+}
+
+.calendar .calendar-day-selected {
+	background: #ff9900;
+}
+
+.calendar .calendar-day-selected a {
+	font-weight: bold;
+	color: #fff;
+}
 
 /***/
 

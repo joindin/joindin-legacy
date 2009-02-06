@@ -209,7 +209,7 @@ class Talks_model extends Model {
 
 	//---------------
 	function search($term,$start,$end){
-		$this->db->select('talks.*, count(talk_comments.ID) as ccount, (select floor(avg(rating)) from talk_comments where talk_id=talks.ID) as tavg, events.event_name, events.event_tz');
+		$this->db->select('talks.*, count(talk_comments.ID) as ccount, (select floor(avg(rating)) from talk_comments where talk_id=talks.ID) as tavg, events.ID eid, events.event_name, events.event_tz');
 	    $this->db->from('talks');
 	    
 	    $this->db->join('talk_comments', 'talk_comments.talk_id=talks.ID', 'left');

@@ -8,6 +8,7 @@
 	<link media="all" rel="stylesheet" type="text/css" href="/inc/css/site.css"/>
 	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" /> 
 	<script type="text/javascript" src="/inc/js/jquery.js"></script>
+	<script type="text/javascript" src="/inc/js/jquery.pause.js"></script>
 	<script type="text/javascript" src="/inc/js/jquery-ui.js"></script>
 	<script type="text/javascript" src="/inc/js/site.js"></script>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
@@ -27,7 +28,9 @@
     		<div class="usr">
     			<div class="wrapper">
         		<?php if (user_is_auth()): ?>
-        			Logged in as <a href="/user/main"><?php echo htmlspecialchars(user_get_username()); ?></a> | <a href="/user/logout">Logout</a>
+        			Logged in as <strong><a href="/user/view/<?php echo user_get_id(); ?>"><?php echo htmlspecialchars(user_get_username()); ?></a></strong> | 
+        			<a href="/user/main">Account</a> | 
+        			<a href="/user/logout">Logout</a>
         		<?php else: ?>
         			<a href="/user/login">Login</a> or <a href="/user/register">Register</a>
         		<?php endif; ?>
@@ -53,7 +56,7 @@
     		<div class="clear"></div>
     	</div>
     	<div class="grid_3 search">
-    		<form id="top-search" method="get" action="/search">
+    		<form id="top-search" method="post" action="/search">
     			<label id="top-search-label" accesskey="2" for="top-search-input">Search joind.in...</label>
     			<input type="text" value="" id="top-search-input" name="search_term"/>
     			<input type="image" alt="Search" src="/inc/img/top-search-submit.gif" id="top-search-submit"/>

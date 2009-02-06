@@ -40,7 +40,8 @@ foreach($claimed as $k=>$v){ $cl[$v->rid]=$v->uid; }
 		}else{ $link_txt="Will you be there?"; $showt=4; }
 	}
 	?>
-		<a class="btn<?php echo $attend ? ' btn-success' : ''; ?>" href="#" id="attend_link" onClick="markAttending(<?=$det->ID?>,<?=$showt?>);return false;"><?=$link_txt?></a>
+		<a class="btn<?php echo $attend ? ' btn-success' : ''; ?>" href="#" onclick="markAttending(this,<?=$det->ID?>,<?php echo $det->event_end<time() ? 'true' : 'false'; ?>);return false;"><?=$link_txt?></a>
+		<div class="clear"></div>
 	</p>
 	<div class="clear"></div>
 </div>

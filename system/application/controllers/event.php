@@ -23,18 +23,23 @@ class Event extends Controller {
 		);
 		
 		$this->load->helper('form');
+		$this->load->helper('reqkey');
 		//$this->load->library('calendar',$prefs);
 		$this->load->model('event_model');
 		$this->load->helper('mycal');
 		
-		$events=$this->event_model->getEventDetail();
+		$events = $this->event_model->getEventDetail();
+		$reqkey = buildReqKey();
+		
 		$arr=array(
 			'events' =>$events,
 			//'admin'	 =>($this->user_model->isAdminEvent($id)) ? true : false
-			'mo'	=>date('m'),
-			'day'	=>0,
-			'yr'	=>date('Y'),
-			'all'	=>true
+			'month'	=> null,
+			'day'	=> null,
+			'year'	=> null,
+			'all'	=> true,
+			'reqkey' => $reqkey,
+			'seckey' => buildSecFile($reqkey)
 		);	
 		$this->template->write_view('content','event/main',$arr,TRUE);
 		$this->template->render();
@@ -43,22 +48,51 @@ class Event extends Controller {
 	}
 	function calendar($date=null){
 		$this->load->model('event_model');
+		$this->load->helper('reqkey');
 		$this->load->helper('mycal');
+
+		if (!$date) {
+		    $date = date('Y-m');
+		}
 		
-		if(!$date){ $date=date('m_d_Y'); }
+		if (strpos($date, '-') === false) {
+		    $day   = null;
+		    $month = date('m');
+		    $year  = (int)$date;
+		} else {
+		    $split = explode('-', $date);
+		    if (count($split) == 2) {
+		        $day = null;
+		        list($year, $month) = $split;
+		    } else {
+		        list($year, $month, $day) = $split;
+		    }
+		}
 		
-		$date_p	= explode('_',$date);
-		$start	= mktime(0,0,0,$date_p[0],1,$date_p[2]);
-		$end	= mktime(0,0,0,$date_p[0],date('t',$start),$date_p[2]);
+		$checkDay = $day === null ? 1 : $day;
+
+		if (!checkdate((int)$month, (int)$checkDay, (int)$year)) {
+		    $day   = null;
+		    $month = date('m');
+		    $year  = date('Y');
+		}
+
+		$start	= mktime(0,  0,  0, $month, $day === null ? 1                 : $day, $year);
+		$end	= mktime(23, 59, 59, $month, $day === null ? date('t', $start) : $day, $year);
+
+		$events	= $this->event_model->getEventDetail(null, $start, $end);
 		
-		$events	= $this->event_model->getEventDetail(null,$start,$end);
-		
+		$reqkey = buildReqKey();
+
 		$arr=array(
-			'events'=>$events,
-			'mo'	=>$date_p[0],
-			'day'	=>$date_p[1],
-			'yr'	=>$date_p[2]
-		);	
+			'events' => $events,
+			'month'	 => $month,
+			'day'	 => $day,
+			'year'	 => $year,
+			'reqkey' => $reqkey,
+			'seckey' => buildSecFile($reqkey)
+		);
+
 		$this->template->write_view('content','event/main',$arr,TRUE);
 		$this->template->render();
 	}
@@ -359,7 +393,7 @@ class Event extends Controller {
 		}
 		$cap = create_captcha($cap_arr);
 		$this->session->set_userdata(array('cinput'=>$cap['word']));
-		$arr['cap']=$cap;
+		$arr['captcha']=$cap;
 		
 		$this->template->write_view('content','event/submit',$arr);
 		$this->template->render();

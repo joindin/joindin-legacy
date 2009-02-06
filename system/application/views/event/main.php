@@ -1,11 +1,22 @@
 <?php
-$admin=false;
+//ob_start();
+//buildCal($mo,$day,$yr,$evt);
+menu_sidebar('Calendar', mycal_get_calendar($year, $month, $day));
+
+$title = '';
+if (!empty($year) && !empty($month)) {
+    if (!empty($day)) {
+        $title .= ' for ' . date('F j, Y', mktime(0, 0, 0, $month, $day, $year));
+    } else {
+        $title .= ' for ' . date('F Y', mktime(0, 0, 0, $month, 1, $year));
+    }
+}
 ?>
 <h1 class="icon-event">
 	<?php if(user_is_admin()){ ?>
 	<span style="float:left">
 	<?php } ?>
-	Events
+	Events<?php echo $title; ?>
 	<?php if(user_is_admin()){ ?>
 	</span>
 	<?php } ?>
@@ -14,52 +25,33 @@ $admin=false;
 	<div class="clear"></div>
     <?php } ?>
 </h1>
-<?php
-//echo '<pre>'; print_r($events); echo '</pre>'; 
-
-$evt=array();
-foreach($events as $k=>$v){
-	$evt[]=array(
-		'day_start'	=> date('d',$v->event_start),
-		'day_end'	=> date('d',$v->event_end),
-		'title'		=> $v->event_name,
-		'link'		=> '/event/view/'.$v->ID
-	);
-}
-
-/*$evt=array(
-	array('day_start'=>2,'title'=>'foo','link'=>'http://foo.com'),
-	array('day_start'=>4,'day_end'=>6,'title'=>'foo 2','link'=>'http://foo.com')
-);*/
-$estart	= mktime(0,0,0,$mo,$day,$yr);
-$eend	= mktime(23,59,59,$mo,$day,$yr);
-
-ob_start();
-buildCal($mo,$day,$yr,$evt);
-menu_sidebar('Calendar', ob_get_clean());
-
-?>
 
 <?php
-$style='';
 foreach($events as $k=>$v){
-    if(isset($all) && $all==false){
-		$style=($estart>=$v->event_start && $eend<=$v->event_end) ? 'color:#5181C1;background-color:#EEEEEE;padding:4px' : 'color:#CCCCCC';
-	}
-	
-	$this->load->view('event/_event-row', array('event'=>$v, 'style' => $style));
+	$this->load->view('event/_event-row', array('event'=>$v));
 ?>
 <?php
 }
 
-if(count($events)==0){ 
-	echo sprintf('
-		<h2>No events found for this month!</h2>
-		<p>
-		Know of an event happening this month? <a href="/event/submit">Let us know!</a>
-		We love to get the word out about events the community would be interested in and
-		you can help us spread the word!
-		</p>
-	'); 
+if (count($events) == 0) {
+    if (!empty($year) && !empty($month)) {
+        if (!empty($day)) {
+            echo '<h2>No events found for this day!</h2>';
+        } else {
+            echo '<h2>No events found for this month!</h2>';
+        }
+    } else {
+	    echo '<h2>No events found!</h2>';
+    }
+?>
+<p>
+	Know of an event happening this month? <a href="/event/submit">Let us know!</a>
+	We love to get the word out about events the community would be interested in and
+	you can help us spread the word!
+</p>
+<p>
+	<a href="/event/submit/" class="btn-big">Submit your event!</a>
+</p>
+<?php
 }
 ?>

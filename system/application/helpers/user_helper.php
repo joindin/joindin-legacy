@@ -9,7 +9,23 @@ function user_is_auth()
 function user_get_username()
 {
 	$CI =& get_instance();
-	return false !== ($username = $CI->user_model->isAuth()) ? $username : null;
+	
+	if ($CI->user_model->isAuth()) {
+	    return $CI->session->userdata('username');
+	}
+
+	return null;
+}
+
+function user_get_id()
+{
+	$CI =& get_instance();
+
+	if ($CI->user_model->isAuth()) {
+	    return $CI->session->userdata('ID');
+	}
+
+	return null;
 }
 
 function user_is_admin()
