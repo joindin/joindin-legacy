@@ -46,29 +46,19 @@ class Event extends Controller {
 		
 		//$this->load->view('event/main',array('events'=>$events));
 	}
-	function calendar($date=null){
+	function calendar($year = null, $month = null, $day = null){
 		$this->load->model('event_model');
 		$this->load->helper('reqkey');
 		$this->load->helper('mycal');
 
-		if (!$date) {
-		    $date = date('Y-m');
+		if (!$year) {
+		    $year = date('Y');
 		}
 		
-		if (strpos($date, '-') === false) {
-		    $day   = null;
+	    if (!$month) {
 		    $month = date('m');
-		    $year  = (int)$date;
-		} else {
-		    $split = explode('-', $date);
-		    if (count($split) == 2) {
-		        $day = null;
-		        list($year, $month) = $split;
-		    } else {
-		        list($year, $month, $day) = $split;
-		    }
 		}
-		
+
 		$checkDay = $day === null ? 1 : $day;
 
 		if (!checkdate((int)$month, (int)$checkDay, (int)$year)) {
@@ -77,7 +67,7 @@ class Event extends Controller {
 		    $year  = date('Y');
 		}
 
-		$start	= mktime(0,  0,  0, $month, $day === null ? 1                 : $day, $year);
+		$start	= mktime(0,   0,  0, $month, $day === null ? 1                 : $day, $year);
 		$end	= mktime(23, 59, 59, $month, $day === null ? date('t', $start) : $day, $year);
 
 		$events	= $this->event_model->getEventDetail(null, $start, $end);

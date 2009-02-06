@@ -68,11 +68,11 @@ function mycal_build_calendar($year, $month, $day, $events = array()){
         }
 
         $class = 'calendar-day';
-        $curr  = _mycal_format_date($year, $month, $d);
+        $curr  = date('Y-m-d', mktime(0, 0, 0, $month, $d, $year));
 
         if (isset($events[$curr])) {
             $class .= ' calendar-day-events';
-            $content = '<a href="/event/calendar/' . $curr . '">' . $d . '</a>';
+            $content = '<a href="/event/calendar/' . _mycal_format_date($year, $month, $d) . '">' . $d . '</a>';
         } else {
             $content = $d;
         }
@@ -94,13 +94,17 @@ function mycal_build_calendar($year, $month, $day, $events = array()){
     return $calendar."</tr>\n</table>\n";
 }
 
-function _mycal_format_date($year, $month, $day = null)
+function _mycal_format_date($year, $month = null, $day = null)
 {
     if (null !== $day) {
-        return date('Y-m-d', mktime(0, 0, 0, $month, $day, $year));
+        return date('Y/m/d', mktime(0, 0, 0, $month, $day, $year));
     }
     
-    return date('Y-m', mktime(0, 0, 0, $month, 1, $year));
+    if (null !== $month) {
+        return date('Y/m', mktime(0, 0, 0, $month, 1, $year));
+    }
+    
+    return date('Y', mktime(0, 0, 0, 1, 1, $year));
 }
 
 //make our calendar
