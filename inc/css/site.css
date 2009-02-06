@@ -194,7 +194,6 @@ a {
 .menu ul {
       position: absolute;
       bottom: -1px;
-	  *bottom: -4px;
       margin:0;
       /*padding:10px 10px 0;*/
       padding: 0;
@@ -256,10 +255,12 @@ a {
 #hd .menu {
 	position: relative;
 	min-height: 60px;
+	border-bottom-color: transparent;
 }
 
 #hd .menu ul {
-      font-size: 105%;
+	font-size: 105%;
+	*bottom: -3px;
 }
 
 #page-event #menu-event,
