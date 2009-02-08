@@ -364,7 +364,6 @@ class Event extends Controller {
 	}
 	function submit(){
 		$arr=array();
-		$this->load->helper('form');
 		$this->load->library('validation');
 		$this->load->plugin('captcha');
 		$this->load->library('akismet');
@@ -384,6 +383,9 @@ class Event extends Controller {
 			'start_mo'				=> 'Event Start Month',
 			'start_day'				=> 'Event Start Day',
 			'start_yr'				=> 'Event Start Year',
+			'end_mo'				=> 'Event End Month',
+			'end_day'				=> 'Event End Day',
+			'end_yr'				=> 'Event End Year',
 		//	'cinput'				=> 'Captcha'
 		);
 		$rules=array(
@@ -392,19 +394,33 @@ class Event extends Controller {
 			'event_contact_email'	=> 'required|valid_email',
 			'event_desc'			=> 'required',
 			'start_mo'				=> 'callback_start_mo_check',
+			'end_mo'				=> 'callback_end_mo_check'
 		//	'cinput'				=> 'required|callback_cinput_check'
 		);
 		$this->validation->set_rules($rules);
 		$this->validation->set_fields($fields);
 		
 		if($this->validation->run()!=FALSE){
-			$arr=array(
+			/*$arr=array(
 				'comment_type'			=>'comment',
 				'comment_author'		=>$this->input->post('your_name'),
 				'comment_author_email'	=>$this->input->post('your_email'),
 				'comment_content'		=>$this->input->post('your_com')
 			);
-			$ret=$this->akismet->send('/1.1/comment-check',$arr);
+			$ret=$this->akismet->send('/1.1/comment-check',$arr);*/
+			
+			//TODO: add it to our database, but mark it pending
+			/*$arr=array(
+				'event_name'	=>$this->input->post('event_name'),
+				'event_start'	=>'',
+				'event_end'		=>'',
+				'event_loc'		=>$this->input->post('event_loc'),
+				'event_desc'	=>$this->input->post('event_desc'),
+				'active'		=>0,
+				'event_stub'	=>'',
+				'event_tz'		=>'',
+				'pending'		=>1
+			);*/
 			
 			//send the information via email...
 			$t=mktime(

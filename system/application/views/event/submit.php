@@ -12,7 +12,9 @@ if(isset($msg)){ echo '<div class="notice">'.$msg.'</div>'; } echo '<br/>';
 <table cellpadding="3" cellspacing="0" border="0">
 <tr>
 	<td class="title">Event Title:</td>
-	<td><?php echo form_input('event_title',$this->validation->event_title); ?></td>
+	<td>
+		<?php echo form_input('event_title',$this->validation->event_title); ?>
+	</td>
 </tr>
 <tr>
 	<td class="title">Event Contact Name:</td>
@@ -32,6 +34,19 @@ if(isset($msg)){ echo '<div class="notice">'.$msg.'</div>'; } echo '<br/>';
 		echo form_dropdown('start_mo',$start_mo,$this->validation->start_mo);
 		echo form_dropdown('start_day',$start_day,$this->validation->start_day);
 		echo form_dropdown('start_yr',$start_yr,$this->validation->start_yr);
+		?>
+	</td>
+</tr>
+<tr>
+	<td class="title">Event End Date:</td>
+	<td>
+		<?php
+		foreach(range(1,12) as $v){ $end_mo[$v]=$v; }
+		foreach(range(1,32) as $v){ $end_day[$v]=$v; }
+		foreach(range(date('Y'),date('Y')+5) as $v){ $end_yr[$v]=$v; }
+		echo form_dropdown('end_mo',$start_mo,$this->validation->end_mo);
+		echo form_dropdown('end_day',$start_day,$this->validation->end_day);
+		echo form_dropdown('end_yr',$start_yr,$this->validation->end_yr);
 		?>
 	</td>
 </tr>

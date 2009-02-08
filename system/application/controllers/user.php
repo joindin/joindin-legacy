@@ -95,7 +95,8 @@ class User extends Controller {
 					'password'	=> $this->input->post('pass'),
 					'email'		=> $this->input->post('email'),
 					'full_name'	=> $this->input->post('full_name'),
-					'active'	=> 1
+					'active'	=> 1,
+					'last_login'=> time()
 				);
 				$this->db->insert('user',$arr);
 				
@@ -149,7 +150,8 @@ class User extends Controller {
 		$arr=array(
 			'details'	=> $this->user_model->getUser($uid),
 			'comments'	=> $this->talks_model->getUserComments($uid),
-			'talks'		=> $this->talks_model->getUserTalks($uid)
+			'talks'		=> $this->talks_model->getUserTalks($uid),
+			'is_admin'	=> $this->user_model->isSiteAdmin()
 		);
 
 		$this->template->write_view('content','user/view',$arr);
