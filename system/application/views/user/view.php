@@ -1,18 +1,28 @@
-<?php
-//echo '<pre>'; print_r($details); print_r($comments); echo '</pre>';
-//echo '<pre>'; print_r($talks); echo '</pre>';
+<h1><?php echo $details[0]->username; ?></h1>
 
-echo '<h1 style="margin-top:0px;margin-bottom:2px;color:#B86F09">'.$details[0]->username.'</h1><br/>';
-echo '<h3 style="color:#5181C1">Talks</h3>';
-foreach($talks as $k=>$v){
-	echo '<a href="/talk/view/'.$v->tid.'">'.$v->talk_title.'</a><br/>';
-	echo $v->talk_desc.'<br/><br/>';
-}
+<div class="box">
+    <h2>Talks</h2>
+<?php if (count($talks) == 0): ?>
+	<p>No talks so far</p>
+<?php else: ?>
+    <?php
+        foreach($talks as $k=>$v){
+        	$this->load->view('talk/_talk-row', array('talk'=>$v));
+        }
+    ?>
+<?php endif; ?>
+</div>
 
-
-echo '<h3 style="color:#5181C1">Comments</h3>';
-foreach($comments as $k=>$v){
-	echo '<a href="/talk/view/'.$v->talk_id.'#'.$v->ID.'">'.$v->talk_title.'</a><br/>';
-}
-?>
-
+<div class="box">
+    <h2>Comments</h2>
+<?php if (count($comments) == 0): ?>
+	<p>No comments so far</p>
+<?php else: ?>
+    <?php foreach($comments as $k=>$v): ?>
+    <div class="row">
+    	<strong><a href="/talk/view/<?php echo $v->talk_id; ?>#comment-<?php echo $v->ID; ?>"><?php echo htmlspecialchars($v->talk_title); ?></a></strong>
+    	<div class="clear"></div>
+    </div>
+    <?php endforeach; ?>
+<?php endif; ?>
+</div>

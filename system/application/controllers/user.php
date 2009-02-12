@@ -30,6 +30,7 @@ class User extends Controller {
 		if($this->validation->run()==FALSE){
 			$ref=(isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : $this->session->userdata('ref_url');
 			$this->session->set_userdata('ref_url',$ref);
+
 			$this->template->write_view('content','user/login');
 			$this->template->render();
 		}else{
@@ -42,7 +43,7 @@ class User extends Controller {
 			$this->db->update('user',array('last_login'=>time()));
 			
 			$rurl=$this->session->userdata('ref_url');
-			if(!empty($rurl)){
+			if(!empty($rurl) && false === strpos($rurl, 'user/login')){
 				$url=str_replace('http://'.$_SERVER['HTTP_HOST'],'',$rurl); //echo $url;
 				redirect($url);
 			}else{ redirect('user/main'); }
@@ -118,6 +119,10 @@ class User extends Controller {
 		$this->load->library('validation');
 		$this->load->model('talks_model');
 		
+		if (!$this->user_model->isAuth()) {
+		    redirect();
+		}
+		
 		$fields=array(
 			'talk_code'=>'Talk Code'
 		);
@@ -181,16 +186,22 @@ class User extends Controller {
 		$this->validation->set_fields($fields);
 		
 		if($this->validation->run()!=FALSE){
-			echo 'pass!';
 			$data=array(
 				'full_name'	=> $this->input->post('full_name'),
 				'email'		=> $this->input->post('email')
 			);
+
 			$pass=$this->input->post('pass');
-			if(!empty($pass)){ echo 'password!'; }else{ echo 'no pass!'; }
-			echo '<pre>'; print_r($data); echo '</pre>';
-			//$this->db->where('ID',$uid);
-			//$this->db->update('user',$data);
+			if (!empty($pass)) { 
+			    $data['password'] = $this->validation->pass;
+			    
+			}
+
+			$this->db->where('ID',$uid);
+			$this->db->update('user',$data);
+			
+			$this->session->set_flashdata('msg', 'Changes saved successfully!');
+			redirect('user/manage', 'location', 302);
 		}
 		
 		$this->template->write_view('content','user/manage',$arr);

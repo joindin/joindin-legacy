@@ -8,228 +8,223 @@ foreach($claimed as $k=>$v){
 
 ?>
 
-<div style="padding:10px;border:0px solid #B86F09;background-color:#E4F1E8">
-<h1 class="title"><?=$det->event_name?></h1>
-<span style=";font-size:10px">
-<?=$det->event_loc?><br/>
-<?=date('m.d.Y',$det->event_start).' - '.date('m.d.Y',$det->event_end)?>
-<br/><br/>
-<?=nl2br($det->event_desc)?><br/>
-</span>
-<br/>
-<?php 
-/*
-if its set, but the event was in the past, just show the text "I was there!"
-if its set, but the event is in the future, show a link for "I'll be there!"
-if its not set show the "I'll be there/I was there" based on time
-*/
-if($attend){
-	if($det->event_end<time()){
-		$link_txt="I was there!"; $showt=1;
-	}else{ $link_txt="I'll be there!"; $showt=2; }
-}else{
-	if($det->event_end<time()){
-		$link_txt="Were you there?"; $showt=3; 
-	}else{ $link_txt="Will you be there?"; $showt=4; }
-}
-?>
-<b>::></b> <a href="#" id="attend_link" onClick="markAttending(<?=$det->ID?>,<?=$showt?>);return false;"><?=$link_txt?></a>
+<div class="detail">
+	<div class="img">
+		<div class="frame"><img src="/inc/img/_event<?php echo mt_rand(1,4); ?>.gif"/></div>
+	</div>
+	
+	<h1><?=$det->event_name?></h1>
+
+	<p class="info">
+		<strong><?php echo date('M j, Y',$det->event_start); ?></strong> - <strong><?php echo date('M j, Y',$det->event_end); ?></strong>
+		<br/> 
+		<strong><?php echo htmlspecialchars($det->event_loc); ?></strong>
+	</p>
+
+	<p class="desc">
+		<?=nl2br($det->event_desc)?>
+	</p>
+	
+	<p class="opts">
+	<?php 
+	/*
+	if its set, but the event was in the past, just show the text "I was there!"
+	if its set, but the event is in the future, show a link for "I'll be there!"
+	if its not set show the "I'll be there/I was there" based on time
+	*/
+	if($attend){
+		if($det->event_end<time()){
+			$link_txt="I was there!"; $showt=1;
+		}else{ $link_txt="I'll be there!"; $showt=2; }
+	}else{
+		if($det->event_end<time()){
+			$link_txt="Were you there?"; $showt=3; 
+		}else{ $link_txt="Will you be there?"; $showt=4; }
+	}
+	?>
+		<a class="btn<?php echo $attend ? ' btn-success' : ''; ?>" href="#" onclick="markAttending(this,<?=$det->ID?>,<?php echo $det->event_end<time() ? 'true' : 'false'; ?>);return false;"><?=$link_txt?></a>
+		<div class="clear"></div>
+	</p>
+	<div class="clear"></div>
 (<?php 
 	echo $attend; 
 	echo (time()<=$det->event_end) ? ' attending so far':' said they attended'; 
 ?>)
 </div>
 
-<?php if($admin){ ?>
-<table cellpadding="0" cellspacing="0" border="0" width="100%">
-<tr>
-	<td>
-		<a href="/event/edit/<?=$det->ID?>"><img src="/inc/img/sticky.gif" border="0" alt="Edit event"/></a>
-		<a href="/talk/add/event/<?=$det->ID?>"><img src="/inc/img/pending.png" border="0" alt="Add new talk"/></a>
-	</td>
-	<td width="50" align="right">
-		<a href="/event/delete/<?=$det->ID?>"><img src="/inc/img/redx.png" border="0" alt="Delete event"/></a>
-	</td>
-</tr>
-</table>
-<br/>
-<a href="/event/codes/<?=$det->ID?>">get talk codes</a>
-<br/>
-<center>
-<script type="text/javascript"><!--
-google_ad_client = "pub-2135094760032194";
-/* 468x60, created 11/5/08 */
-google_ad_slot = "4582459016"; google_ad_width = 468; google_ad_height = 60; //-->
-</script>
-<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
-</center>
-<br/>
+<?php if($admin): ?>
+<p class="admin">
+	<a class="btn-small" href="/event/delete/<?=$det->ID?>">Delete event</a>
+	<a class="btn-small" href="/event/edit/<?=$det->ID?>">Edit event</a>
+	<a class="btn-small" href="/talk/add">Add new talk</a>
+	&nbsp;
+	<a class="btn-small" href="/event/codes/<?=$det->ID?>">Get talk codes</a>
+</p>
+<?php endif; ?>
+
+<p class="ad">
+    <script type="text/javascript"><!--
+    google_ad_client = "pub-2135094760032194";
+    /* 468x60, created 11/5/08 */
+    google_ad_slot = "4582459016"; google_ad_width = 468; google_ad_height = 60; //-->
+    </script>
+    <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
+</p>
+
 
 <?php
-}
-echo '<br/>';
+
 $by_day=array();
 //echo '<pre>'; print_r($talks); echo '</pre>';
 foreach($talks as $v){
 	//echo '<a href="/talk/view/'.$v->ID.'">'.$v->talk_title.' ('.$v->speaker.')</a><br/>';
-	$day=date('m_d_Y',$v->date_given);
+	$day=date('Y-m-d',$v->date_given);
 	$by_day[$day][]=$v;
 }
 ksort($by_day);
 $ct=0;
 
 ?>
-<style>
-td.selected {
-	background-color: #5181C1;
-	font-weight: bold;
-	font-size: 12px;
-	width: 130px;
-	text-align: center;
-}
-td.nselected {
-	background-color: #EEEEEE;
-	font-weight: bold;
-	font-size: 12px;
-	width: 130px;
-	text-align: center;
-}
-td.selected a {
-	color: #FFFFFF;
-	text-decoration: none;
-}
-td.nselected a {
-	color: #5181C1;
-	text-decoration: none;
-}
-</style>
-<script>
-function switchCell(n){
-	if(n=='talks'){
-		document.getElementById('cell_comments').className='nselected';
-		document.getElementById('cell_talks').className='selected';
-		$('#talks_div').css('display','block');
-		$('#comments_div').css('display','none');		
-	}else{
-		document.getElementById('cell_comments').className='selected';
-		document.getElementById('cell_talks').className='nselected';
-		$('#talks_div').css('display','none');
-		$('#comments_div').css('display','block');
-	}
-	return false;
-}
-</script>
 
-<center>
-<table cellpadding="4" cellspacing="0" border="0">
-<tr>
-	<td class="selected" id="cell_talks"><a href="#" onClick="switchCell('talks');return false;">Talks (<?=count($talks)?>)</a></td>
-	<td class="nselected" id="cell_comments"><a href="#" onClick="switchCell('comments');return false;">Comments (<?=count($comments)?>)</a></td>
-</tr>
-</table>
-</center>
-
-<?php
-//echo '<pre>'; print_r($cl); /*print_r($by_day);*/ echo '</pre>';
-
-echo '<div style="border:2px solid #5181C1;padding:3px;" id="talks_div">';
-echo '<table cellpadding="3" cellspacing="0" border="0" width="100%">';
-foreach($by_day as $k=>$v){
-	echo '<tr><td colspan="2"><a name="'.$k.'"></a><b>'.str_replace('_','.',$k).'</b></td></tr>';
-	foreach($v as $ik=>$iv){
-		$style=($ct%2==0) ? 'row1' : 'row2';
-		//echo '<tr><td align="right">'.str_repeat('*',$iv->rank).'</td>';
-		echo '<tr class="'.$style.'"><td align="right">';
-		for($i=1;$i<=$iv->rank;$i++){ echo '<img src="/inc/img/thumbs_up.jpg" height="20"/>'; }
-		echo '</td>';
-		
-		$sp='';
-		foreach($iv->codes as $ck=>$cv){
-			if(array_key_exists($cv,$cl)){
-				$id=$cl[$cv]['uid'];
-				$sp.='<a href="/user/view/'.$id.'">'.$ck.'</a>, ';
-			}else{ $sp.=$ck.', '; }
-		}
-		$sp=substr($sp,0,strlen($sp)-2);
-		//print_r($iv); echo '<br/><br/>';
-		echo '<td><a href="/talk/view/'.$iv->ID.'">'.$iv->talk_title.'</a></td><td style="font-size:10px;font-weight:bold;color:#858585">'.strtoupper($iv->tcid).'</td><td>';
-		echo '<img src="/inc/img/flags/'.$iv->lang.'.gif"/></td><td>'.$sp.'</td><tr/>';
-		$ct++;
-	}
-}
-?>
-</table></div>
-
-<div style="border:2px solid #5181C1;padding:3px;" id="comments_div">
-	<?php
-	if(isset($msg)){ echo '<div class="notice">'.$msg.'</div>'; }
+<div id="event-tabs">
+	<ul>
+		<li><a href="#talks">Talks (<?=count($talks)?>)</a></li>
+		<li><a href="#comments">Comments (<?=count($comments)?>)</a></li>
+	</ul>
+	<div id="talks">
+	<?php if (count($by_day) == 0): ?>
+		<?php $this->load->view('msg_info', array('msg' => 'No talks available at the moment.')); ?>
+	<?php else: ?>
+		<table cellpadding="0" cellspacing="0" border="0" width="100%" class="list">
+        <?php 
+        foreach ($by_day as $k=>$v):
+            $ct = 0;
+        ?>
+        	<tr>
+        		<th colspan="4">
+        			<h4 id="talks-<?php echo $k; ?>"><?php echo date('M j, Y', strtotime($k)); ?></h4>
+        		</th>
+        	</tr>
+        	<?php foreach($v as $ik=>$iv): ?>
+        	<tr class="<?php echo ($ct%2==0) ? 'row1' : 'row2'; ?>">
+        		<?php $sp=(array_key_exists((string)$iv->ID,$cl)) ? '<a href="/user/view/'.$cl[$iv->ID].'">'.$iv->speaker.'</a>' : $iv->speaker; ?>
+        		<td>
+        			<a href="/talk/view/<?php echo $iv->ID; ?>"><?php echo $iv->talk_title; ?></a>
+        		</td>
+        		<td nowrap="nowrap">
+        			<?php echo strtoupper($iv->tcid); ?>
+        		</td>
+        		<td>
+        			<img src="/inc/img/flags/<?php echo $iv->lang; ?>.gif"/>
+        		</td>
+        		<td>
+        			<?php echo $sp; ?>
+        		</td>
+        	<tr/>
+        <?php
+        	    $ct++;
+            endforeach;
+        endforeach;
+        ?>
+        </table>
+    <?php endif; ?>
+	</div>
+	<div id="comments">
 	
-	echo $this->validation->error_string;
-	echo form_open('event/view/'.$det->ID.'#comments');
-	
-	$types=array(
-		'Suggestion'		=> 'Suggestion',
-		'General Comment'	=> 'General Comment',
-		'Feedback'			=> 'Feedback'
-	);
-	$type=($det->event_start>time()) ? 'Suggestion':'Feedback';
-	?>
-	<table cellpadding="3" cellspacing="0" border="0">
 	<?php
-	if($user_id==0){
-	?>
-	<tr>
-		<td>Name:</td>
-		<td><?php echo form_input('cname',$this->validation->cname); ?></td>
-	</tr>
-	<?php } ?>
-	<tr>
-		<td>Type:</td>
-		<td><?=$type?></td>
-	</tr>
-	<tr>
-		<td valign="top">Comment:</td>
-		<td>
+    $msg=$this->session->flashdata('msg');
+    if (!empty($msg)): 
+    ?>
+        <?php $this->load->view('msg_info', array('msg' => $msg)); ?>
+    <?php endif; ?>
+	
+	<?php if (count($comments) == 0): ?>
+		<?php $this->load->view('msg_info', array('msg' => 'No comments yet.')); ?>
+	<?php else: ?>
+
 		<?php 
-		$arr=array(
-			'name'=>'event_comment',
-			'value'=>$this->validation->event_comment,
-			'cols'=>50,
-			'rows'=>8
-		);
-		echo form_textarea($arr);
+		foreach ($comments as $k => $v): 
+		    $uname	= ($v->user_id!=0) ? '<a href="/user/view/'.$v->user_id.'">'.$v->cname.'</a>' : $v->cname;
+		    $type	= ($det->event_start>time()) ? 'Suggestion' : 'Feedback';
 		?>
-		</td>
-	</tr>
-	<tr><td colspan="2" align="right"><?php echo form_submit('sub','Submit'); ?></td></tr>
-	</table>
-	<?php 
-	echo form_close(); 
-	
-	//print_r($comments);
-	$ct=0;
-	echo '<table cellpadding="0" cellspacing="2" border="0" width="100%" class="event_comments">';
-	foreach($comments as $k=>$v){
-		$class  = ($ct%2==0) ? 'row1' : 'row2';
-		$name	= ($v->user_id!=0) ? '<a href="/user/view/'.$v->user_id.'">'.$v->cname.'</a>' : $v->cname;
-		$type	= ($det->event_start>time()) ? 'Suggestion' : 'Feedback';
-		
-		echo '<tr class="'.$class.'"><td><span class="comment">'.$v->comment.'</span><br/>';
-		echo '<span class="meta">'.$name.', '.date('m.d.Y H:i:s',$v->date_made).' ('.$type.')</td></tr>';
-		$ct++;
-	}
-	echo '</table><br/>';
-	?>
+    	<div id="comment-<?php echo $v->ID ?>" class="row row-event-comment">
+        	<div class="text">
+            	<p class="info">
+            		<strong><?php echo date('M j, Y, H:i',$v->date_made); ?></strong> by <strong><?php echo $uname; ?></strong> (<?php echo $type; ?>)
+            	</p>
+            	<p class="desc">
+            		<?php echo nl2br($v->comment); ?>
+            	</p>
+        	</div>
+        	<div class="clear"></div>
+        </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+
+    	<h3 id="comment-form">Write a comment</h3>
+    	<?php echo form_open('event/view/'.$det->ID.'#comment-form', array('class' => 'form-event')); ?>
+    
+        <?php if (!empty($this->validation->error_string)): ?>
+            <?php $this->load->view('msg_error', array('msg' => $this->validation->error_string)); ?>
+        <?php endif; ?>
+    
+        <?php
+    	
+    	$types=array(
+    		'Suggestion'		=> 'Suggestion',
+    		'General Comment'	=> 'General Comment',
+    		'Feedback'			=> 'Feedback'
+    	);
+    	
+    	$type=($det->event_start>time()) ? 'Suggestion':'Feedback';
+
+    	?>
+
+    <?php if($user_id == 0): ?>
+    	<div class="row">
+        	<label for="cname">Name</label>
+        	<?php echo form_input('cname',$this->validation->cname); ?>
+            <div class="clear"></div>
+        </div>
+    <?php endif; ?>
+    	
+    	<div class="row">
+        	<label for="type">Type</label>
+        	<div class="input"><?=$type?></div>
+            <div class="clear"></div>
+        </div>
+    	
+    	<div class="row">
+        	<label for="event_comment">Comment</label>
+        	<?php 
+            $arr = array(
+        			'name'=>'event_comment',
+                    'id'=>'event_comment',
+        			'value'=>$this->validation->event_comment,
+        			'cols'=>40,
+        			'rows'=>10
+            );
+            echo form_textarea($arr);
+            ?>
+            <div class="clear"></div>
+        </div>
+    	
+    	<div class="row row-buttons">
+        	<?php echo form_submit(array('class' => 'btn'), 'Submit Comment'); ?>
+        </div>
+    	<?php  echo form_close(); ?>
+	</div>
 </div>
 
-<script>
-if(window.location.hash=='#comments'){
-	switchCell('comments');
-}else{ 
-	var talk_num=<?=count($talks)?>;
-	if(talk_num<=0){
-		switchCell('comments'); 
-	}else{ switchCell('talks'); }
-}
+<script type="text/javascript">
+$(function() { 
+	$('#event-tabs').tabs();
+	if (window.location.hash == '#comment-form') {
+		$('#event-tabs').tabs('select', '#comments');
+	} else {
+	<?php if (count($talks) == 0): ?>
+		$('#event-tabs').tabs('select', '#comments');
+	<?php endif; ?>
+	}
+});
 </script>
-	

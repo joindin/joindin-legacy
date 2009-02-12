@@ -32,62 +32,60 @@ class Talks_model extends Model {
 		if($tid){
 			$sql=sprintf('
 				select
-					t.talk_title,
-					t.speaker,
-					t.ID as tid,
-					e.ID eid,
-					t.slides_link,
-					t.date_given,
-					t.event_id,
-					t.talk_desc,
-					l.lang_name,
-					l.lang_abbr,
-					t.lang,
-					e.event_name,
-					e.event_tz,
-					(select floor(avg(tc.rating)) from talk_comments tc where tc.talk_id=t.ID) as tavg,
+					talks.*,
+					talks.ID tid,
+					events.ID eid,
+					events.event_name,
+					events.event_tz,
+					lang.lang_name,
+					lang.lang_abbr,
+					count(talk_comments.ID) as ccount,
+					(select floor(avg(tc.rating)) from talk_comments tc where tc.talk_id=talks.ID) as tavg,
 					(select 
 						cat.cat_title
 					from 
 						talk_cat tac,categories cat
 					where 
-						tac.talk_id=t.ID and tac.cat_id=cat.ID
+						tac.talk_id=talks.ID and tac.cat_id=cat.ID
 					) tcid
 				from
-					talks t,
-					events e,
-					lang l
+					talks
+				left join talk_comments on (talk_comments.talk_id = talks.ID)
+				inner join events on (events.ID = talks.event_id)
+				inner join lang on (lang.ID = talks.lang)
 				where
-					t.ID=%s and
-					e.ID=t.event_id and
-					t.active=1 and
-					l.ID=t.lang
+					talks.ID=%s and
+					talks.active=1
+				group by
+					talks.ID
 			',$tid);
 			$q=$this->db->query($sql);
 		}else{
 			if($latest){ 
-				$wh=' date_given<='.time().' and ';
-				$ob=' order by date_given desc';
+				$wh=' talks.date_given<='.time().' and ';
+				$ob=' order by talks.date_given desc';
 			}else{ $wh=''; $ob=''; }
 			$sql=sprintf('
 				select
-					talk_title,
-					speaker,
-					slides_link,
-					date_given,
-					event_id,
-					talks.ID,
-					talk_desc,
-					lang_name,
-					lang_abbr,
-					(select floor(avg(rating)) from talk_comments where talk_id=talks.ID) as tavg,
-					(select event_name from events where events.ID=talks.event_id) as ename
+					talks.*,
+					talks.ID tid,
+					events.ID eid,
+					events.event_name,
+					events.event_tz,
+					lang.lang_name,
+					lang.lang_abbr,
+					count(talk_comments.ID) as ccount,
+					(select floor(avg(rating)) from talk_comments where talk_id=talks.ID) as tavg
 				from
-					talks,lang
+					talks
+				left join talk_comments on (talk_comments.talk_id = talks.ID)
+				inner join events on (events.ID = talks.event_id)
+				inner join lang on (lang.ID = talks.lang)
 				where
 					%s
-					lang.ID=talks.lang and
-					active=1
+					talks.active=1
+				group by
+					talks.ID
 				%s
 			',$wh,$ob);
 			$q=$this->db->query($sql);
@@ -123,25 +121,30 @@ class Talks_model extends Model {
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
-	function getPopularTalks($len=5){
+	function getPopularTalks($len=7){
 		$sql=sprintf('
 			select
 				t.talk_title,
 				t.ID,
 				count(tc.ID) as ccount,
-				(select floor(avg(rating)) from talk_comments where talk_id=t.ID) as tavg
+				(select floor(avg(rating)) from talk_comments where talk_id=t.ID) as tavg,
+				e.ID eid,
+				e.event_name,
+				e.event_tz
 			from
 				talks t,
-				talk_comments tc
+				talk_comments tc,
+				events e
 			where
 				tc.talk_id=t.ID and
+				e.ID=t.event_id and
 				t.active=1
 			group by
 				t.ID
 			order by 
 				ccount desc
 			limit
-				7
+				' . $len . '
 		');
 		$q=$this->db->query($sql);
 		return $q->result();
@@ -211,9 +214,15 @@ class Talks_model extends Model {
 			return true;
 		}else{ return false; }
 	}
+
 	//---------------
 	function search($term,$start,$end){
-		$this->db->from('talks');
+		$this->db->select('talks.*, count(talk_comments.ID) as ccount, (select floor(avg(rating)) from talk_comments where talk_id=talks.ID) as tavg, events.ID eid, events.event_name, events.event_tz');
+	    $this->db->from('talks');
+	    
+	    $this->db->join('talk_comments', 'talk_comments.talk_id=talks.ID', 'left');
+		$this->db->join('events', 'events.ID=talks.event_id', 'left');
+	    
 		if($start>0){ $this->db->where('date_given>='.$start); }
 		if($end>0){ $this->db->where('date_given<='.$end); }
 		
@@ -221,6 +230,7 @@ class Talks_model extends Model {
 		$this->db->or_like('talk_desc',$term);
 		$this->db->or_like('speaker',$term);
 		$this->db->limit(10);
+		$this->db->group_by('talks.ID');
 		$q=$this->db->get();
 		return $q->result();
 	}

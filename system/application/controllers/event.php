@@ -23,31 +23,56 @@ class Event extends Controller {
 		);
 		
 		$this->load->helper('form');
+		$this->load->helper('reqkey');
 		//$this->load->library('calendar',$prefs);
 		$this->load->model('event_model');
 		$this->load->helper('mycal');
 		
-		$events=$this->event_model->getEventDetail();
+		$events = $this->event_model->getEventDetail();
+		$reqkey = buildReqKey();
+		
 		$arr=array(
 			'events' =>$events,
 			//'admin'	 =>($this->user_model->isAdminEvent($id)) ? true : false
-			'mo'	=>date('m'),
-			'day'	=>0,
-			'yr'	=>date('Y'),
-			'all'	=>true
+			'month'	=> null,
+			'day'	=> null,
+			'year'	=> null,
+			'all'	=> true,
+			'reqkey' => $reqkey,
+			'seckey' => buildSecFile($reqkey)
 		);	
 		$this->template->write_view('content','event/main',$arr,TRUE);
 		$this->template->render();
 		
 		//$this->load->view('event/main',array('events'=>$events));
 	}
-	function calendar($date=null){
+	function calendar($year = null, $month = null, $day = null){
 		$this->load->model('event_model');
+		$this->load->helper('reqkey');
 		$this->load->helper('mycal');
+
+		if (!$year) {
+		    $year = date('Y');
+		}
 		
-		if(!$date){ $date=date('m_Y'); }
+	    if (!$month) {
+		    $month = date('m');
+		}
+
+		$checkDay = $day === null ? 1 : $day;
+
+		if (!checkdate((int)$month, (int)$checkDay, (int)$year)) {
+		    $day   = null;
+		    $month = date('m');
+		    $year  = date('Y');
+		}
+
+		$start	= mktime(0,   0,  0, $month, $day === null ? 1                 : $day, $year);
+		$end	= mktime(23, 59, 59, $month, $day === null ? date('t', $start) : $day, $year);
+
+		$events	= $this->event_model->getEventDetail(null, $start, $end);
 		
-		$date_p	= explode('_',$date);
+		/*$date_p	= explode('_',$date);
 		if(count($date_p)==2){
 			$start	= mktime(0,0,0,$date_p[0],1,$date_p[1]);
 			$end	= mktime(0,0,0,$date_p[0],date('t',$start),$date_p[1]);	
@@ -56,15 +81,26 @@ class Event extends Controller {
 			$end	= mktime(0,0,0,$date_p[0],date('t',$start),$date_p[2]);
 		}		
 		$events	= $this->event_model->getEventDetail(null,$start,$end);
-		
-		$arr=array('events'=>$events,'mo'=>$date_p[0]);
+		*/
+		$reqkey = buildReqKey();
+
+		/*$arr=array('events'=>$events,'mo'=>$date_p[0]);
 		if(count($date_p)==2){
 			$arr['day']	= 1;
 			$arr['yr']	= $date_p[1];
 		}else{ 
 			$arr['day']	= $date_p[1];
 			$arr['yr']	= $date_p[2];
-		}
+		}*/
+		$arr=array(
+			'events' => $events,
+			'month'	 => $month,
+			'day'	 => $day,
+			'year'	 => $year,
+			'reqkey' => $reqkey,
+			'seckey' => buildSecFile($reqkey)
+		);
+
 		$this->template->write_view('content','event/main',$arr,TRUE);
 		$this->template->render();
 	}
@@ -254,7 +290,11 @@ class Event extends Controller {
 			$subj	='Joind.in: Event feedback - '.$id;
 			$content='';
 			foreach($ec as $k=>$v){ $content.='['.$k.'] => '.$v."\n\n"; }
-			mail($to,$subj,$content,'From:feedback@joind.in');
+			@mail($to,$subj,$content,'From:feedback@joind.in');
+			
+			$this->session->set_flashdata('msg', 'Comment inserted successfully!');
+			
+			redirect('event/view/'.$events[0]->ID . '#comments', 'location', 302);
 		}
 		
 		$arr['comments']=$this->event_comments_model->getEventComments($id);

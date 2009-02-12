@@ -1,5 +1,112 @@
 <?php
 
+function mycal_get_calendar($year, $month, $day = null)
+{
+    $CI =& get_instance();
+    $CI->load->model('event_model');
+    
+    if (null === $year) {
+        $year = date('Y');
+    }
+    
+    if (null === $month) {
+        $month = date('m');
+    }
+    
+    $events = $CI->event_model->getDayEventCounts($year, $month);
+
+    return mycal_build_calendar($year, $month, $day, $events);
+}
+
+function mycal_build_calendar($year, $month, $day, $events = array()){
+    $prevnext = array(
+    	'&laquo;' => '/event/calendar/' . _mycal_format_date($year, $month - 1),
+    	'&raquo;' => '/event/calendar/' . _mycal_format_date($year, $month + 1),
+    );
+
+    $first_day = 0; // First day is Sunday
+    $first_of_month = gmmktime(0, 0, 0, $month, 1, $year);
+
+    $day_names = array();
+    // January 4, 1970 was a Sunday
+    for($n = 0, $t = (3 + $first_day) * 86400; $n < 7; $n++, $t += 86400) {
+        $day_names[$n] = ucfirst(gmstrftime('%A',$t)); #%A means full textual day name
+    }
+
+    list($month, $year, $month_name, $weekday) = explode(',', gmstrftime('%m,%Y,%B,%w', $first_of_month));
+
+    $weekday = ($weekday + 7 - $first_day) % 7; // Adjust for $first_day
+    $title   = htmlentities(ucfirst($month_name)).'&nbsp;'.$year;
+
+    @list($p, $pl) = each($prevnext); 
+    @list($n, $nl) = each($prevnext);
+
+    $p = '<a class="calendar-prev" href="'.htmlspecialchars($pl).'">'.$p.'</a>';
+    $n = '<a class="calendar-next" href="'.htmlspecialchars($nl).'">'.$n.'</a>';
+
+    $calendar  = '<table class="calendar">' . "\n";
+    $calendar .= '<caption class="calendar-month">'. $p . '<a href="/event/calendar/' . _mycal_format_date($year, $month) . '" class="calendar-title">' . $title . '</a>' . $n."<div class=\"clear\"></div></caption>\n<tr>\n";
+
+    foreach ($day_names as $d) {
+        $calendar .= '<th abbr="'.htmlentities($d).'">' . htmlentities(substr($d, 0, 3)) .' </th>';
+    }
+
+    $calendar .= "</tr>\n<tr>";
+
+    // Initial "empty" days
+    if ($weekday > 0) {
+        for ($i = 0; $i < $weekday; $i++) {
+            $calendar .= '<td class="calendar-empty">&nbsp;</td>'; 
+        }
+    }
+
+    for ($d = 1, $days_in_month = gmdate('t', $first_of_month); $d <= $days_in_month; $d++, $weekday++) {
+        if ($weekday == 7){
+            // Start a new week
+            $weekday   = 0;
+            $calendar .= "</tr>\n<tr>";
+        }
+
+        $class = 'calendar-day';
+        $curr  = date('Y-m-d', mktime(0, 0, 0, $month, $d, $year));
+
+        if (isset($events[$curr])) {
+            $class .= ' calendar-day-events';
+            $content = '<a href="/event/calendar/' . _mycal_format_date($year, $month, $d) . '">' . $d . '</a>';
+        } else {
+            $content = $d;
+        }
+        
+        if (null !== $day && $d == $day) {
+            $class .= ' calendar-day-selected';
+        }
+
+        $calendar .= '<td class="' . $class . '">' . $content . '</td>';
+    }
+
+    // Remaining "empty" days
+    if ($weekday != 7) {
+        for ($i = 0; $i < (7-$weekday); $i++) {
+            $calendar .= '<td class="calendar-empty">&nbsp;</td>'; #initial 'empty' days
+        }
+    }
+
+    return $calendar."</tr>\n</table>\n";
+}
+
+function _mycal_format_date($year, $month = null, $day = null)
+{
+    if (null !== $day) {
+        return date('Y/m/d', mktime(0, 0, 0, $month, $day, $year));
+    }
+    
+    if (null !== $month) {
+        return date('Y/m', mktime(0, 0, 0, $month, 1, $year));
+    }
+    
+    return date('Y', mktime(0, 0, 0, 1, 1, $year));
+}
+
 //make our calendar
 function buildCal($mo,$day,$yr,$events){
 	$events=makeDays($events);
@@ -25,9 +132,9 @@ function buildCal($mo,$day,$yr,$events){
 	$day_ct=0;
 	echo '<table cellpadding="0" cellspacing="0" border="0" class="cal_tbl">'."\n";
 	echo '<tr>'; foreach($day_abbr as $v){ echo '<td class="cal_day_abbr">'.$v.'</td>'; } echo '</tr>';
-	echo '<tr><td class="cal_nav" colspan="2"><a href="/event/calendar/'.$prev_mo.'_'.$prev_yr.'"><<</a></td>';
+	echo '<tr><td class="cal_nav" colspan="2"><a href="/event/calendar/'.$prev_yr.'-'.$prev_mo.'"><<</a></td>';
 	echo '<td class="cal_nav" colspan="3" align="center">'.date('F Y',$mo_start).'</td>';
-	echo '<td class="cal_nav" colspan="2" align="right"><a href="/event/calendar/'.$next_mo.'_'.$next_yr.'">>></a></td></tr>';
+	echo '<td class="cal_nav" colspan="2" align="right"><a href="/event/calendar/'.$next_yr.'-'.$next_mo.'">>></a></td></tr>';
 	echo '<tr>';
 	for($i=1;$i<=$total_days;$i++){
 		if($i>=$start_dow && $day_ct<=$days_mo){ $day_ct++; }

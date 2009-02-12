@@ -46,7 +46,9 @@ $route['scaffolding_trigger'] = "";
 //$route['event/([^add|view|edit|delete])'] = 'event/cust/$1';
 $route['event/add']='event/add';
 $route['event/submit']='event/submit';
-$route['event/calendar/(:any)']	= 'event/calendar/$1';
+$route['event/calendar/(:num)/(:num)/(:num)']	= 'event/calendar/$1/$2/$3';
+$route['event/calendar/(:num)/(:num)']	= 'event/calendar/$1/$2';
+$route['event/calendar/(:num)/']	= 'event/calendar/$1';
 $route['event/export/(:num)']	= 'event/export/$1';
 $route['event/edit/(:num)']		= 'event/edit/$1';
 $route['event/view/(:num)']		= 'event/view/$1';
@@ -55,6 +57,8 @@ $route['event/codes/(:num)']	= 'event/codes/$1';
 //now our catch all...
 $route['event/(:any)']			= 'event/cust/$1';
 $route['(:num)']				= 'talk/view/$1';
+
+$route['search/(:any)']			= 'search/index/$1';
 
 
 /* End of file routes.php */

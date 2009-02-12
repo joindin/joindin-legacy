@@ -1,84 +1,82 @@
 
-<img src="/inc/img/search.gif"/>
-<br/><br/>
-<?php
-echo $this->validation->error_string;
+<h1 class="icon-search">Search</h1>
 
-//echo '<pre>'; print_r($results); echo '</pre>';
+<div class="box">
+    <?php echo form_open('/search'); ?>
+    
+    <?php if (!empty($this->validation->error_string)): ?>
+        <?php $this->load->view('msg_error', array('msg' => $this->validation->error_string)); ?>
+    <?php endif; ?>
+    
+    <div class="row">
+    	<label for="search_term">Search term</label>
+    	<?php 
+            $arr=array(
+    			'name'	=> 'search_term',
+    			'id'	=> 'search_term',
+    			'size'	=> 50,
+    			'value'	=> $this->validation->search_term
+    		);
+    		echo form_input($arr); 
+        ?>
+        <div class="clear"></div>
+    </div>
+    
+    <div class="row">
+    	<label for="search_term">Date range</label>
+    	<?php
+    		foreach(range(1,12) as $v){ $start_mo[$v]=strftime('%B', strtotime('2000-' . $v . '-01')); }
+    		foreach(range(1,31) as $v){ $start_day[$v]=sprintf('%02d', $v); }
+    		foreach(range(date('Y')-5,date('Y')+5) as $v){ $start_yr[$v]=$v; }
+    
+    		$start_mo	= array(''=>'Month') + $start_mo;
+    		$start_day	= array(''=>'Day') + $start_day;
+    		$start_yr	= array(''=>'Year') + $start_yr;
+    		
+    		echo form_dropdown('start_mo',$start_mo,$this->validation->start_mo);
+    		echo form_dropdown('start_day',$start_day,$this->validation->start_day);
+    		echo form_dropdown('start_yr',$start_yr,$this->validation->start_yr);
+    		echo ' - ';
+    		echo form_dropdown('end_mo',$start_mo,$this->validation->end_mo);
+    		echo form_dropdown('end_day',$start_day,$this->validation->end_day);
+    		echo form_dropdown('end_yr',$start_yr,$this->validation->end_yr);
+    		?>
+        <div class="clear"></div>
+    </div>
+    
+    <div class="row row-buttons">
+    	<?php echo form_submit(array('class' => 'btn'), 'Search'); ?>
+    </div>
+    
+    <?php echo form_close(); ?>
 
-echo form_open('/search');
-?>
-<center>
-<table cellpadding="3" cellspacing="0" border="0">
-<tr>
-	<td><b>SEARCH:</b></td>
-	<td>
-		<?php 
-		$arr=array(
-			'name'	=> 'search_term',
-			'id'	=> 'search_term',
-			'size'	=> 50,
-			'value'	=> $this->validation->search_term
-		);
-		echo form_input($arr); 
-		?>
-	</td>
-</tr>
-<tr>
-	<td colspan="2" align="right">
-		<?php
-		foreach(range(1,12) as $v){ $start_mo[$v]=$v; }
-		foreach(range(1,32) as $v){ $start_day[$v]=$v; }
-		foreach(range(date('Y')-5,date('Y')+5) as $v){ $start_yr[$v]=$v; }
-		
-		$start_mo	= array_merge(array(''=>''),$start_mo);
-		$start_day	= array_merge(array(''=>''),$start_day);
-		$start_yr	= array_merge(array(''=>''),$start_yr);
-		
-		echo form_dropdown('start_mo',$start_mo,$this->validation->start_mo);
-		echo form_dropdown('start_day',$start_day,$this->validation->start_day);
-		echo form_dropdown('start_yr',$start_yr,$this->validation->start_yr);
-		echo ' - ';
-		echo form_dropdown('end_mo',$start_mo,$this->validation->end_mo);
-		echo form_dropdown('end_day',$start_day,$this->validation->end_day);
-		echo form_dropdown('end_yr',$start_yr,$this->validation->end_yr);
-		?>
-	</td>
-</tr>
-<tr>
-	<td align="right" colspan="2"><?php echo form_submit('sub','search'); ?></td>
-</tr>
-</table>
-</center>
-<?php 
-echo form_close(); 
+</div>
 
-if(!empty($results)){
-	echo '<img src="/inc/img/sr_events.gif"/><br/><br/>';
-	if(isset($results['events'])){
-		foreach($results['events'] as $k=>$v){
-			$str='';
-			$tmp=explode(' ',$v->event_desc);
-			for($i=0;$i<=20;$i++){ if(isset($tmp[$i])){ $str.=$tmp[$i].' '; } }
-			echo sprintf('
-				<a href="/event/view/%s">%s</a><br/>
-				%s<br/>
-			',$v->ID,$v->event_name,trim($str).'...');
-		}
-	}
-	echo '<hr/><br/>';
-	echo '<img src="/inc/img/sr_talks.gif"/><br/><br/>';
-	if(isset($results['talks'])){
-		foreach($results['talks'] as $k=>$v){
-			$str='';
-			$tmp=explode(' ',$v->talk_desc);
-			for($i=0;$i<=20;$i++){ $str.=$tmp[$i].' '; }
-			echo sprintf('
-				<a href="/talk/view/%s">%s</a><br/>
-				<div style="padding-left:5px;padding-bottom:4px">%s</div>
-			',$v->ID,$v->talk_title,trim($str).'...');
-		}
-	}
-}
-?>
+<?php if (!empty($results)): ?>
+    <?php if (empty($results['events']) && empty($results['talks'])): ?>
+<?php $this->load->view('msg_info', array('msg' => 'Nothing found.')); ?>
+    <?php else: ?>
+    	<?php if (!empty($results['events'])): ?>
+<div class="box">
+	<h2>Events</h2>
+    <?php
+    foreach($results['events'] as $k=>$v){
+        $this->load->view('event/_event-row', array('event'=>$v));
+    }
+    ?>
+</div>
+		<?php endif; ?>
+
+	    <?php if (!empty($results['talks'])): ?>
+<div class="box">
+	<h2>Talks</h2>
+    <?php
+    foreach($results['talks'] as $k=>$v){
+        $this->load->view('talk/_talk-row', array('talk'=>$v));
+    }
+    ?>
+</div>
+		<?php endif; ?>
+	<?php endif; ?>
+<?php endif; ?>
 

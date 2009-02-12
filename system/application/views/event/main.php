@@ -1,52 +1,55 @@
 <?php
-$admin=false;
+//ob_start();
+//buildCal($mo,$day,$yr,$evt);
+menu_sidebar('Calendar', mycal_get_calendar($year, $month, $day));
+
+$title = '';
+if (!empty($year) && !empty($month)) {
+    if (!empty($day)) {
+        $title .= ' for ' . date('F j, Y', mktime(0, 0, 0, $month, $day, $year));
+    } else {
+        $title .= ' for ' . date('F Y', mktime(0, 0, 0, $month, 1, $year));
+    }
+}
 ?>
-<img src="/inc/img/current_events.gif"/>
-<br/><br/>
+<h1 class="icon-event">
+	<?php if(user_is_admin()){ ?>
+	<span style="float:left">
+	<?php } ?>
+	Events<?php echo $title; ?>
+	<?php if(user_is_admin()){ ?>
+	</span>
+	<?php } ?>
+	<?php if(user_is_admin()){ ?>
+	<a class="btn" style="float:right" href="/event/add">Add new event</a>
+	<div class="clear"></div>
+    <?php } ?>
+</h1>
+
 <?php
-//echo '<pre>'; print_r($events); echo '</pre>'; 
-$estart	= mktime(0,0,0,$mo,$day,$yr);
-$eend	= mktime(23,59,59,$mo,$day,$yr);
-$evt	= array();
-
 foreach($events as $k=>$v){
-	if(date('m',$v->event_start)==$mo){
-		$evt[]=array(
-			'day_start'	=> date('d',$v->event_start),
-			'day_end'	=> date('d',$v->event_end),
-			'title'		=> $v->event_name,
-			'link'		=> '/event/view/'.$v->ID
-		);
-	}
+	$this->load->view('event/_event-row', array('event'=>$v));
 }
 
+if (count($events) == 0) {
+    if (!empty($year) && !empty($month)) {
+        if (!empty($day)) {
+            echo '<h2>No events found for this day!</h2>';
+        } else {
+            echo '<h2>No events found for this month!</h2>';
+        }
+    } else {
+	    echo '<h2>No events found!</h2>';
+    }
 ?>
-
-<div style="float:left;padding-right:15px"><?php buildCal($mo,$day,$yr,$evt); ?></div>
+<p>
+	Know of an event happening this month? <a href="/event/submit">Let us know!</a>
+	We love to get the word out about events the community would be interested in and
+	you can help us spread the word!
+</p>
+<p>
+	<a href="/event/submit/" class="btn-big">Submit your event!</a>
+</p>
 <?php
-$style='';
-foreach($events as $k=>$v){
-	if(date('m',$v->event_start)!=$mo){ continue; }
-	if(isset($all) && $all==false){
-		$style=($estart>=$v->event_start && $eend<=$v->event_end) ? 'color:#5181C1;background-color:#EEEEEE;padding:4px' : 'color:#CCCCCC';
-	}
-	
-	echo '<a style="font-size:13px;font-weight:bold;'.$style.'" href="/event/view/'.$v->ID.'">'.$v->event_name.'</a><br/><div style="padding-left:8px;padding-top:5px">'.$v->event_desc.'<br/>';
-	echo '<span style="color:#A2A2A2">'.date('m.d.Y',$v->event_start).'-'.date('m.d.Y',$v->event_end).'</span><br/>';
-	echo '</div><br/>';
-}
-if(count($events)==0){ 
-	echo sprintf('
-		<h2>No events found for this month!</h2>
-		<p>
-		Know of an event happening this month? <a href="/event/submit">Let us know!</a>
-		We love to get the word out about events the community would be interested in and
-		you can help us spread the word!
-		</p>
-	'); 
 }
 ?>
-
-<?php if($admin){ ?>
-<a href="/event/add">add new event</a>
-<?php } ?>

@@ -1,17 +1,31 @@
+<div class="menu">
+	<ul>
+		<li><a href="/user/main">Dashboard</a>
+		<li><a href="/user/manage">Manage Account</a>
+	<?php if (user_is_admin()): ?>
+		<li class="active"><a href="/user/admin">User Admin</a>
+	<?php endif; ?>
+	</ul>
+	<div class="clear"></div>
+</div>
 
-<h1 class="title">Manage Users</h1>
-<?php
-//echo '<pre>'; print_r($users); echo '</pre>';
+<?php 
+if (empty($msg)) {
+    $msg=$this->session->flashdata('msg');
+}
+if (!empty($msg)): 
 ?>
+<?php $this->load->view('msg_info', array('msg' => $msg)); ?>
+<?php endif; ?>
 
-<table cellpadding="3" cellspacing="0" border="0" width="100%" id="user_admin_tbl">
+<table cellpadding="3" cellspacing="0" border="0" width="100%" id="user_admin_tbl" class="list">
 <tr class="header">
-	<td>Username</td>
-	<td>Email</td>
-	<td>Full Name</td>
-	<td>Is Admin?</td>
-	<td>Last Login</td>
-	<td>Status</td>
+	<th>Username</th>
+	<th>Email</th>
+	<th>Full Name</th>
+	<th>Is Admin?</th>
+	<th>Last Login</th>
+	<th>Status</th>
 </tr>
 <?php
 $ct=0;

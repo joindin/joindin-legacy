@@ -272,7 +272,7 @@ class Talk extends Controller {
 			$msg='';
 			$arr['spam']=($ret=='false') ? 'spam' : 'not spam';
 			foreach($arr as $ak=>$av){ $msg.='['.$ak.'] => '.$av."\n"; }
-			mail('enygma@phpdeveloper.org','Comment on talk '.$id,$msg,'From: comments@joind.in');
+			@mail('enygma@phpdeveloper.org','Comment on talk '.$id,$msg,'From: comments@joind.in');
 			
 			//if its claimed, be sure to send an email to the person to tell them
 			if($cl){
@@ -286,6 +286,8 @@ Click here to view it: http://joind.in/talk/view/%s
 			}
 			
 			$this->session->set_flashdata('msg', 'Comment added!');
+
+			redirect('talk/view/'.$talk_detail[0]->tid . '#comments', 'location', 302);
 		}
 		//$cap = create_captcha($cap_arr);
 		//$this->session->set_userdata(array('cinput'=>$cap['word']));

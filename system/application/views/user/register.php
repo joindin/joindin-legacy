@@ -1,57 +1,73 @@
-<?php
-$msg=$this->session->flashdata('msg');
-if($msg && !empty($msg)){ echo '<div class="notice">'.$msg.'</div><br/>'; }
-?>
+<h1>Register a new account</h1>
 
-<h1 class="title">Register a New Account</h1>
 <?php 
-if(!empty($this->validation->error_string)){
-	echo '<div class="err">'.$this->validation->error_string.'</div>';
-}
+$msg=$this->session->flashdata('msg');
+if (!empty($msg)): 
 ?>
-<p>
-Use the form below to register a new account for the site. 
-Username, password and email address fields are required.
-</p>
+<?php $this->load->view('msg_info', array('msg' => $msg)); ?>
+<?php endif; ?>
 
-<?php
-echo form_open('user/register');
-?>
+<div class="box">
 
-<table cellpadding="3" cellspacing="0" border="0">
-<tr>
-	<td class="title">Username:</td>
-	<td><?php echo form_input('user',$this->validation->user); ?></td>
-</tr>
-<tr>
-	<td class="title">Password:</td>
-	<td><?php echo form_password('pass'); ?></td>
-</tr>
-<tr>
-	<td class="title">Confirm Password:</td>
-	<td><?php echo form_password('passc'); ?></td>
-</tr>
-<tr>
-	<td class="title">Email:</td>
-	<td><?php echo form_input('email'); ?></td>
-</tr>
-<tr>
-	<td class="title">Full Name:</td>
-	<td><?php echo form_input('full_name'); ?></td>
-</tr>
-<!--
-<tr>
-	<td class="title" valign="top">Type in the code:</td>
-	<td>
-	<input type="text" name="cinput" id="Captcha" value="" /><br/>
-	<?php echo $captcha['image']; ?>
-	</td>
-</tr>
--->
-<tr>
-	<td align="right" colspan="2">
-		<?php echo form_submit('sub','Register'); ?>
-	</td>
-</tr>
-</table>
-<?php form_close(); ?>
+    <p>
+        Use the form below to register a new account for the site. 
+        Username, password and email address fields are required.
+    </p>
+    
+    <?php echo form_open('user/register', array('class' => 'form-register')); ?>
+    
+    <?php if (!empty($this->validation->error_string)): ?>
+            <?php $this->load->view('msg_error', array('msg' => $this->validation->error_string)); ?>
+    <?php endif; ?>
+
+	<div class="row">
+    	<label for="user">Username</label>
+    	<?php echo form_input(array('name' => 'user', 'id' => 'user'), $this->validation->user); ?>
+    
+        <div class="clear"></div>
+    </div>
+    
+    <div class="row">
+    	<label for="pass">Password</label>
+    	<?php echo form_input(array('name' => 'pass', 'id' => 'pass', 'type' => 'password')); ?>
+    
+        <div class="clear"></div>
+    </div>
+    
+    <div class="row">
+    	<label for="passc">Confirm Password</label>
+    	<?php echo form_input(array('name' => 'passc', 'id' => 'passc', 'type' => 'password')); ?>
+    
+        <div class="clear"></div>
+    </div>
+    
+    <div class="row">
+    	<label for="email">Email</label>
+    	<?php echo form_input(array('name' => 'email', 'id' => 'email'), $this->validation->email); ?>
+    
+        <div class="clear"></div>
+    </div>
+    
+    <div class="row">
+    	<label for="full_name">Full Name</label>
+    	<?php echo form_input(array('name' => 'full_name', 'id' => 'full_name'), $this->validation->full_name); ?>
+    
+        <div class="clear"></div>
+    </div>
+    
+    <div class="row">
+    	<label for="captcha">Type in the code</label>
+    	<div class="captcha">
+        	<input type="text" name="cinput" id="captcha" value="" />
+        	<?php echo $captcha['image']; ?>
+    	</div>
+    	<div class="clear"></div>
+    </div>
+	
+	<div class="row row-buttons">
+    	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Register'); ?>
+    </div>
+    
+    <?php echo form_close(); ?>
+</div>
+
