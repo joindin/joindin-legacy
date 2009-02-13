@@ -239,6 +239,7 @@ class Event extends Controller {
 			'claimed'=>$this->event_model->getClaimedTalks($id),
 			'user_id'=>($is_auth) ? $this->session->userdata('ID') : '0',
 			'attend' =>$chk_attend,
+			'attend_ct'=>$this->uam->getAttendCount($id),
 			'reqkey' =>$reqkey,
 			'seckey' =>buildSecFile($reqkey),
 			'attend' =>$this->uam->getAttendCount($id)

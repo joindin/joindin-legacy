@@ -32,7 +32,7 @@ foreach($claimed as $k=>$v){
 	if its set, but the event is in the future, show a link for "I'll be there!"
 	if its not set show the "I'll be there/I was there" based on time
 	*/
-	if($attend){
+	if($attend && user_is_auth()){
 		if($det->event_end<time()){
 			$link_txt="I was there!"; $showt=1;
 		}else{ $link_txt="I'll be there!"; $showt=2; }
@@ -41,13 +41,15 @@ foreach($claimed as $k=>$v){
 			$link_txt="Were you there?"; $showt=3; 
 		}else{ $link_txt="Will you be there?"; $showt=4; }
 	}
+	//if they're not logged in, show the questions
+	if(!user_is_auth()){ $attend=false; }
 	?>
 		<a class="btn<?php echo $attend ? ' btn-success' : ''; ?>" href="#" onclick="markAttending(this,<?=$det->ID?>,<?php echo $det->event_end<time() ? 'true' : 'false'; ?>);return false;"><?=$link_txt?></a>
 		<div class="clear"></div>
 	</p>
 	<div class="clear"></div>
 (<?php 
-	echo $attend; 
+	echo ($attend_ct) ? $attend_ct : 0;
 	echo (time()<=$det->event_end) ? ' attending so far':' said they attended'; 
 ?>)
 </div>
