@@ -1,6 +1,9 @@
 <div class="row row-event">
 	<div class="img">
-		<div class="frame"><img src="/inc/img/_event<?php echo mt_rand(1,4); ?>.gif"/></div>
+		<div class="frame">
+			<?php $img=(!empty($event->event_icon)) ? $event->event_icon : 'none.gif'; ?>
+			<img src="/inc/img/event_icons/<?php echo $img ?>"/>
+		</div>
 	</div>
 	<div class="text">
     	<h3><a href="/event/view/<?php echo $event->ID; ?>"><?php echo htmlspecialchars($event->event_name); ?></a></h3>

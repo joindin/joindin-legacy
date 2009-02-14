@@ -114,6 +114,13 @@ class Event extends Controller {
 		$this->load->model('event_model');
 		$this->load->model('tz_model');
 		
+		$config['upload_path'] 	= $_SERVER['DOCUMENT_ROOT'].'/inc/img/event_icons';
+		$config['allowed_types']= 'gif|jpg|png';
+		$config['max_size']		= '100';
+		$config['max_width']  	= '90';
+		$config['max_height']  	= '90';
+		$this->load->library('upload', $config);
+		
 		$rules=array(
 			'event_name'	=> 'required',
 			'event_loc'		=> 'required',
@@ -160,6 +167,12 @@ class Event extends Controller {
 			$this->template->render();
 		}else{ 
 			//success...
+			$icon='';
+			if($this->upload->do_upload('event_icon')){
+				$updata=$this->upload->data();
+				$icon=$updata['file_name'];
+			}
+			
 			$arr=array(
 				'event_name'	=>$this->input->post('event_name'),
 				'event_start'	=>mktime(
@@ -177,7 +190,8 @@ class Event extends Controller {
 				'event_loc'		=>$this->input->post('event_loc'),
 				'event_desc'	=>$this->input->post('event_desc'),
 				'active'		=>'1',
-				'event_tz'		=>$this->input->post('event_tz')
+				'event_tz'		=>$this->input->post('event_tz'),
+				'event_icon'	=>$icon
 			);
 			if($id){
 				//edit...

@@ -104,6 +104,7 @@ class Blog extends Controller {
 		$this->load->helper('form');
 		$this->load->library('validation');
 		$this->load->library('akismet');
+		$this->load->library('defensio');
 		$this->load->model('blog_posts_model','bpm');
 		$this->load->model('blog_comments_model','bcm');
 		
@@ -127,6 +128,11 @@ class Blog extends Controller {
 			);
 			$ret=$this->akismet->send('/1.1/comment-check',$arr);
 			
+			$ec=array();
+			$ec['comment']=$this->input->post('comment');
+			$def_ret=$this->defensio->check('anonymous',$ec['comment'],false,'/blog/view/'.$id);
+			$is_spam=(string)$def_ret->spam;
+			
 			//passed...;
 			$arr=array(
 				'title'			=> $this->input->post('title'),
@@ -135,17 +141,19 @@ class Blog extends Controller {
 				'blog_post_id'	=> $id
 			);
 			//print_r($arr);
-			$this->db->insert('blog_comments',$arr);
 			
-			$to='enygma@phpdeveloper.org';
-			$subj='Blog comment on entry '.$id.' from joind.in';
-			$cont= 'Title: '.$this->input->post('title')."\n\n";
-			$cont.='Content: '.$this->input->post('comment')."\n\n";
-			$cont.='Post: http://joind.in/blog/view/'.$id."\n\n";
-			$cont.='Spam check: '.($ret=='false') ? 'not spam' : 'spam caught';
+			if($is_spam!='true'){
+				$this->db->insert('blog_comments',$arr);
+			
+				$to='enygma@phpdeveloper.org';
+				$subj='Blog comment on entry '.$id.' from joind.in';
+				$cont= 'Title: '.$this->input->post('title')."\n\n";
+				$cont.='Content: '.$this->input->post('comment')."\n\n";
+				$cont.='Post: http://joind.in/blog/view/'.$id."\n\n";
+				$cont.='Spam check: '.($ret=='false') ? 'not spam' : 'spam caught';
 
-			mail($to,$subj,$cont,'From: feedback@joind.in');
-			
+				mail($to,$subj,$cont,'From: feedback@joind.in');
+			}
 		}else{
 			//failed...
 		}

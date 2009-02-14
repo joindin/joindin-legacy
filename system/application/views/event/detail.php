@@ -5,12 +5,14 @@ foreach($claimed as $k=>$v){
 	//echo '<pre>'; print_r($v); echo '</pre>';
 	$cl[$v->rcode]=array('rid'=>$v->rid,'uid'=>$v->uid); 
 }
-
 ?>
 
 <div class="detail">
 	<div class="img">
-		<div class="frame"><img src="/inc/img/_event<?php echo mt_rand(1,4); ?>.gif"/></div>
+		<div class="frame">
+			<?php $img=(!empty($det->event_icon)) ? $det->event_icon : 'none.gif'; ?>
+			<img src="/inc/img/event_icons/<?php echo $img ?>"/>
+		</div>
 	</div>
 	
 	<h1><?=$det->event_name?></h1>
