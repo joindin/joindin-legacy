@@ -1,8 +1,7 @@
 <div class="row row-event">
 	<div class="img">
 		<div class="frame">
-			<?php $img=(!empty($event->event_icon)) ? $event->event_icon : 'none.gif'; ?>
-			<img src="/inc/img/event_icons/<?php echo $img ?>"/>
+			<?php $this->load->view('event/_event-icon',array('img'=>$event->event_icon)); ?>
 		</div>
 	</div>
 	<div class="text">

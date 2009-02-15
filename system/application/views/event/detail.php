@@ -10,8 +10,7 @@ foreach($claimed as $k=>$v){
 <div class="detail">
 	<div class="img">
 		<div class="frame">
-			<?php $img=(!empty($det->event_icon)) ? $det->event_icon : 'none.gif'; ?>
-			<img src="/inc/img/event_icons/<?php echo $img ?>"/>
+			<?php $this->load->view('event/_event-icon',array('img'=>$det->event_icon)); ?>
 		</div>
 	</div>
 	
