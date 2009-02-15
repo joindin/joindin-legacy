@@ -8,12 +8,9 @@ foreach($claimed as $k=>$v){
 ?>
 
 <div class="detail">
-	<div class="img">
-		<div class="frame">
-			<?php $this->load->view('event/_event-icon',array('img'=>$det->event_icon)); ?>
-		</div>
-	</div>
 	
+	<?php $this->load->view('event/_event-icon',array('img'=>$det->event_icon)); ?>
+
 	<h1><?=$det->event_name?></h1>
 
 	<p class="info">
