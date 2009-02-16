@@ -158,15 +158,6 @@ if (empty($comments)) {
 	<div class="clear"></div>
 </div>
 <?php
-		/*echo '<tr id="'.$rowid.'" style="background-color:#'.$bg.''.$disp.'">';
-		echo '<td width="110" valign="top" align="right" style="padding-top:5px;">';
-		echo '<a name="'.$v->ID.'"></a>';
-		//for($i=1;$i<=$v->rating;$i++){ echo '<img src="/inc/img/thumbs_up.jpg" height="20"/>'; }
-        echo rating_image($v->rating);
-	
-		echo '<td><p style="font-size:12px;color:#37382F">'.$an.nl2br($v->comment).'</p>';
-		echo '<span style="font-size:10px;color:#A1A58A">'.$uname.' '.date('m.d.Y H:i:s',$v->date_made).'</span></td>';
-		echo '</tr>'."\n".'<tr><td colspan="2"></td></tr>';*/
     }
 }
 ?>

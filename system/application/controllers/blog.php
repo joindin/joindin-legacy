@@ -136,7 +136,7 @@ class Blog extends Controller {
 			//passed...;
 			$arr=array(
 				'title'			=> $this->input->post('title'),
-				'author_id'		=> '0',
+				'author_id'		=> (int)$this->session->userdata('ID'),
 				'content'		=> $this->input->post('comment'),
 				'blog_post_id'	=> $id
 			);
@@ -153,6 +153,8 @@ class Blog extends Controller {
 				$cont.='Spam check: '.($ret=='false') ? 'not spam' : 'spam caught';
 
 				mail($to,$subj,$cont,'From: feedback@joind.in');
+				
+				redirect('blog/view/'.$id . '#comments', 'location', 302);
 			}
 		}else{
 			//failed...

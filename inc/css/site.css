@@ -50,6 +50,8 @@ h3,
 	font-size: 16px;
 	color:#5a8dc3;
 	margin: 0 0 4px 0;
+	border: 0;
+	font-weight: bold;
 }
 
 h4,
@@ -436,6 +438,11 @@ a {
 	font-size: 85%;
 	color: purple;
 	text-transform: uppercase;
+}
+
+#ctn .main .row .admin {
+	text-align: left;
+	margin: 7px 0;
 }
 
 #ctn .main .detail {

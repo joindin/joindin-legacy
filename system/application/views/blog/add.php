@@ -12,7 +12,7 @@ echo $this->validation->error_string;
 if(isset($msg)){ echo '<div class="notice">'.$msg.'</div>'; }
 ?>
 
-<h2>Add Blog Post</h2>
+<h1>Add Blog Post</h1>
 <?php 
 if($edit_id){ 
 	echo form_open('blog/edit/'.$edit_id); 

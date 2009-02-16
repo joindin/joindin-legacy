@@ -1,29 +1,39 @@
-<?php
-//echo '<pre>'; print_r($posts); echo '</pre>';
+<h1 class="icon-event">
+	<?php if(user_is_admin()){ ?>
+	<span style="float:left">
+	<?php } ?>
+	Blog
+	<?php if(user_is_admin()){ ?>
+	</span>
+	<?php } ?>
+	<?php if(user_is_admin()){ ?>
+	<a class="btn" style="float:right" href="/blog/add">Add blog post</a>
+	<div class="clear"></div>
+    <?php } ?>
+</h1>
 
-if(isset($posts) && count($posts)>0){
-	foreach($posts as $k=>$v){
-		if($is_admin){
-			$add='<a class="admin_link" href="/blog/edit/'.$v->ID.'">edit</a> ';
-			$add.='<a class="admin_link" href="">delete</a>';
-		}else{ $add=''; }
-		$com=($v->comment_count!=1) ? $v->comment_count.' comments' : $v->comment_count.' comment';
-		echo sprintf('
-			<table cellpadding="0" cellspacing="0" border="0" class="blog_post">
-			<tr><td class="title"><a style="font-size:20px;font-weight:bold" href="/blog/view/%s">%s</a></td></tr>
-			<tr><td class="content">%s</td></tr>
-			<tr>
-				<td class="byline">
-					<a class="comments_link" href="/blog/view/%s">%s</a>
-					%s %s %s<br/>
-				</td>
-			</tr>
-			</table>
-			<br/>
-		',$v->ID,$v->title,nl2br($v->content),$v->ID,$com,$v->author_id,
-		date('m.d.Y H:i:s',$v->date_posted),$add);
-	}
-}else{
-	echo 'No posts yet! Come back soon!';
-}
-?>
+<?php if(isset($posts) && count($posts)>0): ?>
+	<?php foreach($posts as $k=>$v): ?>
+<div class="row row-blog">
+    <h2 class="h3"><a href="/blog/view/<?php echo $v->ID; ?>"><?php echo $v->title; ?></a></h2>
+    <div class="desc">
+    	<?php echo nl2br($v->content); ?>
+    </div>
+    <p class="opts">
+    	<a href="/blog/view/<?php echo $v->ID; ?>#comments"><?php echo $v->comment_count; ?> comment<?php echo $v->comment_count == 1 ? '' : 's'?></a> |
+    	 Written <strong><?php echo date('M j, Y',$v->date_posted); ?></strong> at <strong><?php echo date('H:i',$v->date_posted); ?></strong> (<?php echo $v->author_id; ?>)
+    </p>
+	
+	<?php if(user_is_admin()): ?>
+	<div class="admin">
+		<a class="btn-small" href="/blog/edit/<?php echo $v->ID; ?>">Edit</a>
+		<a class="btn-small" href="">Delete</a>
+	</div>
+	<?php endif; ?>
+	<div class="clear"></div>
+</div>
+
+	<?php endforeach; ?>
+<?php else: ?>
+	<?php $this->load->view('msg_info', array('msg' => 'No posts yet! Come back soon!')); ?>
+<?php endif; ?>
