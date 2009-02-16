@@ -256,7 +256,7 @@ class Event extends Controller {
 			'attend_ct'=>$this->uam->getAttendCount($id),
 			'reqkey' =>$reqkey,
 			'seckey' =>buildSecFile($reqkey),
-			'attend' =>$this->uam->getAttendCount($id)
+			//'attend' =>$this->uam->getAttendCount($id)
 		);
 		
 		//our event comment form
