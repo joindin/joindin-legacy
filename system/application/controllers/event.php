@@ -421,7 +421,8 @@ class Event extends Controller {
 		$arr=array();
 		$this->load->library('validation');
 		$this->load->plugin('captcha');
-		$this->load->library('akismet');
+		//$this->load->library('akismet');
+		$this->load->library('defensio');
 		
 		$cap_arr=array(
 			'img_path'		=>$_SERVER['DOCUMENT_ROOT'].'/inc/img/captcha/',
@@ -441,64 +442,91 @@ class Event extends Controller {
 			'end_mo'				=> 'Event End Month',
 			'end_day'				=> 'Event End Day',
 			'end_yr'				=> 'Event End Year',
+			'event_loc'				=> 'Event Location',
+			'event_stub'			=> 'Event Stub'
 		//	'cinput'				=> 'Captcha'
 		);
 		$rules=array(
 			'event_title'			=> 'required',
+			'event_loc'				=> 'required',
 			'event_contact_name'	=> 'required',
 			'event_contact_email'	=> 'required|valid_email',
-			'event_desc'			=> 'required',
 			'start_mo'				=> 'callback_start_mo_check',
-			'end_mo'				=> 'callback_end_mo_check'
+			'end_mo'				=> 'callback_end_mo_check',
+			'event_stub'			=> 'callback_stub_check',
+			'event_desc'			=> 'required',
 		//	'cinput'				=> 'required|callback_cinput_check'
 		);
 		$this->validation->set_rules($rules);
 		$this->validation->set_fields($fields);
 		
-		if($this->validation->run()!=FALSE){
-			/*$arr=array(
-				'comment_type'			=>'comment',
-				'comment_author'		=>$this->input->post('your_name'),
-				'comment_author_email'	=>$this->input->post('your_email'),
-				'comment_content'		=>$this->input->post('your_com')
-			);
-			$ret=$this->akismet->send('/1.1/comment-check',$arr);*/
+		//if we're just loading, give the dates some default values
+		if(empty($this->validation->start_mo)){
+			$this->validation->start_mo	= date('m');
+			$this->validation->start_day= date('d');
+			$this->validation->start_yr	= date('Y');
 			
+			$this->validation->end_mo	= date('m');
+			$this->validation->end_day	= date('d');
+			$this->validation->end_yr	= date('Y');
+		}
+		
+		if($this->validation->run()!=FALSE){			
 			//TODO: add it to our database, but mark it pending
-			/*$arr=array(
-				'event_name'	=>$this->input->post('event_name'),
-				'event_start'	=>'',
-				'event_end'		=>'',
+			$sub_arr=array(
+				'event_name'	=>$this->input->post('event_title'),
+				'event_start'	=>mktime(
+					0,0,0,
+					$this->input->post('start_mo'),
+					$this->input->post('start_day'),
+					$this->input->post('start_yr')
+				),
+				'event_end'		=>mktime(
+					0,0,0,
+					$this->input->post('end_mo'),
+					$this->input->post('end_day'),
+					$this->input->post('end_yr')
+				),
 				'event_loc'		=>$this->input->post('event_loc'),
 				'event_desc'	=>$this->input->post('event_desc'),
 				'active'		=>0,
-				'event_stub'	=>'',
-				'event_tz'		=>'',
+				'event_stub'	=>$this->input->post('event_stub'),
+				'event_tz'		=>$this->input->post('event_tz'),
 				'pending'		=>1
-			);*/
-			
-			//send the information via email...
-			$t=mktime(
-				0,0,0,
-				$this->input->post('start_mo'),
-				$this->input->post('start_day'),
-				$this->input->post('start_yr')
 			);
-			$to		= 'enygma@phpdeveloper.org';
-			$subj	= 'Event submission from Joind.in';
-			$msg='Event Title: '.$this->input->post('event_title')."\n\n";
-			$msg.='Event Description: '.$this->input->post('event_desc')."\n\n";
-			$msg.='Event Date: '.date('m.d.Y H:i:s',$t)."\n\n";
-			$msg.='Event Contact Name: '.$this->input->post('event_contact_name')."\n\n";
-			$msg.='Event Contact Email: '.$this->input->post('event_contact_email')."\n\n";
-			$msg.='Spam check: '.($ret=='false') ? 'not spam' : 'spam';
 			
-			mail($to,$subj,$msg,'From: submissions@joind.in');
-			$arr['msg']='Event successfully submitted! We\'ll get back with you soon!';
+			echo '<pre>'; print_r($sub_arr); echo '</pre>';
+			
+			//----------------------
+			$is_auth	= $this->user_model->isAuth();
+			$cname		= $this->input->post('event_contact_name');
+			$ccomment	= $this->input->post('event_desc');
+			$def        = $this->defensio->check($cname,$ccomment,$is_auth,'/event/submit');		
+			$is_spam	= (string)$def->spam;
+			//-----------------------
+			
+			if($is_spam!='true'){			
+				//send the information via email...
+				$to		= 'enygma@phpdeveloper.org';
+				$subj	= 'Event submission from Joind.in';
+				$msg= 'Event Title: '.$this->input->post('event_title')."\n\n";
+				$msg.='Event Description: '.$this->input->post('event_desc')."\n\n";
+				$msg.='Event Date: '.date('m.d.Y H:i:s',$sub_arr['event_start'])."\n\n";
+				$msg.='Event Contact Name: '.$this->input->post('event_contact_name')."\n\n";
+				$msg.='Event Contact Email: '.$this->input->post('event_contact_email')."\n\n";
+				$msg.='Spam check: '.($is_spam=='false') ? 'not spam' : 'spam';
+			
+				echo $msg.'<br/><br/>';
+			
+				mail($to,$subj,$msg,'From: submissions@joind.in');
+				$arr['msg']='Event successfully submitted! We\'ll get back with you soon!';
+				
+				//put it into the database
+				$this->db->insert('events',$sub_arr);
+			}else{ 
+				$arr['msg']='There was an error submitting your event! Please <a href="submissions@joind.in">send us an email</a> with all the details!';
+			}
 		}
-		//$cap = create_captcha($cap_arr);
-		//$this->session->set_userdata(array('cinput'=>$cap['word']));
-		//$arr['cap']=$cap;
 		
 		$this->template->write_view('content','event/submit',$arr);
 		$this->template->render();
@@ -566,6 +594,16 @@ class Event extends Controller {
 			$this->validation->_error_messages['cinput_check'] = 'Incorrect Captcha characters.';
 			return FALSE;                            
 		}else{ return TRUE; }
+	}
+	function stub_check($str){
+		if(!empty($str)){
+			$this->load->model('event_model');
+			$ret=$this->event_model->isUniqueStub($str);
+			if(!$ret){
+				$this->validation->set_message('stub_check','Please choose another stub - this one\'s already in use!');
+				return false;
+			}else{ return true; }
+		}else{ return true; }
 	}
 	//----------------------
 }

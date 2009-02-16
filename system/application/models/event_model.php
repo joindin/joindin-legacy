@@ -10,6 +10,11 @@ class Event_model extends Model {
 		$ret=$q->result();
 		return (empty($ret)) ? true : false;
 	}
+	function isUniqueStub($str){
+		$q=$this->db->get_where('events',array('event_stub'=>$str));
+		$ret=$q->result();
+		return (empty($ret)) ? true : false;
+	}
 	//---------------------
 	function deleteEvent($id){
 		//we don't actually delete them...just make them inactive
@@ -67,18 +72,15 @@ class Event_model extends Model {
 		$this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');
 		$this->db->group_by('events.ID');
 		
-		$this->db->where('events.active=1');
+		$this->db->where('(events.active=1 AND (events.pending is null or events.pending=0))');
 		if($id){
 			//looking for a specific one...
 			$this->db->where('events.ID='.$id);
 		}else{
 			if($start_dt && $end_dt){
-				/*$this->db->where('events.event_start>='.$start_dt);
-				$this->db->where('events.event_start<='.$end_dt);*/
-			    
-			    $this->db->where('(events.event_start>='.$start_dt.' AND events.event_start<='.$end_dt.')');
+			    $this->db->where('((events.event_start>='.$start_dt.' AND events.event_start<='.$end_dt.')');
 			    $this->db->or_where('(events.event_end>='.$start_dt.' AND events.event_end<='.$end_dt.')');
-			    $this->db->or_where('(events.event_start<='.$start_dt.' AND events.event_end>='.$end_dt.')');
+			    $this->db->or_where('(events.event_start<='.$start_dt.' AND events.event_end>='.$end_dt.'))');
 			    
 				$this->db->order_by('events.event_start','desc');
 			}
@@ -124,6 +126,7 @@ class Event_model extends Model {
 		$this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
 		$this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');
 		$this->db->where('events.event_start>=',time());
+		$this->db->where('events.pending!=1');
 		if($inc_curr){ $this->db->or_where('events.event_end>=',time()); }
 		$this->db->order_by('events.event_start','desc');
 

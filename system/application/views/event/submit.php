@@ -16,6 +16,20 @@
     
         <div class="clear"></div>
     </div>
+
+	<div class="row">
+    	<label for="event_title">Event Location</label>
+    	<?php echo form_input(array('name' => 'event_loc', 'id' => 'event_title'), $this->validation->event_loc); ?>
+    
+        <div class="clear"></div>
+    </div>
+
+	<div class="row">
+    	<label for="event_title">Event Stub</label>
+    	<?php echo form_input(array('name' => 'event_stub', 'id' => 'event_title'), $this->validation->event_stub); ?>
+    	<span style="color:#3567AC;font-size:11px">What's a <b>stub</b>? It's the "shortcut" part of the URL to help visitors get to your event faster. An example might be "phpevent" in the address "joind.in/event/phpevent". If no stub is given, you can still get to it via the event ID.</span>
+        <div class="clear"></div>
+    </div>
     
     <div class="row">
     	<label for="event_contact_name">Event Contact Name</label>
@@ -70,16 +84,6 @@
 	    ?>
         <div class="clear"></div>
     </div>
-    
-    <div class="row">
-    	<label for="captcha">Type in the code</label>
-    	<div class="captcha">
-        	<input type="text" name="cinput" id="captcha" value="" />
-        	<?php echo $captcha['image']; ?>
-    	</div>
-    	<div class="clear"></div>
-    </div>
-
 	<div class="row row-buttons">
     	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Submit event'); ?>
     </div>
