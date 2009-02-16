@@ -54,16 +54,6 @@ if (!empty($msg)):
     
         <div class="clear"></div>
     </div>
-    
-    <div class="row">
-    	<label for="captcha">Type in the code</label>
-    	<div class="captcha">
-        	<input type="text" name="cinput" id="captcha" value="" />
-        	<?php echo $captcha['image']; ?>
-    	</div>
-    	<div class="clear"></div>
-    </div>
-	
 	<div class="row row-buttons">
     	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Register'); ?>
     </div>
