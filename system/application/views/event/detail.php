@@ -46,10 +46,7 @@ foreach($claimed as $k=>$v){
 		<div class="clear"></div>
 	</p>
 	<div class="clear"></div>
-(<?php 
-	echo ($attend_ct) ? $attend_ct : 0;
-	echo (time()<=$det->event_end) ? ' attending so far':' said they attended'; 
-?>)
+    (<span class="event-attend-count-<?php echo $det->ID; ?>"><?php echo (int)$attend_ct; ?></span><?php echo (time()<=$det->event_end) ? ' attending so far':' said they attended'; ?>)
 </div>
 
 <?php if($admin): ?>
