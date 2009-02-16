@@ -10,7 +10,7 @@ if(isset($posts) && count($posts)>0){
 		$com=($v->comment_count!=1) ? $v->comment_count.' comments' : $v->comment_count.' comment';
 		echo sprintf('
 			<table cellpadding="0" cellspacing="0" border="0" class="blog_post">
-			<tr><td class="title"><a href="/blog/view/%s">%s</a></td></tr>
+			<tr><td class="title"><a style="font-size:20px;font-weight:bold" href="/blog/view/%s">%s</a></td></tr>
 			<tr><td class="content">%s</td></tr>
 			<tr>
 				<td class="byline">
