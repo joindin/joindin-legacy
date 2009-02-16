@@ -48,9 +48,14 @@
     <div class="row">
     	<label for="start">Event Start Date</label>
     	<?php
-		foreach(range(1,12) as $v){ $start_mo[$v]=$v; }
+		/*foreach(range(1,12) as $v){ $start_mo[$v]=$v; }
 		foreach(range(1,32) as $v){ $start_day[$v]=$v; }
-		foreach(range(date('Y'),date('Y')+5) as $v){ $start_yr[$v]=$v; }
+		foreach(range(date('Y'),date('Y')+5) as $v){ $start_yr[$v]=$v; }*/
+
+    	foreach(range(1,12) as $v){ $start_mo[$v]=strftime('%B', strtotime('2000-' . $v . '-01')); }
+    	foreach(range(1,31) as $v){ $start_day[$v]=sprintf('%02d', $v); }
+    	foreach(range(date('Y'),date('Y')+5) as $v){ $start_yr[$v]=$v; }
+    	
 		echo form_dropdown('start_mo',$start_mo,$this->validation->start_mo);
 		echo form_dropdown('start_day',$start_day,$this->validation->start_day);
 		echo form_dropdown('start_yr',$start_yr,$this->validation->start_yr);
@@ -60,9 +65,14 @@
  <div class="row">
         <label for="start">Event End Date</label>
 	<?php
-		foreach(range(1,12) as $v){ $end_mo[$v]=$v; }
+		/*foreach(range(1,12) as $v){ $end_mo[$v]=$v; }
 		foreach(range(1,32) as $v){ $end_day[$v]=$v; }
-		foreach(range(date('Y'),date('Y')+5) as $v){ $end_yr[$v]=$v; }
+		foreach(range(date('Y'),date('Y')+5) as $v){ $end_yr[$v]=$v; }*/
+
+	    foreach(range(1,12) as $v){ $start_mo[$v]=strftime('%B', strtotime('2000-' . $v . '-01')); }
+    	foreach(range(1,31) as $v){ $start_day[$v]=sprintf('%02d', $v); }
+    	foreach(range(date('Y'),date('Y')+5) as $v){ $start_yr[$v]=$v; }
+
 		echo form_dropdown('end_mo',$start_mo,$this->validation->end_mo);
 		echo form_dropdown('end_day',$start_day,$this->validation->end_day);
 		echo form_dropdown('end_yr',$start_yr,$this->validation->end_yr);
