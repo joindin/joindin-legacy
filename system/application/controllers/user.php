@@ -58,14 +58,14 @@ class User extends Controller {
 			$this->load->helper('form');
 			$this->load->library('validation');
 			$this->load->model('user_model');
-			$this->load->plugin('captcha');
-
+			
+			/*$this->load->plugin('captcha');
 			$cap_arr=array(
 				'img_path'		=>$_SERVER['DOCUMENT_ROOT'].'/inc/img/captcha/',
 				'img_url'		=>'/inc/img/captcha/',
 				'img_width'		=>'130',
 				'img_height'	=>'30'
-			);
+			);*/
 
 			$fields=array(
 				'user'	=> 'Username',
