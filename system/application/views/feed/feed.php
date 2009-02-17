@@ -18,7 +18,7 @@
 				<description>%s</description>
 				<pubDate>%s</pubDate>
 			</item>
-		',$v['title'],$v['guid'],$v['link'],htmlentities($v['description']),$v['pubDate']);
+		',escape($v['title']),$v['guid'],$v['link'],escape($v['description']),$v['pubDate']);
 	}
 	?>
 </rss>

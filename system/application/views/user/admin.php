@@ -43,7 +43,7 @@ foreach($users as $k=>$v){
 			<td>%s</td>
 			<td>%s</td>
 		</tr>
-	',$class,$v->ID,$v->username,$v->email,$v->email,$v->full_name,
+	',$class,$v->ID,escape($v->username),escape($v->email),escape($v->email),escape($v->full_name),
 	$is_admin,$last_log,$active);
 	$ct++;
 }

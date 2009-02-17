@@ -1,15 +1,14 @@
+<?php 
+$this->load->helper('text');
+?>
 <div class="row row-event">
-	<?php $this->load->view('event/_event-icon',array('img'=>$event->event_icon)); ?>
+	<?php $this->load->view('event/_event-icon',array('event'=>$event)); ?>
 	<div class="text">
-    	<h3><a href="/event/view/<?php echo $event->ID; ?>"><?php echo htmlspecialchars($event->event_name); ?></a></h3>
-    	<p class="info"><strong><?php echo date('M j, Y',$event->event_start); ?></strong> - <strong><?php echo date('M j, Y',$event->event_end); ?></strong> at <strong><?php echo htmlspecialchars($event->event_loc); ?></strong></p>
-    	<p class="desc">
-        <?php 
-    	$p=explode(' ',$event->event_desc);
-    	$str='';
-    	for($i=0;$i<20;$i++){ if(isset($p[$i])){ $str.=$p[$i].' '; } } echo htmlspecialchars(trim($str)).'...';
-        ?>
-    	</p>
+    	<h3><a href="/event/view/<?php echo $event->ID; ?>"><?php echo escape($event->event_name); ?></a></h3>
+    	<p class="info"><strong><?php echo date('M j, Y',$event->event_start); ?></strong> - <strong><?php echo date('M j, Y',$event->event_end); ?></strong> at <strong><?php echo escape($event->event_loc); ?></strong></p>
+    	<div class="desc">
+        <?php echo auto_p(escape(word_limiter($event->event_desc, 20))); ?>
+    	</div>
     	<p class="opts">
     		<a href="/event/view/<?php echo $event->ID; ?>#comments"><?php echo $event->num_comments; ?> comment<?php echo $event->num_comments == 1 ? '' : 's'?></a> |
     		<strong><span class="event-attend-count-<?php echo $event->ID; ?>"><?php echo $event->num_attend; ?></span> attending</strong> | 

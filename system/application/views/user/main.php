@@ -62,7 +62,7 @@ if (!empty($msg)):
 <?php else: ?>
     <?php foreach($comments as $k=>$v): ?>
     <div class="row">
-    	<strong><a href="/talk/view/<?php echo $v->talk_id; ?>#comment-<?php echo $v->ID; ?>"><?php echo htmlspecialchars($v->talk_title); ?></a></strong>
+    	<strong><a href="/talk/view/<?php echo $v->talk_id; ?>#comment-<?php echo $v->ID; ?>"><?php echo escape($v->talk_title); ?></a></strong>
     	<div class="clear"></div>
     </div>
     <?php endforeach; ?>

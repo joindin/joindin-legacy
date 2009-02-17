@@ -32,7 +32,7 @@ $title[] = 'Joind.in';
     		<div class="usr">
     			<div class="wrapper">
         		<?php if (user_is_auth()): ?>
-        			Logged in as <strong><a href="/user/view/<?php echo user_get_id(); ?>"><?php echo htmlspecialchars(user_get_username()); ?></a></strong> | 
+        			Logged in as <strong><a href="/user/view/<?php echo user_get_id(); ?>"><?php echo escape(user_get_username()); ?></a></strong> | 
         			<a href="/user/main">Account</a> | 
         			<a href="/user/logout">Logout</a>
         		<?php else: ?>

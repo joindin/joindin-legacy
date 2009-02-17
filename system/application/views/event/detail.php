@@ -14,17 +14,17 @@ menu_pagetitle('Event: ' . escape($det->event_name));
 	
 	<?php $this->load->view('event/_event-icon',array('event'=>$det)); ?>
 
-	<h1><?=$det->event_name?></h1>
+	<h1><?=escape($det->event_name)?></h1>
 
 	<p class="info">
 		<strong><?php echo date('M j, Y',$det->event_start); ?></strong> - <strong><?php echo date('M j, Y',$det->event_end); ?></strong>
 		<br/> 
-		<strong><?php echo htmlspecialchars($det->event_loc); ?></strong>
+		<strong><?php echo escape($det->event_loc); ?></strong>
 	</p>
 
-	<p class="desc">
-		<?=nl2brHtml(auto_link(escape($det->event_desc)));?>
-	</p>
+	<div class="desc">
+		<?=auto_p(auto_link(escape($det->event_desc)));?>
+	</div>
 	
 	<p class="opts">
 	<?php 
@@ -107,15 +107,15 @@ $ct=0;
         	</tr>
         	<?php foreach($v as $ik=>$iv): ?>
         	<tr class="<?php echo ($ct%2==0) ? 'row1' : 'row2'; ?>">
-        		<?php $sp=(array_key_exists((string)$iv->ID,$cl)) ? '<a href="/user/view/'.$cl[$iv->ID].'">'.$iv->speaker.'</a>' : $iv->speaker; ?>
+        		<?php $sp=(array_key_exists((string)$iv->ID,$cl)) ? '<a href="/user/view/'.$cl[$iv->ID].'">'.escape($iv->speaker).'</a>' : escape($iv->speaker); ?>
         		<td>
-        			<a href="/talk/view/<?php echo $iv->ID; ?>"><?php echo $iv->talk_title; ?></a>
+        			<a href="/talk/view/<?php echo $iv->ID; ?>"><?php echo escape($iv->talk_title); ?></a>
         		</td>
         		<td nowrap="nowrap">
-        			<?php echo strtoupper($iv->tcid); ?>
+        			<?php echo escape(strtoupper($iv->tcid)); ?>
         		</td>
         		<td>
-        			<img src="/inc/img/flags/<?php echo $iv->lang; ?>.gif" alt="<?php echo $iv->lang; ?>"/>
+        			<img src="/inc/img/flags/<?php echo $iv->lang; ?>.gif" alt="<?php echo escape($iv->lang); ?>"/>
         		</td>
         		<td>
         			<?php echo $sp; ?>
@@ -144,17 +144,17 @@ $ct=0;
 
 		<?php 
 		foreach ($comments as $k => $v): 
-		    $uname	= ($v->user_id!=0) ? '<a href="/user/view/'.$v->user_id.'">'.$v->cname.'</a>' : $v->cname;
+		    $uname	= ($v->user_id!=0) ? '<a href="/user/view/'.$v->user_id.'">'.escape($v->cname).'</a>' : escape($v->cname);
 		    $type	= ($det->event_start>time()) ? 'Suggestion' : 'Feedback';
 		?>
     	<div id="comment-<?php echo $v->ID ?>" class="row row-event-comment">
         	<div class="text">
             	<p class="info">
-            		<strong><?php echo date('M j, Y, H:i',$v->date_made); ?></strong> by <strong><?php echo $uname; ?></strong> (<?php echo $type; ?>)
+            		<strong><?php echo date('M j, Y, H:i',$v->date_made); ?></strong> by <strong><?php echo $uname; ?></strong> (<?php echo escape($type); ?>)
             	</p>
-            	<p class="desc">
-            		<?php echo nl2br($v->comment); ?>
-            	</p>
+            	<div class="desc">
+            		<?php echo auto_p(escape($v->comment)); ?>
+            	</div>
         	</div>
         	<div class="clear"></div>
         </div>

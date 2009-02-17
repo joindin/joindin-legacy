@@ -11,7 +11,7 @@
 |	http://example.com/
 |
 */
-$config['base_url']	= 'http://conf.localhost/';
+$config['base_url']	= 'http://joindin/';
 
 /*
 |--------------------------------------------------------------------------
@@ -316,7 +316,7 @@ $config['rewrite_short_tags'] = FALSE;
 |--------------------------------------------------------------------------
 */
 $config['token'] = 'th1st0k3n';
-$config['token_dir'] = '/www/htdocs/ctokens';
+$config['token_dir'] = dirname(__FILE__) . '/../../cache/ctokens';
 $config['token_rm'] = 5; //time in minutes
 
 /* End of file config.php */

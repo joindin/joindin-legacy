@@ -29,7 +29,7 @@ if(isset($err) && !empty($err)){ echo '<div class="err">'.$err.'</div>'; }
 	<td>
 		<?php 
 		echo form_hidden('event_id',$ev->ID);
-		echo '<b>'.$ev->event_name.' ('.date('m.d.Y',$ev->event_start).'-'.date('m.d.Y',$ev->event_end).')</b>';
+		echo '<b>'.escape($ev->event_name).' ('.date('m.d.Y',$ev->event_start).'-'.date('m.d.Y',$ev->event_end).')</b>';
 		?>
 	</td>
 </tr>

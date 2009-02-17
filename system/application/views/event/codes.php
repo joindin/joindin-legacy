@@ -21,7 +21,7 @@ tr.tbl_header td {
 tr.claimed { background-color: #DEDEDE; }
 </style>
 
-<h1 class="icon-event">Send Codes: <?=$details[0]->event_name?></h1>
+<h1 class="icon-event">Send Codes: <?=escape($details[0]->event_name)?></h1>
 <p>
 To claim their talks, speakers will need the codes below. To send the codes, put the speaker's email address in the field and check the box to signify you want to send to them. If there are multiple speakers for a talk, seperate the addresses with a comma and an email will be sent to both.
 </p>
@@ -55,8 +55,8 @@ foreach($full_talks as $k=>$v){
 			<td><a href="/talk/view/%s/claim/%s">%s</a></td>
 			<td>%s</td><td>%s</td>
 		</tr>
-	',$rs,$v->ID,$v->talk_title,$v->speaker,
-		$v->ID,$codes[$k],$codes[$k],
+	',$rs,$v->ID,escape($v->talk_title),escape($v->speaker),
+		$v->ID,escape($codes[$k]),escape($codes[$k]),
 		form_checkbox($chk),form_input($email_id,$this->validation->$email_id));
 }
 

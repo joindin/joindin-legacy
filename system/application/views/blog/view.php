@@ -10,7 +10,7 @@ $v=$details[0];
 	</p>
 
 	<div class="desc">
-		<? echo nl2br($v->content); ?>
+		<?php echo auto_p(auto_link($v->content)); ?>
 	</div>
 </div>
 
@@ -45,7 +45,7 @@ if (empty($comments)) {
 
     foreach ($comments as $k => $v) {
         if (isset($v->author_id) && $v->author_id != 0){ 
-    		$uname = '<a href="/user/view/'.$v->author_id.'">'.$v->uname.'</a> ';
+    		$uname = '<a href="/user/view/'.$v->author_id.'">'.escape($v->uname).'</a> ';
     	}else{ 
     		$uname = '<span class="anonymous">Anonymous</span>'; 
     	}
@@ -59,14 +59,16 @@ if (empty($comments)) {
 ?>
 <div id="comment-<?php echo $v->ID ?>" class="row row-blog-comment<?php echo $class?>">
     <p class="info">
-    	<strong><?php echo htmlspecialchars($v->title); ?></strong> by <strong><?php echo $uname; ?></strong>
+    	<strong><?php echo escape($v->title); ?></strong> by <strong><?php echo $uname; ?></strong>
     </p>
     <div class="desc">
-    	<?php echo nl2br(htmlspecialchars($v->content)); ?>
+    	<?php echo auto_p(escape(trim($v->content))); ?>
     </div>
+    <?php if (user_is_admin()): ?>
     <p class="admin">
 		<a class="btn-small" href="">Delete</a>
 	</p>
+	<?php endif; ?>
 
 	<div class="clear"></div>
 </div>

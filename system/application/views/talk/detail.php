@@ -35,7 +35,7 @@ $time_at_event=$gmt+(3600*$det->event_tz);
 
 if(!empty($claim_msg)){
 	$class=($claim_status) ? 'notice' : 'err';
-	if($claim_msg && !empty($claim_msg)){ echo '<div class="'.$class.'">'.$claim_msg.'</div><br/>'; }
+	if($claim_msg && !empty($claim_msg)){ echo '<div class="'.$class.'">'.escape($claim_msg).'</div><br/>'; }
 }
 
 //add the whole total from our anonymous comments
@@ -50,8 +50,8 @@ $rstr = rating_image($detail[0]->tavg);
 
 //change up our string if this is a confirmed, clamed talk
 if(!empty($claimed)){
-	$speaker='<a href="/user/view/'.$claimed[0]->userid.'">'.$det->speaker.'</a>';
-}else{ $speaker=$det->speaker; }
+	$speaker='<a href="/user/view/'.$claimed[0]->userid.'">'.escape($det->speaker).'</a>';
+}else{ $speaker=escape($det->speaker); }
 
 ?>
 <div class="detail">
@@ -60,16 +60,16 @@ if(!empty($claimed)){
 	<p class="info">
 		<strong><?php echo $speaker; ?></strong> (<?php echo date('M j, Y',$det->date_given); ?>)
 		<br/> 
-		<?php echo $det->tcid; ?> at <strong><a href="/event/view/<?php echo $det->event_id; ?>"><?php echo $det->event_name; ?></a></strong> (<?php echo $det->lang_name;?>)
+		<?php echo escape($det->tcid); ?> at <strong><a href="/event/view/<?php echo $det->event_id; ?>"><?php echo escape($det->event_name); ?></a></strong> (<?php echo escape($det->lang_name);?>)
 	</p>
 	
 	<p class="rating">
 		<?php echo $rstr; ?>
 	</p>
 
-	<p class="desc">
-		<?=nl2brHtml(auto_link(escape($det->talk_desc)));?>
-	</p>
+	<div class="desc">
+		<?=auto_p(auto_link(escape($det->talk_desc)));?>
+	</div>
 	
 	<p class="quicklink">
 		Quicklink: <strong><a href="http://joind.in/<?php echo $det->tid; ?>">http://joind.in/<?php echo $det->tid; ?></a></strong>
@@ -126,7 +126,7 @@ if (empty($comments)) {
         }
     
         if (isset($v->user_id) && $v->user_id != 0){ 
-    		$uname = '<a href="/user/view/'.$v->user_id.'">'.$v->uname.'</a> ';
+    		$uname = '<a href="/user/view/'.$v->user_id.'">'.escape($v->uname).'</a> ';
     	}else{ 
     		$uname = '<span class="anonymous">Anonymous</span>'; 
     	}
@@ -153,9 +153,9 @@ if (empty($comments)) {
     		<span class="private">Private</span>
     	<?php endif; ?>
     	</p>
-    	<p class="desc">
-    		<?php echo nl2br($v->comment); ?>
-    	</p>
+    	<div class="desc">
+    		<?php echo auto_p(escape($v->comment)); ?>
+    	</div>
 	</div>
 	<div class="clear"></div>
 </div>

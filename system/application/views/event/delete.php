@@ -1,6 +1,6 @@
 <?php
 if(isset($eid)){
-	echo '<h1 class="title">Delete event '.$details[0]->event_name.' ?</h1>';
+	echo '<h1 class="title">Delete event '.escape($details[0]->event_name).' ?</h1>';
 	
 	echo form_open('event/delete/'.$eid);
 	?>
