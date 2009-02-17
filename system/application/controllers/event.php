@@ -293,21 +293,22 @@ class Event extends Controller {
 			if($is_spam=='false'){
 				$this->db->insert('event_comments',$ec);
 				$arr['msg']='Comment inserted successfully!';
+		
+			
+				if($def_ret){
+					$ec['def_resp_spamn']=(string)$def_ret->spaminess;
+					$ec['def_resp_spamr']=(string)$def_ret->spam;
+				}
+				//print_r($ec);
+			
+				$to		='enygma@phpdeveloper.org';
+				$subj	='Joind.in: Event feedback - '.$id;
+				$content='';
+				foreach($ec as $k=>$v){ $content.='['.$k.'] => '.$v."\n\n"; }
+				@mail($to,$subj,$content,'From:feedback@joind.in');
+			
+				$this->session->set_flashdata('msg', 'Comment inserted successfully!');
 			}
-			
-			if($def_ret){
-				$ec['def_resp_spamn']=(string)$def_ret->spaminess;
-				$ec['def_resp_spamr']=(string)$def_ret->spam;
-			}
-			//print_r($ec);
-			
-			$to		='enygma@phpdeveloper.org';
-			$subj	='Joind.in: Event feedback - '.$id;
-			$content='';
-			foreach($ec as $k=>$v){ $content.='['.$k.'] => '.$v."\n\n"; }
-			@mail($to,$subj,$content,'From:feedback@joind.in');
-			
-			$this->session->set_flashdata('msg', 'Comment inserted successfully!');
 			
 			redirect('event/view/'.$events[0]->ID . '#comments', 'location', 302);
 		}
