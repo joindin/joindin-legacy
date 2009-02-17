@@ -125,9 +125,13 @@ class Event_model extends Model {
 	    $this->db->from('events');
 		$this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
 		$this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');
-		$this->db->where('events.event_start>=',time());
-		$this->db->where('events.pending!=1');
-		if($inc_curr){ $this->db->or_where('events.event_end>=',time()); }
+		
+		if($inc_curr){ 
+			$add='or events.event_end>='.time();
+		}else{ $add=''; }
+		$this->db->where('(events.event_start>='.time().' '.$add.')');
+		
+		$this->db->where('(events.pending is null or events.pending=0)');
 		$this->db->order_by('events.event_start','desc');
 
 		$this->db->limit(10);
