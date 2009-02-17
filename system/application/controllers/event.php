@@ -495,7 +495,7 @@ class Event extends Controller {
 				'pending'		=>1
 			);
 			
-			echo '<pre>'; print_r($sub_arr); echo '</pre>';
+			//echo '<pre>'; print_r($sub_arr); echo '</pre>';
 			
 			//----------------------
 			$is_auth	= $this->user_model->isAuth();
