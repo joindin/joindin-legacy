@@ -39,4 +39,15 @@ function menu_sidebar()
 	return $sidebar;
 }
 
+function menu_pagetitle()
+{
+    static $title = array();
+
+    if (func_num_args() > 0) {
+        $title[] = func_get_arg(0);
+    }
+
+	return $title;
+}
+
 ?>

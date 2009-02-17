@@ -4,6 +4,8 @@
 
 $det=$detail[0];
 
+menu_pagetitle('Talk: ' . escape($det->talk_title));
+
 $total	= 0;
 $rstr	= '';
 $anon	= array();
@@ -66,7 +68,7 @@ if(!empty($claimed)){
 	</p>
 
 	<p class="desc">
-		<?=nl2br($det->talk_desc)?>
+		<?=nl2brHtml(auto_link(escape($det->talk_desc)));?>
 	</p>
 	
 	<p class="quicklink">

@@ -5,6 +5,9 @@ foreach($claimed as $k=>$v){
 	//echo '<pre>'; print_r($v); echo '</pre>';
 	$cl[$v->rcode]=array('rid'=>$v->rid,'uid'=>$v->uid); 
 }
+
+menu_pagetitle('Event: ' . escape($det->event_name));
+
 ?>
 
 <div class="detail">
@@ -20,7 +23,7 @@ foreach($claimed as $k=>$v){
 	</p>
 
 	<p class="desc">
-		<?=nl2br($det->event_desc)?>
+		<?=nl2brHtml(auto_link(escape($det->event_desc)));?>
 	</p>
 	
 	<p class="opts">
@@ -53,7 +56,7 @@ foreach($claimed as $k=>$v){
 <p class="admin">
 	<a class="btn-small" href="/event/delete/<?=$det->ID?>">Delete event</a>
 	<a class="btn-small" href="/event/edit/<?=$det->ID?>">Edit event</a>
-	<a class="btn-small" href="/talk/add">Add new talk</a>
+	<a class="btn-small" href="/talk/add/event/<?=$det->ID?>">Add new talk</a>
 	&nbsp;
 	<a class="btn-small" href="/event/codes/<?=$det->ID?>">Get talk codes</a>
 </p>
