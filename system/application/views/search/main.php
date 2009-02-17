@@ -45,7 +45,7 @@
     </div>
     
     <div class="row row-buttons">
-    	<?php echo form_submit(array('class' => 'btn'), 'Search'); ?>
+    	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn'), 'Search'); ?>
     </div>
     
     <?php echo form_close(); ?>

@@ -18,7 +18,7 @@ if (!empty($msg)):
 <?php $this->load->view('msg_info', array('msg' => $msg)); ?>
 <?php endif; ?>
 
-<table cellpadding="3" cellspacing="0" border="0" width="100%" id="user_admin_tbl" class="list">
+<table summary="" class="list">
 <tr class="header">
 	<th>Username</th>
 	<th>Email</th>

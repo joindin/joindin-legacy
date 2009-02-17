@@ -463,8 +463,9 @@ a {
 
 #ctn .main .detail .img {
 	float: right;
-	margin-left: 10px;
+	margin-left: 20px;
 	margin-right: -5px;
+	margin-bottom: 10px;
 }
 
 #ctn .main .detail .img .frame {
@@ -500,11 +501,10 @@ a {
 
 #ctn .list th {
 	padding: 5px;
-	border-top: 0;
+	border-top: 1px dotted #d7dcdf;
 	text-align: left;
 	font-size: 11px;
 	background: #f1f4f8;
-	margin-bottom: 5px;
 }
 
 #ctn .list th h4 {

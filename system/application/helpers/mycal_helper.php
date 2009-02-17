@@ -44,8 +44,8 @@ function mycal_build_calendar($year, $month, $day, $events = array()){
     $p = '<a class="calendar-prev" href="'.htmlspecialchars($pl).'">'.$p.'</a>';
     $n = '<a class="calendar-next" href="'.htmlspecialchars($nl).'">'.$n.'</a>';
 
-    $calendar  = '<table class="calendar">' . "\n";
-    $calendar .= '<caption class="calendar-month">'. $p . '<a href="/event/calendar/' . _mycal_format_date($year, $month) . '" class="calendar-title">' . $title . '</a>' . $n."<div class=\"clear\"></div></caption>\n<tr>\n";
+    $calendar  = '<table class="calendar" summary="">' . "\n";
+    $calendar .= '<caption class="calendar-month">'. $p . '<a href="/event/calendar/' . _mycal_format_date($year, $month) . '" class="calendar-title">' . $title . '</a>' . $n."<br class=\"clear\"/></caption>\n<tr>\n";
 
     foreach ($day_names as $d) {
         $calendar .= '<th abbr="'.htmlentities($d).'">' . htmlentities(substr($d, 0, 3)) .' </th>';

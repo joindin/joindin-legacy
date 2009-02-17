@@ -9,7 +9,7 @@ foreach($claimed as $k=>$v){
 
 <div class="detail">
 	
-	<?php $this->load->view('event/_event-icon',array('img'=>$det->event_icon)); ?>
+	<?php $this->load->view('event/_event-icon',array('event'=>$det)); ?>
 
 	<h1><?=$det->event_name?></h1>
 
@@ -43,7 +43,7 @@ foreach($claimed as $k=>$v){
 	if(!user_is_auth()){ $attend=false; }
 	?>
 		<a class="btn<?php echo $attend ? ' btn-success' : ''; ?>" href="#" onclick="markAttending(this,<?=$det->ID?>,<?php echo $det->event_end<time() ? 'true' : 'false'; ?>);return false;"><?=$link_txt?></a>
-		<div class="clear"></div>
+
 	</p>
 	<div class="clear"></div>
     (<span class="event-attend-count-<?php echo $det->ID; ?>"><?php echo (int)$attend_ct; ?></span><?php echo (time()<=$det->event_end) ? ' attending so far':' said they attended'; ?>)
@@ -92,7 +92,7 @@ $ct=0;
 	<?php if (count($by_day) == 0): ?>
 		<?php $this->load->view('msg_info', array('msg' => 'No talks available at the moment.')); ?>
 	<?php else: ?>
-		<table cellpadding="0" cellspacing="0" border="0" width="100%" class="list">
+		<table summary="" cellpadding="0" cellspacing="0" border="0" width="100%" class="list">
         <?php 
         foreach ($by_day as $k=>$v):
             $ct = 0;
@@ -112,12 +112,12 @@ $ct=0;
         			<?php echo strtoupper($iv->tcid); ?>
         		</td>
         		<td>
-        			<img src="/inc/img/flags/<?php echo $iv->lang; ?>.gif"/>
+        			<img src="/inc/img/flags/<?php echo $iv->lang; ?>.gif" alt="<?php echo $iv->lang; ?>"/>
         		</td>
         		<td>
         			<?php echo $sp; ?>
         		</td>
-        	<tr/>
+        	</tr>
         <?php
         	    $ct++;
             endforeach;
@@ -207,7 +207,7 @@ $ct=0;
         </div>
     	
     	<div class="row row-buttons">
-        	<?php echo form_submit(array('class' => 'btn'), 'Submit Comment'); ?>
+        	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn'), 'Submit Comment'); ?>
         </div>
     	<?php  echo form_close(); ?>
 	</div>

@@ -2,8 +2,8 @@
 	<div class="frame">
 	<?php 
 		$path=$_SERVER['DOCUMENT_ROOT'].'/inc/img/event_icons/';
-		$img=(!empty($img) && is_file($path.$img)) ? $img : 'none.gif'; 
+		$img=(!empty($event->event_icon) && is_file($path.$event->event_icon)) ? $event->event_icon : 'none.gif'; 
 		?>
-		<img src="/inc/img/event_icons/<?php echo $img ?>"/>
+		<img src="/inc/img/event_icons/<?php echo $img ?>" alt="<?php echo htmlspecialchars($event->event_name); ?>"/>
 	</div>
 </div>

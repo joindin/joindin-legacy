@@ -119,7 +119,7 @@
                         
                         <div class="row row-buttons">
                         	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn'), 'Login'); ?> 
-                        	<a style="margin-left:10px" href="/user">Forgot your password?</a>
+                        	<!-- <a style="margin-left:10px" href="/user">Forgot your password?</a> -->
                         </div>
                         
                         <?php echo form_close(); ?>
