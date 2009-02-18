@@ -15,6 +15,6 @@ class Getcomments {
 		
 		$this->CI->load->model('talks_model');
 		$ret=$this->CI->talks_model->getTalkComments($id);
-		return $ret;
+		return array('items'=>$ret);
 	}
 }

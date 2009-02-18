@@ -17,27 +17,29 @@ class Api extends Controller {
 		$this->load->library('service');
 		//$data=array('action'=>$act,'data'=>array('foo','bar'));
 		$data=file_get_contents('php://input');
-		$ret=array('data'=>$this->service->handle('event',$data));
+		$ret=array('out'=>$this->service->handle('event',$data));
 		$this->output($ret);
 	}
 	function talk($act=null){
 		$this->load->library('service');
 		$data=file_get_contents('php://input');
-		$ret=array('data'=>$this->service->handle('talk',$data));
+		$ret=array('out'=>$this->service->handle('talk',$data));
 		$this->output($ret);
 	}
 	function comment($act=null){
 		$this->load->library('service');
 		$data=file_get_contents('php://input');
-		$ret=array('data'=>$this->service->handle('comment',$data));
+		$ret=array('out'=>$this->service->handle('comment',$data));
 		$this->output($ret);
 	}
 	
 	//---------------------
 	function output($ret){
-		$out=(string)$ret['data']['output'];
+		if(isset($ret['out']['data']['output'])){
+			$out=(string)$ret['out']['data']['output'];
+		}
 		$out=(!empty($out)) ? 'out_'.$out : 'out_xml';
-		$this->load->view('api/'.$out,$ret['data']);
+		$this->load->view('api/'.$out,$ret['out']['data']);
 	}
 	function tz($cont){
 		$this->load->model('tz_model');

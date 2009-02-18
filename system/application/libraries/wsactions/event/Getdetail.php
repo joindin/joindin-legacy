@@ -15,7 +15,6 @@ class Getdetail {
 		
 		$this->CI->load->model('event_model');
 		$ret=$this->CI->event_model->getEventDetail($id);
-		//return array('msg'=>'valid'); 
 		return $ret;
 	}
 }

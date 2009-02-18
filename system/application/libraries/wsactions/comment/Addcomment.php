@@ -41,10 +41,10 @@ class Addcomment {
 			//print_r($arr);
 			
 			$this->CI->db->insert('talk_comments',$arr);
-			$ret=array('msg'=>'comment added');
+			$ret=array('output'=>'msg','msg'=>'comment added');
 		}else{ 
 			if(!$unq){ $ret='Non-unique entry!'; }
-			$ret=array('errors'=>$ret); 
+			$ret=array('output'=>'msg','msg'=>$ret); 
 		}
 		return $ret;
 	}

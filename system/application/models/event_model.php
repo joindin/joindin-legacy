@@ -132,7 +132,7 @@ class Event_model extends Model {
 		$this->db->where('(events.event_start>='.time().' '.$add.')');
 		
 		$this->db->where('(events.pending is null or events.pending=0)');
-		$this->db->order_by('events.event_start','desc');
+		$this->db->order_by('events.event_start','asc');
 
 		$this->db->limit(10);
 		$this->db->group_by('events.ID');

@@ -4,7 +4,10 @@ class Service {
 	
 	var $CI	= null;
 	var $public_actions = array(
-		'event/attend'=>array('logged')
+		'event/attend'		=> array('logged'),
+		'event/getdetail'	=> array(),
+		'talk/getcomments'	=> array(),
+		'talk/getdetail'	=> array()
 	);
 	
 	function Service(){
@@ -21,18 +24,17 @@ class Service {
 		
 		$public=($this->isPublicAction($type,$rtype)) ? true : false;
 		
-		//check to be sure they're authed and that they can execute this action type
+		//check to be sure they're authed (or that it's public) and that they can execute this action type
 		if($this->checkAuth($xml) || $public){
 			ini_set('include_path',ini_get('include_path').PATH_SEPARATOR.BASEPATH.'application/libraries/wsactions');
 			$ws_root=$_SERVER['DOCUMENT_ROOT'].'/system/application/libraries/wsactions/';
 			
 			if($public==false){
-				//get user information
+				//if it's not public, get user information from the request
 				$uinfo=$this->CI->user_model->getUser($xml->auth->user); //echo 'uninfo: '; print_r($uinfo);
 				$uid	= (int)$uinfo[0]->ID;
 			}else{
-				//check our "key" to prevent abuse
-				//split out these values...
+				//if it is public, check our "key" they sent along to prevent abuse
 				foreach(explode('&',$_SERVER['QUERY_STRING']) as $k=>$v){ 
 					$x=explode('=',$v); $_GET[$x[0]]=$x[1]; 
 				}
@@ -41,7 +43,7 @@ class Service {
 				$reqk=$_GET['reqk'];
 				$seck=$_GET['seck'];
 				if(checkReqKey($reqk,$seck)){ 
-					echo 'woo!';
+					//echo 'woo!';
 				}else{ $ret=array('output'=>'msg','msg'=>'Access denied!'); }
 			}
 
@@ -55,8 +57,9 @@ class Service {
 					include_once($class_file);
 					$obj=new $class($xml);
 					$ret['data']=$obj->run();
-					$ret['output']=(!empty($out)) ? $out : 'xml';
-				}else{ $ret=array('msg'=>'Invalid action!'); }
+					//if an output format is specified in the message, use that
+					if(!empty($out)){ $ret['data']['output']=$out; }
+				}else{ $ret=array('output'=>'msg','msg'=>'Invalid action!'); }
 			}else{
 				$ret=array('output'=>'msg','msg'=>'Access denied!');
 			}
@@ -76,7 +79,7 @@ class Service {
 		$this->CI->load->model('user_model');
 		if($obj->auth->user){
 			$uinfo=$this->CI->user_model->getUser($obj->auth->user); //echo 'uninfo: '; print_r($uinfo);
-			return (md5($obj->auth->pass)==$uinfo[0]->password && $uinfo[0]->api_access) ? true : false;
+			return ($obj->auth->pass==$uinfo[0]->password && $uinfo[0]->api_access) ? true : false;
 		}else{ return false; }
 	}
 	// check to see if our given action is one that doesnt need a user/pass

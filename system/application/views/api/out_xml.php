@@ -1,5 +1,5 @@
 <?php
-//print_r($data);
+//echo 'data: '; print_r($items);
 
 $doc=new DOMDocument('1.0');
 $doc->formatOuput=true;
@@ -7,7 +7,7 @@ $doc->formatOuput=true;
 $resp=$doc->createElement('response');
 $doc->appendChild($resp);
 
-foreach($data as $k=>$v){
+foreach($items as $k=>$v){
 	$it=$doc->createElement('item');
 	$resp->appendChild($it);
 

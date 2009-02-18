@@ -112,11 +112,13 @@ class Blog extends Controller {
 		
 		$fields=array(
 			'title'		=> 'Title',
-			'comment'	=> 'Comment'
+			'comment'	=> 'Comment',
+			'name'		=> 'Name'
 		);
 		$rules=array(
 			'title'		=> 'required',
-			'comment'	=> 'required'
+			'comment'	=> 'required',
+			'name'		=> 'required'
 		);
 		$this->validation->set_rules($rules);
 		$this->validation->set_fields($fields);
@@ -137,6 +139,7 @@ class Blog extends Controller {
 			$arr=array(
 				'title'			=> $this->input->post('title'),
 				'author_id'		=> (int)$this->session->userdata('ID'),
+				'author_name'	=> $this->input->post('name'),
 				'content'		=> $this->input->post('comment'),
 				'blog_post_id'	=> $id
 			);
@@ -166,6 +169,10 @@ class Blog extends Controller {
 			'comments'	=> $this->bcm->getPostComments($id),
 			'pid'		=> $id
 		);
+		if($this->user_model->isAuth()){ 
+			$udata=$this->user_model->getUser($this->session->userdata('ID')); //print_r($udata);
+			$arr['full_name']=(!empty($udata[0]->full_name)) ? $udata[0]->full_name : $udata[0]->username;
+		}
 		$this->template->write('feedurl','/feed/blog');
 		$this->template->write_view('content','blog/view',$arr);
 		$this->template->render();

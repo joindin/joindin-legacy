@@ -8,7 +8,7 @@ class Blog_comments_model extends Model {
 	//-------------------
 	function getPostComments($pid){
 
-		$this->db->select('blog_comments.*, user.username AS uname');
+		$this->db->select('blog_comments.*, user.username AS uname, user.full_name');
 	    $this->db->from('blog_comments');
 		$this->db->join('user', 'user.ID = blog_comments.author_id', 'left');
 

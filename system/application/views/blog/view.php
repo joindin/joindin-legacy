@@ -1,5 +1,6 @@
 <?php 
 $v=$details[0];
+if(isset($full_name)){ $this->validation->name=escape($full_name); }
 ?>
 <div class="detail">
 
@@ -45,7 +46,8 @@ if (empty($comments)) {
 
     foreach ($comments as $k => $v) {
         if (isset($v->author_id) && $v->author_id != 0){ 
-    		$uname = '<a href="/user/view/'.$v->author_id.'">'.escape($v->uname).'</a> ';
+			$nm=(!empty($v->full_name)) ? escape($v->full_name) : escape($v->uname);
+    		$uname = '<a href="/user/view/'.$v->author_id.'">'.$nm.'</a> ';
     	}else{ 
     		$uname = '<span class="anonymous">Anonymous</span>'; 
     	}
@@ -93,6 +95,19 @@ if (empty($comments)) {
 		'id'	=>'title',
 		'size'	=>30,
 		'value'	=>$this->validation->title
+	);
+	echo form_input($p);
+    ?>
+    <div class="clear"></div>
+</div>
+<div class="row">
+	<label for="comment">Name</label>
+	<?php 
+    $p=array(
+		'name'	=>'name',
+		'id'	=>'name',
+		'size'	=>30,
+		'value'	=>$this->validation->name
 	);
 	echo form_input($p);
     ?>
