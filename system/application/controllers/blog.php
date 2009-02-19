@@ -78,7 +78,7 @@ class Blog extends Controller {
 			$arr=array('msg'=>'Post inserted successfully! <a href="/blog/view/'.$id.'">View post</a>');
 		}else{
 			if($id){
-				$det=$this->blog_posts_model->getPostDetail(); //print_r($det);
+				$det=$this->blog_posts_model->getPostDetail($id); //print_r($det);
 				$this->validation->title=$det[0]->title;
 				$this->validation->story=$det[0]->content;
 
