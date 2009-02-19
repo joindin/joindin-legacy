@@ -187,7 +187,6 @@ class Event extends Controller {
 				'event_desc'	=>$this->input->post('event_desc'),
 				'active'		=>'1',
 				'event_tz'		=>$this->input->post('event_tz'),
-				'event_icon'	=>$icon,
 				'event_href'	=>$this->input->post('event_href'),
 				'event_hashtag'	=>$this->input->post('event_hashtag')
 			);
