@@ -35,7 +35,7 @@ menu_pagetitle('Event: ' . escape($det->event_name));
 				echo '</td><td valign="top" width="50%" style="font-size:11px">';
 				if(!empty($det->event_hashtag)){
 					echo '<b>Hashtags</b><br/>'; foreach(explode(',',$det->event_hashtag) as $v){ 
-						echo '<a href="http://hashtags.org/tag/'.$v.'">'.$v.'</a><br/>'; 
+						echo '<a href="http://hashtags.org/tag/'.str_replace('#','',$v).'">'.$v.'</a><br/>'; 
 					}
 				}
 				echo '</td></tr></table>';
