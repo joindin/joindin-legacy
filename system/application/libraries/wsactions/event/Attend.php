@@ -29,10 +29,10 @@ class Attend {
 				//if they don't, add...
 				$this->CI->user_attend_model->chgAttendStat($uid,$eid);
 				
-				return array('msg'=>'Success');
+				return array('output'=>'json','items'=>array('msg'=>'Success'));
 				
-			}else{ return array('msg'=>'redirect:/user/login'); }
-		}else{ return array('msg'=>'Fail'); }
+			}else{ return array('output'=>'json','items'=>array('msg'=>'redirect:/user/login')); }
+		}else{ return array('output'=>'json','items'=>array('msg'=>'Fail')); }
 	}
 	//-----------------------
 }
