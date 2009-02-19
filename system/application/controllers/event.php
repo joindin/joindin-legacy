@@ -169,12 +169,6 @@ class Event extends Controller {
 			$this->template->render();
 		}else{ 
 			//success...
-			$icon='';
-			if($this->upload->do_upload('event_icon')){
-				$updata=$this->upload->data();
-				$icon=$updata['file_name'];
-			}
-			
 			$arr=array(
 				'event_name'	=>$this->input->post('event_name'),
 				'event_start'	=>mktime(
@@ -197,6 +191,10 @@ class Event extends Controller {
 				'event_href'	=>$this->input->post('event_href'),
 				'event_hashtag'	=>$this->input->post('event_hashtag')
 			);
+			if($this->upload->do_upload('event_icon')){
+				$updata=$this->upload->data();
+				$arr['event_icon']=$updata['file_name'];
+			}
 			if($id){
 				//edit...
 				$this->db->where('id',$this->edit_id);
