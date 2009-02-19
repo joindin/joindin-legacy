@@ -50,12 +50,17 @@ if($edit_id){
 	<td class="title">Post Date:</td>
 	<td>
 	<?php
-	echo form_dropdown('post_mo',range(1,12),$this->validation->post_mo);
-	echo form_dropdown('post_day',range(1,31),$this->validation->post_day);
-	echo form_dropdown('post_yr',range(date('Y'),date('Y')+5),$this->validation->post_yr);
+	foreach(range(date('Y'),date('Y')+5) as $v){ $post_yr[$v]=$v; }
+	foreach(range(1,24) as $v){ $post_hr[$v]=$v; }
+	foreach(range(1,59) as $v){ $post_mi[$v]=$v; }
+	foreach(range(1,12) as $v){ $post_mo[$v]=$v; }
+	foreach(range(1,31) as $v){ $post_day[$v]=$v; }
+	echo form_dropdown('post_mo',$post_mo,$this->validation->post_mo);
+	echo form_dropdown('post_day',$post_day,$this->validation->post_day);
+	echo form_dropdown('post_yr',$post_yr,$this->validation->post_yr);
 	echo '&nbsp;@&nbsp;';
-	echo form_dropdown('post_hr',range(1,24),$this->validation->post_hr);
-	echo form_dropdown('post_mi',range(1,59),$this->validation->post_mi);
+	echo form_dropdown('post_hr',$post_hr,$this->validation->post_hr);
+	echo form_dropdown('post_mi',$post_mi,$this->validation->post_mi);
 	?>
 	</td>
 </tr>
