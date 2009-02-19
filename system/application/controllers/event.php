@@ -140,7 +140,9 @@ class Event extends Controller {
 			'end_yr'	=>'End Year',
 			'event_loc'	=>'Event Location',
 			'event_desc'=>'Event Description',
-			'event_tz'	=>'Event Timezone'
+			'event_tz'	=>'Event Timezone',
+			'event_href'=>'Event Link(s)',
+			'event_hashtag'=>'Event Hashtag'
 		);
 		$this->validation->set_fields($fields);
 		
@@ -191,7 +193,9 @@ class Event extends Controller {
 				'event_desc'	=>$this->input->post('event_desc'),
 				'active'		=>'1',
 				'event_tz'		=>$this->input->post('event_tz'),
-				'event_icon'	=>$icon
+				'event_icon'	=>$icon,
+				'event_href'	=>$this->input->post('event_href'),
+				'event_hashtag'	=>$this->input->post('event_hashtag')
 			);
 			if($id){
 				//edit...

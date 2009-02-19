@@ -84,6 +84,14 @@ if(isset($msg)){ echo '<div class="notice">'.$msg.'</div>'; }
 		<input type="file" name="event_icon" size="20" />
 	</td>
 </tr>
+<tr>
+	<td class="title">Event Link(s):</td>
+	<td><?php echo form_input('event_href',$this->validation->event_href); ?></td>
+</tr>
+<tr>
+	<td class="title">Event Hashtag(s):</td>
+	<td><?php echo form_input('event_hashtag',$this->validation->event_hashtag); ?></td>
+</tr>
 <tr><td colspan="2" align="right"><?php echo form_submit('sub',$sub); ?></td></tr>
 </table>
 <?php echo form_close(); ?>
