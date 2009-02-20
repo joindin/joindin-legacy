@@ -316,7 +316,7 @@ class Event extends Controller {
 		
 		$arr['comments']=$this->event_comments_model->getEventComments($id);
 		
-		$this->template->write_view('content','event/detail',$arr,TRUE);
+		$this->template->write_view('content','event/detail_new',$arr,TRUE);
 		$this->template->render();
 		//$this->load->view('event/detail',$arr);
 	}

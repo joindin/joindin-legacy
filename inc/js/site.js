@@ -74,8 +74,14 @@ function apiRequest(rtype,raction,data,callback){
 
 
 function markAttending(el,eid,isPast){
-	if (!$(el).next().is('.loading'))
-		$(el).after('<span class="loading">Loading...</span>');
+	var $loading;
+	if (!$(el).next().is('.loading')) {
+		$loading = $('<span class="loading">Loading...</span>');
+		var pos = $(el).position();
+		$loading.css({left: pos.left + 15, top: pos.top - 30}).hide();
+		$(el).after($loading);
+		$loading.fadeIn('fast');
+	}
 
 	var obj=new Object();
 	obj.eid=eid;
@@ -92,7 +98,8 @@ function markAttending(el,eid,isPast){
 		}
 		$(el).html(link_txt);
 		
-		$(el).next().addClass('loading-complete').html('Thanks for letting us know!').pause(2000).fadeOut(function() { $(this).remove() });
+		if ($loading)
+			$loading.addClass('loading-complete').html('Thanks for letting us know!').pause(1500).fadeOut(function() { $(this).remove() });
 		//alert('Thanks for letting us know!');
 	});
 	return false;
