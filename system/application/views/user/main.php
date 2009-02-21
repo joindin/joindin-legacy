@@ -26,6 +26,7 @@ menu_sidebar('Claim a talk', ob_get_clean());
 		<li><a href="/user/manage">Manage Account</a>
 	<?php if (user_is_admin()): ?>
 		<li><a href="/user/admin">User Admin</a>
+		<li><a href="/event/pending">Pending Events</a>
 	<?php endif; ?>
 	</ul>
 	<div class="clear"></div>
