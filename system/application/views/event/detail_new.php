@@ -16,7 +16,7 @@ menu_pagetitle('Event: ' . escape($det->event_name));
         <?php $this->load->view('event/_event-icon',array('event'=>$det)); ?>
     
     	<div class="title">
-        	<h1><?=escape($det->event_name)?></h1>
+        	<h1><?=escape($det->event_name)?> <?=(($det->pending==1) ? '(Pending)':'')?></h1>
         
         	<p class="info">
         		<strong><?php echo date('M j, Y',$det->event_start); ?></strong> - <strong><?php echo date('M j, Y',$det->event_end); ?></strong>
@@ -114,6 +114,9 @@ menu_pagetitle('Event: ' . escape($det->event_name));
 	<a class="btn-small" href="/talk/add/event/<?=$det->ID?>">Add new talk</a>
 	&nbsp;
 	<a class="btn-small" href="/event/codes/<?=$det->ID?>">Get talk codes</a>
+	<?php if(isset($det->pending) && $det->pending==1){
+		echo '<a class="btn-small" href="/approve">Approve Event</a>';
+	} ?>
 </p>
 <?php endif; ?>
 

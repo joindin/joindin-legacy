@@ -37,7 +37,16 @@ class Event_model extends Model {
 		}
 	}
 	//---------------------
+	function approvePendingEvent($id){
+		$arr=array(
+			'active'	=> 1,
+			'pending'	=> 0
+		);
+		$this->db->where('ID',$id);
+		$this->db->update('events',$arr);
+	}
 	
+	//---------------------
 	function getDayEventCounts($year, $month)
 	{
     	$start	= mktime(0,  0, 0, $month, 1,                 $year);
@@ -64,7 +73,7 @@ class Event_model extends Model {
         return $dates;
 	}
 
-	function getEventDetail($id=null,$start_dt=null,$end_dt=null){
+	function getEventDetail($id=null,$start_dt=null,$end_dt=null,$pending=false){
 		$attend = '(SELECT COUNT(*) FROM user_attend WHERE eid = events.ID AND uid = ' . (int)$this->session->userdata('ID') . ')as user_attending';
 	    $this->db->select('events.*, COUNT(user_attend.ID) AS num_attend, COUNT(event_comments.ID) AS num_comments, ' . $attend);
 	    $this->db->from('events');
@@ -72,7 +81,14 @@ class Event_model extends Model {
 		$this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');
 		$this->db->group_by('events.ID');
 		
-		$this->db->where('(events.active=1 AND (events.pending is null or events.pending=0))');
+		if($this->user_model->isSiteAdmin() && isset($id)){
+			/*show it no matter what the status*/
+		}else{
+			if(!$pending){ 
+				$pd='(events.active=1 AND (events.pending is null or events.pending=0))'; 
+			}else{ $pd='(events.active=0 AND events.pending=1)'; }
+			$this->db->where($pd);
+		}
 		if($id){
 			//looking for a specific one...
 			$this->db->where('events.ID='.$id);

@@ -16,7 +16,7 @@ class Event extends Controller {
 		}else{ echo 'error'; }
 	}
 	//--------------------
-	function index(){
+	function index($pending=false){
 		$prefs = array (
 			'show_next_prev'  => TRUE,
 			'next_prev_url'   => '/event'
@@ -28,7 +28,7 @@ class Event extends Controller {
 		$this->load->model('event_model');
 		$this->load->helper('mycal');
 		
-		$events = $this->event_model->getEventDetail();
+		$events = $this->event_model->getEventDetail(null,null,null,$pending);
 		$reqkey = buildReqKey();
 		
 		$arr=array(
@@ -225,8 +225,8 @@ class Event extends Controller {
 		$this->load->model('event_comments_model');
 		$this->load->model('user_attend_model','uam');
 		
+		$events	= $this->event_model->getEventDetail($id);				
 		$talks	= $this->event_model->getEventTalks($id);
-		$events	= $this->event_model->getEventDetail($id);
 		$is_auth= $this->user_model->isAuth();
 		
 		foreach($talks as $k=>$v){
@@ -551,6 +551,17 @@ class Event extends Controller {
 		header('Content-type: application/octet-stream');
 		header('Content-Disposition: attachment; filename="Event_Comments_'.$eid.'.csv"');
 		echo $out;
+	}
+	function pending(){
+		if(!$this->user_model->isSiteAdmin()){ redirect(); }
+		$this->index(true);
+	}
+	function approve($id){
+		if(!$this->user_model->isSiteAdmin()){ redirect(); }
+		
+		$this->load->model('event_model');
+		$this->event_model->approvePendingEvent($id);
+		redirect('event/view/'.$id); 
 	}
 	//----------------------
 	function start_mo_check($str){

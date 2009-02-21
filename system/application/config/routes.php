@@ -45,7 +45,9 @@ $route['scaffolding_trigger'] = "";
 
 //$route['event/([^add|view|edit|delete])'] = 'event/cust/$1';
 $route['event/add']='event/add';
+$route['event/pending']='event/pending';
 $route['event/submit']='event/submit';
+$route['event/approve/(:num)']='event/approve/$1';
 $route['event/calendar/(:num)/(:num)/(:num)']	= 'event/calendar/$1/$2/$3';
 $route['event/calendar/(:num)/(:num)']	= 'event/calendar/$1/$2';
 $route['event/calendar/(:num)/']	= 'event/calendar/$1';
