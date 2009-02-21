@@ -23,6 +23,11 @@ body {
 	line-height:1.231;
 }
 
+hr {
+	border-style: dotted;
+	border-color: #D7DCDF;
+}
+
 h1,
 .h1 {
 	font-size: 26px;
@@ -511,6 +516,10 @@ a {
 	margin-bottom: 10px;
 }
 
+#ctn .main .detail hr {
+	margin: 10px 0;
+}
+
 #ctn .main .detail .header .title {
 	float: left;
 	padding: 5px 0;
@@ -535,10 +544,29 @@ a {
 	margin-left: 5px;
 }
 
+/*#ctn .main .detail .related {
+	color: #2368af;
+	border: 1px solid #D7DCDF;
+	background: #f0f4f8 url(/inc/img/bg-box.gif) left top repeat-x;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	padding: 2px 8px;
+}*/
+
+#ctn .main .detail .links,
+#ctn .main .detail .hashtags {
+	float: left;
+	width: 40%;
+	padding-right: 10px;
+	font-size: 85%;
+}
+
 #ctn .main .detail .links .h4,
 #ctn .main .detail .hashtags .h4 {
 	margin: 0;
 	padding: 0;
+	font-size: 12px;
+	line-height: 14px;
 }
 
 #ctn .main .detail .links ul,

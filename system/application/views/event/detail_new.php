@@ -55,9 +55,10 @@ menu_pagetitle('Event: ' . escape($det->event_name));
 
 	<div class="desc">
 		<?php echo auto_p(auto_link(escape($det->event_desc))); ?>
+		<hr/>
 
 	<?php if(!empty($det->event_href) || !empty($det->event_hastag)){ ?>
-		<div>
+		<div class="related">
 		<?php if(!empty($det->event_href)){ ?>
 		<?php $hrefs = array_map('trim', explode(',',$det->event_href)); ?>
         	<div class="links">
@@ -108,6 +109,8 @@ menu_pagetitle('Event: ' . escape($det->event_name));
 <p class="admin">
 	<a class="btn-small" href="/event/delete/<?=$det->ID?>">Delete event</a>
 	<a class="btn-small" href="/event/edit/<?=$det->ID?>">Edit event</a>
+	<a class="btn-small" href="/event/approve/<?=$det->ID?>">Approve event</a>
+	&nbsp;
 	<a class="btn-small" href="/talk/add/event/<?=$det->ID?>">Add new talk</a>
 	&nbsp;
 	<a class="btn-small" href="/event/codes/<?=$det->ID?>">Get talk codes</a>
