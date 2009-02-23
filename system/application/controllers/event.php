@@ -320,6 +320,18 @@ class Event extends Controller {
 		$this->template->render();
 		//$this->load->view('event/detail',$arr);
 	}
+    function attendees($id){
+		$this->load->model('user_attend_model');
+
+		$users	= $this->user_attend_model->getAttendees($id);				
+		
+		$arr = array(
+		    'users' => $users
+		);
+
+		$this->template->write_view('content','event/attendees',$arr,true);
+		echo $this->template->render('content');
+	}
 	function delete($id){
 		if(!$this->user_model->isSiteAdmin()){ redirect(); }
 		$this->load->helper('form');

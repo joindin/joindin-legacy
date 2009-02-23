@@ -93,8 +93,10 @@ $title[] = 'Joind.in';
     	<div class="grid_4">
         	<div class="sidebar">
         	<?php foreach (menu_sidebar() as $box): ?>
-        		<div class="box">
+        		<div class="box<?php if (!empty($box['class'])): ?> <?php echo $box['class']; ?><?php endif; ?>">
+        		<?php if (!empty($box['title'])): ?>
                 	<h4><?php echo $box['title']; ?></h4>
+                <?php endif; ?>
                 	<div class="ctn">
                 	    <?php echo $box['content']; ?>
                 	</div>

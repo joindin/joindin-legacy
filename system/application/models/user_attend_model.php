@@ -27,5 +27,16 @@ class User_attend_model extends Model {
 		return (isset($res[0]->attend_ct)) ? $res[0]->attend_ct : 0;
 	}
 	
+    function getAttendees($eid){
+		$this->db->select('user.*');
+	    $this->db->from('user_attend');
+		$this->db->join('user', 'user.ID = user_attend.uid', 'inner');
+		$this->db->where('user_attend.eid='.(int)$eid);
+		$this->db->order_by('user_attend.ID','desc');
+
+		$q=$this->db->get();
+		return $q->result();
+	}
+	
 }
 ?>

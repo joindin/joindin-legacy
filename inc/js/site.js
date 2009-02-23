@@ -112,6 +112,42 @@ function adjustAttendCount(eid, num)
 	});
 }
 
+function toggleAttendees(el, eid)
+{
+	if ($('#attendees').length == 0) {
+		$('#ctn .main .detail .header .opts').after('<p id="attendees" style="display:none;">qegegqeg</p>');
+	}
+
+	if ($('#attendees').is(':hidden')) {
+		if ($('#attendees').data('loaded') == true) {
+			$('#attendees').slideDown(function() {
+				$(el).html('Hide &laquo;');
+			});
+		} else {
+			var $loading;
+			if (!$(el).next().is('.loading')) {
+				$loading = $('<span class="loading">Loading...</span>');
+				var pos = $(el).position();
+				$loading.css({left: pos.left + 15, top: pos.top - 30}).hide();
+				$(el).after($loading);
+				$loading.fadeIn('fast');
+			}
+			
+			$('#attendees').load('/event/attendees/14', function() {
+				$('#attendees').slideDown(function() {
+					$(el).html('Hide &laquo;');
+				});
+				if ($loading)
+					$loading.fadeOut(function() { $(this).remove() });
+			}).data('loaded', true);
+		}
+	} else {
+		$('#attendees').slideUp(function() {
+			$(el).html('Show &raquo;');
+		});
+	}
+}
+
 //-------------------------
 
 /*# AVOID COLLISIONS #*/

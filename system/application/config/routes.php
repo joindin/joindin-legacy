@@ -54,6 +54,7 @@ $route['event/calendar/(:num)/']	= 'event/calendar/$1';
 $route['event/export/(:num)']	= 'event/export/$1';
 $route['event/edit/(:num)']		= 'event/edit/$1';
 $route['event/view/(:num)']		= 'event/view/$1';
+$route['event/attendees/(:num)']		= 'event/attendees/$1';
 $route['event/delete/(:num)']	= 'event/delete/$1';
 $route['event/codes/(:num)']	= 'event/codes/$1';
 //now our catch all...

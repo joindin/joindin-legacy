@@ -370,7 +370,6 @@ a {
 
 #ctn .sidebar {
 	padding-left: 20px;
-	margin-top: 4px;
 	font-size: 95%;
 }
 
@@ -384,6 +383,10 @@ a {
 	background: #fff;
 }
 
+#ctn .sidebar .box2 {
+	background: #f0f4f8 url(/inc/img/bg-box.gif) left top repeat-x;
+}
+
 #ctn .sidebar .box h4 {
 	color: #2368af;
 	/*background: #f1f4f8;*/
@@ -394,8 +397,12 @@ a {
 	padding: 5px 7px;
 }
 
+#ctn .sidebar .box2 h4 {
+	background: none;
+}
+
 #ctn .sidebar .box .ctn {
-	padding: 10px 0 0 0;
+	margin-top: 10px;
 }
 
 #ctn .main .row {
@@ -534,14 +541,28 @@ a {
 }
 
 #ctn .main .detail .header .opts {
-	margin: 0;
 	color: #333;
+	margin-top: 5px;
 }
 
 #ctn .main .detail .header .opts .attending {
 	display: inline-block;
-	font-weight: bold;
 	margin-left: 5px;
+	line-height: 15px;
+}
+
+#ctn .main .detail .header #attendees {
+	background: #fff;
+	border: 1px solid #D7DCDF;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	padding: 10px;
+	width: 400px;
+	margin: 0;
+}
+
+#ctn .main .detail .header #attendees ul {
+	margin: 0;
 }
 
 /*#ctn .main .detail .related {

@@ -29,11 +29,20 @@ function menu_sidebar()
 {
     static $sidebar = array();
 
-    if (func_num_args() > 0) {
-        $sidebar[] = array(
-            'title'   => func_get_arg(0),
-            'content' => func_get_arg(1)
-        );
+    $numArgs = func_num_args();
+    if ($numArgs > 0) {
+        switch ($numArgs) {
+            case 3:
+                $sidebar[] = array('title' => func_get_arg(0), 'content' => func_get_arg(1)) + func_get_arg(2);
+                break;
+            case 2:
+                $sidebar[] = array('title' => func_get_arg(0), 'content' => func_get_arg(1));
+                break;
+            case 1:
+            default:
+                $sidebar[] = array('title' => null, 'content' => func_get_arg(0));
+                break;
+        }
     }
 
 	return $sidebar;

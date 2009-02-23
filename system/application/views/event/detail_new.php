@@ -7,9 +7,7 @@ foreach($claimed as $k=>$v){
 }
 
 menu_pagetitle('Event: ' . escape($det->event_name));
-
 ?>
-
 <div class="detail">
 	
 	<div class="header">
@@ -45,7 +43,7 @@ menu_pagetitle('Event: ' . escape($det->event_name));
         	?>
         		
         		<a class="btn<?php echo $attend ? ' btn-success' : ''; ?>" href="#" onclick="markAttending(this,<?=$det->ID?>,<?php echo $det->event_end<time() ? 'true' : 'false'; ?>);return false;"><?=$link_txt?></a>
-        		<span class="attending"><span class="event-attend-count-<?php echo $det->ID; ?>"><?php echo (int)$attend_ct; ?></span><?php echo (time()<=$det->event_end) ? ' attending so far':' said they attended'; ?></span></span>
+        		<span class="attending"><strong><span class="event-attend-count-<?php echo $det->ID; ?>"><?php echo (int)$attend_ct; ?></span> People</strong> <?php echo (time()<=$det->event_end) ? ' attending so far':' said they attended'; ?>. <a href="javascript:void(0);"  onclick="toggleAttendees(this, <?=$det->ID?>);" class="show">Show &raquo;</a></span>
         	</p>
         	<div class="clear"></div>
 
