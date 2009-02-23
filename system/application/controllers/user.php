@@ -152,11 +152,14 @@ class User extends Controller {
 	}
 	function view($uid){
 		$this->load->model('talks_model');
+		$this->load->model('user_attend_model','uam');
+				
 		$arr=array(
 			'details'	=> $this->user_model->getUser($uid),
 			'comments'	=> $this->talks_model->getUserComments($uid),
 			'talks'		=> $this->talks_model->getUserTalks($uid),
-			'is_admin'	=> $this->user_model->isSiteAdmin()
+			'is_admin'	=> $this->user_model->isSiteAdmin(),
+			'is_attending'=>$this->uam->getUserAttending($uid)
 		);
 
 		$this->template->write_view('content','user/view',$arr);

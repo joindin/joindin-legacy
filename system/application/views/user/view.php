@@ -26,3 +26,18 @@
     <?php endforeach; ?>
 <?php endif; ?>
 </div>
+
+<div class="box">
+	<h2>Attending Events</h2>
+<?php if (count($is_attending) == 0): ?>
+	<p>No events so far'</p>
+<?php else: ?>
+    <?php foreach($is_attending as $k=>$v): ?>
+    <div class="row">
+    	<strong><a href="/event/view/<?php echo $v->ID; ?>"><?php echo escape($v->event_name); ?></a></strong>
+		<?php echo date('m.d.Y',$v->event_start); ?>
+    	<div class="clear"></div>
+    </div>
+    <?php endforeach; ?>
+<?php endif; ?>
+</div>

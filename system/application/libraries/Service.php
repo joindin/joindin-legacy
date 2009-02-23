@@ -5,6 +5,7 @@ class Service {
 	var $CI	= null;
 	var $public_actions = array(
 		'event/attend'		=> array('logged'),
+		'event/getattending'=> array(),
 		'event/getdetail'	=> array(),
 		'talk/getcomments'	=> array(),
 		'talk/getdetail'	=> array()

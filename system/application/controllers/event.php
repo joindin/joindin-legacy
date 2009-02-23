@@ -247,6 +247,7 @@ class Event extends Controller {
 		if(empty($events)){ redirect('event'); }
 		$reqkey=buildReqKey();
 		
+		$attend=$this->uam->getAttendUsers($id);
 		$arr=array(
 			'events' =>$events,
 			'talks'  =>$talks,
@@ -254,9 +255,10 @@ class Event extends Controller {
 			'claimed'=>$this->event_model->getClaimedTalks($id),
 			'user_id'=>($is_auth) ? $this->session->userdata('ID') : '0',
 			'attend' =>$chk_attend,
-			'attend_ct'=>$this->uam->getAttendCount($id),
+			'attend_ct'=>count($attend),
 			'reqkey' =>$reqkey,
 			'seckey' =>buildSecFile($reqkey),
+			'attending'=>$attend
 			//'attend' =>$this->uam->getAttendCount($id)
 		);
 		
