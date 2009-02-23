@@ -13,3 +13,22 @@ how changes in your talk might have made a difference in your ratings.
 
 <br/>
 Like the site or just want to give us some suggestions? <a href="/about/contact">Drop us a note!</a>
+
+<br/><br/><br/>
+<h3 style="color:#5181C1">How can Joind.in work for you?</h3>
+<p>
+Are you organizing a conference and wondering how you can get good feedback from those attending? Joind.in lets 
+the attendees of your event leave the feedback they want (public or private) directly to the speakers and those
+organizing the event. Real reviews like this can give you a better idea of how good the event was and things
+you could do better the next time around.
+</p>
+<p>
+Joind.in can also be a resource to find out what people are looking for in conferences and other events. You can 
+see which of the talks were rated the highest and who the speakers were on those talks. Attendees also have the 
+option of leaving feedback or making suggestions on the event as a whole.
+</p>
+<p>
+If you're looking for a good way to get some good, honest feedback about your event, you can either 
+<a href="/event/submit">submit your event</a> or <a href="/about/contact">contact us directly</a> about how Joind.in
+can help.
+</p>
