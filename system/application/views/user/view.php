@@ -1,4 +1,6 @@
-<h1><?php echo $details[0]->username; ?></h1>
+<h1><?php 
+	echo (!empty($details[0]->full_name)) ? $details[0]->full_name.' ('.$details[0]->username.')': $details[0]->username;
+?></h1>
 
 <div class="box">
     <h2>Talks</h2>
