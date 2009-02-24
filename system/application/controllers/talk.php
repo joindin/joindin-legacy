@@ -68,7 +68,8 @@ class Talk extends Controller {
 		$this->validation->set_fields($fields);
 		
 		if($id){
-			$det=$this->talks_model->getTalks($id); //print_r($det);
+			$det	= $this->talks_model->getTalks($id); //print_r($det);
+			$events	= $this->event_model->getEventDetail($det[0]->event_id);
 			foreach($det[0] as $k=>$v){
 				$this->validation->$k=$v;
 			}
@@ -103,7 +104,7 @@ class Talk extends Controller {
 				'lang'			=> $this->input->post('session_lang')
 			);
 
-			if($id){
+			if($id){ print_r($arr);
 				$this->db->where('id',$id);
 				$this->db->update('talks',$arr);
 				//remove the current reference for the talk category and add a new one				

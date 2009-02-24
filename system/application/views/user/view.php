@@ -29,17 +29,54 @@
 <?php endif; ?>
 </div>
 
-<div class="box">
-	<h2>Attending Events</h2>
-<?php if (count($is_attending) == 0): ?>
-	<p>No events so far'</p>
-<?php else: ?>
-    <?php foreach($is_attending as $k=>$v): ?>
-    <div class="row">
-    	<strong><a href="/event/view/<?php echo $v->ID; ?>"><?php echo escape($v->event_name); ?></a></strong>
-		<?php echo date('m.d.Y',$v->event_start); ?>
-    	<div class="clear"></div>
-    </div>
-    <?php endforeach; ?>
-<?php endif; ?>
-</div>
+<?php
+//sort the events
+$ev=array('attended'=>array(),'attending'=>array());
+foreach($is_attending as $k=>$v){
+	if($v->event_end<time()){
+		$ev['attended'][]=$v; 
+	}else{ $ev['attending'][]=$v; }
+}
+//minimize my attending
+$my=array();
+foreach($my_attend as $k=>$v){ $my[]=$v->ID; }
+?>
+
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr>
+	<td>
+		<div class="box">
+			<h2>Attending Events</h2>
+		<?php if (count($ev['attending']) == 0): ?>
+			<p>No events so far</p>
+		<?php else: ?>
+		    <?php foreach($ev['attending'] as $k=>$v): ?>
+		    <div class="row">
+		    	<strong><a href="/event/view/<?php echo $v->ID; ?>"><?php echo escape($v->event_name); ?></a></strong>
+				<?php echo date('M d, Y',$v->event_start); ?>
+				<?php if(in_array($v->ID,$my)){ echo "<br/><span style=\"color:#92C53E;font-size:11px\">you'll be there!</span>"; } ?>
+		    	<div class="clear"></div>
+		    </div>
+		    <?php endforeach; ?>
+		<?php endif; ?>
+		</div>
+	</td>
+	<td>
+		<div class="box">
+			<h2>Attended Events</h2>
+		<?php if (count($ev['attended']) == 0): ?>
+			<p>No events so far</p>
+		<?php else: ?>
+		    <?php foreach($ev['attended'] as $k=>$v): ?>
+		    <div class="row">
+		    	<strong><a href="/event/view/<?php echo $v->ID; ?>"><?php echo escape($v->event_name); ?></a></strong>
+				<?php echo date('M d, Y',$v->event_start); ?>
+				<?php if(in_array($v->ID,$my)){ echo "<br/><span style=\"color:#92C53E\">you were there!</span>"; } ?>
+		    	<div class="clear"></div>
+		    </div>
+		    <?php endforeach; ?>
+		<?php endif; ?>
+		</div>
+	</td>
+</tr>
+</table>
