@@ -41,7 +41,7 @@ class User_attend_model extends Model {
 	    $this->db->from('user_attend');
 		$this->db->join('user', 'user.ID = user_attend.uid', 'inner');
 		$this->db->where('user_attend.eid='.(int)$eid);
-		$this->db->order_by('user_attend.ID','desc');
+		$this->db->order_by('user_attend.ID','asc');
 
 		$q=$this->db->get();
 		return $q->result();

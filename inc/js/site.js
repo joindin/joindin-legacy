@@ -96,12 +96,25 @@ function markAttending(el,eid,isPast){
 			link_txt=isPast ? 'I was there!' : 'I\'ll be there!';
 			adjustAttendCount(eid, 1);
 		}
+
 		$(el).html(link_txt);
 		
-		if ($loading)
-			$loading.addClass('loading-complete').html('Thanks for letting us know!').pause(1500).fadeOut(function() { $(this).remove() });
-		//alert('Thanks for letting us know!');
+		function hideLoading()
+		{
+			if ($loading)
+				$loading.addClass('loading-complete').html('Thanks for letting us know!').pause(1500).fadeOut(function() { $(this).remove() });
+		}
+
+		if ($('#attendees').length == 0 || $('#attendees').is(':hidden')) {
+			$('#attendees').data('loaded', false);
+			hideLoading();
+		} else {
+			$('#attendees').load('/event/attendees/' + eid, function() {
+				hideLoading()
+			});
+		}
 	});
+
 	return false;
 }
 
@@ -133,7 +146,7 @@ function toggleAttendees(el, eid)
 				$loading.fadeIn('fast');
 			}
 			
-			$('#attendees').load('/event/attendees/14', function() {
+			$('#attendees').load('/event/attendees/' + eid, function() {
 				$('#attendees').slideDown(function() {
 					$(el).html('Hide &laquo;');
 				});
@@ -146,6 +159,7 @@ function toggleAttendees(el, eid)
 			$(el).html('Show &raquo;');
 		});
 	}
+	return false;
 }
 
 //-------------------------
