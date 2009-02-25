@@ -24,7 +24,7 @@
         <div class="clear"></div>
     </div>
 	<div class="row row-buttons">
-    	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn-small'), 'Send'); ?>
+    	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Send'); ?>
     </div>
     
     <?php echo form_close(); ?>
