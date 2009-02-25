@@ -130,7 +130,10 @@ $title[] = 'Joind.in';
                         
                         <?php echo form_close(); ?>
 
-    					<p><small>Need an account? <a href="/user/register">Register now!</a></small></p>
+    					<p>
+							<small>Need an account? <a href="/user/register">Register now!</a></small><br/>
+							<small><a href="/user/forgot">Forgot Password</a></small>
+						</p>
             		</div>
             	</div>
             	<?php endif; ?>

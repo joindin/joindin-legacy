@@ -48,6 +48,11 @@ class User_model extends Model {
 		}else{ return false; }
 	}
 	//---------------------
+	function updateUserInfo($uid,$arr){
+		$this->db->where('ID',$uid);
+		$this->db->update('user',$arr);
+	}
+	//---------------------
 	function getUser($in){
 		if(is_numeric($in)){
 			$q=$this->db->get_where('user',array('ID'=>$in));
@@ -55,6 +60,10 @@ class User_model extends Model {
 			$w="username='".$in."'";
 			$q=$this->db->get_where('user',$w);
 		}
+		return $q->result();
+	}
+	function getUserByEmail($in){
+		$q=$this->db->get_where('user',array('email'=>$in));
 		return $q->result();
 	}
 	function getAllUsers(){

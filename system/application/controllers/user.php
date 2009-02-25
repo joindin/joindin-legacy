@@ -54,6 +54,64 @@ class User extends Controller {
 		$this->session->sess_destroy();
 		redirect();
 	}
+	function forgot(){
+		$this->load->helper('form');
+		$this->load->library('validation');
+		$arr=array();
+		
+		$fields=array(
+			'user'	=> 'Username',
+			'email'	=> 'Email Address'
+		);
+		$rules=array(
+			'user'	=> 'trim|xss_clean|callback_login_exist_check',
+			'email'	=> 'trim|xss_clean|valid_email|callback_email_exist_check'
+		);
+		$this->validation->set_rules($rules);
+		$this->validation->set_fields($fields);
+		
+		if($this->validation->run()!=FALSE){
+			//reset their password and send it out to the account
+			$email=$this->input->post('email');
+			$login=$this->input->post('user');
+			if(!empty($email)){
+				$ret=$this->user_model->getUserByEmail($email);
+			}elseif(!empty($login)){
+				$ret=$this->user_model->getUser($login);
+			}
+			//print_r($ret);
+			
+			//generate the new password...
+			$sel		= array_merge(range('a','z'),range('A','Z'),range(0,9)); shuffle($sel);
+			$pass_len	= 10;
+			$pass		= '';
+			$uid		= $ret[0]->ID;
+			for($i=0;$i<$pass_len;$i++){
+				$r=mt_rand(0,count($sel)-1);
+				$pass.=$sel[$r];
+			}
+			$arr=array('password'=>md5($pass));
+			$this->user_model->updateUserInfo($uid,$arr);
+			
+			$to		= $ret[0]->email;
+			$subj	= 'Joind.in - Password Reset Request';
+			$content= sprintf('
+				%s,
+				
+				Someone has requested a password reset for your account on Joind.in. 
+				Your new password is below:
+				
+				%s
+				
+				Please log in in at http://joind.in/user/login and reset your password as soon as possible.
+			',$ret[0]->username,$pass);
+			
+			mail($to,$subj,$content,'From: info@joind.in');
+		}
+		
+		$this->template->write_view('content','user/forgot',$arr);
+		$this->template->render();
+	}
 	function register(){
 			$this->load->helper('form');
 			$this->load->library('validation');
@@ -239,6 +297,20 @@ class User extends Controller {
 		$ret=$this->user_model->getUser($str);
 		if(!empty($ret)){
 			$this->validation->_error_messages['usern_check'] = 'Username already exists!';
+			return false;
+		}else{ return true; }
+	}
+	function email_exist_check($str){
+		$ret=$this->user_model->getUserByEmail($str);
+		if(empty($ret)){
+			$this->validation->_error_messages['email_exist_check'] = 'Login for that email address does not exist!';
+			return false;
+		}else{ return true; }
+	}
+	function login_exist_check($str){
+		$ret=$this->user_model->getUser($str);
+		if(empty($ret)){
+			$this->validation->_error_messages['login_exist_check'] = 'Username does not exist!';
 			return false;
 		}else{ return true; }
 	}
