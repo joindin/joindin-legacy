@@ -2,7 +2,7 @@
 $this->load->helper('text');
 ?>
 <div class="row row-event">
-	<?php $this->load->view('event/_event-icon',array('event'=>$event)); ?>
+	<?php $this->load->view('event/_event-icon',array('event'=>$event, 'showlink' => true)); ?>
 	<div class="text">
     	<h3><a href="/event/view/<?php echo $event->ID; ?>"><?php echo escape($event->event_name); ?></a></h3>
     	<p class="info"><strong><?php echo date('M j, Y',$event->event_start); ?></strong> - <strong><?php echo date('M j, Y',$event->event_end); ?></strong> at <strong><?php echo escape($event->event_loc); ?></strong></p>
