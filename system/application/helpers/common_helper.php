@@ -72,3 +72,11 @@ function auto_p($pee, $br = 1) {
 
 	return $pee;
 }
+
+function delete_link($url, $message = '') 
+{
+	if(empty($message)) {
+		$message = 'Are you sure?';
+	}
+	return "<a href=\"{$url}\" onClick=\"return confirm('{$message}');\">delete</a>";
+}

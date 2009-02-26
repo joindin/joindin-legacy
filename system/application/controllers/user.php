@@ -270,6 +270,7 @@ class User extends Controller {
 		$this->template->write_view('content','user/manage',$arr);
 		$this->template->render();
 	}
+	
 	function admin(){
 		$arr=array(
 			'users'=>$this->user_model->getAllUsers()

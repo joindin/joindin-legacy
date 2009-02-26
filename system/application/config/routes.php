@@ -57,6 +57,11 @@ $route['event/view/(:num)']		= 'event/view/$1';
 $route['event/attendees/(:num)']		= 'event/attendees/$1';
 $route['event/delete/(:num)']	= 'event/delete/$1';
 $route['event/codes/(:num)']	= 'event/codes/$1';
+
+// speaker profile routing
+$route['user/profile'] = 'profile/display';
+$route['user/profile/(:any)'] = 'profile/$1';
+
 //now our catch all...
 $route['event/(:any)']			= 'event/cust/$1';
 $route['(:num)']				= 'talk/view/$1';

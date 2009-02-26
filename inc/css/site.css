@@ -76,6 +76,10 @@ a {
 	color: #2368af;
 }
 
+small {
+	font-size: 85%;
+}
+
 .btn {
 	color: #fff !important;
 	font-weight: bold;
@@ -147,6 +151,28 @@ a {
 	font-style: normal;
 	padding-left: 10px;
 }
+
+/***/
+
+table.data-table {
+	width: 100%;
+	border-bottom: 1px dotted #D7DCDF;
+}
+
+table.data-table tr td {
+	padding: 7px 5px;
+}
+
+table.data-table thead tr td {
+	font-weight: bold;
+	border-bottom: 1px dotted #D7DCDF;
+}
+
+table.data-table .alt-row {
+	background: #F0F4F8;
+}
+
+/***/
 
 /*.icon-event {
 	background: transparent url(/inc/img/icon-event.gif) top left no-repeat;
