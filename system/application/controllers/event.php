@@ -106,7 +106,11 @@ class Event extends Controller {
 	}
 	function add($id=null){
 		//check for admin
-		if(!$this->user_model->isSiteAdmin()){ redirect(); }
+		if($id){ 
+			if(!$this->user_model->isAdminEvent($id)){ redirect(); } 
+		}else{
+			if(!$this->user_model->isSiteAdmin()){ redirect(); }
+		}
 		
 		if($id){ $this->edit_id=$id; }
 		$this->load->helper('form');
@@ -212,7 +216,7 @@ class Event extends Controller {
 		}
 	}
 	function edit($id){
-		if(!$this->user_model->isSiteAdmin()){ redirect(); }
+		if(!$this->user_model->isAdminEvent($id)){ redirect(); }
 		$this->add($id);
 	}
 	function view($id){
