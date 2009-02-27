@@ -70,5 +70,46 @@ class User_model extends Model {
 		$q=$this->db->get('user');
 		return $q->result();
 	}
+	function getOtherUserAtEvt($uid){
+		//find speakers (users attending too?) that have spoken at conferences this speaker did too
+		
+		//first, we get all of the events that the user has spoken at
+		$sql=sprintf("
+			select
+				distinct t.event_id
+			from
+				user_admin ua,
+				talks t
+			where
+				ua.uid=%s and
+				ua.rtype='talk' and
+				ua.rid=t.ID
+		",$uid);
+		$q=$this->db->query($sql);
+		$eid_list=$q->result();
+		
+		//now find speakers that spoke at those events
+		foreach($eid_list as $k=>$v){
+			$sql=sprintf("
+				select
+					u.ID,
+					u.username,
+					u.full_name,
+					t.event_id
+				from
+					user u,
+					user_admin ua,
+					talks t
+				where
+					ua.uid=u.ID and
+					ua.rtype='talk' and
+					ua.rid=t.ID and
+					t.event_id=%s
+			",$v->event_id);
+			$q=$this->db->query($sql);
+			$user_list=$q->result();
+			echo '<pre>'; print_r($user_list); echo '</pre>'; echo '<br/>';
+		}
+	}
 }
 ?>

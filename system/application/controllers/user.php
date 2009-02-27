@@ -213,6 +213,10 @@ class User extends Controller {
 		$this->load->model('user_attend_model','uam');
 		
 		$curr_user=$this->session->userdata('ID');
+		
+		$ret=$this->user_model->getOtherUserAtEvt($uid);
+		echo '<pre>'; print_r($ret); echo '</pre>';
+		
 		$arr=array(
 			'details'	=> $this->user_model->getUser($uid),
 			'comments'	=> $this->talks_model->getUserComments($uid),

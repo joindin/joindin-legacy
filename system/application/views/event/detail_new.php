@@ -7,6 +7,15 @@ foreach($claimed as $k=>$v){
 }
 
 menu_pagetitle('Event: ' . escape($det->event_name));
+
+//echo '<pre>'; print_r($claimed); echo '</pre>';
+
+foreach($claimed as $k=>$v){
+	//echo "update user_admin set rcode='".$v->tdata['codes'][0]."' where uid=".$v->uid." and rid=".$v->rid." and rtype='talk';<br/>";
+}
+
+//echo '<pre>'; print_r($talks); echo '</pre>';
+//echo '<pre>'; print_r($cl); echo '</pre>';
 ?>
 <div class="detail">
 	
@@ -163,7 +172,23 @@ $ct=0;
         	</tr>
         	<?php foreach($v as $ik=>$iv): ?>
         	<tr class="<?php echo ($ct%2==0) ? 'row1' : 'row2'; ?>">
-        		<?php $sp=(array_key_exists((string)$iv->ID,$cl)) ? '<a href="/user/view/'.$cl[$iv->ID].'">'.escape($iv->speaker).'</a>' : escape($iv->speaker); ?>
+        		<?php 
+					$sp_names=array();
+					foreach($iv->codes as $ck => $cv){
+						if(array_key_exists($cv,$cl)){ 
+							//echo $iv->talk_title.' '.$cv.' '.$iv->speaker.' -> '.$ck.'<br/>';
+							//we match the code, but we need to find the speaker...
+							$spk_split=explode(',',$iv->speaker);
+							foreach($spk_split as $spk=>$spv){
+								if(trim($spv)==trim($ck)){
+									$uid=$cl[$cv]['uid'];
+									$sp_names[]='<a href="/user/view/'.$uid.'">'.escape($spv).'</a>';
+								}
+							}
+						}else{ $sp_names[]=escape($ck); }
+						$sp=implode(', ',$sp_names);
+					}
+					?>
         		<td>
         			<a href="/talk/view/<?php echo $iv->ID; ?>"><?php echo escape($iv->talk_title); ?></a>
         		</td>
