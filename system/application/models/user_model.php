@@ -70,46 +70,40 @@ class User_model extends Model {
 		$q=$this->db->get('user');
 		return $q->result();
 	}
-	function getOtherUserAtEvt($uid){
+	function getOtherUserAtEvt($uid,$limit=15){
 		//find speakers (users attending too?) that have spoken at conferences this speaker did too
-		
-		//first, we get all of the events that the user has spoken at
+		$other_speakers=array();
 		$sql=sprintf("
 			select
-				distinct t.event_id
+				distinct u.ID as user_id,
+				t.event_id,
+				u.username,
+				u.full_name
 			from
+				user u,
 				user_admin ua,
 				talks t
 			where
-				ua.uid=%s and
-				ua.rtype='talk' and
-				ua.rid=t.ID
-		",$uid);
+				ua.uid=u.ID and ua.rtype='talk' and ua.rid=t.ID and
+				t.event_id in (
+					select 
+						distinct it.event_id 
+					from
+						user_admin iua,
+						talks it
+					where
+						iua.uid=%s and
+						iua.rtype='talk' and
+						iua.rid=it.ID
+				) and
+				u.ID!=%s
+			order by rand()
+			limit %s
+		",$uid,$uid,$limit);
 		$q=$this->db->query($sql);
-		$eid_list=$q->result();
-		
-		//now find speakers that spoke at those events
-		foreach($eid_list as $k=>$v){
-			$sql=sprintf("
-				select
-					u.ID,
-					u.username,
-					u.full_name,
-					t.event_id
-				from
-					user u,
-					user_admin ua,
-					talks t
-				where
-					ua.uid=u.ID and
-					ua.rtype='talk' and
-					ua.rid=t.ID and
-					t.event_id=%s
-			",$v->event_id);
-			$q=$this->db->query($sql);
-			$user_list=$q->result();
-			//echo '<pre>'; print_r($user_list); echo '</pre>'; echo '<br/>';
-		}
+		$ret=$q->result();
+		foreach($ret as $k=>$v){ $other_speakers[$v->user_id]=$v; }
+		return $other_speakers;
 	}
 }
 ?>

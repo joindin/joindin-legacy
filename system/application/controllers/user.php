@@ -223,9 +223,15 @@ class User extends Controller {
 			'talks'		=> $this->talks_model->getUserTalks($uid),
 			'is_admin'	=> $this->user_model->isSiteAdmin(),
 			'is_attending'=>$this->uam->getUserAttending($uid),
-			'my_attend'	=> $this->uam->getUserAttending($curr_user)
+			'my_attend'	=> $this->uam->getUserAttending($curr_user),
+		);
+		$block=array(
+			'title'		=> 'Other Speakers',
+			'content'	=> $this->user_model->getOtherUserAtEvt($uid),
+			'udata'		=> $arr['details']
 		);
 
+		$this->template->write_view('sidebar2','user/_other-speakers',$block);
 		$this->template->write_view('content','user/view',$arr);
 		$this->template->render();
 	}

@@ -149,6 +149,7 @@ $title[] = 'Joind.in';
                 	</div>
 
             	</div>
+				<?=$sidebar2?>
             </div>
     	</div>
     	<div class="clear"></div>
