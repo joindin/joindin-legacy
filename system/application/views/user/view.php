@@ -46,7 +46,7 @@ foreach($my_attend as $k=>$v){ $my[]=$v->ID; }
 <tr>
 	<td>
 		<div class="box">
-			<h2>Attending Events</h2>
+			<h2>Events They'll Be At</h2>
 		<?php if (count($ev['attending']) == 0): ?>
 			<p>No events so far</p>
 		<?php else: ?>
@@ -63,7 +63,7 @@ foreach($my_attend as $k=>$v){ $my[]=$v->ID; }
 	</td>
 	<td>
 		<div class="box">
-			<h2>Attended Events</h2>
+			<h2>Events They Were At</h2>
 		<?php if (count($ev['attended']) == 0): ?>
 			<p>No events so far</p>
 		<?php else: ?>
