@@ -52,12 +52,12 @@ menu_pagetitle('Event: ' . escape($det->event_name));
 	*/
 	if($attend && user_is_auth()){
 		if($det->event_end<time()){
-			$link_txt="I was there!"; $showt=1;
-		}else{ $link_txt="I'll be there!"; $showt=2; }
+			$link_txt="I attended"; $showt=1;
+		}else{ $link_txt="I'm attending"; $showt=2; }
 	}else{
 		if($det->event_end<time()){
-			$link_txt="Were you there?"; $showt=3; 
-		}else{ $link_txt="Will you be there?"; $showt=4; }
+			$link_txt="I attended"; $showt=3; 
+		}else{ $link_txt="I'm attending"; $showt=4; }
 	}
 	//if they're not logged in, show the questions
 	if(!user_is_auth()){ $attend=false; }

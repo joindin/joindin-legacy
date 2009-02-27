@@ -123,6 +123,11 @@ a {
 .btn-success {
 	background: #66cc00 url(/inc/img/bg-btn-success.gif) 0 50% repeat-x;
 	border-color: #57ae00;
+	padding-left: 27px;
+}
+
+.btn-small.btn-success {
+	padding-left: 23px;
 }
 
 .loading {

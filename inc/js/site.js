@@ -89,11 +89,11 @@ function markAttending(el,eid,isPast){
 	apiRequest('event','attend',obj, function(obj) {
 		if ($(el).is('.btn-success')) {
 			$(el).removeClass('btn-success');
-			link_txt=isPast ? 'Were you there?' : 'Will you be there?';
+			link_txt=isPast ? 'I attended' : 'I\'m attending';
 			adjustAttendCount(eid, -1);
 		} else {
 			$(el).addClass('btn-success');
-			link_txt=isPast ? 'I was there!' : 'I\'ll be there!';
+			link_txt=isPast ? 'I attended' : 'I\'m attending';
 			adjustAttendCount(eid, 1);
 		}
 
