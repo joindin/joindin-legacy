@@ -1,6 +1,8 @@
 <?php 
 $v=$details[0];
 if(isset($full_name)){ $this->validation->name=escape($full_name); }
+ 
+menu_pagetitle('Blog: ' . escape($v->title));
 ?>
 <div class="detail">
 

@@ -1,3 +1,6 @@
+<?php 
+menu_pagetitle('Delete Talk');
+?>
 <?php
 if(isset($tid)){
 	echo form_open('talk/delete/'.$tid);

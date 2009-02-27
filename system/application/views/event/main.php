@@ -1,4 +1,7 @@
 <?php
+
+menu_pagetitle('Events');
+
 //ob_start();
 //buildCal($mo,$day,$yr,$evt);
 menu_sidebar('Calendar', mycal_get_calendar($year, $month, $day));

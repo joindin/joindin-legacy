@@ -1,4 +1,5 @@
 <?php
+menu_pagetitle('Start');
 //echo '<pre>'; print_r($talks); echo '</pre>';
 //echo '<pre>'; print_r($events); echo '</pre>';
 //echo '<pre>'; print_r($latest_blog); echo '</pre>';

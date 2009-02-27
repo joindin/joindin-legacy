@@ -1,3 +1,6 @@
+<?php 
+menu_pagetitle('Add an event');
+?>
 <?php
 //$tz_list=array('Select Continent');
 //foreach($tz as $k=>$v){ $tz_list[(string)$v->offset]=floor((string)$v->offset/3600); }

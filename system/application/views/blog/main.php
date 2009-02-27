@@ -1,3 +1,6 @@
+<?php 
+menu_pagetitle('Blog');
+?>
 <h1 class="icon-event">
 	<?php if(user_is_admin()){ ?>
 	<span style="float:left">

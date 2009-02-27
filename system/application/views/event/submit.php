@@ -1,3 +1,6 @@
+<?php 
+menu_pagetitle('Submit an event');
+?>
 <h1 class="icon-event">Submit an event</h1>
 <?php if (!empty($msg)): ?>
 <?php $this->load->view('msg_info', array('msg' => $msg)); ?>
