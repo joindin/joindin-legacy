@@ -168,7 +168,7 @@ if (empty($comments)) {
 //only show the form if the time for the talk has passed
 //my code: if($det->date_given<=$time_at_event){
 
-if ($det->date_given < $time_at_event) {
+if ($det->date_given > $time_at_event) {
 ?>
 <p class="info">Currently not open for comment.</p>
 <?php
