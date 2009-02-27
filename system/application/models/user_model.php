@@ -108,7 +108,7 @@ class User_model extends Model {
 			",$v->event_id);
 			$q=$this->db->query($sql);
 			$user_list=$q->result();
-			echo '<pre>'; print_r($user_list); echo '</pre>'; echo '<br/>';
+			//echo '<pre>'; print_r($user_list); echo '</pre>'; echo '<br/>';
 		}
 	}
 }
