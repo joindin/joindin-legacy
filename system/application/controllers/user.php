@@ -215,7 +215,7 @@ class User extends Controller {
 		$curr_user=$this->session->userdata('ID');
 		
 		$ret=$this->user_model->getOtherUserAtEvt($uid);
-		echo '<pre>'; print_r($ret); echo '</pre>';
+		//echo '<pre>'; print_r($ret); echo '</pre>';
 		
 		$arr=array(
 			'details'	=> $this->user_model->getUser($uid),
