@@ -192,12 +192,13 @@ $ct=0;
         		<td>
         			<a href="/talk/view/<?php echo $iv->ID; ?>"><?php echo escape($iv->talk_title); ?></a>
         		</td>
+				<td>(<?php echo $iv->comment_count; ?>)</td>
         		<td nowrap="nowrap">
         			<?php echo escape(strtoupper($iv->tcid)); ?>
         		</td>
-        		<td>
+        		<!--<td>
         			<img src="/inc/img/flags/<?php echo $iv->lang; ?>.gif" alt="<?php echo escape($iv->lang); ?>"/>
-        		</td>
+        		</td>-->
         		<td>
         			<?php echo $sp; ?>
         		</td>
