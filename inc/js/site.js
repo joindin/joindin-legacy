@@ -71,7 +71,26 @@ function apiRequest(rtype,raction,data,callback){
 	});
 }
 //-------------------------
+function delBlogComment(cid){
+	var obj=new Object();
+	obj.cid=cid;
 
+	apiRequest('blog','deletecomment',obj, function(obj) {
+		return false;
+	});
+	return false;
+}
+function claimTalk(tid){
+	var obj=new Object();
+	obj.tid=tid;
+
+	apiRequest('talk','claim',obj, function(obj) {
+		//alert(obj);
+		alert("Thanks for claiming this talk! You will be emailed when it's approved!");
+		return false;
+	});
+	return false;
+}
 
 function markAttending(el,eid,isPast){
 	var $loading;
