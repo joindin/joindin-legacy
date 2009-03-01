@@ -13,13 +13,14 @@ echo form_open('talk/claim');
 </tr>
 <?php
 foreach($claims as $k=>$v){
+	$name=(empty($v->claiming_name)) ? $v->claiming_user : $v->claiming_name;
 	echo '<tr><td>'.form_checkbox('claim_'.$v->ua_id,1).'</td>';
 	echo sprintf('
 		<td><a href="/talk/view/%s">%s</a></td>
 		<td>%s</td>
 		<td><a href="/user/view/%s">%s</a></td>
 	</tr>
-	',$v->talk_id,$v->talk_title,$v->speaker,$v->uid,$v->claiming_name);
+	',$v->talk_id,$v->talk_title,$v->speaker,$v->uid,$name);
 }
 ?>
 <tr>
