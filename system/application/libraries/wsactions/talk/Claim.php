@@ -43,7 +43,7 @@ class Claim {
 Talk claim has been submitted for talk \"%s\"
 
 http://joind.in/talk/claim
-				",$talk_det->talk_title)
+				",$talk_det->talk_title);
 				mail('enygma@phpdeveloper.org','Talk claim submitted! Go check!',$msg,'From: feedback@joind.in');
 			
 			}else{ return array('output'=>'json','items'=>array('msg'=>'redirect:/user/login')); }
