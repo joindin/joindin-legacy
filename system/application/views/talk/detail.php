@@ -90,7 +90,7 @@ if(!empty($claimed)){
 <?php endif; ?>
 <?php
 if(empty($claimed)): ?>
-	<a class="btn-small" href="#" onClick="claimTalk(<?php echo $det->tid; ?>)">Claim This Talk</a>	
+	<a class="btn-small" href="#" id="claim_btn" onClick="claimTalk(<?php echo $det->tid; ?>)">Claim This Talk</a>	
 <?php endif; ?>
 </p>
 
