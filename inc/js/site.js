@@ -86,6 +86,7 @@ function claimTalk(tid){
 
 	apiRequest('talk','claim',obj, function(obj) {
 		//alert(obj);
+		$('#claim_btn').css('display','none');
 		alert("Thanks for claiming this talk! You will be emailed when it's approved!");
 		return false;
 	});
