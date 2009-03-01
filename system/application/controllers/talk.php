@@ -339,13 +339,13 @@ Click here to view it: http://joind.in/talk/view/%s
 				//send an email to the person claiming to let them know it was approved
 				$to=$v->email;
 				$subj='Joind.in: Claim on talk "'.$v->talk_title.'"';
-				$msg=sprintf('
-You recently laid claim to a talk at the %s event on Joind.in - "%"\n
-Your claim has been approved. This talk will now be listed under your account.\n
-\n
-Thanks,\n
+				$msg=sprintf("
+You recently laid claim to a talk at the \"%s\" event on Joind.in - \"%\"
+Your claim has been approved. This talk will now be listed under your account.
+
+Thanks,
 The Joind.in Crew
-				',$v->event_name,$v->talk_title);
+				",$v->event_name,$v->talk_title);
 				mail($to,$subj,$msg,'From: feedback@joind.in');
 			}
 		}
