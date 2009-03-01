@@ -8,7 +8,9 @@ class Service {
 		'event/getattending'=> array(),
 		'event/getdetail'	=> array(),
 		'talk/getcomments'	=> array(),
-		'talk/getdetail'	=> array()
+		'talk/getdetail'	=> array(),
+		'talk/claim'		=> array('logged'),
+		'blog/deletecomment'=> array('logged'),
 	);
 	
 	function Service(){
@@ -104,6 +106,9 @@ class Service {
 	function rule_logged(){
 		//check to see if they are logged in or not
 		return ($this->CI->user_model->isAuth()) ? true : false;
+	}
+	function rule_isadmin(){
+		return ($this->CI->user_model->isSiteAdmin()) ? true : false;
 	}
 }
 ?>

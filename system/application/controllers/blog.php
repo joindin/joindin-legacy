@@ -105,10 +105,12 @@ class Blog extends Controller {
 		$this->load->library('validation');
 		$this->load->library('akismet');
 		$this->load->library('defensio');
+		$this->load->helper('reqkey');
 		$this->load->model('blog_posts_model','bpm');
 		$this->load->model('blog_comments_model','bcm');
 		
 		$this->bpm->updatePostViews($id);
+		$reqkey=buildReqKey();
 		
 		$fields=array(
 			'title'		=> 'Title',
@@ -167,7 +169,9 @@ class Blog extends Controller {
 			'details'	=> $this->bpm->getPostDetail($id),
 			'is_admin'	=> $this->user_model->isSiteAdmin(),
 			'comments'	=> $this->bcm->getPostComments($id),
-			'pid'		=> $id
+			'pid'		=> $id,
+			'reqkey'	=> $reqkey,
+			'seckey' 	=> buildSecFile($reqkey)
 		);
 		if($this->user_model->isAuth()){ 
 			$udata=$this->user_model->getUser($this->session->userdata('ID')); //print_r($udata);

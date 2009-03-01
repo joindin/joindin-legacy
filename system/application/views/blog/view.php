@@ -70,7 +70,7 @@ if (empty($comments)) {
     </div>
     <?php if (user_is_admin()): ?>
     <p class="admin">
-		<a class="btn-small" href="">Delete</a>
+		<a class="btn-small" href="#" onClick="delBlogComment(<?=$v->ID?>);return false;">Delete</a>
 	</p>
 	<?php endif; ?>
 

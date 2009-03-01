@@ -104,6 +104,13 @@ class Wsvalidate {
 		$ret=$this->CI->event_model->getEventDetail($obj->eid);
 		return (!empty($ret)) ? true : false;
 	}
+	//---------------
+	// Talk Specific
+	function validate_istalk($k,$obj){
+		$this->CI->load->model('talks_model');
+		$ret=$this->CI->talks_model->getTalks($obj->tid);
+		return (!empty($ret)) ? true : false;
+	}
 		
 }
 ?>
