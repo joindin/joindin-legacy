@@ -55,8 +55,13 @@ class Feed extends Controller {
 			$uid=$udata[0]->ID;
 			$items=array();
 			//get the upcoming talks for this user
-			$ret=$this->talks_model->getUserTalks($uid);
-			foreach($ret as $k=>$v){
+			$ret=$this->talks_model->getUserTalks($uid); //echo '<pre>'; print_r($ret); echo '</pre>';
+			//resort them by date_given
+			$tmp=array(); $out=array();
+			foreach($ret as $k=>$v){ $tmp[$k]=$v->date_given; } arsort($tmp);
+			foreach($tmp as $k=>$v){ $out[]=$ret[$k]; }
+			
+			foreach($out as $k=>$v){
 				$items[]=array(
 					'guid'			=> 'http://joind.in/talk/view/'.$v->tid,
 					'title'			=> $v->talk_title,
