@@ -340,10 +340,10 @@ Click here to view it: http://joind.in/talk/view/%s
 				$to=$v->email;
 				$subj='Joind.in: Claim on talk "'.$v->talk_title.'"';
 				$msg=sprintf("
-You recently laid claim to a talk at the \"%s\" event on Joind.in - \"%\"
-Your claim has been approved. This talk will now be listed under your account.
-
-Thanks,
+You recently laid claim to a talk at the \"%s\" event on Joind.in - \"%\"\n
+Your claim has been approved. This talk will now be listed under your account.\n
+\n
+Thanks,\n
 The Joind.in Crew
 				",$v->event_name,$v->talk_title);
 				mail($to,$subj,$msg,'From: feedback@joind.in');
