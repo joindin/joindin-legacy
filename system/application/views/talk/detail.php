@@ -76,9 +76,9 @@ if(!empty($claimed)){
 	</p>
 	
 	<?php if(isset($claimed[0]) && $this->session->userdata('ID')==$claimed[0]->userid): ?>
-	<p class="opts">
+	<!--<p class="opts">
 		<a class="btn-small" href="/user/comemail/talk/<?php echo $det->tid; ?>">Email me my comments</a>
-	</p>
+	</p>-->
 	<?php endif; ?>
 	<div class="clear"></div>
 </div>

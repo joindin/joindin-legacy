@@ -37,14 +37,14 @@ class Claim {
 				$this->CI->db->insert('user_admin',$arr);
 				
 				//send an email about the claim
-				$to		='enygma@phpdeveloper.org';
-				$subj	='Talk claim submitted! Go check!';
-				$msg=sprintf("
+				$to		= 'enygma@phpdeveloper.org';
+				$subj	= 'Talk claim submitted! Go check!';
+				$msg	= sprintf("
 Talk claim has been submitted for talk \"%s\"
 
 http://joind.in/talk/claim
 				",$talk_det->talk_title);
-				mail('enygma@phpdeveloper.org','Talk claim submitted! Go check!',$msg,'From: feedback@joind.in');
+				mail('enygma@phpdeveloper.org','Joind.in: Talk claim submitted! Go check!',$msg,'From: feedback@joind.in');
 				
 				//return the success message
 				return array('output'=>'json','items'=>array('msg'=>'Success'));
