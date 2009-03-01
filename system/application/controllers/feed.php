@@ -48,6 +48,22 @@ class Feed extends Controller {
 		}
 		$this->load->view('feed/feed',array('items'=>$items));
 	}
+	function user($uid){
+		$this->load->model('talks_model');
+		
+		//get the upcoming talks for this user
+		$ret=$this->talks_model->getUserTalks($uid);
+		foreach($ret as $k=>$v){
+			$items[]=array(
+				'guid'			=> 'http://joind.in/talk/view/'.$v->tid,
+				'title'			=> $v->talk_title,
+				'link'			=> 'http://joind.in/talk/view/'.$v->tid,
+				'description'	=> $v->talk_desc,
+				'pubDate'		=> date('r',$v->date_given)
+			);
+		}
+		$this->load->view('feed/feed',array('items'=>$items));
+	}
 }
 
 ?>
