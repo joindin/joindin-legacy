@@ -22,7 +22,8 @@ class Talks_model extends Model {
 				user_admin ua
 			where
 				u.ID=ua.uid and
-				ua.rid=%s
+				ua.rid=%s and
+				ua.rcode!=\'pending\'
 		',$tid);
 		$q=$this->db->query($sql);
 		return $q->result();

@@ -50,10 +50,14 @@ class Feed extends Controller {
 	}
 	function user($in){
 		$this->load->model('talks_model');
+		$this->load->model('talks_comments_model','tcm');
+		$this->load->model('event_comments_model','ecm');
 		$udata=$this->user_model->getUser($in);
+		$talks		= array();
+		$comments	= array();
+		
 		if(!empty($udata)){
 			$uid=$udata[0]->ID;
-			$items=array();
 			//get the upcoming talks for this user
 			$ret=$this->talks_model->getUserTalks($uid); //echo '<pre>'; print_r($ret); echo '</pre>';
 			//resort them by date_given
@@ -61,17 +65,32 @@ class Feed extends Controller {
 			foreach($ret as $k=>$v){ $tmp[$k]=$v->date_given; } arsort($tmp);
 			foreach($tmp as $k=>$v){ $out[]=$ret[$k]; }
 			
+			//$v['title'],$v['desc'],$v['speaker'],$v['date'],$v['tid']);
+			
 			foreach($out as $k=>$v){
-				$items[]=array(
-					'guid'			=> 'http://joind.in/talk/view/'.$v->tid,
-					'title'			=> $v->talk_title,
-					'link'			=> 'http://joind.in/talk/view/'.$v->tid,
-					'description'	=> $v->talk_desc,
-					'pubDate'		=> date('r',$v->date_given)
+				$talks[]=array(
+					'title'		=> $v->talk_title,
+					'desc'		=> $v->talk_desc,
+					'speaker'	=> $v->speaker,
+					'date'		=> date('r',$v->date_given),
+					'tid'		=> $v->tid,
+					'link'		=> 'http://joind.in/talk/view/'.$v->tid
 				);
 			}
-		}else{ $items=array(); }
-		$this->load->view('feed/feed',array('items'=>$items));
+			
+			//on to the comments!
+			$ecom=$this->ecm->getUserComments($uid);
+			print_r($ecom);
+			
+			$tcom=$this->tcm->getUserComments($uid);
+			print_r($tcom);
+		}
+		$data=array(
+			'talks'		=> $talks,
+			'comments'	=> $comments,
+			'username'	=> ''
+		);
+		$this->load->view('feed/user',$data);
 	}
 }
 
