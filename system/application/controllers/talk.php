@@ -329,6 +329,7 @@ Click here to view it: http://joind.in/talk/view/%s
 		
 		$claims=$this->uam->getPendingClaims();
 		
+		$approved=0;
 		foreach($claims as $k=>$v){
 			$chk=$this->input->post('claim_'.$v->ua_id);
 			if(!empty($chk)){
@@ -347,11 +348,13 @@ Thanks,\n
 The Joind.in Crew
 				",$v->event_name,$v->talk_title);
 				mail($to,$subj,$msg,'From: feedback@joind.in');
+				$approved++;
 			}
 		}
 		
 		$arr=array(
-			'claims'=>$claims
+			'claims'	=> $claims,
+			'approved'	=> $approved
 		);
 		$this->template->write_view('content','talk/claim',$arr);
 		$this->template->render();

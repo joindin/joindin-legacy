@@ -2,6 +2,10 @@
 //echo '<pre>'; print_r($claims); echo '</pre>';
 
 echo form_open('talk/claim');
+
+if(isset($approved) && $approved>0){
+	echo '<div><b>'.$approved.' Talk Claims Approved!</b></div><br/>';
+}
 ?>
 
 <table cellpadding="0" cellspacing="0" border="0" width="100%">
