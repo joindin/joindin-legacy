@@ -24,7 +24,7 @@ class Claim {
 		if(!$ret){		
 			if($this->CI->wsvalidate->validate_loggedin()){				
 				$uid=$this->CI->session->userdata('ID');
-				$ret=$this->talks_model->getTalks($tid);
+				$ret=$this->CI->talks_model->getTalks($tid);
 				$talk_det=$ret[0];
 				
 				//insert a row into user_admin for the user/talk ID but with a code of "pending"
