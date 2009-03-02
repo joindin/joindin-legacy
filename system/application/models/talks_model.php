@@ -153,7 +153,14 @@ class Talks_model extends Model {
 	function getUserTalks($uid){
 		$talks=array();
 		//select rid from user_admin where uid=$uid and rtype='talks'
-		$q=$this->db->get_where('user_admin',array('uid'=>$uid,'rtype'=>'talk'));
+		$this->db->select('*');
+		$this->db->from('user_admin');
+		$this->db->where('uid',$uid);
+		$this->db->where('rtype','talk');
+		$this->db->where("rcode!='pending'");
+		
+		$q=$this->db->get();
+		//$q=$this->db->get_where('user_admin',array('uid'=>$uid,'rtype'=>'talk'));
 		$ret=$q->result();
 		foreach($ret as $k=>$v){ 
 			$t=$this->getTalks($v->rid);
