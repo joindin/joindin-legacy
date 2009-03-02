@@ -48,6 +48,7 @@ h2,
 	color:#555;
 	border-bottom: 1px dotted #d7dcdf;
 	margin-bottom: 15px;
+	position: relative;
 }
 
 h3,
@@ -66,6 +67,21 @@ h4,
 	font-weight: bold;
 	margin: 0;
 	border: 0;
+}
+
+h2 .more,
+.h2 .more {
+	font-size: 45%;
+	position: absolute;
+	right: 0;
+	
+	background: #F0F4F8 url(/inc/img/bg-box.gif) repeat-x left top;
+	text-decoration: none;
+	padding: 0 8px;
+	font-weight: bold;
+
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
 }
 
 p {
@@ -380,6 +396,12 @@ a {
 #ctn .admin {
 	margin: 20px 0;
 	text-align: center;
+}
+
+#ctn .filter {
+	margin-top: -10px;
+	text-align: right;
+	margin-bottom: 15px;
 }
 
 #ctn .main .box {

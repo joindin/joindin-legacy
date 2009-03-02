@@ -47,6 +47,7 @@ class Event_model extends Model {
 	}
 	
 	//---------------------
+
 	function getDayEventCounts($year, $month)
 	{
     	$start	= mktime(0,  0, 0, $month, 1,                 $year);
@@ -105,6 +106,7 @@ class Event_model extends Model {
 		$q=$this->db->get();
 		return $q->result();
 	}
+
 	function getEventTalks($id){
 		$sql=sprintf('
 			select
@@ -136,13 +138,35 @@ class Event_model extends Model {
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
-	function getUpcomingEvents($inc_curr=false){
+	
+    function getHotEvents($limit = null){
 		$attend = '(SELECT COUNT(*) FROM user_attend WHERE eid = events.ID AND uid = ' . (int)$this->session->userdata('ID') . ')as user_attending';
 	    $this->db->select('events.*, COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments, ' . $attend);
 	    $this->db->from('events');
 		$this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
 		$this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');
+
+		$this->db->where('((events.event_start<='.mktime(0,0,0).' AND events.event_end>='.mktime(0,0,0).') OR (events.event_start<='.mktime(0,0,0).' AND events.event_end>='.(mktime(0,0,0) - (60*60*24*14)).'))');
+
+		$this->db->where('(events.pending is null or events.pending=0)');
+		$this->db->order_by('events.event_start','asc');
+
+		if (null !== $limit) {
+		    $this->db->limit((int)$limit);
+		}
 		
+		$this->db->group_by('events.ID');
+		$q=$this->db->get();
+		return $q->result();
+	}
+
+	function getUpcomingEvents($inc_curr=false, $limit = null){
+		$attend = '(SELECT COUNT(*) FROM user_attend WHERE eid = events.ID AND uid = ' . (int)$this->session->userdata('ID') . ')as user_attending';
+	    $this->db->select('events.*, COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments, ' . $attend);
+	    $this->db->from('events');
+		$this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
+		$this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');
+
 		if($inc_curr){ 
 			$add='or events.event_end>='.time();
 		}else{ $add=''; }
@@ -151,11 +175,36 @@ class Event_model extends Model {
 		$this->db->where('(events.pending is null or events.pending=0)');
 		$this->db->order_by('events.event_start','asc');
 
-		$this->db->limit(10);
+	    if (null !== $limit) {
+		    $this->db->limit((int)$limit);
+		}
+
 		$this->db->group_by('events.ID');
 		$q=$this->db->get();
 		return $q->result();
 	}
+	
+    function getPastEvents($limit = null){
+		$attend = '(SELECT COUNT(*) FROM user_attend WHERE eid = events.ID AND uid = ' . (int)$this->session->userdata('ID') . ')as user_attending';
+	    $this->db->select('events.*, COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments, ' . $attend);
+	    $this->db->from('events');
+		$this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
+		$this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');
+
+		$this->db->where('(events.event_end < '.time().')');
+		
+		$this->db->where('(events.pending is null or events.pending=0)');
+		$this->db->order_by('events.event_start','asc');
+
+	    if (null !== $limit) {
+		    $this->db->limit((int)$limit);
+		}
+
+		$this->db->group_by('events.ID');
+		$q=$this->db->get();
+		return $q->result();
+	}
+	
 	function getEventIdByName($name){
 		$q=$this->db->get_where('events',array('event_stub'=>$name));
 		return $q->result();

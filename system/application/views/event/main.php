@@ -1,17 +1,32 @@
 <?php
 
-menu_pagetitle('Events');
+switch ($type) {
+    case 'hot':
+        $title = 'Hot Events';
+        break;
+    case 'upcoming':
+        $title = 'Upcoming Events';
+        break;
+    case 'past':
+        $title = 'Past Events';
+        break;
+    default:
+        $title = 'Events';
+        break;
+}
+
+menu_pagetitle($title);
 
 //ob_start();
 //buildCal($mo,$day,$yr,$evt);
 menu_sidebar('Calendar', mycal_get_calendar($year, $month, $day));
 
-$title = '';
+$subtitle = '';
 if (!empty($year) && !empty($month)) {
     if (!empty($day)) {
-        $title .= ' for ' . date('F j, Y', mktime(0, 0, 0, $month, $day, $year));
+        $subtitle .= ' for ' . date('F j, Y', mktime(0, 0, 0, $month, $day, $year));
     } else {
-        $title .= ' for ' . date('F Y', mktime(0, 0, 0, $month, 1, $year));
+        $subtitle .= ' for ' . date('F Y', mktime(0, 0, 0, $month, 1, $year));
     }
 }
 ?>
@@ -19,7 +34,7 @@ if (!empty($year) && !empty($month)) {
 	<?php if(user_is_admin()){ ?>
 	<span style="float:left">
 	<?php } ?>
-	Events<?php echo $title; ?>
+	<?php echo $title; ?><?php echo $subtitle; ?>
 	<?php if(user_is_admin()){ ?>
 	</span>
 	<?php } ?>
@@ -28,6 +43,13 @@ if (!empty($year) && !empty($month)) {
 	<div class="clear"></div>
     <?php } ?>
 </h1>
+
+<p class="filter">
+	<a href="/event/">All</a> |
+	<a href="/event/hot">Hot</a> |
+	<a href="/event/upcoming">Upcoming</a> |
+	<a href="/event/past">Past</a>
+</p>
 
 <?php
 foreach($events as $k=>$v){

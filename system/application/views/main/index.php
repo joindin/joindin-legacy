@@ -4,15 +4,29 @@ menu_pagetitle('Start');
 //echo '<pre>'; print_r($events); echo '</pre>';
 //echo '<pre>'; print_r($latest_blog); echo '</pre>';
 ?>
+<?php if (count($hot_events) > 0): ?>
 <div class="box">
-<h2 class="h1 icon-event">Upcoming Events</h2>
+<h2 class="h1 icon-event">Hot Events <a class="more" href="/event/hot">More &raquo;</a></h2>
 <?php
-foreach($events as $k=>$v){
+foreach($hot_events as $k=>$v){
     $this->load->view('event/_event-row', array('event'=>$v));
 }
 ?>
 </div>
+<?php endif; ?>
 
+<?php if (count($upcoming_events) > 0): ?>
+<div class="box">
+<h2 class="h1 icon-event">Upcoming Events <a class="more" href="/event/upcoming">More &raquo;</a></h2>
+<?php
+foreach($upcoming_events as $k=>$v){
+    $this->load->view('event/_event-row', array('event'=>$v));
+}
+?>
+</div>
+<?php endif; ?>
+
+<?php if (count($talks) > 0): ?>
 <div class="box">
 <h2 class="h1 icon-talk">Popular Talks</h2>
 <?php 
@@ -21,6 +35,7 @@ foreach($talks as $k=>$v){
 }
 ?>
 </div>
+<?php endif; ?>
 
 <script type="text/javascript"><!--
 google_ad_client = "pub-2135094760032194";
