@@ -212,17 +212,21 @@ a {
 .menu {
 	position: relative;
 	min-height: 25px;
+	_height: 25px;
 	border-bottom: 1px solid #d7dcdf;
 }
 
 .menu ul {
-      position: absolute;
-      bottom: -1px;
       margin:0;
-      /*padding:10px 10px 0;*/
       padding: 0;
       list-style:none;
       font-size: 11px;
+      
+      position: absolute;
+      bottom: -1px;
+    *bottom: -1px;
+    _bottom: -2px;
+    _left: 0;
 }
 
 .menu li {
@@ -231,6 +235,7 @@ a {
       margin:0 1px;
       padding:0 0 0 11px;
       border-bottom:1px solid #d7dcdf;
+      white-space: nowrap;
 }
 .menu li.sep {
       margin-left: 10px;
@@ -279,12 +284,18 @@ a {
 #hd .menu {
 	position: relative;
 	min-height: 60px;
-	border-bottom-color: transparent;
+	_height: 60px;
+	border-bottom-color: #d7dcdf;
+	
+	_position: absolute;
+	_bottom: -1px;
+    _width: 440px;
 }
 
 #hd .menu ul {
 	font-size: 105%;
 	*bottom: -3px;
+	_bottom: -1px;
 }
 
 #page-event #menu-event,
@@ -315,11 +326,12 @@ a {
 #hd .search {
 	position: relative;
 	min-height: 60px;
+	_height: 60px;
 }
 
 #top-search {
 	position: absolute;
-	bottom: 9px;
+	bottom: 0;
 	right: 0;
 }
 
@@ -331,10 +343,11 @@ a {
 #top-search-input {
 	background: #fff;
 	border: 1px solid #38699d;
+	border-right: 0;
 	height:18px;
 	margin-left:3px;
-	padding:2px 12px 0 2px;
-	width:200px;
+	padding: 2px 12px 0 2px;
+	width: 200px;
 }
 
 #top-search-submit {
