@@ -50,7 +50,7 @@ class Feed extends Controller {
 	}
 	function user($in){
 		$this->load->model('talks_model');
-		$this->load->model('talks_comments_model','tcm');
+		$this->load->model('talk_comments_model','tcm');
 		$this->load->model('event_comments_model','ecm');
 		$udata=$this->user_model->getUser($in);
 		$talks		= array();
@@ -77,18 +77,37 @@ class Feed extends Controller {
 					'link'		=> 'http://joind.in/talk/view/'.$v->tid
 				);
 			}
+			$coms=array();
 			
+			//echo '<pre>';
 			//on to the comments!
 			$ecom=$this->ecm->getUserComments($uid);
-			print_r($ecom);
-			
+			//print_r($ecom);
+			foreach($ecom as $k=>$v){
+				$comments[]=array(
+					'content'		=> $v->comment,
+					'date'			=> date('r',$v->date_made),
+					'type'			=> 'event',
+					'event_id'		=> $v->event_id
+				);
+			}
+
 			$tcom=$this->tcm->getUserComments($uid);
-			print_r($tcom);
+			//print_r($tcom);
+			foreach($tcom as $k=>$v){
+				$comments[]=array(
+					'content'		=> $v->comment,
+					'date'			=> date('r',$v->date_made),
+					'type'			=> 'talk',
+					'event_id'		=> ''
+				);
+			}
+			//echo '</pre>';
 		}
 		$data=array(
 			'talks'		=> $talks,
 			'comments'	=> $comments,
-			'username'	=> ''
+			'username'	=> $this->session->userdata('username')
 		);
 		$this->load->view('feed/user',$data);
 	}
