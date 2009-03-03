@@ -35,7 +35,8 @@ class Getdetail extends ServiceHandler
             /** ServiceReponseJson */
             require_once BASEPATH . 'application/libraries/service/ServiceResponseJson.php';
             
-            $response = new ServiceResponseJson($talkData);
+            $response = new ServiceResponseJson();
+            $response->addData($talkData);
         } else {
             /** ServiceReponseXml */
             require_once BASEPATH . 'application/libraries/service/ServiceResponseXml.php';

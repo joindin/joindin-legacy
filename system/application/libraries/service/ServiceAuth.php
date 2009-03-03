@@ -36,8 +36,40 @@ class ServiceAuth
      * Checks authorization based on username and password.
      * @return boolean
      */
-    public static function privateAuth()
+    public static function privateAuth($xmlData, $service)
     {
+        if(!isset($xmlData->auth) || empty($xmlData->auth)) {
+            return false;
+        }
+        
+        $auth = $xmlData->auth;
+        $user = (isset($auth->user)) ? $auth->user : null;
+        $pass = (isset($auth->pass)) ? $auth->pass : null;
+        $action = (isset($xmlData->action['type'])) ? $xmlData->action['type'] : null;
+        
+        
+        if(is_null($user) || is_null($pass) || is_null($action)) {
+            return false;
+        }
+        
+        require_once BASEPATH . 'application/models/User_model.php';
+        $dao = new User_model();
+        $user = $dao->getUser($user);
+        
+        if(!$user) {
+            return false;
+        }
+        
+        if($user->password != $pass) {
+            return false;
+        }
+        
+        require_once BASEPATH . 'applcation/models/User_admin_model.php';
+        $dao = new User_admin_model();
+        $allowed = $dao->hasPerm($user->ID, 0, $action);
+        
+        
+        // All tests passed
         return true;
     }
     

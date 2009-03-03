@@ -49,7 +49,7 @@ abstract class ServiceHandler
         $this->_queryString = $queryString;
         
         // Check if an output type was specified
-        if(isset($xmlData->action['output'])) {
+        if(isset($xmlData->action['output']) && !empty($xmlData->action['type'])) {
             $this->_outputType = (string) $xmlData->action['output'];
         }
     }

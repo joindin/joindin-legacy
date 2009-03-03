@@ -16,13 +16,25 @@ class ServiceResponseJson
      * The data to be converted to JSON
      * @var mixed
      */
-    protected $_data = null;
+    protected $_data = array();
     
-    public function __construct($data)
+    public function __construct()
+    {}
+    
+    /**
+     * Adds data to the response data
+     * @param mixed $value
+     * @param string $key
+     */
+    public function addData($value, $key = '')
     {
-        $this->_data = $data;
+        if(!empty($key)) {
+            $this->_data[$key] = $value;
+        } else {
+            $this->_data[] = $value;
+        }
     }
-    
+
     /**
      * Returns a response in JSON format
      * @return string

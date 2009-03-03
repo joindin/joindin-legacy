@@ -5,8 +5,6 @@
 
 /** ServiceHandler */
 require_once BASEPATH . 'application/libraries/service/ServiceHandler.php';
-/** ServiceTokenAuth */
-require_once BASEPATH . 'application/libraries/service/ServiceTokenAuth.php';
 /** Profile_token_model */
 require_once BASEPATH . 'application/models/profile_token_model.php';
 /** ServiceReponseXml */

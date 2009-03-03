@@ -1,7 +1,7 @@
 <?php
 
-/** ServiceDispatcher */
-require_once BASEPATH . 'application/libraries/service/ServiceDispatcher.php';
+/** ServiceManager */
+require_once BASEPATH . 'application/libraries/service/ServiceManager.php';
 
 /**
  * API controller
@@ -30,9 +30,9 @@ class Api extends Controller {
 		$this->output($ret);
 	}
 	function talk($act=null){
-		$dispatcher = new ServiceDispatcher();
+		$manager = new ServiceManager();
 	    $data = $this->_processRequest();
-	    $dispatcher->dispatch('talk', $data);
+	    $manager->dispatch('talk', $data);
 	}
 	function comment($act=null){
 		$this->load->library('service');
@@ -49,9 +49,9 @@ class Api extends Controller {
 	
 	function speaker()
 	{
-	    $dispatcher = new ServiceDispatcher();
+	    $manager = new ServiceManager();
 	    $data = $this->_processRequest();
-	    $dispatcher->dispatch('speaker', $data);
+	    $manager->dispatch('speaker', $data);
 	}
 	
 	private function _processRequest() 

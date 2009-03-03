@@ -1,6 +1,6 @@
 <?php
 /**
- * Class ServiceDispatcher
+ * Class ServiceManager
  */
 
 /** ServiceResponseXml */
@@ -16,7 +16,7 @@ require_once BASEPATH . 'application/libraries/service/ServiceResponseXml.php';
  * @author Mattijs Hoitink <mattijs@ibuildings.nl>
  *
  */
-class ServiceDispatcher 
+class ServiceManager 
 {
     protected $_ci = null;
     
