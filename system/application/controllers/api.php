@@ -30,10 +30,9 @@ class Api extends Controller {
 		$this->output($ret);
 	}
 	function talk($act=null){
-		$this->load->library('service');
-		$data=file_get_contents('php://input');
-		$ret=array('out'=>$this->service->handle('talk',$data));
-		$this->output($ret);
+		$dispatcher = new ServiceDispatcher();
+	    $data = $this->_processRequest();
+	    $dispatcher->dispatch('talk', $data);
 	}
 	function comment($act=null){
 		$this->load->library('service');

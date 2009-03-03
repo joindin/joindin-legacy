@@ -21,21 +21,19 @@ class ServiceDispatcher
     protected $_ci = null;
     
     /**
-     * Supported output types and their template name
+     * Supported output types and their content type
      * @var array
      */
-    protected $_outputTypes = array(
-        'plain' => 'output_plain',
-        'xml' => 'output_xml',
-        'json' => 'output_json',
-    );
-    
     protected $_contentTypes = array (
         'plain' => 'text',
     	'xml' => 'application/xml',
         'json' => 'application/javascript',
     );
     
+    /**
+     * Status code headers
+     * @var array
+     */
     protected $_statusCodes = array(
         200 => 'OK',
         400 => 'Bad Request',
@@ -143,9 +141,12 @@ class ServiceDispatcher
      */
     protected function _sendResponse($data, $outputType = 'xml', $statusCode = 200)
     {
+        // Get the content type
+        $contentType = (array_key_exists($outputType, $this->_contentTypes)) ? $this->_contentTypes[$outputType] : $this->_contentTypes['xml'];
+        
         // Send the reponse to the client
         header('HTTP/1.1 ' . $statusCode . ' ' . $this->_statusCodes[$statusCode]);
-        header('Content-Type: ' . $this->_contentTypes[$outputType]);
+        header('Content-Type: ' . $contentType);
         echo trim($data);
         exit;
     }
