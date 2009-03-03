@@ -173,11 +173,17 @@ class Blog extends Controller {
 			'reqkey'	=> $reqkey,
 			'seckey' 	=> buildSecFile($reqkey)
 		);
+		$other_data=array(
+			'title'		=> 'Popular Blog Posts',
+			'posts'		=> $this->bpm->getPostDetail(),
+			'curr_id'	=> $id
+		);
 		if($this->user_model->isAuth()){ 
 			$udata=$this->user_model->getUser($this->session->userdata('ID')); //print_r($udata);
 			$arr['full_name']=(!empty($udata[0]->full_name)) ? $udata[0]->full_name : $udata[0]->username;
 		}
 		$this->template->write('feedurl','/feed/blog');
+		$this->template->write_view('sidebar2','blog/_other-posts',$other_data);
 		$this->template->write_view('content','blog/view',$arr);
 		$this->template->render();
 	}
