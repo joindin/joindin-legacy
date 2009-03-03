@@ -46,7 +46,12 @@ abstract class ServiceHandler
     public function __construct($xmlData, $queryString = '')
     {
         $this->_xmlData = $xmlData;
-        $this->_querystring = $queryString;
+        $this->_queryString = $queryString;
+        
+        // Check if an output type was specified
+        if(isset($xmlData->action['output'])) {
+            $this->_outputType = (string) $xmlData->action['output'];
+        }
     }
     
     /**

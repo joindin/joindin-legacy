@@ -2,8 +2,8 @@
 
 /** ServiceHandler */
 require_once BASEPATH . 'application/libraries/service/ServiceHandler.php';
-/** ServiceXmlReponse */
-require_once BASEPATH . 'application/libraries/service/ServiceXmlResponse.php';
+/** ServiceReponseXml */
+require_once BASEPATH . 'application/libraries/service/ServiceResponseXml.php';
 /** Talks_model */
 require_once BASEPATH . 'application/models/talks_model.php';
 
@@ -21,7 +21,7 @@ class Getcomments extends ServiceHandler
 		$dao = new Talks_model();
 		$comments = $dao->getTalkComments($talkId);
 
-		$xmlResponse = new ServiceXmlResponse();
+		$xmlResponse = new ServiceResponseXml();
 		
 		foreach($comments as $comment) {
 		    $xmlResponse->addArray($comment, 'comment');

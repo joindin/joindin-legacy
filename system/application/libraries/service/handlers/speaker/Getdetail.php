@@ -9,8 +9,8 @@ require_once BASEPATH . 'application/libraries/service/ServiceHandler.php';
 require_once BASEPATH . 'application/libraries/service/ServiceTokenAuth.php';
 /** Profile_token_model */
 require_once BASEPATH . 'application/models/profile_token_model.php';
-/** ServiceXmlReponse */
-require_once BASEPATH . 'application/libraries/service/ServiceXmlResponse.php';
+/** ServiceReponseXml */
+require_once BASEPATH . 'application/libraries/service/ServiceResponseXml.php';
 
 /**
  * Returns the speaker details for a token.
@@ -19,8 +19,6 @@ require_once BASEPATH . 'application/libraries/service/ServiceXmlResponse.php';
  */
 class Getdetail extends ServiceHandler
 {
-    protected $_outputType = 'xml';
-    
     public function isAuthorizedRequest()
     {
         return true;
@@ -33,7 +31,7 @@ class Getdetail extends ServiceHandler
         $dao = new Profile_token_model();
         $tokenModel = $dao->findByAccessToken($token);
         
-        $xmlResponse = new ServiceXmlResponse();
+        $xmlResponse = new ServiceResponseXml();
         
         if(!is_null($tokenModel)) {
             // Add the data to the response

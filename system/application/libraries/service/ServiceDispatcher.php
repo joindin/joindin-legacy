@@ -3,8 +3,8 @@
  * Class ServiceDispatcher
  */
 
-/** ServiceXmlResponse */
-require_once BASEPATH . 'application/libraries/service/ServiceXmlResponse.php';
+/** ServiceResponseXml */
+require_once BASEPATH . 'application/libraries/service/ServiceResponseXml.php';
 
 /**
  * Dispatches a service request to the correct 
@@ -118,7 +118,7 @@ class ServiceDispatcher
             return $this->_sendResponse('Bad Request', 400);
         }
         
-        return array('xml' => $xml, 'query_string' => $rawData['query_string']);
+        return array('xml' => $xml, 'query_string' => $_SERVER['QUERY_STRING']);
     }
     
     /**
@@ -128,7 +128,7 @@ class ServiceDispatcher
      */ 
     protected function _sendError($reason, $statusCode)
     {
-        $xmlReponse = new ServiceXmlReponse();
+        $xmlReponse = new ServiceResponseXml();
         $xmlReponse->addString($reason, 'error');
         $this->_sendResponse($xmlReponse->getResponse(), 'xml', $statusCode);
     }

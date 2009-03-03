@@ -1,6 +1,6 @@
 <?php
 /**
- * Class ServiceXmlReponse
+ * Class ServiceReponseXml
  */
 
 /**
@@ -8,7 +8,7 @@
  *  
  * @author Mattijs Hoitink <mattijs@ibuildings.nl
  */
-class ServiceXmlResponse
+class ServiceResponseXml
 {
     
     /**
@@ -34,7 +34,7 @@ class ServiceXmlResponse
      * XML document
      * @param array $data
      */
-    public function addArray($data, $tag)
+    public function addArray($data, $tag = 'item')
     {
         $element = $this->_domDocument->createElement($tag);
         foreach($data as $key => $value) {
@@ -49,7 +49,7 @@ class ServiceXmlResponse
      * @param string $string
      * @param string $tag
      */
-    public function addString($string, $tag)
+    public function addString($string, $tag = 'item')
     {
         $element = $this->_domDocument->createElement($tag);
         $element->appendChild($this->_domDocument->createTextNode($string));
