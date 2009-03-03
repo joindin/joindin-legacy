@@ -3,6 +3,8 @@
  * Class ServiceDispatcher
  */
 
+/** ServiceXmlResponse */
+require_once BASEPATH . 'application/libraries/service/ServiceXmlResponse.php';
 
 /**
  * Dispatches a service request to the correct 
@@ -26,6 +28,12 @@ class ServiceDispatcher
         'plain' => 'output_plain',
         'xml' => 'output_xml',
         'json' => 'output_json',
+    );
+    
+    protected $_contentTypes = array (
+        'plain' => 'text',
+    	'xml' => 'application/xml',
+        'json' => 'application/javascript',
     );
     
     protected $_statusCodes = array(
@@ -60,8 +68,7 @@ class ServiceDispatcher
         $action = ucfirst($xml->action['type']);
         
 	    // Find the handler for the request
-	    $handlerFile = dirname(__FILE__) . '/handlers/' . 
-	                   $service . '/' . $action . '.php';
+	    $handlerFile = dirname(__FILE__) . '/handlers/' . $service . '/' . $action . '.php';
 	    if(!is_file($handlerFile)) {
 	        // return invalid request
 	        $this->_sendError('Bad Request', 400);
@@ -123,8 +130,9 @@ class ServiceDispatcher
      */ 
     protected function _sendError($reason, $statusCode)
     {
-        $data = array('error' => $reason);
-        $this->_sendResponse($data, 'xml', $statusCode);
+        $xmlReponse = new ServiceXmlReponse();
+        $xmlReponse->addString($reason, 'error');
+        $this->_sendResponse($xmlReponse->getResponse(), 'xml', $statusCode);
     }
     
     /**
@@ -135,16 +143,10 @@ class ServiceDispatcher
      */
     protected function _sendResponse($data, $outputType = 'xml', $statusCode = 200)
     {
-        // Load the view
-        $viewFile = (isset($this->_outputTypes[$outputType])) ? $this->_outputTypes[$outputType] : 'output_plain';
-        $viewVars = array(
-            'data' => $data,
-        );
-        $response = $this->_ci->load->view('api/' . $viewFile, $viewVars, true);
-        
         // Send the reponse to the client
         header('HTTP/1.1 ' . $statusCode . ' ' . $this->_statusCodes[$statusCode]);
-        echo $response;
+        header('Content-Type: ' . $this->_contentTypes[$outputType]);
+        echo trim($data);
         exit;
     }
     

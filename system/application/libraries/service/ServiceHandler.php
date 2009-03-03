@@ -26,8 +26,16 @@ abstract class ServiceHandler
      */
     protected $_statusCode = 200;
 
+    /**
+     * XML data passed into this handler
+     * @var SimpleXmlElement
+     */
     protected $_xmlData = null;
     
+    /**
+     * Query string passed into this handler
+     * @var string
+     */
     protected $_queryString = '';
     
     /**
@@ -35,7 +43,7 @@ abstract class ServiceHandler
      * @param SimpleXmlElement $xmlData
      * @param string $queryString
      */
-    public function __construct($xmlData, $queryString)
+    public function __construct($xmlData, $queryString = '')
     {
         $this->_xmlData = $xmlData;
         $this->_querystring = $queryString;
@@ -70,25 +78,6 @@ abstract class ServiceHandler
     public function getStatusCode()
     {
         return $this->_statusCode;    
-    }
-    
-    /**
-     * Sets the xml data for the handler to work with.
-     * This data can also include the data necessary for authentication.
-     * @param SimpleXmlElement $xmlData
-     */
-    public function setXmlData($xmlData)
-    {
-        $this->_xmlData = $xmlData;
-    }
-    
-    /**
-     * Sets the query string for the handler to work with.
-     * @param string $queryString
-     */
-    public function setQueryString($queryString)
-    {
-        $this->_queryString = $queryString;
     }
     
 }

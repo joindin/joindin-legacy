@@ -9,15 +9,18 @@ require_once BASEPATH . 'application/libraries/service/ServiceHandler.php';
 require_once BASEPATH . 'application/libraries/service/ServiceTokenAuth.php';
 /** Profile_token_model */
 require_once BASEPATH . 'application/models/profile_token_model.php';
+/** ServiceXmlReponse */
+require_once BASEPATH . 'application/libraries/service/ServiceXmlResponse.php';
 
 /**
- * Returns the details for a speaker.
+ * Returns the speaker details for a token.
  * 
  * @author Mattijs Hoitink <mattijs@ibuildings.nl>
  */
 class Getdetail extends ServiceHandler
 {
-
+    protected $_outputType = 'xml';
+    
     public function isAuthorizedRequest()
     {
         return true;
@@ -27,17 +30,22 @@ class Getdetail extends ServiceHandler
     {
         $token = (string) $this->_xmlData->action->token;
         
-        $model = new Profile_token_model();
-        $tokenModel = $model->findByAccessToken($token);
+        $dao = new Profile_token_model();
+        $tokenModel = $dao->findByAccessToken($token);
         
-        if(is_null($tokenModel)) {
+        $xmlResponse = new ServiceXmlResponse();
+        
+        if(!is_null($tokenModel)) {
+            // Add the data to the response
+            $xmlResponse->addArray($tokenModel->getProfileData(), 'speaker');
+        } else {
+            // Return an error
             $this->_statusCode = 400;
-            return array('error' => 'No data found for token');
+            $xmlResponse->addString('No data found for token', 'error');
         }
         
-        return array(
-            'speaker' => $tokenModel->getProfileData()
-        );
+        // Return the response
+        return $xmlResponse->getResponse();
     }
     
 }
