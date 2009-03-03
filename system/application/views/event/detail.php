@@ -173,7 +173,8 @@ $ct=0;
         	<?php foreach($v as $ik=>$iv): ?>
         	<tr class="<?php echo ($ct%2==0) ? 'row1' : 'row2'; ?>">
         		<td>
-        			<span class="talk-type talk-type-<?php echo strtolower(str_replace(' ', '-', $iv->tcid)); ?>" title="<?php echo escape($iv->tcid); ?>"><?php echo escape(strtoupper($iv->tcid)); ?></span>
+        			<?php $type = !empty($iv->tcid) ? $iv->tcid : 'Talk'; ?>
+        			<span class="talk-type talk-type-<?php echo strtolower(str_replace(' ', '-', $type)); ?>" title="<?php echo escape($type); ?>"><?php echo escape(strtoupper($type)); ?></span>
         		</td>
         	    <?php 
 					$sp_names=array();
