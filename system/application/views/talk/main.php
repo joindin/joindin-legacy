@@ -1,3 +1,6 @@
+<?php 
+menu_pagetitle('Talks');
+?>
 <?php
 //echo '<pre>'; print_r($talks); echo '</pre>';
 ?>

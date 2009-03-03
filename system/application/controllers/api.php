@@ -32,6 +32,12 @@ class Api extends Controller {
 		$ret=array('out'=>$this->service->handle('comment',$data));
 		$this->output($ret);
 	}
+	function blog($act=null){
+		$this->load->library('service');
+		$data=file_get_contents('php://input');
+		$ret=array('out'=>$this->service->handle('blog',$data));
+		$this->output($ret);
+	}
 	
 	//---------------------
 	function output($ret){

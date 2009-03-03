@@ -17,7 +17,8 @@ class Main extends Controller {
 		
 		$arr=array(
 			'talks'	=> $this->talks_model->getPopularTalks(),
-			'events'=> $this->event_model->getUpcomingEvents(true),
+			'hot_events'=> $this->event_model->getHotEvents(3),
+		    'upcoming_events'=> $this->event_model->getUpcomingEvents(false, 3),
 			'logged'=> $this->user_model->isAuth(),
 			'latest_blog'=> $this->bpm->getLatestPost(),
 			'reqkey' => $reqkey,

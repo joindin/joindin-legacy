@@ -12,6 +12,12 @@ class Event_comments_model extends Model {
 		$q=$this->db->get();
 		return $q->result();
 	}
+	function getUserComments($uid){
+		$this->db->from('event_comments');
+		$this->db->where('user_id='.$uid);
+		$q=$this->db->get();
+		return $q->result();
+	}
 }
 
 ?>

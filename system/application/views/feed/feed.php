@@ -1,4 +1,4 @@
-<?php /*header('Content-type: text/xml');*/ ?>
+<?php header('Content-type: text/xml'); ?>
 <?php echo "<?xml version=\"1.0\"?>"; ?>
 <rss version="2.0">
 	<channel>

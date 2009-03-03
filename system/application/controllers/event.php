@@ -7,7 +7,7 @@ class Event extends Controller {
 		$this->user_model->logStatus();
 	}
 	function cust($in){
-		$this->load->helper('url');
+	    $this->load->helper('url');
 		$this->load->model('event_model');
 		$id=$this->event_model->getEventIdByName($in);
 		//print_r($id); echo $id[0]->ID;
@@ -16,7 +16,8 @@ class Event extends Controller {
 		}else{ echo 'error'; }
 	}
 	//--------------------
-	function index($pending=false){
+	function _runList($type, $pending = false)
+	{
 		$prefs = array (
 			'show_next_prev'  => TRUE,
 			'next_prev_url'   => '/event'
@@ -28,10 +29,25 @@ class Event extends Controller {
 		$this->load->model('event_model');
 		$this->load->helper('mycal');
 		
-		$events = $this->event_model->getEventDetail(null,null,null,$pending);
+		switch ($type) {
+		    case 'hot':
+		        $events = $this->event_model->getHotEvents(null);
+		        break;
+		    case 'upcoming':
+		        $events = $this->event_model->getUpcomingEvents(null);
+		        break;
+		    case 'past':
+		        $events = $this->event_model->getPastEvents(null);
+		        break;
+		    default:
+		        $events = $this->event_model->getEventDetail(null,null,null,$pending);
+		        break;
+		}
+
 		$reqkey = buildReqKey();
 		
 		$arr=array(
+			'type' => $type,
 			'events' =>$events,
 			//'admin'	 =>($this->user_model->isAdminEvent($id)) ? true : false
 			'month'	=> null,
@@ -45,7 +61,25 @@ class Event extends Controller {
 		$this->template->render();
 		
 		//$this->load->view('event/main',array('events'=>$events));
+
 	}
+
+	function index($pending=false){
+		$this->_runList('index', $pending);
+	}
+	
+    function hot($pending=false){
+		$this->_runList('hot', $pending);
+	}
+	
+    function upcoming($pending=false){
+		$this->_runList('upcoming', $pending);
+	}
+	
+    function past($pending=false){
+		$this->_runList('past', $pending);
+	}
+
 	function calendar($year = null, $month = null, $day = null){
 		$this->load->model('event_model');
 		$this->load->helper('reqkey');
@@ -322,7 +356,7 @@ class Event extends Controller {
 		
 		$arr['comments']=$this->event_comments_model->getEventComments($id);
 		
-		$this->template->write_view('content','event/detail_new',$arr,TRUE);
+		$this->template->write_view('content','event/detail',$arr,TRUE);
 		$this->template->render();
 		//$this->load->view('event/detail',$arr);
 	}
@@ -337,6 +371,11 @@ class Event extends Controller {
 
 		$this->template->write_view('content','event/attendees',$arr,true);
 		echo $this->template->render('content');
+	}
+	function ical($id){
+		$this->load->model('event_model');
+		$arr=$this->event_model->getEventDetail($id);
+		$this->load->view('event/ical',array('data'=>$arr));
 	}
 	function delete($id){
 		if(!$this->user_model->isSiteAdmin()){ redirect(); }

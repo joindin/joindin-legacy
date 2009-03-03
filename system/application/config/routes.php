@@ -48,19 +48,24 @@ $route['event/add']='event/add';
 $route['event/pending']='event/pending';
 $route['event/submit']='event/submit';
 $route['event/approve/(:num)']='event/approve/$1';
+$route['event/ical/(:num)']='event/ical/$1';
 $route['event/calendar/(:num)/(:num)/(:num)']	= 'event/calendar/$1/$2/$3';
 $route['event/calendar/(:num)/(:num)']	= 'event/calendar/$1/$2';
 $route['event/calendar/(:num)/']	= 'event/calendar/$1';
 $route['event/export/(:num)']	= 'event/export/$1';
 $route['event/edit/(:num)']		= 'event/edit/$1';
 $route['event/view/(:num)']		= 'event/view/$1';
-$route['event/attendees/(:num)']		= 'event/attendees/$1';
+$route['event/attendees/(:num)'] = 'event/attendees/$1';
 $route['event/delete/(:num)']	= 'event/delete/$1';
 $route['event/codes/(:num)']	= 'event/codes/$1';
 
 // speaker profile routing
 $route['user/profile'] = 'profile/display';
 $route['user/profile/(:any)'] = 'profile/$1';
+
+$route['event/hot']	            = 'event/hot';
+$route['event/upcoming']	    = 'event/upcoming';
+$route['event/past']	        = 'event/past';
 
 //now our catch all...
 $route['event/(:any)']			= 'event/cust/$1';

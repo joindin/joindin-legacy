@@ -171,6 +171,7 @@ class Talk extends Controller {
 		$this->load->model('talks_model');
 		$this->load->helper('form');
 		$this->load->helper('events');
+		$this->load->helper('reqkey');
 		$this->load->plugin('captcha');
 		$this->load->library('akismet');
 		$this->load->library('validation');
@@ -292,7 +293,8 @@ Click here to view it: http://joind.in/talk/view/%s
 		}
 		//$cap = create_captcha($cap_arr);
 		//$this->session->set_userdata(array('cinput'=>$cap['word']));
-			
+		
+		$reqkey=buildReqKey();
 		$this->load->model('talks_model');
 		$arr=array(
 			'detail'		=> $talk_detail,
@@ -303,7 +305,9 @@ Click here to view it: http://joind.in/talk/view/%s
 		//	'captcha'		=> $cap,
 			'claimed'		=> $this->talks_model->isTalkClaimed($id),
 			'claim_status'	=> $claim_status,
-			'claim_msg'		=> $claim_msg
+			'claim_msg'		=> $claim_msg,
+			'reqkey' 		=> $reqkey,
+			'seckey' 		=> buildSecFile($reqkey),
 		);
 		if(empty($arr['detail'])){ redirect('talk'); }
 		
@@ -311,6 +315,49 @@ Click here to view it: http://joind.in/talk/view/%s
 		$this->template->write_view('content','talk/detail',$arr,TRUE);
 		$this->template->render();
 		//$this->load->view('talk/detail',$arr);
+	}
+	function claim(){
+		if(!$this->user_model->isSiteAdmin()){ redirect(); }
+		$this->load->model('user_admin_model','uam');
+		$this->load->library('validation');
+		$this->load->helper('events_helper');		
+		
+		$rules	= array();
+		$fields	= array();
+		//$this->validation->set_rules($rules);
+		//$this->validation->set_fields($fields);
+		
+		$claims=$this->uam->getPendingClaims();
+		
+		$approved=0;
+		foreach($claims as $k=>$v){
+			$chk=$this->input->post('claim_'.$v->ua_id);
+			if(!empty($chk)){
+				$code=buildCode($v->talk_id,$v->eid,$v->talk_title,$v->speaker);
+				$this->db->where('ID',$v->ua_id);
+				$this->db->update('user_admin',array('rcode'=>$code));
+				
+				//send an email to the person claiming to let them know it was approved
+				$to=$v->email;
+				$subj='Joind.in: Claim on talk "'.$v->talk_title.'"';
+				$msg=sprintf("
+You recently laid claim to a talk at the \"%s\" event on Joind.in - \"%s\"
+Your claim has been approved. This talk will now be listed under your account.
+
+Thanks,
+The Joind.in Crew
+				",$v->event_name,$v->talk_title);
+				mail($to,$subj,$msg,'From: feedback@joind.in');
+				$approved++;
+			}
+		}
+		
+		$arr=array(
+			'claims'	=> $claims,
+			'approved'	=> $approved
+		);
+		$this->template->write_view('content','talk/claim',$arr);
+		$this->template->render();
 	}
 	//------------------------
 	function given_mo_check($str){

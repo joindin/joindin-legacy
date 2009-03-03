@@ -1,3 +1,6 @@
+<?php 
+menu_pagetitle('Add Blog Post');
+?>
 <?php
 
 $chk=array('post_mo'=>'m','post_day'=>'d','post_yr'=>'Y','post_hr'=>'H','post_mi'=>'i');

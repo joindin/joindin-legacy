@@ -1,3 +1,6 @@
+<?php 
+menu_pagetitle('Send Codes: ' . escape($details[0]->event_name));
+?>
 <?php
 //echo '<pre>'; print_r($full_talks); echo '</pre>';
 

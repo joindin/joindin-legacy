@@ -213,15 +213,25 @@ class User extends Controller {
 		$this->load->model('user_attend_model','uam');
 		
 		$curr_user=$this->session->userdata('ID');
+		
+		$ret=$this->user_model->getOtherUserAtEvt($uid);
+		//echo '<pre>'; print_r($ret); echo '</pre>';
+		
 		$arr=array(
 			'details'	=> $this->user_model->getUser($uid),
 			'comments'	=> $this->talks_model->getUserComments($uid),
 			'talks'		=> $this->talks_model->getUserTalks($uid),
 			'is_admin'	=> $this->user_model->isSiteAdmin(),
 			'is_attending'=>$this->uam->getUserAttending($uid),
-			'my_attend'	=> $this->uam->getUserAttending($curr_user)
+			'my_attend'	=> $this->uam->getUserAttending($curr_user),
+		);
+		$block=array(
+			'title'		=> 'Other Speakers',
+			'content'	=> $this->user_model->getOtherUserAtEvt($uid),
+			'udata'		=> $arr['details']
 		);
 
+		$this->template->write_view('sidebar2','user/_other-speakers',$block);
 		$this->template->write_view('content','user/view',$arr);
 		$this->template->render();
 	}

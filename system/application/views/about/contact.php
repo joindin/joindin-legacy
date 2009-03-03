@@ -1,3 +1,6 @@
+<?php 
+menu_pagetitle('Contact');
+?>
 <h1 class="icon-about">Contact</h1>
 <?php 
 $msg=$this->session->flashdata('msg');

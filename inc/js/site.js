@@ -71,7 +71,27 @@ function apiRequest(rtype,raction,data,callback){
 	});
 }
 //-------------------------
+function delBlogComment(cid){
+	var obj=new Object();
+	obj.cid=cid;
 
+	apiRequest('blog','deletecomment',obj, function(obj) {
+		return false;
+	});
+	return false;
+}
+function claimTalk(tid){
+	var obj=new Object();
+	obj.tid=tid;
+
+	apiRequest('talk','claim',obj, function(obj) {
+		//alert(obj);
+		$('#claim_btn').css('display','none');
+		alert("Thanks for claiming this talk! You will be emailed when it's approved!");
+		return false;
+	});
+	return false;
+}
 
 function markAttending(el,eid,isPast){
 	var $loading;
@@ -89,11 +109,11 @@ function markAttending(el,eid,isPast){
 	apiRequest('event','attend',obj, function(obj) {
 		if ($(el).is('.btn-success')) {
 			$(el).removeClass('btn-success');
-			link_txt=isPast ? 'Were you there?' : 'Will you be there?';
+			link_txt=isPast ? 'I attended' : 'I\'m attending';
 			adjustAttendCount(eid, -1);
 		} else {
 			$(el).addClass('btn-success');
-			link_txt=isPast ? 'I was there!' : 'I\'ll be there!';
+			link_txt=isPast ? 'I attended' : 'I\'m attending';
 			adjustAttendCount(eid, 1);
 		}
 

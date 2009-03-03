@@ -8,25 +8,93 @@ foreach($claimed as $k=>$v){
 
 menu_pagetitle('Event: ' . escape($det->event_name));
 
-?>
+//echo '<pre>'; print_r($claimed); echo '</pre>';
 
+foreach($claimed as $k=>$v){
+	//echo "update user_admin set rcode='".$v->tdata['codes'][0]."' where uid=".$v->uid." and rid=".$v->rid." and rtype='talk';<br/>";
+}
+
+//echo '<pre>'; print_r($talks); echo '</pre>';
+//echo '<pre>'; print_r($cl); echo '</pre>';
+?>
 <div class="detail">
 	
-	<?php $this->load->view('event/_event-icon',array('event'=>$det)); ?>
+	<div class="header">
+        <?php $this->load->view('event/_event-icon',array('event'=>$det)); ?>
+    
+    	<div class="title">
+        	<h1><?=escape($det->event_name)?> <?=(($det->pending==1) ? '(Pending)':'')?></h1>
+        
+        	<p class="info">
+        		<strong><?php echo date('M j, Y',$det->event_start); ?></strong> - <strong><?php echo date('M j, Y',$det->event_end); ?></strong>
+        		<br/> 
+        		<strong><?php echo escape($det->event_loc); ?></strong>
+        	</p>
+        	
+        	<p class="opts">
+        	<?php 
+        	/*
+        	if its set, but the event was in the past, just show the text "I was there!"
+        	if its set, but the event is in the future, show a link for "I'll be there!"
+        	if its not set show the "I'll be there/I was there" based on time
+        	*/
+        	if($attend && user_is_auth()){
+        		if($det->event_end<time()){
+        			$link_txt="I attended"; $showt=1;
+        		}else{ $link_txt="I'm attending"; $showt=2; }
+        	}else{
+        		if($det->event_end<time()){
+        			$link_txt="I attended"; $showt=3; 
+        		}else{ $link_txt="I'm attending"; $showt=4; }
+        	}
+        	//if they're not logged in, show the questions
+        	if(!user_is_auth()){ $attend=false; }
+        	?>
+        		
+        		<a class="btn<?php echo $attend ? ' btn-success' : ''; ?>" href="javascript:void(0);" onclick="return markAttending(this,<?=$det->ID?>,<?php echo $det->event_end<time() ? 'true' : 'false'; ?>);"><?=$link_txt?></a>
+        		<span class="attending"><strong><span class="event-attend-count-<?php echo $det->ID; ?>"><?php echo (int)$attend_ct; ?></span> people</strong> <?php echo (time()<=$det->event_end) ? ' attending so far':' said they attended'; ?>. <a href="javascript:void(0);"  onclick="return toggleAttendees(this, <?=$det->ID?>);" class="show">Show &raquo;</a></span>
+        	</p>
+        	<div class="clear"></div>
 
-	<h1><?=escape($det->event_name)?></h1>
-
-	<p class="info">
-		<strong><?php echo date('M j, Y',$det->event_start); ?></strong> - <strong><?php echo date('M j, Y',$det->event_end); ?></strong>
-		<br/> 
-		<strong><?php echo escape($det->event_loc); ?></strong>
-	</p>
+        </div>
+        <div class="clear"></div>
+	</div>
 
 	<div class="desc">
-		<?php
-			echo auto_p(auto_link(escape($det->event_desc)));
-			
-			if(!empty($det->event_href) || !empty($det->event_hastag)){
+		<?php echo auto_p(auto_link(escape($det->event_desc))); ?>
+		<hr/>
+
+	<?php if(!empty($det->event_href) || !empty($det->event_hastag)){ ?>
+		<div class="related">
+		<?php if(!empty($det->event_href)){ ?>
+		<?php $hrefs = array_map('trim', explode(',',$det->event_href)); ?>
+        	<div class="links">
+        		<h2 class="h4">Link<?php if (count($hrefs) != 1): ?>s<?php endif; ?></h2>
+    			<ul>
+    			<?php foreach ($hrefs as $href): ?>
+    				<li><a href="<?php echo escape($href); ?>" rel="external"><?php echo escape($href); ?></a></li>
+    			<?php endforeach; ?>
+                </ul>
+        	</div>
+        <?php } ?>
+        <?php if(!empty($det->event_hashtag)){ ?>
+        <?php $hashtags = array_map('trim', explode(',',$det->event_hashtag)); ?>
+        	<div class="hashtags">
+        		<h2 class="h4">Hashtag<?php if (count($hashtags) != 1): ?>s<?php endif; ?></h2>
+    			<ul>
+    			<?php foreach ($hashtags as $hashtag): ?>
+    				<?php $hashtag = str_replace('#', '', $hashtag); ?>
+    				<li>#<a href="http://hashtags.org/tag/<?php echo escape($hashtag); ?>" rel="external"><?php echo escape($hashtag); ?></a></li>
+    			<?php endforeach; ?>
+                </ul>
+        	</div>
+
+        <?php } ?>
+        	<div class="clear"></div>
+    	</div>
+    <?php } ?>
+			<?php
+			/*if(!empty($det->event_href) || !empty($det->event_hastag)){
 				echo '<table cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td width="50%" valign="top" style="font-size:11px">';
 				if(!empty($det->event_href)){
 					echo '<b>Links</b><br/>'; 
@@ -39,43 +107,23 @@ menu_pagetitle('Event: ' . escape($det->event_name));
 					}
 				}
 				echo '</td></tr></table>';
-			}
+			}*/
 		?>
 	</div>
-	
-	<p class="opts">
-	<?php 
-	/*
-	if its set, but the event was in the past, just show the text "I was there!"
-	if its set, but the event is in the future, show a link for "I'll be there!"
-	if its not set show the "I'll be there/I was there" based on time
-	*/
-	if($attend && user_is_auth()){
-		if($det->event_end<time()){
-			$link_txt="I was there!"; $showt=1;
-		}else{ $link_txt="I'll be there!"; $showt=2; }
-	}else{
-		if($det->event_end<time()){
-			$link_txt="Were you there?"; $showt=3; 
-		}else{ $link_txt="Will you be there?"; $showt=4; }
-	}
-	//if they're not logged in, show the questions
-	if(!user_is_auth()){ $attend=false; }
-	?>
-		<a class="btn<?php echo $attend ? ' btn-success' : ''; ?>" href="#" onclick="markAttending(this,<?=$det->ID?>,<?php echo $det->event_end<time() ? 'true' : 'false'; ?>);return false;"><?=$link_txt?></a>
-
-	</p>
-	<div class="clear"></div>
-    (<span class="event-attend-count-<?php echo $det->ID; ?>"><?php echo (int)$attend_ct; ?></span><?php echo (time()<=$det->event_end) ? ' attending so far':' said they attended'; ?>)
 </div>
 
 <?php if($admin): ?>
 <p class="admin">
 	<a class="btn-small" href="/event/delete/<?=$det->ID?>">Delete event</a>
 	<a class="btn-small" href="/event/edit/<?=$det->ID?>">Edit event</a>
+	<a class="btn-small" href="/event/approve/<?=$det->ID?>">Approve event</a>
+	&nbsp;
 	<a class="btn-small" href="/talk/add/event/<?=$det->ID?>">Add new talk</a>
 	&nbsp;
 	<a class="btn-small" href="/event/codes/<?=$det->ID?>">Get talk codes</a>
+	<?php if(isset($det->pending) && $det->pending==1){
+		echo '<a class="btn-small" href="/approve">Approve Event</a>';
+	} ?>
 </p>
 <?php endif; ?>
 
@@ -124,19 +172,38 @@ $ct=0;
         	</tr>
         	<?php foreach($v as $ik=>$iv): ?>
         	<tr class="<?php echo ($ct%2==0) ? 'row1' : 'row2'; ?>">
-        		<?php $sp=(array_key_exists((string)$iv->ID,$cl)) ? '<a href="/user/view/'.$cl[$iv->ID].'">'.escape($iv->speaker).'</a>' : escape($iv->speaker); ?>
+        		<td>
+        			<span class="talk-type talk-type-<?php echo strtolower(str_replace(' ', '-', $iv->tcid)); ?>" title="<?php echo escape($iv->tcid); ?>"><?php echo escape(strtoupper($iv->tcid)); ?></span>
+        		</td>
+        	    <?php 
+					$sp_names=array();
+					foreach($iv->codes as $ck => $cv){
+						if(array_key_exists($cv,$cl)){ 
+							//echo $iv->talk_title.' '.$cv.' '.$iv->speaker.' -> '.$ck.'<br/>';
+							//we match the code, but we need to find the speaker...
+							$spk_split=explode(',',$iv->speaker);
+							foreach($spk_split as $spk=>$spv){
+								if(trim($spv)==trim($ck)){
+									$uid=$cl[$cv]['uid'];
+									$sp_names[]='<a href="/user/view/'.$uid.'">'.escape($spv).'</a>';
+								}
+							}
+						}else{ $sp_names[]=escape($ck); }
+						$sp=implode(', ',$sp_names);
+					}
+					?>
         		<td>
         			<a href="/talk/view/<?php echo $iv->ID; ?>"><?php echo escape($iv->talk_title); ?></a>
         		</td>
-        		<td nowrap="nowrap">
-        			<?php echo escape(strtoupper($iv->tcid)); ?>
-        		</td>
-        		<td>
+        		<!--<td>
         			<img src="/inc/img/flags/<?php echo $iv->lang; ?>.gif" alt="<?php echo escape($iv->lang); ?>"/>
-        		</td>
+        		</td>-->
         		<td>
         			<?php echo $sp; ?>
         		</td>
+        		<td>
+					<a class="comment-count" href="/talk/view/<?php echo $iv->ID; ?>/#comments"><?php echo $iv->comment_count; ?></a>
+				</td>
         	</tr>
         <?php
         	    $ct++;

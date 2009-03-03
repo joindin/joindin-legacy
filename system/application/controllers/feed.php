@@ -48,6 +48,69 @@ class Feed extends Controller {
 		}
 		$this->load->view('feed/feed',array('items'=>$items));
 	}
+	function user($in){
+		$this->load->model('talks_model');
+		$this->load->model('talk_comments_model','tcm');
+		$this->load->model('event_comments_model','ecm');
+		$udata=$this->user_model->getUser($in);
+		$talks		= array();
+		$comments	= array();
+		
+		if(!empty($udata)){
+			$uid=$udata[0]->ID;
+			//get the upcoming talks for this user
+			$ret=$this->talks_model->getUserTalks($uid); //echo '<pre>'; print_r($ret); echo '</pre>';
+			//resort them by date_given
+			$tmp=array(); $out=array();
+			foreach($ret as $k=>$v){ $tmp[$k]=$v->date_given; } arsort($tmp);
+			foreach($tmp as $k=>$v){ $out[]=$ret[$k]; }
+			
+			//$v['title'],$v['desc'],$v['speaker'],$v['date'],$v['tid']);
+			
+			foreach($out as $k=>$v){
+				$talks[]=array(
+					'title'		=> $v->talk_title,
+					'desc'		=> $v->talk_desc,
+					'speaker'	=> $v->speaker,
+					'date'		=> date('r',$v->date_given),
+					'tid'		=> $v->tid,
+					'link'		=> 'http://joind.in/talk/view/'.$v->tid
+				);
+			}
+			$coms=array();
+			
+			//echo '<pre>';
+			//on to the comments!
+			$ecom=$this->ecm->getUserComments($uid);
+			//print_r($ecom);
+			foreach($ecom as $k=>$v){
+				$comments[]=array(
+					'content'		=> $v->comment,
+					'date'			=> date('r',$v->date_made),
+					'type'			=> 'event',
+					'event_id'		=> $v->event_id
+				);
+			}
+
+			$tcom=$this->tcm->getUserComments($uid);
+			//print_r($tcom);
+			foreach($tcom as $k=>$v){
+				$comments[]=array(
+					'content'		=> $v->comment,
+					'date'			=> date('r',$v->date_made),
+					'type'			=> 'talk',
+					'event_id'		=> ''
+				);
+			}
+			//echo '</pre>';
+		}
+		$data=array(
+			'talks'		=> $talks,
+			'comments'	=> $comments,
+			'username'	=> $this->session->userdata('username')
+		);
+		$this->load->view('feed/user',$data);
+	}
 }
 
 ?>

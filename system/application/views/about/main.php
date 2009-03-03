@@ -1,3 +1,6 @@
+<?php 
+menu_pagetitle('About');
+?>
 <h1 class="icon-about">About</h1>
 <h3 style="color:#5181C1">Like the talk? Let 'em know!</h3>
 <p>

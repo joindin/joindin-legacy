@@ -1,3 +1,6 @@
+<?php 
+menu_pagetitle('Add Talk');
+?>
 <?php
 $event_list	= array(); 
 $cat_list	= array();

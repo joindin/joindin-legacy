@@ -76,19 +76,23 @@ if(!empty($claimed)){
 	</p>
 	
 	<?php if(isset($claimed[0]) && $this->session->userdata('ID')==$claimed[0]->userid): ?>
-	<p class="opts">
+	<!--<p class="opts">
 		<a class="btn-small" href="/user/comemail/talk/<?php echo $det->tid; ?>">Email me my comments</a>
-	</p>
+	</p>-->
 	<?php endif; ?>
 	<div class="clear"></div>
 </div>
 
-<?php if($admin):?>
 <p class="admin">
+<?php if($admin):?>
 	<a class="btn-small" href="/talk/delete/<?php echo $det->tid; ?>">Delete talk</a>	
 	<a class="btn-small" href="/talk/edit/<?php echo $det->tid; ?>">Edit talk</a>
-</p>
 <?php endif; ?>
+<?php
+if(empty($claimed)): ?>
+	<a class="btn-small" href="#" id="claim_btn" onClick="claimTalk(<?php echo $det->tid; ?>)">Claim This Talk</a>	
+<?php endif; ?>
+</p>
 
 <p class="ad">
     <script type="text/javascript"><!--
@@ -156,6 +160,11 @@ if (empty($comments)) {
     	<div class="desc">
     		<?php echo auto_p(escape($v->comment)); ?>
     	</div>
+	    <?php if (user_is_admin()): ?>
+		<p class="admin">
+			<a class="btn-small" href="">Delete</a>
+		</p>
+	<?php endif; ?>
 	</div>
 	<div class="clear"></div>
 </div>
@@ -168,7 +177,7 @@ if (empty($comments)) {
 //only show the form if the time for the talk has passed
 //my code: if($det->date_given<=$time_at_event){
 
-if ($det->date_given < $gmt) {
+if ($det->date_given > $time_at_event) {
 ?>
 <p class="info">Currently not open for comment.</p>
 <?php

@@ -1,4 +1,10 @@
-
+<?php 
+if (!empty($results)) {
+   menu_pagetitle('Search for: ' . escape($this->validation->search_term)); 
+} else {
+    menu_pagetitle('Search');
+}
+?>
 <h1 class="icon-search">Search</h1>
 
 <div class="box">
