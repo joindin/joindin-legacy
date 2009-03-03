@@ -372,6 +372,11 @@ class Event extends Controller {
 		$this->template->write_view('content','event/attendees',$arr,true);
 		echo $this->template->render('content');
 	}
+	function ical($id){
+		$this->load->model('event_model');
+		$arr=$this->event_model->getEventDetail($id);
+		$this->load->view('event/ical',array('data'=>$arr));
+	}
 	function delete($id){
 		if(!$this->user_model->isSiteAdmin()){ redirect(); }
 		$this->load->helper('form');
