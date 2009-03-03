@@ -147,6 +147,7 @@ if(!empty($msg_error)) {
 	    </thead>
 	    <tbody>
 	    <?php 
+	        if(!empty($im_accounts)) :
 	    	$total = count($im_accounts);
 	    	$current = 1;
 	    	foreach($im_accounts as $account) :
@@ -166,12 +167,20 @@ if(!empty($msg_error)) {
 	    <?php
 	    	$current++; 
 	    	endforeach; 
+	    	
+	    	else :
+	    ?>
+	    	<tr>
+	    		<td colspan="3">No accounts found</td>
+	    	</tr>
+	    <?php 
+	    	endif;
 	    ?>
 	    </tbody>
 	    </table>
 	    
 	    <p style="text-align: right;">
-	        <a class="btn btn-success" href="/user/profile/im">add account</a>
+	        <a class="btn btn-green" href="/user/profile/im">add account</a>
 	    </p>
 	</div>
 	
@@ -188,6 +197,8 @@ if(!empty($msg_error)) {
 	    </thead>
 	    <tbody>
 	    <?php 
+	        if(!empty($sn_accounts)) :
+	    
 	    	$total = count($sn_accounts);
 	    	$current = 1;
 	    	foreach($sn_accounts as $account) :
@@ -207,12 +218,20 @@ if(!empty($msg_error)) {
 	    <?php
 	    	$current++; 
 	    	endforeach; 
+	    	
+	    	else :
+	    ?>
+	    	<tr>
+	    		<td colspan="3">No accounts found</td>
+	    	</tr>
+	    <?php 
+	    	endif;
 	    ?>
 	    </tbody>
 	    </table>
 	    
 	    <p style="text-align: right;">
-	        <a class="btn btn-success" href="/user/profile/sn">add account</a>
+	        <a class="btn btn-green" href="/user/profile/sn">add account</a>
 	    </p>
 	</div>
     

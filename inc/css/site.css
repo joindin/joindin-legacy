@@ -150,6 +150,13 @@ small {
 	padding-left: 23px;
 }
 
+.btn-green {
+	background: #66cc00 url(/inc/img/bg-btn-success.gif) 0 50% repeat-x;
+	background-position: center;
+	border-color: #57ae00;
+	padding-left: 18px;
+}
+
 .loading {
 	display: inline;
 	position: absolute;

@@ -91,7 +91,7 @@ if(!empty($msg_error)) {
 </table>
 
 <p style="text-align: right;">
-	<a class="btn btn-success" href="/user/profile/token">Add token</a> or <a href="/user/profile">go back to speaker profile</a>
+	<a class="btn btn-green" href="/user/profile/token">Add token</a> or <a href="/user/profile">go back to speaker profile</a>
 </p>
 
 </div>
