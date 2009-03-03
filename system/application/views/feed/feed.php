@@ -1,8 +1,11 @@
-<?php header('Content-type: text/xml'); ?>
+<?php 
+	header('Content-type: text/xml'); 
+	$title='Joind.in'.((!empty($title)) ? ': '.$title : '');
+?>
 <?php echo "<?xml version=\"1.0\"?>"; ?>
 <rss version="2.0">
 	<channel>
-		<title>Joind.in</title>
+		<title><?php echo $title; ?></title>
 		<link>http://joind.in</link>
 		<description>Joind.in</description>
 		<language>en-us</language>

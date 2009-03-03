@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ALL);
 //echo '<pre>'; print_r($detail); print_r($comments); echo '</pre>';
 //print_r($claimed);
 

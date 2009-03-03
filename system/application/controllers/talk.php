@@ -332,9 +332,11 @@ Click here to view it: http://joind.in/talk/view/%s
 		$claims=$this->uam->getPendingClaims();
 		
 		$approved=0;
+		$deleted=0;
 		foreach($claims as $k=>$v){
+			//first check to see if it was approved
 			$chk=$this->input->post('claim_'.$v->ua_id);
-			if(!empty($chk)){
+			if(!empty($chk)){ echo $chk.'<br/>';
 				$code=buildCode($v->talk_id,$v->eid,$v->talk_title,$v->speaker);
 				$this->db->where('ID',$v->ua_id);
 				$this->db->update('user_admin',array('rcode'=>$code));
@@ -351,12 +353,20 @@ The Joind.in Crew
 				",$v->event_name,$v->talk_title);
 				mail($to,$subj,$msg,'From: feedback@joind.in');
 				$approved++;
+				unset($claims[$k]);
+			}
+			$chk=$this->input->post('del_claim_'.$v->ua_id);
+			if(!empty($chk)){
+				$this->db->delete('user_admin',array('ID'=>$v->ua_id));
+				$deleted++;
+				unset($claims[$k]);
 			}
 		}
 		
 		$arr=array(
 			'claims'	=> $claims,
-			'approved'	=> $approved
+			'approved'	=> $approved,
+			'deleted'	=> $deleted
 		);
 		$this->template->write_view('content','talk/claim',$arr);
 		$this->template->render();
