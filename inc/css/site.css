@@ -404,6 +404,45 @@ a {
 	margin-bottom: 15px;
 }
 
+#ctn .comment-count {
+	background: transparent url(/inc/img/icon-comment.gif) 0 0 no-repeat;
+	text-decoration: none;
+	font-size: 10px;
+
+	width: 21px;
+	height: 21px;
+	line-height: 16px;
+	display: block;
+	text-align: center;
+}
+
+#ctn .talk-type {
+	background: transparent url(/inc/img/category_icons/talk.gif) 0 0 no-repeat;
+	text-decoration: none;
+	font-size: 10px;
+	
+	/*padding-left: 25px;*/
+	text-indent: -3000px;
+
+	width: 21px;
+	height: 21px;
+	line-height: 16px;
+	display: block;
+	text-align: center;
+}
+
+#ctn .talk-type-social-event {
+	background-image: url(/inc/img/category_icons/social-event.gif);
+}
+
+#ctn .talk-type-keynote {
+	background-image: url(/inc/img/category_icons/keynote.gif);
+}
+
+#ctn .talk-type-workshop {
+	background-image: url(/inc/img/category_icons/workshop.gif);
+}
+
 #ctn .main .box {
 	margin-bottom: 40px;
 }
