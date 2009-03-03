@@ -1,7 +1,7 @@
 <?php
 
 /** ServiceDispatcher */
-require_once BASEPATH . 'application/libraries/ServiceDispatcher.php';
+require_once BASEPATH . 'application/libraries/service/ServiceDispatcher.php';
 
 /**
  * API controller
@@ -51,13 +51,20 @@ class Api extends Controller {
 	function speaker()
 	{
 	    $dispatcher = new ServiceDispatcher();
-	    
-	    // Get the data
-	    $data = file_get_contents('php://input');
-	    
-	    // Dispatch to the service handler
+	    $data = $this->_processRequest();
 	    $dispatcher->dispatch('speaker', $data);
 	}
+	
+	private function _processRequest() 
+	{
+	    $xml = file_get_contents('php://input');
+	    
+	    $data['xml'] = $xml;
+	    $data['query_string'] = $_SERVER['QUERY_STRING'];
+    
+	    return $data;
+	}
+	
 	
 	//---------------------
 	function output($ret){

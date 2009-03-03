@@ -6,8 +6,13 @@ $doc = new DOMDocument('1.0');
 $root = $doc->createElement('response');
 $doc->appendChild($root);
 
-foreach($data as $tag => $value){
-    $root->appendChild(returnDomElement($value, $tag, $doc));
+if(is_string($data)) {
+    $root->appendChild($doc->createTextNode($data));
+}
+else if(is_array($data)) {
+    foreach($data as $tag => $value){
+        $root->appendChild(returnDomElement($value, $tag, $doc));
+    }
 }
 
 $doc->formatOuput = true;

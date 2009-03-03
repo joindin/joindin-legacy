@@ -86,7 +86,6 @@ class DomainModel extends Model
         $this->load->database();
         $this->_database =& CI_Base::get_instance()->db;
         // Load validation class
-        //$this->load->library('validation');
         load_class('Validation');
         
         // Discover table information
@@ -97,7 +96,11 @@ class DomainModel extends Model
         $this->_errorMessages = array_merge($this->_errorMessages, $this->lang->load('validation', 'english', true));
         
         // Set the data
-        if(!is_null($data)) {
+        if(!is_null($data) && !is_array($data)) {
+            $data = $this->_findBy($this->_primaryKey, $data);
+            $this->setData($data);
+        }
+        else if(!is_null($data) && is_array($data)) {
             $this->setData($data);
         }
     }
@@ -109,7 +112,9 @@ class DomainModel extends Model
      */
     public function find($primaryKey)
     {
-       return $this->_findBy($this->_primaryKey, $primaryKey); 
+        $className = get_class($this);
+        $data = $this->_findBy($this->_primaryKey, $primaryKey);
+        return new $className($data);
     }
     
     /**
@@ -368,7 +373,7 @@ class DomainModel extends Model
             throw new Exception("Unknown column {$column} in table {$this->_table}.");
         }
         
-        $statement = $this->_database->get_where($this->_table, array($column => $value));
+        $statement = $this->_database->get_where($this->_table, array($column => $this->_database->escape_str($value)));
         
         if($statement->num_rows() == 0) {
             return null;
@@ -379,8 +384,7 @@ class DomainModel extends Model
         
         $data = (array) $statement->row(1);
         
-        $className = get_class($this);
-        return new $className($data);
+        return $data;
     }
     
     /**
@@ -485,7 +489,8 @@ class DomainModel extends Model
             $column = $this->_convertToColumnName($name, 'findBy');
             
             // Get the data
-            return $this->_findBy($column, $arguments[0]);
+            $data = $this->_findBy($column, $arguments[0]);
+            return $this->create($data);
             
         }
         else if(strpos($name, 'get') === 0) {

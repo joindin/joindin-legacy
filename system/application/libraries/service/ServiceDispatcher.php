@@ -51,22 +51,20 @@ class ServiceDispatcher
      * @param string $service
      * @param string $data
      */
-    public function dispatch($service, $data)
+    public function dispatch($service, $rawData)
     {
-	    // Parse the xml
-        $xml = $this->_parseRequest($data);
+        // Parse the incomming data
+        $data = $this->_parseData($rawData);
         
-        if(!$xml) {
-            return $this->_sendResponse('Bad Request', 400);
-        }
-        
+        $xml = $data['xml'];
         $action = ucfirst($xml->action['type']);
         
 	    // Find the handler for the request
-	    $handlerFile = $_SERVER['DOCUMENT_ROOT'] . 'system/application/libraries/handlers/' . $service . '/' . $action . '.php';
+	    $handlerFile = dirname(__FILE__) . '/handlers/' . 
+	                   $service . '/' . $action . '.php';
 	    if(!is_file($handlerFile)) {
 	        // return invalid request
-	        $this->_sendError('Invalid request', '');
+	        $this->_sendError('Bad Request', 400);
 	    }
 	    require_once($handlerFile);
 	    
@@ -76,17 +74,16 @@ class ServiceDispatcher
 	    }
 	    
 	    // Create a new instance of the handler
-	    $handler = new $action;
+	    $handler = new $action($xml, $data['query_string']);
 	    
         // Check authorization
-        $authData = (isset($xml->auth)) ? $xml->auth : null;
-        if(!$handler->isAuthorized($authData)) {
-            $this->_sendError('Forbidden', 403);
+        if(!$handler->isAuthorizedRequest()) {
+            $this->_sendError('Unauthorized', 401);
         }
 
 	    // Handle the request
 	    try {
-    	    $handlerResponse = $handler->handle($data);
+    	    $handlerResponse = $handler->handle();
     	} catch(Exception $e) {
 	        $this->_sendError('Internal Server Error', 500);
     	}
@@ -98,21 +95,25 @@ class ServiceDispatcher
     }
     
     /**
-     * Parses the request xml
-     * @param string $raw
+     * Parses the raw request data
+     * @param array $rawData
      * @return mixed
      */
-    protected function _parseRequest($raw)
+    protected function _parseData($rawData)
     {
 		$xml = null;
         try {
-            $xml = @simplexml_load_string($raw);
+            $xml = @simplexml_load_string($rawData['xml']);
         } catch(Exception $e) {
             // Parsing failed, output error
-            $this->_sendResponse('Invalid request.', 'plain');
+            $this->_sendResponse('Bad Request', 400);
         }
         
-        return $xml;
+        if(!$xml) {
+            return $this->_sendResponse('Bad Request', 400);
+        }
+        
+        return array('xml' => $xml, 'query_string' => $rawData['query_string']);
     }
     
     /**

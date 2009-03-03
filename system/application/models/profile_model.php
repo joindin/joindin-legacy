@@ -6,6 +6,9 @@
 /** DomainModel */
 require_once BASEPATH . 'application/libraries/DomainModel.php';
 
+/** Profile_token_model */
+require_once BASEPATH . 'application/models/profile_token_model.php';
+
 /**
  * Represents a speaker profile.
  * 
@@ -22,6 +25,24 @@ class Profile_model extends DomainModel
     );
     
     /**
+     * Find a profile by token
+     * @param string $token
+     * @return null|Profile_model
+     */
+    public function findByToken($token) {
+        
+        $model = new Profile_token_model();
+        $profileToken = $model->findByAccessToken($token);
+        
+        if(is_null($profileToken)) {
+            return null;
+        }
+        
+        $profile = new Profile_model($profileToken->getProfileId());
+        return $profile;
+    }
+    
+    /**
      * Deletes the picture for this profile
      */
     public function deletePicture()
@@ -35,6 +56,9 @@ class Profile_model extends DomainModel
     	}
     }
     
+    /**
+     * Deletes the profile
+     */
     public function delete()
     {
     	// Delete the entry from the database
