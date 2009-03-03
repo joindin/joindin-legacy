@@ -1,5 +1,14 @@
 <?php
 
+/** ServiceDispatcher */
+require_once BASEPATH . 'application/libraries/ServiceDispatcher.php';
+
+/**
+ * API controller
+ * 
+ * @author Chris Cornut <enygma@phpdeveloper.org>
+ * @author Mattijs Hoitink <mattijs@ibuildings.nl>
+ */
 class Api extends Controller {
 	
 	function Api(){
@@ -37,6 +46,17 @@ class Api extends Controller {
 		$data=file_get_contents('php://input');
 		$ret=array('out'=>$this->service->handle('blog',$data));
 		$this->output($ret);
+	}
+	
+	function speaker()
+	{
+	    $dispatcher = new ServiceDispatcher();
+	    
+	    // Get the data
+	    $data = file_get_contents('php://input');
+	    
+	    // Dispatch to the service handler
+	    $dispatcher->dispatch('speaker', $data);
 	}
 	
 	//---------------------
