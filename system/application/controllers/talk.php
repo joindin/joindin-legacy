@@ -176,6 +176,8 @@ class Talk extends Controller {
 		$this->load->library('akismet');
 		$this->load->library('validation');
 		
+		$currentUserId = $this->session->userdata('ID');
+		
 		$talk_detail=$this->talks_model->getTalks($id);
 		
 		$claim_status	= false;
@@ -222,6 +224,8 @@ class Talk extends Controller {
 				}
 			}
 		}
+		
+		$cl=($r=$this->talks_model->isTalkClaimed($id)) ? $r : false; //print_r($cl);
 
 		$cap_arr=array(
 			'img_path'		=>$_SERVER['DOCUMENT_ROOT'].'/inc/img/captcha/',
@@ -232,7 +236,7 @@ class Talk extends Controller {
 		
 		$rules	=array(
 			'comment'	=> 'required',
-			'rating'	=> 'required'
+			'rating'	=> $cl && $cl[0]->userid == $currentUserId ? null : 'required'
 		);
 		$fields	=array(
 			'comment'	=> 'Comment',
@@ -244,9 +248,7 @@ class Talk extends Controller {
 		}
 		$this->validation->set_rules($rules);
 		$this->validation->set_fields($fields);
-		
-		$cl=($r=$this->talks_model->isTalkClaimed($id)) ? $r : false; //print_r($cl);
-		
+
 		if($this->validation->run()==FALSE){
 			//echo 'error!';
 		}else{ 

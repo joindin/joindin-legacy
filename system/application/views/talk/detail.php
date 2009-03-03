@@ -144,11 +144,19 @@ if (empty($comments)) {
         if ($v->private == 1) {
     	    $class .= ' row-talk-comment-private';
     	}
+    	
+    	if ($v->user_id != 0 && $v->user_id == $claimed[0]->userid) {
+    	    $class .= ' row-talk-comment-speaker';
+    	}
 
 ?>
 <div id="comment-<?php echo $v->ID ?>" class="row row-talk-comment<?php echo $class?>">
 	<div class="img">
+	<?php if ($v->user_id != 0 && $v->user_id == $claimed[0]->userid): ?>
+		<span class="speaker">Speaker comment:</span>
+	<?php else: ?>
 		<?php echo rating_image($v->rating); ?>
+	<?php endif; ?>
 	</div>
 	<div class="text">
     	<p class="info">
@@ -213,6 +221,8 @@ if ($det->date_given > $time_at_event) {
     </label>
     <div class="clear"></div>
 </div>
+<?php if (user_get_id() != 0 && user_get_id() == $claimed[0]->userid): ?>
+<?php else: ?>
 <div class="row">
 	<label for="rating">Rating</label>
 	<div class="rating">
@@ -220,6 +230,7 @@ if ($det->date_given > $time_at_event) {
 	</div>
 	<div class="clear"></div>
 </div>
+<?php endif; ?>
 <div class="row row-buttons">
 	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Submit Comment'); ?>
 </div>
