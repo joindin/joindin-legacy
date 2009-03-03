@@ -145,14 +145,14 @@ if (empty($comments)) {
     	    $class .= ' row-talk-comment-private';
     	}
     	
-    	if (isset($claimed[0]) && $claimed[0]->user_id != 0 && !empty($v->user_id) && $v->user_id == $claimed[0]->userid) {
+    	if (isset($claimed[0]->userid) && $claimed[0]->userid != 0 && isset($v->user_id) && $v->user_id == $claimed[0]->userid) {
     	    $class .= ' row-talk-comment-speaker';
     	}
 
 ?>
 <div id="comment-<?php echo $v->ID ?>" class="row row-talk-comment<?php echo $class?>">
 	<div class="img">
-	<?php if (isset($claimed[0]) && $claimed[0]->user_id != 0 && !empty($v->user_id) && $v->user_id == $claimed[0]->userid): ?>
+	<?php if (isset($claimed[0]->userid) && $claimed[0]->userid != 0 && isset($v->user_id) && $v->user_id == $claimed[0]->userid): ?>
 		<span class="speaker">Speaker comment:</span>
 	<?php else: ?>
 		<?php echo rating_image($v->rating); ?>
@@ -221,7 +221,7 @@ if ($det->date_given > $time_at_event) {
     </label>
     <div class="clear"></div>
 </div>
-<?php if (isset($claimed[0]) && $claimed[0]->user_id != 0 && user_get_id() == $claimed[0]->userid): ?>
+<?php if (isset($claimed[0]->userid) && $claimed[0]->userid != 0 && user_get_id() == $claimed[0]->userid): ?>
 <?php else: ?>
 <div class="row">
 	<label for="rating">Rating</label>
