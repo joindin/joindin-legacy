@@ -82,7 +82,7 @@ if(!empty($msg_error)) {
     <?php if(!empty($profile['picture'])) :?>
     
     
-    <div style="float: right; text-align: center;z-index: 100; width: 190px; height: 190px; margin: 10px; padding: 1px 0 10px 10px; background: #F0F4F8 url(/inc/img/bg-box.gif) repeat-x scroll left top;">
+    <div class="profile-picture">
     		<h2>Picture</h2>
     		<img src="<?= $profile['picture'] ?>" />
     </div>
@@ -171,7 +171,7 @@ if(!empty($msg_error)) {
 	    </table>
 	    
 	    <p style="text-align: right;">
-	        <a class="btn btn-success" href="/user/profile/im">+ add account</a>
+	        <a class="btn btn-success" href="/user/profile/im">add account</a>
 	    </p>
 	</div>
 	
@@ -212,7 +212,7 @@ if(!empty($msg_error)) {
 	    </table>
 	    
 	    <p style="text-align: right;">
-	        <a class="btn btn-success" href="/user/profile/sn">+ add account</a>
+	        <a class="btn btn-success" href="/user/profile/sn">add account</a>
 	    </p>
 	</div>
     

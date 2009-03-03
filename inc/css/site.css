@@ -48,7 +48,7 @@ h2,
 	color:#555;
 	border-bottom: 1px dotted #d7dcdf;
 	margin-bottom: 15px;
-	position: static;
+	position: relative;
 }
 
 h3,
@@ -969,6 +969,20 @@ table.data-table .alt-row {
 .calendar .calendar-day-selected a {
 	font-weight: bold;
 	color: #fff;
+}
+
+/***/
+
+.profile-picture {
+	float: right;
+	position: relative;
+	width: 190px;
+	height: 190px;
+	margin: 10px;
+	padding: 1px 0 10px 10px;
+	text-align: center;
+	z-index: 100;
+	background: #F0F4F8 url(/inc/img/bg-box.gif) repeat-x scroll left top;
 }
 
 /***/
