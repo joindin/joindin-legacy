@@ -48,7 +48,7 @@ h2,
 	color:#555;
 	border-bottom: 1px dotted #d7dcdf;
 	margin-bottom: 15px;
-	position: relative;
+	position: static;
 }
 
 h3,
