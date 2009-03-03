@@ -479,18 +479,16 @@ class DomainModel extends Model
         
         if(strpos($name, 'findBy') === 0) {
             
-            //$clean = str_replace('findBy', '', $name);
-            
-            // Split on capitals
-            //preg_match_all('/[A-Z]{1}[a-z_]*/', $clean, $parts);
-            
             // Construct the column name
-            //$column = implode('_', array_map('strtolower', $parts[0]));
             $column = $this->_convertToColumnName($name, 'findBy');
             
             // Get the data
             $data = $this->_findBy($column, $arguments[0]);
-            return $this->create($data);
+            if(is_null($data)) {
+                return null;
+            } else {
+                return $this->create($data);
+            }
             
         }
         else if(strpos($name, 'get') === 0) {

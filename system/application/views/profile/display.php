@@ -53,7 +53,6 @@ if(!empty($msg_error)) {
 
 ?>
 
-
 <?php if(is_null($profile)) : ?>
 
 <div class="box">
