@@ -109,13 +109,6 @@ if(!empty($msg_error)) {
     </div>
     
     <div class="row">
-        <label for="zip">Zip code</label>
-        <?php echo form_input(array('name' => 'zip', 'id' => 'zip', 'value' => $profile['zip'])); ?>
-
-        <div class="clear"></div>
-    </div>
-    
-    <div class="row">
         <label for="city">City</label>
         <?php echo form_input(array('name' => 'city', 'id' => 'city', 'value' => $profile['city'])); ?>
 
@@ -123,8 +116,15 @@ if(!empty($msg_error)) {
     </div>
     
     <div class="row">
+        <label for="zip">Postal code</label>
+        <?php echo form_input(array('name' => 'zip', 'id' => 'zip', 'value' => $profile['zip'])); ?>
+
+        <div class="clear"></div>
+    </div>
+    
+    <div class="row">
         <label for="country">Country</label>
-        <?php echo form_input(array('name' => 'country', 'id' => 'country', 'value' => $profile['country'])); ?>
+        <?= form_dropdown('country_id', $countries, $profile['country_id']) ?>
 
         <div class="clear"></div>
     </div>

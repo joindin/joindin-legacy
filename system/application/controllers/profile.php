@@ -19,6 +19,8 @@ class Profile extends Controller
 		$this->load->model('profile_model');
 		$this->load->model('profile_im_account_model');
 	    $this->load->model('profile_web_address_model');
+	    $this->load->helper('address');
+	    
 	    $profile = $this->profile_model->findByUserId($this->session->userdata('ID'));
 	    
 	    if($profile !== null) {
@@ -31,7 +33,7 @@ class Profile extends Controller
 		    $viewVars['web_addresses'] = $waModels;
 	    }
 	    
-	    $viewVars['profile'] = (null == $profile) ? null : $profile->getData();
+	    $viewVars['profile'] = (null == $profile) ? null : $profile;
 	    
 	    $this->template->write_view('content','profile/display', $viewVars);
 	    $this->template->render();
@@ -150,6 +152,7 @@ class Profile extends Controller
 	{
         $this->load->helper('form');
 	    $this->load->model('profile_model');
+	    $this->load->model('country_model');
 	    
 	    $viewVars = array();
 	    
@@ -222,6 +225,7 @@ class Profile extends Controller
 	    }
 	    
 	    $viewVars['profile'] = $profile->getData();
+	    $viewVars['countries'] = $this->country_model->getList();
 	    
         $this->template->write_view('content','profile/form', $viewVars);
 	    // Render the template
@@ -304,8 +308,7 @@ class Profile extends Controller
 			}
 		}
 		
-		$types = $this->profile_web_address_type_model->getDropdownData();
-		$viewVars['types'] = $types;
+		$viewVars['types'] = $this->profile_web_address_type_model->getList();
 		
 		$this->template->write_view('content','profile/web_form', $viewVars);
 	    $this->template->render();
@@ -316,7 +319,7 @@ class Profile extends Controller
 	 * Deletes a social network account for the user
 	 * @param $id
 	 */
-	function sn_delete($id = null) 
+	function web_delete($id = null) 
 	{
 		if(null === $id) {
 			redirect('user/profile/display', 'location', 400);
@@ -388,8 +391,7 @@ class Profile extends Controller
 			}
 		}
 		
-		$networks = $this->profile_im_account_network_model->getDropdownData();
-		$viewVars['networks'] = $networks;
+		$viewVars['networks'] = $this->profile_im_account_network_model->getList();
 		
 		$this->template->write_view('content','profile/im_form', $viewVars);
 	    $this->template->render();

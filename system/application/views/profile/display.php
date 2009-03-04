@@ -78,13 +78,13 @@ if(!empty($msg_error)) {
 	<a href="/user/profile/access">Profile access</a>
 </div>
 
-<div class="box">    
-    <?php if(!empty($profile['picture'])) :?>
+<div class="box">
+    <?php if($profile->getPicture() != '') :?>
     
     
     <div class="profile-picture">
     		<h2>Picture</h2>
-    		<img src="<?= $profile['picture'] ?>" />
+    		<img src="<?= $profile->getPicture() ?>" />
     </div>
     <?php endif; ?>
     
@@ -93,33 +93,32 @@ if(!empty($msg_error)) {
     
     	<h2>Full name</h2>
 	    <p>
-	        <?= $profile['full_name'] ?>
+	        <?= $profile->getFullName() ?>
 	    </p>
     
 	    <h2>Contact E-mail</h2>
     	<p>
-        	<?= $profile['contact_email'] ?>
+        	<?= $profile->getContactEmail() ?>
     	</p>
     	
     	<h2>Website</h2>
     	<p>
-        	<?= auto_link($profile['website']) ?>
+        	<?= auto_link($profile->getWebsite()) ?>
     	</p>
     	
     	<h2>Blog</h2>
     	<p>
-        	<?= auto_link($profile['blog']) ?>
+        	<?= auto_link($profile->getBlog()) ?>
     	</p>
     	    
 	    <h2>Phone</h2>
 	    <p>
-	        <?= $profile['phone'] ?>
+	        <?= $profile->getPhone() ?>
 	    </p>
 	    
 	    <h2>Mailing address</h2>
 	    <p>
-	        <?= $profile['street'] ?>, <?= $profile['zip'] ?> <br />
-	        <?= $profile['city'] ?>, <?= $profile['country'] ?>
+	    	<?= formatProfileAddress($profile) ?>
 	    </p>
 	    
 	</div>
@@ -127,12 +126,12 @@ if(!empty($msg_error)) {
     <div class="detail">
 	    <h2>Bio</h2>
 	    <p>
-	        <?= nl2br($profile['bio']) ?>
+	        <?= nl2br($profile->getBio()) ?>
 	    </p>
 	    
 	    <h2>Resume</h2>
 	    <p>
-	        <a href=""><?= $profile['resume'] ?></a>
+	        <a href=""><?= $profile->getResume() ?></a>
 	    </p>
 	</div>
 	    
@@ -220,7 +219,7 @@ if(!empty($msg_error)) {
 	    			<a class="btn-small" href="/user/profile/web/<?= $address->getId() ?>">edit</a>
 	    			&nbsp;or&nbsp;
 	    			<?= delete_link(
-	    				'/user/profile/sn_delete/' . $address->getId(), 
+	    				'/user/profile/web_delete/' . $address->getId(), 
 	    				'Are you sure you want to delete your ' . $address->getType() . ' address?') 
 	    			?>
 	    		</td>

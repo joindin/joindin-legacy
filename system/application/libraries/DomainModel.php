@@ -379,6 +379,51 @@ class DomainModel extends Model
     }
     
     /**
+     * Returns a list version of all the records for use in dropdowns. The label 
+     * is based on a column named 'title', 'label', or 'name' and the key is based 
+     * on the primary key column.
+     * @return array
+     */
+    public function getList()
+    {
+        $key = null;
+        if(empty($this->_primaryKey)) {
+            // try the id field
+            if(in_array('id', $this->_columns)) {
+                $key = 'id';
+            }
+        } else {
+           $key = $this->_primaryKey;
+        }
+        
+        if(null == $key) {
+            return null;
+        }
+        
+        $label = null;
+        if(in_array('name', $this->_columns)) {
+            $label = 'name';
+        } else if(in_array('title', $this->_columns)) {
+            $label = 'title';
+        } else if(in_array('label', $this->_columns)) {
+            $label = 'label';
+        }
+        
+        if($label == null) {
+            return null;
+        }
+        
+        $allData = $this->_findAll();
+        
+        $list = array();
+        foreach($allData as $row) {
+            $list[$row[$key]] = $row[$label];
+        }
+        
+        return $list;
+    }
+    
+    /**
      * Find a model by column name
      * @param string $column
      * @param string $value
