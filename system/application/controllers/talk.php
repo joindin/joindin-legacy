@@ -104,7 +104,7 @@ class Talk extends Controller {
 				'lang'			=> $this->input->post('session_lang')
 			);
 
-			if($id){ print_r($arr);
+			if($id){ //print_r($arr);
 				$this->db->where('id',$id);
 				$this->db->update('talks',$arr);
 				//remove the current reference for the talk category and add a new one				
