@@ -50,7 +50,7 @@ if(isset($err) && !empty($err)){ echo '<div class="err">'.$err.'</div>'; }
 		<?php
 		foreach(range(1,12) as $v){ $given_mo[$v]=$v; }
 		foreach(range(1,32) as $v){ $given_day[$v]=$v; }
-		foreach(range(date('Y'),date('Y')+5) as $v){ $given_yr[$v]=$v; }
+		foreach(range(2007,date('Y')+5) as $v){ $given_yr[$v]=$v; }
 		echo form_dropdown('given_mo',$given_mo,$this->validation->given_mo);
 		echo form_dropdown('given_day',$given_day,$this->validation->given_day);
 		echo form_dropdown('given_yr',$given_yr,$this->validation->given_yr);
