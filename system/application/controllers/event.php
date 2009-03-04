@@ -374,7 +374,9 @@ class Event extends Controller {
 		echo $this->template->render('content');
 	}
 	function ical($id){
-		$this->load->model('event_model');
+		header('Content-type: text/calendar');
+		header('Content-disposition: filename="ical.ics"'); 
+	    $this->load->model('event_model');
 		$arr=$this->event_model->getEventDetail($id);
 		$this->load->view('event/ical',array('data'=>$arr));
 	}

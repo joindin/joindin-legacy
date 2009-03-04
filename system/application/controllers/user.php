@@ -212,13 +212,19 @@ class User extends Controller {
 		$this->load->model('talks_model');
 		$this->load->model('user_attend_model','uam');
 		
+		$details = $this->user_model->getUser($uid);
+		
+		if (empty($details[0])) {
+			redirect();
+		}
+
 		$curr_user=$this->session->userdata('ID');
 		
-		$ret=$this->user_model->getOtherUserAtEvt($uid);
+		//$ret=$this->user_model->getOtherUserAtEvt($uid);
 		//echo '<pre>'; print_r($ret); echo '</pre>';
-		
+
 		$arr=array(
-			'details'	=> $this->user_model->getUser($uid),
+			'details'	=> $details,
 			'comments'	=> $this->talks_model->getUserComments($uid),
 			'talks'		=> $this->talks_model->getUserTalks($uid),
 			'is_admin'	=> $this->user_model->isSiteAdmin(),

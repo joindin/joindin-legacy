@@ -23,37 +23,42 @@ foreach($claimed as $k=>$v){
         <?php $this->load->view('event/_event-icon',array('event'=>$det)); ?>
     
     	<div class="title">
-        	<h1><?=escape($det->event_name)?> <?=(($det->pending==1) ? '(Pending)':'')?></h1>
-        
-        	<p class="info">
-        		<strong><?php echo date('M j, Y',$det->event_start); ?></strong> - <strong><?php echo date('M j, Y',$det->event_end); ?></strong>
-        		<br/> 
-        		<strong><?php echo escape($det->event_loc); ?></strong>
-        	</p>
-        	
-        	<p class="opts">
-        	<?php 
-        	/*
-        	if its set, but the event was in the past, just show the text "I was there!"
-        	if its set, but the event is in the future, show a link for "I'll be there!"
-        	if its not set show the "I'll be there/I was there" based on time
-        	*/
-        	if($attend && user_is_auth()){
-        		if($det->event_end<time()){
-        			$link_txt="I attended"; $showt=1;
-        		}else{ $link_txt="I'm attending"; $showt=2; }
-        	}else{
-        		if($det->event_end<time()){
-        			$link_txt="I attended"; $showt=3; 
-        		}else{ $link_txt="I'm attending"; $showt=4; }
-        	}
-        	//if they're not logged in, show the questions
-        	if(!user_is_auth()){ $attend=false; }
-        	?>
-        		
-        		<a class="btn<?php echo $attend ? ' btn-success' : ''; ?>" href="javascript:void(0);" onclick="return markAttending(this,<?=$det->ID?>,<?php echo $det->event_end<time() ? 'true' : 'false'; ?>);"><?=$link_txt?></a>
-        		<span class="attending"><strong><span class="event-attend-count-<?php echo $det->ID; ?>"><?php echo (int)$attend_ct; ?></span> people</strong> <?php echo (time()<=$det->event_end) ? ' attending so far':' said they attended'; ?>. <a href="javascript:void(0);"  onclick="return toggleAttendees(this, <?=$det->ID?>);" class="show">Show &raquo;</a></span>
-        	</p>
+        	<div class="head">
+            	<h1><?=escape($det->event_name)?> <?=(($det->pending==1) ? '(Pending)':'')?></h1>
+            
+            	<p class="info">
+            		<strong><?php echo date('M j, Y',$det->event_start); ?></strong> - <strong><?php echo date('M j, Y',$det->event_end); ?></strong>
+            		<br/> 
+            		<strong><?php echo escape($det->event_loc); ?></strong>
+            	</p>
+            	
+            	<p class="opts">
+            	<?php 
+            	/*
+            	if its set, but the event was in the past, just show the text "I was there!"
+            	if its set, but the event is in the future, show a link for "I'll be there!"
+            	if its not set show the "I'll be there/I was there" based on time
+            	*/
+            	if($attend && user_is_auth()){
+            		if($det->event_end<time()){
+            			$link_txt="I attended"; $showt=1;
+            		}else{ $link_txt="I'm attending"; $showt=2; }
+            	}else{
+            		if($det->event_end<time()){
+            			$link_txt="I attended"; $showt=3; 
+            		}else{ $link_txt="I'm attending"; $showt=4; }
+            	}
+            	//if they're not logged in, show the questions
+            	if(!user_is_auth()){ $attend=false; }
+            	?>
+            		
+            		<a class="btn<?php echo $attend ? ' btn-success' : ''; ?>" href="javascript:void(0);" onclick="return markAttending(this,<?=$det->ID?>,<?php echo $det->event_end<time() ? 'true' : 'false'; ?>);"><?=$link_txt?></a>
+            		<span class="attending"><strong><span class="event-attend-count-<?php echo $det->ID; ?>"><?php echo (int)$attend_ct; ?></span> people</strong> <?php echo (time()<=$det->event_end) ? ' attending so far':' said they attended'; ?>. <a href="javascript:void(0);"  onclick="return toggleAttendees(this, <?=$det->ID?>);" class="show">Show &raquo;</a></span>
+            	</p>
+            </div>
+            <div class="func">
+            	<a class="icon-ical" href="/event/ical/<?php echo $det->ID; ?>">Add to calendar</a>
+            </div>
         	<div class="clear"></div>
 
         </div>

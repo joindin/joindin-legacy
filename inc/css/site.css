@@ -169,6 +169,14 @@ a {
 	padding-left: 10px;
 }
 
+.icon-ical {
+	background: transparent url(/inc/img/icon-ical.gif) 0 1px no-repeat;
+	padding-left: 17px;
+	line-height: 13px;
+	white-space: nowrap;
+	display: inline-block;
+}
+
 /*.icon-event {
 	background: transparent url(/inc/img/icon-event.gif) top left no-repeat;
 	padding-left: 35px;
@@ -616,7 +624,19 @@ a {
 	margin-bottom: 10px;
 }
 
-#ctn .main .detail hr {
+#ctn .main .detail .header .head {
+	float: left;
+	width: 370px;
+}
+
+#ctn .main .detail .header .func {
+	float: left;
+	width: 95px;
+	font-size: 75%;
+	text-align: right;
+}
+
+#ctn .main .detail .header hr {
 	margin: 10px 0;
 }
 
