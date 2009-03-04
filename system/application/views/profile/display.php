@@ -74,7 +74,7 @@ if(!empty($msg_error)) {
 <div style="margin-bottom: 10px; text-align: center;">
 	<a href="#personal">Personal</a>&nbsp;|&nbsp;
 	<a href="#messaging">Instant messaging</a> | 
-	<a href="#social">Social Networking</a>&nbsp;|&nbsp;
+	<a href="#web">Web presence</a>&nbsp;|&nbsp;
 	<a href="/user/profile/access">Profile access</a>
 </div>
 
@@ -140,7 +140,7 @@ if(!empty($msg_error)) {
 	    <table cellpadding="0" cellspacing="0" class="data-table">
 	    <thead>
 	    	<tr>
-	    		<td>Network</td>
+	    		<td>Protocol</td>
 	    		<td>Account Name</td>
 	    		<td>&nbsp;</td>
 	    	</tr>
@@ -153,14 +153,14 @@ if(!empty($msg_error)) {
 	    	foreach($im_accounts as $account) :
 	    ?>
 	    	<tr class="<?= (($current % 2) == 0) ? 'alt-row' : '' ?>">
-	    		<td style="width: 100px;"><?= $account['network_name'] ?></td>
-	    		<td><?= $account['account_name'] ?></td>
+	    		<td style="width: 100px;"><?= $account->getProtocol() ?></td>
+	    		<td><?= $account->getAccountName() ?></td>
 	    		<td style="width: 100px;">
-	    			<a class="btn-small" href="/user/profile/im/<?= $account['id'] ?>">edit</a>
+	    			<a class="btn-small" href="/user/profile/im/<?= $account->getId() ?>">edit</a>
 	    			&nbsp;or&nbsp;
 	    			<?= delete_link(
-	    				'/user/profile/im_delete/' . $account['id'], 
-	    				'Are you sure you want to delete your ' . $account['network_name'] . ' account?') 
+	    				'/user/profile/im_delete/' . $account->getId(), 
+	    				'Are you sure you want to delete your ' . $account->getProtocol() . ' account?') 
 	    			?>
 	    		</td>
 	    	</tr>
@@ -185,33 +185,33 @@ if(!empty($msg_error)) {
 	</div>
 	
 	<div class="">
-		<a name="social"></a>
-	    <h2>Social Networking</h2>
+		<a name="web"></a>
+	    <h2>Web Presence</h2>
 	    <table cellpadding="0" cellspacing="0" class="data-table">
 	    <thead>
 	    	<tr>
-	    		<td>Service</td>
-	    		<td>Account URL</td>
+	    		<td>Type</td>
+	    		<td>URL</td>
 	    		<td>&nbsp;</td>
 	    	</tr>
 	    </thead>
 	    <tbody>
 	    <?php 
-	        if(!empty($sn_accounts)) :
+	        if(!empty($web_addresses)) :
 	    
-	    	$total = count($sn_accounts);
+	    	$total = count($web_addresses);
 	    	$current = 1;
-	    	foreach($sn_accounts as $account) :
+	    	foreach($web_addresses as $address) :
 	    ?>
 	    	<tr class="<?= (($current % 2) == 0) ? 'alt-row' : '' ?>">
-	    		<td style="width: 100px;"><?= $account['service_name'] ?></td>
-	    		<td><?= auto_link($account['account_url']) ?></td>
+	    		<td style="width: 100px;"><?= $address->getType() ?></td>
+	    		<td><?= auto_link($address->getUrl()) ?></td>
 	    		<td style="width: 100px;">
-	    			<a class="btn-small" href="/user/profile/social/<?= $account['id'] ?>">edit</a>
+	    			<a class="btn-small" href="/user/profile/web/<?= $address->getId() ?>">edit</a>
 	    			&nbsp;or&nbsp;
 	    			<?= delete_link(
-	    				'/user/profile/sn_delete/' . $account['id'], 
-	    				'Are you sure you want to delete your ' . $account['service_name'] . ' account?') 
+	    				'/user/profile/sn_delete/' . $address->getId(), 
+	    				'Are you sure you want to delete your ' . $address->getType() . ' address?') 
 	    			?>
 	    		</td>
 	    	</tr>
@@ -231,7 +231,7 @@ if(!empty($msg_error)) {
 	    </table>
 	    
 	    <p style="text-align: right;">
-	        <a class="btn btn-green" href="/user/profile/sn">add account</a>
+	        <a class="btn btn-green" href="/user/profile/web">add address</a>
 	    </p>
 	</div>
     

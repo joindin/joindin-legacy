@@ -48,8 +48,8 @@ if(!empty($msg_error)) {
 	<?= form_open('/user/profile/im') ?>
 	
 	<div class="row">
-        <label for="network_name">Network Name</label>
-        <?php echo form_input(array('name' => 'network_name', 'id' => 'network_name', 'value' => $account['network_name'])); ?>
+        <label for="im_network_id">Network Name</label>
+        <?php echo form_dropdown('im_network_id', $networks, $account['im_network_id']) ?>
 
         <div class="clear"></div>
     </div>

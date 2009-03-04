@@ -98,6 +98,9 @@ class DomainModel extends Model
         // Set the data
         if(!is_null($data) && !is_array($data)) {
             $data = $this->_findBy($this->_primaryKey, $data);
+            if(is_null($data)) {
+                throw new Exception('Model primary key could not be found.');
+            }
             $this->setData($data);
         }
         else if(!is_null($data) && is_array($data)) {
@@ -118,6 +121,27 @@ class DomainModel extends Model
     }
     
     /**
+     * Finds all records for this model and returns them as an array of model instances.
+     * @param string|array $where
+     * @param string $order
+     * @param int $limit
+     * @param int $offset
+     * @return mixed
+     */
+    public function findAll($where = null, $order = null, $limit = null, $offset = null)
+    {
+        $result = $this->_findAll($where, $order, $limit, $offset);
+        $className = get_class($this);
+    	
+    	$data = array();
+    	foreach($result as $rowData) {
+    		$data[] = new $className((array) $rowData);
+    	}
+    	
+        return $data;
+    }
+    
+    /**
      * Find all records for this model. The result can be limited by providing 
      * a where and limit clause and the result can be sorted with the order clause.
      * @param string|array $where
@@ -126,7 +150,7 @@ class DomainModel extends Model
      * @param int $offset
      * @return mixed
      */
-    public function findAll($where = null, $order = null, $limit = null, $offset = null)
+    protected function _findAll($where = null, $order = null, $limit = null, $offset = null) 
     {
     	$query = 'SELECT ' . implode(', ', $this->_columns) . ' FROM ' . $this->_table;
     	
@@ -172,14 +196,7 @@ class DomainModel extends Model
     	// Execute te query
     	$result = $this->_database->query($query);
     	
-    	$className = get_class($this);
-    	
-    	$data = array();
-    	foreach($result->result_array() as $rowData) {
-    		$data[] = new $className((array) $rowData);
-    	}
-    	
-        return $data;
+        return $result->result_array();
     }
     
     /**

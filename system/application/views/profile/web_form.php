@@ -45,18 +45,18 @@ if(!empty($msg_error)) {
 
 <div class="box">
 
-	<?= form_open('/user/profile/sn') ?>
+	<?= form_open('/user/profile/web') ?>
 	
 	<div class="row">
-        <label for="service_name">Service Name</label>
-        <?php echo form_input(array('name' => 'service_name', 'id' => 'service_name', 'value' => $account['service_name'])); ?>
+        <label for="web_type_id">Type</label>
+        <?php echo form_dropdown('web_type_id', $types, $account['web_type_id']) ?>
 
         <div class="clear"></div>
     </div>
     
     <div class="row">
         <label for="account_url">Account URL</label>
-        <?php echo form_input(array('name' => 'account_url', 'id' => 'account_url', 'value' => $account['account_url'])); ?>
+        <?php echo form_input(array('name' => 'url', 'id' => 'url', 'value' => $account['url'])); ?>
 
         <div class="clear"></div>
     </div>

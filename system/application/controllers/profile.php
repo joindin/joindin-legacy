@@ -18,27 +18,17 @@ class Profile extends Controller
 	{
 		$this->load->model('profile_model');
 		$this->load->model('profile_im_account_model');
-	    $this->load->model('profile_sn_account_model');
+	    $this->load->model('profile_web_address_model');
 	    $profile = $this->profile_model->findByUserId($this->session->userdata('ID'));
 	    
 	    if($profile !== null) {
 	    	// Get instant messaging accounts
 	    	$imModels = $this->profile_im_account_model->findAll(array('profile_id' => $profile->getId()), 'id ASC');
-	    	
-	    	$imData = array();
-	    	foreach($imModels as $model) {
-	    		$imData[] = $model->getData();
-	    	}
-	    	$viewVars['im_accounts'] = $imData;
+	    	$viewVars['im_accounts'] = $imModels;
 	    	
 		    // Get social network accounts
-		    $snModels = $this->profile_sn_account_model->findAll(array('profile_id' => $profile->getId()), 'id ASC');
-		    
-		    $snData = array();
-		    foreach($snModels as $model) {
-		    	$snData[] = $model->getData();
-		    }
-		    $viewVars['sn_accounts'] = $snData;
+		    $waModels = $this->profile_web_address_model->findAll(array('profile_id' => $profile->getId()), 'id ASC');
+		    $viewVars['web_addresses'] = $waModels;
 	    }
 	    
 	    $viewVars['profile'] = (null == $profile) ? null : $profile->getData();
@@ -273,13 +263,14 @@ class Profile extends Controller
 	
 	
 	/**
-	 * Shows the social networking add/edit form
+	 * Shows the web address add/edit form
 	 * @param $id
 	 */
-	function sn($id = null)
+	function web($id = null)
 	{
 		$this->load->model('profile_model');
-		$this->load->model('profile_sn_account_model');
+		$this->load->model('profile_web_address_model');
+		$this->load->model('profile_web_address_type_model');
 		
 		$profile = $this->profile_model->findByUserId($this->session->userdata('ID'));
 		
@@ -290,7 +281,7 @@ class Profile extends Controller
 		$viewVars = array();
 		
 		if(!empty($_POST)) {
-			$account = new Profile_sn_account_model($_POST);
+			$account = new Profile_web_address_model($_POST);
 			
 			// Try to save the model
 			if($account->save()) {
@@ -302,10 +293,10 @@ class Profile extends Controller
 				$viewVars['msg_error'] = $account->getErrors();
 			}
 		} else if(null === $id) {
-			$account = new Profile_sn_account_model(array('profile_id' => $profile->getId()));
+			$account = new Profile_web_address_model(array('profile_id' => $profile->getId()));
 			$viewVars['account'] = $account->getData();
 		} else {
-			$account = $this->profile_sn_account_model->find($id);
+			$account = $this->profile_web_address_model->find($id);
 			if(!is_null($account) && $profile->getId() == $account->getProfileId()) {
 				$viewVars['account'] = $account->getData();
 			} else {
@@ -313,7 +304,10 @@ class Profile extends Controller
 			}
 		}
 		
-		$this->template->write_view('content','profile/sn_form', $viewVars);
+		$types = $this->profile_web_address_type_model->getDropdownData();
+		$viewVars['types'] = $types;
+		
+		$this->template->write_view('content','profile/web_form', $viewVars);
 	    $this->template->render();
 	}
 	
@@ -328,7 +322,7 @@ class Profile extends Controller
 			redirect('user/profile/display', 'location', 400);
 		}
 		$this->load->model('profile_model');
-		$this->load->model('profile_sn_account_model');
+		$this->load->model('profile_web_address_model');
 
 		// Check if the user has a profile 
 		$profile = $this->profile_model->findByUserId($this->session->userdata('ID'));
@@ -338,12 +332,12 @@ class Profile extends Controller
 		}
 		
 		// Try to delete the account
-		$account = $this->profile_sn_account_model->find($id);
+		$account = $this->profile_web_address_model->find($id);
 		if(null !== $account && $profile->getId() == $account->getProfileId()) {
 			$account->delete();
-			$this->session->set_flashdata('msg', 'Social network account deleted successfully!');
+			$this->session->set_flashdata('msg', 'Web address deleted successfully!');
 		} else {
-			$this->session->set_flashdata('msg_error', 'An error occurred while deleting the account, try again.');
+			$this->session->set_flashdata('msg_error', 'An error occurred while deleting the web address, please try again.');
 		}
 		
 		redirect('user/profile/display', 'location', 302);
@@ -358,6 +352,7 @@ class Profile extends Controller
 	{
 		$this->load->model('profile_model');
 		$this->load->model('profile_im_account_model');
+		$this->load->model('profile_im_account_network_model');
 		
 		$profile = $this->profile_model->findByUserId($this->session->userdata('ID'));
 		
@@ -392,6 +387,9 @@ class Profile extends Controller
 				$viewVars['account'] = null;
 			}
 		}
+		
+		$networks = $this->profile_im_account_network_model->getDropdownData();
+		$viewVars['networks'] = $networks;
 		
 		$this->template->write_view('content','profile/im_form', $viewVars);
 	    $this->template->render();
