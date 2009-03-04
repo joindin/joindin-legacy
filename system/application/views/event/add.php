@@ -37,7 +37,7 @@ if(isset($msg)){ echo '<div class="notice">'.$msg.'</div>'; }
 		<?php
 		foreach(range(1,12) as $v){ $start_mo[$v]=$v; }
 		foreach(range(1,32) as $v){ $start_day[$v]=$v; }
-		foreach(range(date('Y'),date('Y')+5) as $v){ $start_yr[$v]=$v; }
+		foreach(range(2008,date('Y')+5) as $v){ $start_yr[$v]=$v; }
 		echo form_dropdown('start_mo',$start_mo,$this->validation->start_mo);
 		echo form_dropdown('start_day',$start_day,$this->validation->start_day);
 		echo form_dropdown('start_yr',$start_yr,$this->validation->start_yr);
