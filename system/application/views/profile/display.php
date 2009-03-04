@@ -100,7 +100,17 @@ if(!empty($msg_error)) {
     	<p>
         	<?= $profile['contact_email'] ?>
     	</p>
-    
+    	
+    	<h2>Website</h2>
+    	<p>
+        	<?= auto_link($profile['website']) ?>
+    	</p>
+    	
+    	<h2>Blog</h2>
+    	<p>
+        	<?= auto_link($profile['blog']) ?>
+    	</p>
+    	    
 	    <h2>Phone</h2>
 	    <p>
 	        <?= $profile['phone'] ?>

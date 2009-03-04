@@ -73,6 +73,20 @@ if(!empty($msg_error)) {
     </div>
     
     <div class="row">
+        <label for="website">Website</label>
+        <?php echo form_input(array('name' => 'website', 'id' => 'website', 'value' => $profile['website'])); ?>
+
+        <div class="clear"></div>
+    </div>
+    
+    <div class="row">
+        <label for="blog">Blog</label>
+        <?php echo form_input(array('name' => 'blog', 'id' => 'blog', 'value' => $profile['blog'])); ?>
+
+        <div class="clear"></div>
+    </div>
+    
+    <div class="row">
         <label for="phone">Phone number</label>
         <?php echo form_input(array('name' => 'phone', 'id' => 'phone', 'value' => $profile['phone'])); ?>
 
