@@ -88,7 +88,17 @@ class Profile extends Controller
 		$viewVars = array();
 		
 		if(!empty($_POST)) {
+		    // Get the fields from the $_POST array
+		    if(array_key_exists('fields', $_POST)) {
+		        $fields = $_POST['fields'];
+		        unset($_POST['fields']);
+		    } else {
+		        $fields = array();
+		    }
+		    
 			$token = new Profile_token_model($_POST);
+			$token->setFields($fields);
+
 			if($token->save()) {
 				$this->session->set_flashdata('msg', 'Token saved successfully!');
 			    redirect('user/profile/access', 'location', 302);
@@ -109,6 +119,7 @@ class Profile extends Controller
 		}
 
 		$viewVars['token'] = (null !== $token) ? $token->getData() : null;
+		$viewVars['fields'] = $token->getFields();
 		
 		$this->template->write_view('content','profile/token_form', $viewVars);
 	    $this->template->render();

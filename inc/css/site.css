@@ -838,6 +838,11 @@ table.data-table .alt-row {
 	margin-bottom: 0;
 }
 
+.inline-labels label {
+	display: inline;
+}
+
+
 /***/
 
 #ftr {

@@ -17,9 +17,17 @@ class Profile_token_model extends DomainModel
 {
     protected $_table = 'profile_tokens';
     
-    protected $_rules = array();
-    
+    /**
+     * Profile for this token
+     * @var Profile_model
+     */
     protected $_profile = null;
+    
+    /**
+     * Exposed fields for this token
+     * @var array
+     */
+    protected $_fields = array();
     
     /**
      * Length of the tokens that are generated
@@ -62,10 +70,14 @@ class Profile_token_model extends DomainModel
         $profileData = $profile->getData();
         
         $data = array();
-        foreach($this->_getExposedData() as $column) {
+        foreach($this->getFields() as $column) {
             
             if(array_key_exists($column, $profileData)) {
                 $data[$column] = $profileData[$column];
+            } else if($column == 'address') {
+                $data['street'] = $profileData['street'];
+                $data['zip'] = $profileData['zip'];
+                $data['city'] = $profileData['city'];
             }
             
         }
@@ -74,12 +86,65 @@ class Profile_token_model extends DomainModel
     }
     
     /**
-     * Returns the column names exposed by this token.
+     * Returns the profile fields exposed by this token
      * @return array
      */
-    protected function _getExposedData()
+    public function getFields()
     {
-        return array_keys($this->getProfile()->getData());
+        return $this->_fields;
+    }
+    
+    /**
+     * Sets the profile fields exposed by this token
+     * @param array $fields
+     */
+    public function setFields(array $fields)
+    {
+        $this->_fields = $fields;
+    }
+
+    /**
+     * Saves the fields exposed by this token.
+     * This function is a bypass: instead of creating a model we update 
+     * database manually.
+     */
+    protected function _saveFields()
+    {
+        $tokenId = $this->getId();
+        if(empty($tokenId) || !is_numeric($tokenId)) {
+            return;
+        }
+        
+        // Start a database transaction
+        $this->_database->trans_start();
+        // Delete all old fields for this token
+        $this->_database->query("DELETE FROM `profile_token_fields` WHERE `profile_token_id` = '{$this->getId()}';");
+        foreach($this->_fields as $field) {
+            $this->_database->query("INSERT INTO `profile_token_fields` (`profile_token_id`, `field_name`) VALUES ('{$this->getId()}', '{$field}');");
+        }
+        $this->db->trans_complete(); 
+        
+    }
+    
+    protected function postSave($success)
+    {
+        if($success) {
+            $this->_saveFields();
+        }
+    }
+    
+    /**
+     * Collect token fields after construction
+     * @see system/application/libraries/DomainModel#postConstruct()
+     */
+    protected function postConstruct()
+    {
+        if(!empty($this->_data['id'])) {
+            $query = $this->_database->query("SELECT `field_name` FROM `profile_token_fields` WHERE `profile_token_id` = '{$this->_data['id']}'");
+            foreach($query->result_array() as $field) {
+                $this->_fields[] = $field['field_name'];
+            }
+        }
     }
     
     /**

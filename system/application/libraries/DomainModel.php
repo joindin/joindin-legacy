@@ -106,6 +106,9 @@ class DomainModel extends Model
         else if(!is_null($data) && is_array($data)) {
             $this->setData($data);
         }
+        
+        // Fire post construct hook
+        $this->postConstruct();
     }
     
     /**
@@ -206,10 +209,12 @@ class DomainModel extends Model
     public function create($data = null)
     {
         $className = get_class($this);
-        $newInstance = new $className;
-        if(!is_null($data)) {
-            $newInstance->setData($data);
+        if(null !== $data) {
+            $newInstance = new $className($data);
+        } else {
+            $newInstance = new $className;
         }
+        
         return $newInstance;
     }
 
@@ -233,33 +238,38 @@ class DomainModel extends Model
      */
     public function save($data = null) 
     {
-        if(!is_null($data)) {
-            $this->setData($data);
-        }
-        
         // Validate
-        if(!$this->validate()) {
+        if(!$this->validate($data)) {
             return false;
         }
         
+        $success = false;
+        
+        // Fire pre-save hook
+        $this->preSave();
+        
         if(empty($this->_data[$this->_primaryKey])) {
+            $data = $this->_data;
             // unset the primary key
-            unset($this->_data[$this->_primaryKey]);
+            unset($data[$this->_primaryKey]);
             // insert the new data into the database
-            $success = $this->_database->insert($this->_table, $this->_data);
+            $success = $this->_database->insert($this->_table, $data);
             if($success) {
                 $this->_data[$this->_primaryKey] = $this->_database->insert_id();
             }
-            return $success;
         }
         else {
+            $data = $this->_data;
             // Update the new data to the table
-            $primaryValue = $this->_data[$this->_primaryKey];
-            unset($this->_data[$this->_primaryKey]);
-            return $this->_database->update($this->_table, $this->_data, array($this->_primaryKey => $primaryValue));
+            $primaryValue = $data[$this->_primaryKey];
+            unset($data[$this->_primaryKey]);
+            $success = $this->_database->update($this->_table, $data, array($this->_primaryKey => $primaryValue));
         }
         
-        return false;
+        // Fire the post-save hook
+        $this->postSave($success);
+        
+        return $success;
     }
     
     /**
@@ -269,6 +279,9 @@ class DomainModel extends Model
      */
     public function validate($data = null)
     {
+        // Fire pre-validate hook
+        $this->preValidate();
+        
     	if(!is_null($data)) {
     		$this->setData($data);
     	}
@@ -345,7 +358,12 @@ class DomainModel extends Model
     		
     	}
     	
-        return (count($this->_errors) === 0);
+    	$success = (count($this->_errors) === 0);
+    	
+    	// Fire post-validate hook
+    	$this->postValidate($success);
+    	
+        return $success;
     }
     
     /**
@@ -612,4 +630,37 @@ class DomainModel extends Model
     }
     
     
+    /**
+     * Called after model construction
+     */
+    protected function postConstruct()
+    {}
+    
+    /**
+     * Called before saving the model to the database.
+     */
+    protected function preSave()
+    {}
+
+    /**
+     * Called after the attempt is made to save the model to the database. 
+     * The outcome of the save attempt is passed to this function.
+     * @param boolean $success
+     */
+    protected function postSave($success)
+    {}
+    
+    /**
+     * Called before validating the model.
+     */
+    protected function preValidate()
+    {}
+
+    /**
+     * Called after validation of the model is complete. The outcome 
+     * of the validation is passed to this function.
+     * @param boolean $success
+     */
+    protected function postValidate($success)
+    {}
 }
