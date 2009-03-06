@@ -1,5 +1,9 @@
 <?php
 
+if (!isset($type)) {
+	$type = 'all';
+}
+
 switch ($type) {
     case 'hot':
         $title = 'Hot Events';
