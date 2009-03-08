@@ -278,7 +278,7 @@ class Talk extends Controller {
 			$def_ret=$this->defensio->check($ec['cname'],$ec['comment'],$is_auth,'/talk/view/'.$id);
 			
 			$is_spam=(string)$def_ret->spam;
-			if($is_spam=='false' && $sp_ret==true){
+			if($is_spam!='true' && $sp_ret==true){
 				$arr=array(
 					'talk_id'	=> $id,
 					'rating'	=> $this->input->post('rating'),
