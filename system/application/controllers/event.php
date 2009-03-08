@@ -259,6 +259,7 @@ class Event extends Controller {
 		$this->load->helper('events');
 		$this->load->library('validation');
 		$this->load->library('defensio');
+		$this->load->library('spam');
 		$this->load->model('event_model');
 		$this->load->model('event_comments_model');
 		$this->load->model('user_attend_model','uam');
@@ -329,6 +330,8 @@ class Event extends Controller {
 				$ec['cname']	= $this->input->post('cname');
 			}
 			$def_ret=$this->defensio->check($ec['cname'],$ec['comment'],$is_auth,'/event/view/'.$id);
+			
+			//$this->spam->check('regex',$ec['comment']);
 			
 			$is_spam=(string)$def_ret->spam;
 			if($is_spam=='false'){
@@ -625,14 +628,15 @@ class Event extends Controller {
 	}
 	//----------------------
 	function start_mo_check($str){
+		//be sure it's before the end date
 		$t=mktime(
-			0,0,0,
-			$this->validation->start_mo,
-			$this->validation->start_day,
-			$this->validation->start_yr
+			0,0,0,$this->validation->start_mo,$this->validation->start_day,$this->validation->start_yr
 		);
-		if($t<=time()){
-			$this->validation->set_message('start_mo_check','Start date must be in the future!');
+		$e=mktime(
+			0,0,0,$this->validation->end_mo,$this->validation->end_day,$this->validation->end_yr
+		);
+		if($t>$e){
+			$this->validation->set_message('start_mo_check','Start date must be prior to the end date!');
 			return false;
 		}else{ return true; }
 	}

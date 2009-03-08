@@ -1,7 +1,14 @@
 <?php
 error_reporting(E_ALL);
 //echo '<pre>'; print_r($detail); print_r($comments); echo '</pre>';
-//print_r($claimed);
+//echo '<pre>'; print_r($claimed); echo '</pre>';
+//echo '<pre>'; print_r($claims); echo '</pre>';
+
+$cl=array();
+/*foreach($claims as $k=>$v){ 
+	//echo '<pre>'; print_r($v); echo '</pre>';
+	$cl[$v->rcode]=array('rid'=>$v->rid,'uid'=>$v->uid); 
+}*/
 
 $det=$detail[0];
 
@@ -51,8 +58,26 @@ $rstr = rating_image($detail[0]->tavg);
 
 //change up our string if this is a confirmed, clamed talk
 if(!empty($claimed)){
-	$speaker='<a href="/user/view/'.$claimed[0]->userid.'">'.escape($det->speaker).'</a>';
-}else{ $speaker=escape($det->speaker); }
+	$speaker='';
+	foreach($claimed as $k=>$v){
+		$ccode=$v->rcode;
+		$cl=array();
+		foreach($claimed[0]->speakers as $k=>$v){
+			$cl[$claimed[0]->codes[$k]]=trim($v);
+		}
+		//print_r($cl);
+		//echo 'sp:'.$cl[$claimed[0]->rcode];
+		$speaker[]='<a href="/user/view/'.$claimed[0]->userid.'">'.escape($cl[$claimed[0]->rcode]).'</a>';
+		unset($cl[$claimed[0]->rcode]);
+		foreach($cl as $ik=>$iv){ $speaker[]=escape($iv); }
+		
+		//TODO: show the other, non-claimed user
+	}
+}else{ $speaker[]=escape($det->speaker); }
+
+$speaker=implode(', ',$speaker);
+
+//echo '<pre>CL:'; print_r($claimed); echo '</pre>';
 
 ?>
 <div class="detail">

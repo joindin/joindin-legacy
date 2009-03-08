@@ -169,11 +169,14 @@ class Talk extends Controller {
 	}
 	function view($id,$add_act=null,$code=null){
 		$this->load->model('talks_model');
+		$this->load->model('event_model');
 		$this->load->helper('form');
 		$this->load->helper('events');
 		$this->load->helper('reqkey');
 		$this->load->plugin('captcha');
 		$this->load->library('akismet');
+		$this->load->library('defensio');
+		$this->load->library('spam');		
 		$this->load->library('validation');
 		
 		$currentUserId = $this->session->userdata('ID');
@@ -252,6 +255,7 @@ class Talk extends Controller {
 		if($this->validation->run()==FALSE){
 			//echo 'error!';
 		}else{ 
+			$is_auth	= $this->user_model->isAuth();
 			$arr=array(
 				'comment_type'			=>'comment',
 				'comment_content'		=>$this->input->post('your_com')
@@ -261,36 +265,50 @@ class Talk extends Controller {
 			$priv=$this->input->post('private');
 			$priv=(empty($priv)) ? 0 : 1;
 			
-			$arr=array(
-				'talk_id'	=> $id,
-				'rating'	=> $this->input->post('rating'),
-				'comment'	=> $this->input->post('comment'),
-				'date_made'	=> time(),
-				'private'	=> $priv,
-				'active'	=> 1,
-				'user_id'	=> ($this->user_model->isAuth()) ? $this->session->userdata('ID') : '0'
-			);
-			$this->db->insert('talk_comments',$arr);
+			$sp_ret=$this->spam->check('regex',$this->input->post('comment'));
 			
-			//send an email when a comment's made
-			$msg='';
-			$arr['spam']=($ret=='false') ? 'spam' : 'not spam';
-			foreach($arr as $ak=>$av){ $msg.='['.$ak.'] => '.$av."\n"; }
-			@mail('enygma@phpdeveloper.org','Comment on talk '.$id,$msg,'From: comments@joind.in');
-			
-			//if its claimed, be sure to send an email to the person to tell them
-			if($cl){
-				$to=$cl[0]->email;
-				$subj	= 'A new comment has been posted on your talk!';
-				$msg	= sprintf("
-A comment has been posted to your talk on joind.in: \n%s\n
-Click here to view it: http://joind.in/talk/view/%s
-				",$talk_detail[0]->talk_title,$id);
-				mail($to,$subj,$msg,'From: comments@joind.in');
+			if($is_auth){
+				$ec['user_id']	= $this->session->userdata('ID');
+				$ec['cname']	= $this->session->userdata('username');
+			}else{
+				$ec['user_id']	= 0;
+				$ec['cname']	= $this->input->post('cname');
 			}
+			$ec['comment']=$this->input->post('comment');
+			$def_ret=$this->defensio->check($ec['cname'],$ec['comment'],$is_auth,'/talk/view/'.$id);
 			
-			$this->session->set_flashdata('msg', 'Comment added!');
-
+			$is_spam=(string)$def_ret->spam;
+			if($is_spam=='false' && $sp_ret==true){
+				$arr=array(
+					'talk_id'	=> $id,
+					'rating'	=> $this->input->post('rating'),
+					'comment'	=> $this->input->post('comment'),
+					'date_made'	=> time(),
+					'private'	=> $priv,
+					'active'	=> 1,
+					'user_id'	=> ($this->user_model->isAuth()) ? $this->session->userdata('ID') : '0'
+				);
+				$this->db->insert('talk_comments',$arr);
+			
+				//send an email when a comment's made
+				$msg='';
+				$arr['spam']=($ret=='false') ? 'spam' : 'not spam';
+				foreach($arr as $ak=>$av){ $msg.='['.$ak.'] => '.$av."\n"; }
+				@mail('enygma@phpdeveloper.org','Comment on talk '.$id,$msg,'From: comments@joind.in');
+			
+				//if its claimed, be sure to send an email to the person to tell them
+				if($cl){
+					$to=$cl[0]->email;
+					$subj	= 'A new comment has been posted on your talk!';
+					$msg	= sprintf("
+	A comment has been posted to your talk on joind.in: \n%s\n
+	Click here to view it: http://joind.in/talk/view/%s
+					",$talk_detail[0]->talk_title,$id);
+					mail($to,$subj,$msg,'From: comments@joind.in');
+				}
+			
+				$this->session->set_flashdata('msg', 'Comment added!');
+			}
 			redirect('talk/view/'.$talk_detail[0]->tid . '#comments', 'location', 302);
 		}
 		//$cap = create_captcha($cap_arr);
@@ -306,6 +324,7 @@ Click here to view it: http://joind.in/talk/view/%s
 			'auth'			=> $this->auth,
 		//	'captcha'		=> $cap,
 			'claimed'		=> $this->talks_model->isTalkClaimed($id),
+			//'claims'		=> $this->event_model->getClaimedTalks($talk_detail[0]->eid),
 			'claim_status'	=> $claim_status,
 			'claim_msg'		=> $claim_msg,
 			'reqkey' 		=> $reqkey,
