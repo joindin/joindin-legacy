@@ -105,5 +105,23 @@ class User_model extends Model {
 		foreach($ret as $k=>$v){ $other_speakers[$v->user_id]=$v; }
 		return $other_speakers;
 	}
+	//-------------------
+	function search($term,$start=null,$end=null){
+		$sql=sprintf("
+			select
+				u.username,
+				u.full_name,
+				u.ID,
+				(select count(ID) from user_admin where rtype='talk' and uid=u.ID) talk_count,
+				(select count(ID) from user_attend where uid=u.ID) event_count
+			from
+				user u
+			where
+				username like '%%%s%%' or
+				full_name like '%%%s%%'
+		",$term,$term);
+		$q=$this->db->query($sql);
+		return $q->result();
+	}
 }
 ?>
