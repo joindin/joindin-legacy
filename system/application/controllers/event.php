@@ -623,6 +623,8 @@ class Event extends Controller {
 		if(!$this->user_model->isSiteAdmin()){ redirect(); }
 		
 		$this->load->model('event_model');
+		//$det=$this->event_model->getEventDetail($id); print_r($det);
+		
 		$this->event_model->approvePendingEvent($id);
 		redirect('event/view/'.$id); 
 	}

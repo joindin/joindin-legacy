@@ -121,13 +121,12 @@ foreach($claimed as $k=>$v){
 <p class="admin">
 	<a class="btn-small" href="/event/delete/<?=$det->ID?>">Delete event</a>
 	<a class="btn-small" href="/event/edit/<?=$det->ID?>">Edit event</a>
-	<a class="btn-small" href="/event/approve/<?=$det->ID?>">Approve event</a>
 	&nbsp;
 	<a class="btn-small" href="/talk/add/event/<?=$det->ID?>">Add new talk</a>
 	&nbsp;
 	<a class="btn-small" href="/event/codes/<?=$det->ID?>">Get talk codes</a>
 	<?php if(isset($det->pending) && $det->pending==1){
-		echo '<a class="btn-small" href="/approve">Approve Event</a>';
+		echo '<a class="btn-small" href="/event/approve/'.$det->ID.'">Approve Event</a>';
 	} ?>
 </p>
 <?php endif; ?>
