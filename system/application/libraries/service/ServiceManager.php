@@ -126,11 +126,11 @@ class ServiceManager
             $xml = @simplexml_load_string($rawData['xml']);
         } catch(Exception $e) {
             // Parsing failed, output error
-            $this->_sendResponse('Malformed Request', 400);
+            $this->sendError('Malformed Request', 400);
         }
         
         if(!$xml) {
-            return $this->_sendResponse('Malformed Request', 400);
+            return $this->sendError('Malformed Request', 400);
         }
         
         // Find the requested output type
@@ -151,13 +151,13 @@ class ServiceManager
      * @param int $statuscode
      * @param string $outputType
      */ 
-    public function sendError($reason, $statusCode = 400, $outpyType = '')
+    public function sendError($reason, $statusCode = 400, $outputType = '')
     {
-        if(empty($outpyType)) {
-            $outpyType = $this->_requestedOutputType;
+        if(empty($outputType)) {
+            $outputType = $this->_requestedOutputType;
         }
         
-        $responseClass = 'ServiceResponse' . ucfirst(strtolower($outpyType));
+        $responseClass = 'ServiceResponse' . ucfirst(strtolower($outputType));
         
         $reponse = new $responseClass();
         $reponse->addString($reason, 'error');
@@ -173,10 +173,10 @@ class ServiceManager
     public function sendRedirect($url, $outputType = '', $statusCode = 302)
     {
         if(empty($outpyType)) {
-            $outpyType = $this->_requestedOutputType;
+            $outputType = $this->_requestedOutputType;
         }
         
-        $responseClass = 'ServiceResponse' . ucfirst(strtolower($outpyType));
+        $responseClass = 'ServiceResponse' . ucfirst(strtolower($outputType));
         
         $reponse = new $responseClass();
         $reponse->addString($url, 'redirect');
