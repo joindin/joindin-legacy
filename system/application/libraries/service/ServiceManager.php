@@ -5,6 +5,8 @@
 
 /** ServiceResponseXml */
 require_once BASEPATH . 'application/libraries/service/ServiceResponseXml.php';
+/** ServiceResponseJson */
+require_once BASEPATH . 'application/libraries/service/ServiceResponseJson.php';
 
 /**
  * Dispatches a service request to the correct 
@@ -67,9 +69,10 @@ class ServiceManager
         
 	    // Find the handler for the request
 	    $handlerFile = dirname(__FILE__) . '/handlers/' . $service . '/' . $action . '.php';
+	    
 	    if(!is_file($handlerFile)) {
 	        // return invalid request
-	        $this->_sendError('Bad Request', 400);
+	        $this->_sendError('Action not found', 400);
 	    }
 	    require_once($handlerFile);
 	    
@@ -111,11 +114,11 @@ class ServiceManager
             $xml = @simplexml_load_string($rawData['xml']);
         } catch(Exception $e) {
             // Parsing failed, output error
-            $this->_sendResponse('Bad Request', 400);
+            $this->_sendResponse('Malformed XML', 400);
         }
         
         if(!$xml) {
-            return $this->_sendResponse('Bad Request', 400);
+            return $this->_sendResponse('Malformed XML', 400);
         }
         
         return array('xml' => $xml, 'query_string' => $_SERVER['QUERY_STRING']);

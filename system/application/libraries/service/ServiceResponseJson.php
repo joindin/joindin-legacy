@@ -34,6 +34,16 @@ class ServiceResponseJson
             $this->_data[] = $value;
         }
     }
+    
+    public function addArray($array, $key = '')
+    {
+        $this->addData($array, $key);
+    }
+    
+    public function addString($string, $key = '') 
+    {
+        $this->addData($string, $key);
+    }
 
     /**
      * Returns a response in JSON format

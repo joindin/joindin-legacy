@@ -9,6 +9,8 @@ require_once BASEPATH . 'application/libraries/service/ServiceHandler.php';
 require_once BASEPATH . 'application/models/profile_token_model.php';
 /** ServiceReponseXml */
 require_once BASEPATH . 'application/libraries/service/ServiceResponseXml.php';
+/** ServiceReponseJson */
+require_once BASEPATH . 'application/libraries/service/ServiceResponseJson.php';
 
 /**
  * Returns the speaker details for a token.
@@ -29,19 +31,24 @@ class Getdetail extends ServiceHandler
         $dao = new Profile_token_model();
         $tokenModel = $dao->findByAccessToken($token);
         
-        $xmlResponse = new ServiceResponseXml();
+        
+        if($this->_outputType == 'xml') {
+            $response = new ServiceResponseXml();
+        } else {
+            $response = new ServiceResponseJson();
+        }
         
         if(!is_null($tokenModel)) {
             // Add the data to the response
-            $xmlResponse->addArray($tokenModel->getProfileData(), 'speaker');
+            $response->addArray($tokenModel->getProfileData(), 'speaker');
         } else {
             // Return an error
             $this->_statusCode = 400;
-            $xmlResponse->addString('No data found for token', 'error');
+            $response->addString('No data found for token', 'error');
         }
         
         // Return the response
-        return $xmlResponse->getResponse();
+        return $response->getResponse();
     }
     
 }

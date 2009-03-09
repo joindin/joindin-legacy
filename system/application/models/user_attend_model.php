@@ -47,7 +47,7 @@ class User_attend_model extends Model {
 		return $q->result();
 	}
 	function getUserAttending($uid){
-		$this->db->select('events.event_name,events.ID,events.event_start,events.event_end');
+		$this->db->select('events.event_name,events.ID,events.event_start,events.event_end,events.event_icon');
 		$this->db->from('events');
 		$this->db->join('user_attend','user_attend.eid=events.ID');
 		$this->db->where('user_attend.uid='.(int)$uid);

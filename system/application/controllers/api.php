@@ -29,11 +29,6 @@ class Api extends Controller {
 		$ret=array('out'=>$this->service->handle('event',$data));
 		$this->output($ret);
 	}
-	function talk($act=null){
-		$manager = new ServiceManager();
-	    $data = $this->_processRequest();
-	    $manager->dispatch('talk', $data);
-	}
 	function comment($act=null){
 		$this->load->library('service');
 		$data=file_get_contents('php://input');
@@ -47,17 +42,39 @@ class Api extends Controller {
 		$this->output($ret);
 	}
 	
+	/**
+	 * Processes talk API calls
+	 */
+	function talk($act=null)
+	{
+		$manager = new ServiceManager();
+	    $data = $this->_processRequest();
+	    $manager->dispatch('talk', $data);
+	}
+	
+	/**
+	 * Processes speaker API calls
+	 */
 	function speaker()
 	{
 	    $manager = new ServiceManager();
 	    $data = $this->_processRequest();
 	    $manager->dispatch('speaker', $data);
 	}
+
+	/**
+	 * Processes Wordpress API calls
+	 */
+	function wp()
+	{
+	    $manager = new ServiceManager();
+	    $data = $this->_processRequest();
+	    $manager->dispatch('wp', $data);
+	}
 	
 	private function _processRequest() 
 	{
 	    $xml = file_get_contents('php://input');
-	    
 	    $data['xml'] = $xml;
 	    $data['query_string'] = $_SERVER['QUERY_STRING'];
     
