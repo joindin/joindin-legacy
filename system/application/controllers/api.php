@@ -47,10 +47,18 @@ class Api extends Controller {
 	 */
 	function talk($act=null)
 	{
+	    $this->load->library('service');
+		$data=file_get_contents('php://input');
+		$ret=array('out'=>$this->service->handle('talk',$data));
+		$this->output($ret);
+	}
+	
+	/*function talk2() 
+	{
 		$manager = new ServiceManager();
 	    $data = $this->_processRequest();
 	    $manager->dispatch('talk', $data);
-	}
+	}*/
 	
 	/**
 	 * Processes speaker API calls
@@ -65,12 +73,12 @@ class Api extends Controller {
 	/**
 	 * Processes Wordpress API calls
 	 */
-	function wp()
+	/*function wp()
 	{
 	    $manager = new ServiceManager();
 	    $data = $this->_processRequest();
 	    $manager->dispatch('wp', $data);
-	}
+	}*/
 	
 	private function _processRequest() 
 	{

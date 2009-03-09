@@ -38,6 +38,7 @@ class ServiceManager
      */
     protected $_statusCodes = array(
         200 => 'OK',
+        300 => '',
         400 => 'Bad Request',
         401 => 'Unauthorized',
         403 => 'Forbidden',
@@ -46,6 +47,15 @@ class ServiceManager
         501 => 'Not Implemented',
         503 => 'Service Unavailable',
     );
+    
+    /**
+     * Registers the requested output type. Defaults to xml. 
+     * This value is just kept for reference when the request is aborted 
+     * before the handler output type could be fetched.
+     * @var string
+     */
+    protected $_requestedOutputType = 'xml';
+    
     
     public function __construct()
     {
@@ -72,28 +82,30 @@ class ServiceManager
 	    
 	    if(!is_file($handlerFile)) {
 	        // return invalid request
-	        $this->_sendError('Action not found', 400);
+	        $this->sendError('Action not found', 400);
 	    }
 	    require_once($handlerFile);
 	    
 	    if(!class_exists($action)) {
 	        // return invalid request
-	        $this->_sendResponse('Not Found', 404);
+	        $this->sendError('Not Found', 404);
 	    }
 	    
 	    // Create a new instance of the handler
 	    $handler = new $action($xml, $data['query_string']);
+	    $handler->setOutputType($this->_requestedOutputType);
+	    $handler->setManager($this);
 	    
         // Check authorization
         if(!$handler->isAuthorizedRequest()) {
-            $this->_sendError('Unauthorized', 401);
+            $this->sendError('Unauthorized', 401);
         }
 
 	    // Handle the request
 	    try {
     	    $handlerResponse = $handler->handle();
     	} catch(Exception $e) {
-	        $this->_sendError('Internal Server Error', 500);
+	        $this->sendError('Internal Server Error', 500);
     	}
 	    
 	    // Send the response
@@ -114,36 +126,76 @@ class ServiceManager
             $xml = @simplexml_load_string($rawData['xml']);
         } catch(Exception $e) {
             // Parsing failed, output error
-            $this->_sendResponse('Malformed XML', 400);
+            $this->_sendResponse('Malformed Request', 400);
         }
         
         if(!$xml) {
-            return $this->_sendResponse('Malformed XML', 400);
+            return $this->_sendResponse('Malformed Request', 400);
+        }
+        
+        // Find the requested output type
+        if(isset($xml->action['output']) && !empty($xml->action['type'])) {
+            if(in_array(strtolower((string) $xml->action['output']), array_keys($this->_contentTypes))) {
+                $this->_requestedOutputType = (string) $xml->action['output'];
+            }
         }
         
         return array('xml' => $xml, 'query_string' => $_SERVER['QUERY_STRING']);
     }
     
     /**
-     * Sends an error message back to the client.
+     * Sends an error message back to the client. The ouput type can be overridden 
+     * by explicitly passing it as the last paramter. If no output type is specified 
+     * in the method call the output type from the request is used.
      * @param string $reason
      * @param int $statuscode
+     * @param string $outputType
      */ 
-    protected function _sendError($reason, $statusCode)
+    public function sendError($reason, $statusCode = 400, $outpyType = '')
     {
-        $xmlReponse = new ServiceResponseXml();
-        $xmlReponse->addString($reason, 'error');
-        $this->_sendResponse($xmlReponse->getResponse(), 'xml', $statusCode);
+        if(empty($outpyType)) {
+            $outpyType = $this->_requestedOutputType;
+        }
+        
+        $responseClass = 'ServiceResponse' . ucfirst(strtolower($outpyType));
+        
+        $reponse = new $responseClass();
+        $reponse->addString($reason, 'error');
+        
+        $this->_sendResponse($reponse->getResponse(), $outputType, $statusCode);
     }
     
     /**
-     * Sends the reponse back to the client
+     * Sends a redirect message back to the client
+     * @param string $url
+     * @param string $outputType
+     */
+    public function sendRedirect($url, $outputType = '', $statusCode = 302)
+    {
+        if(empty($outpyType)) {
+            $outpyType = $this->_requestedOutputType;
+        }
+        
+        $responseClass = 'ServiceResponse' . ucfirst(strtolower($outpyType));
+        
+        $reponse = new $responseClass();
+        $reponse->addString($url, 'redirect');
+        
+        $this->_sendResponse($reponse->getResponse(), $outputType, $statusCode);
+    }
+    
+    /**
+     * Sends the reponse back to the client.
      * @param mixed $data
      * @param string $outputType
      * @param int $statusCode
      */
-    protected function _sendResponse($data, $outputType = 'xml', $statusCode = 200)
+    protected function _sendResponse($data, $outputType = '', $statusCode = 200)
     {
+        if(empty($outpyType)) {
+            $outpyType = $this->_requestedOutputType;
+        }
+        
         // Get the content type
         $contentType = (array_key_exists($outputType, $this->_contentTypes)) ? $this->_contentTypes[$outputType] : $this->_contentTypes['xml'];
         

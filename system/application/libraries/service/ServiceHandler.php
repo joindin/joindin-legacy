@@ -13,7 +13,12 @@
  */
 abstract class ServiceHandler
 {
-
+    /**
+     * Reference to the manager this ServiceHandler was spawned from.
+     * @var ServiceManager
+     */
+    protected $_manager = null;
+    
     /**
      * The output type to use when returning data from this handler.
      * @var string
@@ -47,11 +52,6 @@ abstract class ServiceHandler
     {
         $this->_xmlData = $xmlData;
         $this->_queryString = $queryString;
-        
-        // Check if an output type was specified
-        if(isset($xmlData->action['output']) && !empty($xmlData->action['type'])) {
-            $this->_outputType = (string) $xmlData->action['output'];
-        }
     }
     
     /**
@@ -68,7 +68,17 @@ abstract class ServiceHandler
     public abstract function handle();
     
     /**
-     * Returns the status code for this handler.
+     * Sets the output type for this handler
+     * @param string $type
+     */
+    public function setOutputType($type)
+    {
+        $this->_outputType = $type;
+    }
+    
+    /**
+     * Returns the status code for this handler. If an output type needs to be 
+     * forced, override this method in the handler implementation.
      * @return string
      */
     public function getOutputType()
@@ -83,6 +93,25 @@ abstract class ServiceHandler
     public function getStatusCode()
     {
         return $this->_statusCode;    
+    }
+    
+    /**
+     * Sets the manager this handler was spawned from.
+     * @param ServiceManager $manager
+     */
+    public function setManager(ServiceManager $manager)
+    {
+        $this->_manager = $manager;
+    }
+    
+    protected function _sendError($reason, $statusCode = 404)
+    {
+        $this->_manager->sendError($reason, $statusCode, $this->getOutputType());
+    }
+    
+    protected function _sendRedirect($url, $statusCode = 302)
+    {
+        $this->_manager->sendRedirect($url, $this->getOutputType(), $statusCode);
     }
     
 }
