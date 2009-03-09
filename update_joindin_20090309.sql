@@ -371,7 +371,7 @@ INSERT INTO `profile_token_fields` (`id`, `profile_token_id`, `field_name`) VALU
 --
 -- Table structure for table `profile_web_addresses`
 --
-
+DROP TABLE IF EXISTS `profile_sn_accounts`;
 DROP TABLE IF EXISTS `profile_web_addresses`;
 CREATE TABLE `profile_web_addresses` (
   `id` int(10) NOT NULL auto_increment,

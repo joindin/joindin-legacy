@@ -1,6 +1,14 @@
 <?php
+error_reporting(E_ALL);
 //echo '<pre>'; print_r($detail); print_r($comments); echo '</pre>';
-//print_r($claimed);
+//echo '<pre>'; print_r($claimed); echo '</pre>';
+//echo '<pre>'; print_r($claims); echo '</pre>';
+
+$cl=array();
+/*foreach($claims as $k=>$v){ 
+	//echo '<pre>'; print_r($v); echo '</pre>';
+	$cl[$v->rcode]=array('rid'=>$v->rid,'uid'=>$v->uid); 
+}*/
 
 $det=$detail[0];
 
@@ -50,8 +58,26 @@ $rstr = rating_image($detail[0]->tavg);
 
 //change up our string if this is a confirmed, clamed talk
 if(!empty($claimed)){
-	$speaker='<a href="/user/view/'.$claimed[0]->userid.'">'.escape($det->speaker).'</a>';
-}else{ $speaker=escape($det->speaker); }
+	$speaker='';
+	foreach($claimed as $k=>$v){
+		$ccode=$v->rcode;
+		$cl=array();
+		foreach($claimed[0]->speakers as $k=>$v){
+			$cl[$claimed[0]->codes[$k]]=trim($v);
+		}
+		//print_r($cl);
+		//echo 'sp:'.$cl[$claimed[0]->rcode];
+		$speaker[]='<a href="/user/view/'.$claimed[0]->userid.'">'.escape($cl[$claimed[0]->rcode]).'</a>';
+		unset($cl[$claimed[0]->rcode]);
+		foreach($cl as $ik=>$iv){ $speaker[]=escape($iv); }
+		
+		//TODO: show the other, non-claimed user
+	}
+}else{ $speaker[]=escape($det->speaker); }
+
+$speaker=implode(', ',$speaker);
+
+//echo '<pre>CL:'; print_r($claimed); echo '</pre>';
 
 ?>
 <div class="detail">
@@ -144,11 +170,19 @@ if (empty($comments)) {
         if ($v->private == 1) {
     	    $class .= ' row-talk-comment-private';
     	}
+    	
+    	if (isset($claimed[0]->userid) && $claimed[0]->userid != 0 && isset($v->user_id) && $v->user_id == $claimed[0]->userid) {
+    	    $class .= ' row-talk-comment-speaker';
+    	}
 
 ?>
 <div id="comment-<?php echo $v->ID ?>" class="row row-talk-comment<?php echo $class?>">
 	<div class="img">
+	<?php if (isset($claimed[0]->userid) && $claimed[0]->userid != 0 && isset($v->user_id) && $v->user_id == $claimed[0]->userid): ?>
+		<span class="speaker">Speaker comment:</span>
+	<?php else: ?>
 		<?php echo rating_image($v->rating); ?>
+	<?php endif; ?>
 	</div>
 	<div class="text">
     	<p class="info">
@@ -213,6 +247,8 @@ if ($det->date_given > $time_at_event) {
     </label>
     <div class="clear"></div>
 </div>
+<?php if (isset($claimed[0]->userid) && $claimed[0]->userid != 0 && user_get_id() == $claimed[0]->userid): ?>
+<?php else: ?>
 <div class="row">
 	<label for="rating">Rating</label>
 	<div class="rating">
@@ -220,6 +256,7 @@ if ($det->date_given > $time_at_event) {
 	</div>
 	<div class="clear"></div>
 </div>
+<?php endif; ?>
 <div class="row row-buttons">
 	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Submit Comment'); ?>
 </div>

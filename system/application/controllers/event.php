@@ -259,6 +259,7 @@ class Event extends Controller {
 		$this->load->helper('events');
 		$this->load->library('validation');
 		$this->load->library('defensio');
+		$this->load->library('spam');
 		$this->load->model('event_model');
 		$this->load->model('event_comments_model');
 		$this->load->model('user_attend_model','uam');
@@ -330,6 +331,8 @@ class Event extends Controller {
 			}
 			$def_ret=$this->defensio->check($ec['cname'],$ec['comment'],$is_auth,'/event/view/'.$id);
 			
+			//$this->spam->check('regex',$ec['comment']);
+			
 			$is_spam=(string)$def_ret->spam;
 			if($is_spam=='false'){
 				$this->db->insert('event_comments',$ec);
@@ -356,6 +359,7 @@ class Event extends Controller {
 		
 		$arr['comments']=$this->event_comments_model->getEventComments($id);
 		
+		$this->template->write('feedurl','/feed/event/'.$id);
 		$this->template->write_view('content','event/detail',$arr,TRUE);
 		$this->template->render();
 		//$this->load->view('event/detail',$arr);
@@ -373,7 +377,9 @@ class Event extends Controller {
 		echo $this->template->render('content');
 	}
 	function ical($id){
-		$this->load->model('event_model');
+		header('Content-type: text/calendar');
+		header('Content-disposition: filename="ical.ics"'); 
+	    $this->load->model('event_model');
 		$arr=$this->event_model->getEventDetail($id);
 		$this->load->view('event/ical',array('data'=>$arr));
 	}
@@ -617,19 +623,22 @@ class Event extends Controller {
 		if(!$this->user_model->isSiteAdmin()){ redirect(); }
 		
 		$this->load->model('event_model');
+		//$det=$this->event_model->getEventDetail($id); print_r($det);
+		
 		$this->event_model->approvePendingEvent($id);
 		redirect('event/view/'.$id); 
 	}
 	//----------------------
 	function start_mo_check($str){
+		//be sure it's before the end date
 		$t=mktime(
-			0,0,0,
-			$this->validation->start_mo,
-			$this->validation->start_day,
-			$this->validation->start_yr
+			0,0,0,$this->validation->start_mo,$this->validation->start_day,$this->validation->start_yr
 		);
-		if($t<=time()){
-			$this->validation->set_message('start_mo_check','Start date must be in the future!');
+		$e=mktime(
+			0,0,0,$this->validation->end_mo,$this->validation->end_day,$this->validation->end_yr
+		);
+		if($t>$e){
+			$this->validation->set_message('start_mo_check','Start date must be prior to the end date!');
 			return false;
 		}else{ return true; }
 	}

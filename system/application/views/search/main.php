@@ -83,6 +83,18 @@ if (!empty($results)) {
     ?>
 </div>
 		<?php endif; ?>
+		
+		<?php if (!empty($results['users'])): ?>
+<div class="box">
+	<h2>Users</h2>
+    <?php
+    foreach($results['users'] as $k=>$v){
+        $this->load->view('user/_user-row', array('user'=>$v));
+    }
+    ?>
+</div>
+		<?php endif; ?>
+		
 	<?php endif; ?>
 <?php endif; ?>
 

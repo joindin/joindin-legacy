@@ -180,6 +180,7 @@ small {
 	padding-left: 10px;
 }
 
+<<<<<<< .working
 /***/
 
 table.data-table {
@@ -201,6 +202,14 @@ table.data-table .alt-row {
 }
 
 /***/
+
+.icon-ical {
+	background: transparent url(/inc/img/icon-ical.gif) 0 1px no-repeat;
+	padding-left: 17px;
+	line-height: 13px;
+	white-space: nowrap;
+	display: inline-block;
+}
 
 /*.icon-event {
 	background: transparent url(/inc/img/icon-event.gif) top left no-repeat;
@@ -558,6 +567,20 @@ table.data-table .alt-row {
 	*margin-bottom: 0;
 }
 
+#ctn .main .row-talk-comment-speaker {
+	background-color: #f9f9f9;
+	padding-top: 15px;
+	margin-top: -15px;
+}
+
+#ctn .main .row-talk-comment-speaker .speaker {
+	color: #666;
+	font-size: 11px;
+	padding-left: 5px;
+	text-transform: uppercase;
+	font-weight: bold;
+}
+
 #ctn .main .row .info,
 #ctn .main .row .opts {
 	font-size: 11px;
@@ -635,7 +658,19 @@ table.data-table .alt-row {
 	margin-bottom: 10px;
 }
 
-#ctn .main .detail hr {
+#ctn .main .detail .header .head {
+	float: left;
+	width: 370px;
+}
+
+#ctn .main .detail .header .func {
+	float: left;
+	width: 95px;
+	font-size: 75%;
+	text-align: right;
+}
+
+#ctn .main .detail .header hr {
 	margin: 10px 0;
 }
 
@@ -669,7 +704,6 @@ table.data-table .alt-row {
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	padding: 10px;
-	width: 400px;
 	margin: 0;
 }
 

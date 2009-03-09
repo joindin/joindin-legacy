@@ -121,7 +121,8 @@ class Search extends Controller {
     		    //check to see if they entered a date and set that first
     			$results = array(
     				'talks'	=> $this->talks_model->search($search_term, $start, $end),
-    				'events'=> $this->event_model->search($search_term, $start, $end)
+    				'events'=> $this->event_model->search($search_term, $start, $end),
+					'users'	=> $this->user_model->search($search_term, $start, $end)
     			);
     		}
 		}

@@ -48,6 +48,24 @@ class Feed extends Controller {
 		}
 		$this->load->view('feed/feed',array('items'=>$items));
 	}
+	function event($eid){
+		$this->load->model('event_model');
+		$this->load->model('event_comments_model','ecm');
+		
+		$ret    =$this->ecm->getEventComments($eid);
+		$edata	=$this->event_model->getEventDetail($eid);
+		$items=array();
+		foreach($ret as $k=>$v){ //print_r($v);
+			$items[]=array(
+				'guid'			=>'http://joind.in/event/view/'.$eid.'#comments',
+				'title'			=>'Comment on Event "'.$edata[0]->event_name.'"',
+				'link'			=>'http://joind.in/event/view/'.$eid.'#comments',
+				'description'	=>$v->comment,
+				'pubDate'		=>date('r',$v->date_made)
+			);
+		}
+		$this->load->view('feed/feed',array('items'=>$items,'title'=>'Event Comments - "'.$edata[0]->event_name.'"'));
+	}
 	function user($in){
 		$this->load->model('talks_model');
 		$this->load->model('talk_comments_model','tcm');

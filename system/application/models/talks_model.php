@@ -16,17 +16,34 @@ class Talks_model extends Model {
 				u.email,
 				ua.uid,
 				ua.rid,
-				u.ID userid
+				ua.rcode,
+				u.ID userid,
+				t.talk_title,
+				t.event_id,
+				t.speaker
 			from
 				user u,
-				user_admin ua
+				user_admin ua,
+				talks t
 			where
 				u.ID=ua.uid and
 				ua.rid=%s and
-				ua.rcode!=\'pending\'
+				ua.rcode!=\'pending\' and
+				t.ID=ua.rid
 		',$tid);
 		$q=$this->db->query($sql);
-		return $q->result();
+		$ret=$q->result();
+		//echo '<pre>'; print_r($ret); echo '</pre>';
+		foreach($ret as $k=>$v){
+			$codes=array(); $speakers=array();
+			foreach(explode(',',$v->speaker) as $ik=>$iv){
+				$codes[]=buildCode($v->rid,$v->event_id,$v->talk_title,trim($iv));
+				$speakers[]=trim($iv);
+			}
+			$ret[$k]->codes=$codes;
+			$ret[$k]->speakers=$speakers;
+		}
+		return $ret;
 	}
 	//---------------
 	function getTalks($tid=null,$latest=false){

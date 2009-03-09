@@ -105,6 +105,7 @@ class Blog extends Controller {
 		$this->load->library('validation');
 		$this->load->library('akismet');
 		$this->load->library('defensio');
+		$this->load->library('spam');
 		$this->load->helper('reqkey');
 		$this->load->model('blog_posts_model','bpm');
 		$this->load->model('blog_comments_model','bcm');
@@ -132,10 +133,14 @@ class Blog extends Controller {
 			);
 			$ret=$this->akismet->send('/1.1/comment-check',$arr);
 			
+			//check with defensio
 			$ec=array();
 			$ec['comment']=$this->input->post('comment');
 			$def_ret=$this->defensio->check('anonymous',$ec['comment'],false,'/blog/view/'.$id);
 			$is_spam=(string)$def_ret->spam;
+			
+			//check with our local filters
+			$sp_ret=$this->spam->check('regex',$this->input->post('comment'));
 			
 			//passed...;
 			$arr=array(
@@ -147,7 +152,7 @@ class Blog extends Controller {
 			);
 			//print_r($arr);
 			
-			if($is_spam!='true'){
+			if($is_spam!='true' && $sp_ret==true){
 				$this->db->insert('blog_comments',$arr);
 			
 				$to='enygma@phpdeveloper.org';
