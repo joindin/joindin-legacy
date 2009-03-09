@@ -251,7 +251,7 @@ class Profile extends Controller
 	{
 		$this->load->model('profile_model');
 	    $this->load->model('profile_im_account_model');
-	    $this->load->model('profile_sn_account_model');
+	    $this->load->model('profile_web_address_model');
 	    
 	    $profile = $this->profile_model->findByUserId($this->session->userdata('ID'));
 	    if(null !== $profile) {
@@ -263,8 +263,8 @@ class Profile extends Controller
 	    	}
 	    	
 	    	// Delete all the connected social network accounts
-		    $snAccounts = $this->profile_sn_account_model->findAll(array('profile_id' => $profile->getId()));
-		    foreach($snAccounts as $account) {
+		    $webAddress = $this->profile_web_address_model->findAll(array('profile_id' => $profile->getId()));
+		    foreach($webAddress as $account) {
 	    		$account->delete();
 	    	}
 	   		 
