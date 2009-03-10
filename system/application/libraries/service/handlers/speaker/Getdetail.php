@@ -31,21 +31,17 @@ class Getdetail extends ServiceHandler
         $dao = new Profile_token_model();
         $tokenModel = $dao->findByAccessToken($token);
         
+        if(is_null($tokenModel)) {
+            // Return an error
+            $this->_sendError('Token not found', 400);
+        }
         
         if($this->_outputType == 'xml') {
             $response = new ServiceResponseXml();
         } else {
             $response = new ServiceResponseJson();
         }
-        
-        if(!is_null($tokenModel)) {
-            // Add the data to the response
-            $response->addArray($tokenModel->getProfileData(), 'speaker');
-        } else {
-            // Return an error
-            $this->_statusCode = 400;
-            $response->addString('No data found for token', 'error');
-        }
+        $response->addArray($tokenModel->getProfileData(), 'speaker');
         
         // Return the response
         return $response->getResponse();
