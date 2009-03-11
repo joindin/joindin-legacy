@@ -42,8 +42,36 @@ class User_attend_model extends Model {
 		$this->db->join('user', 'user.ID = user_attend.uid', 'inner');
 		$this->db->where('user_attend.eid='.(int)$eid);
 		$this->db->order_by('user_attend.ID','asc');
-
-		$q=$this->db->get();
+		
+		//$q=$this->db->get();
+		//return $q->result();
+		
+		$sql=sprintf('
+			select
+				usr.ID,
+				usr.username,
+				usr.full_name,
+				(select
+					count(uad.ID)
+				from
+					talks t,
+					user_admin uad
+				where
+					uad.uid=usr.ID and
+					t.event_id=%s and
+					t.ID=uad.rid and uad.rtype=\'talk\' and
+					uad.rcode!=\'pending\'
+				) is_speaker
+			from
+				user_attend ua,
+				user usr
+			where
+				ua.uid=usr.ID and
+				ua.eid=%s
+			order by
+				ua.ID asc
+		',(int)$eid,(int)$eid);
+		$q=$this->db->query($sql);
 		return $q->result();
 	}
 	function getUserAttending($uid){

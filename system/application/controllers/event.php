@@ -581,7 +581,7 @@ class Event extends Controller {
 				$msg.='Event Contact Email: '.$this->input->post('event_contact_email')."\n\n";
 				$msg.='Spam check: '.($is_spam=='false') ? 'not spam' : 'spam';
 			
-				echo $msg.'<br/><br/>';
+				//echo $msg.'<br/><br/>';
 			
 				mail($to,$subj,$msg,'From: submissions@joind.in');
 				$arr['msg']='Event successfully submitted! We\'ll get back with you soon!';
