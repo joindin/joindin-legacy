@@ -149,7 +149,7 @@ class Event_model extends Model {
 		$this->db->where('((events.event_start<='.mktime(0,0,0).' AND events.event_end>='.mktime(0,0,0).') OR (events.event_start<='.mktime(0,0,0).' AND events.event_end>='.(mktime(0,0,0) - (60*60*24*14)).'))');
 
 		$this->db->where('(events.pending is null or events.pending=0)');
-		$this->db->order_by('events.event_start','asc');
+		$this->db->order_by('events.event_start','desc');
 
 		if (null !== $limit) {
 		    $this->db->limit((int)$limit);
