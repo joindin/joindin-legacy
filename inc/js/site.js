@@ -71,12 +71,14 @@ function apiRequest(rtype,raction,data,callback){
 	});
 }
 //-------------------------
-function delBlogComment(cid){
+function delBlogComment(cid){ deleteComment(cid,'blog'); }
+function delEventComment(cid){ deleteComment(cid,'event'); }
+function delTalkComment(cid){ deleteComment(cid,'talk'); }
+function deleteComment(cid,rtype){
 	var obj=new Object();
 	obj.cid=cid;
-
-	apiRequest('blog','deletecomment',obj, function(obj) {
-		return false;
+	apiRequest(rtype,'deletecomment',obj, function(obj) {
+		alert('Comment removed!'); return false;
 	});
 	return false;
 }

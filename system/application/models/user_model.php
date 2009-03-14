@@ -72,6 +72,7 @@ class User_model extends Model {
 		return $q->result();
 	}
 	function getAllUsers(){
+		$this->db->order_by('username','asc');
 		$q=$this->db->get('user');
 		return $q->result();
 	}
@@ -117,6 +118,10 @@ class User_model extends Model {
 				u.username,
 				u.full_name,
 				u.ID,
+				u.admin,
+				u.active,
+				u.last_login,
+				u.email,
 				(select count(ID) from user_admin where rtype='talk' and uid=u.ID) talk_count,
 				(select count(ID) from user_attend where uid=u.ID) event_count
 			from

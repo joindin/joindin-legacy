@@ -10,6 +10,14 @@
 </div>
 
 <?php 
+echo form_open('user/admin');
+echo form_input('user_search',$this->validation->user_search);
+echo form_submit('sub','Search');
+//echo form_button('clear','Clear','onClick="document.location.href=\'/user/admin\';"');
+echo form_close(); 
+?>
+
+<?php 
 if (empty($msg)) {
     $msg=$this->session->flashdata('msg');
 }
@@ -18,7 +26,7 @@ if (!empty($msg)):
 <?php $this->load->view('msg_info', array('msg' => $msg)); ?>
 <?php endif; ?>
 
-<table summary="" class="list">
+<table summary="" class="list" width="100%">
 <tr class="header">
 	<th>Username</th>
 	<th>Detail</th>

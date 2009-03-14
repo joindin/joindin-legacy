@@ -292,12 +292,30 @@ class User extends Controller {
 		$this->template->write_view('content','user/manage',$arr);
 		$this->template->render();
 	}
-	function admin(){
+	function admin($page=null){
 		$this->load->helper('reqkey');
-		$reqkey=buildReqKey();
+		$this->load->library('validation');
+		$reqkey	= buildReqKey();
+		$page	= (!$page) ? 1 : $page;
+		$rows_in_pg=10;
+		$offset	= ($page==1) ? 1 : $page*10;
+		$users	= array_slice($this->user_model->getAllUsers(),$offset,$rows_in_pg);
+		
+		$fields=array(
+			'user_search'=>'Search Term'
+		);
+		$rules=array(
+			'user_search'=>'required'
+		);
+		$this->validation->set_rules($rules);
+		$this->validation->set_fields($fields);
+		
+		if($this->validation->run()!=FALSE){
+			$users=$this->user_model->search($this->input->post('user_search'));
+		}
 		
 		$arr=array(
-			'users'		=> $this->user_model->getAllUsers(),
+			'users'		=> $users,
 			'reqkey' 	=> $reqkey,
 			'seckey' 	=> buildSecFile($reqkey),
 		);
