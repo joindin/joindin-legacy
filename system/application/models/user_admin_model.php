@@ -6,10 +6,63 @@ class User_admin_model extends Model {
 		parent::Model();
 	}
 	//----------------------
+	function removePerm($aid){
+		//$arr=array('uid'=>$uid,'rid'=>$rid);
+		$this->db->delete('user_admin',array('ID'=>$aid));
+	}
+	function addPerm($uid,$rid,$type){
+		error_log($uid.'-'.$rid.'-'.$type);
+		$arr=array(
+			'uid'	=>$uid,
+			'rid'	=>$rid,
+			'rtype'	=>$type,
+			'rcode'	=>''
+		);
+		$this->db->insert('user_admin',$arr);
+	}
+	//----------------------
 	function hasPerm($uid,$rid,$rtype){
 		$q=$this->db->get_where('user_admin',array('uid'=>$uid,'rid'=>$rid,'rtype'=>$rtype));
 		$ret=$q->result(); //print_r($ret);
 		return (empty($ret)) ? false : true;
+	}
+	function getUserTypes($uid,$types=null){
+		$CI=&get_instance();
+		
+		$CI->load->model('talks_model');
+		$CI->load->model('event_model');
+		
+		$tadd=($types) ? " and ua.rtype in ('".implode("','",$types)."')" : '';
+		$sql=sprintf("
+			select
+				ua.uid,
+				ua.rid,
+				ua.rtype,
+				ua.rcode,
+				ua.ID admin_id
+			from
+				user_admin ua
+			where
+				ua.uid=%s
+				%s
+		",$uid,$tadd);
+		$q=$this->db->query($sql);
+		$ret=$q->result();
+		
+		foreach($ret as $k=>$v){
+			switch($v->rtype){
+				case 'talk': 
+					$ret[$k]->detail=$CI->talks_model->getTalks($v->rid);
+					break;
+				case 'event':
+					$ret[$k]->detail=$CI->event_model->getEventDetail($v->rid);
+					break;
+			}
+		}
+		
+		return $ret;
+		//$q=$this->db->get_where('user_admin',array('uid'=>$uid));
+		//return $q->result(); //print_r($ret);
 	}
 	function getPendingClaims(){
 		$sql=sprintf("

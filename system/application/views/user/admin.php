@@ -21,8 +21,7 @@ if (!empty($msg)):
 <table summary="" class="list">
 <tr class="header">
 	<th>Username</th>
-	<th>Email</th>
-	<th>Full Name</th>
+	<th>Detail</th>
 	<th>Is Admin?</th>
 	<th>Last Login</th>
 	<th>Status</th>
@@ -31,20 +30,22 @@ if (!empty($msg)):
 $ct=0;
 foreach($users as $k=>$v){
 	$class 		= ($ct%2==0) ? 'row1' : 'row2';
-	$is_admin	= ($v->admin==1) ? 'yes' : 'no';
+	$is_admin	= ($v->admin==1) ? '<b style="color:#00E200">Y</b>' : '';
 	$last_log	= (!empty($v->last_login)) ? date('m.d.Y H:i:s',$v->last_login): '';
-	$active		= (!empty($v->active) && $v->active==1) ? 'active' : 'inactive';
+	$active		= (!empty($v->active) && $v->active==1) ? 'act' : 'inact';
 	echo sprintf('
 		<tr class="%s">
 			<td><a href="/user/view/%s">%s</a></td>
-			<td><a href="mailto:%s">%s</a></td>
-			<td>%s</td>
+			<td>
+				%s<br/>
+				<a href="mailto:%s">%s</a>
+			</td>
 			<td align="center">%s</td>
 			<td>%s</td>
-			<td>%s</td>
+			<td align="right"><a href="#" id="status_link_%s" onClick="toggleUserStatus(%s)">%s</a></td>
 		</tr>
-	',$class,$v->ID,escape($v->username),escape($v->email),escape($v->email),escape($v->full_name),
-	$is_admin,$last_log,$active);
+	',$class,$v->ID,escape($v->username),escape($v->full_name),escape($v->email),escape($v->email),
+	$is_admin,$last_log,$v->ID,$v->ID,$active);
 	$ct++;
 }
 ?>

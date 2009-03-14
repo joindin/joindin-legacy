@@ -57,7 +57,7 @@ function apiRequest(rtype,raction,data,callback){
 			obj=eval('('+rdata+')'); //alert(obj.msg);
 			
 			//check for the redirect
-			if(obj.msg.match('redirect:')){
+			if(obj.msg && obj.msg.match('redirect:')){
 				goto=obj.msg.replace(/redirect:/,'');
 				document.location.href=goto;
 			}else{
@@ -180,6 +180,65 @@ function toggleAttendees(el, eid)
 		});
 	}
 	return false;
+}
+function toggleUserStatus(uid){
+	var obj=new Object();
+	obj.uid=uid;
+	apiRequest('user','status',obj, function(obj) {
+		v=$('#status_link_'+uid).html();
+		(v=='inact') ? nv='act' : nv='inact';
+		$('#status_link_'+uid).html(nv);
+	});
+}
+function removeRole(aid){
+	var obj=new Object();
+	obj.aid=aid;
+	obj.type='remove';
+	apiRequest('user','role',obj, function(obj) {
+		$('#resource_row_'+aid).css('display','none');
+	});
+}
+function populateEvents(fname){
+	var obj=new Object();
+	apiRequest('event','getlist',obj, function(obj) {
+		$.each(obj,function(k,v){
+			$('#'+fname).append('<option value="'+v.ID+'">'+v.event_name);
+		});
+	});
+}
+function populateTalks(fname){
+	var obj=new Object();
+	obj.eid=$('#event_names').val(); 
+	apiRequest('event','gettalks',obj, function(obj) {
+		$.each(obj,function(k,v){
+			$('#'+fname).append('<option value="'+v.ID+'">'+v.talk_title+' ('+v.speaker+')');
+		});
+	});
+}
+function chkAdminType(fname){
+	v=$('#add_type').val();
+	if(v=='talk'){
+		$('#talks_row').css('display','table-row');
+		populateTalks(fname);
+	}
+}
+function addRole(uid){
+	//check to see what kind of role we need to add
+	//add_type
+	//event_names
+	var obj=new Object();
+	obj.rid=$('#event_names').val();
+	obj.uid=uid;
+	tp=$('#add_type').val();
+	if(tp=='talk'){
+		obj.type='addtalk';
+		obj.rid=$('#event_talks').val();		
+		apiRequest('user','role',obj, function(obj) { });
+	}else if(tp=='event'){
+		obj.type='addevent';
+		//we dont need to worry about the talk, just the event
+		apiRequest('user','role',obj, function(obj) { });
+	}
 }
 
 //-------------------------

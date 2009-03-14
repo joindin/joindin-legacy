@@ -37,15 +37,23 @@ class Api extends Controller {
 		$data=file_get_contents('php://input');
 		$ret=array('out'=>$this->service->handle('blog',$data));
 		$this->output($ret);
+	}	
+	function user($act=null){
+		$this->load->library('service');
+		$data=file_get_contents('php://input');
+		$ret=array('out'=>$this->service->handle('user',$data));
+		$this->output($ret);
 	}
 	
 	//---------------------
 	function output($ret){
-		if(isset($ret['out']['data']['output'])){
-			$out=(string)$ret['out']['data']['output'];
-		}
-		$out=(!empty($out)) ? 'out_'.$out : 'out_xml';
-		$this->load->view('api/'.$out,$ret['out']['data']);
+		if(isset($ret['out']['data'])){
+			if(isset($ret['out']['data']['output'])){
+				$out=(string)$ret['out']['data']['output'];
+			}
+			$out=(!empty($out)) ? 'out_'.$out : 'out_xml';
+			$this->load->view('api/'.$out,$ret['out']['data']);
+		}else{ $this->load->view('api/out_json',array('items'=>array('msg'=>'Unknown Error'))); }
 	}
 	function tz($cont){
 		$this->load->model('tz_model');

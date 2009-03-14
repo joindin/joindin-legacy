@@ -7,10 +7,14 @@ class Service {
 		'event/attend'		=> array('logged'),
 		'event/getattending'=> array(),
 		'event/getdetail'	=> array(),
+		'event/getlist'		=> array('logged','isadmin'),
+		'event/gettalks'	=> array('logged','isadmin'),		
 		'talk/getcomments'	=> array(),
 		'talk/getdetail'	=> array(),
 		'talk/claim'		=> array('logged'),
 		'blog/deletecomment'=> array('logged'),
+		'user/status'		=> array('logged','isadmin'),
+		'user/role'			=> array('logged','isadmin')
 	);
 	
 	function Service(){

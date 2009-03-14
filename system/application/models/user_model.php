@@ -48,6 +48,11 @@ class User_model extends Model {
 		}else{ return false; }
 	}
 	//---------------------
+	function toggleUserStatus($uid){
+		$udata=$this->getUser((int)$uid); //echo $uid; print_r($udata);
+		$up=($udata[0]->active==1) ? array('active'=>'0') : array('active'=>'1');
+		$this->updateUserinfo($uid,$up);
+	}
 	function updateUserInfo($uid,$arr){
 		$this->db->where('ID',$uid);
 		$this->db->update('user',$arr);

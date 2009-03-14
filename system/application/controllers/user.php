@@ -211,6 +211,9 @@ class User extends Controller {
 	function view($uid){
 		$this->load->model('talks_model');
 		$this->load->model('user_attend_model','uam');
+		$this->load->model('user_admin_model','uadmin');
+		$this->load->helper('reqkey');
+		$reqkey=buildReqKey();
 		
 		$details = $this->user_model->getUser($uid);
 		
@@ -230,6 +233,9 @@ class User extends Controller {
 			'is_admin'	=> $this->user_model->isSiteAdmin(),
 			'is_attending'=>$this->uam->getUserAttending($uid),
 			'my_attend'	=> $this->uam->getUserAttending($curr_user),
+			'uadmin'	=> $this->uadmin->getUserTypes($uid,array('talk','event')),
+			'reqkey' 	=> $reqkey,
+			'seckey' 	=> buildSecFile($reqkey),
 		);
 		$block=array(
 			'title'		=> 'Other Speakers',
@@ -287,8 +293,13 @@ class User extends Controller {
 		$this->template->render();
 	}
 	function admin(){
+		$this->load->helper('reqkey');
+		$reqkey=buildReqKey();
+		
 		$arr=array(
-			'users'=>$this->user_model->getAllUsers()
+			'users'		=> $this->user_model->getAllUsers(),
+			'reqkey' 	=> $reqkey,
+			'seckey' 	=> buildSecFile($reqkey),
 		);
 		
 		$this->template->write_view('content','user/admin',$arr);
