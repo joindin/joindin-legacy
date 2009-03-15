@@ -194,11 +194,19 @@ if (empty($comments)) {
     	<div class="desc">
     		<?php echo auto_p(escape($v->comment)); ?>
     	</div>
-	    <?php if (user_is_admin()): ?>
 		<p class="admin">
-			<a class="btn-small" href="#" onClick="delTalkComment(<?=$v->ID?>);return false;">Delete</a>
+			<?php if (user_is_admin()): ?>
+				<a class="btn-small" href="#" onClick="delTalkComment(<?=$v->ID?>);return false;">Delete</a>
+			<?php endif; ?>
+			<?php if (isset($claimed[0]->userid) && $claimed[0]->userid != 0 && isset($v->user_id) && $v->user_id == $claimed[0]->userid): ?>
+				<a class="btn-small" href="#" onClick="commentIsSpam(<?=$v->ID?>,'talk');return false;">Is Spam</a>
+			<?php endif; ?>
 		</p>
-	<?php endif; ?>
+		<?php if (user_is_admin()): ?>
+		<p class="admin">
+			
+		</p>
+		<?php endif; ?>
 	</div>
 	<div class="clear"></div>
 </div>

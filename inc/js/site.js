@@ -82,6 +82,15 @@ function deleteComment(cid,rtype){
 	});
 	return false;
 }
+function commentIsSpam(cid,rtype){
+	var obj=new Object();
+	obj.cid		= cid;
+	obj.rtype	= rtype;
+	apiRequest('comment','isspam',obj, function(obj) {
+		alert('Thanks for letting us know!'); return false;
+	});
+	return false;
+}
 function claimTalk(tid){
 	var obj=new Object();
 	obj.tid=tid;

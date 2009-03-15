@@ -16,7 +16,8 @@ class Service {
 		'talk/claim'		=> array('logged'),
 		'blog/deletecomment'=> array('logged'),
 		'user/status'		=> array('logged','isadmin'),
-		'user/role'			=> array('logged','isadmin')
+		'user/role'			=> array('logged','isadmin'),
+		'comment/isspam'	=> array('logged')
 	);
 	
 	function Service(){
