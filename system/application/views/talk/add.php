@@ -22,8 +22,8 @@ if(isset($this->edit_id)){
 }
 echo '<h2>'.$sub.'</h2>';
 
-if(isset($msg) && !empty($msg)){ echo '<div class="notice">'.$msg.'</div>'; }
-if(isset($err) && !empty($err)){ echo '<div class="err">'.$err.'</div>'; }
+if(isset($msg) && !empty($msg)){ $this->load->view('msg_info', array('msg' => $msg)); }
+if(isset($err) && !empty($err)){ $this->load->view('msg_info', array('msg' => $err)); }
 ?>
 
 <table cellpadding="3" cellspacing="0" border="0">

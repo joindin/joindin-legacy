@@ -111,7 +111,7 @@ class Talk extends Controller {
 				$this->db->delete('talk_cat',array('talk_id'=>$id));
 				
 				$tc_id	= $id;
-				$msg	= 'Talk information successfully updated!';
+				$msg	= 'Talk information successfully updated! <a href="/talk/view/'.$id.'">Return to talk</a>';
 				$pass	= true;
 			}else{
 				//check to be sure its unique

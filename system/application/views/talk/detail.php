@@ -101,6 +101,12 @@ $speaker=implode(', ',$speaker);
 		Quicklink: <strong><a href="http://joind.in/<?php echo $det->tid; ?>">http://joind.in/<?php echo $det->tid; ?></a></strong>
 	</p>
 	
+	<?php if(!empty($det->slides_link)): ?>
+	<p class="quicklink">
+		Slides: <strong><a href="<?php echo $det->slides_link; ?>"><?php echo $det->talk_title; ?></a></strong>
+	</p>
+	<?php endif; ?>
+	
 	<?php if(isset($claimed[0]) && $this->session->userdata('ID')==$claimed[0]->userid): ?>
 	<!--<p class="opts">
 		<a class="btn-small" href="/user/comemail/talk/<?php echo $det->tid; ?>">Email me my comments</a>
