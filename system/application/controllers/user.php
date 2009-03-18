@@ -299,7 +299,8 @@ class User extends Controller {
 		$page	= (!$page) ? 1 : $page;
 		$rows_in_pg=10;
 		$offset	= ($page==1) ? 1 : $page*10;
-		$users	= array_slice($this->user_model->getAllUsers(),$offset,$rows_in_pg);
+		$all_users=$this->user_model->getAllUsers();
+		$users	= array_slice($all_users,$offset,$rows_in_pg);
 		
 		$fields=array(
 			'user_search'=>'Search Term'
@@ -316,6 +317,8 @@ class User extends Controller {
 		
 		$arr=array(
 			'users'		=> $users,
+			'all_user_ct'=>count($all_users),
+			'page'		=> $page,
 			'reqkey' 	=> $reqkey,
 			'seckey' 	=> buildSecFile($reqkey),
 		);

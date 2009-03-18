@@ -260,6 +260,7 @@ class Event extends Controller {
 		$this->load->library('validation');
 		$this->load->library('defensio');
 		$this->load->library('spam');
+		$this->load->library('twitter');
 		$this->load->model('event_model');
 		$this->load->model('event_comments_model');
 		$this->load->model('user_attend_model','uam');
@@ -356,11 +357,20 @@ class Event extends Controller {
 			
 			redirect('event/view/'.$events[0]->ID . '#comments', 'location', 302);
 		}
+
+		$arr['comments']	= $this->event_comments_model->getEventComments($id);
 		
-		$arr['comments']=$this->event_comments_model->getEventComments($id);
+		$t=$this->twitter->querySearchAPI(explode(',',$arr['events'][0]->event_hashtag));
+		if(!empty($t)){
+			$other_data=array(
+				'title'		=> 'Tagged on Twitter',
+				'results'	=> $t,
+			);
+		}
 		
 		$this->template->write('feedurl','/feed/event/'.$id);
 		$this->template->write_view('content','event/detail',$arr,TRUE);
+		$this->template->write_view('sidebar2','event/_twitter-search',$other_data);
 		$this->template->render();
 		//$this->load->view('event/detail',$arr);
 	}

@@ -18,6 +18,14 @@ echo form_close();
 ?>
 
 <?php 
+echo '<b>Pages:</b>';
+$rows_in_pg=count($users);
+for($i=1;$i<=($all_user_ct/$rows_in_pg);$i++){
+	$style=($i==$page) ? 'style="font-weight:bold"' : '';
+	echo '<a '.$style.' href="/user/admin/'.$i.'">'.$i.'</a> ';
+} echo '<br/><br/>';
+
+
 if (empty($msg)) {
     $msg=$this->session->flashdata('msg');
 }
