@@ -58,12 +58,13 @@ $template['active_template'] = 'default';
 
 $template['default']['template'] = 'template2';
 $template['default']['regions'] = array(
-   'header',
-   'content',
-   'footer',
-   'logged',
+	'header',
+	'content',
+	'footer',
+	'logged',
 	'feedurl',
-	'sidebar2'
+	'sidebar2',
+	'info_block'
 );
 $template['default']['parser'] = 'parser';
 $template['default']['parser_method'] = 'parse';

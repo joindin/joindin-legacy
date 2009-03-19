@@ -368,6 +368,14 @@ class Event extends Controller {
 			);
 		}
 		
+		if(!$is_auth){
+			$info=array('msg'=>sprintf('
+				<h4 style="color:#3A74C5">New to Joind.in?</h4> Find out how we can help you make connections 
+				whether you\'re attending or putting on the show. <a href="/about">Click here</a> to learn more!
+			'));
+			$this->template->write_view('info_block','msg_info',$info,TRUE);
+		}
+		
 		$this->template->write('feedurl','/feed/event/'.$id);
 		$this->template->write_view('content','event/detail',$arr,TRUE);
 		$this->template->write_view('sidebar2','event/_twitter-search',$other_data);
