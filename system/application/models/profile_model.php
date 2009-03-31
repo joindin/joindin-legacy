@@ -21,8 +21,9 @@ class Profile_model extends DomainModel
     
     protected $_rules = array(
     	'user_id' => 'required',
-    	'full_name' => 'required',
-    	'bio' => 'required|strip_tags'
+    	'full_name' => array('required'),
+        'contact_email' => array('required', 'valid_email'),
+    	'bio' => array('required', 'strip_tags')
     );
     
     /**

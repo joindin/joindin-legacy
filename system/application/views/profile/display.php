@@ -124,6 +124,10 @@ if(!empty($msg_error)) {
 	</div>
     
     <div class="detail">
+    	<h2>Job Title</h2>
+    	<p>
+    		<?= $profile->getJobTitle() ?>
+    	</p>
 	    <h2>Bio</h2>
 	    <p>
 	        <?= nl2br($profile->getBio()) ?>

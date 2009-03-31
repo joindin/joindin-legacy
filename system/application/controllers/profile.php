@@ -225,8 +225,8 @@ class Profile extends Controller
 	        	// Save the profile
 	        	$profile->save();
 	        	// Redirect and display a message
-	            $this->session->set_flashdata('msg', 'Profile updated successfully!');
-			    redirect('user/profile', 'location', 302);
+	            //$this->session->set_flashdata('msg', 'Profile updated successfully!');
+			    //redirect('user/profile', 'location', 302);
 	        } else {
 	            $viewVars['msg_error'] = $profile->getErrors();
 	            if(isset($this->upload)) {

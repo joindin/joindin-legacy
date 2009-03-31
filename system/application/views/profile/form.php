@@ -94,6 +94,12 @@ if(!empty($msg_error)) {
     </div>
     
     <div class="row">
+        <label for="bio">Job Title</label>
+        <?php echo form_input(array('name' => 'job_title', 'id' => 'job_title', 'value' => $profile['job_title'])); ?>
+        <div class="clear"></div>
+    </div>
+    
+    <div class="row">
         <label for="bio">Bio</label>
         <?php echo form_textarea(array('name' => 'bio', 'id' => 'bio', 'value' => $profile['bio'])); ?>
 		<small>HTML is not allowed</small>
@@ -168,6 +174,7 @@ if(!empty($msg_error)) {
     </div>
     <p style="margin-top: 30px; text-align: right;">
         <?php
+            echo form_hidden('user_id', $profile['user_id']);
             echo form_submit(array('name' => 'sub', 'class' => 'btn'), 'Save profile');
     		echo form_close();
 		?>

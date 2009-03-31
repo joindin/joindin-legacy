@@ -302,7 +302,7 @@ class DomainModel extends Model
     		}
     		
     		if(is_string($rules)) {
-    			$rules = array($rules);
+    		    $rules = explode('|', $rules);
     		}
     		
     		// Loop the validation rules
@@ -314,13 +314,13 @@ class DomainModel extends Model
     			} 
     			
     			// Check for required keyword
-    			if($rule == 'required') {
+    			/*if($rule == 'required') {
     				// Check if the field is set and not empty
     				if(!isset($this->_data[$field]) || empty($this->_data[$field])) {
     					$this->_errors[] = $this->_createErrorMessage('required', $field);
     				}
 					continue;
-    			}
+    			}*/
     			
     			// Check for custom callback
     			if(strpos($rule, $this->_callbackPrefix) === 0) {
@@ -328,23 +328,21 @@ class DomainModel extends Model
     					throw new Exception(sprintf('Validation callback "%s" does not exist.', $rule));
     				}
     				
-    				if(!is_null($param)) {
-    					$result = $this->$rule($field, $param);
-    				} else {
-    					$result = $this->$rule($field);
-    				}
+    				$result = $this->$rule($field, $param);
 					
 					if(!$result) {
 						$this->_errors[] = $this->_createErrorMessage($rule, $field);
+						continue 2;
 					}
     				continue;
     			}
     			
     			// Check if the validation class can handle the rule
     			if(method_exists($this->_validator, $rule)) {
-    				$result = $this->_validator->$rule($field, $param);
+    				$result = $this->_validator->$rule($this->_data[$field]);
     				if(!$result) {
     					$this->_errors[] = $this->_createErrorMessage($rule, $field, $param);
+    					continue 2;
     				}
     				continue;
     			}
