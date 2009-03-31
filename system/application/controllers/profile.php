@@ -126,25 +126,32 @@ class Profile extends Controller
 		$this->template->render();
 	}
 
+	/**
+	 * Shows the form used for uploading pictures. The real magic happens
+	 * in the view file.
+	 */
 	function picture_form()
 	{
-	    if($_SERVER['HTTP_HOST'] != 'local.joind.in') {
+	    /*$baseUrl = $this->config->item('base_url');
+	    if('http://' . $_SERVER['HTTP_HOST'] . '/' != $baseUrl) {
 	        die;
-	    }
+	    }*/
 	    $this->load->view('profile/picture_form');
 	}
 	
+	/**
+	 * Handles the uploading of the picture.
+	 */
 	function picture_upload()
 	{
-	    if($_SERVER['HTTP_HOST'] != 'local.joind.in') {
+	    $baseUrl = $this->config->item('base_url');
+	    if('http://' . $_SERVER['HTTP_HOST'] . '/' != $baseUrl) {
 	        die;
 	    }
 	    
 	    $return = array();
 	    $uploadPath = '/inc/img/speaker_pictures/';
 	    $absolutePath = BASEPATH . '..' . $uploadPath;
-	    
-	    
 	    
 	    if(!isset($_FILES) || empty($_FILES['uploader-file']['name'])) {
 	        $return['error'] = 'No file was uploaded.';
@@ -153,7 +160,7 @@ class Profile extends Controller
 	        
 	        switch($_FILES['uploader-file']['error']) {
 	            case UPLOAD_ERR_INI_SIZE:
-	            case  UPLOAD_ERR_FORM_SIZE:
+	            case UPLOAD_ERR_FORM_SIZE:
 	                $return['error'] = 'The file exeeds the maximum file size of ' . ini_get('upload_max_filesize');
 	            break;
 	            case  UPLOAD_ERR_PARTIAL:
@@ -167,8 +174,14 @@ class Profile extends Controller
 	            case  UPLOAD_ERR_EXTENSION:
 	                $return['error'] = 'The file upload failed due to a server error, please try again.';
 	            break;
+	            default:
+	                $return['error'] = 'An unknown error occurred, please try again.';
+	            break;
 	        }
 	        
+	    }
+	    else if(!is_dir($absolutePath) || !is_writable($absolutePath)) {
+	        $return['error'] = 'The upload path does not seem to be writable, please contact the sites administrator.';
 	    }
 	    else if(
 	        preg_match('/.*\.(gif|jpg|jpeg|png)$/i', $_FILES['uploader-file']['name']) !== 1
@@ -181,13 +194,45 @@ class Profile extends Controller
 	        $return['error'] = 'An error occurred, please try again.';
 	    }
 	    else {
-	        extract($_FILES['uploader-file']);
-	        
-	        
-            // get the extension
-            preg_match('/.*\.(gif|jpg|jpeg|png)$/i', $name, $matches);
+	        // All is well, process the image
+	        $result = $this->_processImage($_FILES['uploader-file'], $uploadPath);
             
-            $extension = $matches[1];
+            $return = $result;
+	    }
+
+	    // Show the result (blank) and trigger the callback in the form window.
+	    $this->load->view('profile/upload_result', array('return' => $return));
+	}
+	
+	/**
+	 * Process an uploaded image
+	 * @param $image
+	 * @return unknown_type
+	 */
+	function _processImage($image, $uploadPath)
+	{
+	    // Absolute path to the upload directory
+	    $absolutePath = BASEPATH . '..' . $uploadPath;
+	    
+	    // Extract the image data
+	    extract($image);
+	    
+	    // get the extension
+        preg_match('/.*\.(gif|jpg|jpeg|png)$/i', $name, $matches);
+        $extension = $matches[1];
+        
+        // Write the image to disk
+        $fileName = microtime() . '.' . $extension;
+        $filePath = $absolutePath . $fileName;
+        
+        // See if we need to resize the image
+        list($originalWidth, $originalHeight) = getimagesize($tmp_name);
+        if($originalWidth < 150 && $originalHeight < 150) {
+            // Don't bother resizing, just move the image
+            move_uploaded_file($tmp_name, $filePath);
+        }
+        else {
+            // Resize the image
             switch($extension) {
                 case 'jpg':
                 case 'jpeg': 
@@ -201,33 +246,27 @@ class Profile extends Controller
                 break;
             }
             
-            // Calculate the aspect ratio
-            list($originalWidth, $originalHeight) = getimagesize($tmp_name);
             $ratio = ($originalWidth/$originalHeight);
             if($ratio < 1) {
-                $height = 150;
-                $width = 150 * $ratio;
+                $newHeight = 150;
+                $newWidth = 150 * $ratio;
             }
             else if($ratio > 1) {
-                $height = 150 / $ratio;
-                $width = 150;
+                $newHeight = 150 / $ratio;
+                $newWidth = 150;
             } 
             else if($ratio == 1) {
-                $height = $width = 150;
+                $newHeight = $newWidth = 150;
             }
             
             // Create a new image
-            $canvas = imagecreatetruecolor($width,$height);
-            imagecopyresampled($canvas,$original,0,0,0,0,$width,$height,$originalWidth,$originalHeight); 
-            
-            // Write the image to disk
-            $fileName = microtime() . '.' . $extension;
-            $filePath = $absolutePath . $fileName;
+            $canvas = imagecreatetruecolor($newWidth,$newHeight);
+            imagecopyresampled($canvas, $original, 0, 0, 0, 0, $newWidth, $newHeight, $originalWidth, $originalHeight); 
             
             switch($extension) {
                 case 'jpg':
                 case 'jpeg':
-                imagejpeg($canvas, $filePath, 100);    
+                    imagejpeg($canvas, $filePath, 100);    
                 break;
                 case 'png':
                     imagepng($canvas, $filePath, 100);
@@ -240,23 +279,18 @@ class Profile extends Controller
             // Destroy created images
             imagedestroy($original);
             imagedestroy($canvas);
-            
-            $return['name'] = $fileName;
-            $return['path'] = $filePath;
-            $return['uri'] = $uploadPath . $fileName;
-	    }
-
-        // Debug delay
-	    //$time = mktime() + 7;
-	    //while(mktime() < $time){}
-	    
-	    
-	    $this->load->view('profile/upload_result', array('return' => $return));
-	}
-	
-	function _resizeImage()
-	{
-	    
+        }
+        
+        list($width, $height) = getimagesize($filePath);
+        
+        return array(
+            'name' => $fileName,
+            'path' => $filePath,
+            'uri' => $uploadPath . $fileName,
+            'width' => $width,
+            'height' => $height,
+        );
+        
 	}
 	
 	/**

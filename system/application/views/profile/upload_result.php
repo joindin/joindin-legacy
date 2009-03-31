@@ -1,17 +1,8 @@
 <html>
-	<head>
-		<style>
-			html, body {
-				margin: 0;
-				padding: 0;
-			}
-		</style>
-	</head>
+	<head></head>
 	<body>
-        
         <script type="text/javascript">
-			window.parent.handleResponse(<?php echo json_encode($return); ?>);
+			window.parent.handleUploadResponse(<?php echo json_encode($return); ?>);
         </script>
-        
     </body>
 </html>

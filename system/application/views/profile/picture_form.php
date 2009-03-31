@@ -1,87 +1,81 @@
 <html>
 	<head>
+    	<link rel="stylesheet" type="text/css" href="/inc/css/upload_form.css" />
 		<script type="text/javascript" src="/inc/js/jquery.js"></script>
 		<script type="text/javascript">
-			function handleResponse(response)
+		
+		    /**
+		     * Handles response from the upload action.
+		     * @param json response
+		     */
+			function handleUploadResponse(response)
 			{
-				
-				if(response.uri !== undefined) {
-
-					var image = $('<img>').attr({
-						'src': response.uri,
-						'id': 'picture-preview',
-						'style': 'margin-top: -40px'
-					});
-
-					$('#picture-frame').fadeOut('fast', function () {
-						$('#picture-frame').html(image);
-						$('#picture-frame').fadeIn('slow');
-					});
-					$('#picture-overlay').fadeOut('slow');
+				if(response.error === undefined) {
+					showPicture(response.uri);
 					
 					// Send the picture URI to the parent window
 					window.parent.setPicture(response.uri);
 				}
 				else {
-					$('#uploader-message').html(String(response.error)).slideDown();
-					$('#picture-overlay').hide();
+				    showError(response.error);
 				}
 			}
+			
+			/**
+			 * Shows a picture in the picture frame.
+			 * @param string uri
+			 * @param string height
+			 */
+			function showPicture(uri)
+			{
+			    if(uri == '') { return; }
+			    
+			    // Create a new Image
+			    var image = new Image();
+			    image.onload = function() {
+			        var imageElement = $('<img>').attr({
+					    'src': this.src,
+					    'id': 'picture-preview',
+					    'style': 'margin-top: -' + (parseInt(this.height)/2) + 'px'
+				    });
 
+				    $('#picture-frame').fadeOut('fast', function () {
+					    $('#picture-frame').html(imageElement);
+					    $('#picture-frame').fadeIn('slow');
+				    });
+				    $('#picture-overlay').fadeOut('slow');
+			    };
+			    image.onerror = function() {
+			        showError('Loading of image failed.');
+			    }
+			    // Load the uri into the Image
+			    image.src = uri;
+			}
+
+            /**
+             * Shows an error message
+             * @param string message
+             */			
+			function showError(message) {
+				$('#picture-overlay').hide();
+				$('#uploader-message').html(String(message)).slideDown();
+			}
+
+            /**
+             * Actions when document is done loading
+             */
 			$(document).ready(function() {
+			    // Add some extra events to the form submit
 				$('#uploader-form').submit(function() {
 					$('#uploader-message').slideUp().empty();
 					$('#picture-overlay').show();
 					return true;
 				});
+				
+				// Check if the user already had a picture
+                showPicture(window.parent.getPicture());
 			});
 		</script>
-		<style>
-		
-			html, body {
-				margin: 0;
-				padding: 0;
-				color: #666666;
-				font-size: 13px;
-			}
-			
-			#form {
-				float: left;
-				margin-left: 200px;
-				padding: 10px;
-			}
-			
-			#picture {
-				position: fixed;
-				width: 150px;
-				height: 150px;
-				padding: 10px;
-				background-color: #fff;
-				border: 1px dotted #ccc;
-			}
-			
-			#picture-frame {
-				width: 150px;
-				height: 150px;
-				line-height: 150px;
-				text-align: center;
-			}
-			
-			#picture-frame img {
-				position: relative;
-				top: 50%;
-			}
-			
-			#picture-overlay {
-				position: absolute;
-				z-index: 100;
-				width: 150px;
-				height: 150px;
-				background-image: url('/inc/img/loading.gif');
-				background-repeat: no-repeat;
-				background-position: center;
-			}
-		</style>
 	</head>
 	<body>
         
@@ -102,8 +96,11 @@
                 <div id="uploader-message" style="display: none;"></div>
                 <p>
                 	<small>Allowed file types: gif, jpg, png</small><br />
-        			<small>Max. size: 250KB</small><br />
-        		    <small>Images will be resized to 150 pixels wide and/or 150 pixels high.</small><br />
+        			<small>Max. size: 2MB</small><br />
+        		    <small>
+        		        Images will be resized to 150 pixels wide and/or 150 pixels 
+        		        high with respect to the aspect ratio.
+        		    </small><br />
         		</p>
             </div>
         	<div style="clear:both;">&nbsp;</div>

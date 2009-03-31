@@ -145,15 +145,46 @@ if(!empty($msg_error)) {
     
     <div class="row">
         <label for="picture">Picture</label>
-        <script type="text/javascript">
+        <div id="uploader-form-container">
+            File uploading requires javascript enabled.
+        </div>
+		<input type="hidden" name="picture" id="picture" value="<?= $profile['picture'] ?>" />
+		<script type="text/javascript">
+            /**
+             * Sets a new value for the profile picture
+             * @param string uri
+             */
 			function setPicture(uri) 
 			{
 				$('#picture').val(uri);
 			}
+			
+			/**
+			 * Returns the value of the picture field. Used as a callback from the 
+			 * upload form.
+			 * @return string
+			 */
+			function getPicture()
+			{
+			    return $('#picture').val();
+			}
+			
+			/**
+			 * Creates a new iFrame. This is to prevent uploading when javascript 
+			 * is disabled.
+			 */
+			function loadIframe()
+			{
+			    var frame = $('<iframe></iframe>').attr({
+			        'id': 'uploader-form',
+			        'name': 'uploader-form',
+			        'src': '/user/profile/picture_form',
+			        'style': 'width: 100%; height: 220px;'
+			    });
+                $('#uploader-form-container').html(frame);
+			}
+			loadIframe();
         </script>
-		<iframe src="/user/profile/picture_form" width="100%" height="220px"></iframe>
-		<input type="hidden" name="picture" id="picture" />
-		
         <div class="clear"></div>
     </div>
     
