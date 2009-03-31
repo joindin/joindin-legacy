@@ -132,10 +132,10 @@ class Profile extends Controller
 	 */
 	function picture_form()
 	{
-	    /*$baseUrl = $this->config->item('base_url');
-	    if('http://' . $_SERVER['HTTP_HOST'] . '/' != $baseUrl) {
+	    $baseUrl = $this->config->item('base_url');
+	    if(preg_match("~^http:\/\/({$_SERVER['HTTP_HOST']})\/$~i", $baseUrl) !== 1) {
 	        die;
-	    }*/
+	    }
 	    $this->load->view('profile/picture_form');
 	}
 	
@@ -145,7 +145,7 @@ class Profile extends Controller
 	function picture_upload()
 	{
 	    $baseUrl = $this->config->item('base_url');
-	    if('http://' . $_SERVER['HTTP_HOST'] . '/' != $baseUrl) {
+	    if(preg_match("~^http:\/\/({$_SERVER['HTTP_HOST']})\/$~i", $baseUrl) !== 1) {
 	        die;
 	    }
 	    
