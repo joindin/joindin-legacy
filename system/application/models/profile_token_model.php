@@ -30,16 +30,22 @@ class Profile_token_model extends DomainModel
     protected $_fields = array();
     
     /**
-     * Length of the tokens that are generated
+     * the minimal length of the generated tokens
      * @var int
      */
-    protected $_tokenLenght = 10;
+    protected $_tokenMinLenght = 10;
     
     /**
      * Characters used in token generation.
      * @var string
      */
-    protected $_tokenKeySet = 'abcdefghijklm-_ABCDEFGHIJKLMNOPQRSTUVWXYZ-_0123456789-_';
+    protected $_tokenKeySet = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    
+    /**
+     * Caches the list of tokens retrieved from the database
+     * @var array
+     */
+    protected $_tokenCache = null;
     
     /**
      * Returns the profile for this token.
@@ -165,28 +171,81 @@ class Profile_token_model extends DomainModel
     }
     
     /**
-     * Generates a new token
+     * Returns a newly generated token
      * @return string
      */
     public function generate()
     {
-		$randkey = '';
+        // Token values
+        $tokenString = '';
+		$unique = false;
 		
-		for($i = 0; $i < $this->_tokenLenght; $i++) {
-			$randkey .= $this->_tokenKeySet[rand(0,(strlen($this->_tokenKeySet)-1))];
+		// Start values for the algorithm
+        $tokenLength = $this->_tokenMinLenght;
+        $currentTry = 0;
+        $maxUniqueTries = 10000;
+        
+        // Generate tokens until we find a unique one
+		while(!$unique) {
+		    $currentTry++;
+		    
+		    // Calculate the token lenght to use
+		    if($currentTry > $maxUniqueTries) {
+		        // Up the token lenght
+		        $tokenLength++;
+		        // Reset the tries
+		        $currentTry = 1;
+		    }
+		    
+		    // Create a new token with the appropriate length
+		    $tokenString = $this->_generateToken($tokenLength);
+		    
+		    // Check if it's unique
+		    $unique = $this->isUnique($tokenString);
 		}
 		
-		return $randkey; 
+		return $tokenString; 
     }
     
+    /**
+     * Generates a new token by selecting random characters from $this->_tokenKeySet
+     * @param int $length
+     * @return string
+     */
+    private function _generateToken($length = 10)
+    {
+        $token = '';
+        for($i = 0; $i < $length; $i++) {
+			$token .= $this->_tokenKeySet[rand(0,(strlen($this->_tokenKeySet)-1))];
+		}
+		
+		return $token;
+    }
     
     /**
      * Checks if the token is unique
      * @return boolean
      */
-    protected function isUnique()
+    protected function isUnique($token)
     {
-    	return true;
+        $token = trim($token);
+        if(empty($token)) {
+            return false;
+        }
+        
+        // Check the token cache
+        if(null === $this->_tokenCache) {
+            // Get all the tokens from the database
+            $tokens = array();
+            $tokenRows = $this->_database->query('SELECT `access_token` FROM `profile_tokens`;');
+            foreach($tokenRows->result() as $row) {
+                $tokens[] = $row->access_token;
+            }
+            $this->_tokenCache = $tokens;
+        }
+        
+        // Check if the token exists
+        return (!in_array($token, $this->_tokenCache));
     }
     
 }
