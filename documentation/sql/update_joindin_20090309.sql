@@ -349,22 +349,6 @@ CREATE TABLE `profile_token_fields` (
   PRIMARY KEY  (`id`)
 );
 
---
--- Dumping data for table `profile_token_fields`
---
-
-INSERT INTO `profile_token_fields` (`id`, `profile_token_id`, `field_name`) VALUES
-(14, 1, 'blog'),
-(12, 1, 'contact_email'),
-(13, 1, 'address'),
-(11, 1, 'full_name'),
-(15, 1, 'bio'),
-(16, 3, 'full_name'),
-(17, 3, 'website'),
-(18, 4, 'full_name'),
-(19, 4, 'contact_email'),
-(20, 4, 'blog'),
-(21, 4, 'bio');
 
 -- --------------------------------------------------------
 
