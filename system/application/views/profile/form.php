@@ -149,6 +149,7 @@ if(!empty($msg_error)) {
             File uploading requires javascript enabled.
         </div>
 		<input type="hidden" name="picture" id="picture" value="<?= $profile['picture'] ?>" />
+		<input type="hidden" name="delete_picture" id="delete_picture" value="0" />
 		<script type="text/javascript">
             /**
              * Sets a new value for the profile picture
@@ -167,6 +168,19 @@ if(!empty($msg_error)) {
 			function getPicture()
 			{
 			    return $('#picture').val();
+			}
+			
+			/**
+			 * Toggles the deletion of the picture from the iframe.
+			 */
+			function deletePicture(value)
+			{
+			    if(value == 1) {
+			        $('#delete_picture').val('1');
+			        //$('#picture').val('');
+			    } else {
+			        $('#delete_picture').val('0');
+			    }
 			}
 			
 			/**

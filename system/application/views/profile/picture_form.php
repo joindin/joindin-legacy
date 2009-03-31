@@ -11,6 +11,7 @@
 			function handleUploadResponse(response)
 			{
 				if(response.error === undefined) {
+				    $('#temp_picture').val(response.uri);
 					showPicture(response.uri);
 					
 					// Send the picture URI to the parent window
@@ -44,6 +45,7 @@
 					    $('#picture-frame').fadeIn('slow');
 				    });
 				    $('#picture-overlay').fadeOut('slow');
+				    $('#delete-picture').fadeIn('slow');
 			    };
 			    image.onerror = function() {
 			        showError('Loading of image failed.');
@@ -60,6 +62,10 @@
 				$('#picture-overlay').hide();
 				$('#uploader-message').html(String(message)).slideDown();
 			}
+			
+			function deletePicture() {
+			    
+			}
 
             /**
              * Actions when document is done loading
@@ -71,6 +77,20 @@
 					$('#picture-overlay').show();
 					return true;
 				});
+				
+				$('#delete-picture').click(function() {
+				
+				    window.parent.deletePicture(1);
+				    $('#picture-frame').fadeOut('slow', function() {
+				        $('#picture-frame').html('No picture');
+				        $('#picture-frame').fadeIn('slow');
+				    });
+				    $('#delete-picture').hide();
+				});
+				
+				if($('#temp_picture').val() != '') {
+				    $('#delete-picture').show('fast');
+				}
 				
 				// Check if the user already had a picture
                 showPicture(window.parent.getPicture());
@@ -89,11 +109,6 @@
             </div>
             
             <div id="form">
-                <form action="/user/profile/picture_upload" name="uploader-form" id="uploader-form" target="uploader-frame" enctype="multipart/form-data" method="post">
-                	<input type="file" id="uploader-file" name="uploader-file" /><br />
-                	<input type="submit" name="uploader-submit" id="uploader-submit" value="Upload" />
-                </form>
-                <div id="uploader-message" style="display: none;"></div>
                 <p>
                 	<small>Allowed file types: gif, jpg, png</small><br />
         			<small>Max. size: 2MB</small><br />
@@ -102,9 +117,24 @@
         		        high with respect to the aspect ratio.
         		    </small><br />
         		</p>
+                <form action="/user/profile/picture_upload" name="uploader-form" id="uploader-form" target="uploader-frame" enctype="multipart/form-data" method="post">
+                	<input type="file" id="uploader-file" name="uploader-file" /><br />
+                	<input type="submit" name="uploader-submit" id="uploader-submit" value="Upload" />
+                	<input type="hidden" name="temp_picture" id="temp_picture" value="" />
+                </form>
+                <div id="uploader-message" style="display: none;"></div>
+                
             </div>
+            
         	<div style="clear:both;">&nbsp;</div>
+        	
+        	<div id="delete-container">
+                <button id="delete-picture" style="display: none;">Delete picture</button>
+            </div>
         </div>
+        
+        
+        
         <iframe id="uploader-frame" name="uploader-frame" style="clear: both; display: none;"></iframe>
     </body>
 </html>

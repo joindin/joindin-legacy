@@ -7,6 +7,7 @@ body{font:13px/1.5 Arial,Helvetica,'Liberation Sans',FreeSans,sans-serif}a:focus
 /* Layout */
 html, body {
   height: 100%;
+  color: #666666;
 }
 
 html {
@@ -14,10 +15,19 @@ html {
   overflow-y: none;
 }
 
+small {
+    font-size: 85%;
+}
+
 #form {
 	float: left;
 	margin-left: 200px;
 	padding: 10px;
+}
+
+#uploader-message {
+    color: red;
+    font-weight: bold;
 }
 
 #picture {
@@ -49,4 +59,10 @@ html {
 	background-image: url('/inc/img/loading.gif');
 	background-repeat: no-repeat;
 	background-position: center;
+}
+
+#delete-container {
+    width: 150px;
+    padding: 10px;
+    text-align: center;
 }

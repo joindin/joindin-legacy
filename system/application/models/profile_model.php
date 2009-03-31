@@ -99,7 +99,7 @@ class Profile_model extends DomainModel
     public function deletePicture()
     {
     	if(!empty($this->_data['picture'])) { 
-    		if(file_exists(BASEPATH . '..' . $this->_data['picture'])) {
+    		if(is_file(BASEPATH . '..' . $this->_data['picture'])) {
     			unlink(BASEPATH . '..' . $this->_data['picture']);
     		}
     		

@@ -57,54 +57,43 @@ class Profile extends Controller
 
 	    if(!empty($_POST)) {
 	    	
+	    	$oldPicture = $profile->getPicture();
+	    	
+	    	// Validate the model
+	    	$validData = $profile->validate($_POST);
+	    	
 	    	// Check if we need to delete the picture
 	    	if(isset($_POST['delete_picture']) && $_POST['delete_picture'] == 1) {
 	    		$profile->deletePicture();
 	    	}
-	    	
-	    	// Validate the model
-	    	$validData = $profile->validate($_POST);
-	    	$uploaded = true;
-	    		    	
-	    	// Check if we need to upload a picture
-	    	if($validData && isset($_FILES['picture']['tmp_name']) && !empty($_FILES['picture']['tmp_name'])) {
-	    		// Configure the upload class
-	    		$uploadConfig = array (
-		    		'upload_path' => BASEPATH . '../inc/img/speaker_pictures/',
-		    		'allowed_types' => 'gif|jpg|png',
-		    		'max_size' => '250',
-		    		'max_width' => '150',
-		    		'max_height' => '150',
-	    			'overwrite' => true,
-		    	);
-		    	$this->load->library('upload', $uploadConfig);
-		    	
-		    	// Replace the filename with the name of the speaker
-		    	$fileName = strtolower(preg_replace('/[^A-Za-z0-9_\.]/', '', $profile->getFullName()));
-		    	preg_match('/.*\.(gif|jpg|png)$/i', $_FILES['picture']['name'], $matches);
-		    	if(count($matches) == 2) {
-		    		$fileExtension = $matches[1];
-	    			$_FILES['picture']['name'] = $fileName . '.' . $fileExtension;
-		    	}
-		    	
-		    	// Try to upload the picture
-		    	$uploaded = $this->upload->do_upload('picture');
-		    	if($uploaded) {
-		    		// Update the profile with the new picture
-		    		$uploadData = $this->upload->data();
-		    		// Fetch the old picture
-		    		$oldPicture = $profile->getPicture();
-		    		// Set the new picture
-		    		$profile->setPicture('/inc/img/speaker_pictures/' . $uploadData['file_name']);
-		    		// Remove the old picture
-		    		if(!empty($oldPicture) && ($oldPicture != $profile->getPicture()) && file_exists(BASEPATH . '..' . $oldPicture)) {
-		    			unlink(BASEPATH . '..' . $oldPicture);
-		    		}
-		    	}
-	    	}
 
-	    	// Check if everything went ok
-	        if($validData && $uploaded) {
+            if($validData) {
+
+                if($oldPicture != $profile->getPicture() && $profile->getPicture() != '') {
+                    // We have a new picture, move it to the correct location
+
+                    // Generate a new filename based on the speakers name
+                	$fileName = strtolower(preg_replace('/[^A-Za-z0-9_\.]/', '', $profile->getFullName()));
+                	$fileName .= '_' . mktime();
+                	preg_match('/.*\.(gif|jpg|png)$/i', $profile->getPicture(), $matches);
+                	if(count($matches) == 2) {
+                		$fileExtension = $matches[1];
+            			$filePath = '/inc/img/speaker_pictures/' . $fileName . '.' . $fileExtension;
+                	}
+                    
+                    // Copy the file
+                    if(copy(BASEPATH . '..' . $profile->getPicture(), BASEPATH . '..' . $filePath)) {
+                        // Delete the current picture (temporary uploaded one)
+                        $profile->deletePicture();
+                        // Delete the old picture (name_old-timestamp.xyz)
+                        if(is_file(BASEPATH . '..' . $oldPicture)) {
+                            unlink(BASEPATH . '..' . $oldPicture);
+                        }
+                        // Set the new picture
+                        $profile->setPicture($filePath);
+                    }
+                }
+                
 	        	// Save the profile
 	        	$profile->save();
 	        	// Redirect and display a message
@@ -112,9 +101,6 @@ class Profile extends Controller
 			    redirect('user/profile', 'location', 302);
 	        } else {
 	            $viewVars['msg_error'] = $profile->getErrors();
-	            if(isset($this->upload)) {
-	            	$viewVars['msg_error'] = array_merge($viewVars['msg_error'], $this->upload->error_msg);
-	            }
 	        }
 	    }
 	    
@@ -148,6 +134,14 @@ class Profile extends Controller
 	    if(preg_match("~^http:\/\/({$_SERVER['HTTP_HOST']})\/$~i", $baseUrl) !== 1) {
 	        die;
 	    }
+	    
+	    // Remove previous temporary file
+	    if(isset($_POST['temp_picture']) && !empty($_POST['temp_picture'])) {
+            $path = BASEPATH . '..' . $_POST['temp_picture'];
+            if(is_file($path) && preg_match_all('~^temp_[0-9]{10}\.(gif|jpeg|jpg|png)$~', str_replace('/inc/img/speaker_pictures/', '', $_POST['temp_picture']), $matches) === 1) {
+                unlink($path);
+            }
+        }
 	    
 	    $return = array();
 	    $uploadPath = '/inc/img/speaker_pictures/';
@@ -222,7 +216,7 @@ class Profile extends Controller
         $extension = $matches[1];
         
         // Write the image to disk
-        $fileName = microtime() . '.' . $extension;
+        $fileName = 'temp_' . mktime() . '.' . $extension;
         $filePath = $absolutePath . $fileName;
         
         // See if we need to resize the image
