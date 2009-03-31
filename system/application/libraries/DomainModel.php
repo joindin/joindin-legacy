@@ -224,11 +224,21 @@ class DomainModel extends Model
      */
     public function delete()
     {
+        // Fire the pre-delete hook
+        $this->preDelete();
+        
+        $success = false;
         if(!empty($this->_data[$this->_primaryKey])){
-            return $this->_database->delete($this->_table, array($this->_primaryKey => $this->_data[$this->_primaryKey]));
+            $success = $this->_database->delete($this->_table, array($this->_primaryKey => $this->_data[$this->_primaryKey]));
         }
 		
-		return false;
+        // Fire the post-delete hook
+        $hookReturn = $this->postDelete($success);
+        if(!is_null($hookReturn) && is_bool($hookReturn)) {
+            $success = $hookReturn;
+        }
+        
+		return $success;
     }
     
     /**
@@ -266,8 +276,11 @@ class DomainModel extends Model
             $success = $this->_database->update($this->_table, $data, array($this->_primaryKey => $primaryValue));
         }
         
-        // Fire the post-save hook
-        $this->postSave($success);
+        // Fire the post-dave hook
+        $hookReturn = $this->postSave($success);
+        if(!is_null($hookReturn) && is_bool($hookReturn)) {
+            $success = $hookReturn;
+        }
         
         return $success;
     }
@@ -359,7 +372,10 @@ class DomainModel extends Model
     	$success = (count($this->_errors) === 0);
     	
     	// Fire post-validate hook
-    	$this->postValidate($success);
+    	$hookReturn = $this->postValidate($success);
+        if(!is_null($hookReturn) && is_bool($hookReturn)) {
+            $success = $hookReturn;
+        }
     	
         return $success;
     }
@@ -660,5 +676,11 @@ class DomainModel extends Model
      * @param boolean $success
      */
     protected function postValidate($success)
+    {}
+    
+    protected function preDelete()
+    {}
+    
+    protected function postDelete()
     {}
 }

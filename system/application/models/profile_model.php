@@ -7,6 +7,10 @@
 require_once BASEPATH . 'application/libraries/DomainModel.php';
 /** Profile_token_model */
 require_once BASEPATH . 'application/models/profile_token_model.php';
+/** Profile_im_account_model */
+require_once BASEPATH . 'application/models/profile_im_account_model.php';
+/** Profile_web_address_model */
+require_once BASEPATH . 'application/models/profile_web_address_model.php';
 /** Country_model */
 require_once BASEPATH . 'application/models/country_model.php';
 
@@ -23,7 +27,7 @@ class Profile_model extends DomainModel
     	'user_id' => 'required',
     	'full_name' => array('required'),
         'contact_email' => array('required', 'valid_email'),
-    	'bio' => array('required', 'strip_tags')
+    	'bio' => array('strip_tags')
     );
     
     /**
@@ -104,17 +108,36 @@ class Profile_model extends DomainModel
     }
     
     /**
-     * Deletes the profile
+     * Deletes all data connected to this token.
+     * @param boolean $succes
      */
-    public function delete()
+    protected function postDelete($success)
     {
-    	// Delete the entry from the database
-    	$success = parent::delete();
-    	
-    	// Delete the picture from the filesystem
-    	$this->deletePicture();
-    	
-    	return $success;
+    	if($success) {
+    	    // Delete the picture from the filesystem
+        	$this->deletePicture();
+        	
+        	// Delete all tokens
+        	$tokenDao = new Profile_token_model();
+        	$tokens = $tokenDao->findAll(array('profile_id' => $this->getId()));
+        	foreach($tokens as $token) {
+        	    $token->delete();
+        	}
+        	
+        	// Delete all web addresses
+        	$waDao = new Profile_web_address_model();
+            $webAddresses = $waDao->findAll(array('profile_id' => $this->getId()));
+            foreach($webAddresses as $webAddress) {
+                $webAddress->delete();
+            }
+            
+        	// Delete all im accounts
+    	    $imDao = new Profile_im_account_model();
+            $imAccounts = $imDao->findAll(array('profile_id' => $this->getId()));
+            foreach($imAccounts as $imAccount) {
+                $imAccount->delete();
+            }
+    	}
     }
     
 }

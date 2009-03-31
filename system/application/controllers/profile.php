@@ -225,8 +225,8 @@ class Profile extends Controller
 	        	// Save the profile
 	        	$profile->save();
 	        	// Redirect and display a message
-	            //$this->session->set_flashdata('msg', 'Profile updated successfully!');
-			    //redirect('user/profile', 'location', 302);
+	            $this->session->set_flashdata('msg', 'Profile updated successfully!');
+			    redirect('user/profile', 'location', 302);
 	        } else {
 	            $viewVars['msg_error'] = $profile->getErrors();
 	            if(isset($this->upload)) {
@@ -255,19 +255,6 @@ class Profile extends Controller
 	    
 	    $profile = $this->profile_model->findByUserId($this->session->userdata('ID'));
 	    if(null !== $profile) {
-	    	
-	    	// Delete all the connected instant messaging accounts
-		    $imAccounts = $this->profile_im_account_model->findAll(array('profile_id' => $profile->getId()));
-		    foreach($imAccounts as $account) {
-	    		$account->delete();
-	    	}
-	    	
-	    	// Delete all the connected social network accounts
-		    $webAddress = $this->profile_web_address_model->findAll(array('profile_id' => $profile->getId()));
-		    foreach($webAddress as $account) {
-	    		$account->delete();
-	    	}
-	   		 
 	    	// Delete the profile
 	    	$profile->delete();
 	    }

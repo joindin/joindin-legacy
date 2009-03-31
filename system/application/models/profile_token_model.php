@@ -126,14 +126,7 @@ class Profile_token_model extends DomainModel
         
     }
     
-    protected function postSave($success)
-    {
-        if($success) {
-            $this->_saveFields();
-        }
-    }
-    
-    /**
+	/**
      * Collect token fields after construction
      * @see system/application/libraries/DomainModel#postConstruct()
      */
@@ -144,6 +137,30 @@ class Profile_token_model extends DomainModel
             foreach($query->result_array() as $field) {
                 $this->_fields[] = $field['field_name'];
             }
+        }
+    }
+    
+    /**
+     * Save token fields after token is saved properly
+     * @see system/application/libraries/DomainModel#postSave()
+     */
+    protected function postSave($success)
+    {
+        if($success) {
+            $this->_saveFields();
+        }
+    }
+    
+    /**
+     * Deletes token fields after token has been properly deleted.
+     * @see system/application/libraries/DomainModel#postDelete()
+     */
+    protected function postDelete($success) 
+    {
+        if($success) {
+            $this->_database->trans_start();
+            $this->_database->query("DELETE FROM `profile_token_fields` WHERE `profile_token_id` = '{$this->getId()}';");
+            $this->db->trans_complete();
         }
     }
     

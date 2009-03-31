@@ -125,6 +125,37 @@ if(!empty($msg_error)) {
                 	</fieldset>
     			</td>
     			<td style="vertical-align: top;">
+                	<fieldset>
+                		<?= form_checkbox(array(
+                				'id' => 'job_title', 
+                				'name' => 'fields[]', 
+                				'value' => 'job_title', 
+                				'checked' => in_array('job_title', $fields)
+                		)) ?>
+                		<label for="job_title">Job Title</label>
+                	</fieldset>
+                	
+                	<fieldset>
+                		<?= form_checkbox(array(
+                				'id' => 'bio', 
+                				'name' => 'fields[]', 
+                				'value' => 'bio', 
+                				'checked' => in_array('bio', $fields)
+                		)) ?>
+                		<label for="bio">Bio</label>
+                	</fieldset>
+                	
+                	<fieldset>
+                		<?= form_checkbox(array(
+                				'id' => 'resume', 
+                				'name' => 'fields[]', 
+                				'value' => 'resume', 
+                				'checked' => in_array('resume', $fields)
+                		)) ?>
+                		<label for="resume">Resume</label>
+                	</fieldset>
+    			</td>
+    			<td>
     				<fieldset>
                 		<?= form_checkbox(array(
                 				'id' => 'website', 
@@ -144,24 +175,15 @@ if(!empty($msg_error)) {
                 		)) ?>
                 		<label for="blog">Blog</label>
                 	</fieldset>
-                	<fieldset>
-                		<?= form_checkbox(array(
-                				'id' => 'bio', 
-                				'name' => 'fields[]', 
-                				'value' => 'bio', 
-                				'checked' => in_array('bio', $fields)
-                		)) ?>
-                		<label for="bio">Bio</label>
-                	</fieldset>
                 	
-                	<fieldset>
+    				<fieldset>
                 		<?= form_checkbox(array(
-                				'id' => 'resume', 
+                				'id' => 'picture', 
                 				'name' => 'fields[]', 
-                				'value' => 'resume', 
-                				'checked' => in_array('resume', $fields)
+                				'value' => 'picture', 
+                				'checked' => in_array('picture', $fields)
                 		)) ?>
-                		<label for="resume">Resume</label>
+                		<label for="picture">Picture</label>
                 	</fieldset>
     			</td>
     		</tr>
