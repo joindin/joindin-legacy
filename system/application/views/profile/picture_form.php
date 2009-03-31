@@ -45,6 +45,8 @@
 					    $('#picture-frame').fadeIn('slow');
 				    });
 				    $('#picture-overlay').fadeOut('slow');
+				    // Remove the delete flag
+				    window.parent.deletePicture(0);
 				    $('#delete-picture').fadeIn('slow');
 			    };
 			    image.onerror = function() {
@@ -63,10 +65,6 @@
 				$('#uploader-message').html(String(message)).slideDown();
 			}
 			
-			function deletePicture() {
-			    
-			}
-
             /**
              * Actions when document is done loading
              */
@@ -79,7 +77,7 @@
 				});
 				
 				$('#delete-picture').click(function() {
-				
+    				// Set the delete flag
 				    window.parent.deletePicture(1);
 				    $('#picture-frame').fadeOut('slow', function() {
 				        $('#picture-frame').html('No picture');
