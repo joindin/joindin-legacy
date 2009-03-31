@@ -145,33 +145,18 @@ if(!empty($msg_error)) {
     
     <div class="row">
         <label for="picture">Picture</label>
-        
-        <div style="vertical-align: middle;">
-	        <?php if(!empty($profile['picture'])) : ?>
-		        <div style="float: left; margin-right: 20px;">
-		            <img src="<?= $profile['picture'] ?>" />
-		        </div>
-		        <?php if(!empty($profile['picture'])) : ?>
-				<div style="float: left; clear: both; margin-top: 5px;">
-					<input type="checkbox" name="delete_picture" value="1" style="float: left; margin-top: 2px;" /> delete picture. 
-				</div>
-				<?php endif; ?>
-	        <?php endif; ?>
-	        
-	        <p>
-		        Upload a new picture: <br />
-		        <?php echo form_upload(array('name' => 'picture', 'id' => 'picture')); ?> <br />
-		        <small>Allowed file types: gif, jpg, png</small><br />
-		        <small>Dimesions: 150x150 pixels.</small><br />
-				<small>Max. size: 250KB</small>
-			</p>
-			
-	        <div style="clear: both;">&nbsp;</div>
-	        
-        </div>
-        
+        <script type="text/javascript">
+			function setPicture(uri) 
+			{
+				$('#picture').val(uri);
+			}
+        </script>
+		<iframe src="/user/profile/picture_form" width="100%" height="220px"></iframe>
+		<input type="hidden" name="picture" id="picture" />
+		
         <div class="clear"></div>
     </div>
+    
     <p style="margin-top: 30px; text-align: right;">
         <?php
             echo form_hidden('user_id', $profile['user_id']);

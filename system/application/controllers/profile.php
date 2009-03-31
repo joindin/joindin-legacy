@@ -38,7 +38,227 @@ class Profile extends Controller
 	    $this->template->write_view('content','profile/display', $viewVars);
 	    $this->template->render();
 	}
+	
+	/**
+	 * Edit a speaker profile
+	 */
+	function edit()
+	{
+        $this->load->helper('form');
+	    $this->load->model('profile_model');
+	    $this->load->model('country_model');
+	    
+	    $viewVars = array();
+	    
+	    $profile = $this->profile_model->findByUserId($this->session->userdata('ID'));
+	    if(null === $profile) {
+	    	$profile = new Profile_model(array('user_id' => $this->session->userdata('ID')));
+	    }
 
+	    if(!empty($_POST)) {
+	    	
+	    	// Check if we need to delete the picture
+	    	if(isset($_POST['delete_picture']) && $_POST['delete_picture'] == 1) {
+	    		$profile->deletePicture();
+	    	}
+	    	
+	    	// Validate the model
+	    	$validData = $profile->validate($_POST);
+	    	$uploaded = true;
+	    		    	
+	    	// Check if we need to upload a picture
+	    	if($validData && isset($_FILES['picture']['tmp_name']) && !empty($_FILES['picture']['tmp_name'])) {
+	    		// Configure the upload class
+	    		$uploadConfig = array (
+		    		'upload_path' => BASEPATH . '../inc/img/speaker_pictures/',
+		    		'allowed_types' => 'gif|jpg|png',
+		    		'max_size' => '250',
+		    		'max_width' => '150',
+		    		'max_height' => '150',
+	    			'overwrite' => true,
+		    	);
+		    	$this->load->library('upload', $uploadConfig);
+		    	
+		    	// Replace the filename with the name of the speaker
+		    	$fileName = strtolower(preg_replace('/[^A-Za-z0-9_\.]/', '', $profile->getFullName()));
+		    	preg_match('/.*\.(gif|jpg|png)$/i', $_FILES['picture']['name'], $matches);
+		    	if(count($matches) == 2) {
+		    		$fileExtension = $matches[1];
+	    			$_FILES['picture']['name'] = $fileName . '.' . $fileExtension;
+		    	}
+		    	
+		    	// Try to upload the picture
+		    	$uploaded = $this->upload->do_upload('picture');
+		    	if($uploaded) {
+		    		// Update the profile with the new picture
+		    		$uploadData = $this->upload->data();
+		    		// Fetch the old picture
+		    		$oldPicture = $profile->getPicture();
+		    		// Set the new picture
+		    		$profile->setPicture('/inc/img/speaker_pictures/' . $uploadData['file_name']);
+		    		// Remove the old picture
+		    		if(!empty($oldPicture) && ($oldPicture != $profile->getPicture()) && file_exists(BASEPATH . '..' . $oldPicture)) {
+		    			unlink(BASEPATH . '..' . $oldPicture);
+		    		}
+		    	}
+	    	}
+
+	    	// Check if everything went ok
+	        if($validData && $uploaded) {
+	        	// Save the profile
+	        	$profile->save();
+	        	// Redirect and display a message
+	            $this->session->set_flashdata('msg', 'Profile updated successfully!');
+			    redirect('user/profile', 'location', 302);
+	        } else {
+	            $viewVars['msg_error'] = $profile->getErrors();
+	            if(isset($this->upload)) {
+	            	$viewVars['msg_error'] = array_merge($viewVars['msg_error'], $this->upload->error_msg);
+	            }
+	        }
+	    }
+	    
+	    $viewVars['profile'] = $profile->getData();
+	    $viewVars['countries'] = $this->country_model->getList();
+	    
+        $this->template->write_view('content','profile/form', $viewVars);
+	    // Render the template
+		$this->template->render();
+	}
+
+	function picture_form()
+	{
+	    if($_SERVER['HTTP_HOST'] != 'local.joind.in') {
+	        die;
+	    }
+	    $this->load->view('profile/picture_form');
+	}
+	
+	function picture_upload()
+	{
+	    if($_SERVER['HTTP_HOST'] != 'local.joind.in') {
+	        die;
+	    }
+	    
+	    $return = array();
+	    $uploadPath = '/inc/img/speaker_pictures/';
+	    $absolutePath = BASEPATH . '..' . $uploadPath;
+	    
+	    
+	    
+	    if(!isset($_FILES) || empty($_FILES['uploader-file']['name'])) {
+	        $return['error'] = 'No file was uploaded.';
+	    } 
+	    else if($_FILES['uploader-file']['error'] != UPLOAD_ERR_OK) {
+	        
+	        switch($_FILES['uploader-file']['error']) {
+	            case UPLOAD_ERR_INI_SIZE:
+	            case  UPLOAD_ERR_FORM_SIZE:
+	                $return['error'] = 'The file exeeds the maximum file size of ' . ini_get('upload_max_filesize');
+	            break;
+	            case  UPLOAD_ERR_PARTIAL:
+	                $return['error'] = 'The file was only partially uploaded, please try again.';
+	            break;
+	            case  UPLOAD_ERR_NO_FILE:
+	                $return['error'] = 'No file was uploaded.';
+	            break;
+	            case  UPLOAD_ERR_NO_TMP_DIR:
+	            case  UPLOAD_ERR_CANT_WRITE:
+	            case  UPLOAD_ERR_EXTENSION:
+	                $return['error'] = 'The file upload failed due to a server error, please try again.';
+	            break;
+	        }
+	        
+	    }
+	    else if(
+	        preg_match('/.*\.(gif|jpg|jpeg|png)$/i', $_FILES['uploader-file']['name']) !== 1
+	        ||
+	        preg_match('/^image\/(gif|jpeg|png)$/i', $_FILES['uploader-file']['type']) !== 1
+	    ) {
+	        $return['error'] = 'Only gif, jpeg and png images are allowed.';
+	    }
+	    else if(!is_uploaded_file($_FILES['uploader-file']['tmp_name'])) {
+	        $return['error'] = 'An error occurred, please try again.';
+	    }
+	    else {
+	        extract($_FILES['uploader-file']);
+	        
+	        
+            // get the extension
+            preg_match('/.*\.(gif|jpg|jpeg|png)$/i', $name, $matches);
+            
+            $extension = $matches[1];
+            switch($extension) {
+                case 'jpg':
+                case 'jpeg': 
+                    $original = imagecreatefromjpeg($tmp_name);
+                break;
+                case 'png':
+                    $original = imagecreatefrompng($tmp_name);
+                break;
+                case 'gif':
+                    $original = imagecreatefromgif($tmp_name);
+                break;
+            }
+            
+            // Calculate the aspect ratio
+            list($originalWidth, $originalHeight) = getimagesize($tmp_name);
+            $ratio = ($originalWidth/$originalHeight);
+            if($ratio < 1) {
+                $height = 150;
+                $width = 150 * $ratio;
+            }
+            else if($ratio > 1) {
+                $height = 150 / $ratio;
+                $width = 150;
+            } 
+            else if($ratio == 1) {
+                $height = $width = 150;
+            }
+            
+            // Create a new image
+            $canvas = imagecreatetruecolor($width,$height);
+            imagecopyresampled($canvas,$original,0,0,0,0,$width,$height,$originalWidth,$originalHeight); 
+            
+            // Write the image to disk
+            $fileName = microtime() . '.' . $extension;
+            $filePath = $absolutePath . $fileName;
+            
+            switch($extension) {
+                case 'jpg':
+                case 'jpeg':
+                imagejpeg($canvas, $filePath, 100);    
+                break;
+                case 'png':
+                    imagepng($canvas, $filePath, 100);
+                break;
+                case 'gif':
+                    imagegif($canvas, $filePath);
+                break;
+            }
+            
+            // Destroy created images
+            imagedestroy($original);
+            imagedestroy($canvas);
+            
+            $return['name'] = $fileName;
+            $return['path'] = $filePath;
+            $return['uri'] = $uploadPath . $fileName;
+	    }
+
+        // Debug delay
+	    //$time = mktime() + 7;
+	    //while(mktime() < $time){}
+	    
+	    
+	    $this->load->view('profile/upload_result', array('return' => $return));
+	}
+	
+	function _resizeImage()
+	{
+	    
+	}
+	
 	/**
 	 * Lists access tokens for the speaker profile
 	 */
@@ -155,94 +375,6 @@ class Profile extends Controller
 		
 		redirect('user/profile/access', 'location', 302);
 	}
-	
-	/**
-	 * Edit a speaker profile
-	 */
-	function edit()
-	{
-        $this->load->helper('form');
-	    $this->load->model('profile_model');
-	    $this->load->model('country_model');
-	    
-	    $viewVars = array();
-	    
-	    $profile = $this->profile_model->findByUserId($this->session->userdata('ID'));
-	    if(null === $profile) {
-	    	$profile = new Profile_model(array('user_id' => $this->session->userdata('ID')));
-	    }
-
-	    if(!empty($_POST)) {
-	    	
-	    	// Check if we need to delete the picture
-	    	if(isset($_POST['delete_picture']) && $_POST['delete_picture'] == 1) {
-	    		$profile->deletePicture();
-	    	}
-	    	
-	    	// Validate the model
-	    	$validData = $profile->validate($_POST);
-	    	$uploaded = true;
-	    		    	
-	    	// Check if we need to upload a picture
-	    	if($validData && isset($_FILES['picture']['tmp_name']) && !empty($_FILES['picture']['tmp_name'])) {
-	    		// Configure the upload class
-	    		$uploadConfig = array (
-		    		'upload_path' => BASEPATH . '../inc/img/speaker_pictures/',
-		    		'allowed_types' => 'gif|jpg|png',
-		    		'max_size' => '250',
-		    		'max_width' => '150',
-		    		'max_height' => '150',
-	    			'overwrite' => true,
-		    	);
-		    	$this->load->library('upload', $uploadConfig);
-		    	
-		    	// Replace the filename with the name of the speaker
-		    	$fileName = strtolower(preg_replace('/[^A-Za-z0-9_\.]/', '', $profile->getFullName()));
-		    	preg_match('/.*\.(gif|jpg|png)$/i', $_FILES['picture']['name'], $matches);
-		    	if(count($matches) == 2) {
-		    		$fileExtension = $matches[1];
-	    			$_FILES['picture']['name'] = $fileName . '.' . $fileExtension;
-		    	}
-		    	
-		    	// Try to upload the picture
-		    	$uploaded = $this->upload->do_upload('picture');
-		    	if($uploaded) {
-		    		// Update the profile with the new picture
-		    		$uploadData = $this->upload->data();
-		    		// Fetch the old picture
-		    		$oldPicture = $profile->getPicture();
-		    		// Set the new picture
-		    		$profile->setPicture('/inc/img/speaker_pictures/' . $uploadData['file_name']);
-		    		// Remove the old picture
-		    		if(!empty($oldPicture) && ($oldPicture != $profile->getPicture()) && file_exists(BASEPATH . '..' . $oldPicture)) {
-		    			unlink(BASEPATH . '..' . $oldPicture);
-		    		}
-		    	}
-	    	}
-
-	    	// Check if everything went ok
-	        if($validData && $uploaded) {
-	        	// Save the profile
-	        	$profile->save();
-	        	// Redirect and display a message
-	            $this->session->set_flashdata('msg', 'Profile updated successfully!');
-			    redirect('user/profile', 'location', 302);
-	        } else {
-	            $viewVars['msg_error'] = $profile->getErrors();
-	            if(isset($this->upload)) {
-	            	$viewVars['msg_error'] = array_merge($viewVars['msg_error'], $this->upload->error_msg);
-	            }
-	        }
-	    }
-	    
-	    $viewVars['profile'] = $profile->getData();
-	    $viewVars['countries'] = $this->country_model->getList();
-	    
-        $this->template->write_view('content','profile/form', $viewVars);
-	    // Render the template
-		$this->template->render();
-	}
-	
 	
 	/**
 	 * Deletes the speaker profile
