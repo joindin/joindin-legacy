@@ -1,0 +1,5 @@
+.buildpath
+.project
+.settings
+system/application/config/config.php
+system/application/config/database.php
