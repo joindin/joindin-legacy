@@ -205,6 +205,7 @@ if(!empty($msg_error)) {
     <p style="margin-top: 30px; text-align: right;">
         <?php
             echo form_hidden('user_id', $profile['user_id']);
+            echo "<a href=\"/user/profile\">cancel</a> or ";
             echo form_submit(array('name' => 'sub', 'class' => 'btn'), 'Save profile');
     		echo form_close();
 		?>
