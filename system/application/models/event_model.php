@@ -133,7 +133,7 @@ class Event_model extends Model {
 				event_id=%s and
 				active=1
 			order by
-				date_given desc
+				speaker asc
 		',$id);
 		$q=$this->db->query($sql);
 		return $q->result();

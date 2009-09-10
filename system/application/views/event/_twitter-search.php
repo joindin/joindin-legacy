@@ -14,8 +14,10 @@ a.twitter_lnk:hover { text-decoration: underline; }
 		<ul>
     	<?php 
 			//echo '<pre>'; print_r($results); echo '</pre>';
+			if(isset($results[0]) && count($results[0])>0){
 			foreach($results[0] as $k=>$v){
 				echo '<li style="padding-top:5px"><a class="twitter_lnk" href="http://twitter.com/'.$v->from_user.'/statuses/'.$v->id.'">'.$v->text.'</a>';
+			}
 			}
 		?>
 		</ul>

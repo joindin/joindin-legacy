@@ -65,10 +65,12 @@ if(!empty($claimed)){
 		foreach($claimed[0]->speakers as $k=>$v){
 			$cl[$claimed[0]->codes[$k]]=trim($v);
 		}
-		//print_r($cl);
+		//echo '<!--'; print_r($cl); print_R($claimed); echo '-->';
 		//echo 'sp:'.$cl[$claimed[0]->rcode];
-		$speaker[]='<a href="/user/view/'.$claimed[0]->userid.'">'.escape($cl[$claimed[0]->rcode]).'</a>';
-		unset($cl[$claimed[0]->rcode]);
+		if(isset($cl[$claimed[0]->rcode])){
+			$speaker[]='<a href="/user/view/'.$claimed[0]->userid.'">'.escape($cl[$claimed[0]->rcode]).'</a>';
+			unset($cl[$claimed[0]->rcode]);
+		}
 		foreach($cl as $ik=>$iv){ $speaker[]=escape($iv); }
 		
 		//TODO: show the other, non-claimed user
@@ -148,8 +150,13 @@ if (!empty($msg)):
 <h2 id="comments">Comments</h2>
 
 <?php
+$adv_mo=strtotime('+3 months',$det->date_given);
+$comment_closed=false;
 
-if (empty($comments)) {
+if(time()>$adv_mo){
+	$this->load->view('msg_info', array('msg' => 'Comments closed.'));
+	$comment_closed=true;
+}elseif (empty($comments)) {
 ?>
 <?php $this->load->view('msg_info', array('msg' => 'No comments yet.')); ?>
 <?php
@@ -225,7 +232,7 @@ if (empty($comments)) {
 //only show the form if the time for the talk has passed
 //my code: if($det->date_given<=$time_at_event){
 
-if ($det->date_given > $time_at_event) {
+if (($det->date_given > $time_at_event) || $comment_closed) {
 ?>
 <p class="info">Currently not open for comment.</p>
 <?php

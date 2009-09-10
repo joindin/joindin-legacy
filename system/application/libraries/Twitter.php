@@ -18,7 +18,7 @@ class Twitter {
 			$tmp=json_decode(file_get_contents($url));
 			foreach($tmp as $ok=>$ov){ $ret[]=$ov; }
 		}
-		//echo '<pre>'; print_r($ret); echo '</pre>';
+		echo '<!-- <pre>'; print_r($ret); echo '</pre> -->';
 		return $ret;
 	}
 	

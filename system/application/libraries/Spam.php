@@ -6,7 +6,7 @@ class Spam {
 	var $CI		= null;
 	
 	// Chk values: regex, substr
-	function check($chk,$val,$source='db'){
+	function check($chk,$val,$source='db'){ 
 		$this->CI =& get_instance();
 		$pass=true;
 		if(is_array($chk)){
@@ -28,9 +28,9 @@ class Spam {
 	function chk_substr($val){
 		
 	}
-	function chk_regex($val){
+	function chk_regex($val){ 
 		$pass=true;
-		$rows=$this->fetch_txt('regex');
+		$rows=$this->fetch_txt('regex'); 
 		foreach($rows as $k=>$v){
 			$m=preg_match($v,$val);
 			if($m){ return false; }

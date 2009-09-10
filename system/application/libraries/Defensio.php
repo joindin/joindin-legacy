@@ -40,6 +40,7 @@ class Defensio {
 			fclose($fp);
 		}
 		if($resp){
+			error_log($resp);
 			$p=explode("\r\n\r\n",$resp);
 			$xml=simplexml_load_string($p[1]);
 			//echo 'response: <pre>'; print_r($xml); echo '</pre>';
