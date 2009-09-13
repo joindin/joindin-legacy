@@ -8,7 +8,7 @@
  * Handles a service request and outputs the 
  * response to the user.
  * 
- * @author Mattijs Hoitink <mattijs@ibuildings.nl>
+ * @author Mattijs Hoitink <mattijshoitink@gmail.com>
  *
  */
 abstract class ServiceHandler

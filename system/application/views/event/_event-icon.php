@@ -1,9 +1,20 @@
 <div class="img">
 	<div class="frame">
 	<?php 
-		$path=$_SERVER['DOCUMENT_ROOT'].'/inc/img/event_icons/';
-		$img=(!empty($event->event_icon) && is_file($path.$event->event_icon)) ? escape($event->event_icon) : 'none.gif'; 
+		$path = '/inc/img/event_icons/';
+		if(($event->getIcon() != null && $event->getIcon() != '') && is_file($_SERVER['DOCUMENT_ROOT'] . $path . $event->getIcon())) {
+		    $img = escape($event->getIcon());
+        } else {
+            $img = 'none.gif';
+        }
+        $title = escape($event->getTitle());
+        $html = "<img src=\"{$path}{$img}\" alt=\"{$title}\" />";
+        
+        if(isset($showLink) && $showLink) {
+            $html = "<a href=\"/event/view/{$event->getId()}\">" . $html . "</a>";
+        }
+        
+        echo $html;
 		?>
-		<?php if (!empty($showlink)): ?><a href="/event/view/<?php echo $event->ID; ?>"><?php endif; ?><img src="/inc/img/event_icons/<?php echo $img ?>" alt="<?php echo escape($event->event_name); ?>"/><?php if (!empty($showlink)): ?></a><?php endif; ?>
 	</div>
 </div>

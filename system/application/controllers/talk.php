@@ -1,15 +1,329 @@
 <?php
+/**
+ * Class Talk
+ * @package Core
+ * @subpackage Controllers
+ */
 
+
+/**
+ * Controls talks in the system.
+ * @author Mattijs Hoitink <mattijshoitink@gmail.com>
+ */
 class Talk extends Controller {
 	
-	var $auth	= false;
+	/**
+	 * Speaker profile for the authenticated user.
+	 * @var SpeakerProfileModel
+	 */
+	protected $_speaker = null;
 	
+	/** **/
+	
+	/**
+	 * @see Controller::Controller()
+	 */
 	function Talk(){
 		parent::Controller();
-		$this->auth=($this->user_model->isAuth()) ? true : false;
-		$this->user_model->logStatus();
+		
+		// Check if user is authenticated
+		if(!user_is_authenticated()) {
+			redirect('/account/login');
+		}
+		
+		// Check if user has a speaker profile
+		$this->load->model('SpeakerModel');
+		$speaker = $this->SpeakerModel->findByUserId(user_get_id(), true);
+		if(null === $speaker && strpos($this->uri->uri_string(), '/talk/json/') !== 0) {
+			redirect('/speaker/profile');
+		}
+		$this->_speaker = $speaker;
+		
+	    $this->load->model('TalkModel');
 	}
-	function index(){
+	
+	public function index() 
+	{
+	    redirect('/profile/talks');
+	}
+	
+	/**
+	 * Add a new talk to a speakers profile. Speakers can only add a talk to their 
+	 * own profile.
+	 */
+	function add()
+	{
+	    $talk = new TalkModel(array('speaker_profile_id' => $this->_speaker->getId()));
+	    $this->_manageTalk($talk);
+	}
+	
+	/**
+	 * Edit talk data. 
+	 * @param int $id
+	 */
+	public function edit($id)
+	{
+	    if(null === $id) {
+	        redirect('/speaker/talks');
+	    }
+	    
+	    $talk = $this->TalkModel->find($id);
+	    if(null === $talk || $this->_speaker->getId() !== $talk->getSpeakerId()) {
+	        redirect('/speaker/talks');
+	    }
+	    
+	    $this->_manageTalk($talk);
+	}
+	
+	/**
+	 * Handles talk management and show the add/edit form.
+	 * @param TalkModel $talk
+	 */
+	public function _manageTalk($talk)
+	{
+	    if(!$talk instanceof TalkModel) {
+	        redirect('/speaker/talks');
+	    }
+	    
+	    $viewVars = array (
+	        'talk' => $talk,
+	        'action' => ($talk->isNew()) ? 'talk/add' : "talk/edit/{$talk->getId()}"   
+	    );
+	    
+	    if($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if($talk->validate($_POST)) {
+                $talk->save();
+                $this->session->set_flashdata('Talk data successfully saved');
+	            redirect('/speaker/talks');
+            }
+            else {
+                $viewVars['error'] = $session->getErrors();
+            }
+        }
+        
+	    $this->template->write_view('content', 'talk/form', $viewVars);
+		$this->template->render();
+	}
+	
+	/**
+	 * Deletes a talk from a speaker profile
+	 * @param int $id
+	 */
+	function delete($id) 
+	{
+	    if(null === $id) {
+	        redirect('/speaker/talks');
+	    }
+	    
+	    $talk = $this->TalkModel->find($id);
+	    if(null === $talk || $this->_speaker->getId() !== $talk->getSpeakerId()) {
+	        $this->session->set_flashdata('Talk deletion failed. Please try again.');
+	        redirect('/speaker/talks');
+	    }
+	    
+	    if('POST' === $_SERVER['REQUEST_METHOD'] && $talk->getId() == $_POST['talk_id']) {
+	        $talk->delete();
+	        $this->session->set_flashdata('Talk deleted successfully.');
+	        redirect('/speaker/talks');
+	    }
+	    
+	    $this->template->write_view('content', 'talk/delete', array('talk' => $talk));
+		$this->template->render();
+	}
+	
+	/**
+	 * Displays talk details
+	 * @param int|string $talk_id
+	 */
+	function view($talk_id)
+	{
+	    $talk = $this->TalkModel->find($talk_id);
+	    if(null === $talk || $this->_speaker->getId() !== $talk->getSpeakerId()) {
+	        $this->session->set_flashdata('error', 'Talk not found.');
+	        redirect('/speaker/talks');
+	    }
+	    
+	    $this->template->write_view('content', 'talk/view', array('talk' => $talk));
+		$this->template->render();
+	}
+	
+	/**
+	 * Displays the sessions for a talk.
+	 * @param int|string $talk_id
+	 */
+	function sessions($talk_id)
+	{
+		$talk = $this->TalkModel->find($talk_id);
+		if(null === $talk || $this->_speaker->getId() !== $talk->getSpeakerId()) {
+			redirect('/speaker/talks');
+		}
+		
+		$this->template->write_view('content', 'talk/sessions', array('talk' => $talk));
+		$this->template->render();
+	}
+	
+	/**
+	 * Displays statistics for a talk.
+	 * @param int|string $talk_id
+	 */
+	function statistics($talk_id)
+	{
+		$talk = $this->TalkModel->find($talk_id);
+		if(null === $talk || $this->_speaker->getId() !== $talk->getSpeakerId()) {
+			redirect('/speaker/talks');
+		}
+		
+		$viewVars = array (
+			'talk' => $talk,
+			'speaker' => $this->_speaker
+		);
+		
+		$this->template->write_view('content', 'talk/statistics', $viewVars);
+		$this->template->render();
+	}
+	
+	/**
+	 * Shows access tokens for a talk.
+	 * @param int|string $talk_id
+	 */
+	function access($talk_id)
+	{
+		$talk = $this->TalkModel->find($talk_id);
+		if(null === $talk || $this->_speaker->getId() !== $talk->getSpeakerId()) {
+			redirect('/speaker/talks');
+		}
+		
+		$this->template->write_view('content', 'talk/access', array('talk' => $talk));
+		$this->template->render();
+	}
+	
+	/**
+	 * Adds an access token to a talk.
+	 * @param int|string $talk_id
+	 */
+	function addtoken($talk_id)
+	{
+		$talk = $this->TalkModel->find($talk_id);
+		if(null === $talk || $this->_speaker->getId() !== $talk->getSpeakerId()) {
+			redirect('/speaker/talks');
+		}
+		$this->load->model('TalkTokenModel');
+		$token = new TalkTokenModel(array('talk_id)' => $talk->getId()));
+		
+		$this->_showTokenForm($token);
+	}
+	
+	/**
+	 * edits an access token for a talk.
+	 * @param int|string $token_id
+	 */
+	function edittoken($token_id)
+	{
+		$this->load->model('TalkTokenModel');
+		$token = $this->TalkTokenModel->find($token_id);
+		if(null === $token || $this->_speaker->getId() !== $token->getTalk()->getSpeakerId()) {
+			redirect('/speaker/talks');
+		}
+		
+		$this->_showTokenForm($token);
+	}
+	
+	/**
+	 * Show the talk token form.
+	 * @param TalkTokenModel $token
+	 */
+	function _showTokenForm(TalkTokenModel $token)
+	{
+		$viewVars = array (
+			'token' => $token,
+			'talk' => $token->getTalk()
+		);
+		
+		if('POST' === $_SERVER['REQUEST_METHOD']) {
+			$token->setDescription($_POST['description']);
+			if($token->isNew()) {
+				require_once BASEPATH . 'application/libraries/StringTokenGenerator.php';
+				$generator = new StringTokenGenerator($token->getAllTokenStrings());
+				$token->setAccessToken($generator->generate());
+				$token->setCreated(mktime());
+			}
+			
+			if($token->save()) {
+				$this->session->set_flashdata('message', 'Token saved successfully.');
+				redirect('/talk/access/' . $token->getTalkId());
+			}
+			else {
+				$viewVars['error'] = $token->getErrors();
+			}
+		}
+		
+		$this->template->write_view('content', 'talk/form_token', $viewVars);
+		$this->template->render();
+	}
+	
+	/**
+	 * Deletes an access token from a talk.
+	 * @param int|string $token_id
+	 */
+	function deltoken($token_id)
+	{
+		$this->load->model('TalkTokenModel');
+		$token = $this->TalkTokenModel->find($token_id);
+		if(null === $token || $this->_speaker->getId() !== $token->getTalk()->getSpeakerId()) {
+			redirect('/speaker/talks');
+		}
+		
+		if($token->delete()) {
+			$this->session->set_flashdata('message', 'Token deleted successfullt.');
+		} else {
+			$this->session->set_flashdata('error', 'Token deletion failed.');
+		}
+		redirect('/talk/access/' . $token->getTalkId());
+	}
+	
+	/**
+	 * Fetches token data in JSON format. For use in frontend. This function
+	 * needs to be incorporated in the API.
+	 * @todo Move to public API (mattijs 06/08/2009)
+	 * @param string $token
+	 * @return string
+	 */
+	function json($token = null)
+	{
+		if(empty($token)) {
+			echo json_encode(array('error' => array('message' => 'Token not found.')));
+			return;
+		}
+		
+		$this->load->model('TalkTokenModel');
+		$token = $this->TalkTokenModel->findByAccessToken($token, true);
+		if(null === $token) {
+			echo json_encode(array('error' => array('message' => 'Token not found.')));
+			return;
+		}
+		
+		$talk = $token->getTalk();
+		$speaker = $talk->getSpeaker();
+		echo json_encode(array(
+			'talk' => array (
+				'id' => $talk->getId(),
+				'title' => $talk->getTitle(),
+				'description' => $talk->getDescription()
+			),
+			'speaker' => array (
+				'name' => $speaker->getFullName()
+			)
+		));
+		
+	}
+	
+	/// ***** ///
+	/**
+	 * OLD function below can be removed when replacement functions are created
+	 * and checked
+	 * - Mattijs (06/04/2009)
+	 */
+	function index_old(){
 		$this->load->helper('form');
 		$this->load->library('validation');
 		$this->load->model('talks_model');
@@ -21,7 +335,7 @@ class Talk extends Controller {
 		//$this->load->view('talk/main',array('talks'=>$talks));
 	}
 	//-------------------
-	function add($id=null,$opt=null){
+	function add_old($id=null,$opt=null){
 		if(isset($id) && $id=='event'){
 			$eid	= $opt; 
 			$id		= null; 
@@ -149,10 +463,10 @@ class Talk extends Controller {
 		$this->template->write_view('content','talk/add',$out,TRUE);
 		$this->template->render();
 	}
-	function edit($id){
+	function edit_old($id){
 		$this->add($id);
 	}
-	function delete($id){
+	function delete_old($id){
 		$this->load->helper('form');
 		$this->load->library('validation');
 		$this->load->model('talks_model');
@@ -167,7 +481,7 @@ class Talk extends Controller {
 		$this->template->write_view('content','talk/delete',$arr,TRUE);
 		$this->template->render();
 	}
-	function view($id,$add_act=null,$code=null){
+	function view_old($id,$add_act=null,$code=null){
 		$this->load->model('talks_model');
 		$this->load->model('event_model');
 		$this->load->helper('form');
@@ -337,7 +651,7 @@ class Talk extends Controller {
 		$this->template->render();
 		//$this->load->view('talk/detail',$arr);
 	}
-	function claim(){
+	function claim_old(){
 		if(!$this->user_model->isSiteAdmin()){ redirect(); }
 		$this->load->model('user_admin_model','uam');
 		$this->load->library('validation');
@@ -391,7 +705,7 @@ The Joind.in Crew
 		$this->template->render();
 	}
 	//------------------------
-	function given_mo_check($str){
+	function given_mo_check_old($str){
 		$t=mktime(
 			0,0,0,
 			$this->validation->given_mo,
@@ -412,7 +726,7 @@ The Joind.in Crew
 			return false;
 		}
 	}
-	function cinput_check($str){
+	function cinput_check_old($str){
 		if($this->input->post('cinput') != $this->session->userdata('cinput')){
 			$this->validation->_error_messages['cinput_check'] = 'Incorrect Captcha characters.';
 			return FALSE;                            

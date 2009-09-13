@@ -15,7 +15,7 @@ require_once BASEPATH . 'application/libraries/service/ServiceResponseJson.php';
  * Tries to find the handler and dispatches the request to 
  * the handler
  * 
- * @author Mattijs Hoitink <mattijs@ibuildings.nl>
+ * @author Mattijs Hoitink <mattijshoitink@gmail.com>
  *
  */
 class ServiceManager 

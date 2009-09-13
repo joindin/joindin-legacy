@@ -17,7 +17,7 @@ require_once BASEPATH . 'application/models/country_model.php';
 /**
  * Represents a speaker profile.
  * 
- * @author Mattijs Hoitink <mattijs@ibuildings.nl>
+ * @author Mattijs Hoitink <mattijshoitink@gmail.com>
  */
 class Profile_model extends DomainModel 
 {

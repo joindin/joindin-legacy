@@ -154,7 +154,6 @@ small {
 	background: #66cc00 url(/inc/img/bg-btn-success.gif) 0 50% repeat-x;
 	background-position: center;
 	border-color: #57ae00;
-	padding-left: 18px;
 }
 
 .loading {
@@ -180,6 +179,21 @@ small {
 	padding-left: 10px;
 }
 
+/* Alingments */
+.right {
+	text-align: right;
+}
+
+.middle {
+	vertical-align: middle;
+}
+
+/* text colors */
+.grey { color: #555555; }
+.blue { color: #2368AF; }
+.orange { color: #ff9900; }
+.green { color: #8BDD39; }
+
 /***/
 
 table.data-table {
@@ -196,8 +210,35 @@ table.data-table thead tr td {
 	border-bottom: 1px dotted #D7DCDF;
 }
 
+table.data-table .label {
+    font-weight: bold;
+}
+
 table.data-table .alt-row {
 	background: #F0F4F8;
+}
+
+table.data-table .divider {
+	font-weight: bold;
+	border-bottom: 1px dotted #D7DCDF;
+}
+
+table.data-table .sub {
+	padding-left: 10px;
+}
+
+table.fields-table {
+	width: 80%;
+}
+
+table.fields-table td label {
+	display: inline-table;
+	vertical-align: middle;
+}
+
+table.fields-table td checkbox {
+	display: inline-table;
+	vertical-align: middle;
 }
 
 /***/
@@ -425,6 +466,10 @@ table.data-table .alt-row {
 	margin: 0;
 }
 
+.no-border {
+	border: 0;
+}
+
 #ctn {
 	padding: 40px 0;
 }
@@ -603,7 +648,7 @@ table.data-table .alt-row {
 	margin: 7px 0;
 }
 
-#ctn .main .detail {
+#ctn .main .detail, #ctn .main .admin {
 	margin-bottom: 17px;
 	padding: 10px 15px;
 	/*background: #f4f7f9 url(/inc/img/bg-ftr.gif) left -1px repeat-x;*/
@@ -750,7 +795,20 @@ table.data-table .alt-row {
 	display: inline;
 }
 
+#ctn .bluebar {
+	color: #2368af;
+	background: #f0f4f8 url(/inc/img/bg-box.gif) left top repeat-x;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	padding: 5px 7px;
+	margin-bottom: 10px;
+}
+
 /***/
+
+#ctn .list {
+    width: 100%;
+}
 
 #ctn .list td {
 	padding: 7px 5px 7px 0;
@@ -833,6 +891,9 @@ table.data-table .alt-row {
 /*#ctn .main */form .rating {
 	display: block;
 }
+.rating {
+	vertical-align: middle;
+}
 
 /*#ctn .main */form .errors {
 	display: block;
@@ -863,6 +924,15 @@ table.data-table .alt-row {
 #ctn .main form input[type=text],
 #ctn .main form input[type=password] {
 	width: 350px;
+}
+
+#ctn .main form input[type=text].datepicker {
+    width: 120px;
+    padding-left: 20px;
+    background-image: url('/inc/img/icon-ical.gif');
+    background-repeat: no-repeat;
+    background-position: 2px;
+    border-style: solid;
 }
 
 #ctn .main form .row-buttons {
@@ -914,6 +984,15 @@ table.data-table .alt-row {
 .ui-state-error .ui-icon {
 	float: left; 
 	margin-right: 5px;
+}
+
+/* JQuery UI datepicker */
+.ui-widget-header {
+    color: #666666;
+}
+
+.ui-datepicker-calendar .ui-state-highlight {
+    margin-bottom: 0;
 }
 
 /***/

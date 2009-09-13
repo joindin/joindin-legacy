@@ -1,66 +1,56 @@
-<div class="menu">
-	<ul>
-		<li><a href="/user/main">Dashboard</a>
-		<li class="active"><a href="/user/manage">Manage Account</a>
-        <li><a href="/user/profile">Speaker profile</a>
-	<?php if (user_is_admin()): ?>
-		<li><a href="/user/admin">User Admin</a>
-	<?php endif; ?>
-	</ul>
-	<div class="clear"></div>
-</div>
-
 <?php 
-if (empty($msg)) {
-    $msg=$this->session->flashdata('msg');
-}
-if (!empty($msg)): 
+// Load some sidebars
+$this->load->view('sidebar/user-navigation');
+$this->load->view('sidebar/claim-session');
+
+// Catch Flash message
+$this->load->view('message/flash');
+
+// Add message area
+$this->load->view('message/area');
 ?>
-<?php $this->load->view('msg_info', array('msg' => $msg)); ?>
-<?php endif; ?>
+
+<h1>My Account</h1>
 
 <div class="box">
-    <?php echo form_open('user/manage', array('class' => 'form-user-manage')); ?>
+    <?= form_open('user/manage', array('class' => 'form-user-manage')); ?>
     
-    <?php if (!empty($this->validation->error_string)): ?>
-            <?php $this->load->view('msg_error', array('msg' => $this->validation->error_string)); ?>
-    <?php endif; ?>
+    <?php if(isset($error)) {
+        $this->load->view('message/error', array('message' => $error));
+    } ?>
     
     <div class="row">
-    	<label for="full_name">Full Name</label>
-    	<?php echo form_input(array('name' => 'full_name', 'id' => 'full_name', 'value' => $curr_data[0]->full_name), $this->validation->full_name); ?>
+    	<label for="display_name">Display Name</label>
+    	<?= form_input(array('name' => 'display_name', 'id' => 'display_name', 'value' => $user->getDisplayName())); ?>
 
         <div class="clear"></div>
     </div>
     
     <div class="row">
     	<label for="email">Email Address</label>
-    	<?php echo form_input(array('name' => 'email', 'id' => 'email', 'value' => $curr_data[0]->email), $this->validation->email); ?>
+    	<?= form_input(array('name' => 'email', 'id' => 'email', 'value' => $user->getEmail())); ?>
 
         <div class="clear"></div>
     </div>
     
     <div class="row">
-    	<label for="pass">Password</label>
-    	<?php echo form_input(array('type' => 'password', 'name' => 'pass', 'id' => 'pass')); ?>
+    	<label for="password">Password</label>
+    	<?php echo form_input(array('type' => 'password', 'name' => 'password', 'id' => 'password')); ?>
 
         <div class="clear"></div>
     </div>
     
     <div class="row">
-    	<label for="pass_conf">Confirm Password</label>
-    	<?php echo form_input(array('type' => 'password', 'name' => 'pass_conf', 'id' => 'pass_conf')); ?>
+    	<label for="password_confirm">Confirm Password</label>
+    	<?php echo form_input(array('type' => 'password', 'name' => 'password_confirm', 'id' => 'password_confirm')); ?>
 
         <div class="clear"></div>
     </div>
 	
 	<div class="row row-buttons">
-    	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Save changes'); ?>
+    	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn'), 'Save changes'); ?>
     </div>
 
     <?php echo form_close(); ?>
 </div>
 
-<p>
-	<a href="">Request API Access</a>
-</p>

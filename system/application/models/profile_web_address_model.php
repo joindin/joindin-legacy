@@ -11,7 +11,7 @@ require_once BASEPATH . 'application/models/profile_web_address_type_model.php';
 /**
  * Represents a web address from a profile.
  * 
- * @author Mattijs Hoitink <mattijs@ibuildings.nl>
+ * @author Mattijs Hoitink <mattijshoitink@gmail.com>
  */
 class Profile_web_address_model extends DomainModel 
 {

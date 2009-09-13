@@ -3,3 +3,6 @@
 .settings
 system/application/config/config.php
 system/application/config/database.php
+sysem/application/config/email.php
+system/logs/
+system/cache/ctokens/

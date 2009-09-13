@@ -2,8 +2,8 @@
 
 function mycal_get_calendar($year, $month, $day = null)
 {
-    $CI =& get_instance();
-    $CI->load->model('event_model');
+    $ci =& get_instance();
+    $ci->load->model('EventModel');
     
     if (null === $year) {
         $year = date('Y');
@@ -13,8 +13,7 @@ function mycal_get_calendar($year, $month, $day = null)
         $month = date('m');
     }
     
-    $events = $CI->event_model->getDayEventCounts($year, $month);
-
+    $events = $ci->EventModel->getEventCountPerMonthDay($month, $year);
     return mycal_build_calendar($year, $month, $day, $events);
 }
 

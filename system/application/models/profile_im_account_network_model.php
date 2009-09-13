@@ -8,7 +8,7 @@ require_once BASEPATH . 'application/libraries/DomainModel.php';
 
 /**
  * 
- * @author Mattijs Hoitink <mattijs@ibuildings.nl>
+ * @author Mattijs Hoitink <mattijshoitink@gmail.com>
  *
  */
 class Profile_im_account_network_model extends DomainModel

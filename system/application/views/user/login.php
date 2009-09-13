@@ -22,7 +22,7 @@
     
     <div class="row">
     	<label for="pass">Password</label>
-    	<?php echo form_input(array('name' => 'pass', 'id' => 'pass', 'type' => 'password')); ?>
+    	<?php echo form_input(array('name' => 'password', 'id' => 'password', 'type' => 'password')); ?>
     
         <div class="clear"></div>
     </div>

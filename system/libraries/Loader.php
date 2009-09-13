@@ -150,7 +150,7 @@ class CI_Loader {
 			show_error('The model name you are loading is the name of a resource that is already being used: '.$name);
 		}
 	
-		$model = strtolower($model);
+		//$model = strtolower($model);
 		
 		if ( ! file_exists(APPPATH.'models/'.$path.$model.EXT))
 		{

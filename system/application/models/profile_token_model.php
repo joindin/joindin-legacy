@@ -11,7 +11,7 @@ require_once BASEPATH . 'application/models/profile_model.php';
 /**
  * Represents an access token to a speaker profile.
  * 
- * @author Mattijs Hoitink <mattijs@ibuildings.nl>
+ * @author Mattijs Hoitink <mattijshoitink@gmail.com>
  */
 class Profile_token_model extends DomainModel 
 {

@@ -1,73 +1,73 @@
-<?php 
-$v=$details[0];
-if(isset($full_name)){ $this->validation->name=escape($full_name); }
- 
-menu_pagetitle('Blog: ' . escape($v->title));
-?>
+<?php menu_pagetitle('Blog: ' . escape($post->getTitle())); ?>
+
 <div class="detail">
 
-	<h1><?=$v->title?></h1>
+	<h1><?= $post->getTitle() ?></h1>
 
 	<p class="info">
-		Written <strong><?php echo date('M j, Y',$v->date_posted); ?></strong> at <strong><?php echo date('H:i',$v->date_posted); ?></strong> (<?php echo $v->author_id; ?>)
+		Written <strong><?= date('M j, Y',$post->getDate()) ?></strong> 
+		at <strong><?= date('H:i',$post->getDate()) ?></strong> 
+		(<?= $post->getAuthor() ?>)
 	</p>
 
 	<div class="desc">
-		<?php echo auto_p(auto_link($v->content)); ?>
+		<?= auto_p(auto_link($post->getContent())); ?>
 	</div>
 </div>
 
 <?php if(user_is_admin()): ?>
 <p class="admin">
-	<a class="btn-small" href="/blog/edit/<?php echo $v->ID; ?>">Edit post</a>	
-	<a class="btn-small" href="">Delete post</a>
+	<a class="btn-small" href="/blog/edit/<?= $post->getId() ?>">Edit post</a>	
+	<a class="btn-small" href="/blog/delete/<?= $post->getId() ?>">Delete post</a>
 </p>
 <?php endif; ?>
 
 <?php
-if (empty($msg)) {
-	$msg=$this->session->flashdata('msg');
+if(empty($msg)) { $msg = $this->session->flashdata('msg'); }
+if (!empty($msg)){ 
+    $this->load->view('message/info', array('message' => $msg));
 }
-if (!empty($msg)): 
 ?>
-    <?php $this->load->view('msg_info', array('msg' => $msg)); ?>
-<?php endif; ?>
 
 <div class="box">
 
-<h2 id="comments">Comments</h2>
+    <h2 id="comments">Comments</h2>
 
-<?php
-
-if (empty($comments)) {
-?>
-<?php $this->load->view('msg_info', array('msg' => 'No comments yet.')); ?>
-<?php
-    
+<?php 
+if ($post->getCommentCount() == 0) {
+    $this->load->view('message/info', array('message' => 'No comments yet.'));
 } else {
 
-    foreach ($comments as $k => $v) {
-        if (isset($v->author_id) && $v->author_id != 0){ 
-			$nm=(!empty($v->full_name)) ? escape($v->full_name) : escape($v->uname);
-    		$uname = '<a href="/user/view/'.$v->author_id.'">'.$nm.'</a> ';
-    	}else{ 
-    		$uname = '<span class="anonymous">Anonymous</span>'; 
-    	}
-
-    	$class = '';
-
-    	if ($v->author_id == 0) {
-    	    $class .= ' row-blog-comment-anonymous';
-    	}
+    foreach ($post->getComments() as $blogComment) {
+        if(null !== $blogComment->getAuthor()) {
+            $usernameHtml = '<a href="/user/view/' . $blogComment->getAuthor()->getId() . '">' . $blogComment->getAuthor()->getUsername() . '</a>';
+            $usernameCssClass = '';
+        }
+        else {
+            $usernameHtml = '<span class="anonymous">' . $blogComment->getAuthorName() . '</span>';
+            $usernameCssClass = 'row-blog-comment-anonymous';
+        }
 
 ?>
-<div id="comment-<?php echo $v->ID ?>" class="row row-blog-comment<?php echo $class?>">
-    <p class="info">
-    	<strong><?php echo escape($v->title); ?></strong> by <strong><?php echo $uname; ?></strong>
-    </p>
-    <div class="desc">
-    	<?php echo auto_p(escape(trim($v->content))); ?>
+    <div id="comment-<?= $blogComment->getId() ?>" class="row row-blog-comment<?= $usernameCssClass ?>">
+        <p class="info">
+        	On <strong><?= date('M j, Y', $blogComment->getDate()) ?></strong> 
+        	at <strong><?= date('H:i', $blogComment->getDate()) ?></strong> 
+        	by <strong><?= $usernameHtml; ?></strong>
+        </p>
+        <div class="desc">
+        	<?= auto_p(escape(trim($blogComment->getComment()))) ?>
+        </div>
+        <?php if (user_is_admin()): ?>
+        <p class="admin">
+            <a class="btn-small" href="#" onClick="delBlogComment(<?= $blogComment->getId() ?>);return false;">Mark as Spam</a>
+		    <a class="btn-small" href="#" onClick="delBlogComment(<?= $blogComment->getId() ?>);return false;">Delete</a>
+	    </p>
+	    <?php endif; ?>
+
+	    <div class="clear"></div>
     </div>
+<<<<<<< HEAD:system/application/views/blog/view.php
     <?php if (user_is_admin()): ?>
     <p class="admin">
 		<a class="btn-small" href="#" onClick="delBlogComment(<?=$v->ID?>);return false;">Delete</a>
@@ -76,6 +76,8 @@ if (empty($comments)) {
 
 	<div class="clear"></div>
 </div>
+=======
+>>>>>>> orange_refactor:system/application/views/blog/view.php
 <?php
     }
 }
@@ -83,49 +85,41 @@ if (empty($comments)) {
 </div>
 
 <h3 id="comment-form">Write a comment</h3>
-<?php echo form_open('blog/view/'.$pid . '#comment-form', array('class' => 'form-blog')); ?>
+<?= form_open('blog/view/' . $post->getId() . '#comment-form', array('class' => 'form-blog')); ?>
 
-<?php if (!empty($this->validation->error_string)): ?>
-    <?php $this->load->view('msg_error', array('msg' => $this->validation->error_string)); ?>
+<?php if (isset($error) && !empty($error)): ?>
+    <?php $this->load->view('message/error', array('message' => $error)); ?>
 <?php endif; ?>
 
 <div class="row">
-	<label for="comment">Title</label>
-	<?php 
-    $p=array(
-		'name'	=>'title',
-		'id'	=>'title',
-		'size'	=>30,
-		'value'	=>$this->validation->title
-	);
-	echo form_input($p);
-    ?>
-    <div class="clear"></div>
-</div>
-<div class="row">
 	<label for="comment">Name</label>
 	<?php 
-    $p=array(
-		'name'	=>'name',
-		'id'	=>'name',
-		'size'	=>30,
-		'value'	=>$this->validation->name
-	);
-	echo form_input($p);
+	if(user_is_authenticated()) {
+	    echo user_get_displayname();
+	} 
+	else {
+        $options = array(
+		    'name' => 'author_name',
+		    'id' => 'author_name',
+		    'size' => 30,
+		    'value' => (isset($comment) ? $comment->getAuthorName() : '')
+	    );
+	    echo form_input($options);
+	}
     ?>
     <div class="clear"></div>
 </div>
 <div class="row">
 	<label for="comment">Comment</label>
 	<?php 
-    $p=array(
-		'name'	=>'comment',
-		'id'	=>'comment',
-		'cols'	=>40,
-		'rows'	=>9,
-		'value'	=>$this->validation->comment
+    $options = array(
+		'name' => 'comment',
+		'id' => 'comment',
+		'cols' => 40,
+		'rows' => 9,
+		'value'	=> (isset($comment) ? $comment->getComment() : '')
 	);
-	echo form_textarea($p); 
+	echo form_textarea($options); 
     ?>
     <div class="clear"></div>
 </div>

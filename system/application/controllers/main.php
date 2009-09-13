@@ -1,28 +1,53 @@
 <?php
+/**
+ * Class Main
+ * @package Core
+ * @subpackage Controllers
+ */
 
+/**
+ * Shows the sites main page
+ *
+ * @author Chris Cornut <enygma@phpdeveloper.org>
+ * @author Mattijs Hoitink <mattijshoitink@gmail.com>
+ */
 class Main extends Controller {
 	
 	function Main(){
 		parent::Controller();		
-		$this->user_model->logStatus();
 	}
+	
+	/**
+	 * Displays global information for joind.in:
+	 * <ul>
+	 *  <li>hot events</li>
+	 *  <li>upcoming events</li>
+	 *  <li>popular sessions</li>
+	 * </ul>
+	 */
 	function index(){
 		$this->load->helper('form');
-		$this->load->model('talks_model');
-		$this->load->model('event_model');
-		$this->load->model('blog_posts_model','bpm');
+		$this->load->model('SessionModel');
+		$this->load->model('EventModel');
 		$this->load->helper('reqkey');
 		
-		$reqkey = buildReqKey();
+		// Build protection files
+		$requestKey = buildReqKey();
+		$secretKey = buildSecFile($requestKey);
+		
+		// Get hot events
+		$hotEvents = $this->EventModel->getHotEvents(3);
+		// Get upcoming events
+		$upcomingEvents = $this->EventModel->getUpcomingEvents(3);
+		// Get popular sessions
+		$popularSessions = $this->SessionModel->getPopularSessions(7);
 		
 		$arr=array(
-			'talks'	=> $this->talks_model->getPopularTalks(),
-			'hot_events'=> $this->event_model->getHotEvents(3),
-		    'upcoming_events'=> $this->event_model->getUpcomingEvents(false, 3),
-			'logged'=> $this->user_model->isAuth(),
-			'latest_blog'=> $this->bpm->getLatestPost(),
-			'reqkey' => $reqkey,
-			'seckey' => buildSecFile($reqkey)
+			'hotEvents'=> $hotEvents,
+		    'upcomingEvents'=> $upcomingEvents,
+		    'popularSessions'	=> $popularSessions,
+			'requestKey' => $requestKey,
+			'secretKey' => $secretKey
 		);
 		
 		$this->template->write_view('content','main/index',$arr,TRUE);

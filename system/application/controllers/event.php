@@ -1,690 +1,830 @@
 <?php
+/**
+ * Class Event
+ * @package Core
+ * @subpackage Controllers
+ */
 
+/**
+ * Handles display of information regarding Events.
+ *
+ * @author Chirs Cornut <enygma@phpdeveloper.org>
+ * @author Mattijs Hoitink <mattijshoitink@gmail.com>
+ */
 class Event extends Controller {
 	
 	function Event(){
 		parent::Controller();
-		$this->user_model->logStatus();
-	}
-	function cust($in){
-	    $this->load->helper('url');
-		$this->load->model('event_model');
-		$id=$this->event_model->getEventIdByName($in);
-		//print_r($id); echo $id[0]->ID;
-		if(isset($id[0]->ID)){ 
-			redirect('event/view/'.$id[0]->ID); 
-		}else{ echo 'error'; }
-	}
-	//--------------------
-	function _runList($type, $pending = false)
-	{
-		$prefs = array (
-			'show_next_prev'  => TRUE,
-			'next_prev_url'   => '/event'
-		);
 		
+		$this->load->model('EventModel');
+	}
+	
+	/**
+     * Displays a list all events.
+     */
+	function index(){
+		$this->_displayList();
+	}
+	
+	/**
+	 * Displays a of "hot" events
+	 */
+    function hot(){
+		$this->_displayList('hot');
+	}
+	
+	/**
+	 * Displays a list of "upcoming" events.
+	 */
+    function upcoming(){
+		$this->_displayList('upcoming');
+	}
+	
+	/**
+	 * Displays a list of past events.
+	 */
+    function past(){
+		$this->_displayList('past');
+	}
+	
+	/**
+	 * Displays a list of pending events
+	 */
+	function pending(){
+	    $this->load->helper('user');
+	    if(!user_is_administrator()) {
+	        redirect();
+	    }
+	    
+	    $this->load->model('EventModel');
+	    
+	    $events = $this->EventModel->getPendingEvents();
+	    
+		$this->template->write_view('content', 'event/pending', array('events' => $events), true);
+		$this->template->render();
+	}
+	
+	/**
+	 * Displays a list of events. The type parameter is used to specify what events 
+	 * will end up on the list. Three types can be provided:
+	 * <ul>
+	 *  <li>hot: Only events with comments are shown</li>
+	 *  <li>upcomming: Only events that are in the future are shown</li>
+	 *  <li>past: Only events that are in the past are shown</li>
+	 * </ul>
+	 * If no type is specified all events will be added to the list.
+     * @param string $type
+	 */
+	function _displayList($type = '')
+	{
 		$this->load->helper('form');
 		$this->load->helper('reqkey');
-		//$this->load->library('calendar',$prefs);
-		$this->load->model('event_model');
 		$this->load->helper('mycal');
+		$this->load->model('EventModel');
 		
 		switch ($type) {
 		    case 'hot':
-		        $events = $this->event_model->getHotEvents(null);
+		        $events = $this->EventModel->getHotEvents();
 		        break;
 		    case 'upcoming':
-		        $events = $this->event_model->getUpcomingEvents(null);
+		        $events = $this->EventModel->getUpcomingEvents();
 		        break;
 		    case 'past':
-		        $events = $this->event_model->getPastEvents(null);
+		        $events = $this->EventModel->getPastEvents();
 		        break;
 		    default:
-		        $events = $this->event_model->getEventDetail(null,null,null,$pending);
+		        $events = $this->EventModel->findAll(array('active' => 1), '`start` DESC');
 		        break;
 		}
 
-		$reqkey = buildReqKey();
+		$requestKey = buildReqKey();
 		
-		$arr=array(
+		$viewVars = array(
 			'type' => $type,
-			'events' =>$events,
-			//'admin'	 =>($this->user_model->isAdminEvent($id)) ? true : false
+			'events' => $events,
 			'month'	=> null,
 			'day'	=> null,
 			'year'	=> null,
 			'all'	=> true,
-			'reqkey' => $reqkey,
-			'seckey' => buildSecFile($reqkey)
+			'requestKey' => $requestKey,
+			'secretKey' => buildSecFile($requestKey)
 		);	
-		$this->template->write_view('content','event/main',$arr,TRUE);
-		$this->template->render();
 		
-		//$this->load->view('event/main',array('events'=>$events));
-
-	}
-
-	function index($pending=false){
-		$this->_runList('index', $pending);
+		$this->template->write_view('content', 'event/main', $viewVars, true);
+		$this->template->render();
 	}
 	
-    function hot($pending=false){
-		$this->_runList('hot', $pending);
-	}
-	
-    function upcoming($pending=false){
-		$this->_runList('upcoming', $pending);
-	}
-	
-    function past($pending=false){
-		$this->_runList('past', $pending);
-	}
-
+	/**
+	 * Displays a list of events for a given year, month and day.
+	 * @param int $year
+	 * @param int $month
+	 * @param int $day
+	 */
 	function calendar($year = null, $month = null, $day = null){
-		$this->load->model('event_model');
+		$this->load->model('EventModel');
 		$this->load->helper('reqkey');
 		$this->load->helper('mycal');
-
-		if (!$year) {
+        
+		if (null === $year) {
 		    $year = date('Y');
 		}
 		
-	    if (!$month) {
+	    if (null === $month) {
 		    $month = date('m');
 		}
-
-		$checkDay = $day === null ? 1 : $day;
-
-		if (!checkdate((int)$month, (int)$checkDay, (int)$year)) {
-		    $day   = null;
+        
+        /* 
+         * Check the date values.
+         * If day was null substitute it with 1 for the check
+         */
+		if (!checkdate((int)$month, (int)((null === $day) ? 1 : $day), (int)$year)) {
+		    $day = null;
 		    $month = date('m');
-		    $year  = date('Y');
+		    $year = date('Y');
 		}
+        
+		if(null === $day) {
+	        // The range is a complete month
+	        $rangeStart	= mktime(0, 0, 0, $month, 1, $year);
+    		$rangeEnd = mktime(0, 0, 0, $month + 1, 0, $year);
+        } else {
+            // The range is only 1 day
+            $rangeStart	= mktime(0, 0, 0, $month, $day, $year);
+            $rangeEnd = mktime(23, 59, 59, $month, $day, $year);
+        }
+        
+        // Get the events
+		$events	= $this->EventModel->getEventsForDateRange($rangeStart, $rangeEnd);
 
-		$start	= mktime(0,   0,  0, $month, $day === null ? 1                 : $day, $year);
-		$end	= mktime(23, 59, 59, $month, $day === null ? date('t', $start) : $day, $year);
-
-		$events	= $this->event_model->getEventDetail(null, $start, $end);
-		
-		/*$date_p	= explode('_',$date);
-		if(count($date_p)==2){
-			$start	= mktime(0,0,0,$date_p[0],1,$date_p[1]);
-			$end	= mktime(0,0,0,$date_p[0],date('t',$start),$date_p[1]);	
-		}else{
-			$start	= mktime(0,0,0,$date_p[0],1,$date_p[2]);
-			$end	= mktime(0,0,0,$date_p[0],date('t',$start),$date_p[2]);
-		}		
-		$events	= $this->event_model->getEventDetail(null,$start,$end);
-		*/
-		$reqkey = buildReqKey();
-
-		/*$arr=array('events'=>$events,'mo'=>$date_p[0]);
-		if(count($date_p)==2){
-			$arr['day']	= 1;
-			$arr['yr']	= $date_p[1];
-		}else{ 
-			$arr['day']	= $date_p[1];
-			$arr['yr']	= $date_p[2];
-		}*/
-		$arr=array(
+        // Collect the view variables		
+		$requestKey = buildReqKey();
+		$viewVars = array(
 			'events' => $events,
 			'month'	 => $month,
 			'day'	 => $day,
 			'year'	 => $year,
-			'reqkey' => $reqkey,
-			'seckey' => buildSecFile($reqkey)
+			'requestKey' => $requestKey,
+			'secretKey' => buildSecFile($requestKey)
 		);
 
-		$this->template->write_view('content','event/main',$arr,TRUE);
+		$this->template->write_view('content', 'event/main', $viewVars, TRUE);
 		$this->template->render();
 	}
-	function add($id=null){
-		//check for admin
-		if($id){ 
-			if(!$this->user_model->isAdminEvent($id)){ redirect(); } 
-		}else{
-			if(!$this->user_model->isSiteAdmin()){ redirect(); }
-		}
-		
-		if($id){ $this->edit_id=$id; }
-		$this->load->helper('form');
-		$this->load->library('validation');
-		$this->load->model('event_model');
-		$this->load->model('tz_model');
-		
-		$config['upload_path'] 	= $_SERVER['DOCUMENT_ROOT'].'/inc/img/event_icons';
-		$config['allowed_types']= 'gif|jpg|png';
-		$config['max_size']		= '100';
-		$config['max_width']  	= '90';
-		$config['max_height']  	= '90';
-		$this->load->library('upload', $config);
-		
-		$rules=array(
-			'event_name'	=> 'required',
-			'event_loc'		=> 'required',
-			'event_tz'		=> 'required',
-			'start_mo'		=> 'callback_start_mo_check',
-			'end_mo'		=> 'callback_end_mo_check'
-		);
-		$this->validation->set_rules($rules);
-		
-		$fields=array(
-			'event_name'=>'Event Name',
-			'start_mo'	=>'Start Month',
-			'start_day'	=>'Start Day',
-			'start_yr'	=>'Start Year',
-			'end_mo'	=>'End Month',
-			'end_day'	=>'End Day',
-			'end_yr'	=>'End Year',
-			'event_loc'	=>'Event Location',
-			'event_desc'=>'Event Description',
-			'event_tz'	=>'Event Timezone',
-			'event_href'=>'Event Link(s)',
-			'event_hashtag'=>'Event Hashtag'
-		);
-		$this->validation->set_fields($fields);
-		
-		if($this->validation->run()==FALSE){
-			if($id){
-				//we're editing here...
-				$ret=$this->event_model->getEventDetail($id);
-				foreach($ret[0] as $k=>$v){
-					if($k=='event_start'){
-						$this->validation->start_mo	= date('m',$v);
-						$this->validation->start_day= date('d',$v);
-						$this->validation->start_yr	= date('Y',$v);
-					}elseif($k=='event_end'){
-						$this->validation->end_mo	= date('m',$v);
-						$this->validation->end_day	= date('d',$v);
-						$this->validation->end_yr	= date('Y',$v);
-					}else{ $this->validation->$k=$v; }
-				}
-			}
-			$arr=array(
-				'tz'	=> $this->tz_model->getOffsetInfo()
-			);
-			$this->template->write_view('content','event/add',$arr);
-			$this->template->render();
-		}else{ 
-			//success...
-			$arr=array(
-				'event_name'	=>$this->input->post('event_name'),
-				'event_start'	=>mktime(
-					0,0,0,
-					$this->input->post('start_mo'),
-					$this->input->post('start_day'),
-					$this->input->post('start_yr')
-				),
-				'event_end'		=>mktime(
-					23,59,59,
-					$this->input->post('end_mo'),
-					$this->input->post('end_day'),
-					$this->input->post('end_yr')
-				),
-				'event_loc'		=>$this->input->post('event_loc'),
-				'event_desc'	=>$this->input->post('event_desc'),
-				'active'		=>'1',
-				'event_tz'		=>$this->input->post('event_tz'),
-				'event_href'	=>$this->input->post('event_href'),
-				'event_hashtag'	=>$this->input->post('event_hashtag')
-			);
-			if($this->upload->do_upload('event_icon')){
-				$updata=$this->upload->data();
-				$arr['event_icon']=$updata['file_name'];
-			}
-			if($id){
-				//edit...
-				$this->db->where('id',$this->edit_id);
-				$this->db->update('events',$arr);
-			}else{ 
-				$this->db->insert('events',$arr); 
-				$id=$this->db->insert_id();				
-			}
-			
-			$arr=array(
-				'msg'	=> 'Data saved! <a href="/event/view/'.$id.'">View event</a>',
-				'tz'	=> $this->tz_model->getContInfo()
-			);
-			$this->template->write_view('content','event/add',$arr);
-			$this->template->render();
-		}
-	}
-	function edit($id){
-		if(!$this->user_model->isAdminEvent($id)){ redirect(); }
-		$this->add($id);
-	}
+	
+	/**
+	 * Displays the details of an Event
+	 * @param int $id
+	 */
 	function view($id){
 		$this->load->helper('form');
 		$this->load->helper('reqkey');
 		$this->load->helper('events');
-		$this->load->library('validation');
-		$this->load->library('defensio');
-		$this->load->library('spam');
-		$this->load->model('event_model');
-		$this->load->model('event_comments_model');
-		$this->load->model('user_attend_model','uam');
+		$this->load->model('UserModel');
+		$this->load->model('EventModel');
+		$this->load->model('EventCommentModel');
 		
-		$events	= $this->event_model->getEventDetail($id);				
-		$talks	= $this->event_model->getEventTalks($id);
-		$is_auth= $this->user_model->isAuth();
+		$viewVars = array();
 		
-		foreach($talks as $k=>$v){
-			$codes=array();
-			$p=explode(',',$v->speaker);
-			foreach($p as $ik=>$iv){
-				$val=trim($iv);
-				$talks[$k]->codes[$val]=buildCode($v->ID,$v->event_id,$v->talk_title,$val);
-			}
-		}
+		$event = $this->EventModel->find($id);
+        if(null === $event) {
+            redirect('/event');
+        }
 		
-		if($is_auth){ 
-			$uid=$this->session->userdata('ID');
-			$chk_attend=($this->uam->chkAttend($uid,$id)) ? true : false;
-			
-		}else{ $chk_attend=false; }
+        $viewVars['event'] = $event;
+
+        if($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            $comment = new EventCommentModel($_POST);
+            $comment->setEventId($event->getId());
+            $comment->setDate(time());
+            $comment->setActive(1);
+            // Check for user_id
+            if($this->session->userdata('id')!= null) {
+                $user = $this->UserModel->find($this->session->userdata('id'));
+                $comment->setUserId($user->getId());
+                $comment->setAuthorName($user->getUsername());
+            }
+            
+            // Validate the comment
+            if($comment->validate()) {
+                // Save the comment
+                $comment->save();
+                
+                // Send a mail to the administrators
+                /** Mailer */
+                require_once BASEPATH . 'application/libraries/Mailer.php';
+                
+                $mail = new Mailer(array(
+                    'to' => $this->config->item('mail_admin'),
+                    'from' => $this->config->item('mail_feedback'),
+                    'subject' => 'Joind.in: Event feedback - ' . $event->getId()
+                ));
+                $mail->setBodyFromFile(
+                    'mail/event_comment',
+                    date('', $comment->getDate()),
+                    $event->getTitle() . "({$event->getId()})", 
+                    $comment->getAuthorName(),
+                    $comment->getComment()
+                );
+                $mail->send();
+
+                $this->session->set_flashdata('msg', 'Comment inserted successfully!');
+                redirect("event/view/{$event->getId()}#comments", 'location', 302);
+            } else {
+                // Display error
+                $viewVars['comment'] = $comment;
+                $viewVars['commentErrors'] = $comment->getErrors();
+            }
+        }
 		
-		if(empty($events)){ redirect('event'); }
-		$reqkey=buildReqKey();
+		$requestKey = buildReqKey();
+		$viewVars['requestKey'] = $requestKey;
+		$viewVars['secretKey'] = buildSecFile($requestKey);
 		
-		$attend=$this->uam->getAttendUsers($id);
-		$arr=array(
-			'events' =>$events,
-			'talks'  =>$talks,
-			'admin'	 =>($this->user_model->isAdminEvent($id)) ? true : false,
-			'claimed'=>$this->event_model->getClaimedTalks($id),
-			'user_id'=>($is_auth) ? $this->session->userdata('ID') : '0',
-			'attend' =>$chk_attend,
-			'attend_ct'=>count($attend),
-			'reqkey' =>$reqkey,
-			'seckey' =>buildSecFile($reqkey),
-			'attending'=>$attend
-			//'attend' =>$this->uam->getAttendCount($id)
-		);
-		
-		//our event comment form
-		$rules=array(
-			'event_comment'	=> 'required'
-		);
-		$fields=array(
-			'event_comment'	=>'Event Comment'
-		);
-		if(!$is_auth){
-			$rules['cname']	= 'required';
-			$fields['cname']= 'Name';
-		}
-		$this->validation->set_fields($fields);
-		$this->validation->set_rules($rules);
-		
-		if($this->validation->run()!=FALSE){
-			$ec=array(
-				'event_id'	=> $id,
-				'comment'	=> $this->input->post('event_comment'),
-				'date_made'	=> time(),
-				'active'	=> 1
-			);
-			if($is_auth){
-				$ec['user_id']	= $this->session->userdata('ID');
-				$ec['cname']	= $this->session->userdata('username');
-			}else{
-				$ec['user_id']	= 0;
-				$ec['cname']	= $this->input->post('cname');
-			}
-			$def_ret=$this->defensio->check($ec['cname'],$ec['comment'],$is_auth,'/event/view/'.$id);
-			
-			//$this->spam->check('regex',$ec['comment']);
-			
-			$is_spam=(string)$def_ret->spam;
-			if($is_spam=='false'){
-				$this->db->insert('event_comments',$ec);
-				$arr['msg']='Comment inserted successfully!';
-		
-			
-				if($def_ret){
-					$ec['def_resp_spamn']=(string)$def_ret->spaminess;
-					$ec['def_resp_spamr']=(string)$def_ret->spam;
-				}
-				//print_r($ec);
-			
-				$to		='enygma@phpdeveloper.org';
-				$subj	='Joind.in: Event feedback - '.$id;
-				$content='';
-				foreach($ec as $k=>$v){ $content.='['.$k.'] => '.$v."\n\n"; }
-				@mail($to,$subj,$content,'From:feedback@joind.in');
-			
-				$this->session->set_flashdata('msg', 'Comment inserted successfully!');
-			}
-			
-			redirect('event/view/'.$events[0]->ID . '#comments', 'location', 302);
-		}
-		
-		$arr['comments']=$this->event_comments_model->getEventComments($id);
-		
-		$this->template->write('feedurl','/feed/event/'.$id);
-		$this->template->write_view('content','event/detail',$arr,TRUE);
+		$this->template->write('feedurl', "/feed/event/{$event->getId()}");
+		$this->template->write_view('content', 'event/view', $viewVars, true);
 		$this->template->render();
-		//$this->load->view('event/detail',$arr);
 	}
-    function attendees($id){
-		$this->load->model('user_attend_model');
-
-		$users	= $this->user_attend_model->getAttendees($id);				
+	
+	/**
+	 * Handles events either by `id` or by `stub` and redirects to the proper 
+	 * view page for the event details.
+	 * @param int|string $data
+	 */
+	function cust($data){
+	    $this->load->helper('url');
 		
-		$arr = array(
-		    'users' => $users
-		);
+		$id = null;
+		if(is_numeric($data)) {
+		    // The data is already an event id, no need to search for it in the database
+		    $id = $data;
+		}
+		else {
+		    // Try to find the event by it's stub
+		    $event = $this->EventModel->findByStub(trim(strip_tags($data)));
+		    if((null !== $event) && (count($event) === 1)) {
+		        $event = array_shift($event);
+		        $id = $event->getId();
+		    }
+		}
+		
+		if(null === $id) {
+		    // Event was not found, show an error page
+		    show_404('event/' . $id);
+		}
+		
+		redirect('event/view/' . $id);
+	}
+	
+	/**
+	 * Sends an ical file as response to the client containing the details for 
+	 * the event.
+	 * @param int $id
+	 */
+	function ical($id){
+		$this->load->model('EventModel');
+		
+		$event = $this->EventModel->find($id);
+		
+		if(null === $event) {
+		    show_404('event/ical/' . $id);
+		}
+		
+	    header('Content-type: text/calendar');
+		header('Content-disposition: filename="ical.ics"');
+		$this->load->view('event/ical', array('event' => $event));
+	}
+	
+	/**
+	 * Displays the form to add or edit Event details
+	 */
+	function _showForm($id = null)
+	{
+	    if(!user_is_authenticated()) {
+	        redirect('/user/login');
+	    }
+	    
+	    $this->load->model('EventModel');
+	    $event = new EventModel();
+	    
+	    // check for add or edit action
+	    if(null === $id) {
+	        $viewVars = array(
+	            'title' => 'Add Event',
+	            'action' => 'event/add',
+	        );
+	        $viewVars['event'] = $event;
+	    } else {
+	        $viewVars = array(
+	            'title' => 'Edit Event',
+	            'action' => "event/edit/{$id}",
+	        );
+	        
+	        $event = $event->find($id);
+	        if(null === $event) {
+	            // The event doesn't exist
+	            redirect('/event');
+	        }
+	        if(!user_is_administrator() && !$event->isEventManager(user_get_id())) {
+	            // user does not have the privileges to edit the event
+	            redirect('/event');
+	        }
+	        
+	        $viewVars['event'] = $event;
+	    }
+	    
+	    // check for post values
+	    if('POST' === $_SERVER['REQUEST_METHOD']) {
 
-		$this->template->write_view('content','event/attendees',$arr,true);
+	        $event->setData($_POST);
+
+	        // Set up the upload config
+	        $uploadConfig = array (
+	            'upload_path' => $_SERVER['DOCUMENT_ROOT'] . '/inc/img/event_icons',
+	            'allowed_types' => 'gif|jpg|png',
+	            'max_size' => '100',
+	            'max_width' => '90',
+	            'max_height' => '90'
+	        );
+	        // Do the uploading
+    		$this->load->library('upload', $uploadConfig);
+    		if($this->upload->do_upload('icon_file')){
+                $uploadData = $this->upload->data();
+				$event->setIcon($uploadData['file_name']);
+			} else {
+			    $viewVars['error'] = $this->upload->display_errors('', '');
+			}
+	            
+            // Validate the model
+            if($event->validate()) {
+                $event->setActive(1);
+	            $event->save();
+	            
+	            // redirect
+	            redirect('/event/view/' . $event->getId());
+	        }
+	        else {
+	            if(isset($viewVars['error']) && is_array($viewVars['error'])) {
+    	            $viewVars['error'] = array_merge($event->getErrors(), $viewVars['error']);
+                } else {
+                    $viewVars['error'] = $event->getErrors();
+                }
+	        }
+	    }
+	    
+	    $this->template->write_view('content', 'event/form', $viewVars);
+		$this->template->render();
+	}
+	
+	/**
+	 * Add an event. Will redirect to _showForm.
+	 */
+	function add()
+	{
+	    $this->_showForm();
+	}
+
+    /**
+     * Edit Event details. Will redirect to _showFrom with the id of the Event 
+     * to edit.
+     * @param int $id
+     */
+	function edit($id){
+		$this->_showForm($id);
+	}
+	
+	/**
+	 * Displays a list of attendees for an event
+	 * @param int $id
+	 */
+    function attendees($id){
+        $this->load->model('EventModel');
+		
+        $event = $this->EventModel->find($id);
+
+		$this->template->write_view('content', 'event/attendees', array('event' => $event));
+		// Explicitely echo the rendered region as it is always returned as a
+		// string by the template class when rendering a specific region.
 		echo $this->template->render('content');
 	}
-	function ical($id){
-		header('Content-type: text/calendar');
-		header('Content-disposition: filename="ical.ics"'); 
-	    $this->load->model('event_model');
-		$arr=$this->event_model->getEventDetail($id);
-		$this->load->view('event/ical',array('data'=>$arr));
-	}
+	
+	/**
+	 * This will deactivate an event. This will also deactivate all event comments.
+	 * @param int $id
+	 */
 	function delete($id){
-		if(!$this->user_model->isSiteAdmin()){ redirect(); }
-		$this->load->helper('form');
-		$this->load->library('validation');
-		$this->load->model('event_model');
+	    if(!user_is_administrator()) {
+	        redirect('/event');
+	    }
+		$this->load->model('EventModel');
 		
-		$arr=array(
-			'eid'		=> $id,
-			'details'	=> $this->event_model->getEventDetail($id)
-		);
-		if(isset($_POST['answer']) && $_POST['answer']=='yes'){
-			$this->event_model->deleteEvent($id);
-			$arr=array();
+		$event = $this->EventModel->find($id);
+		if(null === $event) {
+		    redirect('/event');
 		}
-		
-		$this->template->write_view('content','event/delete',$arr,TRUE);
-		$this->template->render();
-		//$this->load->view('event/delete',$arr);
-	}
-	function codes($id){
-		$this->load->helper('form');
-		$this->load->library('validation');
-		$this->load->library('events');
-		$this->load->helper('url');
-		$this->load->helper('events');
-		
-		if($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($id)){ 
-			//they're okay
-		}else{ redirect(); }
-				
-		$rules=array();
-		$fields=array();
-		
-		//make our code list for the talks
-		$this->load->model('event_model');
-		$codes		= array();
-		$full_talks	= array();
-		$talks=$this->event_model->getEventTalks($id);
-		foreach($talks as $k=>$v){
-			$sp=explode(',',$v->speaker); //echo '<pre>'; print_r($sp); echo '</pre>';
-			
-			foreach($sp as $sk=>$sv){				
-				//$str='ec'.str_pad(substr($v->ID,0,2),2,0,STR_PAD_LEFT).str_pad($v->event_id,2,0,STR_PAD_LEFT);
-				//$str.=substr(md5($v->talk_title.$sk),5,5);
-				$str=buildCode($v->ID,$v->event_id,$v->talk_title,trim($sv));
-			
-				$codes[]		= $str;
 
-				$obj=clone $v;
-				$obj->code		= $str;
-				$obj->speaker	= trim($sv);
-				$full_talks[]	= $obj;
-			
-				//$rules['email_'.$v->ID]='trim|valid_email';
-				$rules['email_'.$v->ID]	='callback_chk_email_check';
-				$fields['email_'.$v->ID]='speaker email';
-			}
+		if($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['event_id'] == $event->getId()) {
+		    if($event->isPending()) {
+		        $event->delete();
+		        $this->session->set_flashdata('message', 'Event deleted successfully.');
+				redirect('/event/pending');
+		    }
+		    else {
+    		    $event->deactivate();
+    		    $this->session->set_flashdata('message', 'Event deactivated successfully.');
+				redirect('/event');
+		    }
 		}
-		//echo '<pre>'; print_r($full_talks); echo '</pre>';
 		
-		$this->validation->set_rules($rules);
-		$this->validation->set_fields($fields);
-		
-		$claimed=array();
-		
-		$cl=$this->event_model->getClaimedTalks($id); //echo '<pre>'; print_r($cl); echo '</pre>';
-		foreach($cl as $k=>$v){
-			//$cstr='ec'.str_pad(substr($v->rid,0,2),2,0,STR_PAD_LEFT).str_pad($v->tdata['event_id'],2,0,STR_PAD_LEFT);
-			//$cstr.=substr(md5($v->tdata['talk_title'].$sk),5,5);
-			$cds=array();
-			$sp=explode(',',$v->tdata['speaker']); //print_r($sp);
-			foreach($sp as $spk=>$spv){
-				$code=buildCode($v->rid,$v->tdata['event_id'],$v->tdata['talk_title'],trim($spv));
-				if($code==$v->rcode){ $cl[$k]->code=$code; }
-			}
-			//$cl[$k]->codes=$cds;
-		}
-		//echo '<pre>'; print_r($cl); echo '</pre>';
-		
-		$arr=array(
-			'talks'		=> $talks,
-			'full_talks'=> $full_talks,
-			'codes'		=> $codes,
-			'details'	=> $this->event_model->getEventDetail($id),
-			'claimed'	=> $cl
-		);
-		if($this->validation->run()!=FALSE){
-			foreach($talks as $k=>$v){
-				$pv=$this->input->post('email_'.$v->ID);
-				$chk=$this->input->post('email_chk_'.$v->ID);
-				if(!empty($pv) && $chk==1){
-					//these are the ones we need to send the email to these
-					$this->events->sendCodeEmail($pv,$codes[$k],$arr['details'],$v->ID);
-				}
-			}
-		}else{ /*echo 'fail';*/ }
-		$this->template->write_view('content','event/codes',$arr,TRUE);
+		$this->template->write_view('content', 'event/delete', array('event' => $event), true);
 		$this->template->render();
 	}
-	function submit(){
-		$arr=array();
-		$this->load->library('validation');
-		$this->load->plugin('captcha');
-		//$this->load->library('akismet');
-		$this->load->library('defensio');
-		
-		$cap_arr=array(
-			'img_path'		=>$_SERVER['DOCUMENT_ROOT'].'/inc/img/captcha/',
-			'img_url'		=>'/inc/img/captcha/',
-			'img_width'		=>'130',
-			'img_height'	=>'30'
+
+	/** 
+	 * Allows a user to submit an event.
+	 */
+	function submit()
+	{
+	    $this->load->library('defensio');
+	    $this->load->library('validation');
+	
+	    $viewVars = array(
+			'error' => array()
 		);
-		
-		$fields=array(
-			'event_title'			=> 'Event Title',
-			'event_contact_name'	=> 'Event Contact Name',
-			'event_contact_email'	=> 'Event Contact Email',
-			'event_desc'			=> 'Event Description',
-			'start_mo'				=> 'Event Start Month',
-			'start_day'				=> 'Event Start Day',
-			'start_yr'				=> 'Event Start Year',
-			'end_mo'				=> 'Event End Month',
-			'end_day'				=> 'Event End Day',
-			'end_yr'				=> 'Event End Year',
-			'event_loc'				=> 'Event Location',
-			'event_stub'			=> 'Event Stub'
-		//	'cinput'				=> 'Captcha'
-		);
-		$rules=array(
-			'event_title'			=> 'required',
-			'event_loc'				=> 'required',
-			'event_contact_name'	=> 'required',
-			'event_contact_email'	=> 'required|valid_email',
-			'start_mo'				=> 'callback_start_mo_check',
-			'end_mo'				=> 'callback_end_mo_check',
-			'event_stub'			=> 'callback_stub_check',
-			'event_desc'			=> 'required',
-		//	'cinput'				=> 'required|callback_cinput_check'
-		);
-		$this->validation->set_rules($rules);
-		$this->validation->set_fields($fields);
-		
-		//if we're just loading, give the dates some default values
-		if(empty($this->validation->start_mo)){
-			$this->validation->start_mo	= date('m');
-			$this->validation->start_day= date('d');
-			$this->validation->start_yr	= date('Y');
+	    $event = $viewVars['event'] = new EventModel();
+	    
+	    if($_SERVER['REQUEST_METHOD'] === 'POST') {
+			$event->setData($_POST);
 			
-			$this->validation->end_mo	= date('m');
-			$this->validation->end_day	= date('d');
-			$this->validation->end_yr	= date('Y');
-		}
-		
-		if($this->validation->run()!=FALSE){			
-			//TODO: add it to our database, but mark it pending
-			$sub_arr=array(
-				'event_name'	=>$this->input->post('event_title'),
-				'event_start'	=>mktime(
-					0,0,0,
-					$this->input->post('start_mo'),
-					$this->input->post('start_day'),
-					$this->input->post('start_yr')
-				),
-				'event_end'		=>mktime(
-					0,0,0,
-					$this->input->post('end_mo'),
-					$this->input->post('end_day'),
-					$this->input->post('end_yr')
-				),
-				'event_loc'		=>$this->input->post('event_loc'),
-				'event_desc'	=>$this->input->post('event_desc'),
-				'active'		=>0,
-				'event_stub'	=>$this->input->post('event_stub'),
-				'event_tz'		=>$this->input->post('event_tz'),
-				'pending'		=>1
-			);
+			// Check if the dates are valid
+			if(!$this->_checkDates($event->getStart(), $event->getEnd())) {
+				$viewVars['error'][] = 'One of the date values is incorrect.';
+			}
+			// Check if start date is before the end date
+			else if($event->getStart() > $event->getEnd()) {
+				$viewVars['error'][] = 'Start date needs to be before end date.';
+			}
 			
-			//echo '<pre>'; print_r($sub_arr); echo '</pre>';
-			
-			//----------------------
-			$is_auth	= $this->user_model->isAuth();
-			$cname		= $this->input->post('event_contact_name');
-			$ccomment	= $this->input->post('event_desc');
-			$def        = $this->defensio->check($cname,$ccomment,$is_auth,'/event/submit');		
-			$is_spam	= (string)$def->spam;
-			//-----------------------
-			
-			if($is_spam!='true'){			
-				//send the information via email...
-				$to		= 'enygma@phpdeveloper.org';
-				$subj	= 'Event submission from Joind.in';
-				$msg= 'Event Title: '.$this->input->post('event_title')."\n\n";
-				$msg.='Event Description: '.$this->input->post('event_desc')."\n\n";
-				$msg.='Event Date: '.date('m.d.Y H:i:s',$sub_arr['event_start'])."\n\n";
-				$msg.='Event Contact Name: '.$this->input->post('event_contact_name')."\n\n";
-				$msg.='Event Contact Email: '.$this->input->post('event_contact_email')."\n\n";
-				$msg.='Spam check: '.($is_spam=='false') ? 'not spam' : 'spam';
-			
-				echo $msg.'<br/><br/>';
-			
-				mail($to,$subj,$msg,'From: submissions@joind.in');
-				$arr['msg']='Event successfully submitted! We\'ll get back with you soon!';
+			if($event->validate() && count($viewVars['error']) === 0) {
+				$event->setActive(1);
+				$event->setPending(1);
+				$event->save();
 				
-				//put it into the database
-				$this->db->insert('events',$sub_arr);
-			}else{ 
-				$arr['msg']='There was an error submitting your event! Please <a href="submissions@joind.in">send us an email</a> with all the details!';
+				if(user_is_authenticated()) {
+					$event->addEventManager(user_get_model());
+				}
+				
+				// Check for spam
+				$isSpam = $this->defensio->check($event->getContactName(), $event->getDescription());
+				
+				// Send an email to the site administrators
+				require_once BASEPATH . 'application/libraries/Mailer.php';
+				
+				$mail = new Mailer(array(
+					'to' => $this->config->item('mail_administrator'),
+					'from' => $this->config->item('mail_submissions'),
+					'subject' => 'Event submission from Joind.in'
+				));
+				$mail->setBodyFromFile(
+					'mail/event_submission', 
+					$event->getTitle(),
+					$event->getDescription(),
+					date('m/d/Y', $event->getStart()),
+					date('m/d/Y', $event->getEnd()),
+					$event->getContactName(),
+					$event->getContactEmail(),
+					($isSpam) ? 'Possibly spam!' : ''
+				);
+				/** @todo enable this mail */
+				//$mail->send();
+				
+				$this->session->set_flashdata('message', 'Event submitted, thanks! We\'ll get back to you as soon as possible.');
+				redirect('/');
 			}
-		}
-		
-		$this->template->write_view('content','event/submit',$arr);
+			else {
+				$viewVars['error'] = array_merge($event->getErrors(), $viewVars['error']);
+			}
+	    }
+	    
+	    $this->template->write_view('content', 'event/submit', $viewVars);
 		$this->template->render();
 	}
-	function export($eid){
-		//export the speakers and their ratings/comments for an entire event
-		//push it out as a CSV file...
-		$this->load->model('event_model');
-		$talks=$this->event_model->getEventFeedback($eid);
-		
-		$fp=fopen('php://memory','w+');
-		foreach($talks as $k=>$v){
-			fputcsv($fp,(array)$v);
+	
+	/**
+	 * Checks a number of strptime generated date arrays and returns if they are 
+	 * valid. Dates can be parsed as arguments and will be collected using 
+	 * func_get_args().
+	 * @return boolean
+	 */
+	protected function _checkDates()
+	{
+	    $dates = func_get_args();
+	    if($dates <= 0) {
+	        return true;
+	    }
+	    
+	    $endResult = true;
+	    foreach($dates as $timestamp) {
+	        if(!(date('m/d/Y', $timestamp))) {
+	            $endResult = false;
+				continue;
+	        }
+	        if(!checkdate((date('m', $timestamp)), date('d', $timestamp), date('Y', $timestamp))) {
+	            $endResult = false;
+	        }
+	    }
+	    
+	    return $endResult;
+	}
+	
+	/**
+	 * Converts a strptime generated date array to a timestamp.
+	 * @param array $dateArray
+	 * @param boolean $includeTime
+	 */
+	protected function _convertToTimestamp($dateArray, $includeTime = false)
+	{
+	    if($includeTime) {
+	        return mktime(
+	            $dateArray['tm_hour'], 
+	            $dateArray['tm_min'], 
+	            $dateArray['tm_sec'  ], 
+	            ($dateArray['tm_mon'] + 1),
+	            $dateArray['tm_mday'], 
+	            ($dateArray['tm_year'] + 1900)
+	        );
+	    }
+	    else {
+    	    return mktime(
+    	        0, 0, 0, 
+    	        ($dateArray['tm_mon'] + 1), 
+    	        $dateArray['tm_mday'], 
+    	        ($dateArray['tm_year'] + 1900)
+    	    );
+	    }
+	}
+	
+	
+	/**
+	 * Exports the event sessions with relevant data.
+	 * @param int $id
+	 */
+	function export($id = null){
+		if(null === $id) {
+		    show_404('error/404');
 		}
-		//print_r($talks);
+		$this->load->model('EventModel');
+		$event = $this->EventModel->find($id);
+		
+		if(null === $event) {
+		    show_404('error/404');
+		}
+		
+		$sessions = $event->getSessions();
+		
+		$fp = fopen('php://memory','w+');
+		foreach($sessions as $session) {
+		    $comments = $session->getComments();
+		    foreach($comments as $comment) {
+		        $data = array(
+		            $session->getTitle(), 
+		            $session->getSpeakerName(),
+		            $session->getDate(),
+		            $session->getRating(),
+		            $comment->getComment()
+		        );
+		        fwrite($fp, implode(', ', $data));
+		    }
+		}
 		rewind($fp);
-		$out=stream_get_contents($fp);
+		$output = stream_get_contents($fp);
 		fclose($fp);
 		
 		header('Content-type: application/octet-stream');
-		header('Content-Disposition: attachment; filename="Event_Comments_'.$eid.'.csv"');
-		echo $out;
+		header('Content-Disposition: attachment; filename="Event_Comments_'.$id.'.csv"');
+		echo $output;
 	}
-	function pending(){
-		if(!$this->user_model->isSiteAdmin()){ redirect(); }
-		$this->index(true);
-	}
+	
+	
+	/**
+	 * Approves an event. This will remove the pending status from an event 
+	 * and puts its status to active.
+	 * @param int $id
+	 */
 	function approve($id){
-		if(!$this->user_model->isSiteAdmin()){ redirect(); }
+		if(!user_is_administrator()) { 
+		    redirect();
+		}
 		
-		$this->load->model('event_model');
-		//$det=$this->event_model->getEventDetail($id); print_r($det);
+		$this->load->model('EventModel');
+		$event = $this->EventModel->find($id);
 		
-		$this->event_model->approvePendingEvent($id);
-		redirect('event/view/'.$id); 
-	}
-	//----------------------
-	function start_mo_check($str){
-		//be sure it's before the end date
-		$t=mktime(
-			0,0,0,$this->validation->start_mo,$this->validation->start_day,$this->validation->start_yr
+		if(null === $event) {
+		    $this->session->set_flashdata('error', 'Event not found, try some of the ones below.');
+		    redirect('/event/pending');
+		}
+		
+		$data = array(
+		    'pending' => 0, 
+		    'active' => 1
 		);
-		$e=mktime(
-			0,0,0,$this->validation->end_mo,$this->validation->end_day,$this->validation->end_yr
+		
+		if($event->save($data)) {
+			/** @todo send mail to event contact / manager */
+		    $this->session->set_flashdata('message', 'Approval of event ' . escape($event->getTitle()) . '(' . $event->getId() . ') succeeded!');
+		    redirect('event/view/' . $event->getId());
+		}
+		else {
+		    //$this->session->set_flashdata('error', 'Approval of event ' . escape($event->getTitle()) . '(' . $event->getId() . ') failed.');
+			$this->session->set_flashdata('error', $event->getErrors());
+		    redirect('event/view/' . $event->getId());
+		}
+	}
+	
+	/**
+	 * Shows a list of managers for the event.
+	 * @param int|string $event_id
+	 */
+	function managers($event_id)
+	{
+	    if(!user_is_authenticated()) {
+	        redirect('/user/login');
+	    }
+	    
+	    $this->load->model('EventModel');
+	    $event = $this->EventModel->find($event_id);
+	    
+	    if(null === $event) {
+	        redirect('/event');
+	    } 
+	    else if(!$event->isEventManager(user_get_id()) && !user_is_administrator()) {
+	        redirect('/event/view/' . $event->getId());
+	    }
+		
+	    $this->template->write_view('content', 'event/managers', array('event' => $event));
+		$this->template->render();
+	}
+    
+    /**
+     * Adds a manager to an event.
+     * @param int|string $event_id
+     * @return boolean
+     * */
+    function addmanager($event_id)
+    {
+        if(!user_is_authenticated()) {
+	        redirect('/account/login');
+	    }
+	    
+	    $this->load->model('EventModel');
+	    $event = $this->EventModel->find($event_id);
+	    
+	    if(null === $event) {
+	        redirect('/event');
+	    } 
+	    else if(!$event->isEventManager(user_get_id()) && !user_is_administrator()) {
+	        redirect('/event');
+	    }
+        
+        $username = trim($_POST['username']);
+        $this->load->model('UserModel');
+        $user = $this->UserModel->findByUsername($username, true);
+        if(null === $user) {
+            $this->session->set_flashdata('error', "Username {$username} not found.");
+            redirect("/event/managers/{$event->getId()}");
+        }
+        
+        $success = $event->addEventManager($user);
+        if(!$success) {
+            $this->session->set_flashdata('error', "Adding manager failed.");
+            redirect("/event/managers/{$event->getId()}");
+        }
+        
+        $this->session->set_flashdata('message', "Manager added.");
+        redirect("/event/managers/{$event->getId()}");
+    }
+    
+    /**
+     * Deletes a manager from an event.
+     * @param int|string $event_id
+     * @param int|string $user_id
+     * @return boolean
+     */
+    function delmanager($event_id, $user_id)
+    {
+        if(!user_is_authenticated()) {
+	        redirect('/account/login');
+	    }
+	    
+	    $this->load->model('EventModel');
+	    $event = $this->EventModel->find($event_id);
+	    
+	    if(null === $event) {
+	        redirect('/event');
+	    } 
+	    else if(!$event->isEventManager(user_get_id()) && !user_is_administrator()) {
+	        redirect('/event');
+	    }
+        
+        $success = $event->removeEventManager($user_id);
+        if(!$success) {
+            $this->session->set_flashdata('error', "Removing manager failed.");
+            redirect("/event/managers/{$event->getId()}");
+        }
+        
+        $this->session->set_flashdata('message', "Manager removed.");
+        redirect("/event/managers/{$event->getId()}");
+    }
+	
+	/**
+	 * Sends out codes for speakers to claim their sessions.
+	 * @param int|string $event_id
+	 */
+	function codes($event_id)
+	{
+		if(!user_is_authenticated()) {
+			redirect('/account/login');
+		}
+		$event = $this->EventModel->find($event_id);
+		if(null === $event) {
+			redirect('/event');
+		}
+		else if(!user_is_administrator() && !$event->isEventManager(user_get_id())) {
+			redirect('/event/view/' . $event->getId());
+		}
+		
+		$viewVars = array(
+			'event' => $event,
+			'email' => array(),
+			'error' => array()
 		);
-		if($t>$e){
-			$this->validation->set_message('start_mo_check','Start date must be prior to the end date!');
-			return false;
-		}else{ return true; }
+		
+		$this->load->model('SessionModel');
+		$this->load->library('validation');
+		
+		if('POST' === $_SERVER['REQUEST_METHOD'] && isset($_POST['send'])) {
+			
+			$ids = $_POST['send'];
+			$emailAddresses = $_POST['email'];
+			
+			if(count($ids) > 0) {
+				foreach($ids as $id => $state) {
+					if(!isset($emailAddresses[$id]) || empty($emailAddresses[$id])) {
+						continue;
+					}
+					
+					$session = $this->SessionModel->find($id);
+					if(null === $session || $session->getEventId() != $event->getId()) {
+						continue;
+					}
+					
+					$addresses = split(',', $emailAddresses[$id]);
+					$addresses = array_map('trim', $addresses);
+					foreach($addresses as $index => $address) {
+						if(empty($address)) {
+							unset($addresses[$index]);
+						}
+						else if(!$this->validation->valid_email($address)) {
+							$viewVars['email'][$id] = implode(',', $addresses);
+							$viewVars['error'][] = 'Email address(es) for session "' . escape($session->getTitle()) .'" are not valid.';
+							continue 2;
+						}
+					}
+					
+					require_once BASEPATH . '/application/libraries/StringTokenGenerator.php';
+					$generator = new StringTokenGenerator($session->getAllStringTokens());
+					
+					$token = $session->getClaimToken();
+					if(empty($token)) {
+						$session->setClaimToken($generator->generate())->save();
+						$token = $session->getClaimToken();
+					}
+					
+					/** Mailer */
+					require_once BASEPATH . 'application/libraries/Mailer.php';
+					
+					foreach($addresses as $address) {
+						$mail = new Mailer(array (
+							'to' => $address,
+							'from' => $this->config->item('mail_events'),
+							'subject' => 'Session Code from join.in: ' . escape($session->getTitle())
+						));
+						$mail->setBodyFromFile(
+							'mail/session_code', 
+							escape($session->getTitle()),
+							escape($session->getEventTitle()),
+							$token
+						);
+						$mail->send();
+					}
+				}
+			}
+		}
+
+		$this->template->write_view('content', 'event/codes', $viewVars);
+		$this->template->render();
 	}
-	function end_mo_check($str){
-		$st=mktime(
-			0,0,0,
-			$this->validation->start_mo,
-			$this->validation->start_day,
-			$this->validation->start_yr
-		);
-		$et=mktime(
-			23,59,59,
-			$this->validation->end_mo,
-			$this->validation->end_day,
-			$this->validation->end_yr
-		);
-		if($et<$st){
-			$this->validation->set_message('end_mo_check','End month must be past the start date!');
-			return false;
-		}else{ return true; }
-	}
-	function chk_email_check($str){
-		$chk_str=str_replace('_','_chk_',$this->validation->_current_field);
-		$val=$this->input->post($chk_str);
-		if($val==1 && !$this->validation->valid_email($str)){
-			$this->validation->set_message('chk_email_check','Email address invalid!');
-			return false;
-		}else{ return true; }
-	}
-	function cinput_check($str){
-		if($this->input->post('cinput') != $this->session->userdata('cinput')){
-			$this->validation->_error_messages['cinput_check'] = 'Incorrect Captcha characters.';
-			return FALSE;                            
-		}else{ return TRUE; }
-	}
-	function stub_check($str){
-		if(!empty($str)){
-			$this->load->model('event_model');
-			$ret=$this->event_model->isUniqueStub($str);
-			if(!$ret){
-				$this->validation->set_message('stub_check','Please choose another stub - this one\'s already in use!');
-				return false;
-			}else{ return true; }
-		}else{ return true; }
-	}
-	//----------------------
+	
 }
 
 ?>

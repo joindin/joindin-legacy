@@ -13,7 +13,7 @@ require_once BASEPATH . 'application/models/talks_model.php';
 /**
  * Returns the details for a talk.
  * 
- * @author Mattijs Hoitink <mattijs@voidwalkers.nl>
+ * @author Mattijs Hoitink <mattijshoitink@gmail.com>
  */
 class Getdetail extends ServiceHandler
 {

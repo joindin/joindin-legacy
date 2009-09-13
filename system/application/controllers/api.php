@@ -7,7 +7,7 @@ require_once BASEPATH . 'application/libraries/service/ServiceManager.php';
  * API controller
  * 
  * @author Chris Cornut <enygma@phpdeveloper.org>
- * @author Mattijs Hoitink <mattijs@ibuildings.nl>
+ * @author Mattijs Hoitink <mattijshoitink@gmail.com>
  */
 class Api extends Controller {
 	

@@ -15,7 +15,7 @@ require_once BASEPATH . 'application/libraries/service/ServiceResponseJson.php';
 /**
  * Returns the speaker details for a token.
  * 
- * @author Mattijs Hoitink <mattijs@ibuildings.nl>
+ * @author Mattijs Hoitink <mattijshoitink@gmail.com>
  */
 class Getdetail extends ServiceHandler
 {

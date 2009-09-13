@@ -1,3 +1,4 @@
+<?php //var_dump($user) ?>
 <h1>Register a new account</h1>
 
 <?php 
@@ -14,50 +15,50 @@ if (!empty($msg)):
         Username, password and email address fields are required.
     </p>
     
-    <?php echo form_open('user/register', array('class' => 'form-register')); ?>
+    <?= form_open('user/register', array('class' => 'form-register')); ?>
     
-    <?php if (!empty($this->validation->error_string)): ?>
-            <?php $this->load->view('msg_error', array('msg' => $this->validation->error_string)); ?>
+    <?php if(isset($error)): ?>
+            <?php $this->load->view('msg_error', array('msg' => $error)); ?>
     <?php endif; ?>
 
 	<div class="row">
     	<label for="user">Username</label>
-    	<?php echo form_input(array('name' => 'user', 'id' => 'user'), $this->validation->user); ?>
+    	<?= form_input(array('name' => 'username', 'id' => 'username'), $user->getUsername()); ?>
     
         <div class="clear"></div>
     </div>
     
     <div class="row">
     	<label for="pass">Password</label>
-    	<?php echo form_input(array('name' => 'pass', 'id' => 'pass', 'type' => 'password')); ?>
+    	<?= form_input(array('name' => 'password', 'id' => 'password', 'type' => 'password')); ?>
     
         <div class="clear"></div>
     </div>
     
     <div class="row">
     	<label for="passc">Confirm Password</label>
-    	<?php echo form_input(array('name' => 'passc', 'id' => 'passc', 'type' => 'password')); ?>
+    	<?= form_input(array('name' => 'password_confirm', 'id' => 'password_confirm', 'type' => 'password')); ?>
     
         <div class="clear"></div>
     </div>
     
     <div class="row">
     	<label for="email">Email</label>
-    	<?php echo form_input(array('name' => 'email', 'id' => 'email'), $this->validation->email); ?>
+    	<?= form_input(array('name' => 'email', 'id' => 'email'), $user->getEmail()); ?>
     
         <div class="clear"></div>
     </div>
     
     <div class="row">
-    	<label for="full_name">Full Name</label>
-    	<?php echo form_input(array('name' => 'full_name', 'id' => 'full_name'), $this->validation->full_name); ?>
+    	<label for="full_name">Display Name</label>
+    	<?= form_input(array('name' => 'display_name', 'id' => 'display_name'), $user->getDisplayName()); ?>
     
         <div class="clear"></div>
     </div>
 	<div class="row row-buttons">
-    	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Register'); ?>
+    	<?= form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Register'); ?>
     </div>
     
-    <?php echo form_close(); ?>
+    <?= form_close(); ?>
 </div>
 

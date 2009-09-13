@@ -1,39 +1,45 @@
 <?php
 menu_pagetitle('Start');
-//echo '<pre>'; print_r($talks); echo '</pre>';
-//echo '<pre>'; print_r($events); echo '</pre>';
-//echo '<pre>'; print_r($latest_blog); echo '</pre>';
-?>
-<?php if (count($hot_events) > 0): ?>
-<div class="box">
-<h2 class="h1 icon-event">Hot Events <a class="more" href="/event/hot">More &raquo;</a></h2>
-<?php
-foreach($hot_events as $k=>$v){
-    $this->load->view('event/_event-row', array('event'=>$v));
+if(user_is_authenticated()) {
+    $this->load->view('sidebar/claim-session');
 }
 ?>
+
+
+
+
+<?php $this->load->view('message/flash'); ?>
+
+<?php if (count($hotEvents) > 0): ?>
+<div class="box">
+    <h2 class="h1 icon-event">Hot Events <a class="more" href="/event/hot">More &raquo;</a></h2>
+    <?php 
+    foreach($hotEvents as $event){
+        $this->load->view('event/_event-row', array('event' => $event));
+    }
+    ?>
 </div>
 <?php endif; ?>
 
-<?php if (count($upcoming_events) > 0): ?>
+<?php if (count($upcomingEvents) > 0): ?>
 <div class="box">
-<h2 class="h1 icon-event">Upcoming Events <a class="more" href="/event/upcoming">More &raquo;</a></h2>
-<?php
-foreach($upcoming_events as $k=>$v){
-    $this->load->view('event/_event-row', array('event'=>$v));
-}
-?>
+    <h2 class="h1 icon-event">Upcoming Events <a class="more" href="/event/upcoming">More &raquo;</a></h2>
+    <?php
+    foreach($upcomingEvents as $event){
+        $this->load->view('event/_event-row', array('event'=> $event));
+    }
+    ?>
 </div>
 <?php endif; ?>
 
-<?php if (count($talks) > 0): ?>
+<?php if (count($popularSessions) > 0): ?>
 <div class="box">
-<h2 class="h1 icon-talk">Popular Talks</h2>
-<?php 
-foreach($talks as $k=>$v){
-    $this->load->view('talk/_talk-row', array('talk'=>$v));
-}
-?>
+    <h2 class="h1 icon-talk">Popular Sessions</h2>
+    <?php 
+    foreach($popularSessions as $session){
+        $this->load->view('session/_session-row', array('session' => $session));
+    }
+    ?>
 </div>
 <?php endif; ?>
 

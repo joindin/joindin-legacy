@@ -1,9 +1,9 @@
 <h1>Forgot My Password</h1>
 <div class="box">
-	<?php echo form_open('user/forgot'); ?>
+	<?= form_open('user/forgot'); ?>
 	
-	<?php if (!empty($this->validation->error_string)): ?>
-        <?php $this->load->view('msg_error', array('msg' => $this->validation->error_string)); ?>
+	<?php if (!empty($error)): ?>
+        <?php $this->load->view('msg_error', array('msg' => $error)); ?>
     <?php endif; ?>
 
 	<div class="row">
@@ -16,16 +16,16 @@
 
 	<div class="row">
     	<label for="user">Username</label>
-    	<?php echo form_input(array('name' => 'user', 'id' => 'user'), $this->validation->user); ?>
+    	<?= form_input(array('name' => 'username', 'id' => 'username'), $this->validation->user); ?>
 		<br/><b>or</b><br/><br/>
     	<label for="user">Email Address</label>
-    	<?php echo form_input(array('name' => 'email', 'id' => 'email'), $this->validation->email); ?>
+    	<?= form_input(array('name' => 'email', 'id' => 'email'), $this->validation->email); ?>
     
         <div class="clear"></div>
     </div>
 	<div class="row row-buttons">
-    	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Send'); ?>
+    	<?= form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Send'); ?>
     </div>
     
-    <?php echo form_close(); ?>
+    <?= form_close(); ?>
 </div>

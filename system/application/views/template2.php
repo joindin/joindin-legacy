@@ -18,10 +18,10 @@ $title[] = 'Joind.in';
 	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 	<?php
 	if(!empty($feedurl)){
-		echo '<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="'.$feedurl.'" />';
+		echo '<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="' . $feedurl . '" />';
 	}
-	if(isset($reqkey)){ echo "\n\t" . '<script type="text/javascript">var reqk="'.$reqkey.'";</script>'; }
-	if(isset($seckey)){ echo "\n\t" . '<script type="text/javascript">var seck="'.$seckey.'";</script>'; }
+	if(isset($requestKey)){ echo "\n\t" . '<script type="text/javascript">var reqk="' . $requestKey . '";</script>'; }
+	if(isset($secretKey)){ echo "\n\t" . '<script type="text/javascript">var seck="' . $secretKey . '";</script>'; }
 	?>
 </head>
 <body id="page-<?= menu_get_current_area(); ?>">
@@ -31,8 +31,8 @@ $title[] = 'Joind.in';
     	<div class="grid_12">
     		<div class="usr">
     			<div class="wrapper">
-        		<?php if (user_is_auth()): ?>
-        			Logged in as <strong><a href="/user/view/<?php echo user_get_id(); ?>"><?php echo escape(user_get_username()); ?></a></strong> | 
+        		<?php if (user_is_authenticated()): ?>
+        			Logged in as <strong><a href="/user/view/<?= user_get_id(); ?>"><?= escape(user_get_username()); ?></a></strong> | 
         			<a href="/user/main">Account</a> | 
         			<a href="/user/logout">Logout</a>
         		<?php else: ?>
@@ -52,7 +52,7 @@ $title[] = 'Joind.in';
     	<div class="grid_6 menu">
     		<ul>
 				<li id="menu-event"><a href="/event">Events</a>
-				<li id="menu-talk"><a href="/talk">Talks</a>
+				<li id="menu-session"><a href="/session">Sessions</a>
 				<li id="menu-search"><a href="/search">Search</a>
 				<li id="menu-about" class="sep"><a href="/about">About</a>
 				<li id="menu-blog"><a href="/blog">Blog</a>
@@ -71,7 +71,7 @@ $title[] = 'Joind.in';
     </div>
 </div>
 
-<?php if (menu_get_current_area() == 'home'): ?>
+<?php if((menu_get_current_area() == 'home') && (!user_is_authenticated())): ?>
 
 <div id="splash">
     <div class="container_12">
@@ -102,7 +102,7 @@ $title[] = 'Joind.in';
                 	</div>
                 </div>
         	<?php endforeach; ?>
-            <?php if (!user_is_auth()): ?>
+            <?php if (!user_is_authenticated()): ?>
             	<div class="box">
                 	<h4>Sign in</h4>
                 	<div class="ctn">
@@ -118,7 +118,7 @@ $title[] = 'Joind.in';
                         
                         <div class="row">
                         	<label for="sidebar_pass">Password</label>
-                        	<?php echo form_input(array('name' => 'pass', 'id' => 'sidebar_pass', 'type' => 'password')); ?>
+                        	<?php echo form_input(array('name' => 'password', 'id' => 'sidebar_pass', 'type' => 'password')); ?>
                         
                             <div class="clear"></div>
                         </div>
@@ -149,7 +149,7 @@ $title[] = 'Joind.in';
                 	</div>
 
             	</div>
-				<?=$sidebar2?>
+				<?= $sidebar2 ?>
             </div>
     	</div>
     	<div class="clear"></div>
@@ -160,7 +160,7 @@ $title[] = 'Joind.in';
     <div class="container_12">
     	<div class="grid_6">
         	<a href="/event">Events</a> | 
-        	<a href="/talk">Talks</a> | 
+        	<a href="/session">Sessions</a> | 
         	<a href="/search">Search</a> | 
         	<a href="/about">About</a> | 
         	<a href="/blog">Blog</a> | 

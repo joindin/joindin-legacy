@@ -1,102 +1,113 @@
-<?php 
-menu_pagetitle('Submit an event');
-?>
+<?php menu_pagetitle('Submit an event'); ?>
+
 <h1 class="icon-event">Submit an event</h1>
-<?php if (!empty($msg)): ?>
-<?php $this->load->view('msg_info', array('msg' => $msg)); ?>
-<?php endif; ?>
+
+<?php if(isset($message) && !empty($message)) {
+    $this->load->view('message/info', array('message' => $message));
+} ?>
 
 <div class="box">
-    <?php echo form_open('event/submit', array('class' => 'form-event-submit')); ?>
-    
-    <?php if (!empty($this->validation->error_string)): ?>
-            <?php $this->load->view('msg_error', array('msg' => $this->validation->error_string)); ?>
-    <?php endif; ?>
-    
+    <?php 
+        echo form_open('event/submit', array('class' => 'form-event-submit'));
+        
+        if(isset($error) && !empty($error)) {
+            $this->load->view('message/error', array('message' => $error));
+        }
+    ?>    
     <div class="row">
-    	<label for="event_title">Event Title</label>
-    	<?php echo form_input(array('name' => 'event_title', 'id' => 'event_title'), $this->validation->event_title); ?>
+    	<label for="event_title">Title</label>
+    	<?php echo form_input(array('name' => 'title', 'id' => 'title'), $event->getTitle()); ?>
     
         <div class="clear"></div>
     </div>
 
 	<div class="row">
-    	<label for="event_location">Event Location</label>
-    	<?php echo form_input(array('name' => 'event_loc', 'id' => 'event_location'), $this->validation->event_loc); ?>
+    	<label for="event_location">Location</label>
+    	<?php echo form_input(array('name' => 'location', 'id' => 'location'), $event->getLocation()); ?>
     
         <div class="clear"></div>
     </div>
 
 	<div class="row">
-    	<label for="event_stub">Event Stub</label>
-    	<?php echo form_input(array('name' => 'event_stub', 'id' => 'event_stub'), $this->validation->event_stub); ?>
+    	<label for="event_stub">Stub</label>
     	<span style="color:#3567AC;font-size:11px">What's a <b>stub</b>? It's the "shortcut" part of the URL to help visitors get to your event faster. An example might be "phpevent" in the address "joind.in/event/phpevent". If no stub is given, you can still get to it via the event ID.</span>
+    	<?php echo form_input(array('name' => 'stub', 'id' => 'stub'), $event->getStub()); ?>
         <div class="clear"></div>
     </div>
     
     <div class="row">
-    	<label for="event_contact_name">Event Contact Name</label>
-    	<?php echo form_input(array('name' => 'event_contact_name', 'id' => 'event_contact_name'), $this->validation->event_contact_name); ?>
-    
-        <div class="clear"></div>
-    </div>
-    
-    <div class="row">
-    	<label for="event_contact_email">Event Contact Email</label>
-    	<?php echo form_input(array('name' => 'event_contact_email', 'id' => 'event_contact_email'), $this->validation->event_contact_email); ?>
+    	<label for="event_contact_name">Contact Name</label>
+    	<?php echo form_input(array('name' => 'contact_name', 'id' => 'contact_name'), $event->getContactName()); ?>
     
         <div class="clear"></div>
     </div>
     
     <div class="row">
-    	<label for="start">Event Start Date</label>
-    	<?php
-		/*foreach(range(1,12) as $v){ $start_mo[$v]=$v; }
-		foreach(range(1,32) as $v){ $start_day[$v]=$v; }
-		foreach(range(date('Y'),date('Y')+5) as $v){ $start_yr[$v]=$v; }*/
-
-    	foreach(range(1,12) as $v){ $start_mo[$v]=strftime('%B', strtotime('2000-' . $v . '-01')); }
-    	foreach(range(1,31) as $v){ $start_day[$v]=sprintf('%02d', $v); }
-    	foreach(range(date('Y'),date('Y')+5) as $v){ $start_yr[$v]=$v; }
-    	
-		echo form_dropdown('start_mo',$start_mo,$this->validation->start_mo);
-		echo form_dropdown('start_day',$start_day,$this->validation->start_day);
-		echo form_dropdown('start_yr',$start_yr,$this->validation->start_yr);
-		?>
+    	<label for="event_contact_email">Contact Email</label>
+    	<?php echo form_input(array('name' => 'contact_email', 'id' => 'contact_email'), $event->getContactEmail()); ?>
+    
+        <div class="clear"></div>
+    </div>
+    
+    <div class="row" style="float: left; width: 40%; border-bottom: 0; margin-bottom: 0;">
+    	<label for="start">Start Date</label>
+        <small>Start date for the event (mm/dd/yyyy).</small>
+        <input type="text" id="start_string" name="start_string" class="datepicker" value="<?= ($event->getStart() != '') ? date('m/d/Y', $event->getStart()) : '' ?>" />
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $("#start_string").datepicker();
+            });
+        </script>
  	<div class="clear"></div>
     </div>
- <div class="row">
-        <label for="start">Event End Date</label>
-	<?php
-		/*foreach(range(1,12) as $v){ $end_mo[$v]=$v; }
-		foreach(range(1,32) as $v){ $end_day[$v]=$v; }
-		foreach(range(date('Y'),date('Y')+5) as $v){ $end_yr[$v]=$v; }*/
-
-	    foreach(range(1,12) as $v){ $start_mo[$v]=strftime('%B', strtotime('2000-' . $v . '-01')); }
-    	foreach(range(1,31) as $v){ $start_day[$v]=sprintf('%02d', $v); }
-    	foreach(range(date('Y'),date('Y')+5) as $v){ $start_yr[$v]=$v; }
-
-		echo form_dropdown('end_mo',$start_mo,$this->validation->end_mo);
-		echo form_dropdown('end_day',$start_day,$this->validation->end_day);
-		echo form_dropdown('end_yr',$start_yr,$this->validation->end_yr);
-		?>
+    
+     <div class="row" style="float: right; width: 40%; border-bottom: 0; margin-bottom: 0;">
+        <label for="end">End Date</label>
+        <small>End date for the event (mm/dd/yyyy).</small>
+        <input type="text" id="end_string" name="end_string" class="datepicker" value="<?= ($event->getEnd() != '') ? date('m/d/Y', $event->getEnd()) : '' ?>" />
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $("#end_string").datepicker();
+            });
+        </script>
+	
 	 <div class="clear"></div>
     </div>
     
+	<div class="row">
+		<div class="clear"></div>
+	</div>
+	
     <div class="row">
-    	<label for="event_desc">Event Description</label>
-    	<?php 
-		$attr=array(
-			'name'	=> 'event_desc',
-			'id'	=> 'event_desc',
-			'cols'	=> 50,
-			'rows'	=> 10,
-			'value'	=> $this->validation->event_desc
-		);
-		echo form_textarea($attr); 
-	    ?>
+    	<label for="description">Description</label>
+    	<?= form_textarea(array(
+    	    'name' => 'description',
+			'id' => 'description',
+			'cols' => 50,
+			'rows' => 10,
+			'value'	=> $event->getDescription()
+    	)) ?>
         <div class="clear"></div>
     </div>
+	
+	<!--
+	<div class="row">
+		<label for="hashtag">Hashtag</label>
+		<?= form_input(array(
+			'id' => 'hashtag',
+			'name' => 'hashtag',
+			'value' => $event->getHashtag(),
+			'style' => 'width: 150px'
+		)); ?>
+		<div class="clear"></div>
+	</div>
+	
+	<div class="row">
+		<label for="link">Link</label>
+		<?= form_input('link'); ?>
+		<div class="clear"></div>
+	</div>
+    -->
 	<div class="row row-buttons">
     	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Submit event'); ?>
     </div>

@@ -1,72 +1,57 @@
 <?php 
-
-ob_start();
+// Load the sidebars
+$this->load->view('sidebar/user-navigation');
+$this->load->view('sidebar/claim-session');
 ?>
-<?php if (!empty($this->validation->error_string)): ?>
-	<?php $this->load->view('msg_error', array('msg' => $this->validation->error_string)); ?>
-<?php endif; ?>
-<?php
-		
-		echo form_open('user/main');
-		echo form_input(array('name' => 'talk_code', 'style' => 'width:95%'));
-		echo form_submit(array('name' => 'sub', 'class' => 'btn'), 'Submit');
-		echo form_close();
-		?>
-		<p>
-		Enter your talk code above to claim your talk and have access to private comments from visitors. <a href="/about/contact">Contact Us</a> to have the code for your talk sent via email.
-		</p>
-
-<?php
-menu_sidebar('Claim a talk', ob_get_clean());
-
-?>
-<div class="menu">
-	<ul>
-		<li class="active"><a href="/user/main">Dashboard</a>
-		<li><a href="/user/manage">Manage Account</a>
-        <li><a href="/user/profile">Speaker profile</a>
-	<?php if (user_is_admin()): ?>
-		<li><a href="/user/admin">User Admin</a>
-		<li><a href="/event/pending">Pending Events</a>
-	<?php endif; ?>
-	</ul>
-	<div class="clear"></div>
-</div>
 
 <?php 
-if (empty($msg)) {
-    $msg=$this->session->flashdata('msg');
+// Catch flash messages
+$this->load->view('message/flash');
+
+// Catch other errors and messages
+if(isset($message) && !empty($message)) {
+    $this->load->view('message/info', array('message' => $message)); 
 }
-if (!empty($msg)): 
+if(isset($error) && !empty($error)) {
+    $this->load->view('message/error', array('message' => $error)); 
+}
 ?>
-<?php $this->load->view('msg_info', array('msg' => $msg)); ?>
-<?php endif; ?>
+<h1>Dashboard</h1>
 
 <div class="box">
-    <h2>MyTalks</h2>
-<?php if (count($talks) == 0): ?>
-	<p>No talks so far</p>
-<?php else: ?>
-    <?php
-        foreach($talks as $k=>$v){
-        	$this->load->view('talk/_talk-row', array('talk'=>$v));
-        }
-    ?>
-<?php endif; ?>
+    <h2>My Sessions</h2>
+    <?php if (count($user->getSessions()) === 0): ?>
+	<p>You did not give any sessions yet</p>
+    <?php else: foreach($user->getSessions() as $session) : 
+        	$this->load->view('session/_session-row', array('session' => $session));
+        endforeach; endif; ?>
 	<div class="clear"></div>
 </div>
 
+<div class="box">
+    <h2>My Events</h2>
+    <?php if(count($user->getAttendance()) === 0) : ?>
+    <p>You have not attended any events yet.</p>
+    <?php else: foreach($user->getAttendance() as $attendance) : 
+        $this->load->view('event/_event-row', array('event' => $attendance->getEvent()));
+    endforeach; endif; ?>
+</div>
 
 <div class="box">
     <h2>My Comments</h2>
-<?php if (count($comments) == 0): ?>
-	<p>No comments so far</p>
-<?php else: ?>
-    <?php foreach($comments as $k=>$v): ?>
+    <?php if (count($user->getSessionComments()) === 0): ?>
+	<p>You have not made any comments yet</p>
+    <?php else: foreach($user->getSessionComments() as $comment): ?>
+    
     <div class="row">
-    	<strong><a href="/talk/view/<?php echo $v->talk_id; ?>#comment-<?php echo $v->ID; ?>"><?php echo escape($v->talk_title); ?></a></strong>
+    	<?= date('M j, Y H:i', $comment->getDate()) ?> on
+    	<strong>
+    	    <a href="/session/view/<?= $comment->getSessionId(); ?>#comment-<?= $comment->getId(); ?>">
+    	        <?= escape($comment->getSessionTitle()); ?>
+    	    </a>
+    	</strong> (from <a href="/event/view/<?= $comment->getSession()->getEventId() ?>"><?= escape($comment->getSession()->getEventTitle()); ?></a>)
     	<div class="clear"></div>
     </div>
-    <?php endforeach; ?>
-<?php endif; ?>
+    <?php endforeach; endif; ?>
 </div>
+

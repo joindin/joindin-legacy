@@ -10,42 +10,45 @@
 </div>
 
 <?php 
-if (empty($msg)) {
-    $msg=$this->session->flashdata('msg');
+if(empty($message)) {
+    $message = $this->session->flashdata('message');
 }
-if (!empty($msg)): 
+if(!empty($message)) { 
+    $this->load->view('message/info', array('message' => $message));
+} 
 ?>
-<?php $this->load->view('msg_info', array('msg' => $msg)); ?>
-<?php endif; ?>
 
 <table summary="" class="list">
-<tr class="header">
-	<th>Username</th>
-	<th>Email</th>
-	<th>Full Name</th>
-	<th>Is Admin?</th>
-	<th>Last Login</th>
-	<th>Status</th>
-</tr>
+    <tr class="header">
+	    <th>Username</th>
+	    <th>Email</th>
+	    <th>Display Name</th>
+	    <th>Is Admin?</th>
+	    <th>Last Login</th>
+	    <th>Status</th>
+    </tr>
 <?php
-$ct=0;
-foreach($users as $k=>$v){
-	$class 		= ($ct%2==0) ? 'row1' : 'row2';
-	$is_admin	= ($v->admin==1) ? 'yes' : 'no';
-	$last_log	= (!empty($v->last_login)) ? date('m.d.Y H:i:s',$v->last_login): '';
-	$active		= (!empty($v->active) && $v->active==1) ? 'active' : 'inactive';
-	echo sprintf('
-		<tr class="%s">
-			<td><a href="/user/view/%s">%s</a></td>
-			<td><a href="mailto:%s">%s</a></td>
-			<td>%s</td>
-			<td align="center">%s</td>
-			<td>%s</td>
-			<td>%s</td>
-		</tr>
-	',$class,$v->ID,escape($v->username),escape($v->email),escape($v->email),escape($v->full_name),
-	$is_admin,$last_log,$active);
-	$ct++;
-}
+$count = 0;
+foreach($users as $user) {
+?>	
+	<tr class="<?= ($count %2 === 0) ? 'row1' : 'row2' ?>">
+	    <td>
+	        <a href="/user/view/<?= $user->getId() ?>"><?= escape($user->getUsername()) ?></a>
+        </td>
+	    <td>
+	        <a href="mailto:<?= escape($user->getEmail()) ?>"><?= escape($user->getEmail()) ?></a>
+        </td>
+	    <td><?= escape($user->getDisplayName()) ?></td>
+	    <td style="text-align: center; font-size: 90%;"><?= ($user->isAdmin()) ? 'yes' : 'no' ?></td>
+	    <td>
+	        <?php if($user->getLastLogin() !== null) :
+	            echo date('m.d.Y H:i:s',$user->getLastLogin());
+	        endif; ?>
+	    </td>
+	    <td style="text-align: center; font-size: 90%;"><?= ($user->isActive()) ? 'active' : 'inactive' ?></td>
+	</tr>
+<?php
+$count++;	
+}	
 ?>
 </table>

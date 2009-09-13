@@ -1,0 +1,48 @@
+INSTALL
+
+ 1: Get the latest version
+ 2: Create a database
+ 3: Update configuration
+ 4: Create necessary directories
+ 5: Setup a virtual host
+
+== 1: Get the latest version ==
+
+Checkout the latest version from our SVN repository.
+  
+  svn co svn://joind.in/var/cache/svn/confs/trunk joind.in
+
+This will create a directory called joind.in with the latest version of the 
+trunk in it.
+
+== 2: Create a database ==
+
+
+
+== 3: Update configuration ==
+Configuration files are not committed to the repository, these need to be edited 
+manually.
+
+First, copy ''system/application/config/config.php.dist'' to 
+''system/application/config/config.php''. Open the file and edit the 
+$config['base_url'] value to the url you're developing on. Then go to the bottom 
+of the file and change the $config['mail_admin'] value to your email address.
+
+Second, the database needs to be configured. Copy the file 
+''system/application/config/database.php.dist'' to 
+''system/application/config/database.php. Edit the file and enter the correct 
+url and credentials to the joind.in database we installed in the previous section.
+
+== 4: Create necessary directories ==
+
+Joind.in needs a directory to store temporary identification tokens in. Create 
+the directory ''system/cache/ctokens'' and make sure it is writable for the 
+webserver. 
+
+Then there are two directories that are used to upload event icons and speaker 
+pictures. Make sure the directories ''inc/img/event_icons'' and 
+''inc/img/speaker_pictures'' exist and are writable for the webserver.
+
+== 5: Setup a virtual host ==
+Create a virtual host in your apache configuration (e.g. local.joind.in). Make 
+sure your hosts file points the url ''local.joind.in'' to your development server.

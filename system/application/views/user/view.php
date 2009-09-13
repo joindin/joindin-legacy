@@ -1,102 +1,78 @@
-<h1><?php 
-	echo (!empty($details[0]->full_name)) ? $details[0]->full_name.' ('.$details[0]->username.')': $details[0]->username;
-?></h1>
+<h1>
+<?php
+    if($user->getDisplayName() !== '') {
+        echo "{$user->getDisplayName()} ({$user->getUsername()})";
+    }
+    else {
+        echo $user->getUsername();
+    }
+?>
+</h1>
 
 <div class="box">
-    <h2>Talks</h2>
-<?php if (count($talks) == 0): ?>
-	<p>No talks so far</p>
-<?php else: ?>
+    <h2>Session</h2>
+    <?php if (count($user->getSessions()) == 0): ?>
+	<p>This user did not give any sessions</p>
+    <?php else: ?>
     <?php
-        foreach($talks as $k=>$v){
-        	$this->load->view('talk/_talk-row', array('talk'=>$v));
+        foreach($user->getSessions() as $session){
+        	$this->load->view('session/_session-row', array('talk' => $session));
         }
     ?>
-<?php endif; ?>
+    <?php endif; ?>
 </div>
 
 <div class="box">
     <h2>Comments</h2>
-<?php if (count($comments) == 0): ?>
-	<p>No comments so far</p>
-<?php else: ?>
-    <?php foreach($comments as $k=>$v): ?>
+    <?php if (count($user->getSessionComments()) == 0): ?>
+	<p>This user did not place any comments yet</p>
+    <?php else: foreach($user->getSessionComments() as $comment): ?>
     <div class="row">
-    	<strong><a href="/talk/view/<?php echo $v->talk_id; ?>#comment-<?php echo $v->ID; ?>"><?php echo escape($v->talk_title); ?></a></strong>
+    	<strong>
+    	    <a href="/session/view/<?= $comment->getSessionId() ?>#comment-<?= $comment->getId() ?>">
+    	        <?= escape($comment->getSessionTitle()) ?>
+    	    </a>
+    	</strong>
     	<div class="clear"></div>
     </div>
-    <?php endforeach; ?>
-<?php endif; ?>
+    <?php endforeach; endif; ?>
 </div>
-
-<?php
-//sort the events
-$ev=array('attended'=>array(),'attending'=>array());
-foreach($is_attending as $k=>$v){
-	if($v->event_end<time()){
-		$ev['attended'][]=$v; 
-	}else{ $ev['attending'][]=$v; }
-}
-//minimize my attending
-$my=array();
-foreach($my_attend as $k=>$v){ $my[]=$v->ID; }
-
-//check the date and, if they have talks in their list, be sure that its in the list
-foreach($talks as $k=>$v){
-	$d=array(
-		'event_name'	=> $v->event_name,
-		'event_start'	=> $v->date_given,
-		'ID'			=> $v->eid
-	);
-	$d=(object)$d;
-	if($v->date_given<time()){
-		$ev['attended'][]=$d;
-	}else{ $ev['attending'][]=$d; }
-}
-?>
 
 <table cellpadding="0" cellspacing="0" border="0" width="100%">
 <tr>
-	<td>
+	<td style="width: 48%;">
 		<div class="box">
 			<h2>Events They'll Be At</h2>
-		<?php if (count($ev['attending']) == 0): ?>
+			<?php if(count($futureEventsAttending) === 0) : ?>
 			<p>No events so far</p>
-		<?php else: ?>
-		    <?php 
-			$eids=array();
-			foreach($ev['attending'] as $k=>$v){ 
-				if(in_array($v->ID,$eids)){ continue; }else{ $eids[]=$v->ID; }
-			?>
-		    <div class="row">
-		    	<strong><a href="/event/view/<?php echo $v->ID; ?>"><?php echo escape($v->event_name); ?></a></strong>
-				<?php echo date('M d, Y',$v->event_start); ?>
-				<?php if(in_array($v->ID,$my)){ echo "<br/><span style=\"color:#92C53E;font-size:11px\">you'll be there!</span>"; } ?>
+			<?php else: foreach($futureEventsAttending as $event) : ?>
+			<div class="row">
+		    	<strong><a href="/event/view/<?= $event->getId() ?>"><?= escape($event->getTitle()) ?></a></strong>
+				<?= date('M d, Y',$event->getStart()); ?>
+				<?php if(($user->getId() != user_get_id()) && ($event->userIsAttendee(user_get_id()))) : ?>
+				<br/><span style=\"color:#92C53E;font-size:11px\">you'll be there as well!</span>
+				<?php endif; ?>
 		    	<div class="clear"></div>
 		    </div>
-		    <?php } ?>
-		<?php endif; ?>
+			<?php endforeach; endif; ?>
 		</div>
 	</td>
-	<td>
+	<td>&nbsp;</td>
+	<td style="width: 48%;">
 		<div class="box">
 			<h2>Events They Were At</h2>
-		<?php if (count($ev['attended']) == 0): ?>
+			<?php if(count($pastEventsAttended) === 0) : ?>
 			<p>No events so far</p>
-		<?php else: ?>
-		    <?php 
-			$eids=array();
-			foreach($ev['attended'] as $k=>$v){
-				if(in_array($v->ID,$eids)){ continue; }else{ $eids[]=$v->ID; }
-			?>
-		    <div class="row">
-		    	<strong><a href="/event/view/<?php echo $v->ID; ?>"><?php echo escape($v->event_name); ?></a></strong>
-				<?php echo date('M d, Y',$v->event_start); ?>
-				<?php if(in_array($v->ID,$my)){ echo "<br/><span style=\"color:#92C53E\">you were there!</span>"; } ?>
+			<?php else: foreach($pastEventsAttended as $event) : ?>
+			<div class="row">
+		    	<strong><a href="/event/view/<?= $event->getId() ?>"><?= escape($event->getTitle()) ?></a></strong>
+				<?= date('M d, Y',$event->getStart()); ?>
+				<?php if(($user->getId() != user_get_id()) && ($event->userIsAttendee(user_get_id()))) : ?>
+				<br/><span style=\"color:#92C53E;font-size:11px\">you were there as well!</span>
+				<?php endif; ?>
 		    	<div class="clear"></div>
 		    </div>
-		    <?php } ?>
-		<?php endif; ?>
+			<?php endforeach; endif; ?>
 		</div>
 	</td>
 </tr>

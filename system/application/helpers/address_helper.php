@@ -15,7 +15,7 @@ function formatProfileAddress($profile)
     
     if(!empty($street) && !empty($zipCode) && !empty($city) && !empty($country)) {
         
-        $countryCode = $profile->getCountryModel()->getCode();
+        $countryCode = $profile->getCountry()->getCode();
         
         switch($countryCode) {
             

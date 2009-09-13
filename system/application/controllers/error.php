@@ -1,5 +1,15 @@
 <?php
+/**
+ * Class Error
+ * @package Core
+ * @package Controllers
+ */
 
+/**
+ * Handles 404 pages
+ *
+ * @author Chris Cornut <enygma@phpdeveloper.org>
+ */
 class Error extends Controller {
 	
 	function error_404(){
@@ -10,5 +20,3 @@ class Error extends Controller {
 	
 }
 
-
-?>

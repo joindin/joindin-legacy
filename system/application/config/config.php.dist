@@ -15,6 +15,18 @@ $config['base_url']	= 'http://joindin/';
 
 /*
 |--------------------------------------------------------------------------
+| Mail addresses
+|--------------------------------------------------------------------------
+*/
+$config['mail_admin'] = 'webmaster@localhost';
+
+$config['mail_info'] = 'webmaster@localhost';
+$config['mail_feedback'] = 'webmaster@localhost';
+$config['mail_submissions'] = 'webmaster@localhost';
+$config['mail_events'] = 'webmaster@localhost';
+
+/*
+|--------------------------------------------------------------------------
 | Index File
 |--------------------------------------------------------------------------
 |

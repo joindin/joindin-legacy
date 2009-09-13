@@ -1,23 +1,24 @@
-<?php 
-menu_pagetitle('Delete Talk');
-?>
-<?php
-if(isset($tid)){
-	echo form_open('talk/delete/'.$tid);
-	?>
+<?php menu_pagetitle('Delete Talk'); ?>
+<h1 class="title">Delete talk</h1>
 
-	<table cellpadding="0" cellspacing="0" border="0">
-	<tr>
-		<td>
-			Are you sure you wish to delete this talk?<br/>
-			<input type="submit" value="yes" name="answer"> 
-			<input type="button" value="no" onClick="document.location='/talk/view/<?=$tid?>'">
-		</td>
-	</tr>
-	</table>
+<?= form_open('talk/delete/' . $talk->getId()); ?>
+<p>
+    Are you sure you want to delete the following talk:
+</p>
 
-	<?php 
-	echo form_close(); 
+<p>
+    <strong><?= $talk->getTitle() ?></strong><br />
+    <?= $talk->getDescription() ?>
+</p>
 
-}else{ echo 'talk removed!'; }
-?>
+<p style="color: #FF0000;">
+    <?php $this->load->view('message/error', array('message' => 'The talk will be deleted permanently! No refunds.')); ?>
+</p>
+
+<p>
+    <input class="btn-small" type="submit" value="Delete talk" name="answer"> 
+    or <a href="/speaker/talks">cancel</a>
+</p>
+<?= form_hidden('talk_id', $talk->getId()) ?>
+<?= form_close(); ?>
+

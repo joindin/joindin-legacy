@@ -6,7 +6,7 @@
 /**
  * Creates an XML document that can be used for a Service response.
  *  
- * @author Mattijs Hoitink <mattijs@ibuildings.nl
+ * @author Mattijs Hoitink <mattijshoitink@gmail.com>
  */
 class ServiceResponseXml
 {

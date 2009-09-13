@@ -1,25 +1,23 @@
-<?php
-if(isset($eid)){
-	echo '<h1 class="title">Delete event '.escape($details[0]->event_name).' ?</h1>';
-	
-	echo form_open('event/delete/'.$eid);
-	?>
+<h1 class="title">Delete event</h1>
 
-	<table cellpadding="3" cellspacing="0" border="0">
-	<tr>
-		<td>
-			Are you sure you wish to delete this event?<br/>
-			<input type="submit" value="yes" name="answer"> 
-			<input type="button" value="no" onClick="document.location='/event/view/<?=$eid?>'">
-		</td>
-	</tr>
-	</table>
+<?= form_open('event/delete/' . $event->getId()); ?>
+<p>
+    Are you sure you want to delete the following event:
+</p>
 
-	<?php 
-	echo form_close(); 
+<p>
+    <strong><?= $event->getTitle() ?></strong> at <?= date('M j, Y', $event->getStart()) ?>
+</p>
 
-}else{
-	echo '<h1 class="title">Event Removed!</h1>';
-	echo '<a href="/event">Return to even list</a>';
-}
-?>
+<?php if($event->isPending()) : ?>
+<p style="color: #FF0000;">
+    <?php $this->load->view('message/error', array('message' => 'This event is still in pending state. It will be permanently deleted! No going back!')); ?>
+</p>
+<?php endif; ?>
+
+<p>
+    <input class="btn-small" type="submit" value="Delete Event" name="answer"> 
+    or <a href="/event/view/<?= $event->getId() ?>">cancel</a>
+</p>
+<?= form_hidden('event_id', $event->getId()) ?>
+<?= form_close(); ?>

@@ -1,36 +1,69 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
+<?php
+/**
+ * Class Akismet
+ * @package Core
+ * @subpackage Library
+ */
 
+/**
+ * Checks a comment agains the Akismet api to see if it's spam.
+ *
+ * @author Chris Cornut <enygma@phpdeveloper.org>
+ * @author Mattijs Hoitink <mattijshoitink@gmail.com>
+ */
 class Akismet {
 	
-	var $key	= 'b8bf76a6e0d8';
-	var $blog	= 'http://joind.in';
+	/**
+	 * The API key
+	 * @var string
+	 */
+	protected $key = 'b8bf76a6e0d8';
+	
+	/** 
+	 * The base url for our website
+	 * @var string
+	 */
+	protected $baseUrl = 'http://joind.in';
 
-	function send($path,$data){
-		$req_str	= '';
-		$resp		= '';
-		$host		= $this->key.'.rest.akismet.com';
-		$port		= 80;
-		$data['key']	= $this->key;
-		$data['blog']	= $this->blog;
-		$data['user_ip']= $_SERVER['REMOTE_ADDR'];
-		foreach($data as $k=>$v){ $req_str.=$k.'='.$v.'&'; }
+    
+    /**
+     * Checks comment data against the API
+     * @param string $path the path to the api inside the akismet domain
+     * @param array $data the comment data
+     */
+	function check($path, $data){
+		$requestBody = '';
+		$response = '';
+		$host = $this->key.'.rest.akismet.com';
+		$data['key'] = $this->key;
+		$data['blog'] = $this->baseUrl;
+		$data['user_ip'] = $_SERVER['REMOTE_ADDR'];
 		
-		$http ="POST ".$path." HTTP/1.0\r\n";
-		$http.="Host: ".$host."\r\n";
-		$http.="Content-Type: application/x-www-form-urlencoded;\r\n";
-		$http.='Content-length: '.strlen($req_str)."\r\n";
-		$http.="User-Agent: Joind.in/1.0\r\n";
-		$http.="\r\n";
-		$http.=$req_str;
+		foreach($data as $key => $value){ 
+		    $requestBody .= $key . '=' . urlencode($value) . '&'; 
+		}
 		
-		$fp=fsockopen($host,$port,$errno,$errstr,10);
+		$request = "POST ".$path." HTTP/1.0\r\n";
+		$request .= "Host: ".$host."\r\n";
+		$request .= "Content-Type: application/x-www-form-urlencoded;\r\n";
+		$request .= 'Content-length: '.strlen($requestBody)."\r\n";
+		$request .= "User-Agent: Joind.in/1.0\r\n";
+		$request .= "\r\n";
+		$request .= $requestBody;
+		
+		$fp = fsockopen($host, 80, $errno, $errstr, 10);
 		if($fp){
-			fwrite($fp,$http);
-			while(!feof($fp)){ $resp.=fgets($fp,1024); }
+			fwrite($fp, $request);
+			while(!feof($fp)) { 
+			    $response .= fgets($fp, 1024); 
+			}
 			fclose($fp);
-			$p=explode("\r\n\r\n",$resp);
-			return $p[1];
-		}else{ return false; }
+			$responseBody = explode("\r\n\r\n", $response);
+			return (boolean) $responseBody[1];
+		} 
+		else { 
+		    return false; 
+		}
 	}
 	
 }

@@ -43,34 +43,38 @@
 $route['default_controller'] = "main";
 $route['scaffolding_trigger'] = "";
 
+// Event Routing
 //$route['event/([^add|view|edit|delete])'] = 'event/cust/$1';
-$route['event/add']='event/add';
-$route['event/pending']='event/pending';
-$route['event/submit']='event/submit';
-$route['event/approve/(:num)']='event/approve/$1';
-$route['event/ical/(:num)']='event/ical/$1';
-$route['event/calendar/(:num)/(:num)/(:num)']	= 'event/calendar/$1/$2/$3';
-$route['event/calendar/(:num)/(:num)']	= 'event/calendar/$1/$2';
-$route['event/calendar/(:num)/']	= 'event/calendar/$1';
-$route['event/export/(:num)']	= 'event/export/$1';
-$route['event/edit/(:num)']		= 'event/edit/$1';
-$route['event/view/(:num)']		= 'event/view/$1';
+$route['event/add'] = 'event/add';
+$route['event/pending'] = 'event/pending';
+$route['event/submit'] = 'event/submit';
+$route['event/approve/(:num)'] = 'event/approve/$1';
+$route['event/ical/(:num)'] = 'event/ical/$1';
+$route['event/calendar/(:num)/(:num)/(:num)'] = 'event/calendar/$1/$2/$3';
+$route['event/calendar/(:num)/(:num)'] = 'event/calendar/$1/$2';
+$route['event/calendar/(:num)/'] = 'event/calendar/$1';
+$route['event/export/(:num)'] = 'event/export/$1';
+$route['event/edit/(:num)']	 = 'event/edit/$1';
+$route['event/view/(:num)'] = 'event/view/$1';
 $route['event/attendees/(:num)'] = 'event/attendees/$1';
-$route['event/delete/(:num)']	= 'event/delete/$1';
-$route['event/codes/(:num)']	= 'event/codes/$1';
+$route['event/delete/(:num)'] = 'event/delete/$1';
+$route['event/codes/(:num)'] = 'event/codes/$1';
+$route['event/hot']	= 'event/hot';
+$route['event/upcoming'] = 'event/upcoming';
+$route['event/past'] = 'event/past';
+$route['event/managers/(:num)'] = 'event/managers/$1';
+$route['event/addmanager/(:num)'] = 'event/addmanager/$1';
+$route['event/delmanager/(:num)/(:num)'] = 'event/delmanager/$1/$2';
 
-// speaker profile routing
-$route['user/profile'] = 'profile/display';
-$route['user/profile/(:any)'] = 'profile/$1';
-
-$route['event/hot']	            = 'event/hot';
-$route['event/upcoming']	    = 'event/upcoming';
-$route['event/past']	        = 'event/past';
+// Account routing
+$route['account'] = 'user/main';
+$route['account/manage'] = 'user/manage';
+$route['account/login'] = 'user/login';
+$route['account/view/(:num)'] = 'user/view/$1';
 
 //now our catch all...
 $route['event/(:any)']			= 'event/cust/$1';
-$route['(:num)']				= 'talk/view/$1';
-
+$route['(:num)']				= 'session/view/$1';
 $route['search/(:any)']			= 'search/index/$1';
 
 

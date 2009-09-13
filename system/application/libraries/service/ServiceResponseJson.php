@@ -7,7 +7,7 @@
  * Converts to a JSON encoded string that can be used in 
  * a service response.
  * 
- * @author Mattijs Hoitink <mattijs@ibuildings.nl>
+ * @author Mattijs Hoitink <mattijshoitink@gmail.com>
  */
 class ServiceResponseJson
 {
