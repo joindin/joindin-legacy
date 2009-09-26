@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008 - 2009, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -41,28 +41,28 @@ if ( ! function_exists('singular'))
 {	
 	function singular($str)
 	{
-	    $str = strtolower(trim($str));
-	    $end = substr($str, -3);
-    
-	    if ($end == 'ies')
-	    {
-	        $str = substr($str, 0, strlen($str)-3).'y';
-	    }
-	    elseif ($end == 'ses')
-	    {
-	        $str = substr($str, 0, strlen($str)-2);
-	    }
-	    else
-	    {
-	        $end = substr($str, -1);
-        
-	        if ($end == 's')
-	        {
-	            $str = substr($str, 0, strlen($str)-1);
-	        }
-	    }
-    
-	    return $str;
+		$str = strtolower(trim($str));
+		$end = substr($str, -3);
+	
+		if ($end == 'ies')
+		{
+			$str = substr($str, 0, strlen($str)-3).'y';
+		}
+		elseif ($end == 'ses')
+		{
+			$str = substr($str, 0, strlen($str)-2);
+		}
+		else
+		{
+			$end = substr($str, -1);
+		
+			if ($end == 's')
+			{
+				$str = substr($str, 0, strlen($str)-1);
+			}
+		}
+	
+		return $str;
 	}
 }
 
@@ -82,26 +82,28 @@ if ( ! function_exists('plural'))
 {	
 	function plural($str, $force = FALSE)
 	{
-	    $str = strtolower(trim($str));
-	    $end = substr($str, -1);
+		$str = strtolower(trim($str));
+		$end = substr($str, -1);
 
-	    if ($end == 'y')
-	    {
-	        $str = substr($str, 0, strlen($str)-1).'ies';
-	    }
-	    elseif ($end == 's')
-	    {
-	        if ($force == TRUE)
-	        {
-	            $str .= 'es';
-	        }
-	    }
-	    else
-	    {
-	        $str .= 's';
-	    }
+		if ($end == 'y')
+		{
+			// Y preceded by vowel => regular plural
+			$vowels = array('a', 'e', 'i', 'o', 'u');
+			$str = in_array(substr($str, -2, 1), $vowels) ? $str.'s' : substr($str, 0, -1).'ies';
+		}
+		elseif ($end == 's')
+		{
+			if ($force == TRUE)
+			{
+				$str .= 'es';
+			}
+		}
+		else
+		{
+			$str .= 's';
+		}
 
-	    return $str;
+		return $str;
 	}
 }
 

@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008 - 2009, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -46,7 +46,7 @@ if ( ! function_exists('trim_slashes'))
 {
 	function trim_slashes($str)
 	{
-	    return trim($str, '/');
+		return trim($str, '/');
 	} 
 }
 	
@@ -173,7 +173,7 @@ if ( ! function_exists('reduce_multiples'))
 		{
 			$str = trim($str, $character);
 		}
-    
+
 		return $str;
 	}
 }

@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008 - 2009, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -40,26 +40,26 @@ if ( ! function_exists('byte_format'))
 	{
 		$CI =& get_instance();
 		$CI->lang->load('number');
-
+	
 		if ($num >= 1000000000000) 
 		{
-			$num = round($num/1099511627776)/10;
-			$unit  = $CI->lang->line('terabyte_abbr');
+			$num = round($num / 1099511627776, 1);
+			$unit = $CI->lang->line('terabyte_abbr');
 		}
 		elseif ($num >= 1000000000) 
 		{
-			$num = round($num/107374182)/10;
-			$unit  = $CI->lang->line('gigabyte_abbr');
+			$num = round($num / 1073741824, 1);
+			$unit = $CI->lang->line('gigabyte_abbr');
 		}
 		elseif ($num >= 1000000) 
 		{
-			$num = round($num/104857)/10;
-			$unit  = $CI->lang->line('megabyte_abbr');
+			$num = round($num / 1048576, 1);
+			$unit = $CI->lang->line('megabyte_abbr');
 		}
 		elseif ($num >= 1000) 
 		{
-			$num = round($num/102)/10;
-			$unit  = $CI->lang->line('kilobyte_abbr');
+			$num = round($num / 1024, 1);
+			$unit = $CI->lang->line('kilobyte_abbr');
 		}
 		else
 		{
