@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008 - 2009, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -94,7 +94,7 @@ class CI_Output {
 	}
 
 	// --------------------------------------------------------------------
-		
+
 	/**
 	 * Set Header
 	 *
@@ -107,9 +107,25 @@ class CI_Output {
 	 * @param	string
 	 * @return	void
 	 */	
-	function set_header($header)
+	function set_header($header, $replace = TRUE)
 	{
-		$this->headers[] = $header;
+		$this->headers[] = array($header, $replace);
+	}
+
+	// --------------------------------------------------------------------
+	
+	/**
+	 * Set HTTP Status Header
+	 * moved to Common procedural functions in 1.7.2
+	 * 
+	 * @access	public
+	 * @param	int 	the status code
+	 * @param	string	
+	 * @return	void
+	 */	
+	function set_status_header($code = '200', $text = '')
+	{
+		set_status_header($code, $text);
 	}
 	
 	// --------------------------------------------------------------------
@@ -183,7 +199,7 @@ class CI_Output {
 
 		// Parse out the elapsed time and memory usage,
 		// then swap the pseudo-variables with the data
-				
+
 		$elapsed = $BM->elapsed_time('total_execution_time_start', 'total_execution_time_end');		
 		$output = str_replace('{elapsed_time}', $elapsed, $output);
 		
@@ -211,7 +227,7 @@ class CI_Output {
 		{
 			foreach ($this->headers as $header)
 			{
-				@header($header);
+				@header($header[0], $header[1]);
 			}
 		}		
 
@@ -296,7 +312,7 @@ class CI_Output {
 		
 		$cache_path .= md5($uri);
 
-		if ( ! $fp = @fopen($cache_path, 'wb'))
+		if ( ! $fp = @fopen($cache_path, FOPEN_WRITE_CREATE_DESTRUCTIVE))
 		{
 			log_message('error', "Unable to write cache file: ".$cache_path);
 			return;
@@ -304,9 +320,16 @@ class CI_Output {
 		
 		$expire = time() + ($this->cache_expiration * 60);
 		
-		flock($fp, LOCK_EX);
-		fwrite($fp, $expire.'TS--->'.$output);
-		flock($fp, LOCK_UN);
+		if (flock($fp, LOCK_EX))
+		{
+			fwrite($fp, $expire.'TS--->'.$output);
+			flock($fp, LOCK_UN);
+		}
+		else
+		{
+			log_message('error', "Unable to secure a file lock for file at: ".$cache_path);
+			return;
+		}
 		fclose($fp);
 		@chmod($cache_path, DIR_WRITE_MODE);
 
@@ -342,7 +365,7 @@ class CI_Output {
 			return FALSE;
 		}
 	
-		if ( ! $fp = @fopen($filepath, 'rb'))
+		if ( ! $fp = @fopen($filepath, FOPEN_READ))
 		{
 			return FALSE;
 		}

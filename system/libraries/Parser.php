@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008 - 2009, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -66,7 +66,7 @@ class CI_Parser {
 		
 		if ($return == FALSE)
 		{
-			$CI->output->final_output = $template;
+			$CI->output->append_output($template);
 		}
 		
 		return $template;
@@ -158,7 +158,7 @@ class CI_Parser {
 	 */
 	function _match_pair($string, $variable)
 	{
-		if ( ! preg_match("|".$this->l_delim . $variable . $this->r_delim."(.+)".$this->l_delim . '/' . $variable . $this->r_delim."|s", $string, $match))
+		if ( ! preg_match("|".$this->l_delim . $variable . $this->r_delim."(.+?)".$this->l_delim . '/' . $variable . $this->r_delim."|s", $string, $match))
 		{
 			return FALSE;
 		}
