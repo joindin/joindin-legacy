@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008 - 2009, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -30,6 +30,15 @@
  */
 class CI_DB_mssql_driver extends CI_DB {
 
+	var $dbdriver = 'mssql';
+	
+	// The character used for escaping
+	var $_escape_char = '';
+
+	// clause and character used for LIKE escape sequences
+	var $_like_escape_str = " ESCAPE '%s' ";
+	var $_like_escape_chr = '!';
+	
 	/**
 	 * The syntax to count rows is slightly different across different
 	 * database engines, so this string appears in each driver and is
@@ -37,7 +46,7 @@ class CI_DB_mssql_driver extends CI_DB {
 	 */
 	var $_count_string = "SELECT COUNT(*) AS ";
 	var $_random_keyword = ' ASC'; // not currently supported
-	
+
 	/**
 	 * Non-persistent database connection
 	 *
@@ -46,6 +55,11 @@ class CI_DB_mssql_driver extends CI_DB {
 	 */	
 	function db_connect()
 	{
+		if ($this->port != '')
+		{
+			$this->hostname .= ','.$this->port;
+		}
+
 		return @mssql_connect($this->hostname, $this->username, $this->password);
 	}
 	
@@ -59,11 +73,32 @@ class CI_DB_mssql_driver extends CI_DB {
 	 */	
 	function db_pconnect()
 	{
+		if ($this->port != '')
+		{
+			$this->hostname .= ','.$this->port;
+		}
+
 		return @mssql_pconnect($this->hostname, $this->username, $this->password);
 	}
 	
 	// --------------------------------------------------------------------
+	
+	/**
+	 * Reconnect
+	 *
+	 * Keep / reestablish the db connection if no queries have been
+	 * sent for a length of time exceeding the server's idle timeout
+	 *
+	 * @access	public
+	 * @return	void
+	 */
+	function reconnect()
+	{
+		// not implemented in MSSQL
+	}
 
+	// --------------------------------------------------------------------
+	
 	/**
 	 * Select the database
 	 *
@@ -72,7 +107,9 @@ class CI_DB_mssql_driver extends CI_DB {
 	 */	
 	function db_select()
 	{
-		return @mssql_select_db($this->database, $this->conn_id);
+		// Note: The brackets are required in the event that the DB name
+		// contains reserved characters
+		return @mssql_select_db('['.$this->database.']', $this->conn_id);
 	}
 
 	// --------------------------------------------------------------------
@@ -87,7 +124,7 @@ class CI_DB_mssql_driver extends CI_DB {
 	 */
 	function db_set_charset($charset, $collation)
 	{
-		// TODO - add support if needed
+		// @todo - add support if needed
 		return TRUE;
 	}
 
@@ -209,12 +246,36 @@ class CI_DB_mssql_driver extends CI_DB {
 	 *
 	 * @access	public
 	 * @param	string
+	 * @param	bool	whether or not the string will be used in a LIKE condition
 	 * @return	string
 	 */
-	function escape_str($str)	
-	{	
+	function escape_str($str, $like = FALSE)
+	{
+		if (is_array($str))
+		{
+			foreach($str as $key => $val)
+	   		{
+				$str[$key] = $this->escape_str($val, $like);
+	   		}
+   		
+	   		return $str;
+	   	}
+
+		// Access the CI object
+		$CI =& get_instance();
+		
 		// Escape single quotes
-		return str_replace("'", "''", $str);
+		$str = str_replace("'", "''", $CI->input->_remove_invisible_characters($str));
+		
+		// escape LIKE condition wildcards
+		if ($like === TRUE)
+		{
+			$str = str_replace(	array('%', '_', $this->_like_escape_chr),
+								array($this->_like_escape_chr.'%', $this->_like_escape_chr.'_', $this->_like_escape_chr.$this->_like_escape_chr),
+								$str);
+		}
+		
+		return $str;
 	}
 	
 	// --------------------------------------------------------------------
@@ -295,15 +356,19 @@ class CI_DB_mssql_driver extends CI_DB {
 	function count_all($table = '')
 	{
 		if ($table == '')
-			return '0';
-	
-		$query = $this->query($this->_count_string . $this->_protect_identifiers('numrows'). " FROM " . $this->_protect_identifiers($this->dbprefix.$table));
+		{
+			return 0;
+		}
+
+		$query = $this->query($this->_count_string . $this->_protect_identifiers('numrows') . " FROM " . $this->_protect_identifiers($table, TRUE, NULL, FALSE));
 
 		if ($query->num_rows() == 0)
-			return '0';
+		{
+			return 0;
+		}
 
 		$row = $query->row();
-		return $row->numrows;
+		return (int) $row->numrows;
 	}
 
 	// --------------------------------------------------------------------
@@ -324,7 +389,7 @@ class CI_DB_mssql_driver extends CI_DB {
 		// for future compatibility
 		if ($prefix_limit !== FALSE AND $this->dbprefix != '')
 		{
-			//$sql .= " LIKE '".$this->dbprefix."%'";
+			//$sql .= " LIKE '".$this->escape_like_str($this->dbprefix)."%' ".sprintf($this->_like_escape_str, $this->_like_escape_char);
 			return FALSE; // not currently supported
 		}
 		
@@ -344,7 +409,7 @@ class CI_DB_mssql_driver extends CI_DB {
 	 */
 	function _list_columns($table = '')
 	{
-		return "SELECT * FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = '".$this->_escape_table($table)."'";	
+		return "SELECT * FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = '".$table."'";	
 	}
 
 	// --------------------------------------------------------------------
@@ -360,7 +425,7 @@ class CI_DB_mssql_driver extends CI_DB {
 	 */
 	function _field_data($table)
 	{
-		return "SELECT TOP 1 * FROM ".$this->_escape_table($table);	
+		return "SELECT TOP 1 * FROM ".$table;	
 	}
 
 	// --------------------------------------------------------------------
@@ -373,8 +438,7 @@ class CI_DB_mssql_driver extends CI_DB {
 	 */
 	function _error_message()
 	{
-		// Are errros even supported in MS SQL?
-		return '';
+		return mssql_get_last_message();
 	}
 	
 	// --------------------------------------------------------------------
@@ -390,94 +454,49 @@ class CI_DB_mssql_driver extends CI_DB {
 		// Are error numbers supported?
 		return '';
 	}
-	
+
 	// --------------------------------------------------------------------
 
 	/**
-	 * Escape Table Name
+	 * Escape the SQL Identifiers
 	 *
-	 * This function adds backticks if the table name has a period
-	 * in it. Some DBs will get cranky unless periods are escaped
+	 * This function escapes column and table names
 	 *
 	 * @access	private
-	 * @param	string	the table name
+	 * @param	string
 	 * @return	string
 	 */
-	function _escape_table($table)
+	function _escape_identifiers($item)
 	{
-		// I don't believe this is necessary with MS SQL.  Not sure, though. - Rick
-	
-		/*
-		if (strpos($table, '.') !== FALSE)
+		if ($this->_escape_char == '')
 		{
-			$table = '"' . str_replace('.', '"."', $table) . '"';
+			return $item;
 		}
-		*/
-		
-		return $table;
-	}	
-	
-	// --------------------------------------------------------------------
 
-	/**
-	 * Protect Identifiers
-	 *
-	 * This function adds backticks if appropriate based on db type
-	 *
-	 * @access	private
-	 * @param	mixed	the item(s)
-	 * @param	boolean	should spaces be backticked
-	 * @param	boolean	only affect the first word
-	 * @return	mixed	the item with backticks
-	 */	
-	function _protect_identifiers($item, $first_word_only = FALSE)
-	{
-		if (is_array($item))
+		foreach ($this->_reserved_identifiers as $id)
 		{
-			$escaped_array = array();
-
-			foreach($item as $k=>$v)
+			if (strpos($item, '.'.$id) !== FALSE)
 			{
-				$escaped_array[$this->_protect_identifiers($k)] = $this->_protect_identifiers($v, $first_word_only);
-			}
+				$str = $this->_escape_char. str_replace('.', $this->_escape_char.'.', $item);  
+				
+				// remove duplicates if the user already included the escape
+				return preg_replace('/['.$this->_escape_char.']+/', $this->_escape_char, $str);
+			}		
+		}
 
-			return $escaped_array;
-		}	
-
-		// This function may get "item1 item2" as a string, and so
-		// we may need ""item1" "item2"" and not ""item1 item2""
-		if (ctype_alnum($item) === FALSE)
+		if (strpos($item, '.') !== FALSE)
 		{
-			if (strpos($item, '.') !== FALSE)
-			{
-				$aliased_tables = implode(".",$this->ar_aliased_tables).'.';
-				$table_name =  substr($item, 0, strpos($item, '.')+1);
-				$item = (strpos($aliased_tables, $table_name) !== FALSE) ? $item = $item : $this->dbprefix.$item;
-			}
-
-			// This function may get "field >= 1", and need it to return ""field" >= 1"
-			$lbound = ($first_word_only === TRUE) ? '' : '|\s|\(';
-
-			$item = preg_replace('/(^'.$lbound.')([\w\d\-\_]+?)(\s|\)|$)/iS', '$1"$2"$3', $item);
+			$str = $this->_escape_char.str_replace('.', $this->_escape_char.'.'.$this->_escape_char, $item).$this->_escape_char;			
 		}
 		else
 		{
-			return "\"{$item}\"";
+			$str = $this->_escape_char.$item.$this->_escape_char;
 		}
-
-		$exceptions = array('AS', '/', '-', '%', '+', '*', 'OR', 'IS');
 		
-		foreach ($exceptions as $exception)
-		{
-		
-			if (stristr($item, " \"{$exception}\" ") !== FALSE)
-			{
-				$item = preg_replace('/ "('.preg_quote($exception).')" /i', ' $1 ', $item);
-			}
-		}
-		return $item;
+		// remove duplicates if the user already included the escape
+		return preg_replace('/['.$this->_escape_char.']+/', $this->_escape_char, $str);
 	}
-			
+	
 	// --------------------------------------------------------------------
 
 	/**
@@ -515,7 +534,7 @@ class CI_DB_mssql_driver extends CI_DB {
 	 */
 	function _insert($table, $keys, $values)
 	{	
-		return "INSERT INTO ".$this->_escape_table($table)." (".implode(', ', $keys).") VALUES (".implode(', ', $values).")";
+		return "INSERT INTO ".$table." (".implode(', ', $keys).") VALUES (".implode(', ', $values).")";
 	}
 	
 	// --------------------------------------------------------------------
@@ -544,8 +563,10 @@ class CI_DB_mssql_driver extends CI_DB {
 		
 		$orderby = (count($orderby) >= 1)?' ORDER BY '.implode(", ", $orderby):'';
 	
-		$sql = "UPDATE ".$this->_escape_table($table)." SET ".implode(', ', $valstr);
+		$sql = "UPDATE ".$table." SET ".implode(', ', $valstr);
+
 		$sql .= ($where != '' AND count($where) >=1) ? " WHERE ".implode(" ", $where) : '';
+
 		$sql .= $orderby.$limit;
 		
 		return $sql;
@@ -567,7 +588,7 @@ class CI_DB_mssql_driver extends CI_DB {
 	 */	
 	function _truncate($table)
 	{
-		return "TRUNCATE ".$this->_escape_table($table);
+		return "TRUNCATE ".$table;
 	}
 	
 	// --------------------------------------------------------------------

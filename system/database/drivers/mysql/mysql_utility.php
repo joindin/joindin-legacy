@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008 - 2009, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -48,7 +48,7 @@ class CI_DB_mysql_utility extends CI_DB_utility {
 	 */
 	function _optimize_table($table)
 	{
-		return "OPTIMIZE TABLE ".$this->db->_escape_table($table);
+		return "OPTIMIZE TABLE ".$this->db->_escape_identifiers($table);
 	}
 
 	// --------------------------------------------------------------------
@@ -64,7 +64,7 @@ class CI_DB_mysql_utility extends CI_DB_utility {
 	 */
 	function _repair_table($table)
 	{
-		return "REPAIR TABLE ".$this->db->_escape_table($table);
+		return "REPAIR TABLE ".$this->db->_escape_identifiers($table);
 	}
 
 	// --------------------------------------------------------------------
@@ -153,7 +153,7 @@ class CI_DB_mysql_utility extends CI_DB_utility {
 										) ? TRUE : FALSE;
 										
 				// Create a string of field names
-				$field_str .= $field->name.', ';
+				$field_str .= '`'.$field->name.'`, ';
 				$i++;
 			}
 			
@@ -176,15 +176,6 @@ class CI_DB_mysql_utility extends CI_DB_utility {
 					}
 					else
 					{
-						// Do a little formatting...
-						$v = str_replace(array("\x00", "\x0a", "\x0d", "\x1a"), array('\0', '\n', '\r', '\Z'), $v);
-						$v = str_replace(array("\n", "\r", "\t"), array('\n', '\r', '\t'), $v);
-						$v = str_replace('\\', '\\\\',	$v);
-						$v = str_replace('\'', '\\\'',	$v);
-						$v = str_replace('\\\n', '\n',	$v);
-						$v = str_replace('\\\r', '\r',	$v);
-						$v = str_replace('\\\t', '\t',	$v);
-
 						// Escape the data if it's not an integer
 						if ($is_int[$i] == FALSE)
 						{

@@ -6,7 +6,7 @@
  *
  * @package	 	CodeIgniter
  * @author	 	ExpressionEngine Dev Team
- * @copyright   Copyright (c) 2006, EllisLab, Inc.
+ * @copyright   Copyright (c) 2008 - 2009, EllisLab, Inc.
  * @license	 	http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since	   	Version 1.0
@@ -42,13 +42,15 @@ class CI_DB_oci8_result extends CI_DB_result {
 	 */
 	function num_rows()
 	{
-        $rowcount = count($this->result_array());
-        @ociexecute($this->stmt_id);
-        if ($this->curs_id)
+		$rowcount = count($this->result_array());
+		@ociexecute($this->stmt_id);
+
+		if ($this->curs_id)
 		{
 			@ociexecute($this->curs_id);
 		}
-        return $rowcount;
+
+		return $rowcount;
 	}
 
 	// --------------------------------------------------------------------
@@ -91,12 +93,6 @@ class CI_DB_oci8_result extends CI_DB_result {
 			$field_names[] = ocicolumnname($this->stmt_id, $c);
 		}
 		return $field_names;
-	}
-
-	// Deprecated
-	function field_names()
-	{
-		return $this->list_fields();
 	}
 
 	// --------------------------------------------------------------------

@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008 - 2009, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -72,7 +72,7 @@ class CI_DB_oci8_forge extends CI_DB_forge {
 			$sql .= 'IF NOT EXISTS ';
 		}
 		
-		$sql .= $this->db->_escape_table($table)." (";
+		$sql .= $this->db->_escape_identifiers($table)." (";
 		$current_field_count = 0;
 
 		foreach ($fields as $field=>$attributes)
