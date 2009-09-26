@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008 - 2009, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -97,6 +97,16 @@ class CI_DB_forge {
 	 */
 	function add_key($key = '', $primary = FALSE)
 	{
+		if (is_array($key))
+		{
+			foreach($key as $one)
+			{
+				$this->add_key($one, $primary);
+			}
+			
+			return;
+		}
+	
 		if ($key == '')
 		{
 			show_error('Key information is required for that operation.');
@@ -181,7 +191,7 @@ class CI_DB_forge {
 		}
 
 		$sql = $this->_create_table($this->db->dbprefix.$table, $this->fields, $this->primary_keys, $this->keys, $if_not_exists);
-
+		
 		$this->_reset();
 		return $this->db->query($sql);
 	}
@@ -243,22 +253,32 @@ class CI_DB_forge {
 	{
 		if ($table == '')
 		{
-				show_error('A table name is required for that operation.');
+			show_error('A table name is required for that operation.');
 		}
 
 		// add field info into field array, but we can only do one at a time
-		// so only grab the first field in the event there are more then one
-		$this->add_field(array_slice($field, 0, 1));
+		// so we cycle through
 
-		if (count($this->fields) == 0)
-		{	
-			show_error('Field information is required.');
+		foreach ($field as $k => $v)
+		{
+			$this->add_field(array($k => $field[$k]));		
+
+			if (count($this->fields) == 0)
+			{	
+				show_error('Field information is required.');
+			}
+			
+			$sql = $this->_alter_table('ADD', $this->db->dbprefix.$table, $this->fields, $after_field);
+
+			$this->_reset();
+	
+			if ($this->db->query($sql) === FALSE)
+			{
+				return FALSE;
+			}
 		}
-
-		$sql = $this->_alter_table('ADD', $this->db->dbprefix.$table, $this->fields, $after_field);
-
-		$this->_reset();
-		return $this->db->query($sql);
+		
+		return TRUE;
 	}
 
 	// --------------------------------------------------------------------
@@ -276,12 +296,12 @@ class CI_DB_forge {
 	
 		if ($table == '')
 		{
-				show_error('A table name is required for that operation.');
+			show_error('A table name is required for that operation.');
 		}
 
 		if ($column_name == '')
 		{
-				show_error('A column name is required for that operation.');
+			show_error('A column name is required for that operation.');
 		}
 
 		$sql = $this->_alter_table('DROP', $this->db->dbprefix.$table, $column_name);
@@ -302,25 +322,34 @@ class CI_DB_forge {
 	 */
 	function modify_column($table = '', $field = array())
 	{
-	
 		if ($table == '')
 		{
-				show_error('A table name is required for that operation.');
+			show_error('A table name is required for that operation.');
 		}
 
 		// add field info into field array, but we can only do one at a time
-		// so only grab the first field in the event there are more then one
-		$this->add_field(array_slice($field, 0, 1));
+		// so we cycle through
 
-		if (count($this->fields) == 0)
-		{	
-			show_error('Field information is required.');
+		foreach ($field as $k => $v)
+		{
+			$this->add_field(array($k => $field[$k]));
+
+			if (count($this->fields) == 0)
+			{	
+				show_error('Field information is required.');
+			}
+		
+			$sql = $this->_alter_table('CHANGE', $this->db->dbprefix.$table, $this->fields);
+
+			$this->_reset();
+	
+			if ($this->db->query($sql) === FALSE)
+			{
+				return FALSE;
+			}
 		}
-
-		$sql = $this->_alter_table('CHANGE', $this->db->dbprefix.$table, $this->fields);
-
-		$this->_reset();
-		return $this->db->query($sql);
+		
+		return TRUE;
 	}
 
 	// --------------------------------------------------------------------

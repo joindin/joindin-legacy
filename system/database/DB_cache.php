@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008 - 2009, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -93,13 +93,14 @@ class CI_DB_Cache {
 		{
 			return $this->db->cache_off();
 		}
+
+		$segment_one = ($this->CI->uri->segment(1) == FALSE) ? 'default' : $this->CI->uri->segment(1);
+		
+		$segment_two = ($this->CI->uri->segment(2) == FALSE) ? 'index' : $this->CI->uri->segment(2);
 	
-		$uri  = ($this->CI->uri->segment(1) == FALSE) ? 'default.'	: $this->CI->uri->segment(1).'+';
-		$uri .= ($this->CI->uri->segment(2) == FALSE) ? 'index'		: $this->CI->uri->segment(2);
+		$filepath = $this->db->cachedir.$segment_one.'+'.$segment_two.'/'.md5($sql);		
 		
-		$filepath = $uri.'/'.md5($sql);
-		
-		if (FALSE === ($cachedata = read_file($this->db->cachedir.$filepath)))
+		if (FALSE === ($cachedata = read_file($filepath)))
 		{	
 			return FALSE;
 		}
@@ -122,10 +123,11 @@ class CI_DB_Cache {
 			return $this->db->cache_off();
 		}
 
-		$uri  = ($this->CI->uri->segment(1) == FALSE) ? 'default.'	: $this->CI->uri->segment(1).'+';
-		$uri .= ($this->CI->uri->segment(2) == FALSE) ? 'index'		: $this->CI->uri->segment(2);
+		$segment_one = ($this->CI->uri->segment(1) == FALSE) ? 'default' : $this->CI->uri->segment(1);
 		
-		$dir_path = $this->db->cachedir.$uri.'/';
+		$segment_two = ($this->CI->uri->segment(2) == FALSE) ? 'index' : $this->CI->uri->segment(2);
+	
+		$dir_path = $this->db->cachedir.$segment_one.'+'.$segment_two.'/';
 		
 		$filename = md5($sql);
 	

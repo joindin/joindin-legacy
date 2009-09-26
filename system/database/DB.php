@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008 - 2009, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -44,7 +44,7 @@ function &DB($params = '', $active_record_override = FALSE)
 			show_error('You have specified an invalid database connection group.');
 		}
 		
-		$params = $db[$active_group];			
+		$params = $db[$active_group];
 	}
 	elseif (is_string($params))
 	{
@@ -73,7 +73,7 @@ function &DB($params = '', $active_record_override = FALSE)
 		if (isset($dns['query']))
 		{
 			parse_str($dns['query'], $extra);
-			
+
 			foreach($extra as $key => $val)
 			{
 				// booleans please
@@ -85,12 +85,12 @@ function &DB($params = '', $active_record_override = FALSE)
 				{
 					$val = FALSE;
 				}
-				
+
 				$params[$key] = $val;
 			}
 		}
 	}
-
+	
 	// No DB specified yet?  Beat them senseless...
 	if ( ! isset($params['dbdriver']) OR $params['dbdriver'] == '')
 	{
@@ -130,7 +130,7 @@ function &DB($params = '', $active_record_override = FALSE)
 
 	// Instantiate the DB adapter
 	$driver = 'CI_DB_'.$params['dbdriver'].'_driver';
-	$DB =& new $driver($params);
+	$DB =& instantiate_class(new $driver($params));
 	
 	if ($DB->autoinit == TRUE)
 	{
