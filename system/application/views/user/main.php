@@ -1,4 +1,5 @@
-<?php 
+<?php
+$this->load->view('user/_nav_sidebar');
 
 ob_start();
 ?>

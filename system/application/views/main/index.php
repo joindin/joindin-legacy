@@ -1,8 +1,9 @@
 <?php
 menu_pagetitle('Start');
-//echo '<pre>'; print_r($talks); echo '</pre>';
+//echo '<pre><b>TALKS:</b>'; print_r($talks); echo '</pre>';
 //echo '<pre>'; print_r($events); echo '</pre>';
 //echo '<pre>'; print_r($latest_blog); echo '</pre>';
+
 ?>
 <?php if (count($hot_events) > 0): ?>
 <div class="box">
@@ -29,7 +30,7 @@ foreach($upcoming_events as $k=>$v){
 <?php if (count($talks) > 0): ?>
 <div class="box">
 <h2 class="h1 icon-talk">Popular Talks</h2>
-<?php 
+<?php
 foreach($talks as $k=>$v){
     $this->load->view('talk/_talk-row', array('talk'=>$v));
 }

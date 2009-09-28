@@ -75,7 +75,13 @@ class Event_model extends Model {
 	}
 
 	function getEventDetail($id=null,$start_dt=null,$end_dt=null,$pending=false){
-		$attend = '(SELECT COUNT(*) FROM user_attend WHERE eid = events.ID AND uid = ' . (int)$this->session->userdata('ID') . ')as user_attending';
+		
+		$cols='events.event_name,events.event_start,events.event_end,events.event_lat,events.event_long,';
+		$cols.='events.ID as event_ID,events.event_loc,events.event_desc,events.active,';
+		$cols.='events.event_stub,events.event_tz,events.event_icon,events.pending,events.event_hastag,';
+		$cols.='events.event_href,events.event_cfp_start,events.event_cfp_end';
+		
+		$attend = '(SELECT COUNT(*) FROM user_attend WHERE eid = events.ID AND uid = ' . (int)$this->session->userdata('ID') . ') as user_attending';
 	    $this->db->select('events.*, COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments, ' . $attend);
 	    $this->db->from('events');
 		$this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
@@ -92,7 +98,7 @@ class Event_model extends Model {
 		}
 		if($id){
 			//looking for a specific one...
-			$this->db->where('events.ID='.$id);
+			$this->db->where('events.ID',$id);
 		}else{
 			if($start_dt && $end_dt){
 			    $this->db->where('((events.event_start>='.$start_dt.' AND events.event_start<='.$end_dt.')');
@@ -207,6 +213,13 @@ class Event_model extends Model {
 	
 	function getEventIdByName($name){
 		$q=$this->db->get_where('events',array('event_stub'=>$name));
+		return $q->result();
+	}
+	function getEventIdByTitle($title){
+		$this->db->select('id');
+		$this->db->from('events');
+		$this->db->where("lower(event_name)='".strtolower($title)."'");
+		$q=$this->db->get();
 		return $q->result();
 	}
 	function getClaimedTalks($eid){

@@ -111,13 +111,6 @@ class Talks_model extends Model {
 		return $q->result();
 	}
 	function getTalkComments($tid){
-		/*
-		$this->db->from('talk_comments');
-		$this->db->where('talk_id',$tid);
-		$this->db->where('active','1');
-		$this->db->order_by('date_made','desc');
-		$q=$this->db->get();
-		*/
 		$sql=sprintf('
 			select
 				tc.talk_id,
@@ -174,7 +167,7 @@ class Talks_model extends Model {
 		$this->db->from('user_admin');
 		$this->db->where('uid',$uid);
 		$this->db->where('rtype','talk');
-		$this->db->where("rcode!='pending'");
+		$this->db->where('rcode !=','pending');
 		
 		$q=$this->db->get();
 		//$q=$this->db->get_where('user_admin',array('uid'=>$uid,'rtype'=>'talk'));

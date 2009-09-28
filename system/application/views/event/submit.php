@@ -83,6 +83,49 @@ menu_pagetitle('Submit an event');
 	 <div class="clear"></div>
     </div>
     
+	<div class="row">
+		<span style="color:#3567AC;font-size:11px"><b>Call for Papers:</b> Are you opening up your conference to let people submit ideas? Use these dates to define the time period when they can submit! </span><br/>
+		<?php 
+			$js='onClick="toggleCfpDates()"';
+			echo form_checkbox('is_cfp','1',$this->validation->cfp_checked,$js); 
+		?> Yes, we're going to have a Call for Papers
+		<br/><br/>
+        <label for="start">Call for Papers Start Date</label>
+	<?php
+		/*foreach(range(1,12) as $v){ $end_mo[$v]=$v; }
+		foreach(range(1,32) as $v){ $end_day[$v]=$v; }
+		foreach(range(date('Y'),date('Y')+5) as $v){ $end_yr[$v]=$v; }*/
+
+	    foreach(range(1,12) as $v){ $cfp_start_mo[$v]=strftime('%B', strtotime('2000-' . $v . '-01')); }
+    	foreach(range(1,31) as $v){ $cfp_start_day[$v]=sprintf('%02d', $v); }
+    	foreach(range(date('Y'),date('Y')+5) as $v){ $cfp_start_yr[$v]=$v; }
+
+		$js=($this->validation->cfp_checked==1) ? '' : 'disabled';
+		
+		echo form_dropdown('cfp_start_mo',$cfp_start_mo,$this->validation->cfp_start_mo,'id="cfp_start_mo" '.$js);
+		echo form_dropdown('cfp_start_day',$cfp_start_day,$this->validation->cfp_start_day,'id="cfp_start_day" '.$js);
+		echo form_dropdown('cfp_start_yr',$cfp_start_yr,$this->validation->cfp_start_yr,'id="cfp_start_yr" '.$js);
+		?>
+	 <div class="clear"></div>
+    </div>
+ <div class="row">
+        <label for="start">Call for Papers End Date</label>
+	<?php
+		/*foreach(range(1,12) as $v){ $end_mo[$v]=$v; }
+		foreach(range(1,32) as $v){ $end_day[$v]=$v; }
+		foreach(range(date('Y'),date('Y')+5) as $v){ $end_yr[$v]=$v; }*/
+
+	    foreach(range(1,12) as $v){ $cfp_end_mo[$v]=strftime('%B', strtotime('2000-' . $v . '-01')); }
+    	foreach(range(1,31) as $v){ $cfp_end_day[$v]=sprintf('%02d', $v); }
+    	foreach(range(date('Y'),date('Y')+5) as $v){ $cfp_end_yr[$v]=$v; }
+
+		echo form_dropdown('cfp_end_mo',$cfp_end_mo,$this->validation->cfp_end_mo,'id="cfp_end_mo" '.$js);
+		echo form_dropdown('cfp_end_day',$cfp_end_day,$this->validation->cfp_end_day,'id="cfp_end_day" '.$js);
+		echo form_dropdown('cfp_end_yr',$cfp_end_yr,$this->validation->cfp_end_yr,'id="cfp_end_yr" '.$js);
+		?>
+	 <div class="clear"></div>
+    </div>
+
     <div class="row">
     	<label for="event_desc">Event Description</label>
     	<?php 

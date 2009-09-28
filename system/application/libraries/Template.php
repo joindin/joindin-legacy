@@ -27,11 +27,12 @@
  * @category	Libraries
  * @link		http://www.williamsconcepts.com/ci/libraries/template/index.html
  * @copyright  Copyright (c) 2008, Colin Williams.
- * @version 1.2
+ * @version 1.4.1
  * 
  */
-class Template {
+class CI_Template {
    
+   var $CI;
    var $config;
    var $template;
    var $master;
@@ -55,7 +56,7 @@ class Template {
 	 * @access	public
 	 */
    
-   function Template()
+   function CI_Template()
    {
       // Copy an instance of CI so we can use the entire framework.
       $this->CI =& get_instance();
@@ -319,7 +320,7 @@ class Template {
    function write($region, $content, $overwrite = FALSE)
    {
       if (isset($this->regions[$region]))
-      {
+      { 
          if ($overwrite === TRUE) // Should we append the content or overwrite it
          {
             $this->regions[$region]['content'] = array($content);
@@ -327,7 +328,7 @@ class Template {
             $this->regions[$region]['content'][] = $content;
          }
       }
-      
+
       // Regions MUST be defined
       else
       {
@@ -368,7 +369,7 @@ class Template {
             }
          }
       }
-      
+
       $content = $this->CI->load->view($view, $data, TRUE);
       $this->write($region, $content, $overwrite);
 
@@ -584,7 +585,7 @@ class Template {
             $output = $this->CI->load->view($this->master, $this->output, $buffer);
          }
       }
-      
+
       return $output;
    }
    
@@ -619,13 +620,13 @@ class Template {
    function _build_content($region, $wrapper = NULL, $attributes = NULL)
    {
       $output = NULL;
-      
+
       // Can't build an empty region. Exit stage left
       if ( ! isset($region['content']) or ! count($region['content']))
       {
          return FALSE;
       }
-      
+
       // Possibly overwrite wrapper and attributes
       if ($wrapper)
       {
@@ -654,10 +655,10 @@ class Template {
          
          $output .= ">";
       }
-      
+
       // Output the content items.
       foreach ($region['content'] as $content)
-      {
+      { 
          $output .= $content;
       }
       
@@ -667,7 +668,7 @@ class Template {
          // This just turns the wrapper into a closing tag. Like '<p>' to '</p>'
          $output .= str_replace('<', '</', $region['wrapper']) . "\n";
       }
-      
+
       return $output;
    }
    

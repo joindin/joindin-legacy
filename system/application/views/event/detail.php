@@ -98,22 +98,16 @@ foreach($claimed as $k=>$v){
         	<div class="clear"></div>
     	</div>
     <?php } ?>
-			<?php
-			/*if(!empty($det->event_href) || !empty($det->event_hastag)){
-				echo '<table cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td width="50%" valign="top" style="font-size:11px">';
-				if(!empty($det->event_href)){
-					echo '<b>Links</b><br/>'; 
-					foreach(explode(',',$det->event_href) as $v){ echo '<a href="'.$v.'">'.$v.'</a><br/>'; }
-				}
-				echo '</td><td valign="top" width="50%" style="font-size:11px">';
-				if(!empty($det->event_hashtag)){
-					echo '<b>Hashtags</b><br/>'; foreach(explode(',',$det->event_hashtag) as $v){ 
-						echo '<a href="http://hashtags.org/tag/'.str_replace('#','',$v).'">'.$v.'</a><br/>'; 
-					}
-				}
-				echo '</td></tr></table>';
-			}*/
-		?>
+			<?php 
+			// If there's a Call for Papers open for the event, let them know
+			if(!empty($det->event_cfp_start) || !empty($det->event_cfp_end)){ 
+			$cfp_status=($det->event_cfp_end>=time() && $det->event_cfp_start<=time()) ? 'Open!' : 'Closed';
+			?>
+			<div class="links">
+				<b>Call for Papers Status: <?php echo $cfp_status; ?> </b> 
+			</div>
+			<div class="clear"></div>
+			<?php } ?>
 	</div>
 </div>
 

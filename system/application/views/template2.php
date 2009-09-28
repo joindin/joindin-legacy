@@ -88,7 +88,7 @@ $title[] = 'Joind.in';
         <div class="grid_8">
 			<div class="main">
 			    <?php if(isset($info_block)){ echo $info_block; } ?>
-                <?=$content?>
+                <?php echo $content?>
             </div>
         </div>
     	<div class="grid_4">
