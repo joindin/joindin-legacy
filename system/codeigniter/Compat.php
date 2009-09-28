@@ -6,7 +6,7 @@
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2006, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008 - 2009, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -88,9 +88,6 @@ if ( ! function_exists('ctype_alnum'))
 		return ! preg_match('/[^0-9a-z]/i', $str);
 	}	
 }
-
-// --------------------------------------------------------------------
-
 
 /* End of file Compat.php */
 /* Location: ./system/codeigniter/Compat.php */
