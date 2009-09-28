@@ -156,7 +156,8 @@ $comment_closed=false;
 if(time()>$adv_mo){
 	$this->load->view('msg_info', array('msg' => 'Comments closed.'));
 	$comment_closed=true;
-}elseif (empty($comments)) {
+}
+if (empty($comments)) {
 ?>
 <?php $this->load->view('msg_info', array('msg' => 'No comments yet.')); ?>
 <?php
