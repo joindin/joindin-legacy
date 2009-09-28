@@ -265,7 +265,7 @@ class Event extends Controller {
 		$this->load->model('event_comments_model');
 		$this->load->model('user_attend_model','uam');
 		
-		$events	= $this->event_model->getEventDetail($id);				
+		$events	= $this->event_model->getEventDetail($id);
 		$talks	= $this->event_model->getEventTalks($id);
 		$is_auth= $this->user_model->isAuth();
 		
@@ -360,7 +360,8 @@ class Event extends Controller {
 
 		$arr['comments']	= $this->event_comments_model->getEventComments($id);
 		
-		$t=$this->twitter->querySearchAPI(explode(',',$arr['events'][0]->event_hashtag));
+		//$t=$this->twitter->querySearchAPI(explode(',',$arr['events'][0]->event_hashtag));
+		$t=array();
 		$other_data=array('title'=>'Tagged on Twitter');
 		if(!empty($t)){
 			$other_data=array(
@@ -523,6 +524,13 @@ class Event extends Controller {
 			'start_mo'				=> 'Event Start Month',
 			'start_day'				=> 'Event Start Day',
 			'start_yr'				=> 'Event Start Year',
+			'is_cfp'				=> 'Is CfP',
+			'cfp_start_day'			=> 'CfP Start Day',
+			'cfp_start_mo'			=> 'CfP Start Month',
+			'cfp_start_yr'			=> 'CfP Start Year',
+			'cfp_end_day'			=> 'CfP End Day',
+			'cfp_end_mo'			=> 'CfP End Month',
+			'cfp_end_yr'			=> 'CfP End Year',
 			'end_mo'				=> 'Event End Month',
 			'end_day'				=> 'Event End Day',
 			'end_yr'				=> 'Event End Year',
@@ -531,12 +539,14 @@ class Event extends Controller {
 		//	'cinput'				=> 'Captcha'
 		);
 		$rules=array(
-			'event_title'			=> 'required',
+			'event_title'			=> 'required|callback_event_title_check',
 			'event_loc'				=> 'required',
 			'event_contact_name'	=> 'required',
 			'event_contact_email'	=> 'required|valid_email',
 			'start_mo'				=> 'callback_start_mo_check',
 			'end_mo'				=> 'callback_end_mo_check',
+			'cfp_start_mo'			=> 'callback_cfp_start_mo_check',
+			'cfp_end_mo'			=> 'callback_cfp_end_mo_check',
 			'event_stub'			=> 'callback_stub_check',
 			'event_desc'			=> 'required',
 		//	'cinput'				=> 'required|callback_cinput_check'
@@ -546,13 +556,15 @@ class Event extends Controller {
 		
 		//if we're just loading, give the dates some default values
 		if(empty($this->validation->start_mo)){
-			$this->validation->start_mo	= date('m');
-			$this->validation->start_day= date('d');
-			$this->validation->start_yr	= date('Y');
-			
-			$this->validation->end_mo	= date('m');
-			$this->validation->end_day	= date('d');
-			$this->validation->end_yr	= date('Y');
+			$sel_fields=array(
+				'start_mo'=>'m','start_day'=>'d','start_yr'=>'Y','end_mo'=>'m',
+				'end_day'=>'d','end_yr'=>'Y','cfp_start_mo'=>'m','cfp_start_day'=>'d',
+				'cfp_start_yr'=>'Y','cfp_end_mo'=>'m','cfp_end_day'=>'d','cfp_end_yr'=>'Y'
+			);
+			foreach($sel_fields as $k=>$v){ $this->validation->$k=date($v); }
+			$this->validation->cfp_checked	= false;
+		}else{
+			$this->validation->cfp_checked=$this->validation->is_cfp;
 		}
 		
 		if($this->validation->run()!=FALSE){			
@@ -579,6 +591,23 @@ class Event extends Controller {
 				'pending'		=>1
 			);
 			
+			// Check to see if our Call for Papers dates are set...
+			$cfp_check=$this->input->post('cfp_start_mo');
+			if(!empty($cfp_check)){
+				$sub_arr['event_cfp_start']=mktime(
+					0,0,0,
+					$this->input->post('cfp_start_mo'),
+					$this->input->post('cfp_start_day'),
+					$this->input->post('cfp_start_yr')
+				);
+				$sub_arr['event_cfp_end']=mktime(
+					0,0,0,
+					$this->input->post('cfp_end_mo'),
+					$this->input->post('cfp_end_day'),
+					$this->input->post('cfp_end_yr')
+				);
+			}
+			
 			//echo '<pre>'; print_r($sub_arr); echo '</pre>';
 			
 			//----------------------
@@ -603,7 +632,7 @@ class Event extends Controller {
 				//echo $msg.'<br/><br/>';
 			
 				mail($to,$subj,$msg,'From: submissions@joind.in');
-				$arr['msg']='Event successfully submitted! We\'ll get back with you soon!';
+				$arr['msg']='<style="font-size:13px;font-weight:bold">Event successfully submitted! We\'ll get back with you soon!</span>';
 				
 				//put it into the database
 				$this->db->insert('events',$sub_arr);
@@ -648,6 +677,18 @@ class Event extends Controller {
 		redirect('event/view/'.$id); 
 	}
 	//----------------------
+	/**
+	 * Check the database to be sure we don't have another event by this name, pending or not
+	 */
+	function event_title_check($str){
+		$this->load->model('event_model');
+		$ret=$this->event_model->getEventIdByTitle($str);
+		if(isset($ret[0]->id)){
+			$this->validation->set_message('event_title_check','There is already an event by that name!');
+			return false;
+		}
+		return true;
+	}
 	function start_mo_check($str){
 		//be sure it's before the end date
 		$t=mktime(
@@ -678,6 +719,46 @@ class Event extends Controller {
 			$this->validation->set_message('end_mo_check','End month must be past the start date!');
 			return false;
 		}else{ return true; }
+	}
+	/**
+	 * Ensure that the date given for the CFP start is before the event date's
+	 * and that it's before the cfp_end dates
+	 */
+	function cfp_start_mo_check(){
+		$cfp_st=mktime(0,0,0,
+			$this->validation->cfp_start_mo,$this->validation->cfp_start_day,$this->validation->cfp_start_yr
+		);
+		$cfp_end=mktime(0,0,0,
+			$this->validation->cfp_end_mo,$this->validation->cfp_end_day,$this->validation->cfp_end_yr
+		);
+		$evt_st=mktime(0,0,0,
+			$this->validation->start_mo,$this->validation->start_day,$this->validation->start_yr
+		);
+		if($cfp_st>=$evt_st){
+			$this->validation->set_message('cfp_start_mo_check','Call for Papers must start before the event!');
+			return false;
+		}
+		if($cfp_st>=$cfp_end){
+			$this->validation->set_message('cfp_start_mo_check','Invalid Call for Papers start date!');
+			return false;
+		}
+		return true;
+	}
+	/**
+	 * Ensure that the date given for the CFP's end is before the start of the event
+	 * and that the end date is after the CFP start date
+	 */
+	function cfp_end_mo_check(){
+		$cfp_end=mktime(0,0,0,
+			$this->validation->cfp_end_mo,$this->validation->cfp_end_day,$this->validation->cfp_end_yr
+		);
+		$evt_st=mktime(0,0,0,
+			$this->validation->start_mo,$this->validation->start_day,$this->validation->start_yr
+		);
+		if($cfp_end>=$evt_st){
+			$this->validation->set_message('cfp_start_mo_check','Invalid Call for Papers end date! CfP must end before event start!');
+			return false;
+		}
 	}
 	function chk_email_check($str){
 		$chk_str=str_replace('_','_chk_',$this->validation->_current_field);
