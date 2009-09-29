@@ -40,7 +40,7 @@ class User_attend_model extends Model {
 		$this->db->select('user.*');
 	    $this->db->from('user_attend');
 		$this->db->join('user', 'user.ID = user_attend.uid', 'inner');
-		$this->db->where('user_attend.eid='.(int)$eid);
+		$this->db->where('user_attend.eid',(int)$eid);
 		$this->db->order_by('user_attend.ID','asc');
 		
 		//$q=$this->db->get();
@@ -78,7 +78,7 @@ class User_attend_model extends Model {
 		$this->db->select('events.event_name,events.ID,events.event_start,events.event_end');
 		$this->db->from('events');
 		$this->db->join('user_attend','user_attend.eid=events.ID');
-		$this->db->where('user_attend.uid='.(int)$uid);
+		$this->db->where('user_attend.uid',(int)$uid);
 		$this->db->order_by('events.event_start','desc');
 		
 		$q=$this->db->get(); return $q->result();
