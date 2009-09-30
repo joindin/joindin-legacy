@@ -19,16 +19,7 @@ $rstr	= '';
 $anon	= array();
 $anon_total = 0;
 
-foreach($comments as $k=>$v){ 
-	if($v->user_id==0 && strlen($v->user_id)>=1){
-		$anon[]=$v;
-		//unset($comments[$k]);
-		$anon_total+=$v->rating; 
-	}else{
-		$total+=$v->rating; 
-	}
-}
-$anon=array();
+
 
 //--------------------
 $gmt=mktime(
@@ -47,14 +38,14 @@ if(!empty($claim_msg)){
 }
 
 //add the whole total from our anonymous comments
-$total+=$anon_total;
-$total_count=count($comments)+count($anon);
+
 //$avg=(count($comments)>0) ? $total/$total_count : 0;
 //$avg=($total_count>0) ? $total/$total_count : 0;
 //$avg=$detail[0]->tavg;
 //for($i=1;$i<=round($avg);$i++){ $rstr.='<img src="/inc/img/thumbs_up.jpg" height="20"/>'; }
 
-$rstr = rating_image($detail[0]->tavg);
+
+$speaker_ids=array();
 
 //change up our string if this is a confirmed, clamed talk
 if(!empty($claimed)){
@@ -70,6 +61,7 @@ if(!empty($claimed)){
 		if(isset($cl[$claimed[0]->rcode])){
 			$speaker[]='<a href="/user/view/'.$claimed[0]->userid.'">'.escape($cl[$claimed[0]->rcode]).'</a>';
 			unset($cl[$claimed[0]->rcode]);
+			$speaker_ids[]=$claimed[0]->userid;
 		}
 		foreach($cl as $ik=>$iv){ $speaker[]=escape($iv); }
 		
@@ -77,7 +69,27 @@ if(!empty($claimed)){
 	}
 }else{ $speaker[]=escape($det->speaker); }
 
+
 $speaker=implode(', ',$speaker);
+
+// Calculate the comment values
+foreach($comments as $k=>$v){
+	//echo '<pre>'; print_r($v); echo '</pre>';
+	//if(in_array($v->user_id,$speaker_ids)){ continue; }
+	if($v->user_id==0 && strlen($v->user_id)>=1){
+		$anon[]=$v;
+		//unset($comments[$k]);
+		$anon_total+=$v->rating;
+	}else{
+		$total+=$v->rating;
+	}
+}
+$anon=array();
+
+$total+=$anon_total;
+$total_count=count($comments)+count($anon);
+
+$rstr = rating_image($detail[0]->tavg);
 
 //echo '<pre>CL:'; print_r($claimed); echo '</pre>';
 

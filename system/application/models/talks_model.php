@@ -48,6 +48,17 @@ class Talks_model extends Model {
 	//---------------
 	function getTalks($tid=null,$latest=false){
 		if($tid){
+			// See if we have any comments to exclude
+			$uids=$this->_findExcludeComments($tid);
+			$addl=(!empty($uids)) ? 'and user_id not in ('.implode(',',$uids).')': '';
+			$tc_sql=sprintf('
+			    (select
+				floor(avg(tc.rating))
+			    from
+				talk_comments tc
+			    where
+				tc.talk_id=talks.ID %s) as tavg,
+			',$addl);
 			$sql=sprintf('
 				select
 					talks.*,
@@ -58,7 +69,7 @@ class Talks_model extends Model {
 					lang.lang_name,
 					lang.lang_abbr,
 					count(talk_comments.ID) as ccount,
-					(select floor(avg(tc.rating)) from talk_comments tc where tc.talk_id=talks.ID) as tavg,
+					%s
 					(select 
 						cat.cat_title
 					from 
@@ -76,7 +87,7 @@ class Talks_model extends Model {
 					talks.active=1
 				group by
 					talks.ID
-			',$tid);
+			',$tc_sql,$tid);
 			$q=$this->db->query($sql);
 		}else{
 			if($latest){ 
@@ -251,6 +262,21 @@ class Talks_model extends Model {
 		$this->db->group_by('talks.ID');
 		$q=$this->db->get();
 		return $q->result();
+	}
+	//---------------
+	function _findExcludeComments($tid){
+	    $uid=array();
+	    
+	    // See if there's any speaker claims for the talk
+	    $this->db->select('uid,rid,ID');
+	    $this->db->from('user_admin');
+	    $this->db->where('rid',$tid);
+	    $this->db->where('rtype','talk');
+	    $q=$this->db->get();
+	    $ret=$q->result();
+	    if($ret){ foreach($ret as $k=>$v){ $uid[]=$v->uid; } }
+
+	    return $uid;
 	}
 }
 ?>
