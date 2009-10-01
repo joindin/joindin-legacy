@@ -2,12 +2,53 @@
 	echo (!empty($details[0]->full_name)) ? $details[0]->full_name.' ('.$details[0]->username.')': $details[0]->username;
 ?></h1>
 
+
 <div class="box">
-    <h2>Talks</h2>
+<?php
+$uid=$details[0]->ID;
+
+if (!isset($sort_type)) { $sort_type = 'all'; }
+switch ($sort_type) {
+    case 'lastcomment':
+	$talk_cdate = array();
+	$tmp_talk   = array();
+	foreach($talks as $k=>$v){
+	    $talk_cdate[$v->ID]	= $v->last_comment_date;
+	    $tmp_talk[$v->ID]	= $v;
+	}
+	arsort($talk_cdate);
+	// Resort our talks
+	$tmp=array();
+	foreach($talk_cdate as $k=>$v){ $tmp[]=$tmp_talk[$k]; }
+	$talks=$tmp;
+	$title = 'Talks (By Latest Comment)'; break;
+    case 'bycomment':
+	$talk_ccount	= array();
+	$tmp_talk	= array();
+	foreach($talks as $k=>$v){
+	    $talk_ccount[$v->ID]= $v->ccount;
+	    $tmp_talk[$v->ID]	= $v;
+	}
+	arsort($talk_ccount);
+	foreach($talk_ccount as $k=>$v){ $tmp[]=$tmp_talk[$k]; }
+	$talks=$tmp;
+	$title = 'Talks (By Comment Count)'; break;
+    default:
+	$title = 'Talks'; break;
+}
+?>
+<h2><?php echo $title; ?></h2>
+<p class="filter">
+	<a href="/user/view/<?php echo $uid; ?>">Date Presented</a> |
+	<a href="/user/view/<?php echo $uid; ?>/lastcomment">Last Commented</a> |
+	<a href="/user/view/<?php echo $uid; ?>/bycomment">By Comment</a>
+</p>
+
 <?php if (count($talks) == 0): ?>
 	<p>No talks so far</p>
 <?php else: ?>
     <?php
+	//echo '<pre>'; print_r($talks); echo '</pre>';
         foreach($talks as $k=>$v){
         	$this->load->view('talk/_talk-row', array('talk'=>$v));
         }

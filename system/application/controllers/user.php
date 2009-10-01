@@ -213,7 +213,12 @@ class User extends Controller {
 		$this->load->model('user_attend_model','uam');
 		$this->load->model('user_admin_model','uadmin');
 		$this->load->helper('reqkey');
+		$this->load->helper('url');
 		$reqkey=buildReqKey();
+
+		// See if we have a sort type and apply it
+		$p=explode('/',uri_string());
+		if(isset($p[4])){ $sort_type=$p[4]; }else{ $sort_type=null; }
 		
 		$details = $this->user_model->getUser($uid);
 		
@@ -236,6 +241,7 @@ class User extends Controller {
 			'uadmin'	=> $this->uadmin->getUserTypes($uid,array('talk','event')),
 			'reqkey' 	=> $reqkey,
 			'seckey' 	=> buildSecFile($reqkey),
+			'sort_type'	=> $sort_type
 		);
 		$block=array(
 			'title'		=> 'Other Speakers',

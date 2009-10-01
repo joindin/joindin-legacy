@@ -76,7 +76,8 @@ class Talks_model extends Model {
 						talk_cat tac,categories cat
 					where 
 						tac.talk_id=talks.ID and tac.cat_id=cat.ID
-					) tcid
+					) tcid,
+					(select max(date_made) from talk_comments where talk_id=talks.ID) last_comment_date
 				from
 					talks
 				left join talk_comments on (talk_comments.talk_id = talks.ID)
@@ -104,7 +105,8 @@ class Talks_model extends Model {
 					lang.lang_name,
 					lang.lang_abbr,
 					count(talk_comments.ID) as ccount,
-					(select floor(avg(rating)) from talk_comments where talk_id=talks.ID) as tavg
+					(select floor(avg(rating)) from talk_comments where talk_id=talks.ID) as tavg,
+					(select max(date_made) from talk_comments where talk_id=talks.ID) last_comment_date
 				from
 					talks
 				left join talk_comments on (talk_comments.talk_id = talks.ID)
