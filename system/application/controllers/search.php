@@ -33,7 +33,8 @@ class Search extends Controller {
 		if($this->validation->run()==TRUE){
 			//success! search the talks and events
 			
-		    $query = 'q:' . urlencode($this->input->post('search_term'));
+			$query = 'q:'.urlencode($this->input->post('search_term'));
+			echo 'query: '.$query;
 			
 			$start_mo=$this->input->post('start_mo');
 			$end_mo=$this->input->post('end_mo');			
@@ -101,7 +102,7 @@ class Search extends Controller {
     		}
     
     		if (!empty($search_term)) {
-    		    $this->validation->search_term = $search_term;
+    		    $this->validation->search_term = urldecode($search_term);
 
     		    if (null !== $start) {
     		        $start = max(0, @strtotime($start));
@@ -122,7 +123,7 @@ class Search extends Controller {
     			$results = array(
     				'talks'	=> $this->talks_model->search($search_term, $start, $end),
     				'events'=> $this->event_model->search($search_term, $start, $end),
-					'users'	=> $this->user_model->search($search_term, $start, $end)
+				'users'	=> $this->user_model->search($search_term, $start, $end)
     			);
     		}
 		}
