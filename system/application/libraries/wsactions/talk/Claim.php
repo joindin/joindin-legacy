@@ -26,28 +26,35 @@ class Claim {
 				$uid=$this->CI->session->userdata('ID');
 				$ret=$this->CI->talks_model->getTalks($tid);
 				$talk_det=$ret[0];
-				
-				//insert a row into user_admin for the user/talk ID but with a code of "pending"
+
 				$arr=array(
 					'uid' 	=> $uid,
 					'rid' 	=> $tid,
 					'rtype'	=> 'talk',
 					'rcode'	=> 'pending'
 				);
-				$this->CI->db->insert('user_admin',$arr);
-				
-				//send an email about the claim
-				$to		= 'enygma@phpdeveloper.org';
-				$subj	= 'Talk claim submitted! Go check!';
-				$msg	= sprintf("
+				// Be sure we don't already have a claim pending
+				$q=$this->CI->db->get_where('user_admin',$arr);
+				$ret=$q->result();
+				if(isset($ret[0]->ID)){
+				    return array('output'=>'json','items'=>array('msg'=>'Fail: Duplicate Claim!'));
+				}else{
+				    //insert a row into user_admin for the user/talk ID but with a code of "pending"
+				    $this->CI->db->insert('user_admin',$arr);
+
+				    //send an email about the claim
+				    $to		= 'enygma@phpdeveloper.org';
+				    $subj	= 'Talk claim submitted! Go check!';
+				    $msg	= sprintf("
 Talk claim has been submitted for talk \"%s\"
 
 http://joind.in/talk/claim
-				",$talk_det->talk_title);
-				mail('enygma@phpdeveloper.org','Joind.in: Talk claim submitted! Go check!',$msg,'From: feedback@joind.in');
-				
-				//return the success message
-				return array('output'=>'json','items'=>array('msg'=>'Success'));
+				    ",$talk_det->talk_title);
+				    mail('enygma@phpdeveloper.org','Joind.in: Talk claim submitted! Go check!',$msg,'From: feedback@joind.in');
+
+				    //return the success message
+				    return array('output'=>'json','items'=>array('msg'=>'Success'));
+				}
 			
 			}else{ return array('output'=>'json','items'=>array('msg'=>'redirect:/user/login')); }
 		}else{ return array('output'=>'json','items'=>array('msg'=>'Fail')); }
