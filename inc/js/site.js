@@ -98,7 +98,11 @@ function claimTalk(tid){
 	apiRequest('talk','claim',obj, function(obj) {
 		//alert(obj);
 		$('#claim_btn').css('display','none');
-		alert("Thanks for claiming this talk! You will be emailed when it's approved!");
+		if(obj.msg=='Success'){
+			alert("Thanks for claiming this talk! You will be emailed when it's approved!");
+		}else{
+			alert(obj.msg);
+		}
 		return false;
 	});
 	return false;
@@ -249,6 +253,25 @@ function addRole(uid){
 		obj.type='addevent';
 		//we dont need to worry about the talk, just the event
 		apiRequest('user','role',obj, function(obj) { });
+	}
+}
+function toggleCfpDates(){
+	
+	var sel_fields = new Array(
+		'cfp_start_mo','cfp_start_day','cfp_start_yr',
+		'cfp_end_mo','cfp_end_day','cfp_end_yr'
+	);
+	
+	// Get the current status of the first one...
+	stat=$('#cfp_start_mo').attr("disabled");
+	if(stat){
+		$.each(sel_fields,function(){
+			$('#'+this).removeAttr("disabled");
+		});
+	}else{
+		$.each(sel_fields,function(){
+			$('#'+this).attr("disabled","disabled");
+		});
 	}
 }
 
