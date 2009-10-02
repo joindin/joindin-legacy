@@ -305,8 +305,11 @@ class Talk extends Controller {
 					$subj	= 'A new comment has been posted on your talk!';
 					$msg	= sprintf("
 	A comment has been posted to your talk on joind.in: \n%s\n
+	\n\n
+	%s
+	\n\n
 	Click here to view it: http://joind.in/talk/view/%s
-					",$talk_detail[0]->talk_title,$id);
+					",$talk_detail[0]->talk_title,$arr['comment'],$id);
 					mail($to,$subj,$msg,'From: comments@joind.in');
 				}
 			
@@ -358,7 +361,7 @@ class Talk extends Controller {
 		foreach($claims as $k=>$v){
 			//first check to see if it was approved
 			$chk=$this->input->post('claim_'.$v->ua_id);
-			if(!empty($chk)){ echo $chk.'<br/>';
+			if(!empty($chk)){
 				$code=buildCode($v->talk_id,$v->eid,$v->talk_title,$v->speaker);
 				$this->db->where('ID',$v->ua_id);
 				$this->db->update('user_admin',array('rcode'=>$code));
