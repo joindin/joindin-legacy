@@ -20,6 +20,6 @@ if(isset($eid)){
 
 }else{
 	echo '<h1 class="title">Event Removed!</h1>';
-	echo '<a href="/event">Return to even list</a>';
+	echo '<a href="/event/pending">Return to pending event list</a>';
 }
 ?>

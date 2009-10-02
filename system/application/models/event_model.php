@@ -20,7 +20,7 @@ class Event_model extends Model {
 		//we don't actually delete them...just make them inactive
 		//get the event
 		$this->db->where('ID',$id);
-		$this->db->update('events',array('active'=>0));
+		$this->db->update('events',array('active'=>0,'pending'=>0));
 		
 		$this->deleteEventTalks($id);
 		$this->deleteTalkComments($id);
@@ -218,7 +218,7 @@ class Event_model extends Model {
 	function getEventIdByTitle($title){
 		$this->db->select('id');
 		$this->db->from('events');
-		$this->db->where("lower(event_name)='".strtolower($title)."'");
+		$this->db->where("lower(event_name)",strtolower($title));
 		$q=$this->db->get();
 		return $q->result();
 	}

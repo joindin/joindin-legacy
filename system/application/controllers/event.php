@@ -413,7 +413,8 @@ class Event extends Controller {
 			'eid'		=> $id,
 			'details'	=> $this->event_model->getEventDetail($id)
 		);
-		if(isset($_POST['answer']) && $_POST['answer']=='yes'){
+		$ans=$this->input->post('answer');
+		if(isset($ans) && $ans =='yes'){
 			$this->event_model->deleteEvent($id);
 			$arr=array();
 		}
