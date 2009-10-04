@@ -53,7 +53,7 @@ class Talks_model extends Model {
 			$addl=(!empty($uids)) ? 'and user_id not in ('.implode(',',$uids).')': '';
 			$tc_sql=sprintf('
 			    (select
-				round(tc.rating)
+				round(avg(tc.rating))
 			    from
 				talk_comments tc
 			    where
@@ -105,7 +105,7 @@ class Talks_model extends Model {
 					lang.lang_name,
 					lang.lang_abbr,
 					count(talk_comments.ID) as ccount,
-					(select round(rating) from talk_comments where talk_id=talks.ID) as tavg,
+					(select round(avg(rating)) from talk_comments where talk_id=talks.ID) as tavg,
 					(select max(date_made) from talk_comments where talk_id=talks.ID) last_comment_date
 				from
 					talks
@@ -151,7 +151,7 @@ class Talks_model extends Model {
 				t.talk_title,
 				t.ID,
 				count(tc.ID) as ccount,
-				(select round(rating) from talk_comments where talk_id=t.ID) as tavg,
+				(select round(avg(rating)) from talk_comments where talk_id=t.ID) as tavg,
 				e.ID eid,
 				e.event_name,
 				e.event_tz
@@ -248,7 +248,7 @@ class Talks_model extends Model {
 
 	//---------------
 	function search($term,$start,$end){
-		$this->db->select('talks.*, count(talk_comments.ID) as ccount, (select round(rating) from talk_comments where talk_id=talks.ID) as tavg, events.ID eid, events.event_name, events.event_tz');
+		$this->db->select('talks.*, count(talk_comments.ID) as ccount, (select round(avg(rating)) from talk_comments where talk_id=talks.ID) as tavg, events.ID eid, events.event_name, events.event_tz');
 	    $this->db->from('talks');
 	    
 	    $this->db->join('talk_comments', 'talk_comments.talk_id=talks.ID', 'left');
