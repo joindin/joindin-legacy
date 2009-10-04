@@ -21,10 +21,12 @@ class Speaker extends Controller {
      * Create/modify the information in a speaker's profile
      */
     public function edit(){
-	$pic_err=null;
+	$pic_err    = null;
+	$resume_err = null;
 	
 	$this->load->helper('form');
 	$this->load->library('validation');
+	$this->load->model('speaker_profile_model','sp');
 	$udata=$this->user_model->getUser($this->session->userdata('ID'));
 
 	$fields=array(
@@ -50,28 +52,26 @@ class Speaker extends Controller {
 	$this->validation->set_rules($rules);
 	$this->validation->set_fields($fields);
 
+	// If we have profile settings, assign them
+	$cdata=$this->sp->getProfile($udata[0]->ID);
+	if(isset($cdata[0])){
+	    foreach($cdata[0] as $k=>$v){ $this->validation->$k=$v; }
+	}
+
 	// Run the form!
 	if($this->validation->run()!=FALSE){
-	    // Set up the upload for the user pic
-	    /*$this->load->library('upload',array(
-		'upload_path'	=> $this->config->item('user_pic_path'),
-		'allowed_types'	=> 'gif|jpg|png',
-		'max_size'=>2000,'max_height'=>100,'max_width'=>100
-	    ));
-	    $this->p_up=$this->upload;
-	    unset($this->_upload);
-
 	    // Set up the upload for the resume
-	    $this->load->library('upload',array(
-		'upload_path'	=> $this->config->item('user_resume_path'),
-		'allowed_types'=>'txt|doc|pdf','max_size'=>2000
-	    ));
-	    $this->r_up=$this->upload;
-	    unset($this->_upload);
-	     *
-	     */
+	    $config=array(
+		'upload_path'	=> $this->config->item('user_data'),
+		'allowed_types'	=> 'jpg|gif|png',
+		'overwrite'	=> true,
+		'max_size'	=> 2000,
+		'max_height'	=> 200,
+		'max_width'	=> 200
+	    );
+	    $this->load->library('upload',$config);
 
-	    $this->load->library('upload',array(
+	    /*$this->load->library('upload',array(
 		'resume'=>array(
 		    'upload_path'	=> $this->config->item('user_resume_path'),
 		    'allowed_types'=>'txt|doc|pdf','max_size'=>2000
@@ -81,11 +81,9 @@ class Speaker extends Controller {
 		    'allowed_types'	=> 'gif|jpg|png',
 		    'max_size'=>2000,'max_height'=>100,'max_width'=>100
 		)
-	    ));
+	    ));*/
 
 	    // Let's go! Make our array to insert!
-
-	    echo '<pre>'; print_r($_FILES); echo '</pre>';
 
 	    // Check for picture upload...reset our filename if it's there
 	    if(isset($_FILES['picture']) && $_FILES['picture']['error']==0){
@@ -97,16 +95,13 @@ class Speaker extends Controller {
 		$ext=strrchr($_FILES['resume']['name'],'.');
 		$_FILES['resume']['name']='user_resume_'.$udata[0]->ID.$ext;
 	    }
-
-	    echo '<pre>'; print_r($_FILES); echo '</pre>';
-
-	    $this->upload->do_upload(array('picture','resume'));
-	    //$pic_err=$this->p_up->display_errors();
-	    //$pdata=$this->p_up->data(); print_r($pdata); echo '<br/><br/>';
+	    
+	    //$this->upload->do_upload('resume');
+	    $this->upload->do_upload('picture');
 
 	    //$this->upload->do_upload('resume');
-	    $up_err=$this->upload->display_errors();
-	    $udata=$this->upload->data(); print_r($udata);
+	    $up_err = $this->upload->display_errors();
+	    $up_data= $this->upload->data();
 
 	    $data=array(
 		'user_id'	=>$udata[0]->ID,
@@ -121,10 +116,18 @@ class Speaker extends Controller {
 		'street'	=>$this->input->post('street'),
 		'job_title'	=>$this->input->post('job_title'),
 		'bio'		=>$this->input->post('bio'),
-		'resume'	=>$rdata['file_name'],
-		'picture'	=>$pdata['file_name']
+		//'resume'	=>$rdata['file_name'],
+		'picture'	=>$up_data['file_name']
 	    );
-	    echo '<pre>'; print_r($data); echo '</pre>';
+	    //echo '<pre>'; print_r($data); echo '</pre>';
+
+	    if(isset($cdata[0])){
+		$this->sp->updateProfile($udata[0]->ID,$data);
+		$this->validation->error_string='Profile successfully updated!';
+	    }else{
+		$this->sp->setProfile($data);
+		$this->validation->error_string='Profile successfully saved!';
+	    }
 	}else{
 	    // If there's not an data set, get from their profile
 	    if(empty($this->validation->email)){
@@ -134,8 +137,19 @@ class Speaker extends Controller {
 	    }
 	}
 
+	$msg=$this->validation->error_string;
+	$msg.=($pic_err) ? 'Profile Image: '.$pic_err : '';
+	$msg.=($resume_err) ? 'Resume Upload: '.$resume_err : '';
+
+	$profile_pic=null;
+	if(!empty($cdata[0]->picture)){
+	    $p=$this->config->item('user_data').'/'.$cdata[0]->picture;
+	    if(is_file($p)){ $profile_pic='/inc/img/profile/'.$cdata[0]->picture; }
+	}
+
 	$arr=array(
-	    'msg'=>$this->validation->error_string.'Pic:'.$pic_err.'Resume:'.$resume_err
+	    'msg'	    => $msg,
+	    'profile_pic'   => $profile_pic
 	);
 
 	$this->template->write_view('content','speaker/edit',$arr);

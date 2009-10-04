@@ -8,7 +8,7 @@ if(user_is_admin()){
     <li><b>Admin Links</b>
     <ul>
 	<li><a href="/user/admin">User Admin</a>
-	<li><a href="/event_pending">Pending Events</a>
+	<li><a href="/event/pending">Pending Events</a>
 	<li><a href="/talk/claim">Talk Claims</a>
     </ul>
     ');

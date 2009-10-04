@@ -17,6 +17,8 @@ $this->load->view('user/_nav_sidebar');
 </div>
 <?php
 
-echo 'Speaker profiles coming soon...';
+echo 'Speaker profiles coming soon';
 
 ?>
+</br/><br/>
+<a href="/speaker/edit">create/edit profile</a>
