@@ -360,8 +360,8 @@ class Event extends Controller {
 
 		$arr['comments']	= $this->event_comments_model->getEventComments($id);
 		
-		//$t=$this->twitter->querySearchAPI(explode(',',$arr['events'][0]->event_hashtag));
-		$t=array();
+		$t=$this->twitter->querySearchAPI(explode(',',$arr['events'][0]->event_hashtag));
+		//$t=array();
 		$other_data=array('title'=>'Tagged on Twitter');
 		if(!empty($t)){
 			$other_data=array(
