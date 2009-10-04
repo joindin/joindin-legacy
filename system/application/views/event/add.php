@@ -35,7 +35,9 @@ if(isset($msg)){ echo '<div class="notice">'.$msg.'</div>'; }
 	<td class="title">Event Start:</td>
 	<td>
 		<?php
-		foreach(range(1,12) as $v){ $start_mo[$v]=$v; }
+		foreach(range(1,12) as $v){ 
+		    $m=date('M',mktime(0,0,0,$v,1,date('Y')));
+		    $start_mo[$v]=$m; }
 		foreach(range(1,32) as $v){ $start_day[$v]=$v; }
 		foreach(range(2008,date('Y')+5) as $v){ $start_yr[$v]=$v; }
 		echo form_dropdown('start_mo',$start_mo,$this->validation->start_mo);
@@ -48,7 +50,9 @@ if(isset($msg)){ echo '<div class="notice">'.$msg.'</div>'; }
 	<td class="title">Event End:</td>
 	<td>
 		<?php
-		foreach(range(1,12) as $v){ $end_mo[$v]=$v; }
+		foreach(range(1,12) as $v){
+		    $m=date('M',mktime(0,0,0,$v,1,date('Y')));
+		    $end_mo[$v]=$m; }
 		foreach(range(1,32) as $v){ $end_day[$v]=$v; }
 		foreach(range(2008,date('Y')+5) as $v){ $end_yr[$v]=$v; }
 		echo form_dropdown('end_mo',$end_mo,$this->validation->end_mo);

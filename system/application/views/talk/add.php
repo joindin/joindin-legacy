@@ -48,7 +48,9 @@ if(isset($err) && !empty($err)){ $this->load->view('msg_info', array('msg' => $e
 	<td class="title">Date Given:</td>
 	<td>
 		<?php
-		foreach(range(1,12) as $v){ $given_mo[$v]=$v; }
+		foreach(range(1,12) as $v){
+		    $m=date('M',mktime(0,0,0,$v,1,date('Y')));
+		    $given_mo[$v]=$m; }
 		foreach(range(1,32) as $v){ $given_day[$v]=$v; }
 		foreach(range(2007,date('Y')+5) as $v){ $given_yr[$v]=$v; }
 		echo form_dropdown('given_mo',$given_mo,$this->validation->given_mo);
