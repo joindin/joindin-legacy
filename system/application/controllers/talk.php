@@ -80,6 +80,7 @@ class Talk extends Controller {
 			
 			$this->validation->session_lang=$det[0]->lang;
 		}else{
+			$det=array();
 			//set the date to the start date of the event
 			$this->validation->given_mo = date('m',$events[0]->event_start);
 			$this->validation->given_day= date('d',$events[0]->event_start);
@@ -144,7 +145,8 @@ class Talk extends Controller {
 			'err'	=>(isset($err)) ? $err : '',
 			'events'=>$events,
 			'cats'	=>$cats,
-			'langs'	=>$langs
+			'langs'	=>$langs,
+			'detail'=>$det
 		);
 		$this->template->write_view('content','talk/add',$out,TRUE);
 		$this->template->render();

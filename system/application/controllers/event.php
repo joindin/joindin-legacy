@@ -162,7 +162,7 @@ class Event extends Controller {
 		$rules=array(
 			'event_name'	=> 'required',
 			'event_loc'		=> 'required',
-			'event_tz'		=> 'required',
+			//'event_tz'		=> 'required',
 			'start_mo'		=> 'callback_start_mo_check',
 			'end_mo'		=> 'callback_end_mo_check'
 		);
@@ -183,12 +183,13 @@ class Event extends Controller {
 			'event_hashtag'=>'Event Hashtag'
 		);
 		$this->validation->set_fields($fields);
-		
+
+		$event_detail=array();
 		if($this->validation->run()==FALSE){
 			if($id){
 				//we're editing here...
-				$ret=$this->event_model->getEventDetail($id);
-				foreach($ret[0] as $k=>$v){
+				$event_detail=$this->event_model->getEventDetail($id);
+				foreach($event_detail[0] as $k=>$v){
 					if($k=='event_start'){
 						$this->validation->start_mo	= date('m',$v);
 						$this->validation->start_day= date('d',$v);
@@ -201,7 +202,8 @@ class Event extends Controller {
 				}
 			}
 			$arr=array(
-				'tz'	=> $this->tz_model->getOffsetInfo()
+				'tz'	=> $this->tz_model->getOffsetInfo(),
+				'detail'=> $event_detail
 			);
 			$this->template->write_view('content','event/add',$arr);
 			$this->template->render();
@@ -236,6 +238,7 @@ class Event extends Controller {
 				//edit...
 				$this->db->where('id',$this->edit_id);
 				$this->db->update('events',$arr);
+				$event_detail=$this->event_model->getEventDetail($id);
 			}else{ 
 				$this->db->insert('events',$arr); 
 				$id=$this->db->insert_id();				
@@ -243,7 +246,8 @@ class Event extends Controller {
 			
 			$arr=array(
 				'msg'	=> 'Data saved! <a href="/event/view/'.$id.'">View event</a>',
-				'tz'	=> $this->tz_model->getContInfo()
+				'tz'	=> $this->tz_model->getContInfo(),
+				'detail'=> $event_detail
 			);
 			$this->template->write_view('content','event/add',$arr);
 			$this->template->render();
