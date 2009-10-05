@@ -24,7 +24,7 @@ class Twitter {
 				$url=$this->api_url.str_replace('#','%23',$v); //echo $url;
 				$tmp=json_decode(@file_get_contents($url));
 				$this->CI->cache->cacheData($cname,$tmp);
-				foreach($tmp as $ok=>$ov){ $ret[]=$ov; }
+				if(!empty($tmp)){ foreach($tmp as $ok=>$ov){ $ret[]=$ov; } }
 			    }else{
 				$tmp=array();
 				foreach($ret->results as $k=>$v){ $tmp[0][$k]=$v; }
