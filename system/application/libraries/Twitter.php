@@ -23,7 +23,7 @@ class Twitter {
 			    if(!$ret){
 				$url=$this->api_url.str_replace('#','%23',$v); //echo $url;
 				$tmp=json_decode(@file_get_contents($url));
-				$this->CI->cache->cacheData($cname,$tmp);
+				$this->CI->cache->cacheData(trim($cname),$tmp);
 				if(!empty($tmp)){ foreach($tmp as $ok=>$ov){ $ret[]=$ov; } }
 			    }else{
 				$tmp=array();
