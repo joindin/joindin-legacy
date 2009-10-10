@@ -99,7 +99,7 @@ function claimTalk(tid){
 		//alert(obj);
 		$('#claim_btn').css('display','none');
 		if(obj.msg=='Success'){
-			alert("Thanks for claiming this talk! You will be emailed when it's approved!");
+			alert("Thanks for claiming this talk! You will be emailed when the claim is approved!");
 		}else{
 			alert(obj.msg);
 		}
