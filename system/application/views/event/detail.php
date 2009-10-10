@@ -242,7 +242,10 @@ $ct=0;
         	<div class="clear"></div>
         </div>
         <?php endforeach; ?>
-    <?php endif; ?>
+    <?php endif;
+
+    $adv_mo=strtotime('+3 months',$det->event_start);
+    if(time()<$adv_mo): ?>
 
     	<h3 id="comment-form">Write a comment</h3>
     	<?php echo form_open('event/view/'.$det->ID.'#comment-form', array('class' => 'form-event')); ?>
@@ -291,11 +294,10 @@ $ct=0;
             ?>
             <div class="clear"></div>
         </div>
-    	
     	<div class="row row-buttons">
         	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn'), 'Submit Comment'); ?>
         </div>
-    	<?php  echo form_close(); ?>
+    	<?php endif; echo form_close(); ?>
 	</div>
 </div>
 
