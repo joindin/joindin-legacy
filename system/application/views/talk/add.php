@@ -15,13 +15,13 @@ if(!empty($this->validation->error_string)){
 if(isset($this->edit_id)){
 	echo form_open('talk/edit/'.$this->edit_id);
 	$sub	= 'Save Edits';
-	$title	= 'Edit Talk: '.$detail[0]->talk_title;
-	menu_pagetitle('Edit Talk: '.$detail[0]->talk_title);
+	$title	= 'Edit Session: '.$detail[0]->talk_title;
+	menu_pagetitle('Edit Session: '.$detail[0]->talk_title);
 }else{ 
 	echo form_open('talk/add/event/'.$ev->ID);
-	$sub	= 'Add Talk';
-	$title	= 'Add Talk';
-	menu_pagetitle('Add Talk');
+	$sub	= 'Add Session';
+	$title	= 'Add Session';
+	menu_pagetitle('Add Session');
 }
 echo '<h2>'.$title.'</h2>';
 
@@ -39,7 +39,7 @@ if(isset($err) && !empty($err)){ $this->load->view('msg_info', array('msg' => $e
 	<div class="clear"></div>
     </div>
     <div class="row">
-	<label for="talk_title">Talk Title</label>
+	<label for="talk_title">Session Title</label>
 	<?php echo form_input('talk_title',$this->validation->talk_title);?>
 	<div class="clear"></div>
     </div>

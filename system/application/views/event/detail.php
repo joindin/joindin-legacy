@@ -15,6 +15,15 @@ foreach($claimed as $k=>$v){
 }
 
 //echo '<pre>'; print_r($talks); echo '</pre>';
+
+// Pick out our "event-related" ones...
+$evt_sessions=array();
+foreach($talks as $k=>$v){
+    if($v->tcid=='Event Related'){
+	$evt_sessions[]=$v; unset($talks[$k]);
+    }
+}
+
 //echo '<pre>'; print_r($cl); echo '</pre>';
 ?>
 <div class="detail">
@@ -153,6 +162,7 @@ $ct=0;
 	<ul>
 		<li><a href="#talks">Talks (<?=count($talks)?>)</a></li>
 		<li><a href="#comments">Comments (<?=count($comments)?>)</a></li>
+		<li><a href="#evt_related">Event Related (<?=count($evt_sessions)?>)</a></li>
 	</ul>
 	<div id="talks">
 	<?php if (count($by_day) == 0): ?>
@@ -211,6 +221,27 @@ $ct=0;
         ?>
         </table>
     <?php endif; ?>
+	</div>
+	<div id="evt_related">
+	    <?php $ct=0; ?>
+	    <table summary="" cellpadding="0" cellspacing="0" border="0" width="100%" class="list">
+	    <?php foreach($evt_sessions as $ik=>$iv): ?>
+        	<tr class="<?php echo ($ct%2==0) ? 'row1' : 'row2'; ?>">
+		    <td>
+		    <?php $type = !empty($iv->tcid) ? $iv->tcid : 'Talk'; ?>
+		    <span class="talk-type talk-type-<?php echo strtolower(str_replace(' ', '-', $type)); ?>"
+			  title="<?php echo escape($type); ?>"><?php echo escape(strtoupper($type)); ?></span>
+		    </td>
+		    <td>
+			<a href="/talk/view/<?php echo $iv->ID; ?>"><?php echo escape($iv->talk_title); ?></a>
+		    </td>
+		    <td><?php echo $iv->speaker; ?></td>
+		    <td>
+			<a class="comment-count" href="/talk/view/<?php echo $iv->ID; ?>/#comments"><?php echo $iv->comment_count; ?></a>
+		    </td>
+		</tr>
+	    <?php endforeach; ?>
+	    </table>
 	</div>
 	<div id="comments">
 	
