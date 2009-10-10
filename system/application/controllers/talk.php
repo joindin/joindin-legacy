@@ -307,11 +307,10 @@ class Talk extends Controller {
 					$subj	= 'A new comment has been posted on your talk!';
 					$msg	= sprintf("
 	A comment has been posted to your talk on joind.in: \n%s\n
-	\n\n
 	%s
-	\n\n
+	\n
 	Click here to view it: http://joind.in/talk/view/%s
-					",$talk_detail[0]->talk_title,$arr['comment'],$id);
+					",$talk_detail[0]->talk_title,trim($arr['comment']),$id);
 					mail($to,$subj,$msg,'From: comments@joind.in');
 				}
 			
