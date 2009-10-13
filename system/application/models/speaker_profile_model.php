@@ -30,6 +30,26 @@ class Speaker_profile_model extends Model {
 	$this->db->update('speaker_profile',$data);
     }
 
+    function getProfileFields(){
+	$fields=array();
+	$q=$this->db->query('show columns from speaker_profile');
+	foreach($q->result() as $k=>$v){
+	    if($v->Field!='ID'){ $fields[]=$v->Field; }
+	}
+	return $fields;
+    }
+    //----------------------
+
+    function getProfileAccess($uid){
+	$q=$this->db->get_where('speaker_tokens',array('speaker_profile_id'=>$uid));
+	return $q->result();
+    }
+    function setProfileAccess($uid,$fields){
+
+    }
+    function updateProfileAccess($pid,$fields){
+	
+    }
 }
 
 ?>
