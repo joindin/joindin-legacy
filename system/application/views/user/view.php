@@ -1,7 +1,10 @@
 <h1><?php 
 	echo (!empty($details[0]->full_name)) ? $details[0]->full_name.' ('.$details[0]->username.')': $details[0]->username;
 ?></h1>
-
+<?php if($is_admin){
+    $txt=($details[0]->active==1) ? 'Disable User Account' : 'Enable User Account'; ?>
+    <a class="btn-small" href="/user/changestat/<?php echo $details[0]->ID; ?>"><?php echo $txt; ?></a><br/><br/>
+<?php } ?>
 
 <div class="box">
 <?php

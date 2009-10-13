@@ -112,6 +112,13 @@ class User extends Controller {
 		$this->template->write_view('content','user/forgot',$arr);
 		$this->template->render();
 	}
+	function changestat($uid){
+	    // Kick them back out if they're not an admin
+	    if(!$this->user_model->isSiteAdmin()){ redirect(); }
+	    $this->user_model->toggleUserStatus($uid);
+	    redirect('user/view/'.$uid);
+	}
+
 	function register(){
 			$this->load->helper('form');
 			$this->load->library('validation');
@@ -236,7 +243,7 @@ class User extends Controller {
 			'comments'	=> $this->talks_model->getUserComments($uid),
 			'talks'		=> $this->talks_model->getUserTalks($uid),
 			'is_admin'	=> $this->user_model->isSiteAdmin(),
-			'is_attending'=>$this->uam->getUserAttending($uid),
+			'is_attending'	=> $this->uam->getUserAttending($uid),
 			'my_attend'	=> $this->uam->getUserAttending($curr_user),
 			'uadmin'	=> $this->uadmin->getUserTypes($uid,array('talk','event')),
 			'reqkey' 	=> $reqkey,
