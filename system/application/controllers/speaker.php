@@ -12,7 +12,18 @@ class Speaker extends Controller {
      * Work with the speaker's profile(s)
      */
     public function profile(){
-	$arr=array();
+	$this->load->model('speaker_profile_model','sp');
+	
+	$arr		= array();
+	$udata		= $this->user_model->getUser($this->session->userdata('ID'));
+	$arr['pdata']	= $this->sp->getProfile($udata[0]->ID);
+
+	$profile_pic=null;
+	if(!empty($arr['pdata'][0]->picture)){
+	    $p=$this->config->item('user_data').'/'.$arr['pdata'][0]->picture;
+	    if(is_file($p)){ $profile_pic='/inc/img/profile/'.$arr['pdata'][0]->picture; }
+	    $arr['profile_pic']=$profile_pic;
+	}
 	
 	$this->template->write_view('content','speaker/profile',$arr);
 	$this->template->render();
@@ -107,7 +118,7 @@ class Speaker extends Controller {
 		'user_id'	=>$udata[0]->ID,
 		'country_id'	=>$this->input->post(),
 		'full_name'	=>$this->input->post('full_name'),
-		'contact_email'	=>$this->input->post('contact_email'),
+		'contact_email'	=>$this->input->post('email'),
 		'website'	=>$this->input->post('website'),
 		'blog'		=>$this->input->post('blog'),
 		'phone'		=>$this->input->post('phone'),
@@ -117,8 +128,10 @@ class Speaker extends Controller {
 		'job_title'	=>$this->input->post('job_title'),
 		'bio'		=>$this->input->post('bio'),
 		//'resume'	=>$rdata['file_name'],
-		'picture'	=>$up_data['file_name']
 	    );
+	    if($up_data['file_name']){
+		$data['picture']=$up_data['file_name'];
+	    }
 	    //echo '<pre>'; print_r($data); echo '</pre>';
 
 	    if(isset($cdata[0])){
@@ -160,7 +173,43 @@ class Speaker extends Controller {
      * the speaker's profile
      */
     public function access(){
+	$this->load->model('speaker_profile_model','spm');
+	$this->load->helper('url');
+	$this->load->helper('form');
+	$this->load->library('validation');
+	$p=explode('/',uri_string());
+	$arr=array();
 
+	$view='';
+	if(isset($p[3])){
+	    switch(strtolower($p[3])){
+		case 'add':
+		    $view='speaker/access_add';
+		    //$f=$this->spm->getProfileFields(); echo '<pre>'; print_r($f); echo '</pre>';
+		    
+		    $rules  = array('fields'=>'required');
+		    $fields = array('fields'=>'Items');
+
+		    $this->validation->set_rules($rules);
+		    $this->validation->set_fields($fields);
+
+		    if($this->validation->run()!=FALSE){
+			var_dump($this->input->post('fields'));
+		    }else{
+			$this->validation->set_message('fields','You must select at least one field!');
+			$arr['msg']=$this->validation->error_string;
+		    }
+
+		    break;
+	    }
+	}else{ $view='speaker/access'; }
+
+	$udata	= $this->user_model->getUser($this->session->userdata('ID'));
+	
+	$arr['access_data']=$this->spm->getProfileAccess($udata[0]->ID);
+	
+	$this->template->write_view('content',$view,$arr);
+	$this->template->render();
     }
 }
 ?>
