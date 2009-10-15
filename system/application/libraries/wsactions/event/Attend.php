@@ -31,7 +31,10 @@ class Attend {
 				
 				return array('output'=>'json','items'=>array('msg'=>'Success'));
 				
-			}else{ return array('output'=>'json','items'=>array('msg'=>'redirect:/user/login')); }
+			}else{
+			    $this->CI->session->set_userdata('ref_url','event/view/'.$eid);
+			    return array('output'=>'json','items'=>array('msg'=>'redirect:/user/login'));
+			}
 		}else{ return array('output'=>'json','items'=>array('msg'=>'Fail')); }
 	}
 	//-----------------------

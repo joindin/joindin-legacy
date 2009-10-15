@@ -29,7 +29,7 @@ class User extends Controller {
 		
 		if($this->validation->run()==FALSE){
 			$ref=(isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : $this->session->userdata('ref_url');
-			$this->session->set_userdata('ref_url',$ref);
+			//$this->session->set_userdata('ref_url',$ref);
 
 			$this->template->write_view('content','user/login');
 			$this->template->render();
@@ -184,9 +184,7 @@ class User extends Controller {
 		$this->load->library('validation');
 		$this->load->model('talks_model');
 		
-		if (!$this->user_model->isAuth()) {
-		    redirect();
-		}
+		if (!$this->user_model->isAuth()) { redirect('user/login'); }
 		
 		$fields=array(
 			'talk_code'=>'Talk Code'
@@ -262,7 +260,10 @@ class User extends Controller {
 	}
 	function manage(){
 		// Be sure they're logged in
-		if (!$this->user_model->isAuth()) { redirect('user/login'); }
+		if (!$this->user_model->isAuth()) {
+		    $this->session->set_userdata('ref_url','user/manage');
+		    redirect('user/login');
+		}
 
 		$this->load->helper('form');
 		$this->load->library('validation');
