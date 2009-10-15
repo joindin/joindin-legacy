@@ -67,6 +67,7 @@ if (!empty($results)) {
 	<h2>Events</h2>
     <?php
     foreach($results['events'] as $k=>$v){
+	if($v->pending==1) continue;
         $this->load->view('event/_event-row', array('event'=>$v));
     }
     ?>
