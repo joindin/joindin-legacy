@@ -261,6 +261,9 @@ class User extends Controller {
 		$this->template->render();
 	}
 	function manage(){
+		// Be sure they're logged in
+		if (!$this->user_model->isAuth()) { redirect('user/login'); }
+
 		$this->load->helper('form');
 		$this->load->library('validation');
 		$uid=$this->session->userdata('ID');
