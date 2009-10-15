@@ -295,13 +295,13 @@ class Event_model extends Model {
 		$attend = '(SELECT COUNT(*) FROM user_attend WHERE eid = events.ID AND uid = ' . (int)$this->session->userdata('ID') . ')as user_attending';
 
 		$this->db->select('events.*, COUNT(user_attend.ID) AS num_attend, COUNT(event_comments.ID) AS num_comments, ' . $attend);
-	    $this->db->from('events');
+		$this->db->from('events');
 		$this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
 		$this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');
 		
 		if($start>0){ $this->db->where('event_start>='.$start); }
 		if($end>0){ $this->db->where('event_start<='.$end); }
-		
+
 		$this->db->like('event_name',$term);
 		$this->db->or_like('event_desc',$term);
 		$this->db->limit(10);
