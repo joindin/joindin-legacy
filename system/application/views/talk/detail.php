@@ -1,15 +1,7 @@
 <?php
 error_reporting(E_ALL);
-//echo '<pre>'; print_r($detail); print_r($comments); echo '</pre>';
-//echo '<pre>'; print_r($claimed); echo '</pre>';
-//echo '<pre>'; print_r($claims); echo '</pre>';
 
 $cl=array();
-/*foreach($claims as $k=>$v){ 
-	//echo '<pre>'; print_r($v); echo '</pre>';
-	$cl[$v->rcode]=array('rid'=>$v->rid,'uid'=>$v->uid); 
-}*/
-
 $det=$detail[0];
 
 menu_pagetitle('Talk: ' . escape($det->talk_title));
@@ -18,8 +10,6 @@ $total	= 0;
 $rstr	= '';
 $anon	= array();
 $anon_total = 0;
-
-
 
 //--------------------
 $gmt=mktime(
@@ -37,40 +27,38 @@ if(!empty($claim_msg)){
 	if($claim_msg && !empty($claim_msg)){ echo '<div class="'.$class.'">'.escape($claim_msg).'</div><br/>'; }
 }
 
-//add the whole total from our anonymous comments
+$speaker_ids= array();
+$ftalk	    = 0;
+if(!empty($claims)){
+	//echo '<pre>'; print_r($claims); echo '</pre>';
 
-//$avg=(count($comments)>0) ? $total/$total_count : 0;
-//$avg=($total_count>0) ? $total/$total_count : 0;
-//$avg=$detail[0]->tavg;
-//for($i=1;$i<=round($avg);$i++){ $rstr.='<img src="/inc/img/thumbs_up.jpg" height="20"/>'; }
-
-
-$speaker_ids=array();
-
-//change up our string if this is a confirmed, clamed talk
-if(!empty($claimed)){
 	$speaker='';
-	foreach($claimed as $k=>$v){
-		$ccode=$v->rcode;
-		$cl=array();
-		foreach($claimed[0]->speakers as $k=>$v){
-			$cl[$claimed[0]->codes[$k]]=trim($v);
+	foreach($claims as $k=>$v){
+		// Be sure we're only looking at the ones we need
+		if($v->rid!=$det->ID){ continue; }else{ $ftalk++; }
+
+		// Get the claim code
+		$cd=$v->rcode;
+
+		// Break up the speakers
+		$sp=explode(',',$v->tdata['speaker']);
+
+		// Now, check to see if any of the codes match the $cd
+		$ct=0;
+		$matched=array();
+		foreach($v->tdata['codes'] as $ck=>$cv){
+		    if($cv==$cd){
+			   //echo 'match! '.$ct.' '.$sp[$ct];
+			   $speaker[$sp[$ct]]='<a href="/user/view/'.$v->uid.'">'.$sp[$ct].'</a>';
+		    }else{
+			if(!isset($speaker[$sp[$ct]])){ $speaker[$sp[$ct]]=$sp[$ct]; }
+		    }
+		    $ct++;
 		}
-		//echo '<!--'; print_r($cl); print_R($claimed); echo '-->';
-		//echo 'sp:'.$cl[$claimed[0]->rcode];
-		if(isset($cl[$claimed[0]->rcode])){
-			$speaker[]='<a href="/user/view/'.$claimed[0]->userid.'">'.escape($cl[$claimed[0]->rcode]).'</a>';
-			unset($cl[$claimed[0]->rcode]);
-			$speaker_ids[]=$claimed[0]->userid;
-		}
-		foreach($cl as $ik=>$iv){ $speaker[]=escape($iv); }
-		
-		//TODO: show the other, non-claimed user
 	}
 }else{ $speaker[]=escape($det->speaker); }
 
-
-$speaker=implode(', ',$speaker);
+$speaker_txt=implode(', ',$speaker);
 
 // Calculate the comment values
 foreach($comments as $k=>$v){
@@ -98,7 +86,7 @@ $rstr = rating_image($detail[0]->tavg);
 	<h1><?=$det->talk_title?></h1>
 
 	<p class="info">
-		<strong><?php echo $speaker; ?></strong> (<?php echo date('M j, Y',$det->date_given); ?>)
+		<strong><?php echo $speaker_txt; ?></strong> (<?php echo date('M j, Y',$det->date_given); ?>)
 		<br/> 
 		<?php echo escape($det->tcid); ?> at <strong><a href="/event/view/<?php echo $det->event_id; ?>"><?php echo escape($det->event_name); ?></a></strong> (<?php echo escape($det->lang_name);?>)
 	</p>
@@ -135,7 +123,7 @@ $rstr = rating_image($detail[0]->tavg);
 	<a class="btn-small" href="/talk/edit/<?php echo $det->tid; ?>">Edit talk</a>
 <?php endif; ?>
 <?php
-if(empty($claimed)): ?>
+if(empty($claims) || $ftalk<count($speaker)): ?>
 	<a class="btn-small" href="#" id="claim_btn" onClick="claimTalk(<?php echo $det->tid; ?>)">Claim This Talk</a>	
 <?php endif; ?>
 </p>

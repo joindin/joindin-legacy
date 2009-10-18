@@ -331,7 +331,7 @@ class Talk extends Controller {
 			'auth'			=> $this->auth,
 		//	'captcha'		=> $cap,
 			'claimed'		=> $this->talks_model->isTalkClaimed($id),
-			//'claims'		=> $this->event_model->getClaimedTalks($talk_detail[0]->eid),
+			'claims'		=> $this->event_model->getClaimedTalks($talk_detail[0]->eid),
 			'claim_status'	=> $claim_status,
 			'claim_msg'		=> $claim_msg,
 			'reqkey' 		=> $reqkey,

@@ -226,6 +226,8 @@ class Event_model extends Model {
 		$this->load->helper('events');
 		$ids	= array();
 		$tdata	= array();
+
+		// Find all of the talks for the event...
 		$ret 	= $this->getEventTalks($eid); //echo '<pre>'; print_r($ret); echo '</pre>';
 		foreach($ret as $k=>$v){
 			$p=explode(',',$v->speaker);
@@ -242,7 +244,9 @@ class Event_model extends Model {
 			);
 			$ids[]=$v->ID; 
 		}
-		
+
+		// Now find the users that are in the user_admin take
+		// and try to match them up...
 		$uids=implode(',',$ids);
 		if(empty($uids)){ return array(); }
 		$sql=sprintf('
@@ -265,6 +269,9 @@ class Event_model extends Model {
 		foreach($ret as $k=>$v){ 
 			$ret[$k]->tdata=$tdata[$v->rid];
 		}
+
+		// This gives us a return array of all of the claimed talks
+		// for the this event
 		return $ret;
 	}
 	function getEventFeedback($eid){
