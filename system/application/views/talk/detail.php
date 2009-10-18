@@ -29,10 +29,10 @@ if(!empty($claim_msg)){
 
 $speaker_ids= array();
 $ftalk	    = 0;
+$speaker    = array();
 if(!empty($claims)){
 	//echo '<pre>'; print_r($claims); echo '</pre>';
 
-	$speaker='';
 	foreach($claims as $k=>$v){
 		// Be sure we're only looking at the ones we need
 		if($v->rid!=$det->ID){ continue; }else{ $ftalk++; }
