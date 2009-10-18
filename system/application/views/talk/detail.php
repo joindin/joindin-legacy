@@ -56,6 +56,8 @@ if(!empty($claims)){
 		    $ct++;
 		}
 	}
+	// if we have no matches, just assign it
+	$speaker[]=escape($det->speaker);
 }else{ $speaker[]=escape($det->speaker); }
 
 $speaker_txt=implode(', ',$speaker);
