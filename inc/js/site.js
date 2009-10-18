@@ -254,6 +254,7 @@ function addRole(uid){
 		//we dont need to worry about the talk, just the event
 		apiRequest('user','role',obj, function(obj) { });
 	}
+	alert('Role added!');
 }
 function toggleCfpDates(){
 	
