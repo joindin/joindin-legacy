@@ -13,7 +13,15 @@ class Getlist {
 	function run(){
 		$this->CI->load->model('event_model');
 		$ret=$this->CI->event_model->getEventDetail();
-		return array('output'=>'json','items'=>$ret);
+
+		//Sort them by name...
+		$names	= array();
+		$tmp	= array();
+		foreach($ret as $k=>$v){ $names[$v->event_name]=$k; }
+		ksort($names);
+		foreach($names as $k=>$v){ $tmp[]=$ret[$v]; }
+
+		return array('output'=>'json','items'=>$tmp);
 	}
 	
 }
