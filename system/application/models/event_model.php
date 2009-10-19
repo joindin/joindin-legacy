@@ -144,7 +144,7 @@ class Event_model extends Model {
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
-	
+
     function getHotEvents($limit = null){
 		$attend = '(SELECT COUNT(*) FROM user_attend WHERE eid = events.ID AND uid = ' . (int)$this->session->userdata('ID') . ')as user_attending';
 	    $this->db->select('events.*, COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments, ' . $attend);
@@ -209,6 +209,25 @@ class Event_model extends Model {
 		$this->db->group_by('events.ID');
 		$q=$this->db->get();
 		return $q->result();
+	}
+
+	function getEventAdmins($eid){
+	    $sql=sprintf("
+		select
+		    u.username,
+		    u.email
+		from
+		    user_admin ua,
+		    user u,
+		    events e
+		where
+		    e.ID=%s and
+		    ua.rtype='event' and
+		    ua.rid=e.ID and
+		    u.ID=ua.uid
+	    ",$eid);
+	    $q=$this->db->query($sql);
+	    return $q->result();
 	}
 	
 	function getEventIdByName($name){

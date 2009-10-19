@@ -349,12 +349,20 @@ class Event extends Controller {
 					$ec['def_resp_spamr']=(string)$def_ret->spam;
 				}
 				//print_r($ec);
-			
-				$to		='enygma@phpdeveloper.org';
+
+				$to=array('enygma@phpdveloper.org');
+				
+				// Get whatever email addresses there are for the event
+				$admins=$this->event_model->getEventAdmins($id);
+				foreach($admins as $ak=>$av){ $to[]=$av->email; }
+				
+				//$to	='enygma@phpdeveloper.org';
 				$subj	='Joind.in: Event feedback - '.$id;
 				$content='';
 				foreach($ec as $k=>$v){ $content.='['.$k.'] => '.$v."\n\n"; }
-				@mail($to,$subj,$content,'From:feedback@joind.in');
+				foreach($to as $tk=>$tv){
+				    @mail($tv,$subj,$content,'From:feedback@joind.in');
+				}
 			
 				$this->session->set_flashdata('msg', 'Comment inserted successfully!');
 			}
