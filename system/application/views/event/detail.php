@@ -266,10 +266,6 @@ $ct=0;
 	    <tr><td><b>Last Comment:</b></td><td style="padding:3px"><?php echo date('m.d.Y H:i:s',$latest_comment[0]->max_date); ?></td></tr>
 	    <tr><td><b>Total # of Comments</b></td><td style="padding:3px""><?php echo $total_comment_ct; ?></td></tr>
 	    <tr><td><b>Average Session Rating</b></td><td style="padding:3px"><?php echo round($session_rate/count($talks),2); ?></td></tr>
-	    <!--
-	    <b># of Anonymous Comments</b><br/>
-	    <b>Average Session Rating</b><br/>
-	    -->
 	    </table>
 	</div>
 	<div id="slides">
