@@ -259,6 +259,7 @@ $ct=0;
 	    <?php $total_comment_ct+=$iv->comment_count; endforeach; ?>
 	    </table>
 	</div>
+	<?php if($admin){ ?>
 	<div id="estats">
 	    <h3>Event Statistics</h3>
 	    <table cellpadding="0" cellspacing="0" border="0">
@@ -268,6 +269,7 @@ $ct=0;
 	    <tr><td><b>Average Session Rating</b></td><td style="padding:3px"><?php echo round($session_rate/count($talks),2); ?></td></tr>
 	    </table>
 	</div>
+	<?php } ?>
 	<div id="slides">
 	    <table summary="" cellpadding="0" cellspacing="0" border="0" width="100%" class="list">
 	    <?php foreach($slides as $sk=>$sv): ?>
