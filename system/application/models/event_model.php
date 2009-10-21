@@ -229,6 +229,24 @@ class Event_model extends Model {
 	    $q=$this->db->query($sql);
 	    return $q->result();
 	}
+
+	function getLatestComment($eid){
+	    $sql=sprintf("
+		select
+		    max(tc.date_made) max_date,
+		    tc.ID
+		from
+		    talks t,
+		    talk_comments tc
+		where
+		    t.event_id=%s and
+		    tc.talk_id=t.ID
+		group by
+		    t.event_id
+	    ",$eid);
+	    $q=$this->db->query($sql);
+	    return $q->result();
+	}
 	
 	function getEventIdByName($name){
 		$q=$this->db->get_where('events',array('event_stub'=>$name));
