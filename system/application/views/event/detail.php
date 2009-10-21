@@ -1,6 +1,7 @@
 <?php
-$det=$events[0]; //print_r($det);
-$cl=array();
+$det	= $events[0]; //print_r($det);
+$cl	= array();
+
 foreach($claimed as $k=>$v){ 
 	//echo '<pre>'; print_r($v); echo '</pre>';
 	$cl[$v->rcode]=array('rid'=>$v->rid,'uid'=>$v->uid); 
@@ -17,14 +18,20 @@ foreach($claimed as $k=>$v){
 //echo '<pre>'; print_r($talks); echo '</pre>';
 
 // Pick out our "event-related" ones...
-$evt_sessions=array();
+$evt_sessions	= array();
+$slides		= array();
 foreach($talks as $k=>$v){
     if($v->tcid=='Event Related'){
 	$evt_sessions[]=$v; unset($talks[$k]);
     }
+    // If they have slides, add them to the array
+    if(!empty($v->slides_link)){
+	$slides[$v->ID]=array('link'=>$v->slides_link,'speaker'=>$v->speaker,'title'=>$v->talk_title);
+    }
 }
 
 //echo '<pre>'; print_r($cl); echo '</pre>';
+//echo '<pre>'; print_r($slides); echo '</pre>';
 ?>
 <div class="detail">
 	
@@ -163,13 +170,19 @@ $ct=0;
 		<li><a href="#talks">Talks (<?=count($talks)?>)</a></li>
 		<li><a href="#comments">Comments (<?=count($comments)?>)</a></li>
 		<li><a href="#evt_related">Event Related (<?=count($evt_sessions)?>)</a></li>
+		<li><a href="#slides">Slides</a></li>
+		<?php if($admin): ?>
+		<li><a href="#estats">Statistics</a></li>
+		<?php endif; ?>
 	</ul>
 	<div id="talks">
 	<?php if (count($by_day) == 0): ?>
 		<?php $this->load->view('msg_info', array('msg' => 'No talks available at the moment.')); ?>
 	<?php else: ?>
 		<table summary="" cellpadding="0" cellspacing="0" border="0" width="100%" class="list">
-        <?php 
+        <?php
+	$total_comment_ct   = 0;
+	$session_rate	    = 0;
         foreach ($by_day as $k=>$v):
             $ct = 0;
         ?>
@@ -178,7 +191,9 @@ $ct=0;
         			<h4 id="talks-<?php echo $k; ?>"><?php echo date('M j, Y', strtotime($k)); ?></h4>
         		</th>
         	</tr>
-        	<?php foreach($v as $ik=>$iv): ?>
+        	<?php foreach($v as $ik=>$iv): 
+		    $session_rate+=$iv->rank;
+		?>
         	<tr class="<?php echo ($ct%2==0) ? 'row1' : 'row2'; ?>">
         		<td>
         			<?php $type = !empty($iv->tcid) ? $iv->tcid : 'Talk'; ?>
@@ -216,6 +231,7 @@ $ct=0;
         	</tr>
         <?php
         	    $ct++;
+		    $total_comment_ct+=$iv->comment_count;
             endforeach;
         endforeach;
         ?>
@@ -238,6 +254,36 @@ $ct=0;
 		    <td><?php echo $iv->speaker; ?></td>
 		    <td>
 			<a class="comment-count" href="/talk/view/<?php echo $iv->ID; ?>/#comments"><?php echo $iv->comment_count; ?></a>
+		    </td>
+		</tr>
+	    <?php $total_comment_ct+=$iv->comment_count; endforeach; ?>
+	    </table>
+	</div>
+	<div id="estats">
+	    <h3>Event Statistics</h3>
+	    <table cellpadding="0" cellspacing="0" border="0">
+	    <tr><td><b>Number of Sessions:</b></td><td style="padding:3px""><?php echo count($talks); ?></td></tr>
+	    <tr><td><b>Last Comment:</b></td><td style="padding:3px"><?php echo date('m.d.Y H:i:s',$latest_comment[0]->max_date); ?></td></tr>
+	    <tr><td><b>Total # of Comments</b></td><td style="padding:3px""><?php echo $total_comment_ct; ?></td></tr>
+	    <tr><td><b>Average Session Rating</b></td><td style="padding:3px"><?php echo round($session_rate/count($talks),2); ?></td></tr>
+	    <!--
+	    <b># of Anonymous Comments</b><br/>
+	    <b>Average Session Rating</b><br/>
+	    -->
+	    </table>
+	</div>
+	<div id="slides">
+	    <table summary="" cellpadding="0" cellspacing="0" border="0" width="100%" class="list">
+	    <?php foreach($slides as $sk=>$sv): ?>
+        	<tr class="<?php echo ($ct%2==0) ? 'row1' : 'row2'; ?>">
+		    <td>
+		    <a href=""><?php echo $sv['title']; ?></a>
+		    </td>
+		    <td>
+			<?php echo $sv['speaker']; ?>
+		    </td>
+		    <td>
+			<a href="<?php echo $sv['link']; ?>">Slides</a>
 		    </td>
 		</tr>
 	    <?php endforeach; ?>
