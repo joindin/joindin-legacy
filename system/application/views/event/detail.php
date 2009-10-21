@@ -275,7 +275,7 @@ $ct=0;
 	    <?php foreach($slides as $sk=>$sv): ?>
         	<tr class="<?php echo ($ct%2==0) ? 'row1' : 'row2'; ?>">
 		    <td>
-		    <a href=""><?php echo $sv['title']; ?></a>
+		    <a href="/talk/view/<?php echo $sv['ID']; ?>"><?php echo $sv['title']; ?></a>
 		    </td>
 		    <td>
 			<?php echo $sv['speaker']; ?>
