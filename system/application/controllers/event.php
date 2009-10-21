@@ -302,7 +302,8 @@ class Event extends Controller {
 			'attend_ct'=>count($attend),
 			'reqkey' =>$reqkey,
 			'seckey' =>buildSecFile($reqkey),
-			'attending'=>$attend
+			'attending'=>$attend,
+			'latest_comment'=>$this->event_model->getLatestComment($id)
 			//'attend' =>$this->uam->getAttendCount($id)
 		);
 		
