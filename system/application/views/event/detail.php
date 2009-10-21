@@ -170,7 +170,7 @@ $ct=0;
 		<li><a href="#talks">Talks (<?=count($talks)?>)</a></li>
 		<li><a href="#comments">Comments (<?=count($comments)?>)</a></li>
 		<li><a href="#evt_related">Event Related (<?=count($evt_sessions)?>)</a></li>
-		<li><a href="#slides">Slides</a></li>
+		<li><a href="#slides">Slides (<?=count($slides)?>)</a></li>
 		<?php if($admin): ?>
 		<li><a href="#estats">Statistics</a></li>
 		<?php endif; ?>
