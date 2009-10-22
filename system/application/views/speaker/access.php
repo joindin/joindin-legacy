@@ -25,5 +25,5 @@ $this->load->view('user/_nav_sidebar');
 
 <h2>Current Access</h2>
 <?php
-print_r($access_data);
+//print_r($access_data);
 ?>
