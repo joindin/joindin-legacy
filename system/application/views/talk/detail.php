@@ -37,6 +37,8 @@ if(!empty($claims)){
 		// Be sure we're only looking at the ones we need
 		if($v->rid!=$det->ID){ continue; }else{ $ftalk++; }
 
+		//echo '<pre>'; print_r($v); echo '</pre>'; echo '<br/>';
+
 		// Get the claim code
 		$cd=$v->rcode;
 
@@ -82,6 +84,7 @@ $total_count=count($comments)+count($anon);
 $rstr = rating_image($detail[0]->tavg);
 
 //echo '<pre>CL:'; print_r($claimed); echo '</pre>';
+
 
 ?>
 <div class="detail">

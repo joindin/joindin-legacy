@@ -363,9 +363,17 @@ class Talk extends Controller {
 			//first check to see if it was approved
 			$chk=$this->input->post('claim_'.$v->ua_id);
 			if(!empty($chk)){
-				$code=buildCode($v->talk_id,$v->eid,$v->talk_title,$v->speaker);
-				$this->db->where('ID',$v->ua_id);
-				$this->db->update('user_admin',array('rcode'=>$code));
+				// Split the speakers on the commas and see if we have a match on the name
+				$names=explode(',',$v->speaker);
+				foreach($names as $nk=>$nv){
+				    if(trim($nv)==$v->claiming_name){
+					// match!
+					$code=buildCode($v->talk_id,$v->eid,$v->talk_title,$v->claiming_name);
+					$this->db->where('ID',$v->ua_id);
+					$this->db->update('user_admin',array('rcode'=>$code));
+				    }
+				}
+
 				
 				//send an email to the person claiming to let them know it was approved
 				$to=$v->email;
