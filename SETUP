@@ -1,0 +1,15 @@
+
+You'll need to do a few things to set up the environment 
+for this code:
+
+- Create a webserver writable directory in system/cache
+called "ctokens"
+
+- In the system/application/config directory do:
+  > Make a database.php file using the database.php.dist as a guide
+  > Make a config.php file using the config.php.dist as a guide
+
+Grab the curr_db.sql file and drop it into your database 
+and you should be good to go!
+
+ccornutt@phpdeveloper.org
