@@ -692,6 +692,17 @@ class Event extends Controller {
 		$this->event_model->approvePendingEvent($id);
 		redirect('event/view/'.$id); 
 	}
+	function claim(){
+           $this->load->model('user_admin_model','uam');
+           $ret=$this->uam->getPendingClaims('event');
+
+           $arr=array(
+               'claims'=>$ret
+           );
+ 
+           $this->template->write_view('content','event/claim',$arr);
+           $this->template->render();
+       }
 	//----------------------
 	/**
 	 * Check the database to be sure we don't have another event by this name, pending or not

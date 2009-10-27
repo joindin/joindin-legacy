@@ -10,6 +10,7 @@ class Service {
 		'event/getlist'		=> array('logged','isadmin'),
 		'event/gettalks'	=> array('logged','isadmin'),
 		'event/deletecomment'=> array('logged','isadmin'),
+		'event/claim'           => array('logged'),
 		'talk/getcomments'	=> array(),
 		'talk/getdetail'	=> array(),
 		'talk/deletecomment'=> array('logged','isadmin'),

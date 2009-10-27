@@ -138,6 +138,7 @@ foreach($talks as $k=>$v){
 	<?php if(isset($det->pending) && $det->pending==1){
 		echo '<a class="btn-small" href="/event/approve/'.$det->ID.'">Approve Event</a>';
 	} ?>
+	<a class="btn-small" href="#" onClick="claimEvent(<?=$det->ID?>);return false;">Claim event</a>
 </p>
 <?php endif; ?>
 

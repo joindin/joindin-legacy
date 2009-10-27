@@ -10,6 +10,7 @@ if(user_is_admin()){
 	<li><a href="/user/admin">User Admin</a>
 	<li><a href="/event/pending">Pending Events</a>
 	<li><a href="/talk/claim">Talk Claims</a>
+	<li><a href="/talk/claim">Event Claims</a>
     </ul>
     ');
 }

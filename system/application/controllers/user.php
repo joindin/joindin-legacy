@@ -42,10 +42,9 @@ class User extends Controller {
 			$this->db->where('id',$ret[0]->ID);
 			$this->db->update('user',array('last_login'=>time()));
 			
-			$rurl=$this->session->userdata('ref_url');
-			if(!empty($rurl) && false === strpos($rurl, 'user/login')){
-				$url=str_replace('http://'.$_SERVER['HTTP_HOST'],'',$rurl); //echo $url;
-				redirect($url);
+			// Send them back to where they came from
+			if($_SERVER['REQUEST_URI']!='/user/login'){
+			    redirect($_SERVER['HTTP_REFERER']);
 			}else{ redirect('user/main'); }
 		}
 	}
