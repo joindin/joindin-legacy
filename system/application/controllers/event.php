@@ -322,11 +322,16 @@ class Event extends Controller {
 		$this->validation->set_rules($rules);
 		
 		if($this->validation->run()!=FALSE){
+			// If it's before the event, it's a "vote" & after is 
+			// a normal comment (empty)
+			$type=(time()<$events[0]->event_start) ? 'vote' : '';
+			
 			$ec=array(
-				'event_id'	=> $id,
-				'comment'	=> $this->input->post('event_comment'),
-				'date_made'	=> time(),
-				'active'	=> 1
+				'event_id'		=> $id,
+				'comment'		=> $this->input->post('event_comment'),
+				'date_made'		=> time(),
+				'active'		=> 1,
+				'comment_type'	=> $type
 			);
 			if($is_auth){
 				$ec['user_id']	= $this->session->userdata('ID');
@@ -703,6 +708,55 @@ class Event extends Controller {
            $this->template->write_view('content','event/claim',$arr);
            $this->template->render();
        }
+	/**
+	 * Import an XML file and push the test information into the table
+	 */
+	function import($eid){
+		// Be sure they're supposed to be here...
+		if($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($id)){
+		//they're okay
+		}else{ redirect(); }
+
+		$this->load->library('validation');
+		$this->load->library('xmlimport');
+		$this->load->model('event_model','em');
+		
+		$config['upload_path'] 	= $_SERVER['DOCUMENT_ROOT'].'/inc/tmp';
+		$config['allowed_types']= 'xml';
+		$this->load->library('upload', $config);
+
+		// Allow them to upload the XML or pull it from another resource
+		//$rules   = array('xml_file'=>'required');
+		$rules	 = array();
+		$fields  = array('xml_file'=>'XML File');
+		$this->validation->set_rules($rules);
+		$this->validation->set_fields($fields);
+		
+		$msg=null;
+		
+		if($this->upload->do_upload('xml_file')){
+			// The file's there, lets run our import
+			$updata	= $this->upload->data(); //print_r($updata);
+			$p		= $config['upload_path'].'/'.$updata['file_name'];
+			try{
+				$data=file_get_contents($p);
+				$this->xmlimport->import($data,'event',$eid);
+			}catch(Exception $e){
+				$msg='Error: '.$e->getMessage();
+			}
+			unlink($p);
+		}else{
+			//print_r($this->upload->display_errors()); 
+			$this->upload->display_errors();
+		}
+
+		$arr=array(
+			'details'	=> $this->em->getEventDetail($eid),
+			'msg'		=> $msg
+		);
+		$this->template->write_view('content','event/import',$arr);
+		$this->template->render();
+	}
 	//----------------------
 	/**
 	 * Check the database to be sure we don't have another event by this name, pending or not

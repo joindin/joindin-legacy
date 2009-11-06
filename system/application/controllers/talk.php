@@ -184,6 +184,7 @@ class Talk extends Controller {
 		$currentUserId = $this->session->userdata('ID');
 		
 		$talk_detail=$this->talks_model->getTalks($id);
+		if(empty($talk_detail)){ redirect('talk'); }
 		
 		$claim_status	= false;
 		$claim_msg		= '';

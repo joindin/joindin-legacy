@@ -35,3 +35,9 @@ If you're looking for a good way to get some good, honest feedback about your ev
 <a href="/event/submit">submit your event</a> or <a href="/about/contact">contact us directly</a> about how Joind.in
 can help.
 </p>
+
+<br/>
+<h3 style="color:#5181C1">Other Information</h3>
+<ul>
+<li><a href="/about/importing">Importing Event Information</a> (XML)
+</ul>

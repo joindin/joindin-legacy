@@ -32,6 +32,15 @@ class Service {
 		$xml=$this->parseReqXML($data);
 		if(!$xml){ return array('output'=>'msg','msg'=>'Invalid request!'); }
 		$rtype	= (string)$xml->action['type'];
+
+		/**
+		 * So, we want each of the actions to handle their own authentication
+		 * information. We need to move the functonality from above (public_actions)
+		 * down into the actions themselves
+		 *
+		 */
+		 
+
 		
 		$public=($this->isPublicAction($type,$rtype)) ? true : false;
 		

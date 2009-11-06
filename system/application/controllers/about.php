@@ -12,6 +12,10 @@ class About extends Controller {
 		$this->template->write_view('content','about/main');
 		$this->template->render();
 	}
+	function import(){
+		$this->template->write_view('content','about/import');
+		$this->template->render();
+	}
 	function contact(){
 		$arr=array();
 		$this->load->helper('form');

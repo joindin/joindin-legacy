@@ -61,6 +61,7 @@ $route['event/codes/(:num)']	= 'event/codes/$1';
 $route['event/hot']	            = 'event/hot';
 $route['event/upcoming']	    = 'event/upcoming';
 $route['event/past']	        = 'event/past';
+$route['event/import/(:num)']		= 'event/import/$1';
 //now our catch all...
 $route['event/(:any)']			= 'event/cust/$1';
 $route['(:num)']				= 'talk/view/$1';

@@ -134,11 +134,12 @@ foreach($talks as $k=>$v){
 	&nbsp;
 	<a class="btn-small" href="/talk/add/event/<?=$det->ID?>">Add new talk</a>
 	&nbsp;
-	<a class="btn-small" href="/event/codes/<?=$det->ID?>">Get talk codes</a>
+	<!--<a class="btn-small" href="/event/codes/<?=$det->ID?>">Get talk codes</a>-->
 	<?php if(isset($det->pending) && $det->pending==1){
 		echo '<a class="btn-small" href="/event/approve/'.$det->ID.'">Approve Event</a>';
 	} ?>
 	<a class="btn-small" href="#" onClick="claimEvent(<?=$det->ID?>);return false;">Claim event</a>
+	<a class="btn-small" href="/event/import/<?php echo $det->ID; ?>">Import Event Info</a>
 </p>
 <?php endif; ?>
 
@@ -265,9 +266,15 @@ $ct=0;
 	    <h3>Event Statistics</h3>
 	    <table cellpadding="0" cellspacing="0" border="0">
 	    <tr><td><b>Number of Sessions:</b></td><td style="padding:3px"><?php echo count($talks); ?></td></tr>
-	    <tr><td><b>Last Comment:</b></td><td style="padding:3px"><?php echo date('m.d.Y H:i:s',$latest_comment[0]->max_date); ?></td></tr>
-	    <tr><td><b>Total # of Comments</b></td><td style="padding:3px""><?php echo $total_comment_ct; ?></td></tr>
-	    <tr><td><b>Average Session Rating</b></td><td style="padding:3px"><?php echo round($session_rate/count($talks),2); ?></td></tr>
+	    <tr><td><b>Last Comment:</b></td><td style="padding:3px"><?php 
+			echo (isset($latest_comment[0])) ? date('m.d.Y H:i:s',$latest_comment[0]->max_date) : '[none]';
+		?></td></tr>
+	    <tr><td><b>Total # of Comments</b></td><td style="padding:3px""><?php 
+			echo (isset($total_comment_ct)) ? $total_comment_ct : '[none]'; 
+		?></td></tr>
+	    <tr><td><b>Average Session Rating</b></td><td style="padding:3px"><?php 
+			echo (isset($session_rate)) ? round($session_rate/count($talks),2) : '[none]';
+		?></td></tr>
 	    </table>
 	</div>
 	<?php } ?>
