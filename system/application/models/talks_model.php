@@ -66,6 +66,7 @@ class Talks_model extends Model {
 					events.ID eid,
 					events.event_name,
 					events.event_tz,
+					events.event_voting,
 					lang.lang_name,
 					lang.lang_abbr,
 					count(talk_comments.ID) as ccount,
@@ -254,8 +255,8 @@ class Talks_model extends Model {
 	    $this->db->join('talk_comments', 'talk_comments.talk_id=talks.ID', 'left');
 		$this->db->join('events', 'events.ID=talks.event_id', 'left');
 	    
-		if($start>0){ $this->db->where('date_given>='.$start); }
-		if($end>0){ $this->db->where('date_given<='.$end); }
+		if($start>0){ $this->db->where('date_given >='.$start); }
+		if($end>0){ $this->db->where('date_given <='.$end); }
 		
 		$this->db->like('talk_title',$term);
 		$this->db->or_like('talk_desc',$term);

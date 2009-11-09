@@ -101,9 +101,9 @@ class Event_model extends Model {
 			$this->db->where('events.ID',$id);
 		}else{
 			if($start_dt && $end_dt){
-			    $this->db->where('((events.event_start>='.$start_dt.' AND events.event_start<='.$end_dt.')');
-			    $this->db->or_where('(events.event_end>='.$start_dt.' AND events.event_end<='.$end_dt.')');
-			    $this->db->or_where('(events.event_start<='.$start_dt.' AND events.event_end>='.$end_dt.'))');
+			    $this->db->where('((events.event_start >='.$start_dt.' AND events.event_start <='.$end_dt.')');
+			    $this->db->or_where('(events.event_end >='.$start_dt.' AND events.event_end <='.$end_dt.')');
+			    $this->db->or_where('(events.event_start <='.$start_dt.' AND events.event_end >='.$end_dt.'))');
 			    
 				$this->db->order_by('events.event_start','desc');
 			}
@@ -343,8 +343,8 @@ class Event_model extends Model {
 		$this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
 		$this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');
 		
-		if($start>0){ $this->db->where('event_start>='.$start); }
-		if($end>0){ $this->db->where('event_start<='.$end); }
+		if($start>0){ $this->db->where('event_start >='.$start); }
+		if($end>0){ $this->db->where('event_start <='.$end); }
 
 		$this->db->like('event_name',$term);
 		$this->db->or_like('event_desc',$term);
