@@ -26,7 +26,11 @@ if(!empty($claim_msg)){
 	$class=($claim_status) ? 'notice' : 'err';
 	if($claim_msg && !empty($claim_msg)){ echo '<div class="'.$class.'">'.escape($claim_msg).'</div><br/>'; }
 }
-
+?>
+<?php if (!empty($msg)): ?>
+<?php $this->load->view('msg_info', array('msg' => $msg)); ?>
+<?php endif; ?>
+<?php
 $speaker_ids= array();
 $ftalk	    = 0;
 $speaker    = array();
@@ -65,7 +69,9 @@ if(!empty($claims)){
 $speaker_txt=implode(', ',$speaker);
 
 // Calculate the comment values
-foreach($comments as $k=>$v){
+foreach($comments as $k=>$v){ 
+	if($v->comment_type=='vote'){ continue; }
+	
 	//echo '<pre>'; print_r($v); echo '</pre>';
 	//if(in_array($v->user_id,$speaker_ids)){ continue; }
 	if($v->user_id==0 && strlen($v->user_id)>=1){
@@ -152,13 +158,12 @@ if (!empty($msg)):
 
 <div class="box">
 
-<h2 id="comments">Comments</h2>
 
 <?php
 $adv_mo=strtotime('+3 months',$det->date_given);
 $comment_closed=false;
 
-if(time()>$adv_mo){
+if(time()>$adv_mo && $detail[0]->event_voting!='Y'){
 	$this->load->view('msg_info', array('msg' => 'Comments closed.'));
 	$comment_closed=true;
 }
@@ -166,9 +171,32 @@ if (empty($comments)) {
 ?>
 <?php $this->load->view('msg_info', array('msg' => 'No comments yet.')); ?>
 <?php
-    
-} else {
 
+} else {
+	
+	// Sort out the votes from the comments
+	$votes=array();
+	foreach($comments as $k=>$v){
+		if($v->comment_type=='vote'){ $votes[]=$v; unset($comments[$k]); }
+	}
+	
+	if(count($votes)){ echo '<h2 id="comments">Votes</h2>'; }
+	foreach($votes as $k=>$v){
+		$uname = '<a href="/user/view/'.$v->user_id.'">'.escape($v->uname).'</a> ';
+		?>
+		<div>
+			<div class="text">
+			<p class="info">
+				<a class="btn-small" href="#">+1 vote</a>&nbsp;
+	    		<strong><?php echo date('M j, Y, H:i',$v->date_made); ?></strong> by <strong><?php echo $uname; ?></strong>
+	    	</p>
+			</div>
+		</div>
+		<?php
+	}
+	echo '<br/>';
+	echo '<h2 id="comments">Comments</h2>';
+	
     foreach ($comments as $k => $v) {
         if ($v->private && !$admin){ 
             continue; 
@@ -238,7 +266,7 @@ if (empty($comments)) {
 //only show the form if the time for the talk has passed
 //my code: if($det->date_given<=$time_at_event){
 
-if (($det->date_given > $time_at_event) || $comment_closed) {
+if ((($det->date_given > $time_at_event) || $comment_closed) && $detail[0]->event_voting!='Y') {
 ?>
 <p class="info">Currently not open for comment.</p>
 <?php
@@ -248,13 +276,32 @@ if (($det->date_given > $time_at_event) || $comment_closed) {
 <p class="info">Want to comment on this talk? <a href="/user/login">Log in</a> or <a href="/user/register">create a new account</a>.</p>
 <?php 
     } else {
+	$title=($detail[0]->event_voting=='Y' && $det->date_given<=$time_at_event) ? 'Cast your vote' : 'Write a comment';
 ?>
-<h3 id="comment-form">Write a comment</h3>
+<h3 id="comment-form"><?php echo $title; ?></h3>
 <?php echo form_open('talk/view/'.$det->tid . '#comment-form', array('class' => 'form-talk')); ?>
 
 <?php if (!empty($this->validation->error_string)): ?>
     <?php $this->load->view('msg_error', array('msg' => $this->validation->error_string)); ?>
 <?php endif; ?>
+
+<?php
+if($detail[0]->event_voting=='Y' && !$evt_has_started){
+	?>
+	<div style="text-align:center" class="row row-buttons">
+		<?php 
+			if($user_attending){
+				echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), '+1 vote'); echo '&nbsp;';
+				echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), '-1 vote'); 
+			}
+		?><br/><br/>
+			<span style="color:#3567AC;font-size:11px">You must be listed as attending the event 
+			<a href="/event/view/<?php echo $det->event_id; ?>"><?php echo $det->event_name; ?></a> to vote on 
+			this talk.</span>
+	</div>
+	<?php
+}else{
+?>
 
 <div class="row">
 	<label for="comment">Comment</label>
@@ -288,6 +335,7 @@ if (($det->date_given > $time_at_event) || $comment_closed) {
 	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Submit Comment'); ?>
 </div>
 <?php 
+}
         echo form_close(); 
         /* close if for date */
     }
