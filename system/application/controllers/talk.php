@@ -279,7 +279,6 @@ class Talk extends Controller {
 		$this->validation->set_fields($fields);
 
 		if($this->validation->run()==FALSE){
-			//echo 'error!';
 			
 			// Check to see if it's just a vote...
 			// Let people only vote once per talk
@@ -289,7 +288,7 @@ class Talk extends Controller {
 			if(($sub=='+1 vote' || $sub=='-1 vote') && !$has_voted){
 				$arr=array(
 					'talk_id'		=> $id,
-					'rating'		=> ($sub=='+1 vote') ? 1 : 5,
+					'rating'		=> ($sub=='+1 vote') ? 5 : 1,
 					'comment'		=> 'talk_vote',
 					'date_made'		=> time(),
 					'active'		=> 1,

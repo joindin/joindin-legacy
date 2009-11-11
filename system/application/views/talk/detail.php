@@ -182,12 +182,13 @@ if (empty($comments)) {
 	
 	if(count($votes)){ echo '<h2 id="comments">Votes</h2>'; }
 	foreach($votes as $k=>$v){
-		$uname = '<a href="/user/view/'.$v->user_id.'">'.escape($v->uname).'</a> ';
+		$uname 		= '<a href="/user/view/'.$v->user_id.'">'.escape($v->uname).'</a> ';
+		$vote_str	=($v->rating==1) ? '-1 vote' : '+1 vote';
 		?>
 		<div>
 			<div class="text">
 			<p class="info">
-				<a class="btn-small" href="#">+1 vote</a>&nbsp;
+				<a class="btn-small" href="#"><?php echo $vote_str; ?></a>&nbsp;
 	    		<strong><?php echo date('M j, Y, H:i',$v->date_made); ?></strong> by <strong><?php echo $uname; ?></strong>
 	    	</p>
 			</div>
@@ -276,7 +277,7 @@ if ((($det->date_given > $time_at_event) || $comment_closed) && $detail[0]->even
 <p class="info">Want to comment on this talk? <a href="/user/login">Log in</a> or <a href="/user/register">create a new account</a>.</p>
 <?php 
     } else {
-	$title=($detail[0]->event_voting=='Y' && $det->date_given<=$time_at_event) ? 'Cast your vote' : 'Write a comment';
+	$title=($detail[0]->event_voting=='Y' && !$evt_has_started) ? 'Cast your vote' : 'Write a comment';
 ?>
 <h3 id="comment-form"><?php echo $title; ?></h3>
 <?php echo form_open('talk/view/'.$det->tid . '#comment-form', array('class' => 'form-talk')); ?>

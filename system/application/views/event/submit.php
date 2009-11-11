@@ -47,7 +47,16 @@ menu_pagetitle('Submit an event');
     
         <div class="clear"></div>
     </div>
-    
+	
+	<?php if($is_auth): ?>
+	<div class="row">
+		<label for="is_event_admin">Event Admin</label>
+		<?php echo form_checkbox('is_admin','1',$this->validation->is_admin); ?> I'm an event admin!<br/>
+		<span style="color:#3567AC;font-size:11px">If you're an organizer or an admin for this event, check the box above. As an admin you will be able to manage talks, approve claims, moderate comments, etc.</span><br/>
+		<div class="clear"></div>
+	</div>
+	<?php endif; ?>
+	
     <div class="row">
     	<label for="start">Event Start Date</label>
     	<?php

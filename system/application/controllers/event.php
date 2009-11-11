@@ -531,6 +531,7 @@ class Event extends Controller {
 		$this->load->plugin('captcha');
 		//$this->load->library('akismet');
 		$this->load->library('defensio');
+		$this->load->model('user_admin_model');
 		
 		$cap_arr=array(
 			'img_path'		=>$_SERVER['DOCUMENT_ROOT'].'/inc/img/captcha/',
@@ -659,10 +660,19 @@ class Event extends Controller {
 				
 				//put it into the database
 				$this->db->insert('events',$sub_arr);
+				
+				// Check to see if we need to make them an admin of this event
+				if($this->input->post('is_admin') && $this->input->post('is_admin')==1){
+					$uid	= $this->session->userdata('ID');
+					$rid	= $this->db->insert_id();
+					$type	= 'event';
+					$this->user_admin_model->addPerm($uid,$rid,$type);
+				}
 			}else{ 
 				$arr['msg']='There was an error submitting your event! Please <a href="submissions@joind.in">send us an email</a> with all the details!';
 			}
-		}
+		}else{ $this->validation->is_admin=0; }
+		$arr['is_auth']=$this->user_model->isAuth();
 		
 		$this->template->write_view('content','event/submit',$arr);
 		$this->template->render();
@@ -690,16 +700,36 @@ class Event extends Controller {
 		if(!$this->user_model->isSiteAdmin()){ redirect(); }
 		$this->index(true);
 	}
-	function approve($id){
+	function approve($eid){
 		if(!$this->user_model->isSiteAdmin()){ redirect(); }
 		
 		$this->load->model('event_model');
-		//$det=$this->event_model->getEventDetail($id); print_r($det);
+		$this->event_model->approvePendingEvent($eid);
 		
-		$this->event_model->approvePendingEvent($id);
-		redirect('event/view/'.$id); 
+		// If we have admins for the event, send them an email to let them know
+		$admin_list	= $this->event_model->getEventAdmins($eid);
+		if($admin_list && count($admin_list)>0){
+			$evt_detail	= $this->event_model->getEventDetail($eid);
+			
+			$subj	= 'Submitted Event "'.$evt_detail[0]->event_name.'" Approved!';
+			$from	= 'From:feedback@joind.in';
+			
+			foreach($admin_list as $k=>$user){
+				$msg='The event you submitted "'.$evt_detail[0]->event_name.'" has been approved!'."\n";
+				$msg.='You can now manage the event here: http://joind.in/event/view/'.$eid;
+				
+				mail($user->email,$subj,$msg,$from);
+			}
+		}
+		
+		// Finally, redirect back to the event!
+		redirect('event/view/'.$eid); 
 	}
 	function claim($eid){
+		if($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($id)){ 
+			//they're okay
+		}else{ redirect('event/view/'.$eid); }
+		
 		$this->load->model('user_admin_model','uam');
 		$this->load->helper('events_helper');
 		$ret 	= $this->uam->getPendingClaims('talk',$eid);
