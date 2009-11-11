@@ -14,6 +14,7 @@ class Claim {
 		$this->CI->load->library('wsvalidate');
 		$this->CI->load->model('user_admin_model');
 		$this->CI->load->model('talks_model');
+		$this->CI->load->model('event_model');
 		
 		$rules=array(
 			'tid'		=>'required|istalk',
@@ -39,19 +40,28 @@ class Claim {
 				if(isset($ret[0]->ID)){
 				    return array('output'=>'json','items'=>array('msg'=>'Fail: Duplicate Claim!'));
 				}else{
+					$to=array('enygma@phpdeveloper.org');
+					
+					// See if there's an admin for the event
+					$evt_admin=$this->CI->event_model->getEventAdmins($talk_det->event_id);
+					if(count($evt_admin)>0){
+						foreach($evt_admin as $k=>$v){ $to[]=$v->email; }
+					}
+					
 				    //insert a row into user_admin for the user/talk ID but with a code of "pending"
 				    $this->CI->db->insert('user_admin',$arr);
 
 				    //send an email about the claim
-				    $to		= 'enygma@phpdeveloper.org';
 				    $subj	= 'Talk claim submitted! Go check!';
 				    $msg	= sprintf("
 Talk claim has been submitted for talk \"%s\"
 
-http://joind.in/talk/claim
-				    ",$talk_det->talk_title);
-				    mail('enygma@phpdeveloper.org','Joind.in: Talk claim submitted! Go check!',$msg,'From: feedback@joind.in');
-
+http://joind.in/event/%s/claims
+				    ",$talk_det->talk_title,$talk_det->event_id);
+				
+					foreach($to as $email_addr){
+				    	mail($email_addr,'Joind.in: Talk claim submitted! Go check!',$msg,'From: feedback@joind.in');
+					}
 				    //return the success message
 				    return array('output'=>'json','items'=>array('msg'=>'Success'));
 				}

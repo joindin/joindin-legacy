@@ -42,7 +42,7 @@ class Xmlimport {
 		$arr=array(
 		  'talk_title'	=> (string)$data->session_title,
 		  'date_given'	=> strtotime((string)$data->session_start),
-		  'speaker'	=> (string)$data->session_speaker,
+		  'speaker'		=> (string)$data->session_speaker,
 		  'event_id'	=> $eid
 		);
 		$q=$this->CI->db->get_where('talks',$arr);

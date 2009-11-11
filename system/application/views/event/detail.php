@@ -2,6 +2,8 @@
 $det	= $events[0]; //print_r($det);
 $cl	= array();
 
+//echo 'has event started?'; var_dump($started);
+
 foreach($claimed as $k=>$v){ 
 	//echo '<pre>'; print_r($v); echo '</pre>';
 	$cl[$v->rcode]=array('rid'=>$v->rid,'uid'=>$v->uid); 
@@ -171,7 +173,9 @@ $ct=0;
 	<ul>
 		<li><a href="#talks">Talks (<?=count($talks)?>)</a></li>
 		<li><a href="#comments">Comments (<?=count($comments)?>)</a></li>
-		<li><a href="#evt_related">Event Related (<?=count($evt_sessions)?>)</a></li>
+		<?php if(count($evt_sessions)>0): ?>
+			<li><a href="#evt_related">Event Related (<?=count($evt_sessions)?>)</a></li>
+		<?php endif; ?>
 		<li><a href="#slides">Slides (<?=count($slides)?>)</a></li>
 		<?php if($admin): ?>
 		<li><a href="#estats">Statistics</a></li>

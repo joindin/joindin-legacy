@@ -27,9 +27,10 @@ if(isset($this->edit_id) && $this->edit_id){
 }
 
 echo '<h2>'.$title.'</h2>';
-
-if(isset($msg)){ echo '<div class="notice">'.$msg.'</div>'; }
 ?>
+<?php if (!empty($msg)): ?>
+<?php $this->load->view('msg_info', array('msg' => $msg)); ?>
+<?php endif; ?>
 
 <div class="box">
     <div class="row">
@@ -70,11 +71,14 @@ if(isset($msg)){ echo '<div class="notice">'.$msg.'</div>'; }
 	<?php echo form_input('event_loc',$this->validation->event_loc); ?>
     </div>
     <div class="clear"></div>
-    <!--<div class="row">
+    <div class="row">
     	<label for="event_timezone">Event Timezone:</label>
-	<?php echo form_dropdown('event_tz',$tz_list,$this->validation->event_tz); ?>
+	<?php echo form_dropdown('event_tz',$tz_list,$this->validation->event_tz); ?><br/>
+	<span style="color:#3567AC;font-size:11px">For more information on locations and 
+	their time zone, see <a href="http://en.wikipedia.org/wiki/List_of_time_zones">this
+	page on Wikipedia</a></span>
     </div>
-    <div class="clear"></div>-->
+    <div class="clear"></div>
     <div class="row">
     	<label for="event_description">Event Description:</label>
 	<?php
@@ -87,6 +91,19 @@ if(isset($msg)){ echo '<div class="notice">'.$msg.'</div>'; }
 	echo form_textarea($arr);
 	?>
     </div>
+    <div class="clear"></div>
+	<div class="row">
+	<label for="event_icon">Allow Voting?</label>
+	<?php 
+		$ev=($this->validation->event_voting=='Y') ? true : false;
+		echo form_checkbox('event_voting','Y',$ev); 
+	?><br/>
+	<span style="color:#3567AC;font-size:11px">
+		If you'd like to allow voting on event sessions, check here to turn this feature on 
+		(useful for things like Unconferences). This can be enabled at any time, but comments will
+		only count as "votes" prior to the start of the session.
+	</span>
+	</div>
     <div class="clear"></div>
     <div class="row">
     	<label for="event_icon">Event Icon:</label>

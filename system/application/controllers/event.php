@@ -180,7 +180,8 @@ class Event extends Controller {
 			'event_desc'=>'Event Description',
 			'event_tz'	=>'Event Timezone',
 			'event_href'=>'Event Link(s)',
-			'event_hashtag'=>'Event Hashtag'
+			'event_hashtag'=>'Event Hashtag',
+			'event_voting'=>'Event Voting Allowed'
 		);
 		$this->validation->set_fields($fields);
 
@@ -228,7 +229,8 @@ class Event extends Controller {
 				'active'		=>'1',
 				'event_tz'		=>$this->input->post('event_tz'),
 				'event_href'	=>$this->input->post('event_href'),
-				'event_hashtag'	=>$this->input->post('event_hashtag')
+				'event_hashtag'	=>$this->input->post('event_hashtag'),
+				'event_voting'	=>$this->input->post('event_voting'),
 			);
 			if($this->upload->do_upload('event_icon')){
 				$updata=$this->upload->data();
@@ -265,6 +267,7 @@ class Event extends Controller {
 		$this->load->library('defensio');
 		$this->load->library('spam');
 		$this->load->library('twitter');
+		$this->load->library('timezone',null,'tz');
 		$this->load->model('event_model');
 		$this->load->model('event_comments_model');
 		$this->load->model('user_attend_model','uam');
@@ -303,6 +306,7 @@ class Event extends Controller {
 			'reqkey' =>$reqkey,
 			'seckey' =>buildSecFile($reqkey),
 			'attending'=>$attend,
+			'started'=>$this->tz->hasEvtStarted($id),
 			'latest_comment'=>$this->event_model->getLatestComment($id)
 			//'attend' =>$this->uam->getAttendCount($id)
 		);
@@ -321,17 +325,12 @@ class Event extends Controller {
 		$this->validation->set_fields($fields);
 		$this->validation->set_rules($rules);
 		
-		if($this->validation->run()!=FALSE){
-			// If it's before the event, it's a "vote" & after is 
-			// a normal comment (empty)
-			$type=(time()<$events[0]->event_start) ? 'vote' : '';
-			
+		if($this->validation->run()!=FALSE){	
 			$ec=array(
 				'event_id'		=> $id,
 				'comment'		=> $this->input->post('event_comment'),
 				'date_made'		=> time(),
-				'active'		=> 1,
-				'comment_type'	=> $type
+				'active'		=> 1
 			);
 			if($is_auth){
 				$ec['user_id']	= $this->session->userdata('ID');
@@ -400,7 +399,10 @@ class Event extends Controller {
 		
 		$this->template->write('feedurl','/feed/event/'.$id);
 		$this->template->write_view('content','event/detail',$arr,TRUE);
-		$this->template->write_view('sidebar2','event/_twitter-search',$other_data);
+		if(!empty($t)){ 
+			// If there's no twitter results, don't show this sidebar
+			$this->template->write_view('sidebar2','event/_twitter-search',$other_data);
+		}
 		$this->template->render();
 		//$this->load->view('event/detail',$arr);
 	}
@@ -697,17 +699,51 @@ class Event extends Controller {
 		$this->event_model->approvePendingEvent($id);
 		redirect('event/view/'.$id); 
 	}
-	function claim(){
-           $this->load->model('user_admin_model','uam');
-           $ret=$this->uam->getPendingClaims('event');
+	function claim($eid){
+		$this->load->model('user_admin_model','uam');
+		$this->load->helper('events_helper');
+		$ret 	= $this->uam->getPendingClaims('talk',$eid);
+		
+		$claim	= $this->input->post('claim');
+		$sub	= $this->input->post('sub');
+		
+		// If we have claims to process...
+		if($claim && count($claim)>0 && isset($sub)){
+			foreach($claim as $k=>$v){
+				// p[0] is record from $ret, p[1] is the user ID, p[2] is the session ID
+				$p=explode('_',$k);
+				if($v=='approve'){
+					$t_id		= $p[1];
+					$t_title	= $ret[$p[0]]->talk_title;
+					$c_name		= $ret[$p[0]]->claiming_name;
+					$code		= buildCode($t_id,$eid,$t_title,$c_name);
+					
+					// Put the code in the database to claim their talk!
+					$this->db->where('ID',$ret[$p[0]]->ua_id);
+					$this->db->update('user_admin',array('rcode'=>$code));
+				}else{
+					// Remove the claim...it's not valid
+					$tdata=array(
+						'rid'	=> $p[2],
+						'rtype'	=> 'talk',
+						'rcode'	=> 'pending'
+					);
+					$this->db->delete('user_admin',$tdata);
+					unset($ret[$p[0]]);
+				}
+			}
+		}
+		
+		// Data to pass out to the view
+		$arr=array(
+			'claims'	=> $ret,
+			'eid'		=> $eid
+		);
 
-           $arr=array(
-               'claims'=>$ret
-           );
- 
-           $this->template->write_view('content','event/claim',$arr);
-           $this->template->render();
-       }
+		$this->template->write_view('content','event/claim',$arr);
+		$this->template->render();
+	}
+	
 	/**
 	 * Import an XML file and push the test information into the table
 	 */

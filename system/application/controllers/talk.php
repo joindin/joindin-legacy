@@ -172,6 +172,7 @@ class Talk extends Controller {
 	function view($id,$add_act=null,$code=null){
 		$this->load->model('talks_model');
 		$this->load->model('event_model');
+		$this->load->model('user_attend_model');
 		$this->load->helper('form');
 		$this->load->helper('events');
 		$this->load->helper('reqkey');
@@ -180,11 +181,21 @@ class Talk extends Controller {
 		$this->load->library('defensio');
 		$this->load->library('spam');		
 		$this->load->library('validation');
+		$this->load->library('timezone');
+		
+		$msg='';
+		
+		// Filter it down to just the numeric characters
+		if(preg_match('/[0-9]+/',$id,$m)){
+			$id=$m[0];
+		}else{ redirect('talk'); }
 		
 		$currentUserId = $this->session->userdata('ID');
 		
 		$talk_detail=$this->talks_model->getTalks($id);
 		if(empty($talk_detail)){ redirect('talk'); }
+		
+		$evt_started = $this->timezone->talkEvtStarted($id);
 		
 		$claim_status	= false;
 		$claim_msg		= '';
@@ -241,13 +252,25 @@ class Talk extends Controller {
 		);
 		
 		$rules	=array(
-			'comment'	=> 'required',
+			//'comment'	=> 'required',
 			'rating'	=> $cl && $cl[0]->userid == $currentUserId ? null : 'required'
 		);
 		$fields	=array(
 			'comment'	=> 'Comment',
 			'rating'	=> 'Rating'
 		);
+		
+		// if it's past time for the talk, they're required
+		// All other times they're not required...
+		if(time()>=$talk_detail[0]->date_given){
+			$rules['comment']='required';
+		}
+		
+		// If it's before the event has started, we want votes
+		if(!$evt_started){
+			unset($rules['comment'],$rules['rating']);
+		}
+		
 		if(!$this->user_model->isAuth()){
 		//	$rules['cinput']	= 'required|callback_cinput_check';
 		//	$fields['cinput']	= 'Captcha';
@@ -257,42 +280,75 @@ class Talk extends Controller {
 
 		if($this->validation->run()==FALSE){
 			//echo 'error!';
+			
+			// Check to see if it's just a vote...
+			// Let people only vote once per talk
+			$sub		= $this->input->post('sub');
+			$has_voted	= $this->talks_model->hasUserCommented($id,$currentUserId,'vote');
+			
+			if(($sub=='+1 vote' || $sub=='-1 vote') && !$has_voted){
+				$arr=array(
+					'talk_id'		=> $id,
+					'rating'		=> ($sub=='+1 vote') ? 1 : 5,
+					'comment'		=> 'talk_vote',
+					'date_made'		=> time(),
+					'active'		=> 1,
+					'user_id'		=> ($this->user_model->isAuth()) ? $this->session->userdata('ID') : '0',
+					'comment_type'	=> 'vote'
+				);
+				$this->db->insert('talk_comments',$arr);
+				$msg='Vote submitted!';
+			}elseif(($sub=='+1 vote' || $sub=='-1 vote') && $has_voted){ 
+				$msg='You can only vote on a talk once!'; 
+			}
 		}else{ 
 			$is_auth	= $this->user_model->isAuth();
-			$arr=array(
-				'comment_type'			=>'comment',
-				'comment_content'		=>$this->input->post('your_com')
+			$arr		= array(
+				'comment_type'		=> 'comment',
+				'comment_content'	=> $this->input->post('your_com')
 			);
-			$ret=$this->akismet->send('/1.1/comment-check',$arr);
 			
-			$priv=$this->input->post('private');
-			$priv=(empty($priv)) ? 0 : 1;
+			if(!$is_auth){
+				$ret=$this->akismet->send('/1.1/comment-check',$arr);
 			
-			$sp_ret=$this->spam->check('regex',$this->input->post('comment'));
-			error_log('sp: '.$sp_ret);
+				$priv=$this->input->post('private');
+				$priv=(empty($priv)) ? 0 : 1;
 			
-			if($is_auth){
-				$ec['user_id']	= $this->session->userdata('ID');
-				$ec['cname']	= $this->session->userdata('username');
+				$sp_ret=$this->spam->check('regex',$this->input->post('comment'));
+				error_log('sp: '.$sp_ret);
+			
+				if($is_auth){
+					$ec['user_id']	= $this->session->userdata('ID');
+					$ec['cname']	= $this->session->userdata('username');
+				}else{
+					$ec['user_id']	= 0;
+					$ec['cname']	= $this->input->post('cname');
+				}
+				$ec['comment']=$this->input->post('comment');
+				$def_ret=$this->defensio->check($ec['cname'],$ec['comment'],$is_auth,'/talk/view/'.$id);
+			
+				$is_spam=(string)$def_ret->spam;
+				if(strtolower($ec['cname'])=='dynom'){ $is_spam='false'; } //hack to allow comments for now
 			}else{
-				$ec['user_id']	= 0;
-				$ec['cname']	= $this->input->post('cname');
+				// They're logged in, let their comments through
+				$is_spam	= false;
+				$sp_ret 	= true;
 			}
-			$ec['comment']=$this->input->post('comment');
-			$def_ret=$this->defensio->check($ec['cname'],$ec['comment'],$is_auth,'/talk/view/'.$id);
 			
-			$is_spam=(string)$def_ret->spam;
-			if(strtolower($ec['cname'])=='dynom'){ $is_spam='false'; } //hack to allow comments for now
-
 			if($is_spam!='true' && $sp_ret==true){
+				// If it's before the event, it's a "vote" & after is 
+				// a normal comment (empty)
+				$type=(time()<$talk_detail[0]->date_given) ? 'vote' : null;
+				
 				$arr=array(
-					'talk_id'	=> $id,
-					'rating'	=> $this->input->post('rating'),
-					'comment'	=> $this->input->post('comment'),
-					'date_made'	=> time(),
-					'private'	=> $priv,
-					'active'	=> 1,
-					'user_id'	=> ($this->user_model->isAuth()) ? $this->session->userdata('ID') : '0'
+					'talk_id'		=> $id,
+					'rating'		=> $this->input->post('rating'),
+					'comment'		=> $this->input->post('comment'),
+					'date_made'		=> time(),
+					'private'		=> $priv,
+					'active'		=> 1,
+					'user_id'		=> ($this->user_model->isAuth()) ? $this->session->userdata('ID') : '0',
+					'comment_type'	=> $type
 				);
 				$this->db->insert('talk_comments',$arr);
 			
@@ -337,6 +393,9 @@ class Talk extends Controller {
 			'claim_msg'		=> $claim_msg,
 			'reqkey' 		=> $reqkey,
 			'seckey' 		=> buildSecFile($reqkey),
+			'evt_has_started'=>$evt_started,
+			'user_attending'=>($this->user_attend_model->chkAttend($currentUserId,$talk_detail[0]->event_id)) ? true : false,
+			'msg'			=> $msg
 		);
 		if(empty($arr['detail'])){ redirect('talk'); }
 		
@@ -410,9 +469,12 @@ The Joind.in Crew
 	function given_mo_check($str){
 		$t=mktime(
 			0,0,0,
-			$this->validation->given_mo,
+			/*$this->validation->given_mo,
 			$this->validation->given_day,
-			$this->validation->given_yr
+			$this->validation->given_yr*/
+			$this->input->post('given_mo'),
+			$this->input->post('given_day'),
+			$this->input->post('given_yr')
 		); //echo $t.' '.date('m.d.Y H:i:s',$t);
 		//get the duration of the selected event
 		$det=$this->event_model->getEventDetail($this->validation->event_id);

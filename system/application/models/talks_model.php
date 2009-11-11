@@ -45,6 +45,18 @@ class Talks_model extends Model {
 		}
 		return $ret;
 	}
+	
+	//---------------
+	// Check to see if user has already made that sort of 
+	// comment on the talk
+	function hasUserCommented($tid,$uid,$type=null){
+		$arr=array('user_id'=>$uid,'talk_id'=>$tid);
+		if($type){ $arr['comment_type']=$type; }
+		$q=$this->db->get_where('talk_comments',$arr);
+		$ret=$q->result();
+		return (isset($ret[0])) ? true : false;
+	}
+	
 	//---------------
 	function getTalks($tid=null,$latest=false){
 		if($tid){
@@ -57,7 +69,7 @@ class Talks_model extends Model {
 			    from
 				talk_comments tc
 			    where
-				tc.talk_id=talks.ID %s) as tavg,
+				tc.talk_id=talks.ID %s and tc.comment_type!=\'vote\') as tavg,
 			',$addl);
 			$sql=sprintf('
 				select
@@ -78,7 +90,7 @@ class Talks_model extends Model {
 					where 
 						tac.talk_id=talks.ID and tac.cat_id=cat.ID
 					) tcid,
-					(select max(date_made) from talk_comments where talk_id=talks.ID) last_comment_date
+					(select max(date_made) from talk_comments where talk_id=talks.ID and talk_comments.comment_type=\'vote\') last_comment_date
 				from
 					talks
 				left join talk_comments on (talk_comments.talk_id = talks.ID)
@@ -106,7 +118,11 @@ class Talks_model extends Model {
 					lang.lang_name,
 					lang.lang_abbr,
 					count(talk_comments.ID) as ccount,
-					(select round(avg(rating)) from talk_comments where talk_id=talks.ID) as tavg,
+					(select 
+						round(avg(rating)) 
+					from 
+						talk_comments 
+					where talk_id=talks.ID and talk_comments.comment_type!=\'vote\') as tavg,
 					(select max(date_made) from talk_comments where talk_id=talks.ID) last_comment_date
 				from
 					talks
@@ -135,7 +151,8 @@ class Talks_model extends Model {
 				tc.private,
 				tc.active,
 				tc.user_id,
-				(select username from user where user.ID=tc.user_id) uname
+				(select username from user where user.ID=tc.user_id) uname,
+				tc.comment_type
 			from
 				talk_comments tc
 			where

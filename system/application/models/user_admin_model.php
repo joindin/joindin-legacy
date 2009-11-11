@@ -65,14 +65,19 @@ class User_admin_model extends Model {
 		//return $q->result(); //print_r($ret);
 	}
 
-	function getPendingClaims($type='talk'){
+	function getPendingClaims($type='talk',$rid=null){
 	    switch($type){
-               case 'talk':    return $this->getPendingClaims_Talks(); break;
-               case 'event':   return $this->getPendingClaims_Events(); break;
+               case 'talk':    return $this->getPendingClaims_Talks($rid); break;
+               case 'event':   return $this->getPendingClaims_Events($rid); break;
 	    }
 	}
 
-	function getPendingClaims_Talks(){
+	/**
+	* Get the pending talk claims
+	* @param $eid[optional] integer Event ID to restrict on
+	*/
+	function getPendingClaims_Talks($eid=null){
+		$addl=($eid) ? ' e.ID='.$eid.' and ' : '';
 	    $sql=sprintf("
 		    select
 			    ua.uid,
@@ -95,37 +100,38 @@ class User_admin_model extends Model {
 			    ua.rcode='pending' and
 			    ua.rtype='talk' and
 			    t.id=ua.rid and
-			    u.id=ua.uid and
+			    u.id=ua.uid and %s
 			    e.id=t.event_id
-	    ");
+	    ",$addl);
 	    $q=$this->db->query($sql);
 	    return $q->result();
 	}
-	function getPendingClaims_Events(){
-           $sql=sprintf("
-               select
-                   u.ID,
-                   u.username claiming_user,
-                   u.full_name claiming_name,
-                   u.email,
-                   e.event_name,
-                   e.ID eid,
-                   ua.ID ua_id,
-                   ua.uid,
-                   ua.rid
-               from
-                   events e,
-                   user_admin ua,
-                   user u
-               where
-                   ua.rtype='event' and
-                   ua.rcode='pending' and
-                   ua.rid=e.ID and
-                   ua.uid=u.ID
-           ");
-           $q=$this->db->query($sql);
-           return $q->result();
-       }
+	function getPendingClaims_Events($eid=null){
+		$addl=($eid) ? ' e.ID='.$eid.' and ' : '';
+	    $sql=sprintf("
+	        select
+	            u.ID,
+	            u.username claiming_user,
+	            u.full_name claiming_name,
+	            u.email,
+	            e.event_name,
+	            e.ID eid,
+	            ua.ID ua_id,
+	            ua.uid,
+	            ua.rid
+	        from
+	            events e,
+	            user_admin ua,
+	            user u
+	        where
+	            ua.rtype='event' and
+	            ua.rcode='pending' and
+	            ua.rid=e.ID and %s
+	            ua.uid=u.ID
+	    ",$addl);
+	    $q=$this->db->query($sql);
+	    return $q->result();
+	}
 }
 
 ?>
