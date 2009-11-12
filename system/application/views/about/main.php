@@ -39,5 +39,5 @@ can help.
 <br/>
 <h3 style="color:#5181C1">Other Information</h3>
 <ul>
-<li><a href="/about/importing">Importing Event Information</a> (XML)
+<li><a href="/about/import">Importing Event Information</a> (XML)
 </ul>
