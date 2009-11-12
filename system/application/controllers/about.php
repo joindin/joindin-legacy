@@ -16,6 +16,10 @@ class About extends Controller {
 		$this->template->write_view('content','about/import');
 		$this->template->render();
 	}
+	function evt_admin(){
+		$this->template->write_view('content','about/evt_admin');
+		$this->template->render();
+	}
 	function contact(){
 		$arr=array();
 		$this->load->helper('form');

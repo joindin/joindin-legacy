@@ -40,4 +40,5 @@ can help.
 <h3 style="color:#5181C1">Other Information</h3>
 <ul>
 <li><a href="/about/import">Importing Event Information</a> (XML)
+<li><a href="/about/evt_admin">Event Admin Cheat Sheet</a>
 </ul>
