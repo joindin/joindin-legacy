@@ -69,7 +69,7 @@ class Talks_model extends Model {
 			    from
 				talk_comments tc
 			    where
-				tc.talk_id=talks.ID %s and tc.comment_type!=\'vote\') as tavg,
+				tc.talk_id=talks.ID %s and tc.comment_type!=\'vote\' or tc.comment_type is null) as tavg,
 			',$addl);
 			$sql=sprintf('
 				select
@@ -90,7 +90,7 @@ class Talks_model extends Model {
 					where 
 						tac.talk_id=talks.ID and tac.cat_id=cat.ID
 					) tcid,
-					(select max(date_made) from talk_comments where talk_id=talks.ID and talk_comments.comment_type=\'vote\') last_comment_date
+					(select max(date_made) from talk_comments where talk_id=talks.ID and talk_comments.comment_type=\'vote\' or talk_comments.comment_type is null) last_comment_date
 				from
 					talks
 				left join talk_comments on (talk_comments.talk_id = talks.ID)
@@ -122,7 +122,7 @@ class Talks_model extends Model {
 						round(avg(rating)) 
 					from 
 						talk_comments 
-					where talk_id=talks.ID and talk_comments.comment_type!=\'vote\') as tavg,
+					where talk_id=talks.ID and talk_comments.comment_type!=\'vote\' or talk_comments.comment_type is null) as tavg,
 					(select max(date_made) from talk_comments where talk_id=talks.ID) last_comment_date
 				from
 					talks
