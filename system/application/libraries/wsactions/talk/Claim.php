@@ -56,7 +56,7 @@ class Claim {
 				    $msg	= sprintf("
 Talk claim has been submitted for talk \"%s\"
 
-http://joind.in/event/%s/claims
+http://joind.in/event/claim/%s
 				    ",$talk_det->talk_title,$talk_det->event_id);
 				
 					foreach($to as $email_addr){
