@@ -13,6 +13,7 @@ class Claim {
 	function run(){
 		$this->CI->load->library('wsvalidate');
 		$this->CI->load->model('user_admin_model');
+		$this->CI->load->model('user_model');
 		$this->CI->load->model('talks_model');
 		$this->CI->load->model('event_model');
 		
@@ -40,7 +41,10 @@ class Claim {
 				if(isset($ret[0]->ID)){
 				    return array('output'=>'json','items'=>array('msg'=>'Fail: Duplicate Claim!'));
 				}else{
-					$to=array('enygma@phpdeveloper.org');
+					$to=array();
+					
+					$admin_emails=$this->CI->user_model->getSiteAdminEmail();
+					foreach($admin_emails as $user){ $to[]=$user->email; }
 					
 					// See if there's an admin for the event
 					$evt_admin=$this->CI->event_model->getEventAdmins($talk_det->event_id);

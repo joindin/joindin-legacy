@@ -355,13 +355,14 @@ class Event extends Controller {
 				}
 				//print_r($ec);
 
-				$to=array('enygma@phpdveloper.org');
+				$to=array();
+				$admin_emails=$this->user_model->getSiteAdminEmail();
+				foreach($admin_emails as $user){ $to[]=$user->email; }
 				
 				// Get whatever email addresses there are for the event
 				$admins=$this->event_model->getEventAdmins($id);
 				foreach($admins as $ak=>$av){ $to[]=$av->email; }
 				
-				//$to	='enygma@phpdeveloper.org';
 				$subj	='Joind.in: Event feedback - '.$id;
 				$content='';
 				foreach($ec as $k=>$v){ $content.='['.$k.'] => '.$v."\n\n"; }
@@ -644,7 +645,6 @@ class Event extends Controller {
 			
 			if($is_spam!='true'){			
 				//send the information via email...
-				$to		= 'enygma@phpdeveloper.org';
 				$subj	= 'Event submission from Joind.in';
 				$msg= 'Event Title: '.$this->input->post('event_title')."\n\n";
 				$msg.='Event Description: '.$this->input->post('event_desc')."\n\n";
@@ -654,8 +654,11 @@ class Event extends Controller {
 				$msg.='Spam check: '.($is_spam=='false') ? 'not spam' : 'spam';
 			
 				//echo $msg.'<br/><br/>';
-			
-				mail($to,$subj,$msg,'From: submissions@joind.in');
+				
+				$admin_emails=$this->user_model->getSiteAdminEmail();
+				foreach($admin_emails as $user){
+					mail($user->email,$subj,$msg,'From: submissions@joind.in');
+				}
 				$arr['msg']='<style="font-size:13px;font-weight:bold">Event successfully submitted! We\'ll get back with you soon!</span>';
 				
 				//put it into the database

@@ -47,14 +47,16 @@ class About extends Controller {
 			);
 			$ret=$this->akismet->send('/1.1/comment-check',$arr);
 			
-			$to='enygma@phpdeveloper.org';
 			$subj='Feedback from joind.in';
 			$cont= 'Name: '.$this->input->post('your_name')."\n\n";
 			$cont.='Email: '.$this->input->post('your_email')."\n\n";
 			$cont.='Comment: '.$this->input->post('your_com')."\n\n";
 			$cont.='Spam check: '.($ret=='false') ? 'not spam' : 'spam caught';
-
-			mail($to,$subj,$cont,'From: feedback@joind.in');
+			
+			$admin_emails=$this->user_model->getSiteAdminEmail();
+			foreach($admin_emails as $user){
+				mail($user->email,$subj,$cont,'From: feedback@joind.in');
+			}
 			$arr=array('msg'=>'Comments sent! Thanks for the feedback!');
 			
 			//clear out the values so they know it was sent..

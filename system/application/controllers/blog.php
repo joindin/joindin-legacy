@@ -155,14 +155,16 @@ class Blog extends Controller {
 			if($is_spam!='true' && $sp_ret==true){
 				$this->db->insert('blog_comments',$arr);
 			
-				$to='enygma@phpdeveloper.org';
 				$subj='Blog comment on entry '.$id.' from joind.in';
 				$cont= 'Title: '.$this->input->post('title')."\n\n";
 				$cont.='Content: '.$this->input->post('comment')."\n\n";
 				$cont.='Post: http://joind.in/blog/view/'.$id."\n\n";
 				$cont.='Spam check: '.($ret=='false') ? 'not spam' : 'spam caught';
 
-				mail($to,$subj,$cont,'From: feedback@joind.in');
+				$admin_emails=$this->user_model->getSiteAdminEmail();
+				foreach($admin_emails as $user){
+					mail($user->email,$subj,$cont,'From: feedback@joind.in');
+				}
 				
 				redirect('blog/view/'.$id . '#comments', 'location', 302);
 			}

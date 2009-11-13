@@ -11,11 +11,17 @@ class Isspam {
 	}
 	//-----------------------
 	function run(){
+		$this->CI->load->model('user_model');
+		
 		$cid	= $this->xml->action->cid;
 		$rtype	= $this->xml->action->rtype;
 		
 		$msg='Spam comment on : http://joind.in/'.$rtype.'/view/'.$cid;
-		mail('enygma@phpdeveloper.org','Suggested spam comment!',$msg,'From: info@joind.in');
+		
+		$admin_emails=$this->CI->user_model->getSiteAdminEmail();
+		foreach($admin_emails as $user){
+			mail($user->email,'Suggested spam comment!',$msg,'From: info@joind.in');
+		}
 		
 		return array('output'=>'json','items'=>array('msg'=>'Success'));
 	}

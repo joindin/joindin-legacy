@@ -70,6 +70,12 @@ class User_model extends Model {
 		$q=$this->db->get_where('user',array('email'=>$in));
 		return $q->result();
 	}
+	function getSiteAdminEmail(){
+		$this->db->select('email')
+			->where('admin',1);
+		$q=$this->db->get('user');
+		return $q->result();
+	}
 	function getAllUsers(){
 		$this->db->order_by('username','asc');
 		$q=$this->db->get('user');
