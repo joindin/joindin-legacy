@@ -25,7 +25,7 @@
 			<td align="center"><?php echo form_radio('claim['.$k.'_'.$claim->uid.'_'.$claim->rid.']','deny'); ?></td>
 			<td>
 				<?php echo '<a href="/talk/view/'.$claim->rid.'">'.$claim->talk_title.'</a>'; ?><br/>
-				<span style="font-size:8px">@<?php echo $claim->event_name; ?></span>
+				<span style="font-size:9px">@<?php echo $claim->event_name; ?></span>
 			</td>
 			<td><?php echo $claim->speaker; ?></td>
 			<td><?php echo '<a href="/user/view/'.$claim->uid.'">'.$claim->claiming_name.'</a>'; ?></td>
