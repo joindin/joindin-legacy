@@ -407,6 +407,7 @@ class Talk extends Controller {
 		if(!$this->user_model->isSiteAdmin()){ redirect(); }
 		$this->load->model('user_admin_model','uam');
 		$this->load->library('validation');
+		$this->load->library('sendemail');
 		$this->load->helper('events_helper');		
 		
 		$rules	= array();
@@ -418,7 +419,7 @@ class Talk extends Controller {
 		
 		$approved=0;
 		$deleted=0;
-		foreach($claims as $k=>$v){
+		foreach($claims as $k=>$v){ //print_r($v);
 			//first check to see if it was approved
 			$chk=$this->input->post('claim_'.$v->ua_id);
 			if(!empty($chk)){
@@ -435,16 +436,7 @@ class Talk extends Controller {
 
 				
 				//send an email to the person claiming to let them know it was approved
-				$to=$v->email;
-				$subj='Joind.in: Claim on talk "'.$v->talk_title.'"';
-				$msg=sprintf("
-You recently laid claim to a talk at the \"%s\" event on Joind.in - \"%s\"
-Your claim has been approved. This talk will now be listed under your account.
-
-Thanks,
-The Joind.in Crew
-				",$v->event_name,$v->talk_title);
-				mail($to,$subj,$msg,'From: feedback@joind.in');
+				$this->sendemail->claimSuccess($v->email,$v->talk_title,$v->event_name);
 				$approved++;
 				unset($claims[$k]);
 			}

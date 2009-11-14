@@ -187,8 +187,8 @@ $ct=0;
 	<?php else: ?>
 		<table summary="" cellpadding="0" cellspacing="0" border="0" width="100%" class="list">
         <?php
-	$total_comment_ct   = 0;
-	$session_rate	    = 0;
+		$total_comment_ct   = 0;
+		$session_rate	    = 0;
         foreach ($by_day as $k=>$v):
             $ct = 0;
         ?>

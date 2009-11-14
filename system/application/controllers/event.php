@@ -735,6 +735,7 @@ class Event extends Controller {
 		
 		$this->load->model('user_admin_model','uam');
 		$this->load->helper('events_helper');
+		$this->load->library('sendemail');
 		$ret 	= $this->uam->getPendingClaims('talk',$eid);
 		
 		$claim	= $this->input->post('claim');
@@ -746,7 +747,7 @@ class Event extends Controller {
 				// p[0] is record from $ret, p[1] is the user ID, p[2] is the session ID
 				$p=explode('_',$k);
 				if($v=='approve'){
-					$t_id		= $p[1];
+					$t_id		= $p[2];
 					$t_title	= $ret[$p[0]]->talk_title;
 					$c_name		= $ret[$p[0]]->claiming_name;
 					$code		= buildCode($t_id,$eid,$t_title,$c_name);
@@ -754,6 +755,11 @@ class Event extends Controller {
 					// Put the code in the database to claim their talk!
 					$this->db->where('ID',$ret[$p[0]]->ua_id);
 					$this->db->update('user_admin',array('rcode'=>$code));
+					
+					$email		= $ret[$p[0]]->email;
+					$evt_name	= $ret[$p[0]]->event_name;
+					$this->sendemail->claimSuccess($email,$t_title,$evt_name);
+					unset($ret[$p[0]]);
 				}else{
 					// Remove the claim...it's not valid
 					$tdata=array(
