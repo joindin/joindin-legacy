@@ -731,7 +731,7 @@ class Event extends Controller {
 		redirect('event/view/'.$eid); 
 	}
 	function claim($eid){
-		if($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($id)){ 
+		if($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($eid)){ 
 			//they're okay
 		}else{ redirect('event/view/'.$eid); }
 		
