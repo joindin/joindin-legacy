@@ -15,7 +15,7 @@ echo $this->validation->error_string;
 if(isset($this->edit_id) && $this->edit_id){
 	echo form_open_multipart('event/edit/'.$this->edit_id);
 	$sub='Save Edits';
-	$title='Edit Event: '.$detail[0]->event_name;
+	$title='Edit Event: <a style="text-decoration:none" href="/event/view/'.$detail[0]->ID.'">'.$detail[0]->event_name.'</a>';
 	$curr_img=$detail[0]->event_icon;
 	menu_pagetitle('Edit Event: '.$detail[0]->event_name);
 }else{ 

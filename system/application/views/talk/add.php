@@ -34,7 +34,7 @@ if(isset($err) && !empty($err)){ $this->load->view('msg_info', array('msg' => $e
 	<label for="event"></label>
 	<?php
 	echo form_hidden('event_id',$ev->ID);
-	echo '<b>'.escape($ev->event_name).' ('.date('M d.Y',$ev->event_start).' - '.date('M d.Y',$ev->event_end).')</b>';
+	echo '<b><a href="/event/view/'.$ev->ID.'">'.escape($ev->event_name).'</a> ('.date('M d.Y',$ev->event_start).' - '.date('M d.Y',$ev->event_end).')</b>';
 	?>
 	<div class="clear"></div>
     </div>
