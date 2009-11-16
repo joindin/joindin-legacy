@@ -138,6 +138,7 @@ $title[] = 'Joind.in';
             		</div>
             	</div>
             	<?php endif; ?>
+				<?=$sidebar3?>
             	<div class="box">
                 	<h4>Submit your event</h4>
                 	<div class="ctn">

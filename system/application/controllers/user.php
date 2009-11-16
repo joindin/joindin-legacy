@@ -43,8 +43,10 @@ class User extends Controller {
 			$this->db->update('user',array('last_login'=>time()));
 			
 			// Send them back to where they came from
-			if($_SERVER['REQUEST_URI']!='/user/login'){
-			    redirect($_SERVER['HTTP_REFERER']);
+			$from	= $this->input->server('REQUEST_URI');
+			$to		= $this->input->server('HTTP_REFERER');
+			if($to!='/user/login'){
+			    redirect($to);
 			}else{ redirect('user/main'); }
 		}
 	}

@@ -64,6 +64,7 @@ $template['default']['regions'] = array(
 	'logged',
 	'feedurl',
 	'sidebar2',
+	'sidebar3',
 	'info_block'
 );
 $template['default']['parser'] = 'parser';

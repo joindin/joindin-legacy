@@ -8,6 +8,10 @@ format to follow to ensure your sessions get imported correctly.
 <p>
 The XML file's contents and format will be validated for correctness.
 </p>
+<p><b>Tips:</b></p>
+<ul>
+<li>If there's multiple speakers on the same session, seperate their names with commas
+</ul>
 
 <div style="padding:3px;border:1px solid #000000;background-color:#F8F8F8">
 <pre>

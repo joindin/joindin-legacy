@@ -399,6 +399,8 @@ class Event extends Controller {
 		}
 		
 		$this->template->write('feedurl','/feed/event/'.$id);
+		// Only show if they're an admin...
+		if($arr['admin']){ $this->template->write_view('sidebar3','event/_sidebar-admin',array('eid'=>$id)); }
 		$this->template->write_view('content','event/detail',$arr,TRUE);
 		if(!empty($t)){ 
 			// If there's no twitter results, don't show this sidebar
