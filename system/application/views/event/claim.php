@@ -7,6 +7,12 @@
 #claims_table td.app_den { width: 30px; font-size: 9px; }
 </style>
 
+<p>
+Below you'll find a list of claims visitors to the site have made on the sessions for this event. 
+The "Speaker" field shows the speaker name(s) and the "Claiming User" is the Joind.in user trying to
+claim the session. You can then accept/deny based on any match between them.
+</p>
+
 <?php echo form_open('event/claim/'.$eid); ?>
 <div class="box">
 	<a href="/event/view/<?php echo $eid; ?>">Back to event</a>

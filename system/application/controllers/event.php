@@ -879,6 +879,7 @@ class Event extends Controller {
 		if($resp && $user){
 			// They're respondng to an invite - update the database
 			$this->ilm->acceptInvite($eid,$user[0]->ID);
+			redirect('event/view/'.$eid);
 		}
 		
 		// Be sure they're supposed to be here...the rest of this is for admins
