@@ -181,7 +181,8 @@ class Event extends Controller {
 			'event_tz'	=>'Event Timezone',
 			'event_href'=>'Event Link(s)',
 			'event_hashtag'=>'Event Hashtag',
-			'event_voting'=>'Event Voting Allowed'
+			'event_voting'=>'Event Voting Allowed',
+			'event_private'=>'Private Event'
 		);
 		$this->validation->set_fields($fields);
 
@@ -201,6 +202,7 @@ class Event extends Controller {
 						$this->validation->end_yr	= date('Y',$v);
 					}else{ $this->validation->$k=$v; }
 				}
+				$this->validation->event_private=$event_detail[0]->private;
 			}
 			$arr=array(
 				'tz'	=> $this->tz_model->getOffsetInfo(),
@@ -231,6 +233,7 @@ class Event extends Controller {
 				'event_href'	=>$this->input->post('event_href'),
 				'event_hashtag'	=>$this->input->post('event_hashtag'),
 				'event_voting'	=>$this->input->post('event_voting'),
+				'private'		=>$this->input->post('event_private'),
 			);
 			if($this->upload->do_upload('event_icon')){
 				$updata=$this->upload->data();
@@ -273,6 +276,31 @@ class Event extends Controller {
 		$this->load->model('user_attend_model','uam');
 		
 		$events	= $this->event_model->getEventDetail($id);
+		
+		if($events[0]->private=='Y'){
+			$this->load->model('invite_list_model','ilm');
+						
+			// Private event! Check to see if they're on the invite list!
+			$is_auth	= $this->user_model->isAuth();
+			$priv_admin	= ($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($id)) ? true : false;
+			if($is_auth){
+				$udata=$this->user_model->getUser($is_auth);
+				$is_invite=$this->ilm->isInvited($id,$udata[0]->ID);
+				
+				//If they're invited, accept if they haven't already
+				if($is_invite){ $this->ilm->acceptInvite($id,$udata[0]->ID); }
+				
+				if(!$is_invite && !$priv_admin){
+					$arr=array('detail'=>$events);
+					$this->template->write_view('content','event/private',$arr,TRUE);
+				
+					// Render the page
+					$this->template->render();
+					return true;
+				}
+			}
+		}
+		
 		$talks	= $this->event_model->getEventTalks($id);
 		$is_auth= $this->user_model->isAuth();
 		
@@ -400,7 +428,9 @@ class Event extends Controller {
 		
 		$this->template->write('feedurl','/feed/event/'.$id);
 		// Only show if they're an admin...
-		if($arr['admin']){ $this->template->write_view('sidebar3','event/_sidebar-admin',array('eid'=>$id)); }
+		if($arr['admin']){ $this->template->write_view('sidebar3','event/_sidebar-admin',
+			array('eid'=>$id,'is_private'=>$events[0]->private)); 
+		}
 		$this->template->write_view('content','event/detail',$arr,TRUE);
 		if(!empty($t)){ 
 			// If there's no twitter results, don't show this sidebar
@@ -832,6 +862,59 @@ class Event extends Controller {
 			'msg'		=> $msg
 		);
 		$this->template->write_view('content','event/import',$arr);
+		$this->template->render();
+	}
+	
+	function invite($eid,$resp=null){
+		
+		$this->load->model('invite_list_model','ilm');
+		$this->load->library('sendemail');
+		$this->load->model('event_model');
+		//$this->load->library('validation');
+		$msg=null;
+		$detail=$this->event_model->getEventDetail($eid);
+		
+		$is_auth=$this->user_model->isAuth();
+		$user=($is_auth) ? $this->user_model->getUser($is_auth) : false;
+		if($resp && $user){
+			// They're respondng to an invite - update the database
+			$this->ilm->acceptInvite($eid,$user[0]->ID);
+		}
+		
+		// Be sure they're supposed to be here...the rest of this is for admins
+		if($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($id)){
+			//they're okay
+		}else{ redirect(); }
+		
+		if($this->input->post('sub') && $this->input->post('sub')=='Send Invite'){
+			// See if they're adding a username and check to see if it's valid
+			$u=$this->input->post('user');
+			if(!empty($u)){
+				$ret=$this->user_model->getUser($u);
+				if(empty($ret)){ 
+					$msg='Invalid user <b>'.$u.'</b>!'; 
+				}else{
+					// Good user, lets add them to the list (if they're not there already)
+					$is_invited=$this->ilm->isInvited($eid,$ret[0]->ID);
+					if(!$is_invited){
+						$this->ilm->addInvite($eid,$ret[0]->ID);
+						$this->sendemail->sendInvite($ret[0]->email,$eid,$$detail[0]->event_name);
+						$msg='User <b>'.$u.'</b> has been sent an invite!';
+					}else{
+						$msg='User <b>'.$u.'</b> has already been invited to this event!';
+					}
+				}
+			}
+		}
+		
+		$arr=array(
+			'eid'		=> $eid,
+			'invites'	=> $this->ilm->getEventInvites($eid),
+			'msg'		=> $msg,
+			'evt_detail'=> $detail
+		);
+		
+		$this->template->write_view('content','event/invite',$arr);
 		$this->template->render();
 	}
 	//----------------------
