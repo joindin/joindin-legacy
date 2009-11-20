@@ -275,7 +275,7 @@ class Event extends Controller {
 		$this->load->model('event_comments_model');
 		$this->load->model('user_attend_model','uam');
 		
-		$events	= $this->event_model->getEventDetail($id);
+		$events	= $this->event_model->getEventDetail($id,null,null,true);
 		
 		if($events[0]->private=='Y'){
 			$this->load->model('invite_list_model','ilm');
@@ -320,6 +320,13 @@ class Event extends Controller {
 		}else{ $chk_attend=false; }
 		
 		if(empty($events)){ redirect('event'); }
+		if($events[0]->pending==1 && !$this->user_model->isSiteAdmin()){
+			$parr=array('detail'=>$events);
+			$this->template->write_view('content','event/pending',$parr,true);
+			echo $this->template->render();	
+			return true;
+		}
+		
 		$reqkey=buildReqKey();
 		
 		$attend=$this->uam->getAttendUsers($id);
@@ -620,8 +627,9 @@ class Event extends Controller {
 			);
 			foreach($sel_fields as $k=>$v){ $this->validation->$k=date($v); }
 			$this->validation->cfp_checked	= false;
+			$this->validation->is_private	= 'n';
 		}else{
-			$this->validation->cfp_checked=$this->validation->is_cfp;
+			$this->validation->cfp_checked	= $this->validation->is_cfp;
 		}
 		
 		if($this->validation->run()!=FALSE){			
@@ -645,7 +653,8 @@ class Event extends Controller {
 				'active'		=>0,
 				'event_stub'	=>$this->input->post('event_stub'),
 				'event_tz'		=>$this->input->post('event_tz'),
-				'pending'		=>1
+				'pending'		=>1,
+				'private'		=>($this->input->post('is_private')=='n') ? null : $this->input->post('is_private')
 			);
 			
 			// Check to see if our Call for Papers dates are set...

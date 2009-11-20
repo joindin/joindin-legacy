@@ -108,8 +108,8 @@ echo '<h2>'.$title.'</h2>';
 	<div class="row">
 	<label for="event_icon">Is event private?</label>
 	<?php
-		$ev_y=($this->validation->event_private=='Y') ? true : false;
-		$ev_n=($this->validation->event_private=='N') ? true : false;
+		$ev_y=($this->validation->event_private=='y') ? true : false;
+		$ev_n=($this->validation->event_private=='n') ? true : false;
 		if(empty($this->validation->event_private)){ $ev_n=true; }
 
 		echo form_radio('event_private','Y',$ev_y).' Yes'; 

@@ -93,6 +93,16 @@ menu_pagetitle('Submit an event');
     </div>
     
 	<div class="row">
+        <label for="start">Is the event private?</label>
+		<?php
+		echo form_radio('is_private','y',$this->validation->is_private).' Yes'; 
+		echo form_radio('is_private','n',$this->validation->is_private). 'No'; 
+		?><br/>
+		<span style="color:#3567AC;font-size:11px"><b>Private Events:</b> If a event is marked as private, it's an 
+		invite-only event.</span><br/>
+	</div>
+
+	<div class="row">
 		<span style="color:#3567AC;font-size:11px"><b>Call for Papers:</b> Are you opening up your conference to let people submit ideas? Use these dates to define the time period when they can submit! </span><br/>
 		<?php 
 			$js='onClick="toggleCfpDates()"';

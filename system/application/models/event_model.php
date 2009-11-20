@@ -79,7 +79,7 @@ class Event_model extends Model {
 		$cols='events.event_name,events.event_start,events.event_end,events.event_lat,events.event_long,';
 		$cols.='events.ID as event_ID,events.event_loc,events.event_desc,events.active,';
 		$cols.='events.event_stub,events.event_tz,events.event_icon,events.pending,events.event_hastag,';
-		$cols.='events.event_href,events.event_cfp_start,events.event_cfp_end';
+		$cols.='events.event_href,events.event_cfp_start,events.event_cfp_end,events.private';
 		
 		$attend = '(SELECT COUNT(*) FROM user_attend WHERE eid = events.ID AND uid = ' . (int)$this->session->userdata('ID') . ') as user_attending';
 	    $this->db->select('events.*, COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments, ' . $attend);
