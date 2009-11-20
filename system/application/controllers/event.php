@@ -275,9 +275,9 @@ class Event extends Controller {
 		$this->load->model('event_comments_model');
 		$this->load->model('user_attend_model','uam');
 		
-		$events	= $this->event_model->getEventDetail($id,null,null,true);
-		
-		if($events[0]->private=='Y'){
+		$events	= $this->event_model->getEventDetail($id);
+
+		if($events[0]->private=='y'){
 			$this->load->model('invite_list_model','ilm');
 						
 			// Private event! Check to see if they're on the invite list!
@@ -298,6 +298,13 @@ class Event extends Controller {
 					$this->template->render();
 					return true;
 				}
+			}else{ 
+				$arr=array('detail'=>$events);
+				$this->template->write_view('content','event/private',$arr,TRUE);
+			
+				// Render the page
+				$this->template->render();
+				return true;
 			}
 		}
 		
