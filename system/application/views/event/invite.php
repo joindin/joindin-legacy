@@ -17,12 +17,10 @@
 <?php endif; ?>
 
 <?php echo form_open('event/invite/'.$eid); ?>
-<div class="box">
+<div class="box" style="margin-bottom:18px">
     <div class="row">
     	<label for="event_name">Invite Username:</label>
 		<?php echo form_input('user'); ?>
-    </div>
-	<div class="row">
 		<?php echo form_submit('sub','Send Invite'); ?>
 	</div>
 </div>
@@ -31,6 +29,8 @@
 <?php
 // Display the list of private attendees
 //var_dump($invites);
+echo form_open('event/invite/'.$eid);
+echo form_hidden('attend_list',count($invites));
 ?>
 <table cellpadding="0" cellspacing="0" border="0" id="invite_list">
 <tr class="header">
@@ -42,14 +42,29 @@
 </tr>
 <?php foreach($invites as $k=>$user): ?>
 	<tr>
-		<td></td>
+		<td><?php 
+			if($user->accepted=='A'){
+				echo form_submit('approve_'.$user->uid,'approve');
+				echo form_submit('decline_'.$user->uid,'decline');
+			}else{ echo form_submit('del_'.$user->uid,'delete'); }
+		?></td>
 		<td><?php echo $user->full_name; ?></td>
 		<td><a href="/user/view/<?php echo $user->uid; ?>"><?php echo $user->username; ?></a></td>
 		<td><?php echo date('m.d.Y H:i:s',$user->date_added); ?></td>
 		<td><?php 
-			$style=($user->accepted=='Y') ? 'accepted' : 'pending'; 
+			switch(strtolower($user->accepted)){
+				case 'y': 
+					$style='accepted'; 
+					break;
+				case 'a': 
+					$style='pending approval'; 
+					break;
+				default: 
+					$style='pending';
+			}
 			echo '<span class="'.$style.'">'.$style.'</span>';
 		?></td>
 	</tr>
 <?php endforeach; ?>
 </table>
+<?php echo form_close(); ?>

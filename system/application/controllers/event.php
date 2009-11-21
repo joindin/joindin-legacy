@@ -275,8 +275,8 @@ class Event extends Controller {
 		$this->load->model('event_comments_model');
 		$this->load->model('user_attend_model','uam');
 		
-		$events	= $this->event_model->getEventDetail($id);
-
+		$events		= $this->event_model->getEventDetail($id);
+		$evt_admins	= $this->event_model->getEventAdmins($id);
 		if($events[0]->private=='y'){
 			$this->load->model('invite_list_model','ilm');
 						
@@ -291,7 +291,7 @@ class Event extends Controller {
 				if($is_invite){ $this->ilm->acceptInvite($id,$udata[0]->ID); }
 				
 				if(!$is_invite && !$priv_admin){
-					$arr=array('detail'=>$events);
+					$arr=array('detail'=>$events,'is_auth'=>$is_auth,'admins'=>$evt_admins);
 					$this->template->write_view('content','event/private',$arr,TRUE);
 				
 					// Render the page
@@ -299,7 +299,7 @@ class Event extends Controller {
 					return true;
 				}
 			}else{ 
-				$arr=array('detail'=>$events);
+				$arr=array('detail'=>$events,'is_auth'=>$is_auth,'admins'=>$evt_admins);
 				$this->template->write_view('content','event/private',$arr,TRUE);
 			
 				// Render the page
@@ -349,7 +349,8 @@ class Event extends Controller {
 			'seckey' =>buildSecFile($reqkey),
 			'attending'=>$attend,
 			'started'=>$this->tz->hasEvtStarted($id),
-			'latest_comment'=>$this->event_model->getLatestComment($id)
+			'latest_comment'=>$this->event_model->getLatestComment($id),
+			'admins' =>$evt_admins
 			//'attend' =>$this->uam->getAttendCount($id)
 		);
 		
@@ -890,18 +891,41 @@ class Event extends Controller {
 		$msg=null;
 		$detail=$this->event_model->getEventDetail($eid);
 		
-		$is_auth=$this->user_model->isAuth();
-		$user=($is_auth) ? $this->user_model->getUser($is_auth) : false;
+		$is_auth= $this->user_model->isAuth();
+		$user	= ($is_auth) ? $this->user_model->getUser($is_auth) : false;
+		$admins	= $this->event_model->getEventAdmins($eid);
 		if($resp && $user){
-			// They're respondng to an invite - update the database
-			$this->ilm->acceptInvite($eid,$user[0]->ID);
-			redirect('event/view/'.$eid);
+			switch(strtolower($resp)){
+				case "respond":
+					// Check their invite, be sure it's an empty status
+					$inv=$this->ilm->getInvite($eid,$user[0]->ID);
+					if(empty($inv[0]->accepted)){					
+						// They're respondng to an invite - update the database
+						$this->ilm->acceptInvite($eid,$user[0]->ID);
+						redirect('event/view/'.$eid);
+					}else{ redirect('event/view/'.$eid); }
+					break;
+				case "request":
+					// They're requesting an invite, let the admin know!
+					$evt_title	= $detail[0]->event_name;
+					$evt_id		= $detail[0]->ID;
+					$this->sendemail->sendInviteRequest($evt_id,$evt_title,$user);
+					$this->ilm->addInvite($eid,$user[0]->ID,'A');
+					
+					$arr=array('detail'=>$detail);
+					$this->template->write_view('content','event/request',$arr);
+					$this->template->render();
+					return;
+					break;
+			}
 		}
-		
+					
 		// Be sure they're supposed to be here...the rest of this is for admins
 		if($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($id)){
 			//they're okay
 		}else{ redirect(); }
+		
+		$invites=$this->ilm->getEventInvites($eid);
 		
 		if($this->input->post('sub') && $this->input->post('sub')=='Send Invite'){
 			// See if they're adding a username and check to see if it's valid
@@ -915,7 +939,7 @@ class Event extends Controller {
 					$is_invited=$this->ilm->isInvited($eid,$ret[0]->ID);
 					if(!$is_invited){
 						$this->ilm->addInvite($eid,$ret[0]->ID);
-						$this->sendemail->sendInvite($ret[0]->email,$eid,$$detail[0]->event_name);
+						$this->sendemail->sendInvite($ret[0]->email,$eid,$detail[0]->event_name);
 						$msg='User <b>'.$u.'</b> has been sent an invite!';
 					}else{
 						$msg='User <b>'.$u.'</b> has already been invited to this event!';
@@ -923,10 +947,36 @@ class Event extends Controller {
 				}
 			}
 		}
+		if($this->input->post('attend_list')){
+			//Managing the list...
+			foreach($invites as $k=>$v){
+				//check for... *pending*
+				
+				//check to see if we have a delete action
+				$del=$this->input->post('del_'.$v->uid);
+				if($del && $del=='delete'){ $this->ilm->removeInvite($eid,$v->uid); }
+				
+				//check to see if there's an "approve" action
+				$del=$this->input->post('approve_'.$v->uid);
+				if($del && $del=='approve'){ $this->ilm->updateInviteStatus($eid,$v->uid,'Y'); }
+				
+				//check to see if there's a decline action
+				$del=$this->input->post('decline_'.$v->uid);
+				if($del && $del=='decline'){ $this->ilm->removeInvite($eid,$v->uid); }
+				
+			}
+			
+			// Refresh the invite list
+			$invites=$this->ilm->getEventInvites($eid);
+			$msg='Invite list changes saved!';
+		}
 		
+		
+		
+		// Finally, we send it out to the view....
 		$arr=array(
 			'eid'		=> $eid,
-			'invites'	=> $this->ilm->getEventInvites($eid),
+			'invites'	=> $invites,
 			'msg'		=> $msg,
 			'evt_detail'=> $detail
 		);
