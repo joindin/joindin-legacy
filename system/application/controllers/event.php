@@ -451,6 +451,7 @@ class Event extends Controller {
 			// If there's no twitter results, don't show this sidebar
 			$this->template->write_view('sidebar2','event/_twitter-search',$other_data);
 		}
+		$this->template->write_view('sidebar3','event/_event_contact',array('eid'=>$id));
 		$this->template->render();
 		//$this->load->view('event/detail',$arr);
 	}
@@ -573,6 +574,9 @@ class Event extends Controller {
 		$this->template->write_view('content','event/codes',$arr,TRUE);
 		$this->template->render();
 	}
+	/**
+	* Handle the user submission of a new event
+	*/
 	function submit(){
 		$arr=array();
 		$this->load->library('validation');
@@ -729,9 +733,14 @@ class Event extends Controller {
 		$this->template->write_view('content','event/submit',$arr);
 		$this->template->render();
 	}
+	
+	/**
+	* Export the full event information as a CSV including:
+	* - Speakers
+	* - Sessions
+	* - Session ratings/comments
+	*/
 	function export($eid){
-		//export the speakers and their ratings/comments for an entire event
-		//push it out as a CSV file...
 		$this->load->model('event_model');
 		$talks=$this->event_model->getEventFeedback($eid);
 		
@@ -748,10 +757,18 @@ class Event extends Controller {
 		header('Content-Disposition: attachment; filename="Event_Comments_'.$eid.'.csv"');
 		echo $out;
 	}
+	
+	/**
+	* Get the list of pending events
+	*/
 	function pending(){
 		if(!$this->user_model->isSiteAdmin()){ redirect(); }
 		$this->index(true);
 	}
+	
+	/**
+	* Approve a pending event and send emails to the admins (if there are any)
+	*/
 	function approve($eid){
 		if(!$this->user_model->isSiteAdmin()){ redirect(); }
 		
@@ -777,6 +794,11 @@ class Event extends Controller {
 		// Finally, redirect back to the event!
 		redirect('event/view/'.$eid); 
 	}
+	
+	/**
+	* Allows a user to claim an event - adds a pending row to the admin table
+	* for the site admins to go in and approve
+	*/
 	function claim($eid){
 		if($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($eid)){ 
 			//they're okay
@@ -834,6 +856,7 @@ class Event extends Controller {
 	
 	/**
 	 * Import an XML file and push the test information into the table
+	 * XML is validated against a document structure in the /inc/xml directory
 	 */
 	function import($eid){
 		// Be sure they're supposed to be here...
@@ -882,6 +905,10 @@ class Event extends Controller {
 		$this->template->render();
 	}
 	
+	/**
+	* Allows the event/site admins to send and manage invites to their invite-only
+	* event. They can see the status of the invites (pending, accepted, requested).
+	*/
 	function invite($eid,$resp=null){
 		
 		$this->load->model('invite_list_model','ilm');
@@ -909,7 +936,7 @@ class Event extends Controller {
 					// They're requesting an invite, let the admin know!
 					$evt_title	= $detail[0]->event_name;
 					$evt_id		= $detail[0]->ID;
-					$this->sendemail->sendInviteRequest($evt_id,$evt_title,$user);
+					$this->sendemail->sendInviteRequest($evt_id,$evt_title,$user,$admins);
 					$this->ilm->addInvite($eid,$user[0]->ID,'A');
 					
 					$arr=array('detail'=>$detail);
@@ -982,6 +1009,56 @@ class Event extends Controller {
 		);
 		
 		$this->template->write_view('content','event/invite',$arr);
+		$this->template->render();
+	}
+	
+	/**
+	* Allow logged in users to send a message to the event admins
+	* if any are assigned. Will always send to site admins regardless
+	*/
+	function contact($eid){
+		// They need to be logged in...
+		$is_auth=$this->user_model->isAuth();
+		if(!$is_auth){ redirect('event/view/'.$eid); }
+		$this->load->model('event_model');
+		$this->load->library('validation');
+		$this->load->library('sendemail');
+		
+		$rules=array(
+			'subject'	=> 'required',
+			'comments'	=> 'required'
+		);
+		$this->validation->set_rules($rules);
+		
+		$fields=array(
+			'subject'	=> 'Subject',
+			'comments'	=> 'Comments'
+		);
+		$this->validation->set_fields($fields);
+		
+		
+		$arr=array(
+			'detail'=>$this->event_model->getEventDetail($eid)
+		);
+		
+		if($this->validation->run()!=FALSE){
+			$user	= $this->user_model->getUser($is_auth);
+			// Grab the event admins
+			$admins	= $this->event_model->getEventAdmins($eid);
+			
+			// Push the emails over to the mailer class
+			$evt_name	= $arr['detail'][0]->event_name;
+			$msg		= 'Subject: '.$this->input->post('subject')."\n\n";
+			$msg		.= $this->input->post('comments');
+			$this->sendemail->sendEventContact($eid,$evt_name,$msg,$user,$admins);
+			
+			$arr['msg']='Your comments have been sent to the event administrators! They\'ll 
+				get back in touch with you soon!';
+		}else{
+			$arr['msg']=$this->validation->error_string;
+		}
+	
+		$this->template->write_view('content','event/contact',$arr);
 		$this->template->render();
 	}
 	//----------------------
