@@ -108,6 +108,9 @@ class User extends Controller {
 			',$ret[0]->username,$pass);
 			
 			mail($to,$subj,$content,'From: info@joind.in');
+			
+			$this->validation->error_string='A new password has been sent to your email - open it and click
+				on the login link to use the new password';
 		}
 		
 		$this->template->write_view('content','user/forgot',$arr);
