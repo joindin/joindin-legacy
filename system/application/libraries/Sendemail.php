@@ -84,5 +84,21 @@ You can reply directly to them by replying to this email.
 		foreach($admins as $k=>$v){ $to[]=$v->email; }
 		$this->_sendEmail($to,$msg,$subj,$user[0]->email);
 	}
+	
+	public function sendPassordReset($user,$pass){
+		$to		= $user[0]->email;
+		$subj	= 'Joind.in - Password Reset Request';
+		$msg	= sprintf('
+%s,
+
+Someone has requested a password reset for your account on Joind.in. 
+Your new password is below:
+
+%s
+
+Please log in in at http://joind.in/user/login and reset your password as soon as possible.
+		',$user[0]->username,$pass);
+		$this->_sendEmail($to,$msg,$subj,$user[0]->email);
+	}
 }
 ?>

@@ -94,28 +94,20 @@ class User extends Controller {
 			$arr=array('password'=>md5($pass));
 			$this->user_model->updateUserInfo($uid,$arr);
 			
-			$to		= $ret[0]->email;
-			$subj	= 'Joind.in - Password Reset Request';
-			$content= sprintf('
-				%s,
-				
-				Someone has requested a password reset for your account on Joind.in. 
-				Your new password is below:
-				
-				%s
-				
-				Please log in in at http://joind.in/user/login and reset your password as soon as possible.
-			',$ret[0]->username,$pass);
+			// Send the email...
+			$this->sendemail->sendForgotPassword($ret,$pass);
 			
-			mail($to,$subj,$content,'From: info@joind.in');
-			
-			$this->validation->error_string='A new password has been sent to your email - open it and click
+			$arr['msg']='A new password has been sent to your email - open it and click
 				on the login link to use the new password';
 		}
 		
 		$this->template->write_view('content','user/forgot',$arr);
 		$this->template->render();
 	}
+	
+	/**
+	* Swap the user's status - active/inactive
+	*/
 	function changestat($uid){
 	    // Kick them back out if they're not an admin
 	    if(!$this->user_model->isSiteAdmin()){ redirect(); }
@@ -123,6 +115,9 @@ class User extends Controller {
 	    redirect('user/view/'.$uid);
 	}
 
+	/**
+	* Sets up a new user in the system
+	*/
 	function register(){
 			$this->load->helper('form');
 			$this->load->library('validation');
@@ -183,6 +178,10 @@ class User extends Controller {
 			$this->template->write_view('content','user/register',$carr);
 			$this->template->render();
 	}
+	
+	/**
+	* A users" main" page - their list of talks, events attended/attending
+	*/
 	function main(){
 		$this->load->helper('form');
 		$this->load->library('validation');
@@ -217,6 +216,10 @@ class User extends Controller {
 		$this->template->write_view('content','user/main',$arr);
 		$this->template->render();
 	}
+	
+	/**
+	* View a user's information...input can be either username of user ID
+	*/
 	function view($uid){
 		$this->load->model('talks_model');
 		$this->load->model('user_attend_model','uam');
@@ -234,6 +237,8 @@ class User extends Controller {
 		if (empty($details[0])) {
 			redirect();
 		}
+		// Reset our UID based on what we found...
+		$uid=$details[0]->ID;
 
 		$curr_user=$this->session->userdata('ID');
 		
@@ -262,6 +267,10 @@ class User extends Controller {
 		$this->template->write_view('content','user/view',$arr);
 		$this->template->render();
 	}
+	
+	/**
+	* User management of name, email, password
+	*/
 	function manage(){
 		// Be sure they're logged in
 		if (!$this->user_model->isAuth()) {
@@ -313,6 +322,10 @@ class User extends Controller {
 		$this->template->write_view('content','user/manage',$arr);
 		$this->template->render();
 	}
+	
+	/**
+	* For site admins, view users listing, enable/disable
+	*/
 	function admin($page=null){
 		$this->load->helper('reqkey');
 		$this->load->library('validation');

@@ -1,4 +1,9 @@
 <h1>Forgot My Password</h1>
+
+<?php if (!empty($msg)): ?>
+<?php $this->load->view('msg_info', array('msg' => $msg)); ?>
+<?php endif; ?>
+
 <div class="box">
 	<?php echo form_open('user/forgot'); ?>
 	

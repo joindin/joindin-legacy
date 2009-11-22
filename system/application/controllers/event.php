@@ -57,6 +57,9 @@ class Event extends Controller {
 			'reqkey' => $reqkey,
 			'seckey' => buildSecFile($reqkey)
 		);	
+		
+		//$this->template->write_view('info_block','msg_info',array('msg'=>'test'),TRUE);
+		
 		$this->template->write_view('content','event/main',$arr,TRUE);
 		$this->template->render();
 		
