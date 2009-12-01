@@ -60,7 +60,7 @@ To invite this user, visit http://joind.in/event/invite/%s and click on the \"In
 approve or reject the invite.
 		",$user[0]->full_name,$user[0]->username,$evt_name,$eid);
 		
-		$to=array();
+		$to=array($user[0]->email);
 		foreach($admins as $k=>$v){ $to[]=$v->email; }
 		$this->_sendEmail($to,$subj,$msg);
 	}
