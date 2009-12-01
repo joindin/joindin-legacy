@@ -95,8 +95,8 @@ menu_pagetitle('Submit an event');
 	<div class="row">
         <label for="start">Is the event private?</label>
 		<?php
-		echo form_radio('is_private','y',$this->validation->is_private).' Yes'; 
-		echo form_radio('is_private','n',$this->validation->is_private). 'No'; 
+		echo form_radio('is_private','Y',$this->validation->is_private).' Yes'; 
+		echo form_radio('is_private','N',$this->validation->is_private). 'No'; 
 		?><br/>
 		<span style="color:#3567AC;font-size:11px"><b>Private Events:</b> If a event is marked as private, it's an 
 		invite-only event.</span><br/>

@@ -280,7 +280,7 @@ class Event extends Controller {
 		
 		$events		= $this->event_model->getEventDetail($id);
 		$evt_admins	= $this->event_model->getEventAdmins($id);
-		if($events[0]->private=='y'){
+		if($events[0]->private=='Y'){
 			$this->load->model('invite_list_model','ilm');
 						
 			// Private event! Check to see if they're on the invite list!

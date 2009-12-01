@@ -11,7 +11,7 @@
 		<li><a href="/event/import/<?php echo $eid; ?>">Import Event Info</a>
 		<li><a href="/event/delete/<?php echo $eid; ?>" style="color:#D3000E;font-weight:bold">Delete event</a>
 		<?php
-		if($is_private=='y'){ echo '<br/><br/><li><a href="/event/invite/'.$eid.'">Invite list</a>'; }
+		if($is_private=='Y'){ echo '<br/><br/><li><a href="/event/invite/'.$eid.'">Invite list</a>'; }
 		?>
 		</ul>
 	</div>
