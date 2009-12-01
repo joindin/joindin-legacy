@@ -44,7 +44,7 @@ To reply to this invite and add yourself to the attending list, please
 visit http://joind.in/event/invite/%s/respond
 		",$evt_name,$evt_id);
 		
-		$this->_sendEmail($to,$subj,$msg);		
+		$this->_sendEmail($to,$msg,$subj);
 	}
 	
 	/**
@@ -60,9 +60,10 @@ To invite this user, visit http://joind.in/event/invite/%s and click on the \"In
 approve or reject the invite.
 		",$user[0]->full_name,$user[0]->username,$evt_name,$eid);
 		
-		$to=array($user[0]->email);
+		//$to=array($user[0]->email);
+		$to=array();
 		foreach($admins as $k=>$v){ $to[]=$v->email; }
-		$this->_sendEmail($to,$subj,$msg);
+		$this->_sendEmail($to,$msg,$subj);
 	}
 	
 	/**
