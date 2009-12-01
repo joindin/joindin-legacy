@@ -1,1 +1,8 @@
+
+//--------------------
+// README for Joind.in
+//--------------------
+
+curr_db.sql : Current SQL information for the application. Table structure ready for import (as exported from MySQL)
+
 See LICENSE file for license information for this software
