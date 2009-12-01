@@ -951,7 +951,7 @@ class Event extends Controller {
 		}
 					
 		// Be sure they're supposed to be here...the rest of this is for admins
-		if($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($id)){
+		if($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($eid)){
 			//they're okay
 		}else{ redirect(); }
 		
