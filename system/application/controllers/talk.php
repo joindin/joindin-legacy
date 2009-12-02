@@ -199,7 +199,7 @@ class Talk extends Controller {
 		if($talk_detail[0]->private=='Y'){
 			if(!$this->user_model->isAuth()){ /* denied! */ redirect('event/view/'.$talk_detail[0]->eid); }
 			// If the event for this talk is private, be sure that the user is allowed
-			if(!$this->ilm->isInvited($talk_detail[0]->eid,$currentUserId)){
+			if(!$this->ilm->isInvited($talk_detail[0]->eid,$currentUserId) || $this->user_model->isAdminEvent($talk_detail[0]->eid)){
 				redirect('event/view/'.$talk_detail[0]->eid);
 			}
 		}
