@@ -172,6 +172,7 @@ class Talk extends Controller {
 	function view($id,$add_act=null,$code=null){
 		$this->load->model('talks_model');
 		$this->load->model('event_model');
+		$this->load->model('invite_list_model','ilm');
 		$this->load->model('user_attend_model');
 		$this->load->helper('form');
 		$this->load->helper('events');
@@ -192,8 +193,16 @@ class Talk extends Controller {
 		
 		$currentUserId = $this->session->userdata('ID');
 		
-		$talk_detail=$this->talks_model->getTalks($id);
+		$talk_detail=$this->talks_model->getTalks($id); //print_r($talk_detail);
 		if(empty($talk_detail)){ redirect('talk'); }
+		
+		if($talk_detail[0]->private=='Y'){
+			if(!$this->user_model->isAuth()){ /* denied! */ redirect('event/view/'.$talk_detail[0]->eid); }
+			// If the event for this talk is private, be sure that the user is allowed
+			if(!$this->ilm->isInvited($talk_detail[0]->eid,$currentUserId)){
+				redirect('event/view/'.$talk_detail[0]->eid);
+			}
+		}
 		
 		$evt_started = $this->timezone->talkEvtStarted($id);
 		

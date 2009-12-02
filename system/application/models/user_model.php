@@ -11,9 +11,10 @@ class User_model extends Model {
 			return $u;
 		}else{ return false; }
 	}
-	function validate($user,$pass){
+	function validate($user,$pass,$plaintxt=false){
 		$ret=$this->getUser($user);
-		return (isset($ret[0]) && $ret[0]->password==md5($pass)) ? true : false;
+		$pass=($plaintxt) ? $pass : md5($pass);
+		return (isset($ret[0]) && $ret[0]->password==$pass) ? true : false;
 	}
 	function logStatus(){
 		//piece to handle the login/logout
@@ -21,8 +22,16 @@ class User_model extends Model {
 		$lstr=($u) ? '<a href="/user/main">'.$u.'</a> <a href="/user/logout">[logout]</a>':'<a href="/user/login">login</a>';
 		$this->template->write('logged',$lstr);
 	}
-	function isSiteAdmin(){
-		return ($this->session->userdata('admin')==1) ? true : false;
+	function isSiteAdmin($user=null){
+		if(!$this->isAuth()){
+			// get our user information
+			if($user){
+				$udata=$this->getUser($user);
+				return (isset($udata[0]) && $udata[0]->admin==1) ? true : false;
+			}else{ return false; }
+		}else{
+			return ($this->session->userdata('admin')==1) ? true : false;
+		}
 	}
 	function isAdminEvent($rid){
 		if($this->isAuth()){
@@ -62,7 +71,7 @@ class User_model extends Model {
 		if(is_numeric($in)){
 			$q=$this->db->get_where('user',array('ID'=>$in));
 		}else{ 
-			$q=$this->db->get_where('user',array('username'=>$in));
+			$q=$this->db->get_where('user',array('username'=>(string)$in));
 		}
 		return $q->result();
 	}
