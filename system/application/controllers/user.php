@@ -58,6 +58,7 @@ class User extends Controller {
 	function forgot(){
 		$this->load->helper('form');
 		$this->load->library('validation');
+		$this->load->library('sendemail');
 		$arr=array();
 		
 		$fields=array(
