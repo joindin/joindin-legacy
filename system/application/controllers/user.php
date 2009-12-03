@@ -76,30 +76,34 @@ class User extends Controller {
 			//reset their password and send it out to the account
 			$email=$this->input->post('email');
 			$login=$this->input->post('user');
+			$ret=null;
 			if(!empty($email)){
 				$ret=$this->user_model->getUserByEmail($email);
 			}elseif(!empty($login)){
 				$ret=$this->user_model->getUser($login);
 			}
-			//print_r($ret);
 			
-			//generate the new password...
-			$sel		= array_merge(range('a','z'),range('A','Z'),range(0,9)); shuffle($sel);
-			$pass_len	= 10;
-			$pass		= '';
-			$uid		= $ret[0]->ID;
-			for($i=0;$i<$pass_len;$i++){
-				$r=mt_rand(0,count($sel)-1);
-				$pass.=$sel[$r];
+			if(empty($ret)){
+				$arr['msg']='You must specify either a username or email address!';
+			}else{			
+				//generate the new password...
+				$sel		= array_merge(range('a','z'),range('A','Z'),range(0,9)); shuffle($sel);
+				$pass_len	= 10;
+				$pass		= '';
+				$uid		= $ret[0]->ID;
+				for($i=0;$i<$pass_len;$i++){
+					$r=mt_rand(0,count($sel)-1);
+					$pass.=$sel[$r];
+				}
+				$arr=array('password'=>md5($pass));
+				$this->user_model->updateUserInfo($uid,$arr);
+			
+				// Send the email...
+				$this->sendemail->sendPassordReset($ret,$pass);
+			
+				$arr['msg']='A new password has been sent to your email - open it and click
+					on the login link to use the new password';
 			}
-			$arr=array('password'=>md5($pass));
-			$this->user_model->updateUserInfo($uid,$arr);
-			
-			// Send the email...
-			$this->sendemail->sendForgotPassword($ret,$pass);
-			
-			$arr['msg']='A new password has been sent to your email - open it and click
-				on the login link to use the new password';
 		}
 		
 		$this->template->write_view('content','user/forgot',$arr);
