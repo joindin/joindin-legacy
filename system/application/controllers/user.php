@@ -45,7 +45,7 @@ class User extends Controller {
 			// Send them back to where they came from
 			$from	= $this->input->server('REQUEST_URI');
 			$to		= $this->input->server('HTTP_REFERER');
-			if($to!='/user/login'){
+			if(!strstr($to,'user/login')){
 			    redirect($to);
 			}else{ redirect('user/main'); }
 		}
