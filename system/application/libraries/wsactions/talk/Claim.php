@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
 
-class Claim {
+class Claim extends BaseWsRequest {
 	
 	var $CI		= null;
 	var $xml	= null;
@@ -9,6 +9,11 @@ class Claim {
 		$this->CI=&get_instance(); //print_r($this->CI);
 		$this->xml=$xml;
 	}
+	public function checkSecurity($xml){
+		// Just check the key combination on the URL
+		return $this->checkPublicKey();
+	}
+	
 	//-----------------------
 	function run(){
 		$this->CI->load->library('wsvalidate');
@@ -39,7 +44,7 @@ class Claim {
 				$q=$this->CI->db->get_where('user_admin',$arr);
 				$ret=$q->result();
 				if(isset($ret[0]->ID)){
-				    return array('output'=>'json','items'=>array('msg'=>'Fail: Duplicate Claim!'));
+				    return array('output'=>'json','data'=>array('items'=>array('msg'=>'Fail: Duplicate Claim!')));
 				}else{
 					$to=array();
 					
@@ -70,11 +75,11 @@ http://joind.in/event/claim/%s
 				    	mail($email_addr,'Joind.in: Talk claim submitted! Go check!',$msg,'From: feedback@joind.in');
 					}
 				    //return the success message
-				    return array('output'=>'json','items'=>array('msg'=>'Success'));
+				    return array('output'=>'json','data'=>array('items'=>array('msg'=>'Success')));
 				}
 			
-			}else{ return array('output'=>'json','items'=>array('msg'=>'redirect:/user/login')); }
-		}else{ return array('output'=>'json','items'=>array('msg'=>'Fail')); }
+			}else{ return array('output'=>'json','data'=>array('items'=>array('msg'=>'redirect:/user/login'))); }
+		}else{ return array('output'=>'json','data'=>array('items'=>array('msg'=>'Fail'))); }
 	}
 	
 }

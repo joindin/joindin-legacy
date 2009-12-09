@@ -1,16 +1,20 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
 
-class Attend {
+class Attend extends BaseWsRequest {
 	
 	var $CI		= null;
 	var $xml	= null;
 	
-	function Attend($xml){
+	public function Attend($xml){
 		$this->CI=&get_instance(); //print_r($this->CI);
 		$this->xml=$xml;
 	}
+	public function checkSecurity($xml){
+		// Just check the key combination on the URL
+		return $this->checkPublicKey();
+	}
 	//-----------------------
-	function run(){
+	public function run(){
 		$this->CI->load->library('wsvalidate');
 		$this->CI->load->model('user_attend_model');
 		
@@ -29,13 +33,13 @@ class Attend {
 				//if they don't, add...
 				$this->CI->user_attend_model->chgAttendStat($uid,$eid);
 				
-				return array('output'=>'json','items'=>array('msg'=>'Success'));
+				return array('output'=>'json','data'=>array('items'=>array('msg'=>'Success')));
 				
 			}else{
 			    $this->CI->session->set_userdata('ref_url','event/view/'.$eid);
-			    return array('output'=>'json','items'=>array('msg'=>'redirect:/user/login'));
+			    return array('output'=>'json','data'=>array('items'=>array('msg'=>'redirect:/user/login')));
 			}
-		}else{ return array('output'=>'json','items'=>array('msg'=>'Fail')); }
+		}else{ return array('output'=>'json','data'=>array('items'=>array('msg'=>'Fail'))); }
 	}
 	//-----------------------
 }

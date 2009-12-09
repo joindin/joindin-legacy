@@ -1,17 +1,21 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 /* "Claiming an event" - requesting to be added as an admin */
-class Claim {
+class Claim extends WsBaseRequest {
 
 	var $CI		= null;
 	var $xml	= null;
 
-	function Claim($xml){
+	public function Claim($xml){
 		$this->CI=&get_instance(); //print_r($this->CI);
 		$this->xml=$xml;
 	}
+	public function checkSecurity($xml){
+		// public function!
+		return true;
+	}
 	//-----------------------
-	function run(){
+	public function run(){
 		$this->CI->load->library('wsvalidate');
 		$this->CI->load->model('user_admin_model');
 		$this->CI->load->model('event_model');

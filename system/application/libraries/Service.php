@@ -2,24 +2,8 @@
 
 class Service {
 	
-	var $CI	= null;
-	var $public_actions = array(
-		'event/attend'		=> array('logged'),
-		'event/getattending'=> array(),
-		'event/getdetail'	=> array(),
-		'event/getlist'		=> array('logged','isadmin'),
-		'event/gettalks'	=> array('logged','isadmin'),
-		'event/deletecomment'=> array('logged','isadmin'),
-		'event/claim'           => array('logged'),
-		'talk/getcomments'	=> array(),
-		'talk/getdetail'	=> array(),
-		'talk/deletecomment'=> array('logged','isadmin'),
-		'talk/claim'		=> array('logged'),
-		'blog/deletecomment'=> array('logged'),
-		'user/status'		=> array('logged','isadmin'),
-		'user/role'			=> array('logged','isadmin'),
-		'comment/isspam'	=> array('logged')
-	);
+	private $CI	= null;
+	private $_output_types=array('json','xml');
 	
 	function Service(){
 		$this->CI=&get_instance();
@@ -30,63 +14,61 @@ class Service {
 		$data=trim($data);
 		
 		$xml=$this->parseReqXML($data);
-		if(!$xml){ return array('output'=>'msg','msg'=>'Invalid request!'); }
+		if(!$xml){ return array('output'=>'msg','data'=>array('msg'=>'Invalid request!')); }
 		$rtype	= (string)$xml->action['type'];
 
 		/**
 		 * So, we want each of the actions to handle their own authentication
-		 * information. We need to move the functonality from above (public_actions)
+		 * information. We need to move the functionality from above (public_actions)
 		 * down into the actions themselves
 		 *
 		 */
-		 
+		
+		ini_set('include_path',ini_get('include_path').PATH_SEPARATOR.BASEPATH.'application/libraries/wsactions');
+		$ws_root=$_SERVER['DOCUMENT_ROOT'].'/system/application/libraries/wsactions';
 
-		
-		$public=($this->isPublicAction($type,$rtype)) ? true : false;
-		
-		//check to be sure they're authed (or that it's public) and that they can execute this action type
-		if($this->checkAuth($xml) || $public){
-			ini_set('include_path',ini_get('include_path').PATH_SEPARATOR.BASEPATH.'application/libraries/wsactions');
-			$ws_root=$_SERVER['DOCUMENT_ROOT'].'/system/application/libraries/wsactions/';
+		// Be sure we have at least an action and a type
+		if(empty($rtype)){ return array('output'=>'msg','data'=>array('msg'=>'Invalid request type!')); }
+
+		// Get the permissions type of the requested action
+		$ret=array();
+		$action=$ws_root.'/'.$type.'/'.ucwords($rtype).'.php';
+		if(is_file($action)){
+			// Get our base web service library
+			$this->CI->load->library('wsactions/BaseWsRequest');
+			include_once($action);
+			$obj=new $rtype($xml);
 			
-			if($public==false){
-				//if it's not public, get user information from the request
-				$uinfo=$this->CI->user_model->getUser($xml->auth->user); //echo 'uninfo: '; print_r($uinfo);
-				$uid	= (int)$uinfo[0]->ID;
-			}else{
-				//if it is public, check our "key" they sent along to prevent abuse
-				foreach(explode('&',$_SERVER['QUERY_STRING']) as $k=>$v){ 
-					$x=explode('=',$v); $_GET[$x[0]]=$x[1]; 
-				}
+			// Be sure we have a "checkSecurity" method in the object
+			if(!method_exists($obj,'checkSecurity')){ 
+				return array('output'=>'msg','data'=>array('msg'=>'Internal security error!'));
+			}
+			
+			if($obj && $obj->checkSecurity($xml)){
+				// Execute our action...
+				$out=$obj->run();
+				if(!empty($out)){ $ret=$out; }
 				
-				$this->CI->load->helper('reqkey');
-				$reqk=$_GET['reqk'];
-				$seck=$_GET['seck'];
-				if(checkReqKey($reqk,$seck)){ 
-					//echo 'woo!';
-				}else{ $ret=array('output'=>'msg','msg'=>'Access denied!'); }
+				//if an output format is specified in the message, use that
+				if(isset($xml->action['output'])){ 
+					$outf=$xml->action['output'];
+					// Be sure it's one of our allowed types
+					if(in_array($outf,$this->_output_types)){
+						$ret['output']=strtolower($outf); 
+					}else{ 
+						return array('output'=>'msg','data'=>array('msg'=>'Invalid output type ('.$outf.')!'));
+					}
+				}
+			}else{ 
+				return array('output'=>'msg','data'=>array('msg'=>'Invalid permissions!'));
 			}
-
-			if($public || $this->CI->user_admin_model->hasPerm($uid,0,$rtype)){
-				//run our given action	
-				//$this->CI->load->library((string)$xml->action['type']);
-				$class=ucwords(strtolower((string)$xml->action['type']));
-				$class_file=$ws_root.$type.'/'.$class.'.php';
-				$out=(string)$xml->action['output'];
-				if(is_file($class_file)){
-					include_once($class_file);
-					$obj=new $class($xml);
-					$ret['data']=$obj->run();
-					//if an output format is specified in the message, use that
-					if(!empty($out)){ $ret['data']['output']=$out; }
-				}else{ $ret=array('output'=>'msg','msg'=>'Invalid action!'); }
-			}else{
-				$ret=array('output'=>'msg','msg'=>'Access denied!');
-			}
-		}else{ 
-			$ret=array('output'=>'msg','msg'=>'Authentication failed');
+		}else{
+			// Invalid request type - error!
+			return array('output'=>'msg','data'=>array('msg'=>'Invalid request type ('.$type.'/'.$rtype.')!'));
 		}
 		return $ret;
+		############################
+
 	}
 	function parseReqXML($xml){ error_log($xml);
 		$ret_xml=null;
@@ -107,6 +89,17 @@ class Service {
 		$find=$rtype.'/'.$raction; //echo $find;
 		return (array_key_exists($find,$this->public_actions)) ? true : false;
 	}
+	function checkKey(){
+		//if it is public, check our "key" they sent along to prevent abuse
+		foreach(explode('&',$_SERVER['QUERY_STRING']) as $k=>$v){ 
+			$x=explode('=',$v); $_GET[$x[0]]=$x[1]; 
+		}
+		
+		$this->CI->load->helper('reqkey');
+		$reqk=$_GET['reqk'];
+		$seck=$_GET['seck'];
+		return (checkReqKey($reqk,$seck)) ? true : false;
+	}
 	//------------------------
 	function checkPublicRules($rtype,$raction){
 		$find=$rtype.'/'.$raction;
@@ -126,6 +119,6 @@ class Service {
 	}
 	function rule_isadmin(){
 		return ($this->CI->user_model->isSiteAdmin()) ? true : false;
-	}
+	}	
 }
 ?>

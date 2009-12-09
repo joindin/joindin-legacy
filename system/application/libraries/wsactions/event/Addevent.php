@@ -1,16 +1,29 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
 
-class Addevent {
+class Addevent extends BaseWsRequest {
 	
 	var $CI	= null;
 	var $xml= null;
 	
-	function Addevent($xml){
+	public function Addevent($xml){
 		$this->CI=&get_instance(); //print_r($this->CI);
 		$this->xml=$xml;
 	}
+	/**
+	* Right now, only site admins can add events via the web interface
+	*/
+	public function checkSecurity($xml){
+		// Check for a valid login
+		if($this->isValidLogin($xml)){
+			// Now check to see if they're a site admin
+			if(!$this->CI->user_model->isSiteAdmin($xml->auth->user)){
+				return false;
+			}else{ return true; }
+			
+		}else{ return false; }
+	}
 	//-----------------------
-	function run(){
+	public function run(){
 		$this->CI->load->library('wsvalidate');
 		$id=$this->xml->action->id;
 		$unique=true;
@@ -41,10 +54,11 @@ class Addevent {
 			);
 			$this->CI->db->insert('events',$arr);
 			
-			return array('msg'=>'Event added successfully!');
-		}else{ 
+			return array('output'=>'msg','data'=>array('msg'=>'Event added successfully!'));
+		}else{
 			if(!$unique){ $ret='Non-unique entry!'; }
-			return array('errors'=>$ret); 
+			if(is_array($ret)){ $msg=''; foreach($ret as $k=>$v){ $msg.=$v."\n"; } $ret=$msg; }
+			return array('output'=>'msg','data'=>array('msg'=>$ret)); 
 		}
 	}
 }

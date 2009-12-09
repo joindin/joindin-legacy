@@ -1,16 +1,20 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
 
-class Getcomments {
+class Getcomments extends BaseWsRequest {
 	
 	var $CI	= null;
 	var $xml= null;
 	
-	function Getcomments($xml){
+	public function Getcomments($xml){
 		$this->CI=&get_instance(); //print_r($this->CI);
 		$this->xml=$xml;
 	}
+	public function checkSecurity($xml){
+		// public method!
+		return ($this->isValidLogin($xml)) ? true : false;
+	}
 	//-----------------------
-	function run(){
+	public function run(){
 		$id=$this->xml->action->talk_id;
 		
 		$this->CI->load->model('talks_model');

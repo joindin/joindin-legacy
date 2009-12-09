@@ -5,12 +5,19 @@ class Status {
 	var $CI		= null;
 	var $xml	= null;
 	
-	function Status($xml){
+	public function Status($xml){
 		$this->CI=&get_instance(); //print_r($this->CI);
 		$this->xml=$xml;
 	}
+	public function checkSecurity($xml){
+		if($this->isValidLogin($xml)){
+			if($this->CI->user_model->isSiteAdmin($xml->auth->user)){
+				return true;
+			}else{ return false; }
+		}else{ return false; }
+	}
 	//-----------------------
-	function run(){
+	public function function run(){
 		$this->CI->load->model('user_model','um');
 		$uid=$this->xml->action->uid;
 		

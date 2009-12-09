@@ -1,16 +1,31 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
 
-class Role {
+class Role extends BaseWsRequest {
 	
 	var $CI		= null;
 	var $xml	= null;
 	
-	function Role($xml){
+	public function Role($xml){
 		$this->CI=&get_instance(); //print_r($this->CI);
 		$this->xml=$xml;
 	}
+	/**
+	* Only site admins can use this functionality
+	*/
+	public function checkSecurity($xml){
+		$this->CI->load->model('user_model');
+		
+		// Check for a valid login
+		if($this->isValidLogin($xml)){
+			// Now check to see if they're a site admin
+			if(!$this->CI->user_model->isSiteAdmin($xml->auth->user)){
+				return false;
+			}else{ return true; }
+			
+		}else{ return false; }
+	}
 	//-----------------------
-	function run(){
+	public function run(){
 		$this->CI->load->model('user_admin_model','uam');
 		$type=$this->xml->action->type;
 		

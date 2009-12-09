@@ -1,16 +1,20 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
 
-class Isspam {
+class Isspam extends BaseWsRequest {
 	
 	var $CI	= null;
 	var $xml= null;
 	
-	function Isspam($xml){
+	public function Isspam($xml){
 		$this->CI=&get_instance(); //print_r($this->CI);
 		$this->xml=$xml;
 	}
+	public function checkSecurity($xml){
+		// public method!
+		return true;
+	}
 	//-----------------------
-	function run(){
+	public function run(){
 		$this->CI->load->model('user_model');
 		
 		$cid	= $this->xml->action->cid;
@@ -23,6 +27,6 @@ class Isspam {
 			mail($user->email,'Suggested spam comment!',$msg,'From: info@joind.in');
 		}
 		
-		return array('output'=>'json','items'=>array('msg'=>'Success'));
+		return array('output'=>'json','data'=>array('msg'=>'Success'));
 	}
 }

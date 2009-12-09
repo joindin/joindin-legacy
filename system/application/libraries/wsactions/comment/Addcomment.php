@@ -1,16 +1,26 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
 
-class Addcomment {
+class Addcomment extends BaseWsRequest {
 	
 	var $CI	= null;
 	var $xml= null;
 	
-	function Addcomment($xml){
+	public function Addcomment($xml){
 		$this->CI=&get_instance(); //print_r($this->CI);
 		$this->xml=$xml;
 	}
+	public function checkSecurity($xml){
+		$this->CI->load->model('user_model');
+		
+		// Check to see if what they gave us is a valid login
+		// Check for a valid login
+		if($this->isValidLogin($xml) || $this->CI->user_model->isAuth()){
+			//they've either given us a valid user/pass on the API or they're logged into the site
+			return true;
+		}else{ return false; }
+	}
 	//-----------------------
-	function run(){
+	public function run(){
 		$this->CI->load->library('wsvalidate');
 		$id=$this->xml->action->id;
 		
@@ -37,14 +47,16 @@ class Addcomment {
 			);
 			if(isset($this->xml->action->user_id)){
 				$arr['user_id']=$in['user_id'];
+			}elseif($this->CI->user_model->isAuth()){
+				$arr['user_id']=$this->session->userdata('ID');
 			}
 			//print_r($arr);
 			
 			$this->CI->db->insert('talk_comments',$arr);
-			$ret=array('output'=>'msg','msg'=>'comment added');
+			$ret=array('output'=>'msg','data'=>array('msg'=>'Comment added!'));
 		}else{ 
 			if(!$unq){ $ret='Non-unique entry!'; }
-			$ret=array('output'=>'msg','msg'=>$ret); 
+			$ret=array('output'=>'msg','data'=>array('msg'=>$ret));
 		}
 		return $ret;
 	}

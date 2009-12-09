@@ -1,21 +1,23 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
 
-class Getdetail {
+class Getdetail extends BaseWsRequest {
 	
-	var $CI	= null;
-	var $xml= null;
+	private $CI		= null;
+	private $xml	= null;
 	
-	function Getdetail($xml){
+	public function Getdetail($xml){
 		$this->CI=&get_instance(); //print_r($this->CI);
 		$this->xml=$xml;
 	}
+	public function checkSecurity(){
+		// We're a public action, we dont need security
+		return ($this->isValidLogin($xml)) ? true : false;
+	}
 	//-----------------------
-	function run(){
+	public function run(){
 		$id=$this->xml->action->talk_id;
-		
 		$this->CI->load->model('talks_model');
-		$ret=$this->CI->talks_model->getTalks($id);
-		//return array('msg'=>'valid'); 
+		$ret['items']=$this->CI->talks_model->getTalks($id);
 		return $ret;
 	}
 }

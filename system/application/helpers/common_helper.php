@@ -20,6 +20,23 @@ function escape($str)
      return $str;
 }
 
+/* 
+* Given an array, it'll build out a DOM document for you
+* When you get the result, you'll need to run a saveXML() on it
+*/ 
+function buildXML(&$doc,$data,$append=null){
+	foreach($data as $k=>$v){
+		$app=($append) ? $append : $doc;
+		if(is_array($v)){
+			$c=$app->appendChild($doc->createElement($k));
+			buildXML($doc,$v,$c);
+		}elsE{
+			$c=$app->appendChild($doc->createElement($k,$v));
+		}
+	}
+}
+
+
 /**
  * Replaces double line-breaks with paragraph elements.
  *

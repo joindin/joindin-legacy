@@ -33,13 +33,19 @@ class User_model extends Model {
 			return ($this->session->userdata('admin')==1) ? true : false;
 		}
 	}
-	function isAdminEvent($rid){
+	function isAdminEvent($rid,$uid=null){
 		if($this->isAuth()){
 			$uid=$this->session->userdata('ID');
-			$q=$this->db->get_where('user_admin',array('uid'=>$uid,'rid'=>$rid,'rtype'=>'event'));
-			$ret=$q->result();
-			return (isset($ret[0]->ID) || $this->isSiteAdmin()) ? true : false;
+		}elseif(!$this->isAuth() && $uid){
+			$udata=$this->getUser($uid);
+			if($udata){
+				$uid=$udata[0]->ID;
+			}else{ return false; }
 		}else{ return false; }
+		
+		$q=$this->db->get_where('user_admin',array('uid'=>$uid,'rid'=>$rid,'rtype'=>'event'));
+		$ret=$q->result();
+		return (isset($ret[0]->ID) || $this->isSiteAdmin()) ? true : false;
 	}
 	function isAdminTalk($tid){
 		if($this->isAuth()){

@@ -9,26 +9,33 @@ b.req_name { font-size: 12px; }
 The Joind.in API is XML based and allows for the fetching and updating of information in the service's database. Here's an example structure each request should follow:
 </p>
 
+<h3>Sample Request</h3>
 <div style="padding:3px;border:1px solid #000000;background-color:#F8F8F8">
 <pre>
-&lt;request>
-        &lt;auth>
-                &lt;user>$username&lt;/user>
-                &lt;pass>$password&lt;/pass>
-        &lt;/auth>
-        &lt;action type="getdetail">
-                &lt;event_id>1&lt;/event_id>
-        &lt;/action>
-&lt;/request>
+<?php echo escape('<request>
+        <auth>
+                <user>$username</user>
+                <pass>$password</pass>
+        </auth>
+        <action type="getdetail">
+                <event_id>1</event_id>
+        </action>
+</request>'); ?>
 </pre>
 </div>
 
 <p>
 In our above example, you can see the <b>"auth"</b> section where you would replace $username and $password with your login information. The password should be md5 encoded. Below that there's the <b>"action"</b> section. We're making a "getdetail" call to grab the information for the given event ID.
 </p>
+<b>
+<b>Note:</b> all requests to the Joind.in API require a valid login to be passed in via the "auth" credentials. The only anonymous method is the API status request (api/status).
+</p>
+
+<h3>Types</h3>
 <p>
-There are three different URLs you can make requests to:
+There are four different URLs you can make requests to:
 <ul>
+	<li><b>api/status</b> - to get the current status of the web service
 	<li><b>api/event</b> - to get information on events
 	<li><b>api/talk</b> - to get information on talks
 	<li><b>api/comment</b> - to get information about individual comments
@@ -38,18 +45,20 @@ There are three different URLs you can make requests to:
 <p>
 Our sample XML above would need to be sent to "http://joind.in/api/event" to work correctly. If you send it to an incorrect URL you probably won't get quite what you're expecting. 
 </p>
+
+<h3>Responses</h3>
 <p>
 By default, responses will be made in an XML format. There is an optional attribute you can add to the "action" tag in your request called <b>"output"</b>. This is set to "xml" initially but it can also be set to "json" if you prefer your response in that format. Here's an example of the XML output:
 </p>
 <div style="padding:3px;border:1px solid #000000;background-color:#F8F8F8">
 <pre>
-&lt;response>
-	&lt;item>
-		&lt;talk_title>My Test Talk&lt;/talk_title>
-		&lt;talk_desc>This is a sample talk description&lt;/talk_desc>
-		&lt;ID>42&lt;/ID>
-	&lt;/item>
-&lt;/response>
+<?php echo escape('<response>
+	<item>
+		<talk_title>My Test Talk</talk_title>
+		<talk_desc>This is a sample talk description</talk_desc>
+		<ID>42&lt;/ID>
+	</item>
+</response>'); ?>
 </pre>
 </div>
 <p>
@@ -57,6 +66,7 @@ If there are any errors in the request or problems processing it, an <b>"errors"
 </p>
 
 <hr/>
+<h3>Request Types</h3>
 <p>
 Below are the request types that you can make to the API including input and output variables.
 </p>
@@ -89,6 +99,21 @@ Below are the request types that you can make to the API including input and out
 	<ul>
 		<li>event_id: integer
 	</ul>
+<b class="req_title">Example Input Message</b>
+<div style="padding:3px;border:1px solid #000000;background-color:#F8F8F8">
+<pre>
+<?php echo escape('<request>
+        <auth>
+                <user>$username</user>
+                <pass>$password</pass>
+        </auth>
+        <action type="getdetail">
+                <event_id>1</event_id>
+       </action>
+</request>'); ?>
+</pre>
+</div>
+<br/>
 <b class="req_title">Output:</b>
 	<ul>
 		<li>event_name: string, Name of the event
