@@ -863,7 +863,7 @@ class Event extends Controller {
 	 */
 	function import($eid){
 		// Be sure they're supposed to be here...
-		if($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($id)){
+		if($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($eid)){
 		//they're okay
 		}else{ redirect(); }
 
