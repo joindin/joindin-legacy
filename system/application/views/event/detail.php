@@ -12,7 +12,7 @@ foreach($claimed as $k=>$v){
 	$claimed_uids[$v->rid]=$v->uid;
 }
 
-echo '<pre>'; print_r($times_claimed); echo '</pre>';
+//echo '<pre>'; print_r($times_claimed); echo '</pre>';
 
 menu_pagetitle('Event: ' . escape($det->event_name));
 
@@ -209,14 +209,14 @@ $ct=0;
 					$sp_names=array();
 					foreach($iv->codes as $ck => $cv){
 						
-						echo $cv.' - '.$iv->ID.' '.((array_key_exists($iv->ID, $times_claimed)) ? 'yes' : 'no').'<br/>';
+						//echo $cv.' - '.$iv->ID.' '.((array_key_exists($iv->ID, $times_claimed)) ? 'yes' : 'no').'<br/>';
 						
 						$iscl=(array_key_exists($iv->ID, $times_claimed)) ? true : false;
-						var_dump($iscl);
+						//var_dump($iscl);
 						
 						//If there's an exactly matching claim (name too) or... 
 						if(array_key_exists($cv,$cl) || $iscl){
-							echo $iv->talk_title.' '.$cv.' '.$iv->speaker.' -> '.$ck.'<br/><br/>';
+							//echo $iv->talk_title.' '.$cv.' '.$iv->speaker.' -> '.$ck.'<br/><br/>';
 							//we match the code, but we need to find the speaker...
 
 							$spk_split=explode(',',$iv->speaker);
