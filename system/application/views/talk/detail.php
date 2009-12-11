@@ -53,11 +53,14 @@ if(!empty($claims)){
 		$ct=0;
 		$matched=array();
 		foreach($v->tdata['codes'] as $ck=>$cv){
-		    if($cv==$cd){
+			
+			$iscl=(count($sp)==1 && count($v->tdata['codes'])==1) ? true : false;
+			
+		    if($cv==$cd || $iscl){
 			   //echo 'match! '.$ct.' '.$sp[$ct];
 			   $speaker[$sp[$ct]]='<a href="/user/view/'.$v->uid.'">'.$sp[$ct].'</a>';
 		    }else{
-			if(!isset($speaker[$sp[$ct]])){ $speaker[$sp[$ct]]=$sp[$ct]; }
+				if(!isset($speaker[$sp[$ct]])){ $speaker[$sp[$ct]]=$sp[$ct]; }
 		    }
 		    $ct++;
 		}
