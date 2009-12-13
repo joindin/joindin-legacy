@@ -178,12 +178,16 @@ if (empty($comments)) {
 } else {
 	
 	// Sort out the votes from the comments
-	$votes=array();
+	$votes=array(); $for=0; $against=0;
 	foreach($comments as $k=>$v){
+		if($v->rating==1){ $against++; }elseif($v->rating==5){ $for++; }
 		if($v->comment_type=='vote'){ $votes[]=$v; unset($comments[$k]); }
 	}
 	
-	if(count($votes)){ echo '<h2 id="comments">Votes</h2>'; }
+	if(count($votes)){ 
+		echo '<h2 id="comments">Votes '; 
+		echo '<span style="font-size:12px;color:#898989">&nbsp;&nbsp;('.$for.' for / '.$against.' against)</span></h2>'; 
+	}
 	foreach($votes as $k=>$v){
 		$uname 		= '<a href="/user/view/'.$v->user_id.'">'.escape($v->uname).'</a> ';
 		$vote_str	=($v->rating==1) ? '-1 vote' : '+1 vote';

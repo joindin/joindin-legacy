@@ -1,5 +1,6 @@
 <?php 
 $v=$details[0];
+$bid=$v->ID;
 if(isset($full_name)){ $this->validation->name=escape($full_name); }
  
 menu_pagetitle('Blog: ' . escape($v->title));
@@ -70,7 +71,7 @@ if (empty($comments)) {
     </div>
     <?php if (user_is_admin()): ?>
     <p class="admin">
-		<a class="btn-small" href="#" onClick="delBlogComment(<?=$v->ID?>);return false;">Delete</a>
+		<a class="btn-small" href="#" onClick="delBlogComment(<?php echo $v->ID; ?>,<?php echo $bid; ?>);return false;">Delete</a>
 	</p>
 	<?php endif; ?>
 

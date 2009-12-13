@@ -17,16 +17,18 @@ class Deletecomment extends BaseWsRequest {
 	*/
 	public function checkSecurity($xml){
 		$this->CI->load->model('user_model');
-		
+
 		// Check for a valid login
-		if($this->isValidLogin($xml)){
+		//if($this->isValidLogin($xml)){
+		if($this->CI->user_model->isAuth() && $this->checkPublicKey()){
 			// Be sure they gave us the blog entry ID and comment ID
 			if(!isset($xml->action->bid) || !isset($xml->action->cid)){
 				return false;
 			}
+			$user=$this->CI->session->userdata('username');
 			
 			// Now check to see if they're a site admin
-			if(!$this->CI->user_model->isSiteAdmin($xml->auth->user)){
+			if(!$this->CI->user_model->isSiteAdmin($user)){
 				return false;
 			}else{ return true; }
 		}else{ return false; }
@@ -39,7 +41,7 @@ class Deletecomment extends BaseWsRequest {
 		$com_id=$this->xml->action->cid;
 		$this->CI->bcm->deleteComment($com_id);
 		
-		return array('output'=>'json','items'=>array('msg'=>'Success'));
+		return array('output'=>'json','data'=>array('items'=>array('msg'=>'Success')));
 	}
 	
 }

@@ -167,7 +167,8 @@ class Event extends Controller {
 			'event_loc'		=> 'required',
 			//'event_tz'		=> 'required',
 			'start_mo'		=> 'callback_start_mo_check',
-			'end_mo'		=> 'callback_end_mo_check'
+			'end_mo'		=> 'callback_end_mo_check',
+			'event_stub'	=> 'callback_stub_check'
 		);
 		$this->validation->set_rules($rules);
 		
@@ -185,7 +186,8 @@ class Event extends Controller {
 			'event_href'=>'Event Link(s)',
 			'event_hashtag'=>'Event Hashtag',
 			'event_voting'=>'Event Voting Allowed',
-			'event_private'=>'Private Event'
+			'event_private'=>'Private Event',
+			'event_stub'=>'Event Stub'
 		);
 		$this->validation->set_fields($fields);
 
@@ -211,6 +213,8 @@ class Event extends Controller {
 				'tz'	=> $this->tz_model->getOffsetInfo(),
 				'detail'=> $event_detail
 			);
+			$this->validation->start_yr=date('Y');
+			$this->validation->end_yr=date('Y');
 			$this->template->write_view('content','event/add',$arr);
 			$this->template->render();
 		}else{ 
@@ -237,6 +241,7 @@ class Event extends Controller {
 				'event_hashtag'	=>$this->input->post('event_hashtag'),
 				'event_voting'	=>$this->input->post('event_voting'),
 				'private'		=>$this->input->post('event_private'),
+				'event_stub'	=>$this->input->post('event_stub')
 			);
 			if($this->upload->do_upload('event_icon')){
 				$updata=$this->upload->data();
