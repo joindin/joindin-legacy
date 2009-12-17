@@ -59,6 +59,7 @@ $route['event/attendees/(:num)'] = 'event/attendees/$1';
 $route['event/delete/(:num)']	= 'event/delete/$1';
 $route['event/codes/(:num)']	= 'event/codes/$1';
 $route['event/hot']	            = 'event/hot';
+$route['event/all']	            = 'event/all';
 $route['event/upcoming']	    = 'event/upcoming';
 $route['event/past']	        = 'event/past';
 $route['event/import/(:num)']		= 'event/import/$1';

@@ -264,6 +264,25 @@ function addRole(uid){
 	}
 	alert('Role added!');
 }
+function addEventAdmin(eid){
+	var uname	= $('#add_admin_user').val();
+	var obj		= new Object();
+	obj.eid		= eid;
+	obj.username=uname;
+	apiRequest('event','addadmin',obj, function(obj) {
+		if(obj.msg=='Success'){
+			$('#evt_admin_list').append('<li><a href="/user/view/'+uname+'">'+uname+'</a>');
+		}else{ alert(obj.msg); }
+	});
+}
+function removeEventAdmin(eid,uname,uid){
+	var obj		= new Object();
+	obj.eid		= eid;
+	obj.username=uname;
+	apiRequest('event','rmadmin',obj, function(obj) {
+		$('#evt_admin_'+uid).remove();
+	});	
+}
 function toggleCfpDates(){
 	
 	var sel_fields = new Array(

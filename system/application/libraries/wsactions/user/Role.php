@@ -16,9 +16,11 @@ class Role extends BaseWsRequest {
 		$this->CI->load->model('user_model');
 		
 		// Check for a valid login
-		if($this->isValidLogin($xml)){
+		//if($this->isValidLogin($xml) || $this->CI->user_model->isAuth()){
+		if($this->CI->user_model->isAuth()){
 			// Now check to see if they're a site admin
-			if(!$this->CI->user_model->isSiteAdmin($xml->auth->user)){
+			$user=$this->session->userdata('username');
+			if(!$this->CI->user_model->isSiteAdmin($user)){
 				return false;
 			}else{ return true; }
 			

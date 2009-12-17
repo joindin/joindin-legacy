@@ -215,7 +215,9 @@ class Event_model extends Model {
 	    $sql=sprintf("
 		select
 		    u.username,
-		    u.email
+			u.full_name,
+		    u.email,
+			u.ID
 		from
 		    user_admin ua,
 		    user u,

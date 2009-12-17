@@ -10,6 +10,14 @@ class User_admin_model extends Model {
 		//$arr=array('uid'=>$uid,'rid'=>$rid);
 		$this->db->delete('user_admin',array('ID'=>$aid));
 	}
+	function removeRidPerm($uid,$rid,$type){
+		$det=array(
+			'rid'=>$rid,
+			'uid'=>$uid,
+			'rtype'=>$type
+		);
+		$this->db->delete('user_admin',$det);
+	}
 	function addPerm($uid,$rid,$type){
 		error_log($uid.'-'.$rid.'-'.$type);
 		$arr=array(

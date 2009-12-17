@@ -68,6 +68,10 @@ class Event extends Controller {
 	}
 
 	function index($pending=false){
+		$this->_runList('upcoming', $pending);
+	}
+	
+	function all($pending=false){
 		$this->_runList('index', $pending);
 	}
 	
@@ -390,7 +394,10 @@ class Event extends Controller {
 				$ec['user_id']	= 0;
 				$ec['cname']	= $this->input->post('cname');
 			}
-			$def_ret=$this->defensio->check($ec['cname'],$ec['comment'],$is_auth,'/event/view/'.$id);
+			// If they're logged in, dont bother with the spam check
+			if(!$is_auth){
+				$def_ret=$this->defensio->check($ec['cname'],$ec['comment'],$is_auth,'/event/view/'.$id);
+			}else{ $is_spam='false'; }
 			
 			//$this->spam->check('regex',$ec['comment']);
 			
@@ -452,7 +459,11 @@ class Event extends Controller {
 		$this->template->write('feedurl','/feed/event/'.$id);
 		// Only show if they're an admin...
 		if($arr['admin']){ $this->template->write_view('sidebar3','event/_sidebar-admin',
-			array('eid'=>$id,'is_private'=>$events[0]->private)); 
+			array(
+				'eid'			=> $id,
+				'is_private'	=> $events[0]->private,
+				'evt_admin'		=> $this->event_model->getEventAdmins($id)
+			)); 
 		}
 		$this->template->write_view('content','event/detail',$arr,TRUE);
 		if(!empty($t)){ 
