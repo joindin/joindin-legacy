@@ -11,7 +11,7 @@ class Claim extends BaseWsRequest {
 	}
 	public function checkSecurity($xml){
 		// Just check the key combination on the URL
-		return $this->checkPublicKey();
+		return ($this->checkPublicKey() || $this->isValidLogin($xml));
 	}
 	
 	//-----------------------
@@ -28,9 +28,27 @@ class Claim extends BaseWsRequest {
 		);
 		$tid=$this->xml->action->tid;
 		$ret=$this->CI->wsvalidate->validate($rules,$this->xml->action);
-		if(!$ret){		
-			if($this->CI->wsvalidate->validate_loggedin()){				
-				$uid=$this->CI->session->userdata('ID');
+		if(!$ret){
+			if($this->CI->wsvalidate->validate_loggedin() || $this->isValidLogin($this->xml)){
+				$uid_session=$this->CI->session->userdata('ID');
+				if(empty($uid_session)){
+					//They're not logged in, coming from the web service
+					// If it is, we need to be sure they've given us the user to add the claim for
+					if(!isset($this->xml->action->username)){
+						return array('output'=>'json','data'=>array('items'=>array('msg'=>'Fail: Username required!')));
+					}
+					$this->CI->load->model('user_model');
+					$udata=$this->CI->user_model->getUser($this->xml->action->username);
+					if(!empty($udata)){
+						$uid=$udata[0]->ID;
+					}else{
+						return array('output'=>'json','data'=>array('items'=>array('msg'=>'Fail: User not found!')));
+					}
+				}else{
+					// They're logged in, so let's go with that user
+					$uid=$this->CI->session->userdata('ID');
+				}
+
 				$ret=$this->CI->talks_model->getTalks($tid);
 				$talk_det=$ret[0];
 
@@ -40,6 +58,18 @@ class Claim extends BaseWsRequest {
 					'rtype'	=> 'talk',
 					'rcode'	=> 'pending'
 				);
+				
+				// If we're a site admin, we can add without having to get approval
+				// This will be coming from the API
+				if(isset($this->xml->auth->user)){
+					$is_site_admin=$this->CI->user_model->isSiteAdmin($this->xml->auth->user);
+					if($is_site_admin){
+						$this->CI->load->helper('events_helper');
+						$c_name=$udata[0]->full_name;
+						$arr['rcode']=buildCode($tid,$talk_det->eid,$talk_det->talk_title,$c_name);
+					}
+				}
+				
 				// Be sure we don't already have a claim pending
 				$q=$this->CI->db->get_where('user_admin',$arr);
 				$ret=$q->result();

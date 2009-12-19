@@ -101,5 +101,18 @@ Please log in in at http://joind.in/user/login and reset your password as soon a
 		',$user[0]->username,$pass);
 		$this->_sendEmail($to,$msg,$subj,$user[0]->email);
 	}
+	
+	public function sendAdminAdd($user,$evt,$added_by=null){
+		$subj='You\'re now an admin on "'.$evt[0]->event_name.'"';
+		$aby=($added_by) ? 'by '.$added_by : '';
+		$msg=sprintf("
+You have been added as an admin for the event \"%s\" %s
+
+You can view the event here: http://joind.in/event/view/%s
+		",$evt[0]->event_name,$aby,$evt[0]->ID);
+		
+		$to=array($user[0]->email);
+		$this->_sendEmail($to,$msg,$subj);
+	}
 }
 ?>

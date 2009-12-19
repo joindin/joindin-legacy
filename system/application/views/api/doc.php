@@ -83,6 +83,7 @@ Below are the request types that you can make to the API including input and out
 	<ul>
 		<li><a href="#get_talk_detail">Get Talk Detail</a>
 		<li><a href="#get_talk_comments">Get Talk Comments</a>
+		<li><a href="#claim_talk">Claim</a>
 	</ul>
 <li>Comments
 	<ul>
@@ -227,6 +228,22 @@ Below are the request types that you can make to the API including input and out
 		<li>active: integer, If the comment is marked as active or not
 		<li>user_id: integer, If a registered user made the comment, a non-zero value is here
 		<li>uname: string, If a registered user made the comment, their username is here
+	</ul>
+	<a href="#top">[top]</a><br/><br/>
+</div>
+
+<a name="claim_talk"></a>
+<b class="req_name" style="color:#5181C1;font-size:14px">Claim Talk</b>
+<div style="padding-left:10px">
+<b class="req_title">Action Type:</b> claim<br/>
+<b class="req_title">Description:</b> Send claim request for talk ID<br/>
+<b class="req_title">Input:</b>
+	<ul>
+		<li>tid: integer, ID number of talk to submit claim for
+	</ul>
+<b class="req_title">Output:</b> Failure/Success message
+	<ul>
+		<li>msg: Either success or one of a few failure messages
 	</ul>
 	<a href="#top">[top]</a><br/><br/>
 </div>

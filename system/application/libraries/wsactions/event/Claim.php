@@ -1,7 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 /* "Claiming an event" - requesting to be added as an admin */
-class Claim extends WsBaseRequest {
+class Claim extends BaseWsRequest {
 
 	var $CI		= null;
 	var $xml	= null;
