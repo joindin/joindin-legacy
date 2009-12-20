@@ -48,7 +48,7 @@ Our sample XML above would need to be sent to "http://joind.in/api/event" to wor
 
 <h3>Responses</h3>
 <p>
-By default, responses will be made in an XML format. There is an optional attribute you can add to the "action" tag in your request called <b>"output"</b>. This is set to "xml" initially but it can also be set to "json" if you prefer your response in that format. Here's an example of the XML output:
+By default, responses will be made in an XML format. There is an optional attribute you can add to the "action" tag in your request called <b>"output"</b>. This is set to "json" initially but it can also be set to "xml" if you prefer your response in that format. Here's an example of the XML output:
 </p>
 <div style="padding:3px;border:1px solid #000000;background-color:#F8F8F8">
 <pre>
@@ -78,6 +78,7 @@ Below are the request types that you can make to the API including input and out
 		<li><a href="#get_evt_detail">Get Event Detail</a>
 		<li><a href="#add_evt">Add Event</a>
 		<li><a href="#get_evt_talks">Get Talks</a>
+		<li><a href="#get_evt_list">Get Event Listing</a>
 	</ul>
 <li>Talks
 	<ul>
@@ -176,6 +177,22 @@ Below are the request types that you can make to the API including input and out
 <b class="req_title">Output:</b>
 <ul>
 	<li>Multiple, see <a href="#get_talk_detail">Get Talk Detail results</a>
+</ul>
+	<a href="#top">[top]</a><br/><br/>
+</div>
+
+<a name="get_evt_list"></a>
+<b class="req_name" style="color:#5181C1;font-size:14px">Get Event Listing</b>
+<div style="padding-left:10px">
+<b class="req_title">Action Type:</b> getlist<br/>
+<b class="req_title">Description:</b> Gets the event listing for various types<br/>
+<b class="req_title">Input:</b>
+	<ul>
+		<li>event_type: string, event type [hot,upcoming,past,pending]
+	</ul>
+<b class="req_title">Output:</b>
+<ul>
+	<li>Multiple, see <a href="#get_evt_detail">Get Event Detail results</a>
 </ul>
 	<a href="#top">[top]</a><br/><br/>
 </div>

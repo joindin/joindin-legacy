@@ -68,7 +68,8 @@ class Event extends Controller {
 	}
 
 	function index($pending=false){
-		$this->_runList('upcoming', $pending);
+		$type=($pending) ? 'pending' : 'upcoming';
+		$this->_runList($type, $pending);
 	}
 	
 	function all($pending=false){
