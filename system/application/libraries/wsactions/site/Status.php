@@ -16,9 +16,12 @@ class Status extends BaseWsRequest {
 	//-----------------------
 	public function run(){
 		$arr=array(
-			'data'=>array('items'=>array(
-				'dt'=>date('r',time())
-			))
+			'data'=>array(
+				'items'=>array(
+					'dt'=>date('r',time())
+				)
+			),
+			'output'=>'json'
 		);
 		// If they give us a test string, echo it back to them
 		if(isset($this->xml->action->test_string)){
