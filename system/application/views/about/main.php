@@ -2,6 +2,13 @@
 menu_pagetitle('About');
 ?>
 <h1 class="icon-about">About</h1>
+
+<?php 
+$msg='<b>We have an open API!</b> Looking for more information on how you can connect your applications to the 
+	Joind.in API? <a href="/api">Check out the docs here!</a>';
+$this->load->view('msg_info', array('msg' => $msg)); 
+?><br/>
+
 <h3 style="color:#5181C1">Like the talk? Let 'em know!</h3>
 <p>
 Joind.in provides the missing link between the people attending a conference and the ones that presented. 

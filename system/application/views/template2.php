@@ -166,6 +166,7 @@ $title[] = 'Joind.in';
         	<a href="/search">Search</a> | 
         	<a href="/about">About</a> | 
         	<a href="/blog">Blog</a> | 
+			<a href="/api">API</a> |
         	<a href="/about/contact">Contact</a>
     	</div>
     	<div class="grid_6 rgt">
