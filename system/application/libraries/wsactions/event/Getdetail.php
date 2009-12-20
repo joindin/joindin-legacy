@@ -18,12 +18,11 @@ class Getdetail extends BaseWsRequest {
 		$this->CI->load->library('wsvalidate');
 		
 		$rules=array(
-			'event_id'		=>'required|isevent',
-			//'reqkey'	=>'required|reqkey'
+			'event_id'		=>'required|isevent'
 		);
 		$eid=$this->xml->action->event_id;
 		$valid=$this->CI->wsvalidate->validate($rules,$this->xml->action);
-		if($valid && isset($this->xml->action->event_id)){
+		if(!$valid){
 			$this->CI->load->model('event_model');
 			$ret=$this->CI->event_model->getEventDetail($eid);
 			return array('output'=>'json','data'=>array('items'=>$ret));

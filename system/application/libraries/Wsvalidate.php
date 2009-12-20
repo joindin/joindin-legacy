@@ -100,8 +100,9 @@ class Wsvalidate {
 	//---------------
 	// Event Specific
 	function validate_isevent($k,$obj){
+		$eid=($obj->eid) ? $obj->eid : $obj->event_id;
 		$this->CI->load->model('event_model');
-		$ret=$this->CI->event_model->getEventDetail($obj->eid);
+		$ret=$this->CI->event_model->getEventDetail($eid);
 		return (!empty($ret)) ? true : false;
 	}
 	//---------------
