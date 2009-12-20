@@ -26,7 +26,7 @@ class Claim extends BaseWsRequest {
 			'tid'		=>'required|istalk',
 			//'reqkey'	=>'required|reqkey'
 		);
-		$tid=$this->xml->action->tid;
+		$tid=$this->xml->action->talk_id;
 		$ret=$this->CI->wsvalidate->validate($rules,$this->xml->action);
 		if(!$ret){
 			if($this->CI->wsvalidate->validate_loggedin() || $this->isValidLogin($this->xml)){

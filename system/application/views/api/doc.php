@@ -171,7 +171,7 @@ Below are the request types that you can make to the API including input and out
 <b class="req_title">Description:</b> Gets the talks assoiated with an event<br/>
 <b class="req_title">Input:</b>
 	<ul>
-		<li>eid: string, event ID
+		<li>event_id: string, event ID
 	</ul>
 <b class="req_title">Output:</b>
 <ul>
@@ -239,7 +239,7 @@ Below are the request types that you can make to the API including input and out
 <b class="req_title">Description:</b> Send claim request for talk ID<br/>
 <b class="req_title">Input:</b>
 	<ul>
-		<li>tid: integer, ID number of talk to submit claim for
+		<li>talk_id: integer, ID number of talk to submit claim for
 	</ul>
 <b class="req_title">Output:</b> Failure/Success message
 	<ul>
