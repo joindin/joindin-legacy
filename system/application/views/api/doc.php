@@ -104,7 +104,7 @@ Below are the request types that you can make to the API including input and out
 	</ul>
 </ul>
 
-<h2 style="color:#5181C1">Events</h2>
+<h2 style="color:#5181C1">Events (/api/event)</h2>
 <a name="get_evt_detail"></a>
 <b class="req_name" style="color:#5181C1;font-size:14px">Get Event Detail</b>
 <div style="padding-left:10px">
@@ -199,7 +199,7 @@ Below are the request types that you can make to the API including input and out
 	<a href="#top">[top]</a><br/><br/>
 </div>
 
-<h2 style="color:#5181C1">Talks</h2>
+<h2 style="color:#5181C1">Talks (/api/talk)</h2>
 <a name="get_talk_detail"></a>
 <b class="req_name" style="color:#5181C1;font-size:14px">Get Talk Detail</b>
 <div style="padding-left:10px">
@@ -287,7 +287,7 @@ Below are the request types that you can make to the API including input and out
 	<a href="#top">[top]</a><br/><br/>
 </div>
 
-<h2 style="color:#5181C1">Comments</h2>
+<h2 style="color:#5181C1">Comments (/api/comments)</h2>
 <a name="get_comment_detail"></a>
 <b class="req_name" style="color:#5181C1;font-size:14px">Get Comment Detail</b>
 <div style="padding-left:10px">
@@ -322,7 +322,7 @@ Below are the request types that you can make to the API including input and out
 	<a href="#top">[top]</a><br/><br/>
 </div>
 
-<h2 style="color:#5181C1">User</h2>
+<h2 style="color:#5181C1">User (/api/user)</h2>
 <a name="get_user_detail"></a>
 <b class="req_name" style="color:#5181C1;font-size:14px">Get User Detail</b>
 <div style="padding-left:10px">
@@ -388,7 +388,7 @@ Below are the request types that you can make to the API including input and out
 	<a href="#top">[top]</a><br/><br/>
 </div>
 	
-<h2 style="color:#5181C1">Site</h2>
+<h2 style="color:#5181C1">Site (/api/site)</h2>
 <a name="site_status"></a>
 <b class="req_name" style="color:#5181C1;font-size:14px">Status</b>
 <div style="padding-left:10px">
