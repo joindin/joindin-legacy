@@ -1,5 +1,8 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
 
+/**
+ * Web Service Action: Add an event comment
+ */
 class Addcomment extends BaseWsRequest {
 	
 	var $CI	= null;
@@ -14,45 +17,34 @@ class Addcomment extends BaseWsRequest {
 		
 		// Check to see if what they gave us is a valid login
 		// Check for a valid login
-		if($this->isValidLogin($xml) || $this->CI->user_model->isAuth()){
-			//they've either given us a valid user/pass on the API or they're logged into the site
-			return true;
-		}else{ return false; }
+		return ($this->isValidLogin($xml)) ? true : false;
 	}
 	//-----------------------
 	public function run(){
 		$this->CI->load->library('wsvalidate');
-		$id=$this->xml->action->id;
+		$this->CI->load->model('user_model');
 		
 		$rules=array(
-			'talk_id'	=>'required',
-			'rating'	=>'required|range[1,5]',
-			'comment'	=>'required',
-			'private'	=>'required|range[0,1]'
+			'event_id'	=>'required',
+			'comment'	=>'required'
 		);
 		$ret=$this->CI->wsvalidate->validate($rules,$this->xml->action);
 		if(!$ret){
-			$unq=$this->CI->wsvalidate->validate_unique('talk_comments',$this->xml->action);
+			$unq=$this->CI->wsvalidate->validate_unique('event_comments',$this->xml->action);
 		}
-
 		if(!$ret && $unq){
-			$in=(array)$this->xml->action;
+			$in=(array)$this->xml->action;			
+			$user=$this->CI->user_model->getUser($this->xml->auth->user);
+
 			$arr=array(
-				'talk_id'	=> $in['talk_id'],
-				'rating'	=> $in['rating'],
+				'event_id'	=> $in['event_id'],
 				'comment'	=> $in['comment'],
 				'date_made'	=> time(),
-				'private'	=> $in['private'],
-				'active'	=> 1
+				'user_id'	=> $user[0]->ID,
+				'active'	=> 1,
+				'cname'		=> $user[0]->full_name
 			);
-			if(isset($this->xml->action->user_id)){
-				$arr['user_id']=$in['user_id'];
-			}elseif($this->CI->user_model->isAuth()){
-				$arr['user_id']=$this->session->userdata('ID');
-			}
-			//print_r($arr);
-			
-			$this->CI->db->insert('talk_comments',$arr);
+			$this->CI->db->insert('event_comments',$arr);
 			$ret=array('output'=>'msg','data'=>array('msg'=>'Comment added!'));
 		}else{ 
 			if(!$unq){ $ret='Non-unique entry!'; }
@@ -61,3 +53,4 @@ class Addcomment extends BaseWsRequest {
 		return $ret;
 	}
 }
+?>

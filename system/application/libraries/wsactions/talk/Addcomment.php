@@ -1,5 +1,8 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
 
+/**
+ * Web Service Action: Add a talk comment
+ */
 class Addcomment extends BaseWsRequest {
 	
 	var $CI	= null;
@@ -14,10 +17,7 @@ class Addcomment extends BaseWsRequest {
 		
 		// Check to see if what they gave us is a valid login
 		// Check for a valid login
-		if($this->isValidLogin($xml) || $this->CI->user_model->isAuth()){
-			//they've either given us a valid user/pass on the API or they're logged into the site
-			return true;
-		}else{ return false; }
+		return ($this->isValidLogin($xml)) ? true : false;
 	}
 	//-----------------------
 	public function run(){

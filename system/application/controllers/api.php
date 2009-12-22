@@ -56,7 +56,7 @@ class Api extends Controller {
 		$out=null;
 		if(isset($ret['out'])){
 			if(isset($ret['out']['output'])){ $out=(string)$ret['out']['output']; }
-			$out=(!empty($out)) ? 'out_'.$out : 'out_xml';
+			$out=(!empty($out)) ? 'out_'.$out : 'out_json';
 			$this->load->view('api/'.$out,$ret['out']['data']);
 		}else{
 			$this->load->view('api/out_json',array('items'=>array('msg'=>'Unknown Error'))); 

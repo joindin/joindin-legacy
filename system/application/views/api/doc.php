@@ -95,6 +95,8 @@ Below are the request types that you can make to the API including input and out
 <li>User
 	<ul>
 		<li><a href="#get_user_detail">Get Detail</a>
+		<li><a href="#get_user_comments">Get User Comments</a>
+		<li><a href="#validate_user">Validate User</a>
 	</ul>
 <li>Site
 	<ul>
@@ -319,42 +321,72 @@ Below are the request types that you can make to the API including input and out
 	</ul>
 	<a href="#top">[top]</a><br/><br/>
 </div>
-	<h2 style="color:#5181C1">User</h2>
-	<a name="get_user_detail"></a>
-	<b class="req_name" style="color:#5181C1;font-size:14px">Get User Detail</b>
-	<div style="padding-left:10px">
-	<b class="req_title">Action Type:</b> getdetail<br/>
-	<b class="req_title">Description:</b> Get detail of a user, given either user ID or username<br/>
-	<b class="req_title">Input:</b>
-		<ul>
-			<li>uid: string, Username/user ID
-		</ul>
-	<b class="req_title">Output:</b>
-		<ul>
-			<li>username: string, Joind.in username
-			<li>last_login: string, User's last login time (unix timestamp)'
-			<li>ID: integer, user's ID'
-			<li>full_name: string, User's full name'
-		</ul>
-		<a href="#top">[top]</a><br/><br/>
-	</div>
 
-	<a name="validate_user"></a>
-	<b class="req_name" style="color:#5181C1;font-size:14px">Validate User</b>
-	<div style="padding-left:10px">
-	<b class="req_title">Action Type:</b> validate<br/>
-	<b class="req_title">Description:</b> Check login/password to check login<br/>
-	<b class="req_title">Input:</b>
-		<ul>
-			<li>uid: string, Username/user ID
-			<li>pass: string, MD5 hased value of password
-		</ul>
-	<b class="req_title">Output:</b>
-		<ul>
-			<li>success: string, Status of login verification (string of 'success' if info is good)
-		</ul>
-		<a href="#top">[top]</a><br/><br/>
-	</div>
+<h2 style="color:#5181C1">User</h2>
+<a name="get_user_detail"></a>
+<b class="req_name" style="color:#5181C1;font-size:14px">Get User Detail</b>
+<div style="padding-left:10px">
+<b class="req_title">Action Type:</b> getdetail<br/>
+<b class="req_title">Description:</b> Get detail of a user, given either user ID or username<br/>
+<b class="req_title">Input:</b>
+	<ul>
+		<li>uid: string, Username/user ID
+	</ul>
+<b class="req_title">Output:</b>
+	<ul>
+		<li>username: string, Joind.in username
+		<li>last_login: string, User's last login time (unix timestamp)
+		<li>ID: integer, user's ID'
+		<li>full_name: string, User's full name'
+	</ul>
+	<a href="#top">[top]</a><br/><br/>
+</div>
+
+<a name="get_user_comments"></a>
+<b class="req_name" style="color:#5181C1;font-size:14px">Get User Comments</b>
+<div style="padding-left:10px">
+<b class="req_title">Action Type:</b> getcomments<br/>
+<b class="req_title">Description:</b> Get the user's talk and event comments<br/>
+<b class="req_title">Input:</b>
+	<ul>
+		<li>username: string, Username
+		<li>type: [optional] string, type of comments to get (event or talk)
+	</ul>
+<b class="req_title">Output:</b>
+	<ul>
+		<li>Multiple records of:
+			<ul>
+				<li>talk_id/event_id: integer, ID number of the talk or event
+				<li>comment: string, User's comment
+				<li>date_made: integer, Time comment was made (unix timestamp)
+				<li>user_id: integer, User ID number of user that made the post
+				<li>active: integer, Current status of comment (1 = active, 0 = inactive)
+				<li>ID: integer, ID number of the comment
+				<li>type: string, Type of comment (event or talk)<br/><br/>
+				<li>rating: integer, [In talk data only] Rating
+				<li>comment_type: string, [In talk data only] (null for normal comments, "vote" for a pre-event vote)<br/><br/>
+				<li>cname: string, [In event data only] Commentor's full name
+			</ul>
+	</ul>
+	<a href="#top">[top]</a><br/><br/>
+</div>
+
+<a name="validate_user"></a>
+<b class="req_name" style="color:#5181C1;font-size:14px">Validate User</b>
+<div style="padding-left:10px">
+<b class="req_title">Action Type:</b> validate<br/>
+<b class="req_title">Description:</b> Check login/password to check login<br/>
+<b class="req_title">Input:</b>
+	<ul>
+		<li>uid: string, Username/user ID
+		<li>pass: string, MD5 hased value of password
+	</ul>
+<b class="req_title">Output:</b>
+	<ul>
+		<li>success: string, Status of login verification (string of 'success' if info is good)
+	</ul>
+	<a href="#top">[top]</a><br/><br/>
+</div>
 	
 <h2 style="color:#5181C1">Site</h2>
 <a name="site_status"></a>

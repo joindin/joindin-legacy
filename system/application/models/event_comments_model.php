@@ -6,6 +6,11 @@ class Event_comments_model extends Model {
 		parent::Model();
 	}
 	//------------------
+	function isUnique($data){
+		$q=$this->db->get_where('event_comments',$data);
+		$ret=$q->result();
+		return (empty($ret)) ? true : false;
+	}
 	function getEventComments($eid){
 		$this->db->from('event_comments');
 		$this->db->where('event_id',$eid);
