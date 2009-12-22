@@ -85,12 +85,12 @@ Below are the request types that you can make to the API including input and out
 		<li><a href="#get_talk_detail">Get Talk Detail</a>
 		<li><a href="#get_talk_comments">Get Talk Comments</a>
 		<li><a href="#claim_talk">Claim</a>
+		<li><a href="#add_comment">Add Comment</a>
 	</ul>
 <li>Comments
 	<ul>
-		<li><a href="get_comment_detail">Get Comment Detail</a>
-		<li><a href="add_comment">Add Comment</a>
-		<li><a href="comment_as_spam">Mark as Spam</a>
+		<li><a href="#get_comment_detail">Get Comment Detail</a>
+		<li><a href="#comment_as_spam">Mark as Spam</a>
 	</ul>
 <li>User
 	<ul>
@@ -249,6 +249,26 @@ Below are the request types that you can make to the API including input and out
 	<a href="#top">[top]</a><br/><br/>
 </div>
 
+<a name="add_comment"></a>
+<b class="req_name" style="color:#5181C1;font-size:14px">Add Comment</b>
+<div style="padding-left:10px">
+<b class="req_title">Action Type:</b> addcomment<br/>
+<b class="req_title">Description:</b> Add a comment to a given talk<br/>
+<b class="req_title">Input:</b>
+	<ul>
+		<li>talk_id: integer, ID of the talk to add the comment to
+		<li>rating: integer, Rating to give the talk (range of 1-5)
+		<li>comment: string, Comments to submit
+		<li>private: integer, Whether to make the comment private or not
+		<li>user_id: integer, The ID number of the registered user making the comment
+	</ul>
+<b class="req_title">Output:</b>
+	<ul>
+		<li>msg: string, either "Comment added!" or error string
+	</ul>
+	<a href="#top">[top]</a><br/><br/>
+</div>
+	
 <a name="claim_talk"></a>
 <b class="req_name" style="color:#5181C1;font-size:14px">Claim Talk</b>
 <div style="padding-left:10px">
@@ -282,26 +302,6 @@ Below are the request types that you can make to the API including input and out
 	</ul>
 	<a href="#top">[top]</a><br/><br/>
 </div>
-
-<a name="add_comment"></a>
-<b class="req_name" style="color:#5181C1;font-size:14px">Add Comment</b>
-<div style="padding-left:10px">
-<b class="req_title">Action Type:</b> addcomment<br/>
-<b class="req_title">Description:</b> Add a comment to a given talk<br/>
-<b class="req_title">Input:</b>
-	<ul>
-		<li>talk_id: integer, ID of the talk to add the comment to
-		<li>rating: integer, Rating to give the talk (range of 1-5)
-		<li>comment: string, Comments to submit
-		<li>private: integer, Whether to make the comment private or not
-		<li>user_id: integer, The ID number of the registered user making the comment
-	</ul>
-<b class="req_title">Output:</b>
-	<ul>
-		<li>msg: string, either "Comment added!" or error string
-	</ul>
-	<a href="#top">[top]</a><br/><br/>
-</div> 
 
 <a name="comment_is_spam"></a>
 <b class="req_name" style="color:#5181C1;font-size:14px">Mark as Spam (comment)</b>
