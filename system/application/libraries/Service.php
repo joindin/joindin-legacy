@@ -11,11 +11,19 @@ class Service {
 	//---------------------
 	function handle($type,$data){
 		$this->CI->load->model('user_admin_model');
-		$data=trim($data);
+		$data	= trim($data);
+		$hdrs	= getallheaders();
 		
-		$xml=$this->parseReqXML($data);
-		if(!$xml){ return array('output'=>'msg','data'=>array('msg'=>'Invalid request!')); }
-		$rtype	= (string)$xml->action['type'];
+		// If it's not set, assume it's XML
+		if(!isset($hdrs['Content-Type']) || $hdrs['Content-Type']=='text/xml'){
+			$xml=$this->parseReqXML($data);
+			if(!$xml){ return array('output'=>'msg','data'=>array('msg'=>'Invalid request!')); }
+			$rtype	= (string)$xml->action['type'];
+		}elseif($hdrs['Content-Type']=='text/json' || $hdrs['Content-Type']=='text/x-json'){
+			// We're working with json now...
+			$xml	= $this->parseReqJson($data);
+			$rtype	= (string)$xml->action['type'];
+		}
 
 		/**
 		 * So, we want each of the actions to handle their own authentication
@@ -76,6 +84,23 @@ class Service {
 			$ret_xml=simplexml_load_string($xml); //print_r($ret_xml);
 		}catch(Exception $e){ /* exceptions */ }
 		return $ret_xml;
+	}
+	// Transform the json into XML and make a SimpleXML object out of it
+	function parseReqJson($json){ error_log($json);
+		$js=json_decode($json);
+		$xml='<request>';
+		if(isset($js->request->auth)){
+			$xml.='<auth><user>'.$js->request->auth->user.'</user>';
+			$xml.='<pass>'.$js->request->auth->pass.'</pass></auth>';
+		}
+		$xml.='<action type="'.$js->request->action->type.'">';
+		foreach($js->request->action->data as $k=>$v){
+			$xml.='<'.$k.'>'.$v.'</'.$k.'>';
+		}
+		$xml.='</action></request>';
+		
+		//return $js->request;
+		return simplexml_load_string($xml);
 	}
 	function checkAuth($obj){
 		$this->CI->load->model('user_model');

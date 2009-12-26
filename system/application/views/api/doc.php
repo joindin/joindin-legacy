@@ -23,9 +23,26 @@ The Joind.in API is XML based and allows for the fetching and updating of inform
 </request>'); ?>
 </pre>
 </div>
+<br/>
+or, if you reprefer JSON: 
+<br/><br/>
+
+<div style="padding:3px;border:1px solid #000000;background-color:#F8F8F8">
+<pre>
+{"request":{
+	"auth":{
+		"user":"your_username","pass":"your_password"
+	},
+	"action":{
+		"type":"status",
+		"data":{"test_string":"my test"}
+	}
+}}
+</pre>
+</div>
 
 <p>
-In our above example, you can see the <b>"auth"</b> section where you would replace $username and $password with your login information. The password should be md5 encoded. Below that there's the <b>"action"</b> section. We're making a "getdetail" call to grab the information for the given event ID.
+In our above examples, you can see the <b>"auth"</b> section where you would replace $username and $password with your login information. The password should be md5 encoded. Below that there's the <b>"action"</b> section. We're making a "getdetail" call to grab the information for the given event ID.
 </p>
 <b>
 <b>Note:</b></b> all requests to the Joind.in API require a valid login to be passed in via the "auth" credentials. The only anonymous method is the API status request (api/status).
