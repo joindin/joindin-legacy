@@ -14,6 +14,13 @@ class Service {
 		$data	= trim($data);
 		$hdrs	= getallheaders();
 		
+		// Split it out if the header includes the character set
+		// Ex: "text/xml; charset=UTF-8"
+		if(!empty($hdrs['Content-Type'])){
+			$ct_p=explode(';',$hdrs['Content-Type']);
+			$hdrs['Content-Type']=$ct_p[0];
+		}
+		
 		// If it's not set, assume it's XML
 		if(!isset($hdrs['Content-Type']) || $hdrs['Content-Type']=='text/xml'){
 			$xml=$this->parseReqXML($data);
