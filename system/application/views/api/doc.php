@@ -280,7 +280,6 @@ Below are the request types that you can make to the API including input and out
 		<li>rating: integer, Rating to give the talk (range of 1-5)
 		<li>comment: string, Comments to submit
 		<li>private: integer, Whether to make the comment private or not
-		<li>user_id: integer, The ID number of the registered user making the comment
 	</ul>
 <b class="req_title">Output:</b>
 	<ul>
