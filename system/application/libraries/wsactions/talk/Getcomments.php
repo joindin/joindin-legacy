@@ -19,6 +19,6 @@ class Getcomments extends BaseWsRequest {
 		
 		$this->CI->load->model('talks_model');
 		$ret=$this->CI->talks_model->getTalkComments($id);
-		return array('items'=>$ret);
+		return array('output' => 'json', 'data'=>array('items'=>$ret));
 	}
 }
