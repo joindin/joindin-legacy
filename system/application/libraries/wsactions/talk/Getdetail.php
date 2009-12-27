@@ -18,6 +18,6 @@ class Getdetail extends BaseWsRequest {
 		$id=$this->xml->action->talk_id;
 		$this->CI->load->model('talks_model');
 		$ret['items']=$this->CI->talks_model->getTalks($id);
-		return $ret;
+		return array('output' => 'json', 'data'=>$ret);
 	}
 }
