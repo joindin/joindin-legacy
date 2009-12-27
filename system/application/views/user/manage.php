@@ -59,7 +59,3 @@ if (!empty($msg)):
 
     <?php echo form_close(); ?>
 </div>
-
-<p>
-	<a href="">Request API Access</a>
-</p>
