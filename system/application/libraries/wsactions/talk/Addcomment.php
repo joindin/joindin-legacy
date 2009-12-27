@@ -39,23 +39,18 @@ class Addcomment extends BaseWsRequest {
 			$arr=array(
 				'talk_id'	=> $in['talk_id'],
 				'rating'	=> $in['rating'],
+				'user_id'	=> $this->session->userdata('ID'),
 				'comment'	=> $in['comment'],
 				'date_made'	=> time(),
 				'private'	=> $in['private'],
 				'active'	=> 1
 			);
-			if(isset($this->xml->action->user_id)){
-				$arr['user_id']=$in['user_id'];
-			}elseif($this->CI->user_model->isAuth()){
-				$arr['user_id']=$this->session->userdata('ID');
-			}
-			//print_r($arr);
-			
+
 			$this->CI->db->insert('talk_comments',$arr);
-			$ret=array('output'=>'msg','data'=>array('msg'=>'Comment added!'));
+			$ret=array('output'=>'msg','data'=>array('items'=>array('msg'=>'Comment added!')));
 		}else{ 
 			if(!$unq){ $ret='Non-unique entry!'; }
-			$ret=array('output'=>'msg','data'=>array('msg'=>$ret));
+			$ret=array('output'=>'msg','data'=>array('items'=>array('msg'=>$ret)));
 		}
 		return $ret;
 	}
