@@ -33,14 +33,23 @@ class BaseWsRequest {
 		if(!$this->CI){ $this->CI=&get_instance(); }
 		
 		//if it is public, check our "key" they sent along to prevent abuse
-		foreach(explode('&',$_SERVER['QUERY_STRING']) as $k=>$v){ 
-			$x=explode('=',$v); $_GET[$x[0]]=$x[1]; 
+		$get_vars = explode('&',$_SERVER['QUERY_STRING']);
+		if($get_vars && isset($_GET['reqk']) && isset($_GET['seck'])) {
+			foreach($get_vars as $k=>$v){ 
+				$x=explode('=',$v); 
+				if(count($x) > 1) {
+					$_GET[$x[0]]=$x[1]; 
+				} else {
+					return false;
+				}
+			}
+			
+			$this->CI->load->helper('reqkey');
+			$reqk=$_GET['reqk'];
+			$seck=$_GET['seck'];
+			return (checkReqKey($seck,$reqk)) ? true : false;
 		}
-		
-		$this->CI->load->helper('reqkey');
-		$reqk=$_GET['reqk'];
-		$seck=$_GET['seck'];
-		return (checkReqKey($seck,$reqk)) ? true : false;
+		return false;
 	}
 	
 }
