@@ -9,7 +9,7 @@ class Getdetail extends BaseWsRequest {
 		$this->CI=&get_instance(); //print_r($this->CI);
 		$this->xml=$xml;
 	}
-	public function checkSecurity(){
+	public function checkSecurity($xml){
 		// We're a public action, we dont need security
 		return ($this->isValidLogin($xml)) ? true : false;
 	}
