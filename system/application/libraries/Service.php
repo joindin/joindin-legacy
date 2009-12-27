@@ -29,6 +29,7 @@ class Service {
 		}elseif(in_array($hdrs['Content-Type'],array('text/x-json','text/json','application/json'))){
 			// We're working with json now...
 			$xml	= $this->parseReqJson($data);
+			if(!$xml){ return array('output'=>'msg','data'=>array('msg'=>'Invalid request!')); }
 			$rtype	= (string)$xml->action['type'];
 		}
 
@@ -95,12 +96,19 @@ class Service {
 	// Transform the json into XML and make a SimpleXML object out of it
 	function parseReqJson($json){ error_log($json);
 		$js=json_decode($json);
+		if(!isset($js->request)){ return false; }
+		
 		$xml='<request>';
 		if(isset($js->request->auth)){
 			$xml.='<auth><user>'.$js->request->auth->user.'</user>';
 			$xml.='<pass>'.$js->request->auth->pass.'</pass></auth>';
 		}
-		$xml.='<action type="'.$js->request->action->type.'">';
+		//see if we have an alternate output format specified
+		if(isset($js->request->action->output)){
+			$alt_out='output="'.$js->request->action->output.'"';
+		}else{ $alt_out=''; }
+		
+		$xml.='<action type="'.$js->request->action->type.'" '.$alt_out.'>';
 		foreach($js->request->action->data as $k=>$v){
 			$xml.='<'.$k.'>'.$v.'</'.$k.'>';
 		}
