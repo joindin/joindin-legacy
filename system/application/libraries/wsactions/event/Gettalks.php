@@ -12,7 +12,7 @@ class Gettalks extends BaseWsRequest {
 	public function checkSecurity($xml){
 		//public function!
 		// Be sure they've given us an event ID
-		if(!isset($xml->action->eid)){ return false; }
+		if(!isset($xml->action->event_id)){ return false; }
 		
 		return ($this->isValidLogin($xml)) ? true : false;
 	}
