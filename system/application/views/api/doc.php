@@ -52,10 +52,11 @@ In our above examples, you can see the <b>"auth"</b> section where you would rep
 <p>
 There are four different URLs you can make requests to:
 <ul>
-	<li><b>api/status</b> - to get the current status of the web service
+	<li><b>api/site</b> - to get the current status of the web service
 	<li><b>api/event</b> - to get information on events
 	<li><b>api/talk</b> - to get information on talks
-	<li><b>api/comment</b> - to get information about individual comments
+	<li><b>api/user</b> - to get information on users
+	<li><b>api/comments</b> - to get information about individual comments
 </ul>
 </p>
 
@@ -65,7 +66,7 @@ Our sample XML above would need to be sent to "http://joind.in/api/event" to wor
 
 <h3>Responses</h3>
 <p>
-By default, responses will be made in an XML format. There is an optional attribute you can add to the "action" tag in your request called <b>"output"</b>. This is set to "json" initially but it can also be set to "xml" if you prefer your response in that format. Here's an example of the XML output:
+By default, responses will be made in an JSON format. There is an optional attribute you can add to the "action" tag in your request called <b>"output"</b>. This is set to "json" initially but it can also be set to "xml" if you prefer your response in that format. Here's an example of the XML output:
 </p>
 <div style="padding:3px;border:1px solid #000000;background-color:#F8F8F8">
 <pre>
