@@ -26,7 +26,7 @@ class Service {
 			$xml=$this->parseReqXML($data);
 			if(!$xml){ return array('output'=>'msg','data'=>array('msg'=>'Invalid request!')); }
 			$rtype	= (string)$xml->action['type'];
-		}elseif($hdrs['Content-Type']=='text/json' || $hdrs['Content-Type']=='text/x-json'){
+		}elseif(in_array($hdrs['Content-Type'],array('text/x-json','text/json','application/json'))){
 			// We're working with json now...
 			$xml	= $this->parseReqJson($data);
 			$rtype	= (string)$xml->action['type'];
