@@ -27,11 +27,11 @@ function escape($str)
 function buildXML(&$doc,$data,$append=null){
 	foreach($data as $k=>$v){
 		$app=($append) ? $append : $doc;
-		if(is_array($v)){
+		if(is_array($v) || is_object($v)){
 			$c=$app->appendChild($doc->createElement($k));
 			buildXML($doc,$v,$c);
 		}elsE{
-			$c=$app->appendChild($doc->createElement($k,$v));
+			$c=$app->appendChild($doc->createElement($k,(string)$v));
 		}
 	}
 }
