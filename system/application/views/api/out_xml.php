@@ -1,5 +1,5 @@
 <?php
-
+header('Content-Type: text/xml');
 $doc=new DOMDocument('1.0');
 $doc->formatOuput=true;
 
