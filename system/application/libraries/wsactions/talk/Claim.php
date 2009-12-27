@@ -23,7 +23,7 @@ class Claim extends BaseWsRequest {
 		$this->CI->load->model('event_model');
 		
 		$rules=array(
-			'tid'		=>'required|istalk',
+			'talk_id'		=>'required|istalk',
 			//'reqkey'	=>'required|reqkey'
 		);
 		$tid=$this->xml->action->talk_id;
@@ -34,11 +34,14 @@ class Claim extends BaseWsRequest {
 				if(empty($uid_session)){
 					//They're not logged in, coming from the web service
 					// If it is, we need to be sure they've given us the user to add the claim for
-					if(!isset($this->xml->action->username)){
+
+					// can only claim talks for ourselves - use logged in user
+					$username = $this->xml->auth->user;
+					if(!isset($username)){
 						return array('output'=>'json','data'=>array('items'=>array('msg'=>'Fail: Username required!')));
 					}
 					$this->CI->load->model('user_model');
-					$udata=$this->CI->user_model->getUser($this->xml->action->username);
+					$udata=$this->CI->user_model->getUser($username);
 					if(!empty($udata)){
 						$uid=$udata[0]->ID;
 					}else{

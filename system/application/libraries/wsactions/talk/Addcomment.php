@@ -36,10 +36,12 @@ class Addcomment extends BaseWsRequest {
 
 		if(!$ret && $unq){
 			$in=(array)$this->xml->action;
+			$user=$this->CI->user_model->getUser($this->xml->auth->user);
+
 			$arr=array(
 				'talk_id'	=> $in['talk_id'],
 				'rating'	=> $in['rating'],
-				'user_id'	=> $this->session->userdata('ID'),
+				'user_id'	=> $user[0]->ID,
 				'comment'	=> $in['comment'],
 				'date_made'	=> time(),
 				'private'	=> $in['private'],
