@@ -411,7 +411,7 @@ Below are the request types that you can make to the API including input and out
 <b class="req_name" style="color:#5181C1;font-size:14px">Status</b>
 <div style="padding-left:10px">
 <b class="req_title">Action Type:</b> status<br/>
-<b class="req_title">Description:</b> Get site's current statusbr/>
+<b class="req_title">Description:</b> Get site's current status<br/>
 <b class="req_title">Input:</b>
 	<ul>
 		<li>test_string: [optional] send in a string, get the same string back
