@@ -21,9 +21,10 @@ class Getdetail extends BaseWsRequest {
 		$this->CI->load->model('user_model');
 		$uid=$this->xml->action->uid;
 		$ret=$this->CI->user_model->getUser($uid);
+	
 		
 		//if they're not a site admin, remove some of the info
-		if($this->CI->user_model->isSiteAdmin($this->xml->auth->user)){
+		if(!$this->CI->user_model->isSiteAdmin($this->xml->auth->user)){
 			unset($ret[0]->email,$ret[0]->password,$ret[0]->admin,$ret[0]->active);
 		}
 		
