@@ -251,6 +251,15 @@ Below are the request types that you can make to the API including input and out
 		<li>event_tz: For future use
 		<li>tavg: integer, Average rating of comments on selected talk
 		<li>tcid: string, Type of entry ("Talk")
+		<li>event_id: integer, The event ID (same as eid)
+		<li>ID: integer, The talk ID number (same as tid)
+		<li>active: integer, Whether this talk is in use 
+		<li>owner_id: integer, The speaker ID number
+		<li>event_voting: integer, Whether voting is active for thi event
+		<li>private: integer, If this session is only visible to members
+		<li>lang_abbr: string, Short code for the session language
+		<li>ccount: integer, Number of comments on this session
+		<li>last_comment_date: unix timestamp, Date of the last comment added to this session
 	</ul>
 	<a href="#top">[top]</a><br/><br/>
 </div>
