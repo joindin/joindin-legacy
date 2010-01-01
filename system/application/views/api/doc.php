@@ -152,14 +152,23 @@ Below are the request types that you can make to the API including input and out
 		<li>event_name: string, Name of the event
 		<li>event_start: Unix timestamp
 		<li>event_end: Unix timestamp
-		<li>event_lat: For future use
-		<li>event_long: For future use
 		<li>ID: integer, ID for the event
 		<li>event_loc: string, Event location
 		<li>event_desc: string, Event description
 		<li>active: integer, Whether the event is active or not
 		<li>event_stub: string, Stub/shortcut value for event
 		<li>event_tz: integer, Defines offset from GMT for event times
+		<li>event_icon: string, path to image icon
+		<li>pending: integer, whether the event is awaiting approval
+		<li>event_hashtag: string, twitter/blogging hashtag for this event
+		<li>event_href: string, event homepage
+		<li>event_cfp_start: unix timestamp, date the call for papers opens for this event
+		<li>event_cfp_end: unix timestamp, date the call for papers closes for this event
+		<li>event_voting: integer, whether users can vote on the sessions
+		<li>private: integer, whether this event is only visible to its members
+		<li>num_attend: integer, number of people marked as attending
+		<li>num_comments: integer, the number of comments on this event
+		<li>user_attending: integer, whether the current user is attending this event
 	</ul>
 	<a href="#top">[top]</a><br/><br/>
 </div>
