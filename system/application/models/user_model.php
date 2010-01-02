@@ -147,9 +147,9 @@ class User_model extends Model {
 			from
 				user u
 			where
-				username like '%%%s%%' or
-				full_name like '%%%s%%'
-		",$term,$term);
+				lower(username) like '%%%s%%' or
+				lower(full_name) like '%%%s%%'
+		",strtolower($term),strtolower($term));
 		$q=$this->db->query($sql);
 		return $q->result();
 	}

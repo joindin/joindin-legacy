@@ -123,7 +123,7 @@ class Search extends Controller {
     			$results = array(
     				'talks'	=> $this->talks_model->search($search_term, $start, $end),
     				'events'=> $this->event_model->search($search_term, $start, $end),
-				'users'	=> $this->user_model->search($search_term, $start, $end)
+					'users'	=> $this->user_model->search($search_term, $start, $end)
     			);
     		}
 		}
