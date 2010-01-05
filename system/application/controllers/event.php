@@ -398,17 +398,17 @@ class Event extends Controller {
 			// If they're logged in, dont bother with the spam check
 			if(!$is_auth){
 				$def_ret=$this->defensio->check($ec['cname'],$ec['comment'],$is_auth,'/event/view/'.$id);
+				$is_spam=(string)$def_ret->spam;
 			}else{ $is_spam='false'; }
 			
 			//$this->spam->check('regex',$ec['comment']);
 			
-			$is_spam=(string)$def_ret->spam;
 			if($is_spam=='false'){
 				$this->db->insert('event_comments',$ec);
 				$arr['msg']='Comment inserted successfully!';
 		
 			
-				if($def_ret){
+				if(isset($def_ret)){
 					$ec['def_resp_spamn']=(string)$def_ret->spaminess;
 					$ec['def_resp_spamr']=(string)$def_ret->spam;
 				}
