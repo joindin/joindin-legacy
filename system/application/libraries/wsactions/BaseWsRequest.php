@@ -34,7 +34,7 @@ class BaseWsRequest {
 		
 		//if it is public, check our "key" they sent along to prevent abuse
 		$get_vars = explode('&',$_SERVER['QUERY_STRING']);
-		if($get_vars && isset($_GET['reqk']) && isset($_GET['seck'])) {
+		if($get_vars) {
 			foreach($get_vars as $k=>$v){ 
 				$x=explode('=',$v); 
 				if(count($x) > 1) {
@@ -47,7 +47,10 @@ class BaseWsRequest {
 			$this->CI->load->helper('reqkey');
 			$reqk=$_GET['reqk'];
 			$seck=$_GET['seck'];
-			return (checkReqKey($seck,$reqk)) ? true : false;
+			$key_check = checkReqKey($seck,$reqk);
+		 	if($key_check) {
+				return true;
+			}
 		}
 		return false;
 	}

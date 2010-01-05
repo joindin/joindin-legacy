@@ -23,16 +23,23 @@ class Deletecomment extends BaseWsRequest {
 			// Now check to see if they're a site admin
 			$is_site=$this->CI->user_model->isSiteAdmin($xml->auth->user);
 			$is_talk=$this->CI->uam->hasPerm($udata[0]->ID,$xml->action->tid,'talk');
+
 			
 			return ($is_site || $is_talk) ? true : false;
 						
-		}else{ return false; }
+		}
+
+		// check for valid site js codes
+		if($this->checkPublicKey()) {
+			return true;
+		}
+		return false; 
 	}
 	//-----------------------
 	public function run(){
 		// Be sure we're getting out right input
-		if(!isset($this->xml->action->tid) || !isset($this->xml->action->cid)){
-			return array('output'=>'msg','data'=>array('msg'=>'Missing Input Values!'));
+		if(!isset($this->xml->action->cid)){
+			return array('output'=>'json','data'=>array('items'=>array('msg'=>'Missing Input Values!')));
 		}
 		
 		$this->CI->load->library('wsvalidate');
@@ -41,7 +48,7 @@ class Deletecomment extends BaseWsRequest {
 		$com_id=$this->xml->action->cid;
 		$this->CI->tcm->deleteComment($com_id);
 		
-		return array('output'=>'msg','data'=>array('msg'=>'Success'));
+		return array('output'=>'json','data'=>array('items'=>array('msg'=>'Success')));
 	}
 	
 }
