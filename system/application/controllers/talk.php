@@ -316,12 +316,12 @@ class Talk extends Controller {
 				'comment_content'	=> $this->input->post('your_com')
 			);
 			
+			$ret=$this->akismet->send('/1.1/comment-check',$arr);
+
+			$priv=$this->input->post('private');
+			$priv=(empty($priv)) ? 0 : 1;
+
 			if(!$is_auth){
-				$ret=$this->akismet->send('/1.1/comment-check',$arr);
-			
-				$priv=$this->input->post('private');
-				$priv=(empty($priv)) ? 0 : 1;
-			
 				$sp_ret=$this->spam->check('regex',$this->input->post('comment'));
 				error_log('sp: '.$sp_ret);
 			
