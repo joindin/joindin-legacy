@@ -42,10 +42,7 @@ or, if you reprefer JSON:
 </div>
 
 <p>
-In our above examples, you can see the <b>"auth"</b> section where you would replace $username and $password with your login information. The password should be md5 encoded. Below that there's the <b>"action"</b> section. We're making a "getdetail" call to grab the information for the given event ID.
-</p>
-<b>
-<b>Note:</b></b> all requests to the Joind.in API require a valid login to be passed in via the "auth" credentials. The only anonymous method is the API status request (api/status).
+In our above examples, you can see the <b>"auth"</b> section where you would replace $username and $password with your login information - the auth section only needs to be included where authentication is required for that action. The password in the auth section should be md5. Below that there's the <b>"action"</b> section which indicates which operation the system should perform. In this example we're making a "getdetail" call to grab the information for the given event ID.
 </p>
 <br/><br/>
 <h3>Types</h3>
@@ -56,7 +53,7 @@ There are four different URLs you can make requests to:
 	<li><b>api/event</b> - to get information on events
 	<li><b>api/talk</b> - to get information on talks
 	<li><b>api/user</b> - to get information on users
-	<li><b>api/comments</b> - to get information about individual comments
+	<li><b>api/comment</b> - to get information about individual comments
 </ul>
 </p>
 
@@ -97,6 +94,8 @@ Below are the request types that you can make to the API including input and out
 		<li><a href="#add_evt">Add Event</a>
 		<li><a href="#get_evt_talks">Get Talks</a>
 		<li><a href="#get_evt_list">Get Event Listing</a>
+		<li><a href="#evt_attend">Attend Event</a>
+		<li><a href="#add_evt_comment">Add Comment</a>
 	</ul>
 <li>Talks
 	<ul>
@@ -105,7 +104,7 @@ Below are the request types that you can make to the API including input and out
 		<li><a href="#claim_talk">Claim</a>
 		<li><a href="#add_comment">Add Comment</a>
 	</ul>
-<li>Comments
+<li>Comment
 	<ul>
 		<li><a href="#get_comment_detail">Get Comment Detail</a>
 		<li><a href="#comment_as_spam">Mark as Spam</a>
@@ -128,24 +127,11 @@ Below are the request types that you can make to the API including input and out
 <div style="padding-left:10px">
 <b class="req_title">Action Type:</b> getdetail<br/>
 <b class="req_title">Description:</b> Get the details for a given event number<br/>
+<b class="req_title">Authentication:</b> not required<br />
 <b class="req_title">Input:</b>
 	<ul>
 		<li>event_id: integer
 	</ul>
-<b class="req_title">Example Input Message</b>
-<div style="padding:3px;border:1px solid #000000;background-color:#F8F8F8">
-<pre>
-<?php echo escape('<request>
-        <auth>
-                <user>$username</user>
-                <pass>$password</pass>
-        </auth>
-        <action type="getdetail">
-                <event_id>1</event_id>
-       </action>
-</request>'); ?>
-</pre>
-</div>
 <br/>
 <b class="req_title">Output:</b>
 	<ul>
@@ -178,6 +164,7 @@ Below are the request types that you can make to the API including input and out
 <div style="padding-left:10px">
 <b class="req_title">Action Type:</b> addevent<br/>
 <b class="req_title">Description:</b> Adds an active event<br/>
+<b class="req_title">Authentication:</b> required<br />
 <b class="req_title">Input:</b>
 	<ul>
 		<li>event_name: string, Full name of event
@@ -199,6 +186,7 @@ Below are the request types that you can make to the API including input and out
 <div style="padding-left:10px">
 <b class="req_title">Action Type:</b> gettalks<br/>
 <b class="req_title">Description:</b> Gets the talks assoiated with an event<br/>
+<b class="req_title">Authentication:</b> not required<br />
 <b class="req_title">Input:</b>
 	<ul>
 		<li>event_id: string, event ID
@@ -215,9 +203,47 @@ Below are the request types that you can make to the API including input and out
 <div style="padding-left:10px">
 <b class="req_title">Action Type:</b> getlist<br/>
 <b class="req_title">Description:</b> Gets the event listing for various types<br/>
+<b class="req_title">Authentication:</b> not required<br />
 <b class="req_title">Input:</b>
 	<ul>
 		<li>event_type: string, event type [hot,upcoming,past,pending]
+	</ul>
+<b class="req_title">Output:</b>
+<ul>
+	<li>Multiple, see <a href="#get_evt_detail">Get Event Detail results</a>
+</ul>
+	<a href="#top">[top]</a><br/><br/>
+</div>
+
+<a name="add_evt_comment"></a>
+<b class="req_name" style="color:#5181C1;font-size:14px">Add Comment</b>
+<div style="padding-left:10px">
+<b class="req_title">Action Type:</b> addcomment<br/>
+<b class="req_title">Description:</b> Add a comment to the event<br/>
+<b class="req_title">Authentication:</b> required<br />
+<b class="req_title">Input:</b>
+	<ul>
+		<li>event_id: integer, id of the talk to add the comment to
+		<li>rating: integer, rating to give the talk (range of 1-5)
+		<li>comment: string, comments to submit
+		<li>private: integer, whether to make the comment private or not
+	</ul>
+<b class="req_title">Output:</b>
+	<ul>
+		<li>msg: string, either "comment added!" or error string
+	</ul>
+	<a href="#top">[top]</a><br/><br/>
+</div>
+
+<a name="evt_attend"></a>
+<b class="req_name" style="color:#5181C1;font-size:14px">Attend Event</b>
+<div style="padding-left:10px">
+<b class="req_title">Action Type:</b> attend <br/>
+<b class="req_title">Description:</b> Marks this user as attending the event<br/>
+<b class="req_title">Authentication:</b> required<br />
+<b class="req_title">Input:</b>
+	<ul>
+		<li>msg: string, either "comment added!" or error string
 	</ul>
 <b class="req_title">Output:</b>
 <ul>
@@ -232,6 +258,7 @@ Below are the request types that you can make to the API including input and out
 <div style="padding-left:10px">
 <b class="req_title">Action Type:</b> getdetail<br/>
 <b class="req_title">Description:</b> Get the details for given talk number<br/>
+<b class="req_title">Authentication:</b> not required<br />
 <b class="req_title">Input:</b>
 	<ul>
 		<li>talk_id: integer, ID number of the talk to fetch
@@ -269,6 +296,7 @@ Below are the request types that you can make to the API including input and out
 <div style="padding-left:10px">
 <b class="req_title">Action Type:</b> getcomments<br/>
 <b class="req_title">Description:</b> Get all comments associated with a talk<br/>
+<b class="req_title">Authentication:</b> not required<br />
 <b class="req_title">Input:</b>
 	<ul>
 		<li>talk_id: integer, ID number of talk to get comments for
@@ -292,16 +320,17 @@ Below are the request types that you can make to the API including input and out
 <div style="padding-left:10px">
 <b class="req_title">Action Type:</b> addcomment<br/>
 <b class="req_title">Description:</b> Add a comment to a given talk<br/>
+<b class="req_title">Authentication:</b> required<br />
 <b class="req_title">Input:</b>
 	<ul>
-		<li>talk_id: integer, ID of the talk to add the comment to
-		<li>rating: integer, Rating to give the talk (range of 1-5)
-		<li>comment: string, Comments to submit
-		<li>private: integer, Whether to make the comment private or not
+		<li>talk_id: integer, id of the talk to add the comment to
+		<li>rating: integer, rating to give the talk (range of 1-5)
+		<li>comment: string, comments to submit
+		<li>private: integer, whether to make the comment private or not
 	</ul>
 <b class="req_title">Output:</b>
 	<ul>
-		<li>msg: string, either "Comment added!" or error string
+		<li>msg: string, either "comment added!" or error string
 	</ul>
 	<a href="#top">[top]</a><br/><br/>
 </div>
@@ -311,6 +340,7 @@ Below are the request types that you can make to the API including input and out
 <div style="padding-left:10px">
 <b class="req_title">Action Type:</b> claim<br/>
 <b class="req_title">Description:</b> Send claim request for talk ID<br/>
+<b class="req_title">Authentication:</b> required<br />
 <b class="req_title">Input:</b>
 	<ul>
 		<li>talk_id: integer, ID number of talk to submit claim for
@@ -328,6 +358,7 @@ Below are the request types that you can make to the API including input and out
 <div style="padding-left:10px">
 <b class="req_title">Action Type:</b> getdetail<br/>
 <b class="req_title">Description:</b> Get detail of an event comment with a given ID<br/>
+<b class="req_title">Authentication:</b> not required<br />
 <b class="req_title">Input:</b>
 	<ul>
 		<li>cid: integer, Comment ID
@@ -345,6 +376,7 @@ Below are the request types that you can make to the API including input and out
 <div style="padding-left:10px">
 <b class="req_title">Action Type:</b> isspam<br/>
 <b class="req_title">Description:</b> Suggest a comment to be spam<br/>
+<b class="req_title">Authentication:</b> not required<br />
 <b class="req_title">Input:</b>
 	<ul>
 		<li>cid: integer, comment ID number
@@ -363,6 +395,7 @@ Below are the request types that you can make to the API including input and out
 <div style="padding-left:10px">
 <b class="req_title">Action Type:</b> getdetail<br/>
 <b class="req_title">Description:</b> Get detail of a user, given either user ID or username<br/>
+<b class="req_title">Authentication:</b> required<br />
 <b class="req_title">Input:</b>
 	<ul>
 		<li>uid: string, Username/user ID
@@ -382,6 +415,7 @@ Below are the request types that you can make to the API including input and out
 <div style="padding-left:10px">
 <b class="req_title">Action Type:</b> getcomments<br/>
 <b class="req_title">Description:</b> Get the user's talk and event comments<br/>
+<b class="req_title">Authentication:</b> not required<br />
 <b class="req_title">Input:</b>
 	<ul>
 		<li>username: string, Username
@@ -411,6 +445,7 @@ Below are the request types that you can make to the API including input and out
 <div style="padding-left:10px">
 <b class="req_title">Action Type:</b> validate<br/>
 <b class="req_title">Description:</b> Check login/password to check login<br/>
+<b class="req_title">Authentication:</b> not required<br />
 <b class="req_title">Input:</b>
 	<ul>
 		<li>uid: string, Username/user ID
@@ -429,6 +464,7 @@ Below are the request types that you can make to the API including input and out
 <div style="padding-left:10px">
 <b class="req_title">Action Type:</b> status<br/>
 <b class="req_title">Description:</b> Get site's current status<br/>
+<b class="req_title">Authentication:</b> not required<br />
 <b class="req_title">Input:</b>
 	<ul>
 		<li>test_string: [optional] send in a string, get the same string back

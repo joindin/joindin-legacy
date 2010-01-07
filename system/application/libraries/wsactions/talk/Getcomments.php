@@ -11,7 +11,7 @@ class Getcomments extends BaseWsRequest {
 	}
 	public function checkSecurity($xml){
 		// public method!
-		return ($this->isValidLogin($xml)) ? true : false;
+		return true;
 	}
 	//-----------------------
 	public function run(){

@@ -117,29 +117,7 @@ class Service {
 		//return $js->request;
 		return simplexml_load_string($xml);
 	}
-	function checkAuth($obj){
-		$this->CI->load->model('user_model');
-		if($obj->auth->user){
-			$uinfo=$this->CI->user_model->getUser($obj->auth->user); //echo 'uninfo: '; print_r($uinfo);
-			return ($obj->auth->pass==$uinfo[0]->password && $uinfo[0]->api_access) ? true : false;
-		}else{ return false; }
-	}
-	// check to see if our given action is one that doesnt need a user/pass
-	function isPublicAction($rtype,$raction){
-		$find=$rtype.'/'.$raction; //echo $find;
-		return (array_key_exists($find,$this->public_actions)) ? true : false;
-	}
-	function checkKey(){
-		//if it is public, check our "key" they sent along to prevent abuse
-		foreach(explode('&',$_SERVER['QUERY_STRING']) as $k=>$v){ 
-			$x=explode('=',$v); $_GET[$x[0]]=$x[1]; 
-		}
-		
-		$this->CI->load->helper('reqkey');
-		$reqk=$_GET['reqk'];
-		$seck=$_GET['seck'];
-		return (checkReqKey($reqk,$seck)) ? true : false;
-	}
+
 	//------------------------
 	function checkPublicRules($rtype,$raction){
 		$find=$rtype.'/'.$raction;
