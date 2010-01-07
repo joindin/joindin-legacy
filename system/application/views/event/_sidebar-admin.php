@@ -27,5 +27,12 @@
 		</ul>
 		<input type="text" name="add_admin_user" id="add_admin_user" />
 		<input type="button" name="add_admin_btn" id="add_admin_btn" value="add" onClick="addEventAdmin(<?php echo $eid; ?>)" />
+		<br/><br/>
+	</div>
+	<h4>Helpful Links</h4>
+	<div class="ctn">
+		<ul>
+		<li><a href="/about/evt_admin">Event Admin Cheat Sheet</a>
+		</ul>
 	</div>
 </div>

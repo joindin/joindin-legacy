@@ -119,6 +119,16 @@ class User extends Controller {
 	    $this->user_model->toggleUserStatus($uid);
 	    redirect('user/view/'.$uid);
 	}
+	
+	/**
+	* Toggle the user's admin status
+	*/
+	function changeastat($uid){
+	    // Kick them back out if they're not an admin
+	    if(!$this->user_model->isSiteAdmin()){ redirect(); }
+	    $this->user_model->toggleUserAdminStatus($uid);
+	    redirect('user/view/'.$uid);
+	}
 
 	/**
 	* Sets up a new user in the system

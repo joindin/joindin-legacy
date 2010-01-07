@@ -183,6 +183,7 @@ class Talk extends Controller {
 		$this->load->library('spam');		
 		$this->load->library('validation');
 		$this->load->library('timezone');
+		$this->load->library('sendemail');		
 		
 		$msg='';
 		
@@ -368,15 +369,7 @@ class Talk extends Controller {
 			
 				//if its claimed, be sure to send an email to the person to tell them
 				if($cl){
-					$to=$cl[0]->email;
-					$subj	= 'A new comment has been posted on your talk!';
-					$msg	= sprintf("
-	A comment has been posted to your talk on joind.in: \n%s\n
-	%s
-	\n
-	Click here to view it: http://joind.in/talk/view/%s
-					",$talk_detail[0]->talk_title,trim($arr['comment']),$id);
-					mail($to,$subj,$msg,'From: comments@joind.in');
+					$this->sendemail->sendTalkComment($id,$cl[0]->email,$talk_detail,$arr);
 				}
 			
 				$this->session->set_flashdata('msg', 'Comment added!');

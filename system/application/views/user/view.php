@@ -3,7 +3,10 @@
 ?></h1>
 <?php if($is_admin){
     $txt=($details[0]->active==1) ? 'Disable User Account' : 'Enable User Account'; ?>
-    <a class="btn-small" href="/user/changestat/<?php echo $details[0]->ID; ?>"><?php echo $txt; ?></a><br/><br/>
+    <a class="btn-small" href="/user/changestat/<?php echo $details[0]->ID; ?>"><?php echo $txt; ?></a>
+	<?php $atxt=($details[0]->admin==1) ? 'Remove as Admin' : 'Add as Admin'; ?>
+	<a class="btn-small" href="/user/changeastat/<?php echo $details[0]->ID; ?>"><?php echo $atxt; ?></a>
+	<br/><br/>
 <?php } ?>
 
 <div class="box">
