@@ -34,7 +34,9 @@ class Getdetail extends BaseWsRequest {
 				$uid = $user[0]->ID;
 			}
 
-			$ret[0]->user_attending = $this->CI->user_attend_model->chkAttend($uid, $ret[0]->ID);
+			if($uid) {
+				$ret[0]->user_attending = $this->CI->user_attend_model->chkAttend($uid, $ret[0]->ID);
+			}
 			return array('output'=>'json','data'=>array('items'=>$ret));
 		}else{
 			return array('output'=>'json','data'=>array('items'=>array('msg'=>'Invalid Event ID!')));
