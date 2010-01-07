@@ -26,6 +26,7 @@ class Getlist extends BaseWsRequest {
 		$valid=$this->CI->wsvalidate->validate($rules,$this->xml->action);
 		if(!$valid){
 			$this->CI->load->model('event_model');
+			$this->CI->load->model('user_attend_model');
 			
 			$type=strtolower($this->xml->action->event_type);
 			if(!in_array($type,$this->_valid_types)){
@@ -52,9 +53,20 @@ class Getlist extends BaseWsRequest {
 			        $events = $this->event_model->getEventDetail(null,null,null,$pending);
 			        break;*/
 			}
+
+			// identify user so we can do the attending (or not if they're not identified)
+			$uid = false;
+			$user=$this->CI->user_model->getUser($this->xml->auth->user);
+			if($user) {
+				$uid = $user[0]->ID;
+			}
+
 			// Filter out a few things first
 			foreach($events as $k=>$evt){
-				unset($events[$k]->event_lat,$events[$k]->event_long);
+				unset($events[$k]->event_lat,$events[$k]->event_long,$events[$k]->score);
+				if($uid) {
+					$evt->user_attending = $this->CI->user_attend_model->chkAttend($uid, $evt->ID);
+				}
 			}
 			return array('output'=>'json','data'=>array('items'=>$events));
 		}else{

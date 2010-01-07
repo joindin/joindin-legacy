@@ -11,7 +11,11 @@ class Attend extends BaseWsRequest {
 	}
 	public function checkSecurity($xml){
 		// Just check the key combination on the URL
-		return $this->checkPublicKey();
+		if($this->isValidLogin($xml) || $this->checkPublicKey()) {
+			return true;
+		}
+
+		return false;
 	}
 	//-----------------------
 	public function run(){
@@ -26,8 +30,13 @@ class Attend extends BaseWsRequest {
 		$ret=$this->CI->wsvalidate->validate($rules,$this->xml->action);
 		if(!$ret){
 			//see if were logged in - if not, we return the redirect: message back
-			if($this->CI->wsvalidate->validate_loggedin()){				
+			if($this->CI->wsvalidate->validate_loggedin() || $this->isValidLogin($this->xml)){				
 				$uid=$this->CI->session->userdata('ID');
+				if(!$uid) {
+					// its an API call, grab from the XML
+					$user=$this->CI->user_model->getUser($this->xml->auth->user);
+					$uid = $user[0]->ID;
+				}
 				
 				//check to see if they have a record - if they do, remove
 				//if they don't, add...

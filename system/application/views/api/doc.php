@@ -223,10 +223,8 @@ Below are the request types that you can make to the API including input and out
 <b class="req_title">Authentication:</b> required<br />
 <b class="req_title">Input:</b>
 	<ul>
-		<li>event_id: integer, id of the talk to add the comment to
-		<li>rating: integer, rating to give the talk (range of 1-5)
+		<li>event_id: integer, id of the event to add the comment to
 		<li>comment: string, comments to submit
-		<li>private: integer, whether to make the comment private or not
 	</ul>
 <b class="req_title">Output:</b>
 	<ul>
@@ -243,12 +241,12 @@ Below are the request types that you can make to the API including input and out
 <b class="req_title">Authentication:</b> required<br />
 <b class="req_title">Input:</b>
 	<ul>
-		<li>msg: string, either "comment added!" or error string
+		<li>eid: integer, id of the talk to add the comment to
 	</ul>
-<b class="req_title">Output:</b>
-<ul>
-	<li>Multiple, see <a href="#get_evt_detail">Get Event Detail results</a>
-</ul>
+	<b class="req_title">Output:</b>
+	<ul>
+		<li>msg: Either success or one of a few failure messages
+	</ul>
 	<a href="#top">[top]</a><br/><br/>
 </div>
 
