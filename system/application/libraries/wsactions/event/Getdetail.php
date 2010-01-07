@@ -11,7 +11,7 @@ class Getdetail extends BaseWsRequest {
 	}
 	public function checkSecurity($xml){
 		//public function!
-		return ($this->isValidLogin($xml)) ? true : false;
+		return true;
 	}
 	//-----------------------
 	public function run(){
