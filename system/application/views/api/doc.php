@@ -96,6 +96,7 @@ Below are the request types that you can make to the API including input and out
 		<li><a href="#get_evt_list">Get Event Listing</a>
 		<li><a href="#evt_attend">Attend Event</a>
 		<li><a href="#add_evt_comment">Add Comment</a>
+		<li><a href="#get_evt_comment">Get Event Comments</a>
 	</ul>
 <li>Talks
 	<ul>
@@ -246,6 +247,30 @@ Below are the request types that you can make to the API including input and out
 	<b class="req_title">Output:</b>
 	<ul>
 		<li>msg: Either success or one of a few failure messages
+	</ul>
+	<a href="#top">[top]</a><br/><br/>
+</div>
+
+<a name="get_evt_comments"></a>
+<b class="req_name" style="color:#5181C1;font-size:14px">Get Event Comments</b>
+<div style="padding-left:10px">
+<b class="req_title">Action Type:</b> getcomments<br/>
+<b class="req_title">Description:</b> Get all comments associated with an event<br/>
+<b class="req_title">Authentication:</b> not required<br />
+<b class="req_title">Input:</b>
+	<ul>
+		<li>event_id: integer, ID number of event to get comments for
+	</ul>
+<b class="req_title">Output:</b> An array of values containing the following for each comment
+	<ul>
+		<li>event_id: integer, ID number of the event comment is on
+		<li>comment: string, Comments from the user
+		<li>date_made: integer, Unix timestamp of when comment was posted
+		<li>user_id: integer, If a registered user made the comment, a non-zero value is here
+		<li>active: integer, If the comment is marked as active or not
+		<li>ID: integer, ID number of the comment
+		<li>cname: string, If a registered user made the comment, their username is here
+		<li>private: integer, If the comment is marked as private or not
 	</ul>
 	<a href="#top">[top]</a><br/><br/>
 </div>
