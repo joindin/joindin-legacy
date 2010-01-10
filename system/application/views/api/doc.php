@@ -304,6 +304,7 @@ Below are the request types that you can make to the API including input and out
 <b class="req_title">Output:</b> An array of values containing the following for each comment
 	<ul>
 		<li>talk_id: integer, ID number of the talk comment is on
+		<li>rating: integer, The rating the user gave to this talk
 		<li>comment: string, Comments from the user
 		<li>date_made: integer, Unix timestamp of when comment was posted
 		<li>ID: integer, ID number of the comment
