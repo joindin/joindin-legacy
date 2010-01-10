@@ -114,5 +114,41 @@ You can view the event here: http://joind.in/event/view/%s
 		$to=array($user[0]->email);
 		$this->_sendEmail($to,$msg,$subj);
 	}
+	
+	public function sendTalkComment($tid,$to,$talk_detail,$in_arr){
+		$CI =& get_instance();
+		$byline='';
+		if($in_arr['user_id']!=0){
+			$CI->load->model('user_model');
+			$udata	= $CI->user_model->getUser($in_arr['user_id']);
+			$byline	= 'by '.$udata[0]->full_name.' ('.$udata[0]->username.')';
+		}
+		
+		$subj	= 'A new comment has been posted on your talk!';
+		$msg	= sprintf("
+A comment has been posted to your talk on joind.in %s: \n%s\n
+%s
+\n
+Click here to view it: http://joind.in/talk/view/%s
+		",$byline,$talk_detail[0]->talk_title,trim($in_arr['comment']),$tid);
+		
+		$to=array($to);
+ 		$this->_sendEmail($to,$msg,$subj,'comments@joind.in');
+	}
+	
+	public function sendEventApproved($eid,$evt_detail,$admin_list){
+		$subj	= 'Submitted Event "'.$evt_detail[0]->event_name.'" Approved!';
+		$from	= 'From:feedback@joind.in';
+		
+		foreach($admin_list as $k=>$user){
+			$msg='The event you submitted "'.$evt_detail[0]->event_name.'" has been approved!'."\n";
+			$msg.='You can now manage the event here: http://joind.in/event/view/'.$eid."\n\n";
+			$msg.='If you need some help getting started with managing your event, try our '."\n";
+			$msg.='helpful Event Admin Cheat Sheet! http://joind.in/about/evt_admin';
+			
+			$to=array($to);
+			$this->_sendEmail($to,$msg,$subj);
+		}
+	}
 }
 ?>

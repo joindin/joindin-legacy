@@ -2,7 +2,8 @@
 	<h4>Contact</h4>
 	<div class="ctn">
     	<p>
-    		Know of an event happening? Let us know! We love to get the word out about events the community would be interested in and you can help us spread the word!
+    		Want to get in contact with the organizers for this event? Click below and you can send them a message
+			directly!
     	</p>
 		<p style="text-align:center">
     		<a href="/event/contact/<?php echo $eid; ?>" class="btn-big">Contact Event Admins</a>

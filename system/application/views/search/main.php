@@ -59,41 +59,41 @@ if (!empty($results)) {
 </div>
 
 <?php if (!empty($results)): ?>
-    <?php if (empty($results['events']) && empty($results['talks'])): ?>
+    <?php if (empty($results['events']) && empty($results['talks']) && empty($results['users'])): ?>
 <?php $this->load->view('msg_info', array('msg' => 'Nothing found.')); ?>
     <?php else: ?>
     	<?php if (!empty($results['events'])): ?>
-<div class="box">
-	<h2>Events</h2>
-    <?php
-    foreach($results['events'] as $k=>$v){
-	if($v->pending==1) continue;
-        $this->load->view('event/_event-row', array('event'=>$v));
-    }
-    ?>
-</div>
+			<div class="box">
+				<h2>Events</h2>
+			    <?php
+			    foreach($results['events'] as $k=>$v){
+				if($v->pending==1) continue;
+			        $this->load->view('event/_event-row', array('event'=>$v));
+			    }
+			    ?>
+			</div>
 		<?php endif; ?>
 
 	    <?php if (!empty($results['talks'])): ?>
-<div class="box">
-	<h2>Talks</h2>
-    <?php
-    foreach($results['talks'] as $k=>$v){
-        $this->load->view('talk/_talk-row', array('talk'=>$v));
-    }
-    ?>
-</div>
+			<div class="box">
+				<h2>Talks</h2>
+			    <?php
+			    foreach($results['talks'] as $k=>$v){
+			        $this->load->view('talk/_talk-row', array('talk'=>$v));
+			    }
+			    ?>
+			</div>
 		<?php endif; ?>
 		
 		<?php if (!empty($results['users'])): ?>
-<div class="box">
-	<h2>Users</h2>
-    <?php
-    foreach($results['users'] as $k=>$v){
-        $this->load->view('user/_user-row', array('user'=>$v));
-    }
-    ?>
-</div>
+			<div class="box">
+				<h2>Users</h2>
+			    <?php
+			    foreach($results['users'] as $k=>$v){
+			        $this->load->view('user/_user-row', array('user'=>$v));
+			    }
+			    ?>
+			</div>
 		<?php endif; ?>
 		
 	<?php endif; ?>

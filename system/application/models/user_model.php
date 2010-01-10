@@ -68,6 +68,11 @@ class User_model extends Model {
 		$up=($udata[0]->active==1) ? array('active'=>'0') : array('active'=>'1');
 		$this->updateUserinfo($uid,$up);
 	}
+	function toggleUserAdminStatus($uid){
+		$udata=$this->getUser((int)$uid); //echo $uid; print_r($udata);
+		$up=($udata[0]->admin==1) ? array('admin'=>null) : array('admin'=>'1');
+		$this->updateUserinfo($uid,$up);
+	}
 	function updateUserInfo($uid,$arr){
 		$this->db->where('ID',$uid);
 		$this->db->update('user',$arr);
@@ -147,9 +152,9 @@ class User_model extends Model {
 			from
 				user u
 			where
-				username like '%%%s%%' or
-				full_name like '%%%s%%'
-		",$term,$term);
+				lower(username) like '%%%s%%' or
+				lower(full_name) like '%%%s%%'
+		",strtolower($term),strtolower($term));
 		$q=$this->db->query($sql);
 		return $q->result();
 	}

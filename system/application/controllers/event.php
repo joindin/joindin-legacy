@@ -793,22 +793,14 @@ class Event extends Controller {
 		if(!$this->user_model->isSiteAdmin()){ redirect(); }
 		
 		$this->load->model('event_model');
+		$this->load->library('sendemail');
 		$this->event_model->approvePendingEvent($eid);
 		
 		// If we have admins for the event, send them an email to let them know
 		$admin_list	= $this->event_model->getEventAdmins($eid);
 		if($admin_list && count($admin_list)>0){
 			$evt_detail	= $this->event_model->getEventDetail($eid);
-			
-			$subj	= 'Submitted Event "'.$evt_detail[0]->event_name.'" Approved!';
-			$from	= 'From:feedback@joind.in';
-			
-			foreach($admin_list as $k=>$user){
-				$msg='The event you submitted "'.$evt_detail[0]->event_name.'" has been approved!'."\n";
-				$msg.='You can now manage the event here: http://joind.in/event/view/'.$eid;
-				
-				mail($user->email,$subj,$msg,$from);
-			}
+			$this->sendemail->sendEventApproved($eid,$evt_detail,$admin_list);
 		}
 		
 		// Finally, redirect back to the event!
