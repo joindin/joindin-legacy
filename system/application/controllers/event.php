@@ -27,6 +27,7 @@ class Event extends Controller {
 		$this->load->helper('reqkey');
 		//$this->load->library('calendar',$prefs);
 		$this->load->model('event_model');
+		$this->load->model('user_attend_model');
 		$this->load->helper('mycal');
 		
 		switch ($type) {
@@ -42,6 +43,14 @@ class Event extends Controller {
 		    default:
 		        $events = $this->event_model->getEventDetail(null,null,null,$pending);
 		        break;
+		}
+		
+		// now add the attendance data
+		$uid = $this->user_model->getID();
+		foreach($events as $e) {
+			if($uid) {
+				$e->user_attending = $this->user_attend_model->chkAttend($uid, $e->ID);
+			}
 		}
 
 		$reqkey = buildReqKey();
