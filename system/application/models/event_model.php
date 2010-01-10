@@ -170,9 +170,9 @@ class Event_model extends Model {
 		$this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');
 
 		if($inc_curr){ 
-			$add='or events.event_end>='.time();
+			$add='or events.event_end>='.(mktime(0,0,0));
 		}else{ $add=''; }
-		$this->db->where('(events.event_start>='.time().' '.$add.')');
+		$this->db->where('(events.event_start>='.mktime(0,0,0).' '.$add.')');
 		
 		$this->db->where('(events.pending is null or events.pending=0)');
 		$this->db->order_by('events.event_start','asc');
@@ -192,7 +192,7 @@ class Event_model extends Model {
 		$this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
 		$this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');
 
-		$this->db->where('(events.event_end < '.time().')');
+		$this->db->where('(events.event_end < '.mktime(0,0,0).')');
 		
 		$this->db->where('(events.pending is null or events.pending=0)');
 		$this->db->order_by('events.event_start','desc');

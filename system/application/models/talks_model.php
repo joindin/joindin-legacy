@@ -106,7 +106,7 @@ class Talks_model extends Model {
 			$q=$this->db->query($sql);
 		}else{
 			if($latest){ 
-				$wh=' talks.date_given<='.time().' and ';
+				$wh=' talks.date_given<='.mktime(0,0,0).' and ';
 				$ob=' order by talks.date_given desc';
 			}else{ $wh=''; $ob=''; }
 			$sql=sprintf('
