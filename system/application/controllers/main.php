@@ -10,6 +10,7 @@ class Main extends Controller {
 		$this->load->helper('form');
 		$this->load->model('talks_model');
 		$this->load->model('event_model');
+		$this->load->model('user_attend_model');
 		$this->load->model('blog_posts_model','bpm');
 		$this->load->helper('reqkey');
 		
@@ -25,6 +26,20 @@ class Main extends Controller {
 			'seckey' => buildSecFile($reqkey)
 		);
 		
+		// now add the attendance data for the events
+		$uid = $this->user_model->getID();
+		foreach($arr['hot_events'] as $e) {
+			if($uid) {
+				$e->user_attending = $this->user_attend_model->chkAttend($uid, $e->ID);
+			}
+		}
+
+		foreach($arr['upcoming_events'] as $e) {
+			if($uid) {
+				$e->user_attending = $this->user_attend_model->chkAttend($uid, $e->ID);
+			}
+		}
+
 		$this->template->write_view('content','main/index',$arr,TRUE);
 		$this->template->render();
 	}

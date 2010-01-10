@@ -81,8 +81,7 @@ class Event_model extends Model {
 		$cols.='events.event_stub,events.event_tz,events.event_icon,events.pending,events.event_hastag,';
 		$cols.='events.event_href,events.event_cfp_start,events.event_cfp_end,events.private';
 		
-		$attend = '(SELECT COUNT(*) FROM user_attend WHERE eid = events.ID AND uid = ' . (int)$this->session->userdata('ID') . ') as user_attending';
-	    $this->db->select('events.*, COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments, ' . $attend);
+	    $this->db->select('events.*, COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments');
 	    $this->db->from('events');
 		$this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
 		$this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');
@@ -143,15 +142,12 @@ class Event_model extends Model {
 	}
 
     function getHotEvents($limit = null){
-		// figure out if we are attending and then add this into the second select query
-		$attend = '(SELECT COUNT(*) FROM user_attend WHERE eid = events.ID AND uid = ' . (int)$this->session->userdata('ID') . ')as user_attending';
-
 		// the "score" field is a weighting to make things that are more soon/recent than others appear here
 		// these results pay attention to "soon ness" and to number of attendees
 	    $this->db->select('events.*,
 			(select count(*) from user_attend where user_attend.eid = events.ID) as num_attend,
-			(select count(*) from event_comments where event_comments.event_id = events.ID) as num_comments,' . $attend
-		  			.', abs(datediff(from_unixtime(events.event_start), from_unixtime('.mktime(0,0,0).'))) as score');
+			(select count(*) from event_comments where event_comments.event_id = events.ID) as num_comments, abs(0) as user_attending, '
+		  			.' abs(datediff(from_unixtime(events.event_start), from_unixtime('.mktime(0,0,0).'))) as score');
 	    $this->db->from('events');
 
 		$this->db->where('((events.event_start<='.(mktime(0,0,0) + (60*60*24*14)).' AND events.event_end>='.mktime(0,0,0).') OR (events.event_start<='.mktime(0,0,0).' AND events.event_end>='.(mktime(0,0,0) - (60*60*24*14)).'))');
@@ -168,8 +164,7 @@ class Event_model extends Model {
 	}
 
 	function getUpcomingEvents($inc_curr=false, $limit = null){
-		$attend = '(SELECT COUNT(*) FROM user_attend WHERE eid = events.ID AND uid = ' . (int)$this->session->userdata('ID') . ')as user_attending';
-	    $this->db->select('events.*, COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments, ' . $attend);
+	    $this->db->select('events.*, COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments, abs(0) as user_attending');
 	    $this->db->from('events');
 		$this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
 		$this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');
@@ -192,8 +187,7 @@ class Event_model extends Model {
 	}
 	
     function getPastEvents($limit = null){
-		$attend = '(SELECT COUNT(*) FROM user_attend WHERE eid = events.ID AND uid = ' . (int)$this->session->userdata('ID') . ')as user_attending';
-	    $this->db->select('events.*, COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments, ' . $attend);
+	    $this->db->select('events.*, COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments, abs(0) as user_attending');
 	    $this->db->from('events');
 		$this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
 		$this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');
