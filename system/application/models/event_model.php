@@ -116,14 +116,10 @@ class Event_model extends Model {
 	function getEventTalks($id){
 		$sql=sprintf('
 			select
-				talk_title,
-				speaker,
-				slides_link,
-				date_given,
-				event_id,
-				ID,
-				talk_desc,
-				(select l.lang_abbr from lang l where talks.lang=l.ID) lang,
+				talks.*,
+				talks.ID tid,
+				lang.lang_name,
+				lang.lang_abbr,
 				(select floor(avg(rating)) from talk_comments where talk_id=talks.ID) rank,
 				(select count(rating) from talk_comments where talk_id=talks.ID) comment_count,
 				(select 
@@ -135,6 +131,7 @@ class Event_model extends Model {
 				) tcid
 			from
 				talks
+			inner join lang on (lang.ID = talks.lang)
 			where
 				event_id=%s and
 				active=1
