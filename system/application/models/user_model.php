@@ -11,6 +11,10 @@ class User_model extends Model {
 			return $u;
 		}else{ return false; }
 	}
+	function getID() {
+		// this only works for web users!
+		return $this->session->userdata('ID');
+	}
 	function validate($user,$pass,$plaintxt=false){
 		$ret=$this->getUser($user);
 		$pass=($plaintxt) ? $pass : md5($pass);
