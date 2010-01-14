@@ -22,7 +22,6 @@ class Addcomment extends BaseWsRequest {
 	//-----------------------
 	public function run(){
 		$this->CI->load->library('wsvalidate');
-		$this->CI->load->model('user_model');
 		
 		$rules=array(
 			'event_id'	=>'required',
@@ -45,10 +44,10 @@ class Addcomment extends BaseWsRequest {
 				'cname'		=> $user[0]->full_name
 			);
 			$this->CI->db->insert('event_comments',$arr);
-			$ret=array('output'=>'msg','data'=>array('msg'=>'Comment added!'));
+			$ret=array('output'=>'msg','data'=>array('items'=>array('msg'=>'Comment added!')));
 		}else{ 
 			if(!$unq){ $ret='Non-unique entry!'; }
-			$ret=array('output'=>'msg','data'=>array('msg'=>$ret));
+			$ret=array('output'=>'msg','data'=>array('items'=>array('msg'=>$ret)));
 		}
 		return $ret;
 	}

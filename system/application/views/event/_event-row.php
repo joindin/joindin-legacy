@@ -16,15 +16,9 @@ $this->load->helper('text');
 			<!--<input type="checkbox" name="attend" value="1"/> Attending?-->
 
     <?php 
-	if($event->user_attending){
 		if($event->event_end<time()){
 			$link_txt="I attended";
 		}else{ $link_txt="I'm attending"; }
-	}else{
-		if($event->event_end<time()){
-			$link_txt="I attended";
-		}else{ $link_txt="I'm attending"; }
-	}
 	?>
     		<a class="btn-small<?php echo $event->user_attending ? ' btn-success' : ''; ?>" href="#" onclick="markAttending(this,<?=$event->ID?>,<?php echo $event->event_end<time() ? 'true' : 'false'; ?>);return false;"><?=$link_txt?></a>
 
