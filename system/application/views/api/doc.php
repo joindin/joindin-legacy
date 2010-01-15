@@ -310,6 +310,7 @@ Below are the request types that you can make to the API including input and out
 		<li>lang_abbr: string, Short code for the session language
 		<li>ccount: integer, Number of comments on this session
 		<li>last_comment_date: unix timestamp, Date of the last comment added to this session
+		<li>allow_comments: integer, Whether comments are accepted on this talk
 	</ul>
 	<a href="#top">[top]</a><br/><br/>
 </div>
