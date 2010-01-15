@@ -355,7 +355,7 @@ Below are the request types that you can make to the API including input and out
 	</ul>
 <b class="req_title">Output:</b>
 	<ul>
-		<li>msg: string, either "comment added!" or error string
+		<li>msg: string or array, either "comment added!" or error string (or array of strings)
 	</ul>
 	<a href="#top">[top]</a><br/><br/>
 </div>
