@@ -90,7 +90,7 @@ $anon=array();
 $total+=$anon_total;
 $total_count=count($comments)+count($anon);
 
-$rstr = rating_image($detail[0]->tavg);
+$rstr = rating_image($det->tavg);
 
 //echo '<pre>CL:'; print_r($claimed); echo '</pre>';
 
@@ -163,10 +163,7 @@ if (!empty($msg)):
 
 
 <?php
-$adv_mo=strtotime('+3 months',$det->date_given);
-$comment_closed=false;
-
-if(time()>$adv_mo && $detail[0]->event_voting!='Y'){
+if(!$det->allow_comments) {
 	$this->load->view('msg_info', array('msg' => 'Comments closed.'));
 	$comment_closed=true;
 }
@@ -271,10 +268,7 @@ if (empty($comments)) {
 ?>
 </div>
 <?php
-//only show the form if the time for the talk has passed
-//my code: if($det->date_given<=$time_at_event){
-
-if ((($det->date_given > $time_at_event) || $comment_closed) && $detail[0]->event_voting!='Y') {
+if(!$det->allow_comments) {
 ?>
 <p class="info">Currently not open for comment.</p>
 <?php
@@ -284,7 +278,7 @@ if ((($det->date_given > $time_at_event) || $comment_closed) && $detail[0]->even
 <p class="info">Want to comment on this talk? <a href="/user/login">Log in</a> or <a href="/user/register">create a new account</a>.</p>
 <?php 
     } else {
-	$title=($detail[0]->event_voting=='Y' && !$evt_has_started) ? 'Cast your vote' : 'Write a comment';
+	$title=($det->event_voting=='Y' && !$evt_has_started) ? 'Cast your vote' : 'Write a comment';
 ?>
 <h3 id="comment-form"><?php echo $title; ?></h3>
 <?php echo form_open('talk/view/'.$det->tid . '#comment-form', array('class' => 'form-talk')); ?>
@@ -294,7 +288,7 @@ if ((($det->date_given > $time_at_event) || $comment_closed) && $detail[0]->even
 <?php endif; ?>
 
 <?php
-if($detail[0]->event_voting=='Y' && !$evt_has_started){
+if($det->event_voting=='Y' && !$evt_has_started){
 	?>
 	<div style="text-align:center" class="row row-buttons">
 		<?php 
