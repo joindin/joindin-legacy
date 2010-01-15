@@ -8,7 +8,7 @@ class Feed extends Controller {
 	}
 	function index(){
 		//$this->load->helper('url');
-		//redirect('user/login');
+		redirect();
 	}
 	function talk($tid){
 		$this->load->helper('form');

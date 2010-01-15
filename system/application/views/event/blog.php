@@ -14,10 +14,9 @@ switch($action){
 menu_pagetitle('Blog : ' .escape($evt_detail[0]->event_name));
 ?>
 <h2>Blog : <?php echo $evt_detail[0]->event_name; ?></h2>
-<?php if($action!='view'): ?>
 <a class="btn-small" href="/event/view/<?php echo $eid; ?>">Back to event</a>
+<?php if($action!='view'): ?>
 <a class="btn-small" href="/event/blog/view/<?php echo $eid; ?>">Back to blog</a>
-<br/><br/>
 <?php endif; ?>
 
 <?php if($action=='add' || $action=='edit'): 
@@ -45,7 +44,6 @@ echo form_open('event/blog/'.$fact);
 echo form_close();
 
 else: ?>
-<a class="btn-small" href="/event/view/<?php echo $eid; ?>">Back to event</a>
 <?php if(user_is_admin() || user_is_admin_event($eid)): ?>
 <a href="/event/blog/add/<?php echo $eid; ?>" class="btn-small">Add Entry</a>
 <?php endif; ?>

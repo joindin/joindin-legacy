@@ -1025,8 +1025,6 @@ class Event extends Controller {
 			$msg='Invite list changes saved!';
 		}
 		
-		
-		
 		// Finally, we send it out to the view....
 		$arr=array(
 			'eid'		=> $eid,
@@ -1106,7 +1104,10 @@ class Event extends Controller {
 		$this->validation->set_rules($rules);
 		$this->validation->set_fields($fields);
 		
+		$posts=$this->ebp->getPosts($eid);
 		if($act=='add' || $act=='edit'){
+			$this->template->write('feedurl','http://joind.in/event/blog/feed/'.$eid);
+			
 			// Be sure they're either a site admin or event admin
 			if($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($eid)){
 				//they're okay
@@ -1133,12 +1134,31 @@ class Event extends Controller {
 			}else{
 				$msg=$this->validation->error_string;
 			}
+		}elseif($act=='feed'){
+			$items=array();
+			foreach($posts as $k=>$v){
+				$items[]=array(
+					'title'			=> $v->title,
+					'guid'			=> 'http://joind.in/event/blog/view/'.$eid.'#'.$v->ID,
+					'link'			=> 'http://joind.in/event/blog/view/'.$eid.'#'.$v->ID,
+					'description' 	=> $v->content,
+					'pubDate'		=> date('t')
+				);
+			}
+			$arr=array(
+				'title'=>'Event Feed '.$eid,
+				'items'=>$items
+			);
+			$this->load->view('feed/feed',$arr);
+			return;
+		}else{ 
+			$this->template->write('feedurl','http://joind.in/event/blog/feed/'.$eid);
 		}
 		
 		$arr=array(
 			'evt_detail'=>$this->event_model->getEventDetail($eid),
 			'action'	=>$act,
-			'posts'		=>$this->ebp->getPosts($eid),
+			'posts'		=>$posts,
 			'pid'		=>$pid,
 			'msg'		=>$msg
 		);
