@@ -296,6 +296,7 @@ class Event extends Controller {
 		$this->load->model('event_model');
 		$this->load->model('event_comments_model');
 		$this->load->model('user_attend_model','uam');
+		$this->load->model('event_blog_posts_model','ebp');
 		
 		$events		= $this->event_model->getEventDetail($id);
 		$evt_admins	= $this->event_model->getEventAdmins($id);
@@ -468,7 +469,12 @@ class Event extends Controller {
 		
 		$this->template->write('feedurl','/feed/event/'.$id);
 		// Only show if they're an admin...
-		if($arr['admin']){ $this->template->write_view('sidebar3','event/_sidebar-admin',
+		$this->template->write_view('sidebar3','event/_event_blog',array(
+			'entries'	=> $this->ebp->getPosts($id,true),
+			'eid'		=> $id
+		));
+		
+		if($arr['admin']){ $this->template->write_view('sidebar2','event/_sidebar-admin',
 			array(
 				'eid'			=> $id,
 				'is_private'	=> $events[0]->private,
@@ -480,7 +486,7 @@ class Event extends Controller {
 			// If there's no twitter results, don't show this sidebar
 			$this->template->write_view('sidebar2','event/_twitter-search',$other_data);
 		}
-		$this->template->write_view('sidebar3','event/_event_contact',array('eid'=>$id));
+		$this->template->write_view('sidebar2','event/_event_contact',array('eid'=>$id));
 		$this->template->render();
 		//$this->load->view('event/detail',$arr);
 	}
@@ -1083,16 +1089,58 @@ class Event extends Controller {
 		$this->template->render();
 	}
 	
-	function blog($id){
-		$this->load->mode('event_model');
+	function blog($act='view',$eid,$pid=null){
+		$this->load->model('event_model');
+		$this->load->library('validation');
+		$this->load->model('event_blog_posts_model','ebp');
 		
-		$rules	= array();
-		$fields	= array();
-		$this->validation->set_rules();
-		$this->validation->set_fields();
+		$msg	= '';
+		$rules	= array(
+			'title'		=> 'required',
+			'content'	=> 'required'
+		);
+		$fields	= array(
+			'title'		=> 'Post Title',
+			'content'	=> 'Post Content'
+		);
+		$this->validation->set_rules($rules);
+		$this->validation->set_fields($fields);
+		
+		if($act=='add' || $act=='edit'){
+			// Be sure they're either a site admin or event admin
+			if($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($eid)){
+				//they're okay
+			}else{ redirect('event/blog/view/'.$eid); }
+			
+			if($act=='edit'){
+				$detail=$this->ebp->getPostDetail($pid); //print_r($detail);
+				$this->validation->title	= $detail[0]->title;
+				$this->validation->content	= $detail[0]->content;
+			}
+			
+			if($this->validation->run()!=FALSE){
+				$data=array(
+					'title'		=> $this->input->post('title'),
+					'content'	=> $this->input->post('content')
+				);
+				if($pid){
+					$this->ebp->updatePost($pid,$data);
+					$msg='Post updated!';
+				}else{ 
+					$this->ebp->addPost($eid,$data); 
+					$msg='New post added!';
+				}
+			}else{
+				$msg=$this->validation->error_string;
+			}
+		}
 		
 		$arr=array(
-			'evt_detail'=>$this->event_model->getEventDetail($id)
+			'evt_detail'=>$this->event_model->getEventDetail($eid),
+			'action'	=>$act,
+			'posts'		=>$this->ebp->getPosts($eid),
+			'pid'		=>$pid,
+			'msg'		=>$msg
 		);
 		$this->template->write_view('content','event/blog',$arr);
 		$this->template->render();

@@ -1,11 +1,12 @@
 <?php
-//print_r($detail);
 //$posts	= array();
 $eid	= $evt_detail[0]->ID;
 $sub	= ($action=='add') ? 'Add Post' : 'Edit';
 switch($action){
-	case 'add': $fact='add/'.$eid; break;
-	case 'edit': $fact='edit/'.$eid.'/'.$pid; break;
+	case 'add': 	$fact='add/'.$eid; 
+		break;
+	case 'edit': 	$fact='edit/'.$eid.'/'.$pid; 
+		break;
 	default:
 		$fact='';
 }
@@ -44,18 +45,24 @@ echo form_open('event/blog/'.$fact);
 echo form_close();
 
 else: ?>
+<a class="btn-small" href="/event/view/<?php echo $eid; ?>">Back to event</a>
 <?php if(user_is_admin() || user_is_admin_event($eid)): ?>
 <a href="/event/blog/add/<?php echo $eid; ?>" class="btn-small">Add Entry</a>
-<br/><br/>
 <?php endif; ?>
+<br/><br/>
 
-<?php foreach($posts as $v): ?>
+<?php 
+if(count($posts)==0){
+	$this->load->view('msg_info', array('msg' => 'No posts have been made to this event\'s blog!'));
+}
+
+foreach($posts as $v): ?>
 <div class="detail">
-
+	<a name="<?php echo $v->ID; ?>"></a>
 	<h1><?=$v->title?></h1>
 	
 	<p class="info">
-		Written <strong><?php echo date('M j, Y',$v->date_posted); ?></strong> at <strong><?php echo date('H:i',$v->date_posted); ?></strong> (<?php echo $v->author_id; ?>)
+		Written <strong><?php echo date('M j, Y',$v->date_posted); ?></strong> at <strong><?php echo date('H:i',$v->date_posted); ?></strong> (<?php echo $v->full_name; ?>)
 	</p>
 
 	<div class="desc">
