@@ -14,6 +14,10 @@ $name=(!empty($udata[0]->full_name)) ? $udata[0]->full_name : $udata[0]->usernam
 		<ul>
     	<?php 
 			//print_r($content);
+			if(!$has_talks){
+				//the user has no talks!
+				echo 'This user has never given a talk!';
+			}
 			if(count($content)>0){
 				foreach($content as $k=>$v){
 					if($ct>$limit){ break; }
@@ -21,7 +25,7 @@ $name=(!empty($udata[0]->full_name)) ? $udata[0]->full_name : $udata[0]->usernam
 					echo '<li><a href="/user/view/'.$v->user_id.'">'.$name.'</a>';
 					$ct++;
 				}
-			}else{ echo 'This user has never given a talk!'; }
+			}else{ echo 'No related speakers or sessions!'; }
 		?>
 		</ul>
 	</div>

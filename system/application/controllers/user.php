@@ -275,7 +275,8 @@ class User extends Controller {
 		$block=array(
 			'title'		=> 'Other Speakers',
 			'content'	=> $this->user_model->getOtherUserAtEvt($uid),
-			'udata'		=> $arr['details']
+			'udata'		=> $arr['details'],
+			'has_talks'	=> (count($arr['talks'])==0) ? false : true
 		);
 
 		$this->template->write_view('sidebar2','user/_other-speakers',$block);
