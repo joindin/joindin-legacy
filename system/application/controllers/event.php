@@ -1082,6 +1082,21 @@ class Event extends Controller {
 		$this->template->write_view('content','event/contact',$arr);
 		$this->template->render();
 	}
+	
+	function blog($id){
+		$this->load->mode('event_model');
+		
+		$rules	= array();
+		$fields	= array();
+		$this->validation->set_rules();
+		$this->validation->set_fields();
+		
+		$arr=array(
+			'evt_detail'=>$this->event_model->getEventDetail($id)
+		);
+		$this->template->write_view('content','event/blog',$arr);
+		$this->template->render();
+	}
 	//----------------------
 	/**
 	 * Check the database to be sure we don't have another event by this name, pending or not

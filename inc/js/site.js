@@ -101,7 +101,7 @@ function commentIsSpam(cid,rtype){
 }
 function claimTalk(tid){
 	var obj=new Object();
-	obj.tid=tid;
+	obj.talk_id=tid;
 
 	apiRequest('talk','claim',obj, function(obj) {
 		//alert(obj);
