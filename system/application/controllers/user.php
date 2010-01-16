@@ -259,7 +259,7 @@ class User extends Controller {
 		
 		//$ret=$this->user_model->getOtherUserAtEvt($uid);
 		//echo '<pre>'; print_r($ret); echo '</pre>';
-
+		
 		$arr=array(
 			'details'	=> $details,
 			'comments'	=> $this->talks_model->getUserComments($uid),
@@ -270,7 +270,8 @@ class User extends Controller {
 			'uadmin'	=> $this->uadmin->getUserTypes($uid,array('talk','event')),
 			'reqkey' 	=> $reqkey,
 			'seckey' 	=> buildSecFile($reqkey),
-			'sort_type'	=> $sort_type
+			'sort_type'	=> $sort_type,
+			'pending_evt'=> $this->uadmin->getUserTypes($curr_user,array('event'),true)
 		);
 		$block=array(
 			'title'		=> 'Other Speakers',

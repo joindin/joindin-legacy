@@ -10,6 +10,18 @@
 <?php } ?>
 
 <div class="box">
+<?php if(count($pending_evt)>0): ?>
+<h2>Your Pending Events</h2>
+<?php 
+foreach($pending_evt as $e){
+	$det=$e->detail[0];
+	echo '<b style="font-size:14px">'.$det->event_name.'</b><br/>'.date('m.d.Y',$det->event_start).' - ';
+	echo date('m.d.Y',$det->event_end).'<br/>';
+}
+?>
+<br/>
+<?php endif; ?>
+
 <?php
 $uid=$details[0]->ID;
 
