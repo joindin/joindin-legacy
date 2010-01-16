@@ -30,9 +30,7 @@ class Addcomment extends BaseWsRequest {
 			'private'	=>'required|range[0,1]'
 		);
 		$ret=$this->CI->wsvalidate->validate($rules,$this->xml->action);
-		if(!$ret){
-			$unq=$this->CI->wsvalidate->validate_unique('talk_comments',$this->xml->action);
-		}
+		$unq=$this->CI->wsvalidate->validate_unique('talk_comments',$this->xml->action);
 
 		if(!$ret && $unq){
 			$in=(array)$this->xml->action;
@@ -49,10 +47,10 @@ class Addcomment extends BaseWsRequest {
 			);
 
 			$this->CI->db->insert('talk_comments',$arr);
-			$ret=array('output'=>'msg','data'=>array('items'=>array('msg'=>'Comment added!')));
+			$ret=array('output'=>'json','data'=>array('items'=>array('msg'=>'Comment added!')));
 		}else{ 
 			if(!$unq){ $ret='Non-unique entry!'; }
-			$ret=array('output'=>'msg','data'=>array('items'=>array('msg'=>$ret)));
+			$ret=array('output'=>'json','data'=>array('items'=>array('msg'=>$ret)));
 		}
 		return $ret;
 	}
