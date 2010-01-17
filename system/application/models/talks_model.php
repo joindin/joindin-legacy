@@ -75,8 +75,7 @@ class Talks_model extends Model {
 				select
 					talks.*,
 					CASE 
-						WHEN (talks.date_given > '.mktime(0,0,0).') THEN 1
-						WHEN (date_add(talks.date_given, interval 3 month) < '.mktime(0,0,0).') THEN 1
+						WHEN ((talks.date_given > '.mktime(0,0,0).') and (date_add(talks.date_given, interval 3 month) < '.mktime(0,0,0).')) THEN 1
 						WHEN (events.event_voting = "Y") THEN 1
 						ELSE 0
 						END as allow_comments,
