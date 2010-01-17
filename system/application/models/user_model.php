@@ -18,7 +18,8 @@ class User_model extends Model {
 	function validate($user,$pass,$plaintxt=false){
 		$ret=$this->getUser($user);
 		$pass=($plaintxt) ? $pass : md5($pass);
-		return (isset($ret[0]) && $ret[0]->password==$pass) ? true : false;
+		$valid = (isset($ret[0]) && $ret[0]->password==$pass) ? true : false;
+		return $valid;
 	}
 	function logStatus(){
 		//piece to handle the login/logout
