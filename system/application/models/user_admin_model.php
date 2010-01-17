@@ -34,13 +34,14 @@ class User_admin_model extends Model {
 		$ret=$q->result(); //print_r($ret);
 		return (empty($ret)) ? false : true;
 	}
-	function getUserTypes($uid,$types=null){
+	function getUserTypes($uid,$types=null,$pending=false){
 		$CI=&get_instance();
 		
 		$CI->load->model('talks_model');
 		$CI->load->model('event_model');
 		
 		$tadd=($types) ? " and ua.rtype in ('".implode("','",$types)."')" : '';
+		$pend=($pending) ? " and rcode='pending'" : '';
 		$sql=sprintf("
 			select
 				ua.uid,
@@ -51,9 +52,9 @@ class User_admin_model extends Model {
 			from
 				user_admin ua
 			where
-				ua.uid=%s
+				ua.uid=%s %s
 				%s
-		",$uid,$tadd);
+		",$uid,$pend,$tadd);
 		$q=$this->db->query($sql);
 		$ret=$q->result();
 		
