@@ -18,8 +18,16 @@ class Validate extends BaseWsRequest {
 	}
 	
 	public function run(){
-		//if we get here, we have a good login
-		$ret=array('success');
+		$this->CI->load->model('user_model');
+		
+		// check for a valid login
+		$ret = false;
+		if(isset($this->xml->action->uid) && isset($this->xml->action->pass)){
+			// check to see if they're a valid user
+			if($this->CI->user_model->validate($this->xml->action->uid,$this->xml->action->pass,true)){
+				$ret=true; 
+			}
+		}
 		return array('output'=>'json','data'=>array('items'=>$ret));
 	}
 	
