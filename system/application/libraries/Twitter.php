@@ -36,6 +36,31 @@ class Twitter {
 		//echo '<pre>'; print_r($ret); echo '</pre>';
 		return $ret;
 	}
+	function sendMsg($msg){
+		$uname	= $this->CI->config->item('twitter_user');
+		$pass	= $this->CI->config->item('twitter_pass');
+		$out	= '';
+		
+		$auth	= base64_encode($uname.':'.$pass);
+		$content= "status=".$msg;
+		
+		$out.="POST /statuses/update.xml HTTP/1.1\r\n";
+		$out.="Authorization: Basic ".$auth."\r\n";
+		$out.="Content-Length: ".strlen($content)."\r\n";
+		$out.="Host: twitter.com\r\n";
+		$out.="\r\n".$content;
+		
+		$response='';
+		$fp=fsockopen('twitter.com',80,$errno,$errstr);
+		if($fp){
+			fwrite($fp,$out);
+			while(!feof($fp)){
+				$response.=fread($fp,1024);
+			}
+			fclose($fp);
+		}
+		return $response;
+	}
 	
 }
 
