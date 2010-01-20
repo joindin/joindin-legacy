@@ -270,9 +270,12 @@ class User extends Controller {
 			'uadmin'	=> $this->uadmin->getUserTypes($uid,array('talk','event')),
 			'reqkey' 	=> $reqkey,
 			'seckey' 	=> buildSecFile($reqkey),
-			'sort_type'	=> $sort_type,
-			'pending_evt'=> $this->uadmin->getUserTypes($curr_user,array('event'),true)
+			'sort_type'	=> $sort_type
 		);
+		if($curr_user){
+			$arr['pending_evt']=$this->uadmin->getUserTypes($curr_user,array('event'),true);
+		}else{ $arr['pending_evt']=array(); }
+		
 		$block=array(
 			'title'		=> 'Other Speakers',
 			'content'	=> $this->user_model->getOtherUserAtEvt($uid),
