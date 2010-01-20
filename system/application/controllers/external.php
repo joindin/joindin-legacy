@@ -7,7 +7,7 @@ class External extends Controller {
 	}
 	
 	public function twitter_event_add(){
-		if(!defined('IS_CRON')){ echo 'here'; }else{ return false; }
+		if(!defined('IS_CRON')){ return false; }
 		
 		//http://conf.localhost/event/hot
 		$this->load->library('twitter');
