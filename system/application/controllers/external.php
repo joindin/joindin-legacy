@@ -20,6 +20,9 @@ class External extends Controller {
 		
 		$resp=$this->twitter->sendMsg($msg);
 	}
+	public function twitter_popular_talks(){
+		//send a message to twitter with some of the popular talks
+	}
 }
 
 ?>
