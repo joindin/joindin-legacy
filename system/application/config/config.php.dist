@@ -320,5 +320,9 @@ $config['token'] = 'th1st0k3n';
 $config['token_dir'] = dirname(__FILE__) . '/../../cache/ctokens';
 $config['token_rm'] = 5; //time in minutes
 
+// Save our Twitter login information
+$config['twitter_user']		= '';
+$config['twitter_pass']		= '';
+
 /* End of file config.php */
 /* Location: ./system/application/config/config.php */
