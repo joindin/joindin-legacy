@@ -18,8 +18,7 @@ class External extends Controller {
 		$msg="Joind.in Update: There's ".count($events)." great events coming up soon! ";
 		$msg.="Check them out! http://joind.in/event/upcoming";
 		
-		//$resp=$this->twitter->sendMsg($msg);
-		//var_dump($resp);
+		$resp=$this->twitter->sendMsg($msg);
 	}
 }
 
