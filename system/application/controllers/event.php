@@ -99,6 +99,7 @@ class Event extends Controller {
 
 	function calendar($year = null, $month = null, $day = null){
 		$this->load->model('event_model');
+		$this->load->model('user_attend_model');
 		$this->load->helper('reqkey');
 		$this->load->helper('mycal');
 
@@ -122,6 +123,18 @@ class Event extends Controller {
 		$end	= mktime(23, 59, 59, $month, $day === null ? date('t', $start) : $day, $year);
 
 		$events	= $this->event_model->getEventDetail(null, $start, $end);
+		// now add the attendance information
+		$uid = $this->user_model->getID();
+		foreach($events as $e) {
+			if($uid) {
+				$e->user_attending = $this->user_attend_model->chkAttend($uid, $e->ID);
+			} else {
+				$e->user_attending = false;
+			}
+
+		}
+
+
 		
 		/*$date_p	= explode('_',$date);
 		if(count($date_p)==2){
