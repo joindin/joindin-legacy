@@ -4,6 +4,10 @@ menu_pagetitle('About');
 <h1 class="icon-about">About</h1>
 
 <?php 
+$msg='<b>New to Joind.in?</b> Check out our <a href="/inc/files/User_Guide.pdf">User Guide</a> for the ins and outs
+of using Joind.in!';
+$this->load->view('msg_info', array('msg' => $msg));
+
 $msg='<b>We have an open API!</b> Looking for more information on how you can connect your applications to the 
 	Joind.in API? <a href="/api">Check out the docs here!</a>';
 $this->load->view('msg_info', array('msg' => $msg)); 
