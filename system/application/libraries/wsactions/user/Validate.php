@@ -21,11 +21,11 @@ class Validate extends BaseWsRequest {
 		$this->CI->load->model('user_model');
 		
 		// check for a valid login
-		$ret = false;
+		$ret = array('msg'=>'Invalid user');;
 		if(isset($this->xml->action->uid) && isset($this->xml->action->pass)){
 			// check to see if they're a valid user
 			if($this->CI->user_model->validate($this->xml->action->uid,$this->xml->action->pass,true)){
-				$ret=true; 
+				$ret = array('msg'=>'success');;
 			}
 		}
 		return array('output'=>'json','data'=>array('items'=>$ret));
