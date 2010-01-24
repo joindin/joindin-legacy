@@ -1128,8 +1128,12 @@ class Event extends Controller {
 					$this->ebp->updatePost($pid,$data);
 					$msg='Post updated!';
 				}else{ 
-					$this->ebp->addPost($eid,$data); 
+					$id=$this->ebp->addPost($eid,$data); 
 					$msg='New post added!';
+					
+					//Sent it out to twitter
+					$msg='Event Update: '.$data['title'].' http://joind.in/event/blog/view/'.$id;
+					$resp=$this->twitter->sendMsg($msg);
 				}
 			}else{
 				$msg=$this->validation->error_string;
