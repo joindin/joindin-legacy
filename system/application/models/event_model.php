@@ -5,13 +5,26 @@ class Event_model extends Model {
 	function Event_model(){
 		parent::Model();
 	}
+	/**
+	 * Match all data given against the events table to see 
+	 * is there's anything matching
+	 */
 	function isUnique($data){
 		$q=$this->db->get_where('events',$data);
 		$ret=$q->result();
 		return (empty($ret)) ? true : false;
 	}
-	function isUniqueStub($str){
-		$q=$this->db->get_where('events',array('event_stub'=>$str));
+	/**
+	 * Check the given string to see if it already exists
+	 * $pid is an optional event ID
+	 */
+	function isUniqueStub($str,$eid=null){
+		$this->db->select('ID')
+			->from('events')
+			->where('event_stub',$str);
+		if($eid){ $this->db->where('ID !=',$eid); }
+		
+		$q=$this->db->get();
 		$ret=$q->result();
 		return (empty($ret)) ? true : false;
 	}
@@ -21,16 +34,24 @@ class Event_model extends Model {
 		//get the event
 		//$this->db->where('ID',$id);
 		//$this->db->update('events',array('active'=>0,'pending'=>0));
-		// No mercy
+		
+		// No mercy!
 		$this->db->delete('events',array('ID'=>$id));
 		
 		$this->deleteEventTalks($id);
 		$this->deleteTalkComments($id);
 	}
+	/**
+	 * Remove the talks related to an event ID
+	 */
 	function deleteEventTalks($eid){
 		$this->db->where('event_id',$eid);
 		$this->db->update('talks',array('active'=>0));
 	}
+	/**
+	 * Remove the comments related to all of the talks on an event
+	 * (useful for cleanup)
+	 */
 	function deleteTalkComments($eid){
 		$talks=$this->getEventTalks($eid);
 		foreach($talks as $k=>$v){
@@ -39,6 +60,10 @@ class Event_model extends Model {
 		}
 	}
 	//---------------------
+	
+	/**
+	 * Sets the Active and Pending statuses to make the event show correctly
+	 */
 	function approvePendingEvent($id){
 		$arr=array(
 			'active'	=> 1,

@@ -27,6 +27,7 @@ echo '<h2>'.$title.'</h2>';
 
 if(isset($msg) && !empty($msg)){ $this->load->view('msg_info', array('msg' => $msg)); }
 if(isset($err) && !empty($err)){ $this->load->view('msg_info', array('msg' => $err)); }
+$priv=($evt_priv===true) ? ', Private Event' : '';
 ?>
 
 <div id="box">
@@ -34,7 +35,7 @@ if(isset($err) && !empty($err)){ $this->load->view('msg_info', array('msg' => $e
 	<label for="event"></label>
 	<?php
 	echo form_hidden('event_id',$ev->ID);
-	echo '<b><a href="/event/view/'.$ev->ID.'">'.escape($ev->event_name).'</a> ('.date('M d.Y',$ev->event_start).' - '.date('M d.Y',$ev->event_end).')</b>';
+	echo '<b><a href="/event/view/'.$ev->ID.'">'.escape($ev->event_name).'</a> ('.date('M d.Y',$ev->event_start).' - '.date('M d.Y',$ev->event_end).$priv.')</b>';
 	?>
 	<div class="clear"></div>
     </div>

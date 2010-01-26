@@ -1283,7 +1283,9 @@ class Event extends Controller {
 	function stub_check($str){
 		if(!empty($str)){
 			$this->load->model('event_model');
-			$ret=$this->event_model->isUniqueStub($str);
+			$id=($this->uri->segment(3)===false) ? null : $this->uri->segment(3);
+			
+			$ret=$this->event_model->isUniqueStub($str,$id);
 			if(!$ret){
 				$this->validation->set_message('stub_check','Please choose another stub - this one\'s already in use!');
 				return false;
