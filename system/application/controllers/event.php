@@ -1103,6 +1103,7 @@ class Event extends Controller {
 	function blog($act='view',$eid,$pid=null){
 		$this->load->model('event_model');
 		$this->load->library('validation');
+		$this->load->library('twitter');
 		$this->load->model('event_blog_posts_model','ebp');
 		
 		$msg	= '';
