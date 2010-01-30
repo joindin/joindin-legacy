@@ -75,7 +75,7 @@ class Talks_model extends Model {
 				select
 					talks.*,
 					CASE 
-						WHEN ((talks.date_given > '.mktime(0,0,0).') and (date_add(talks.date_given, interval 3 month) < '.mktime(0,0,0).')) THEN 1
+						WHEN (((talks.date_given - 86400) < '.mktime(0,0,0).') and (talks.date_given + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
 						WHEN (events.event_voting = "Y") THEN 1
 						ELSE 0
 						END as allow_comments,
@@ -254,6 +254,77 @@ class Talks_model extends Model {
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
+	
+	/**
+	 * Find users with popular talks that are also in upcoming events
+	 */
+	function getPopularUpcomingTalks($rating=4,$rand=true){
+		$this->CI=&get_instance();
+		$this->CI->load->model('event_model','em');
+		$this->CI->load->model('talks_model','tm');
+		$events = $this->CI->em->getUpcomingEvents(null);
+		$ret 	= array();
+		
+		foreach($events as $e){
+			$sql=sprintf('
+				select
+					u.ID
+				from
+					user u
+				where
+					u.ID in (
+						select
+							ua.uid
+						from
+							talks t, user_admin ua
+						where
+							t.event_id=%s and ua.rid=t.ID
+					)
+			',$e->ID);
+			$q=$this->db->query($sql);
+			$claimed_users=$q->result();
+			//var_dump($claimed_users);
+			
+			// Now, for these users, lets find ones that have good ratings
+			foreach($claimed_users as $u){
+				$sql=sprintf("
+					select 
+						(select 
+							round(avg(tcs.rating)) rate 
+						from 
+							talk_comments tcs 
+						where 
+							tcs.talk_id=t.ID
+						having rate>=%s) rating,
+						t.ID,
+						t.talk_title
+					from 
+						talks t
+					where 
+						t.ID in (
+							select
+								ua.rid
+							from
+								user_admin ua
+							where
+								ua.uid=%s and ua.rcode!='pending'
+						)
+					having
+						rating>=%s
+				",$rating,$u->ID,$rating);
+				$q=$this->db->query($sql);
+				$ratings=$q->result();
+				foreach($ratings as $v){ $ret[]=$v; }
+			}			
+		}
+		if($rand){ 
+			$tmp=array();
+			$rand=array_rand($ret,5);
+			foreach($rand as $r){ $tmp[]=$ret[$r]; }
+			return $tmp;
+		}else{ return $ret; }
+	}
+	
 	function linkUserRes($uid,$rid,$type,$code=null){		
 		$arr=array(
 			'uid'	=> $uid,
