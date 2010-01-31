@@ -297,7 +297,8 @@ class Talks_model extends Model {
 							tcs.talk_id=t.ID
 						having rate>=%s) rating,
 						t.ID,
-						t.talk_title
+						t.talk_title,
+						t.speaker
 					from 
 						talks t
 					where 
