@@ -14,7 +14,11 @@ class Talk extends Controller {
 		$this->load->library('validation');
 		$this->load->model('talks_model');
 		
-		$talks=$this->talks_model->getTalks(null,true);
+		//$talks=$this->talks_model->getTalks(null,true);
+		$talks=array();
+		//$talks['popular']=$this->talks_model->getPopularUpcomingTalks();
+		$talks['popular']	= $this->talks_model->getPopularTalks();
+		$talks['recent']	= $this->talks_model->getRecentTalks();
 		
 		$this->template->write_view('content','talk/main',array('talks'=>$talks),TRUE);
 		$this->template->render();

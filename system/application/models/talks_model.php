@@ -198,6 +198,44 @@ class Talks_model extends Model {
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
+	function getRecentTalks(){
+		$sql=sprintf("
+			select
+				t.talk_title,
+				t.ID,
+				count(tc.ID) as ccount,
+				(select round(avg(rating)) from talk_comments where talk_id=t.ID) as tavg,
+				e.ID eid,
+				e.event_name,
+				e.event_tz,
+				e.event_start
+			from
+				talks t,
+				events e,
+				talk_comments tc
+			where
+				e.ID=t.event_id and
+				tc.talk_id=t.ID and
+				event_id in (
+					(
+						select
+							e.ID
+						from
+							events e
+						where event_start>=%s
+					)
+				) and
+				t.ID in (
+					select rid from user_admin where rtype='talk' and rcode!='pending'
+				)
+			group by
+				t.ID
+			having
+				tavg>3 and ccount>3
+		",strtotime('-3 months'));
+		$q=$this->db->query($sql);
+		return $q->result();
+	}
 	function getUserTalks($uid){
 		$talks=array();
 		//select rid from user_admin where uid=$uid and rtype='talks'
@@ -320,8 +358,11 @@ class Talks_model extends Model {
 		}
 		if($rand){ 
 			$tmp=array();
-			$rand=array_rand($ret,5);
-			foreach($rand as $r){ $tmp[]=$ret[$r]; }
+			if(count($ret)>0){
+				$max=(count($ret)<5) ? count($ret)-1 : 5;
+				$rand=array_rand($ret,$max);
+				foreach($rand as $r){ $tmp[]=$ret[$r]; }
+			}
 			return $tmp;
 		}else{ return $ret; }
 	}
