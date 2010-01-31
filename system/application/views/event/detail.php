@@ -92,12 +92,12 @@ foreach($talks as $k=>$v){
 		<?php echo auto_p(auto_link(escape($det->event_desc))); ?>
 		<hr/>
 
-	<?php if(!empty($det->event_href) || !empty($det->event_hastag)){ ?>
+	<?php if(!empty($det->event_href) || !empty($det->event_hastag) || !empty($det->event_stub)){ ?>
 		<div class="related">
 		<?php if(!empty($det->event_href)){ ?>
 		<?php $hrefs = array_map('trim', explode(',',$det->event_href)); ?>
         	<div class="links">
-        		<h2 class="h4">Link<?php if (count($hrefs) != 1): ?>s<?php endif; ?></h2>
+        		<h2 class="h4">Event Link<?php if (count($hrefs) != 1): ?>s<?php endif; ?></h2>
     			<ul>
     			<?php foreach ($hrefs as $href): ?>
     				<li><a href="<?php echo escape($href); ?>" rel="external"><?php echo escape($href); ?></a></li>
@@ -116,8 +116,17 @@ foreach($talks as $k=>$v){
     			<?php endforeach; ?>
                 </ul>
         	</div>
-
         <?php } ?>
+		<?php if(!empty($det->event_stub)){ ?>
+			<div class="links">
+        		<h2 class="h4">Quicklink</h2>
+    			<ul>
+					<li>
+					<a href="/event/<?php echo $det->event_stub; ?>">http://joind.in/event/<?php echo $det->event_stub;?></a>
+					</li>
+                </ul>
+        	</div>
+		<?php } ?>
         	<div class="clear"></div>
     	</div>
     <?php } ?>
