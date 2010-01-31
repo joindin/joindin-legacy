@@ -50,7 +50,7 @@ class Event extends Controller {
 		foreach($events as $e) {
 			if($uid) {
 				$e->user_attending = $this->user_attend_model->chkAttend($uid, $e->ID);
-			}
+			}else{ $e->user_attending=false; }
 		}
 
 		$reqkey = buildReqKey();
