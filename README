@@ -1,8 +1,23 @@
 
-//--------------------
-// README for Joind.in
-//--------------------
+Joind.in (http://joind.in)
+#####################
 
-curr_db.sql : Current SQL information for the application. Table structure ready for import (as exported from MySQL)
+This is the source code for the Joind.in website - a resource set up to allow
+events to get real-time feedback from those attending. It also gives speakers a 
+way to claim and track their presentations over time.
+
+Included in the source:
+	- curr_db.sql
+		Current SQL information for the application. Table structure ready for 
+		import (as exported from MySQL)
+		
+	- seed.sql
+		Some seed data you can load into your (MySQL) database to get the ball rolling
+	
+	- Release of CodeIgniter
+	- Sample cron jobs (in /scripts)
+	
+You can find more on github: http://github.com/enygma/joind.in
+Issues should be filed at: http://github.com/enygma/joind.in/issues
 
 See LICENSE file for license information for this software
