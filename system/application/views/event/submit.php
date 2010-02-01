@@ -13,6 +13,7 @@ menu_pagetitle('Submit an event');
             <?php $this->load->view('msg_error', array('msg' => $this->validation->error_string)); ?>
     <?php endif; ?>
     
+	<h2>General</h2>
     <div class="row">
     	<label for="event_title">Event Title</label>
     	<?php echo form_input(array('name' => 'event_title', 'id' => 'event_title'), $this->validation->event_title); ?>
@@ -26,33 +27,35 @@ menu_pagetitle('Submit an event');
     
         <div class="clear"></div>
     </div>
-
-	<div class="row">
-    	<label for="event_stub">Event Stub</label>
-    	<?php echo form_input(array('name' => 'event_stub', 'id' => 'event_stub'), $this->validation->event_stub); ?>
-    	<span style="color:#3567AC;font-size:11px">What's a <b>stub</b>? It's the "shortcut" part of the URL to help visitors get to your event faster. An example might be "phpevent" in the address "joind.in/event/phpevent". If no stub is given, you can still get to it via the event ID.</span>
-        <div class="clear"></div>
-    </div>
     
+	<h2>Contact Information</h2>
     <div class="row">
     	<label for="event_contact_name">Event Contact Name</label>
     	<?php echo form_input(array('name' => 'event_contact_name', 'id' => 'event_contact_name'), $this->validation->event_contact_name); ?>
     
         <div class="clear"></div>
     </div>
-    
+
     <div class="row">
     	<label for="event_contact_email">Event Contact Email</label>
     	<?php echo form_input(array('name' => 'event_contact_email', 'id' => 'event_contact_email'), $this->validation->event_contact_email); ?>
     
         <div class="clear"></div>
     </div>
+
+	<h2>Event Details</h2>
+	<div class="row">
+    	<label for="event_stub">Event Stub</label>
+    	<?php echo form_input(array('name' => 'event_stub', 'id' => 'event_stub'), $this->validation->event_stub); ?>
+        <div class="clear"></div>
+    </div>
 	
 	<?php if($is_auth): ?>
 	<div class="row">
 		<label for="is_event_admin">Event Admin</label>
-		<?php echo form_checkbox('is_admin','1',$this->validation->is_admin); ?> I'm an event admin!<br/>
-		<span style="color:#3567AC;font-size:11px">If you're an organizer or an admin for this event, check the box above. As an admin you will be able to manage talks, approve claims, moderate comments, etc.</span><br/>
+		<?php 
+			$is_admin=(isset($this->validation->is_admin)) ? $this->validation->is_admin : '';
+			echo form_checkbox('is_admin','1',$is_admin); ?> I'm an event admin!<br/>
 		<div class="clear"></div>
 	</div>
 	<?php endif; ?>
@@ -95,15 +98,14 @@ menu_pagetitle('Submit an event');
 	<div class="row">
         <label for="start">Is the event private?</label>
 		<?php
-		echo form_radio('is_private','Y',$this->validation->is_private).' Yes'; 
-		echo form_radio('is_private','N',$this->validation->is_private). 'No'; 
+		$is_priv=(isset($this->validation->is_private)) ? $this->validation->is_private : '';
+		echo form_radio('is_private','Y',$is_priv).' Yes'; 
+		echo form_radio('is_private','N',$is_priv). 'No'; 
 		?><br/>
-		<span style="color:#3567AC;font-size:11px"><b>Private Events:</b> If a event is marked as private, it's an 
-		invite-only event.</span><br/>
 	</div>
 
 	<div class="row">
-		<span style="color:#3567AC;font-size:11px"><b>Call for Papers:</b> Are you opening up your conference to let people submit ideas? Use these dates to define the time period when they can submit! </span><br/>
+		<label for="start">Call for Papers</label>
 		<?php 
 			$js='onClick="toggleCfpDates()"';
 			echo form_checkbox('is_cfp','1',$this->validation->cfp_checked,$js); 

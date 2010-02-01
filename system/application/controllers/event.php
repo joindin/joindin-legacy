@@ -760,7 +760,16 @@ class Event extends Controller {
 				foreach($admin_emails as $user){
 					mail($user->email,$subj,$msg,'From: submissions@joind.in');
 				}
-				$arr['msg']='<style="font-size:13px;font-weight:bold">Event successfully submitted! We\'ll get back with you soon!</span>';
+				$arr['msg']=sprintf('
+					<style="font-size:16px;font-weight:bold">Event successfully submitted!</span><br/>
+					<style="font-size:14px;">
+						Once your event is approved, you (or the contact person for the event) will
+						receive an email letting you know it\'s been accepted.
+						<br/><br/>
+						We\'ll get back with you soon!
+					</span>
+					</span>
+				');
 				
 				//put it into the database
 				$this->db->insert('events',$sub_arr);
@@ -779,6 +788,7 @@ class Event extends Controller {
 		$arr['is_auth']=$this->user_model->isAuth();
 		
 		$this->template->write_view('content','event/submit',$arr);
+		$this->template->write_view('sidebar2','event/_submit-sidebar',array());
 		$this->template->render();
 	}
 	
