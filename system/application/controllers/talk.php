@@ -85,7 +85,8 @@ class Talk extends Controller {
 			$this->validation->given_day= date('d',$det[0]->date_given);
 			$this->validation->given_yr = date('Y',$det[0]->date_given);
 			
-			$this->validation->session_lang=$det[0]->lang;
+			$this->validation->session_lang=$det[0]->lang_name;
+			$this->validation->session_type=$det[0]->tcid;
 		}else{
 			$det=array();
 			//set the date to the start date of the event
