@@ -21,3 +21,20 @@ You can find more on github: http://github.com/enygma/joind.in
 Issues should be filed at: http://github.com/enygma/joind.in/issues
 
 See LICENSE file for license information for this software
+
+Installation
+#####################
+The following are the steps you'll need to correctly install the software:
+
+- Download/clone the current repository and drop it into a 
+	web-accessible directory for your server
+
+- In the system/cache directory, create a web server-writeable 
+	directory called "ctokens"
+	
+- In your system/application/config directory:
+	> Make a database.php file using the database.php.dist as a guide
+	> Make a config.php file using the config.php.dist as a guide
+	
+Grab the curr_db.sql file and drop it into your database 
+and you should be good to go!
