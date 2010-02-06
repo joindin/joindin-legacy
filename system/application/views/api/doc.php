@@ -221,7 +221,7 @@ Below are the request types that you can make to the API including input and out
 <div style="padding-left:10px">
 <b class="req_title">Action Type:</b> addcomment<br/>
 <b class="req_title">Description:</b> Add a comment to the event<br/>
-<b class="req_title">Authentication:</b> required<br />
+<b class="req_title">Authentication:</b> not required (but user name used with comment if supplied)<br />
 <b class="req_title">Input:</b>
 	<ul>
 		<li>event_id: integer, id of the event to add the comment to
