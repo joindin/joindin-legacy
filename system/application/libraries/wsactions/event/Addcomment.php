@@ -22,16 +22,18 @@ class Addcomment extends BaseWsRequest {
 	//-----------------------
 	public function run(){
 		$this->CI->load->library('wsvalidate');
+		$unq = false;
 		
 		$rules=array(
 			'event_id'	=>'required',
 			'comment'	=>'required'
 		);
 		$ret=$this->CI->wsvalidate->validate($rules,$this->xml->action);
-		if(!$ret){
-			$unq=$this->CI->wsvalidate->validate_unique('event_comments',$this->xml->action);
+		if($ret) {
+			return array('output'=>'json','data'=>array('items'=>array('msg'=>$ret)));
 		}
-		if(!$ret && $unq){
+		$unq=$this->CI->wsvalidate->validate_unique('event_comments',$this->xml->action);
+		if($unq){
 			$in=(array)$this->xml->action;			
 			$user=$this->CI->user_model->getUser($this->xml->auth->user);
 
@@ -44,10 +46,10 @@ class Addcomment extends BaseWsRequest {
 				'cname'		=> $user[0]->full_name
 			);
 			$this->CI->db->insert('event_comments',$arr);
-			$ret=array('output'=>'msg','data'=>array('items'=>array('msg'=>'Comment added!')));
+			$ret=array('output'=>'json','data'=>array('items'=>array('msg'=>'Comment added!')));
 		}else{ 
 			if(!$unq){ $ret='Non-unique entry!'; }
-			$ret=array('output'=>'msg','data'=>array('items'=>array('msg'=>$ret)));
+			$ret=array('output'=>'json','data'=>array('items'=>array('msg'=>$ret)));
 		}
 		return $ret;
 	}
