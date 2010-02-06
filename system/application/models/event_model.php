@@ -5,13 +5,26 @@ class Event_model extends Model {
 	function Event_model(){
 		parent::Model();
 	}
+	/**
+	 * Match all data given against the events table to see 
+	 * is there's anything matching
+	 */
 	function isUnique($data){
 		$q=$this->db->get_where('events',$data);
 		$ret=$q->result();
 		return (empty($ret)) ? true : false;
 	}
-	function isUniqueStub($str){
-		$q=$this->db->get_where('events',array('event_stub'=>$str));
+	/**
+	 * Check the given string to see if it already exists
+	 * $pid is an optional event ID
+	 */
+	function isUniqueStub($str,$eid=null){
+		$this->db->select('ID')
+			->from('events')
+			->where('event_stub',$str);
+		if($eid){ $this->db->where('ID !=',$eid); }
+		
+		$q=$this->db->get();
 		$ret=$q->result();
 		return (empty($ret)) ? true : false;
 	}
@@ -19,16 +32,26 @@ class Event_model extends Model {
 	function deleteEvent($id){
 		//we don't actually delete them...just make them inactive
 		//get the event
-		$this->db->where('ID',$id);
-		$this->db->update('events',array('active'=>0,'pending'=>0));
+		//$this->db->where('ID',$id);
+		//$this->db->update('events',array('active'=>0,'pending'=>0));
+		
+		// No mercy!
+		$this->db->delete('events',array('ID'=>$id));
 		
 		$this->deleteEventTalks($id);
 		$this->deleteTalkComments($id);
 	}
+	/**
+	 * Remove the talks related to an event ID
+	 */
 	function deleteEventTalks($eid){
 		$this->db->where('event_id',$eid);
 		$this->db->update('talks',array('active'=>0));
 	}
+	/**
+	 * Remove the comments related to all of the talks on an event
+	 * (useful for cleanup)
+	 */
 	function deleteTalkComments($eid){
 		$talks=$this->getEventTalks($eid);
 		foreach($talks as $k=>$v){
@@ -37,6 +60,10 @@ class Event_model extends Model {
 		}
 	}
 	//---------------------
+	
+	/**
+	 * Sets the Active and Pending statuses to make the event show correctly
+	 */
 	function approvePendingEvent($id){
 		$arr=array(
 			'active'	=> 1,
@@ -173,7 +200,13 @@ class Event_model extends Model {
 	}
 
 	function getUpcomingEvents($inc_curr=false, $limit = null){
-	    $this->db->select('events.*, COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments, abs(0) as user_attending');
+	    //$this->db->select('events.*, COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments, abs(0) as user_attending');
+		$this->db->select('events.*, 
+              CASE 
+                WHEN (((events.event_start - 86400) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
+                ELSE 0
+                END as allow_comments,
+              COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments', false);
 	    $this->db->from('events');
 		$this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
 		$this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');

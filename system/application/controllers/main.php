@@ -31,13 +31,13 @@ class Main extends Controller {
 		foreach($arr['hot_events'] as $e) {
 			if($uid) {
 				$e->user_attending = $this->user_attend_model->chkAttend($uid, $e->ID);
-			}
+			}else{ $e->user_attending=false; }
 		}
 
 		foreach($arr['upcoming_events'] as $e) {
 			if($uid) {
 				$e->user_attending = $this->user_attend_model->chkAttend($uid, $e->ID);
-			}
+			}else{ $e->user_attending=false; }
 		}
 
 		$this->template->write_view('content','main/index',$arr,TRUE);

@@ -50,7 +50,7 @@ class Event extends Controller {
 		foreach($events as $e) {
 			if($uid) {
 				$e->user_attending = $this->user_attend_model->chkAttend($uid, $e->ID);
-			}
+			}else{ $e->user_attending=false; }
 		}
 
 		$reqkey = buildReqKey();
@@ -760,7 +760,16 @@ class Event extends Controller {
 				foreach($admin_emails as $user){
 					mail($user->email,$subj,$msg,'From: submissions@joind.in');
 				}
-				$arr['msg']='<style="font-size:13px;font-weight:bold">Event successfully submitted! We\'ll get back with you soon!</span>';
+				$arr['msg']=sprintf('
+					<style="font-size:16px;font-weight:bold">Event successfully submitted!</span><br/>
+					<style="font-size:14px;">
+						Once your event is approved, you (or the contact person for the event) will
+						receive an email letting you know it\'s been accepted.
+						<br/><br/>
+						We\'ll get back with you soon!
+					</span>
+					</span>
+				');
 				
 				//put it into the database
 				$this->db->insert('events',$sub_arr);
@@ -779,6 +788,7 @@ class Event extends Controller {
 		$arr['is_auth']=$this->user_model->isAuth();
 		
 		$this->template->write_view('content','event/submit',$arr);
+		$this->template->write_view('sidebar2','event/_submit-sidebar',array());
 		$this->template->render();
 	}
 	
@@ -1103,6 +1113,7 @@ class Event extends Controller {
 	function blog($act='view',$eid,$pid=null){
 		$this->load->model('event_model');
 		$this->load->library('validation');
+		$this->load->library('twitter');
 		$this->load->model('event_blog_posts_model','ebp');
 		
 		$msg	= '';
@@ -1141,8 +1152,12 @@ class Event extends Controller {
 					$this->ebp->updatePost($pid,$data);
 					$msg='Post updated!';
 				}else{ 
-					$this->ebp->addPost($eid,$data); 
+					$id=$this->ebp->addPost($eid,$data); 
 					$msg='New post added!';
+					
+					//Sent it out to twitter
+					$msg='Event Update: '.$data['title'].' http://joind.in/event/blog/view/'.$id;
+					$resp=$this->twitter->sendMsg($msg);
 				}
 			}else{
 				$msg=$this->validation->error_string;
@@ -1279,7 +1294,9 @@ class Event extends Controller {
 	function stub_check($str){
 		if(!empty($str)){
 			$this->load->model('event_model');
-			$ret=$this->event_model->isUniqueStub($str);
+			$id=($this->uri->segment(3)===false) ? null : $this->uri->segment(3);
+			
+			$ret=$this->event_model->isUniqueStub($str,$id);
 			if(!$ret){
 				$this->validation->set_message('stub_check','Please choose another stub - this one\'s already in use!');
 				return false;

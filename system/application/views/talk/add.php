@@ -27,6 +27,7 @@ echo '<h2>'.$title.'</h2>';
 
 if(isset($msg) && !empty($msg)){ $this->load->view('msg_info', array('msg' => $msg)); }
 if(isset($err) && !empty($err)){ $this->load->view('msg_info', array('msg' => $err)); }
+$priv=($evt_priv===true) ? ', Private Event' : '';
 ?>
 
 <div id="box">
@@ -34,7 +35,7 @@ if(isset($err) && !empty($err)){ $this->load->view('msg_info', array('msg' => $e
 	<label for="event"></label>
 	<?php
 	echo form_hidden('event_id',$ev->ID);
-	echo '<b><a href="/event/view/'.$ev->ID.'">'.escape($ev->event_name).'</a> ('.date('M d.Y',$ev->event_start).' - '.date('M d.Y',$ev->event_end).')</b>';
+	echo '<b><a href="/event/view/'.$ev->ID.'">'.escape($ev->event_name).'</a> ('.date('M d.Y',$ev->event_start).' - '.date('M d.Y',$ev->event_end).$priv.')</b>';
 	?>
 	<div class="clear"></div>
     </div>
@@ -64,12 +65,26 @@ if(isset($err) && !empty($err)){ $this->load->view('msg_info', array('msg' => $e
     </div>
     <div class="row">
 	<label for="session_type">Session Type</label>
-	<?php echo form_dropdown('session_type',$cat_list,$this->validation->session_type); ?>
+	<?php 
+		if(isset($this->validation->session_type)){
+			foreach($cat_list as $k=>$v){
+				if($v==$this->validation->session_type){ $stype=$k; }
+			}
+		}else{ $stype=$this->validation->session_type; }
+		echo form_dropdown('session_type',$cat_list,$stype); 
+	?>
 	<div class="clear"></div>
     </div>
     <div class="row">
 	<label for="session_lang">Session Language</label>
-	<?php echo form_dropdown('session_lang',$lang_list,$this->validation->session_lang); ?>
+	<?php 
+		if(isset($this->validation->session_lang)){
+			foreach($lang_list as $k=>$v){
+				if(trim($v)==trim($this->validation->session_lang)){ $slang=$k; }
+			}
+		}else{ $slang=$this->validation->session_lang; }
+		echo form_dropdown('session_lang',$lang_list,$slang); 
+	?>
 	<div class="clear"></div>
     </div>
     <div class="row">

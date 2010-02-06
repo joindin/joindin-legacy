@@ -26,6 +26,7 @@ class Event_blog_posts_model extends Model {
 		$data['event_id']	= $eid;
 		$data['ID']			= null;
 		$this->db->insert('event_blog_posts',$data);
+		return $this->db->insert_id();
 	}
 	function updatePost($pid,$data){
 		$data['author_id']=$this->session->userdata('ID');

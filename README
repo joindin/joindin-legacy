@@ -1,8 +1,40 @@
 
-//--------------------
-// README for Joind.in
-//--------------------
+Joind.in (http://joind.in)
+#####################
 
-curr_db.sql : Current SQL information for the application. Table structure ready for import (as exported from MySQL)
+This is the source code for the Joind.in website - a resource set up to allow
+events to get real-time feedback from those attending. It also gives speakers a 
+way to claim and track their presentations over time.
+
+Included in the source:
+	- curr_db.sql
+		Current SQL information for the application. Table structure ready for 
+		import (as exported from MySQL)
+		
+	- seed.sql
+		Some seed data you can load into your (MySQL) database to get the ball rolling
+	
+	- Release of CodeIgniter
+	- Sample cron jobs (in /scripts)
+	
+You can find more on github: http://github.com/enygma/joind.in
+Issues should be filed at: http://github.com/enygma/joind.in/issues
 
 See LICENSE file for license information for this software
+
+Installation
+#####################
+The following are the steps you'll need to correctly install the software:
+
+- Download/clone the current repository and drop it into a 
+	web-accessible directory for your server
+
+- In the system/cache directory, create a web server-writeable 
+	directory called "ctokens"
+	
+- In your system/application/config directory:
+	> Make a database.php file using the database.php.dist as a guide
+	> Make a config.php file using the config.php.dist as a guide
+	
+Grab the curr_db.sql file and drop it into your database 
+and you should be good to go!

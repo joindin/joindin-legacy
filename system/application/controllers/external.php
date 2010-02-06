@@ -23,6 +23,18 @@ class External extends Controller {
 	public function twitter_popular_talks(){
 		//send a message to twitter with some of the popular talks
 	}
+	public function twitter_latest_blog(){
+		if(!defined('IS_CRON')){ return false; }
+		$this->load->model('blog_posts_model','bpm');
+		
+		$detail=$this->bpm->getPostDetail();
+		//print_r($detail[0]);
+		
+		$msg='Joind.in Update: Latest blog post - '.$detail[0]->title.' ';
+		$msg.='http://joind.in/blog/view/'.$detail[0]->ID;
+		
+		$resp=$this->twitter->sendMsg($msg);
+	}
 }
 
 ?>

@@ -14,7 +14,11 @@ class Talk extends Controller {
 		$this->load->library('validation');
 		$this->load->model('talks_model');
 		
-		$talks=$this->talks_model->getTalks(null,true);
+		//$talks=$this->talks_model->getTalks(null,true);
+		$talks=array();
+		//$talks['popular']=$this->talks_model->getPopularUpcomingTalks();
+		$talks['popular']	= $this->talks_model->getPopularTalks();
+		$talks['recent']	= $this->talks_model->getRecentTalks();
 		
 		$this->template->write_view('content','talk/main',array('talks'=>$talks),TRUE);
 		$this->template->render();
@@ -70,6 +74,9 @@ class Talk extends Controller {
 		if($id){
 			$det	= $this->talks_model->getTalks($id); //print_r($det);
 			$events	= $this->event_model->getEventDetail($det[0]->event_id);
+			
+			$is_private=($events[0]->private=='Y') ? true : false;
+			
 			foreach($det[0] as $k=>$v){
 				$this->validation->$k=$v;
 			}
@@ -78,13 +85,16 @@ class Talk extends Controller {
 			$this->validation->given_day= date('d',$det[0]->date_given);
 			$this->validation->given_yr = date('Y',$det[0]->date_given);
 			
-			$this->validation->session_lang=$det[0]->lang;
+			$this->validation->session_lang=$det[0]->lang_name;
+			$this->validation->session_type=$det[0]->tcid;
 		}else{
 			$det=array();
 			//set the date to the start date of the event
 			$this->validation->given_mo = date('m',$events[0]->event_start);
 			$this->validation->given_day= date('d',$events[0]->event_start);
 			$this->validation->given_yr = date('Y',$events[0]->event_start);
+			
+			$is_private=false;
 		}
 		if(isset($eid)){ $this->validation->event_id=$eid; }
 		
@@ -141,12 +151,13 @@ class Talk extends Controller {
 			}
 		}
 		$out=array(
-			'msg'	=>(isset($msg)) ? $msg : '',
-			'err'	=>(isset($err)) ? $err : '',
-			'events'=>$events,
-			'cats'	=>$cats,
-			'langs'	=>$langs,
-			'detail'=>$det
+			'msg'		=>(isset($msg)) ? $msg : '',
+			'err'		=>(isset($err)) ? $err : '',
+			'events'	=>$events,
+			'cats'		=>$cats,
+			'langs'		=>$langs,
+			'detail'	=>$det,
+			'evt_priv'	=>$is_private
 		);
 		$this->template->write_view('content','talk/add',$out,TRUE);
 		$this->template->render();

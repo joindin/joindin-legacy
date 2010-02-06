@@ -198,6 +198,44 @@ class Talks_model extends Model {
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
+	function getRecentTalks(){
+		$sql=sprintf("
+			select
+				t.talk_title,
+				t.ID,
+				count(tc.ID) as ccount,
+				(select round(avg(rating)) from talk_comments where talk_id=t.ID) as tavg,
+				e.ID eid,
+				e.event_name,
+				e.event_tz,
+				e.event_start
+			from
+				talks t,
+				events e,
+				talk_comments tc
+			where
+				e.ID=t.event_id and
+				tc.talk_id=t.ID and
+				event_id in (
+					(
+						select
+							e.ID
+						from
+							events e
+						where event_start>=%s
+					)
+				) and
+				t.ID in (
+					select rid from user_admin where rtype='talk' and rcode!='pending'
+				)
+			group by
+				t.ID
+			having
+				tavg>3 and ccount>3
+		",strtotime('-3 months'));
+		$q=$this->db->query($sql);
+		return $q->result();
+	}
 	function getUserTalks($uid){
 		$talks=array();
 		//select rid from user_admin where uid=$uid and rtype='talks'
@@ -254,6 +292,81 @@ class Talks_model extends Model {
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
+	
+	/**
+	 * Find users with popular talks that are also in upcoming events
+	 */
+	function getPopularUpcomingTalks($rating=4,$rand=true){
+		$this->CI=&get_instance();
+		$this->CI->load->model('event_model','em');
+		$this->CI->load->model('talks_model','tm');
+		$events = $this->CI->em->getUpcomingEvents(null);
+		$ret 	= array();
+		
+		foreach($events as $e){
+			$sql=sprintf('
+				select
+					u.ID
+				from
+					user u
+				where
+					u.ID in (
+						select
+							ua.uid
+						from
+							talks t, user_admin ua
+						where
+							t.event_id=%s and ua.rid=t.ID
+					)
+			',$e->ID);
+			$q=$this->db->query($sql);
+			$claimed_users=$q->result();
+			//var_dump($claimed_users);
+			
+			// Now, for these users, lets find ones that have good ratings
+			foreach($claimed_users as $u){
+				$sql=sprintf("
+					select 
+						(select 
+							round(avg(tcs.rating)) rate 
+						from 
+							talk_comments tcs 
+						where 
+							tcs.talk_id=t.ID
+						having rate>=%s) rating,
+						t.ID,
+						t.talk_title,
+						t.speaker
+					from 
+						talks t
+					where 
+						t.ID in (
+							select
+								ua.rid
+							from
+								user_admin ua
+							where
+								ua.uid=%s and ua.rcode!='pending'
+						)
+					having
+						rating>=%s
+				",$rating,$u->ID,$rating);
+				$q=$this->db->query($sql);
+				$ratings=$q->result();
+				foreach($ratings as $v){ $ret[]=$v; }
+			}			
+		}
+		if($rand){ 
+			$tmp=array();
+			if(count($ret)>0){
+				$max=(count($ret)<5) ? count($ret)-1 : 5;
+				$rand=array_rand($ret,$max);
+				foreach($rand as $r){ $tmp[]=$ret[$r]; }
+			}
+			return $tmp;
+		}else{ return $ret; }
+	}
+	
 	function linkUserRes($uid,$rid,$type,$code=null){		
 		$arr=array(
 			'uid'	=> $uid,
