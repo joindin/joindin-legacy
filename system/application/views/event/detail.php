@@ -338,7 +338,13 @@ $ct=0;
 
 		<?php 
 		foreach ($comments as $k => $v): 
-		    $uname	= ($v->user_id!=0) ? '<a href="/user/view/'.$v->user_id.'">'.escape($v->cname).'</a>' : escape($v->cname);
+			if($v->user_id != 0) {
+				$uname = '<strong><a href="/user/view/'.$v->user_id.'">'.escape($v->cname).'</a></strong>';
+			} elseif(isset($v->cname)) {
+				$uname = '<strong>'.escape($v->cname).'</strong>';
+			} else {
+				$uname = "<span class=\"anonymous\">Anonymous</span>";
+			}
 		    $type	= ($det->event_start>time()) ? 'Suggestion' : 'Feedback';
 		?>
     	<div id="comment-<?php echo $v->ID ?>" class="row row-event-comment">

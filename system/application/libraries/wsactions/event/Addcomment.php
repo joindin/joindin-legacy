@@ -13,11 +13,8 @@ class Addcomment extends BaseWsRequest {
 		$this->xml=$xml;
 	}
 	public function checkSecurity($xml){
-		$this->CI->load->model('user_model');
-		
-		// Check to see if what they gave us is a valid login
-		// Check for a valid login
-		return ($this->isValidLogin($xml)) ? true : false;
+		// users can comment anonymously, don't require login
+		return true;
 	}
 	//-----------------------
 	public function run(){
@@ -36,15 +33,20 @@ class Addcomment extends BaseWsRequest {
 		if($unq){
 			$in=(array)$this->xml->action;			
 			$user=$this->CI->user_model->getUser($this->xml->auth->user);
+			if($user && !$this->isValidLogin($this->xml)) {
+				return array('output'=>'json','data'=>array('items'=>array('msg'=>'Invalid permissions')));
+			}
 
 			$arr=array(
 				'event_id'	=> $in['event_id'],
 				'comment'	=> $in['comment'],
 				'date_made'	=> time(),
-				'user_id'	=> $user[0]->ID,
-				'active'	=> 1,
-				'cname'		=> $user[0]->full_name
+				'active'	=> 1
 			);
+			if($user) {
+				$arr['user_id'] = $user[0]->ID;
+				$arr['cname'] = $user[0]->full_name;
+			}
 			$this->CI->db->insert('event_comments',$arr);
 			$ret=array('output'=>'json','data'=>array('items'=>array('msg'=>'Comment added!')));
 		}else{ 
