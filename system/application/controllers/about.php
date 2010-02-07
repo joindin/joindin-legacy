@@ -68,5 +68,9 @@ class About extends Controller {
 		$this->template->write_view('content','about/contact',$arr);
 		$this->template->render();
 	}
+	function iphone_support(){
+		$this->template->write_view('content','about/iphone_support');
+		$this->template->render();
+	}
 }
 ?>
