@@ -397,10 +397,6 @@ class Event extends Controller {
 		$fields=array(
 			'event_comment'	=>'Event Comment'
 		);
-		if(!$is_auth){
-			$rules['cname']	= 'required';
-			$fields['cname']= 'Name';
-		}
 		$this->validation->set_fields($fields);
 		$this->validation->set_rules($rules);
 		
@@ -416,11 +412,10 @@ class Event extends Controller {
 				$ec['cname']	= $this->session->userdata('username');
 			}else{
 				$ec['user_id']	= 0;
-				$ec['cname']	= $this->input->post('cname');
 			}
 			// If they're logged in, dont bother with the spam check
 			if(!$is_auth){
-				$def_ret=$this->defensio->check($ec['cname'],$ec['comment'],$is_auth,'/event/view/'.$id);
+				$def_ret=$this->defensio->check('Anonymous',$ec['comment'],$is_auth,'/event/view/'.$id);
 				$is_spam=(string)$def_ret->spam;
 			}else{ $is_spam='false'; }
 			
