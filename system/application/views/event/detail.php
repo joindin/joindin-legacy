@@ -383,14 +383,6 @@ $ct=0;
 
     	?>
 
-    <?php if($user_id == 0): ?>
-    	<div class="row">
-        	<label for="cname">Name</label>
-        	<?php echo form_input('cname',$this->validation->cname); ?>
-            <div class="clear"></div>
-        </div>
-    <?php endif; ?>
-    	
     	<div class="row">
         	<label for="type">Type</label>
         	<div class="input"><?=$type?></div>
