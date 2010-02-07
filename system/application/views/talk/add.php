@@ -66,6 +66,7 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
     <div class="row">
 	<label for="session_type">Session Type</label>
 	<?php 
+		$stype = false;
 		if(isset($this->validation->session_type)){
 			foreach($cat_list as $k=>$v){
 				if($v==$this->validation->session_type){ $stype=$k; }
@@ -78,6 +79,7 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
     <div class="row">
 	<label for="session_lang">Session Language</label>
 	<?php 
+		$slang = false;
 		if(isset($this->validation->session_lang)){
 			foreach($lang_list as $k=>$v){
 				if(trim($v)==trim($this->validation->session_lang)){ $slang=$k; }
