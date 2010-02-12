@@ -4,10 +4,11 @@ menu_pagetitle('About');
 <h1 class="icon-about">About</h1>
 
 <?php 
-$msg='<img src="/inc/img/iphone.jpg" height="70" style="margin-right:10px" align="left"/><b style="font-size:13px">Check out our 
+$msg='<a href="/about/iphone_support"><img src="/inc/img/iphone.jpg" height="70" style="margin-right:10px" 
+	align="left" border="0"/></a><b style="font-size:13px">Check out our 
 	new iPhone application!</b><br/>Want the best way to keep up with all of the events and comments from 
 	Joind.in directly from your phone? <a href="http://itunes.apple.com/us/app/joind-in/id355184913?mt=8">Download
-	our iPhone app</a> and get the latest and greatest!';
+	our iPhone app here!</a><br/><a href="/about/iphone_support">Visit our App Support page</a>';
 $this->load->view('msg_info', array('msg' => $msg));
 
 $msg='<b>New to Joind.in?</b> Check out our <a href="/inc/files/User_Guide.pdf">User Guide</a> for the ins and outs

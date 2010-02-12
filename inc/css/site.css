@@ -326,6 +326,7 @@ a {
 #page-talk #menu-talk,
 #page-search #menu-search,
 #page-about #menu-about,
+#page-help #menu-help,
 #page-blog #menu-blog {
       background-position:0 -150px;
       border-width:0;
@@ -334,6 +335,7 @@ a {
 #page-talk #menu-talk a,
 #page-search #menu-search a,
 #page-about #menu-about a,
+#page-help #menu-help a,
 #page-blog #menu-blog a {
       background-position:100% -150px;
       padding-bottom:4px;
