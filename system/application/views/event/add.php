@@ -128,11 +128,15 @@ echo '<h2>'.$title.'</h2>';
     	<label for="event_icon">Event Icon:</label>
 	<input type="file" name="event_icon" size="20" /><br/><br/>
 	<img src="/inc/img/event_icons/<?php echo $curr_img; ?>"/>
+	<span style="color:#3567AC;font-size:11px">
+		<b>Please Note:</b> Only icons that are 90 pixels by 90 pixels will be accepted!<br/>
+		Allowed types: gif, jpg, png
+	</span>
     </div>
     <div class="clear"></div>
     <div class="row">
     	<label for="event_link">Event Link(s):</label>
-	<?php echo form_input('event_href',$this->validation->event_href); ?>
+	<?php echo form_input('event_href',$this->validation->event_href); ?><br/>
     </div>
     <div class="clear"></div>
     <div class="row">
