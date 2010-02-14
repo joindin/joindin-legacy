@@ -25,6 +25,7 @@
 		if(count($evt_admin)==0){ echo 'No event admins'; }
 		?>
 		</ul>
+		<b>Username:</b> 
 		<input type="text" name="add_admin_user" id="add_admin_user" />
 		<input type="button" name="add_admin_btn" id="add_admin_btn" value="add" onClick="addEventAdmin(<?php echo $eid; ?>)" />
 		<br/><br/>
