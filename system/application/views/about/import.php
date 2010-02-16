@@ -11,6 +11,7 @@ The XML file's contents and format will be validated for correctness.
 <p><b>Tips:</b></p>
 <ul>
 <li>If there's multiple speakers on the same session, seperate their names with commas
+<li>All dates must be in the XSD:dateTime format (YYYY-MM-DDTHH24:MI:SS+00:00), <a href="http://books.xmlschemata.org/relaxng/ch19-77049.html">see here</a>
 </ul>
 
 <div style="padding:3px;border:1px solid #000000;background-color:#F8F8F8">
@@ -18,9 +19,9 @@ The XML file's contents and format will be validated for correctness.
 
 &lt;?xml version="1.0" encoding="UTF-8"?>
 &lt;event> 
-  &lt;event_title>Sample Event #1</event_title>
-  &lt;event_start_date>2009-02-10T08:00:21+00:00</event_start_date>
-  &lt;event_end_date>2009-02-14T17:00:21+00:00</event_end_date>
+  &lt;event_title>Sample Event #1&lt;/event_title>
+  &lt;event_start_date>2009-02-10T08:00:21+00:00&lt;/event_start_date>
+  &lt;event_end_date>2009-02-14T17:00:21+00:00&lt;/event_end_date>
   &lt;event_desc>
     This is my sample event...
   &lt;/event_desc>
