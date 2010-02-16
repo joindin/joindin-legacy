@@ -944,13 +944,14 @@ class Event extends Controller {
 			try{
 				$data=file_get_contents($p);
 				$this->xmlimport->import($data,'event',$eid);
+				$msg='Import Successful! <a href="/event/view/'.$eid.'">View event</a>';
 			}catch(Exception $e){
 				$msg='Error: '.$e->getMessage();
 			}
 			unlink($p);
 		}else{
 			//print_r($this->upload->display_errors()); 
-			$this->upload->display_errors();
+			$msg=$this->upload->display_errors();
 		}
 
 		$arr=array(
