@@ -1166,7 +1166,7 @@ class Event extends Controller {
 					$msg='New post added!';
 					
 					//Sent it out to twitter
-					$msg='Event Update: '.$data['title'].' http://joind.in/event/blog/view/'.$id;
+					$msg='Event Update: '.$data['title'].' http://joind.in/event/blog/view/'.$eid;
 					$resp=$this->twitter->sendMsg($msg);
 				}
 			}else{
