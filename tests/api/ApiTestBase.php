@@ -1,8 +1,12 @@
 <?php
 	require_once 'PHPUnit/Framework.php';
 	 
-	class ApiTest extends PHPUnit_Framework_TestCase {
+	class ApiTestBase extends PHPUnit_Framework_TestCase {
 		
+		public function testTest() {
+			$this->assertTrue(true);
+		}
+
 		protected function makeApiRequest( $type, $action, $params, $creds=null, $useCache=true ) {
 			// $creds === false means don't use credentials
 			// $creds === null  means use default credentials
