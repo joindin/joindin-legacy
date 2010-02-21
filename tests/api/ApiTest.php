@@ -3,7 +3,7 @@
 	 
 	class ApiTest extends PHPUnit_Framework_TestCase {
 		
-		protected function makeApiRequest( $type, $action, $params, $creds=null ) {
+		protected function makeApiRequest( $type, $action, $params, $creds=null, $useCache=true ) {
 			// $creds === false means don't use credentials
 			// $creds === null  means use default credentials
 			// $creds === array($user, $pass) otherwise
@@ -30,12 +30,30 @@
 				}
 			}
 			$payload = json_encode($req);
+
+			$cache_filename = sys_get_temp_dir().DIRECTORY_SEPARATOR.'joindin-test-'.md5($url.$payload);
+
+			if ($useCache) {
+				// Check for reading from cache
+				if (file_exists($cache_filename) && is_readable($cache_filename)) {
+					$cache_data = json_decode(file_get_contents($cache_filename));
+					if (time() < $cache_data->expires) {
+						return $cache_data->payload;
+					}
+				}
+			}
+
 			$request = new HttpRequest($url, HttpRequest::METH_POST);
 			$request->addRawPostData($payload);
 			$request->setHeaders(array('Content-Type'=>'application/json'));
 			$response = $request->send();
 
-			return $response;
+			if ($useCache) {
+				$cache_data = json_encode( array('payload'=>$response->getBody(), 'expires'=>(time()+3600)) );
+				file_put_contents($cache_filename, $cache_data);
+			}
+
+			return $response->getBody();
 		}
 
 	}
