@@ -1,8 +1,8 @@
 <?php
 
-	require_once 'ApiTest.php';
+	require_once 'ApiTestBase.php';
 	 
-	class EventGetList extends ApiTest {
+	class EventGetList extends ApiTestBase {
 
 		public function testGetListUpcomingWithAuth() {
 
