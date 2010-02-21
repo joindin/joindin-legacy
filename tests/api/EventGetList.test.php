@@ -8,8 +8,7 @@
 
 			$response = self::makeApiRequest('event', 'getlist', array('event_type'=>'upcoming'));
 
-			$this->assertTrue( $response->getResponseCode() === 200, "Response code is not 200" );
-			$res = json_decode($response->getBody());
+			$res = json_decode($response);
 			$this->assertTrue( $res !== null, "Could not decode JSON response");
 			foreach($res as $event) {
 				$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_OBJECT, $event);
