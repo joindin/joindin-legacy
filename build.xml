@@ -24,7 +24,7 @@
 			sourcecode="yes"
 			defaultpackagename="MHTest"
 			output="HTML:Smarty:PHP">
-			<fileset dir="./system">
+			<fileset dir="./system/application">
 				<include name="**/*.php" />
 			</fileset>
 		</phpdoc>
@@ -33,30 +33,36 @@
 	<!-- PHP copy/paste analysis -->
 	<target name="phpcpd">
 		<echo msg="PHP Copy/Paste..." />
-		<exec command="phpcpd --log-pmd=${builddir}/logs/pmd.xml system" escape="false" logoutput="true" />
+		<exec command="phpcpd --log-pmd=${builddir}/logs/pmd.xml system/application" escape="false" logoutput="true" />
 	</target>
 
 	<!-- PHP dependency checker -->
 	<target name="pdepend">
 		<echo msg="PHP Depend..." />
-		<exec command="pdepend --jdepend-xml=${builddir}/logs/jdepend.xml ./system" escape="false" logoutput="true" />
+		<exec command="pdepend --jdepend-xml=${builddir}/logs/jdepend.xml ./system/application" escape="false" logoutput="true" />
 	</target>
 
 	<!-- PHP CodeSniffer -->
 	<target name="phpcs">
 		<echo msg="PHP CodeSniffer..." />
-		<exec command="phpcs --standard=ZEND --report=checkstyle ./system > ${builddir}/logs/checkstyle.xml" escape="false" logoutput="true" />
+		<exec command="phpcs --standard=ZEND --report=checkstyle ./system/application > ${builddir}/logs/checkstyle.xml" escape="false" logoutput="true" />
 	</target>
 
-	<!-- Unit Tests & coverage analysis -->
+	<!-- PHP mess detector -->
+	<target name="phpmd">
+		<exec command="phpmd system/application xml codesize > ${builddir}/logs/phpmd.xml" logoutput="true" />
+	</target>
+
+	<!-- Unit Tests -->
 	<target name="phpunit">
 		<echo msg="PHP Unit..." />
 		<exec command="phpunit ./tests" logoutput="true" />
 	</target>
 
+	<!-- Full reported unit tests & coverage analysis -->
 	<target name="fullphpunit">
 		<echo msg="PHP Unit..." />
-		<exec command="phpunit --log-junit ${builddir}/logs/phpunit.xml --log-pmd ${builddir}/logs/phpunit.pmd.xml --coverage-clover ${builddir}/logs/coverage/clover.xml --coverage-html ${builddir}/logs/coverage/ ./tests" logoutput="true" />
+		<exec command="phpunit --log-junit ${builddir}/logs/phpunit.xml --coverage-clover ${builddir}/logs/coverage/clover.xml --coverage-html ${builddir}/logs/coverage/ ./tests" logoutput="true" />
 	</target>
 
 </project>
