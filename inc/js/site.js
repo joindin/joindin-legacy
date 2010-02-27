@@ -102,7 +102,8 @@ function commentIsSpam(cid,rtype){
 function claimTalk(tid){
 	var obj=new Object();
 	obj.talk_id=tid;
-
+	$('#claim_btn').html('Sending Claim >>');
+	
 	apiRequest('talk','claim',obj, function(obj) {
 		//alert(obj);
 		$('#claim_btn').css('display','none');
