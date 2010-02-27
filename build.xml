@@ -13,7 +13,6 @@
 		<mkdir dir="${builddir}/logs" />
 		<mkdir dir="${builddir}/logs/coverage" />
 		<mkdir dir="${builddir}/docs" />
-		<mkdir dir="${builddir}/app" />
 	</target>
 
 	<!-- PHP API Documentation -->
