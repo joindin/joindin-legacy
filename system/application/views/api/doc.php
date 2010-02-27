@@ -97,6 +97,7 @@ Below are the request types that you can make to the API including input and out
 		<li><a href="#evt_attend">Attend Event</a>
 		<li><a href="#add_evt_comment">Add Comment</a>
 		<li><a href="#get_evt_comment">Get Event Comments</a>
+		<li><a href="#add_evt_track">Add Event Track</a>
 	</ul>
 <li>Talks
 	<ul>
@@ -271,6 +272,25 @@ Below are the request types that you can make to the API including input and out
 		<li>ID: integer, ID number of the comment
 		<li>cname: string, If a registered user made the comment, their username is here
 		<li>private: integer, If the comment is marked as private or not
+	</ul>
+	<a href="#top">[top]</a><br/><br/>
+</div>
+
+<a name="add_evt_track"></a>
+<b class="req_name" style="color:#5181C1;font-size:14px">Add Event Track</b>
+<div style="padding-left:10px">
+<b class="req_title">Action Type:</b> addtrack<br/>
+<b class="req_title">Description:</b> Add a track to an existing event<br/>
+<b class="req_title">Authentication:</b> valid login, admin for event<br />
+<b class="req_title">Input:</b>
+	<ul>
+		<li>event_id: integer, ID number of event to get comments for
+		<li>track_name: string, name for the track
+		<li>track_desc: string, descrption for the track
+	</ul>
+<b class="req_title">Output:</b> An array of values containing the following for each comment
+	<ul>
+		<li>msg: Either success or one of a few failure messages indicating the problem
 	</ul>
 	<a href="#top">[top]</a><br/><br/>
 </div>
