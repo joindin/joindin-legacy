@@ -105,7 +105,7 @@ class Event_model extends Model {
 		
 		$cols='events.event_name,events.event_start,events.event_end,events.event_lat,events.event_long,';
 		$cols.='events.ID as event_ID,events.event_loc,events.event_desc,events.active,';
-		$cols.='events.event_stub,events.event_tz,events.event_icon,events.pending,events.event_hastag,';
+		$cols.='events.event_stub,events.event_tz_cont,event_tz_place,events.event_icon,events.pending,events.event_hastag,';
 		$cols.='events.event_href,events.event_cfp_start,events.event_cfp_end,events.private';
 		
 	    $this->db->select('events.*, 
