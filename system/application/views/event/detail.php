@@ -112,7 +112,7 @@ foreach($talks as $k=>$v){
     			<ul>
     			<?php foreach ($hashtags as $hashtag): ?>
     				<?php $hashtag = str_replace('#', '', $hashtag); ?>
-    				<li>#<a href="http://hashtags.org/tag/<?php echo escape($hashtag); ?>" rel="external"><?php echo escape($hashtag); ?></a></li>
+    				<li>#<a href="http://hashtags.org/<?php echo escape($hashtag); ?>" rel="external"><?php echo escape($hashtag); ?></a></li>
     			<?php endforeach; ?>
                 </ul>
         	</div>
