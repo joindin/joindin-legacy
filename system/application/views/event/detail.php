@@ -248,6 +248,11 @@ $ct=0;
 					?>
         		<td>
         			<a href="/talk/view/<?php echo $iv->ID; ?>"><?php echo escape($iv->talk_title); ?></a>
+					<?php
+						if(date('H', $iv->date_given) != '0') {
+							echo date(' (H:i)',$iv->date_given);
+						}
+					?>
         		</td>
         		<!--<td>
         			<img src="/inc/img/flags/<?php echo $iv->lang; ?>.gif" alt="<?php echo escape($iv->lang); ?>"/>

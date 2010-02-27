@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="joindin" basedir="." default="app">
+	<property name="builddir" value="./build" />
+
+	<target name="clean">
+		<echo msg="Clean..." />
+		<delete dir="${builddir}" />
+	</target>
+
+	<target name="prepare">
+		<echo msg="Prepare..." />
+		<mkdir dir="${builddir}" />
+		<mkdir dir="${builddir}/logs" />
+		<mkdir dir="${builddir}/logs/coverage" />
+		<mkdir dir="${builddir}/docs" />
+		<mkdir dir="${builddir}/app" />
+	</target>
+
+	<!-- PHP API Documentation -->
+	<target name="phpdoc">
+		<echo msg="PHP Documentor..." />
+		<phpdoc title="API Documentation"
+			destdir="${builddir}/docs"
+			sourcecode="yes"
+			defaultpackagename="MHTest"
+			output="HTML:Smarty:PHP">
+			<fileset dir="./system">
+				<include name="**/*.php" />
+			</fileset>
+		</phpdoc>
+	</target>
+
+	<!-- PHP copy/paste analysis -->
+	<target name="phpcpd">
+		<echo msg="PHP Copy/Paste..." />
+		<exec command="phpcpd --log-pmd=${builddir}/logs/pmd.xml system" escape="false" />
+	</target>
+
+	<!-- PHP dependency checker -->
+	<target name="pdepend">
+		<echo msg="PHP Depend..." />
+		<exec command="pdepend --jdepend-xml=${builddir}/logs/jdepend.xml ./system" escape="false" />
+	</target>
+
+	<!-- PHP CodeSniffer -->
+	<target name="phpcs">
+		<echo msg="PHP CodeSniffer..." />
+		<exec command="phpcs --standard=ZEND --report=checkstyle ./system > ${builddir}/logs/checkstyle.xml" escape="false" />
+	</target>
+
+	<!-- Unit Tests & coverage analysis -->
+	<target name="phpunit" depends="clean,prepare">
+		<echo msg="PHP Unit..." />
+		<exec command="phpunit --log-junit ${builddir}/logs/phpunit.xml --log-pmd ${builddir}/logs/phpunit.pmd.xml --coverage-clover ${builddir}/logs/coverage/clover.xml --coverage-html ${builddir}/logs/coverage/ ./tests" />
+	</target>
+
+</project>

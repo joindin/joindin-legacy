@@ -827,7 +827,10 @@ class Event extends Controller {
 		
 		$this->load->model('event_model');
 		$this->load->library('sendemail');
+		$this->load->library('twitter');
 		$this->event_model->approvePendingEvent($eid);
+		
+		//print_r($this->event_model->getEventDetail($eid));
 		
 		// If we have admins for the event, send them an email to let them know
 		$admin_list	= $this->event_model->getEventAdmins($eid);
@@ -835,6 +838,14 @@ class Event extends Controller {
 			$evt_detail	= $this->event_model->getEventDetail($eid);
 			$this->sendemail->sendEventApproved($eid,$evt_detail,$admin_list);
 		}
+		
+		// @todo get this and twitter class working with short URL
+		/*echo '<pre>';
+		$link=$this->twitter->short_bitly('http://joind.in/event/view/'.$eid); 
+		echo '</pre>';*/
+		
+		// Send the new approved event to Twitter
+		//$this->twitter->sendMsg($msg);
 		
 		// Finally, redirect back to the event!
 		redirect('event/view/'.$eid); 
@@ -933,13 +944,14 @@ class Event extends Controller {
 			try{
 				$data=file_get_contents($p);
 				$this->xmlimport->import($data,'event',$eid);
+				$msg='Import Successful! <a href="/event/view/'.$eid.'">View event</a>';
 			}catch(Exception $e){
 				$msg='Error: '.$e->getMessage();
 			}
 			unlink($p);
 		}else{
 			//print_r($this->upload->display_errors()); 
-			$this->upload->display_errors();
+			$msg=$this->upload->display_errors();
 		}
 
 		$arr=array(
@@ -1089,6 +1101,9 @@ class Event extends Controller {
 			// Grab the event admins
 			$admins	= $this->event_model->getEventAdmins($eid);
 			
+			//If there's no event admins, we send it to the site admins
+			if(empty($admins)){ $admins=$this->user_model->getSiteAdminEmail(); }
+			
 			// Push the emails over to the mailer class
 			$evt_name	= $arr['detail'][0]->event_name;
 			$msg		= 'Subject: '.$this->input->post('subject')."\n\n";
@@ -1151,7 +1166,7 @@ class Event extends Controller {
 					$msg='New post added!';
 					
 					//Sent it out to twitter
-					$msg='Event Update: '.$data['title'].' http://joind.in/event/blog/view/'.$id;
+					$msg='Event Update: '.$data['title'].' http://joind.in/event/blog/view/'.$eid;
 					$resp=$this->twitter->sendMsg($msg);
 				}
 			}else{

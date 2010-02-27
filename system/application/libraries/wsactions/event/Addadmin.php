@@ -27,7 +27,7 @@ class Addadmin extends BaseWsRequest {
 			}
 			if(!is_int($user)){ 
 				$udata=$this->CI->um->getUser($user);
-				if(!empty($udata)){ 
+				if(!empty($udata)){
 					$user=$udata[0]->ID;
 				}else{ return false; }
 			}
@@ -64,7 +64,19 @@ class Addadmin extends BaseWsRequest {
 		if(!is_int($eid)){ return array('output'=>'json','data'=>array('items'=>array('msg'=>'Invalid Event ID!'))); }
 		
 		$udata=$this->CI->um->getUser($user);
-		if(empty($udata)){ return false; }
+		if(empty($udata)){ 
+			//Let's search too...
+			$udata=$this->CI->um->search($user);
+			if(!empty($udata)){
+				if(count($udata)>1){
+					return array('output'=>'json','data'=>
+						array('items'=>array('msg'=>'Too many results returned! Please try again...'))
+					);
+				}
+			}else{
+				return array('output'=>'json','data'=>array('items'=>array('msg'=>'User not found!')));
+			}
+		}
 		
 		// Check to see if they're already an admin 
 		if(!$this->CI->uam->hasPerm($udata[0]->ID,$eid,$type)){

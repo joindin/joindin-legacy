@@ -4,12 +4,14 @@ class Twitter {
 	
 	var $CI			= null;
 	var $api_url	= 'http://search.twitter.com/search.json?q=';
+	var $blogin		= 'enygmadae';
+	var $bkey		= 'R_2c00b3a60109aba55b7628405fffb570';
 	
 	function Twitter(){
 		$this->CI=&get_instance();
 	}
 	//---------------------
-	function querySearchAPI($term=null){
+	public function querySearchAPI($term=null){
 		$this->CI->load->library('cache');
 		
 		if(!$term || empty($term[0])){ return array(); }
@@ -36,7 +38,7 @@ class Twitter {
 		//echo '<pre>'; print_r($ret); echo '</pre>';
 		return $ret;
 	}
-	function sendMsg($msg){
+	public function sendMsg($msg,$link=null){
 		$uname	= $this->CI->config->item('twitter_user');
 		$pass	= $this->CI->config->item('twitter_pass');
 		$out	= '';
@@ -60,6 +62,12 @@ class Twitter {
 			fclose($fp);
 		}
 		return $response;
+	}
+	//---------------------
+	public function short_bitly($link){
+		$url='http://api.bit.ly/shorten?version=2.0.1&login='.$this->blogin.'&apiKey='.$this->bkey.'&longUrl='.urlencode($link);
+		$ret=json_decode(file_get_contents($url));
+		return $ret->results->{"http://joind.in"}->shortUrl;
 	}
 	
 }

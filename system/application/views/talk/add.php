@@ -50,7 +50,7 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
 	<div class="clear"></div>
     </div>
     <div class="row">
-	<label for="session_date">Date of Session</label>
+	<label for="session_date">Date and Time of Session</label>
 	<?php
 	foreach(range(1,12) as $v){
 	    $m=date('M',mktime(0,0,0,$v,1,date('Y')));
@@ -60,12 +60,18 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
 	echo form_dropdown('given_mo',$given_mo,$this->validation->given_mo);
 	echo form_dropdown('given_day',$given_day,$this->validation->given_day);
 	echo form_dropdown('given_yr',$given_yr,$this->validation->given_yr);
+	?> at <?php
+	foreach(range(0,23) as $v){ $given_hour[$v]=$v; }
+	foreach(range(0,55, 5) as $v){ $given_min[$v]=$v; }
+	echo form_dropdown('given_hour', $given_hour, $this->validation->given_hour);
+	echo form_dropdown('given_min', $given_min, $this->validation->given_min);
 	?>
 	<div class="clear"></div>
     </div>
     <div class="row">
 	<label for="session_type">Session Type</label>
-	<?php 
+	<?php
+		$stype=null;
 		if(isset($this->validation->session_type)){
 			foreach($cat_list as $k=>$v){
 				if($v==$this->validation->session_type){ $stype=$k; }
@@ -77,7 +83,8 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
     </div>
     <div class="row">
 	<label for="session_lang">Session Language</label>
-	<?php 
+	<?php
+		$slang=null;
 		if(isset($this->validation->session_lang)){
 			foreach($lang_list as $k=>$v){
 				if(trim($v)==trim($this->validation->session_lang)){ $slang=$k; }

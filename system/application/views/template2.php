@@ -53,8 +53,9 @@ $title[] = 'Joind.in';
     		<ul>
 				<li id="menu-event"><a href="/event">Events</a>
 				<li id="menu-talk"><a href="/talk">Talks</a>
-				<li id="menu-search"><a href="/search">Search</a>
+				<!--<li id="menu-search"><a href="/search">Search</a>-->
 				<li id="menu-about" class="sep"><a href="/about">About</a>
+				<li id="menu-help"><a href="/help">Help</a>
 				<li id="menu-blog"><a href="/blog">Blog</a>
     		</ul>
     		<div class="clear"></div>
@@ -165,6 +166,7 @@ $title[] = 'Joind.in';
         	<a href="/talk">Talks</a> | 
         	<a href="/search">Search</a> | 
         	<a href="/about">About</a> | 
+			<a href="/help">Help</a> | 
         	<a href="/blog">Blog</a> | 
 			<a href="/api">API</a> |
         	<a href="/about/contact">Contact</a>

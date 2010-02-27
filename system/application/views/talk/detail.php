@@ -100,7 +100,11 @@ $rstr = rating_image($det->tavg);
 	<h1><?=$det->talk_title?></h1>
 
 	<p class="info">
-		<strong><?php echo $speaker_txt; ?></strong> (<?php echo date('M j, Y',$det->date_given); ?>)
+		<?php
+		if(date('H', $det->date_given) != '0') { $date_string = 'M j, Y \a\t H:i'; }
+		else { $date_string = 'M j, Y'; }
+		?>
+		<strong><?php echo $speaker_txt; ?></strong> (<?php echo date($date_string,$det->date_given); ?>)
 		<br/> 
 		<?php echo escape($det->tcid); ?> at <strong><a href="/event/view/<?php echo $det->event_id; ?>"><?php echo escape($det->event_name); ?></a></strong> (<?php echo escape($det->lang_name);?>)
 	</p>

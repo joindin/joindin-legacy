@@ -43,7 +43,6 @@ class Talk extends Controller {
 		$this->load->helper('form');
 		$this->load->library('validation');
 
-		$events	= $this->event_model->getEventDetail($eid);
 		$cats	= $this->categories_model->getCats();
 		$langs	= $this->lang_model->getLangs();
 		
@@ -63,6 +62,8 @@ class Talk extends Controller {
 			'given_mo'		=>'Given Month',
 			'given_day'		=>'Given Day',
 			'given_yr'		=>'Given Year',
+			'given_hour'	=>'Given Hour',
+			'given_min'		=>'Given Minute',
 			'slides_link'	=>'Slides Link',
 			'talk_desc'		=>'Talk Description',
 			'session_type'	=>'Session Type',
@@ -84,15 +85,20 @@ class Talk extends Controller {
 			$this->validation->given_mo = date('m',$det[0]->date_given);
 			$this->validation->given_day= date('d',$det[0]->date_given);
 			$this->validation->given_yr = date('Y',$det[0]->date_given);
+			$this->validation->given_hour= date('H',$det[0]->date_given);
+			$this->validation->given_min= date('i',$det[0]->date_given);
 			
 			$this->validation->session_lang=$det[0]->lang_name;
 			$this->validation->session_type=$det[0]->tcid;
 		}else{
+			$events	= $this->event_model->getEventDetail($eid);
 			$det=array();
 			//set the date to the start date of the event
 			$this->validation->given_mo = date('m',$events[0]->event_start);
 			$this->validation->given_day= date('d',$events[0]->event_start);
 			$this->validation->given_yr = date('Y',$events[0]->event_start);
+			$this->validation->given_hour= date('H',$events[0]->event_start);
+			$this->validation->given_min= date('i',$events[0]->event_start);
 			
 			$is_private=false;
 		}
@@ -104,7 +110,9 @@ class Talk extends Controller {
 				'speaker'		=> $this->input->post('speaker'),
 				'slides_link'	=> $this->input->post('slides_link'),
 				'date_given'	=> mktime(
-					0,0,0,
+					$this->input->post('given_hour'),
+					$this->input->post('given_min'),
+					0,
 					$this->input->post('given_mo'),
 					$this->input->post('given_day'),
 					$this->input->post('given_yr')
@@ -472,10 +480,9 @@ class Talk extends Controller {
 	//------------------------
 	function given_mo_check($str){
 		$t=mktime(
-			0,0,0,
-			/*$this->validation->given_mo,
-			$this->validation->given_day,
-			$this->validation->given_yr*/
+			$this->input->post('given_hour'),
+			$this->input->post('given_min'),
+			0,
 			$this->input->post('given_mo'),
 			$this->input->post('given_day'),
 			$this->input->post('given_yr')
