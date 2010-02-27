@@ -6,6 +6,7 @@ as an event administrator or as an attendee coming to rank your favorite session
 </p>
 <h3>iPhone Application</h3>
 <ul>
+<li><a href="http://itunes.apple.com/us/app/joind-in/id355184913?mt=8">Joind.in at the App Store</a>
 <li><a href="/about/iphone_support">iPhone Application Support</a>
 </ul>
 
