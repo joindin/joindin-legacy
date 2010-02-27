@@ -154,24 +154,28 @@ class Event_model extends Model {
 				talks.event_id,
 				talks.ID,
 				talks.talk_desc,
+				events.event_tz_cont,
+				events.event_tz_place,
 				(select l.lang_abbr from lang l where talks.lang=l.ID) lang,
 				(select round(avg(rating)) from talk_comments where talk_id=talks.ID) rank,
 				(select count(rating) from talk_comments where talk_id=talks.ID) comment_count,
-				(select 
+				ifnull((select 
 					cat.cat_title
 				from 
-					talk_cat tac,categories cat 
+					talk_cat tac
+					left join categories cat on tac.cat_id=cat.ID
 				where 
-					tac.talk_id=talks.ID and tac.cat_id=cat.ID
-				) tcid
+					tac.talk_id=talks.ID
+				), \'Talk\') tcid
 			from
 				talks
 			inner join lang on (lang.ID = talks.lang)
+			inner join events on events.ID = talks.event_id
 			where
 				event_id=%s and
-				active=1
+				talks.active=1
 			order by
-				speaker asc
+				talks.date_given asc, talks.speaker asc
 		',$id);
 		$q=$this->db->query($sql);
 		return $q->result();

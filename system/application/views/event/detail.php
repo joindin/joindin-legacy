@@ -3,7 +3,6 @@ $det			= $events[0]; //print_r($det);
 $cl				= array();
 $times_claimed	= array();
 $claimed_uids	= array();
-//echo 'has event started?'; var_dump($started);
 
 foreach($claimed as $k=>$v){ 
 	//echo '<pre>'; print_r($v); echo '</pre>';
@@ -12,17 +11,7 @@ foreach($claimed as $k=>$v){
 	$claimed_uids[$v->rid]=$v->uid;
 }
 
-//echo '<pre>'; print_r($times_claimed); echo '</pre>';
-
 menu_pagetitle('Event: ' . escape($det->event_name));
-
-//echo '<pre>'; print_r($claimed); echo '</pre>';
-
-foreach($claimed as $k=>$v){
-	//echo "update user_admin set rcode='".$v->tdata['codes'][0]."' where uid=".$v->uid." and rid=".$v->rid." and rtype='talk';<br/>";
-}
-
-//echo '<pre>'; print_r($talks); echo '</pre>';
 
 // Pick out our "event-related" ones...
 $evt_sessions	= array();
@@ -37,8 +26,6 @@ foreach($talks as $k=>$v){
     }
 }
 
-//echo '<pre>'; print_r($cl); echo '</pre>';
-//echo '<pre>'; print_r($slides); echo '</pre>';
 ?>
 <div class="detail">
 	
@@ -166,12 +153,11 @@ foreach($talks as $k=>$v){
 
 <?php
 
+// work through the talks list and split into days
 $by_day=array();
-//echo '<pre>'; print_r($talks); echo '</pre>';
-foreach($talks as $v){
-	//echo '<a href="/talk/view/'.$v->ID.'">'.$v->talk_title.' ('.$v->speaker.')</a><br/>';
-	$day=date('Y-m-d',$v->date_given);
-	$by_day[$day][]=$v;
+foreach($talks as $t){
+	$day = strtotime($t->display_date);
+	$by_day[$day][]=$t;
 }
 ksort($by_day);
 $ct=0;
@@ -198,37 +184,33 @@ $ct=0;
         <?php
 		$total_comment_ct   = 0;
 		$session_rate	    = 0;
-        foreach ($by_day as $k=>$v):
+        foreach ($by_day as $talk_section_date=>$talk_section_talks): // was $k=>$v
             $ct = 0;
         ?>
         	<tr>
         		<th colspan="4">
-        			<h4 id="talks-<?php echo $k; ?>"><?php echo date('M j, Y', strtotime($k)); ?></h4>
+        			<h4 id="talks"><?php echo date('M d, Y', $talk_section_date); ?></h4>
         		</th>
         	</tr>
-        	<?php foreach($v as $ik=>$iv): 
-		    $session_rate+=$iv->rank;
+        	<?php foreach($talk_section_talks as $talk):  // was $ik=>$iv
+		    $session_rate+=$talk->rank;
 		?>
         	<tr class="<?php echo ($ct%2==0) ? 'row1' : 'row2'; ?>">
         		<td>
-        			<?php $type = !empty($iv->tcid) ? $iv->tcid : 'Talk'; ?>
+        			<?php $type = !empty($talk->tcid) ? $talk->tcid : 'Talk'; ?>
         			<span class="talk-type talk-type-<?php echo strtolower(str_replace(' ', '-', $type)); ?>" title="<?php echo escape($type); ?>"><?php echo escape(strtoupper($type)); ?></span>
         		</td>
         	    <?php 
 					$sp_names=array();
-					foreach($iv->codes as $ck => $cv){
+					foreach($talk->codes as $ck => $cv){
 						
-						//echo $cv.' - '.$iv->ID.' '.((array_key_exists($iv->ID, $times_claimed)) ? 'yes' : 'no').'<br/>';
-						
-						$iscl=(array_key_exists($iv->ID, $times_claimed)) ? true : false;
-						//var_dump($iscl);
+						$iscl=(array_key_exists($talk->ID, $times_claimed)) ? true : false;
 						
 						//If there's an exactly matching claim (name too) or... 
 						if(array_key_exists($cv,$cl) || $iscl){
-							//echo $iv->talk_title.' '.$cv.' '.$iv->speaker.' -> '.$ck.'<br/><br/>';
 							//we match the code, but we need to find the speaker...
 
-							$spk_split=explode(',',$iv->speaker);
+							$spk_split=explode(',',$talk->speaker);
 							foreach($spk_split as $spk=>$spv){
 								if(trim($spv)==trim($ck)){
 									if(isset($cl[$cv])){ 
@@ -247,26 +229,21 @@ $ct=0;
 					}
 					?>
         		<td>
-        			<a href="/talk/view/<?php echo $iv->ID; ?>"><?php echo escape($iv->talk_title); ?></a>
+        			<a href="/talk/view/<?php echo $talk->ID; ?>"><?php echo escape($talk->talk_title); ?></a>
 					<?php
-						if(date('H', $iv->date_given) != '0') {
-							echo date(' (H:i)',$iv->date_given);
-						}
+						if($talk->display_time != '00:00') {echo '(' . $talk->display_time . ')';}
 					?>
         		</td>
-        		<!--<td>
-        			<img src="/inc/img/flags/<?php echo $iv->lang; ?>.gif" alt="<?php echo escape($iv->lang); ?>"/>
-        		</td>-->
         		<td>
         			<?php echo $sp; ?>
         		</td>
         		<td>
-					<a class="comment-count" href="/talk/view/<?php echo $iv->ID; ?>/#comments"><?php echo $iv->comment_count; ?></a>
+					<a class="comment-count" href="/talk/view/<?php echo $talk->ID; ?>/#comments"><?php echo $talk->comment_count; ?></a>
 				</td>
         	</tr>
         <?php
         	    $ct++;
-		    $total_comment_ct+=$iv->comment_count;
+		    $total_comment_ct+=$talk->comment_count;
             endforeach;
         endforeach;
         ?>

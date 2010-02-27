@@ -11,17 +11,6 @@ $rstr	= '';
 $anon	= array();
 $anon_total = 0;
 
-//--------------------
-$gmt=mktime(
-	gmdate('h'),gmdate('i'),gmdate('s'),
-	//0,0,0,
-	gmdate('m'),gmdate('d'),gmdate('Y')
-);
-//so now we know what time it is GMT
-//lets use the offset of the event to figure out what time it is there
-$time_at_event=$gmt+(3600*$det->event_tz);
-//--------------------
-
 if(!empty($claim_msg)){
 	$class=($claim_status) ? 'notice' : 'err';
 	if($claim_msg && !empty($claim_msg)){ echo '<div class="'.$class.'">'.escape($claim_msg).'</div><br/>'; }
@@ -35,13 +24,9 @@ $speaker_ids= array();
 $ftalk	    = 0;
 $speaker    = array();
 if(!empty($claims)){
-	//echo '<pre>'; print_r($claims); echo '</pre>';
-
 	foreach($claims as $k=>$v){
 		// Be sure we're only looking at the ones we need
 		if($v->rid!=$det->ID){ continue; }else{ $ftalk++; }
-
-		//echo '<pre>'; print_r($v); echo '</pre>'; echo '<br/>';
 
 		// Get the claim code
 		$cd=$v->rcode;
@@ -75,11 +60,9 @@ $speaker_txt=implode(', ',$speaker);
 foreach($comments as $k=>$v){ 
 	if($v->comment_type=='vote'){ continue; }
 	
-	//echo '<pre>'; print_r($v); echo '</pre>';
 	//if(in_array($v->user_id,$speaker_ids)){ continue; }
 	if($v->user_id==0 && strlen($v->user_id)>=1){
 		$anon[]=$v;
-		//unset($comments[$k]);
 		$anon_total+=$v->rating;
 	}else{
 		$total+=$v->rating;
@@ -92,19 +75,12 @@ $total_count=count($comments)+count($anon);
 
 $rstr = rating_image($det->tavg);
 
-//echo '<pre>CL:'; print_r($claimed); echo '</pre>';
-
-
 ?>
 <div class="detail">
 	<h1><?=$det->talk_title?></h1>
 
 	<p class="info">
-		<?php
-		if(date('H', $det->date_given) != '0') { $date_string = 'M j, Y \a\t H:i'; }
-		else { $date_string = 'M j, Y'; }
-		?>
-		<strong><?php echo $speaker_txt; ?></strong> (<?php echo date($date_string,$det->date_given); ?>)
+		<strong><?php echo $speaker_txt; ?></strong> (<?php echo $det->display_datetime; ?>)
 		<br/> 
 		<?php echo escape($det->tcid); ?> at <strong><a href="/event/view/<?php echo $det->event_id; ?>"><?php echo escape($det->event_name); ?></a></strong> (<?php echo escape($det->lang_name);?>)
 	</p>

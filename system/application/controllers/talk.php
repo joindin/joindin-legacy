@@ -105,25 +105,29 @@ class Talk extends Controller {
 		if(isset($eid)){ $this->validation->event_id=$eid; }
 		
 		if($this->validation->run()!=FALSE){
+			$talk_date = mktime(0,0,0,
+					$this->input->post('given_mo'),
+					$this->input->post('given_day'),
+					$this->input->post('given_yr'));
+			if(!empty($events[0]->event_tz_cont) && !empty($events[0]->event_tz_place)) {
+				$talk_timezone = new DateTimeZone($events[0]->event_tz_cont . '/' . $events[0]->event_tz_place);
+				$talk_datetime = date_create(date('d-M-Y ',$talk_date) . $this->input->post('given_hour') . ':' . $this->input->post('given_min'), $talk_timezone);
+			} else {
+				$talk_datetime = date_create(date('d-M-Y ',$talk_date) . $this->input->post('given_hour') . ':' . $this->input->post('given_min'));
+			}
+
 			$arr=array(
 				'talk_title'	=> $this->input->post('talk_title'),
 				'speaker'		=> $this->input->post('speaker'),
 				'slides_link'	=> $this->input->post('slides_link'),
-				'date_given'	=> mktime(
-					$this->input->post('given_hour'),
-					$this->input->post('given_min'),
-					0,
-					$this->input->post('given_mo'),
-					$this->input->post('given_day'),
-					$this->input->post('given_yr')
-				),
+				'date_given'	=> $talk_datetime->format('U'),
 				'event_id'		=> $this->input->post('event_id'),
 				'talk_desc'		=> $this->input->post('talk_desc'),
 				'active'		=> '1',
 				'lang'			=> $this->input->post('session_lang')
 			);
 
-			if($id){ //print_r($arr);
+			if($id){ 
 				$this->db->where('id',$id);
 				$this->db->update('talks',$arr);
 				//remove the current reference for the talk category and add a new one				
@@ -158,6 +162,7 @@ class Talk extends Controller {
 				$this->db->insert('talk_cat',$tc_arr);
 			}
 		}
+		$det = $this->talks_model->setDisplayFields($det);
 		$out=array(
 			'msg'		=>(isset($msg)) ? $msg : '',
 			'err'		=>(isset($err)) ? $err : '',
@@ -400,6 +405,7 @@ class Talk extends Controller {
 		
 		$reqkey=buildReqKey();
 		$this->load->model('talks_model');
+		$talk_detail = $this->talks_model->setDisplayFields($talk_detail);
 		$arr=array(
 			'detail'		=> $talk_detail,
 			'comments'		=> $this->talks_model->getTalkComments($id),

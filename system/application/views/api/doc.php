@@ -193,9 +193,21 @@ Below are the request types that you can make to the API including input and out
 		<li>event_id: string, event ID
 	</ul>
 <b class="req_title">Output:</b>
-<ul>
-	<li>Multiple, see <a href="#get_talk_detail">Get Talk Detail results</a>
-</ul>
+	<ul>
+		<li>talk_title: string, Title of the talk
+		<li>speaker: string, Speaker of the talk
+		<li>slides_link: For future use
+		<li>date_given: integer, Unix timestamp for the date talk presented
+		<li>event_id: integer, The event ID the talk belongs to
+		<li>ID: integer, The talk ID number
+		<li>talk_desc: string, Description of the talk
+		<li>event_tz_cont: string, Continent part of timezone name (e.g. 'Europe')
+		<li>event_tz_place: string, Detial part of timezone name (e.g. 'London')
+		<li>lang: string, Language the talk given in (2-digit short code)
+		<li>rank: integer, Average rating of comments on selected talk
+		<li>tcid: string, Type of entry (e.g."Talk")
+		<li>comment_count: integer, Number of comments on this session
+	</ul>
 	<a href="#top">[top]</a><br/><br/>
 </div>
 
@@ -298,7 +310,9 @@ Below are the request types that you can make to the API including input and out
 		<li>lang_name: string, Language the talk given in
 		<li>lang: integer, Language reference ID (internal use)
 		<li>event_name: string, Name of event talk belongs to
-		<li>event_tz: For future use
+		<li>event_tz: Deprecated
+		<li>event_tz_cont: string, Continent part of timezone name (e.g. 'Europe')
+		<li>event_tz_place: string, Detial part of timezone name (e.g. 'London')
 		<li>tavg: integer, Average rating of comments on selected talk
 		<li>tcid: string, Type of entry ("Talk")
 		<li>event_id: integer, The event ID (same as eid)

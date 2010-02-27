@@ -133,29 +133,9 @@ class Event extends Controller {
 			}
 
 		}
-
-
 		
-		/*$date_p	= explode('_',$date);
-		if(count($date_p)==2){
-			$start	= mktime(0,0,0,$date_p[0],1,$date_p[1]);
-			$end	= mktime(0,0,0,$date_p[0],date('t',$start),$date_p[1]);	
-		}else{
-			$start	= mktime(0,0,0,$date_p[0],1,$date_p[2]);
-			$end	= mktime(0,0,0,$date_p[0],date('t',$start),$date_p[2]);
-		}		
-		$events	= $this->event_model->getEventDetail(null,$start,$end);
-		*/
 		$reqkey = buildReqKey();
 
-		/*$arr=array('events'=>$events,'mo'=>$date_p[0]);
-		if(count($date_p)==2){
-			$arr['day']	= 1;
-			$arr['yr']	= $date_p[1];
-		}else{ 
-			$arr['day']	= $date_p[1];
-			$arr['yr']	= $date_p[2];
-		}*/
 		$arr=array(
 			'events' => $events,
 			'month'	 => $month,
@@ -311,6 +291,7 @@ class Event extends Controller {
 		$this->load->model('event_comments_model');
 		$this->load->model('user_attend_model','uam');
 		$this->load->model('event_blog_posts_model','ebp');
+		$this->load->model('talks_model');
 		
 		$events		= $this->event_model->getEventDetail($id);
 		$evt_admins	= $this->event_model->getEventAdmins($id);
@@ -374,6 +355,7 @@ class Event extends Controller {
 		$reqkey=buildReqKey();
 		
 		$attend=$this->uam->getAttendUsers($id);
+		$talks = $this->talks_model->setDisplayFields($talks);
 		$arr=array(
 			'events' =>$events,
 			'talks'  =>$talks,
