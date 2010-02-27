@@ -35,6 +35,7 @@ class Talk extends Controller {
 			$eid	= null;
 		}
 		$pass=true;
+		$tracks=array();
 		
 		$this->load->model('talks_model');
 		$this->load->model('event_model');
@@ -42,6 +43,8 @@ class Talk extends Controller {
 		$this->load->model('lang_model');				
 		$this->load->helper('form');
 		$this->load->library('validation');
+		$this->load->model('event_track_model','etm');
+		$this->load->model('talk_track_model','ttm');
 
 		$cats	= $this->categories_model->getCats();
 		$langs	= $this->lang_model->getLangs();
@@ -75,6 +78,10 @@ class Talk extends Controller {
 		if($id){
 			$det	= $this->talks_model->getTalks($id); //print_r($det);
 			$events	= $this->event_model->getEventDetail($det[0]->event_id);
+			$tracks	= $this->etm->getEventTracks($det[0]->eid);
+			
+			$track_info=$this->ttm->getSessionTrackInfo($det[0]->ID); //print_r($track_info);
+			$this->validation->session_track=(isset($track_info[0]->ID)) ? $track_info[0]->ID : null;
 			
 			$is_private=($events[0]->private=='Y') ? true : false;
 			
@@ -99,6 +106,8 @@ class Talk extends Controller {
 			$this->validation->given_yr = date('Y',$events[0]->event_start);
 			$this->validation->given_hour= date('H',$events[0]->event_start);
 			$this->validation->given_min= date('i',$events[0]->event_start);
+			
+			$this->validation->session_track=null;
 			
 			$is_private=false;
 		}
@@ -129,6 +138,18 @@ class Talk extends Controller {
 				//remove the current reference for the talk category and add a new one				
 				$this->db->delete('talk_cat',array('talk_id'=>$id));
 				
+				//check to see if we have a track and it's not the "none"
+				if($this->input->post('session_track')!='none'){
+					$curr_track	= (isset($track_info[0]->ID)) ? $track_info[0]->ID : null;
+					$new_track	= $this->input->post('session_track');
+					$this->ttm->updateSessionTrack($id,$curr_track,$new_track);
+					$this->validation->session_track=$new_track;
+				}elseif($this->input->post('session_track')=='none'){
+					//remove the track for the session
+					$curr_track	= $track_info[0]->ID;
+					$this->ttm->deleteSessionTrack($id,$curr_track);
+				}
+				
 				$tc_id	= $id;
 				$msg	= 'Talk information successfully updated! <a href="/talk/view/'.$id.'">Return to talk</a>';
 				$pass	= true;
@@ -139,6 +160,11 @@ class Talk extends Controller {
 				if(count($ret)==0){
 					$this->db->insert('talks',$arr);
 					$tc_id=$this->db->insert_id();
+					
+					//check to see if we have a track and it's not the "none"
+					if($this->input->post('session_track')!='none'){
+						$this->ttm->setSessionTrack($tc_id,$this->input->post('session_track'));
+					}
 				
 					$msg='Talk information successfully added!</br><a href="/talk/add/event/'.$events[0]->ID.'">Add another</a> ';
 					$msg.='or <a href="/event/view/'.$events[0]->ID.'">View Event</a>';
@@ -158,6 +184,7 @@ class Talk extends Controller {
 				$this->db->insert('talk_cat',$tc_arr);
 			}
 		}
+
 		$out=array(
 			'msg'		=>(isset($msg)) ? $msg : '',
 			'err'		=>(isset($err)) ? $err : '',
@@ -165,7 +192,8 @@ class Talk extends Controller {
 			'cats'		=>$cats,
 			'langs'		=>$langs,
 			'detail'	=>$det,
-			'evt_priv'	=>$is_private
+			'evt_priv'	=>$is_private,
+			'tracks'	=>$tracks
 		);
 		$this->template->write_view('content','talk/add',$out,TRUE);
 		$this->template->render();
@@ -193,6 +221,7 @@ class Talk extends Controller {
 		$this->load->model('event_model');
 		$this->load->model('invite_list_model','ilm');
 		$this->load->model('user_attend_model');
+		$this->load->model('talk_track_model','ttm');
 		$this->load->helper('form');
 		$this->load->helper('events');
 		$this->load->helper('reqkey');
@@ -397,7 +426,6 @@ class Talk extends Controller {
 		}
 		//$cap = create_captcha($cap_arr);
 		//$this->session->set_userdata(array('cinput'=>$cap['word']));
-		
 		$reqkey=buildReqKey();
 		$this->load->model('talks_model');
 		$arr=array(
@@ -415,7 +443,8 @@ class Talk extends Controller {
 			'seckey' 		=> buildSecFile($reqkey),
 			'evt_has_started'=>$evt_started,
 			'user_attending'=>($this->user_attend_model->chkAttend($currentUserId,$talk_detail[0]->event_id)) ? true : false,
-			'msg'			=> $msg
+			'msg'			=> $msg,
+			'track_info'	=> $this->ttm->getSessionTrackInfo($id)
 		);
 		if(empty($arr['detail'])){ redirect('talk'); }
 		
