@@ -175,25 +175,33 @@ foreach($talks as $v){
 }
 ksort($by_day);
 $ct=0;
-
 ?>
 
 <div id="event-tabs">
 	<ul>
-		<li><a href="#talks">Talks (<?=count($talks)?>)</a></li>
-		<li><a href="#comments">Comments (<?=count($comments)?>)</a></li>
+		<li><a href="#talks">Talks (<?php echo count($talks)?>)</a></li>
+		<li><a href="#comments">Comments (<?php echo count($comments)?>)</a></li>
 		<?php if(count($evt_sessions)>0): ?>
-			<li><a href="#evt_related">Event Related (<?=count($evt_sessions)?>)</a></li>
+			<li><a href="#evt_related">Event Related (<?php echo count($evt_sessions)?>)</a></li>
 		<?php endif; ?>
-		<li><a href="#slides">Slides (<?=count($slides)?>)</a></li>
+		<li><a href="#slides">Slides (<?php echo count($slides)?>)</a></li>
 		<?php if($admin): ?>
 		<li><a href="#estats">Statistics</a></li>
+		<?php endif; ?>
+		<?php if(count($tracks)>0): ?>
+			<li><a href="#tracks">Tracks (<?php echo count($tracks); ?>)</a></li>
 		<?php endif; ?>
 	</ul>
 	<div id="talks">
 	<?php if (count($by_day) == 0): ?>
 		<?php $this->load->view('msg_info', array('msg' => 'No talks available at the moment.')); ?>
-	<?php else: ?>
+	<?php else: 
+		if(isset($track_filter)){
+			echo '<span style="font-size:13px">Sessions for track <b>'.$track_data->track_name.'</b></span>';
+			echo ' <span style="font-size:11px"><a href="/event/view/'.$det->ID.'">[show all sessions]</a></span>';
+			echo '<br/><br/>';
+		}
+		?>
 		<table summary="" cellpadding="0" cellspacing="0" border="0" width="100%" class="list">
         <?php
 		$total_comment_ct   = 0;
@@ -202,12 +210,27 @@ $ct=0;
             $ct = 0;
         ?>
         	<tr>
-        		<th colspan="4">
+        		<th colspan="5">
         			<h4 id="talks-<?php echo $k; ?>"><?php echo date('M j, Y', strtotime($k)); ?></h4>
         		</th>
         	</tr>
         	<?php foreach($v as $ik=>$iv): 
 		    $session_rate+=$iv->rank;
+			
+			if(isset($track_filter)){
+				//Filter to the track ID
+				if(empty($iv->tracks)){ 
+					// If there's no track ID on the talk, don't show it
+					continue; 
+				}else{
+					// There are tracks on the session, let's see if any match...
+					$filter_pass=false;
+					foreach($iv->tracks as $talk_track){
+						if($talk_track->ID==$track_filter){ $filter_pass=true; }
+					}
+					if(!$filter_pass){ continue; }
+				}
+			}
 		?>
         	<tr class="<?php echo ($ct%2==0) ? 'row1' : 'row2'; ?>">
         		<td>
@@ -217,11 +240,7 @@ $ct=0;
         	    <?php 
 					$sp_names=array();
 					foreach($iv->codes as $ck => $cv){
-						
-						//echo $cv.' - '.$iv->ID.' '.((array_key_exists($iv->ID, $times_claimed)) ? 'yes' : 'no').'<br/>';
-						
 						$iscl=(array_key_exists($iv->ID, $times_claimed)) ? true : false;
-						//var_dump($iscl);
 						
 						//If there's an exactly matching claim (name too) or... 
 						if(array_key_exists($cv,$cl) || $iscl){
@@ -252,7 +271,7 @@ $ct=0;
 						if(date('H', $iv->date_given) != '0') {
 							echo date(' (H:i)',$iv->date_given);
 						}
-					?>
+					?><br/>
         		</td>
         		<!--<td>
         			<img src="/inc/img/flags/<?php echo $iv->lang; ?>.gif" alt="<?php echo escape($iv->lang); ?>"/>
@@ -327,6 +346,16 @@ $ct=0;
 		</tr>
 	    <?php endforeach; ?>
 	    </table>
+	</div>
+	<div id="tracks">
+		<?php
+		foreach($tracks as $k=>$tr){
+			echo '<div style="padding:3px">';
+			echo '<a style="font-size:13px" href="/event/view/'.$det->ID.'/track/'.$tr->ID.'">'.$tr->track_name.'</a><br/>';
+			echo $tr->track_desc;
+			echo '</div>';
+		}
+		?>
 	</div>
 	<div id="comments">
 	

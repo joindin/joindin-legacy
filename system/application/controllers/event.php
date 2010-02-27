@@ -297,7 +297,7 @@ class Event extends Controller {
 		if(!$this->user_model->isAdminEvent($id)){ redirect(); }
 		$this->add($id);
 	}
-	function view($id){
+	function view($id,$opt=null,$opt_id=null){
 		$this->load->helper('form');
 		$this->load->helper('reqkey');
 		$this->load->helper('events');
@@ -310,6 +310,8 @@ class Event extends Controller {
 		$this->load->model('event_comments_model');
 		$this->load->model('user_attend_model','uam');
 		$this->load->model('event_blog_posts_model','ebp');
+		$this->load->model('talk_track_model','ttm');
+		$this->load->model('event_track_model','etm');
 		
 		$events		= $this->event_model->getEventDetail($id);
 		$evt_admins	= $this->event_model->getEventAdmins($id);
@@ -354,6 +356,7 @@ class Event extends Controller {
 				$val=trim($iv);
 				$talks[$k]->codes[$val]=buildCode($v->ID,$v->event_id,$v->talk_title,$val);
 			}
+			$talks[$k]->tracks=$this->ttm->getSessionTrackInfo($v->ID);
 		}
 		
 		if($is_auth){ 
@@ -386,9 +389,17 @@ class Event extends Controller {
 			'attending'=>$attend,
 			'started'=>$this->tz->hasEvtStarted($id),
 			'latest_comment'=>$this->event_model->getLatestComment($id),
-			'admins' =>$evt_admins
+			'admins' =>$evt_admins,
+			'tracks' =>$this->etm->getEventTracks($id),
 			//'attend' =>$this->uam->getAttendCount($id)
 		);
+		if($opt=='track'){ 
+			$arr['track_filter']	= $opt_id;
+			$arr['track_data']		= null;
+			foreach($arr['tracks'] as $tr){
+				if($tr->ID==$opt_id){ $arr['track_data']=$tr; }
+			}
+		}
 		
 		//our event comment form
 		$rules=array(
@@ -1201,6 +1212,26 @@ class Event extends Controller {
 			'msg'		=>$msg
 		);
 		$this->template->write_view('content','event/blog',$arr);
+		$this->template->render();
+	}
+	function tracks($eid){
+		if($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($eid)){ 
+			//they're okay
+		}else{ redirect(); }
+		
+		$this->load->model('event_track_model','etm');
+		$this->load->model('event_model');
+		$this->load->helper('reqkey');
+		
+		$reqkey=buildReqKey();
+		$arr=array(
+			'detail'	=> $this->event_model->getEventDetail($eid),
+			'tracks'	=> $this->etm->getEventTracks($eid),
+			'admin'	 	=> ($this->user_model->isAdminEvent($eid)) ? true : false,
+			'reqkey' 	=> $reqkey,
+			'seckey' 	=> buildSecFile($reqkey)
+		);
+		$this->template->write_view('content','event/tracks',$arr);
 		$this->template->render();
 	}
 	//----------------------

@@ -4,6 +4,8 @@ $cat_list	= array();
 $lang_list	= array();
 
 //echo '<pre>'; print_r($cats); echo '</pre>';
+//echo '<pre>'; print_r($tracks); echo '</pre>';
+
 $ev=$events[0];
 foreach($cats as $k=>$v){ $cat_list[$v->ID]=$v->cat_title; }
 foreach($langs as $k=>$v){ $lang_list[$v->ID]=$v->lang_name; }
@@ -81,6 +83,19 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
 	?>
 	<div class="clear"></div>
     </div>
+
+	<?php if(!empty($tracks)): ?>
+	<div class="row">
+	<label for="session_track">Session Track</label>
+	<?php
+	$tarr=array('none'=>'No track');
+	foreach($tracks as $t){ $tarr[$t->ID]=$t->track_name; }
+	echo form_dropdown('session_track',$tarr,$this->validation->session_track); 
+	?>
+	<div class="clear"></div>
+	</div>
+	<?php endif; ?>
+
     <div class="row">
 	<label for="session_lang">Session Language</label>
 	<?php
