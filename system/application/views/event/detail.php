@@ -99,7 +99,7 @@ foreach($talks as $k=>$v){
     			<ul>
     			<?php foreach ($hashtags as $hashtag): ?>
     				<?php $hashtag = str_replace('#', '', $hashtag); ?>
-    				<li>#<a href="http://hashtags.org/tag/<?php echo escape($hashtag); ?>" rel="external"><?php echo escape($hashtag); ?></a></li>
+    				<li>#<a href="http://hashtags.org/<?php echo escape($hashtag); ?>" rel="external"><?php echo escape($hashtag); ?></a></li>
     			<?php endforeach; ?>
                 </ul>
         	</div>
@@ -161,25 +161,33 @@ foreach($talks as $t){
 }
 ksort($by_day);
 $ct=0;
-
 ?>
 
 <div id="event-tabs">
 	<ul>
-		<li><a href="#talks">Talks (<?=count($talks)?>)</a></li>
-		<li><a href="#comments">Comments (<?=count($comments)?>)</a></li>
+		<li><a href="#talks">Talks (<?php echo count($talks)?>)</a></li>
+		<li><a href="#comments">Comments (<?php echo count($comments)?>)</a></li>
 		<?php if(count($evt_sessions)>0): ?>
-			<li><a href="#evt_related">Event Related (<?=count($evt_sessions)?>)</a></li>
+			<li><a href="#evt_related">Event Related (<?php echo count($evt_sessions)?>)</a></li>
 		<?php endif; ?>
-		<li><a href="#slides">Slides (<?=count($slides)?>)</a></li>
+		<li><a href="#slides">Slides (<?php echo count($slides)?>)</a></li>
 		<?php if($admin): ?>
 		<li><a href="#estats">Statistics</a></li>
+		<?php endif; ?>
+		<?php if(count($tracks)>0): ?>
+			<li><a href="#tracks">Tracks (<?php echo count($tracks); ?>)</a></li>
 		<?php endif; ?>
 	</ul>
 	<div id="talks">
 	<?php if (count($by_day) == 0): ?>
 		<?php $this->load->view('msg_info', array('msg' => 'No talks available at the moment.')); ?>
-	<?php else: ?>
+	<?php else: 
+		if(isset($track_filter)){
+			echo '<span style="font-size:13px">Sessions for track <b>'.$track_data->track_name.'</b></span>';
+			echo ' <span style="font-size:11px"><a href="/event/view/'.$det->ID.'">[show all sessions]</a></span>';
+			echo '<br/><br/>';
+		}
+		?>
 		<table summary="" cellpadding="0" cellspacing="0" border="0" width="100%" class="list">
         <?php
 		$total_comment_ct   = 0;
@@ -188,12 +196,27 @@ $ct=0;
             $ct = 0;
         ?>
         	<tr>
-        		<th colspan="4">
+        		<th colspan="5">
         			<h4 id="talks"><?php echo date('M d, Y', $talk_section_date); ?></h4>
         		</th>
         	</tr>
         	<?php foreach($talk_section_talks as $talk):  // was $ik=>$iv
 		    $session_rate+=$talk->rank;
+			
+			if(isset($track_filter)){
+				//Filter to the track ID
+				if(empty($talk->tracks)){ 
+					// If there's no track ID on the talk, don't show it
+					continue; 
+				}else{
+					// There are tracks on the session, let's see if any match...
+					$filter_pass=false;
+					foreach($talk->tracks as $talk_track){
+						if($talk_track->ID==$track_filter){ $filter_pass=true; }
+					}
+					if(!$filter_pass){ continue; }
+				}
+			}
 		?>
         	<tr class="<?php echo ($ct%2==0) ? 'row1' : 'row2'; ?>">
         		<td>
@@ -232,7 +255,7 @@ $ct=0;
         			<a href="/talk/view/<?php echo $talk->ID; ?>"><?php echo escape($talk->talk_title); ?></a>
 					<?php
 						if($talk->display_time != '00:00') {echo '(' . $talk->display_time . ')';}
-					?>
+					?><br />
         		</td>
         		<td>
         			<?php echo $sp; ?>
@@ -304,6 +327,16 @@ $ct=0;
 		</tr>
 	    <?php endforeach; ?>
 	    </table>
+	</div>
+	<div id="tracks">
+		<?php
+		foreach($tracks as $k=>$tr){
+			echo '<div style="padding:3px">';
+			echo '<a style="font-size:13px" href="/event/view/'.$det->ID.'/track/'.$tr->ID.'">'.$tr->track_name.'</a><br/>';
+			echo $tr->track_desc;
+			echo '</div>';
+		}
+		?>
 	</div>
 	<div id="comments">
 	

@@ -173,43 +173,43 @@ class Speaker extends Controller {
      * the speaker's profile
      */
     public function access(){
-	$this->load->model('speaker_profile_model','spm');
-	$this->load->helper('url');
-	$this->load->helper('form');
-	$this->load->library('validation');
-	$p=explode('/',uri_string());
-	$arr=array();
+		$this->load->model('speaker_profile_model','spm');
+		$this->load->helper('url');
+		$this->load->helper('form');
+		$this->load->library('validation');
+		$p=explode('/',uri_string());
+		$arr=array();
 
-	$view='';
-	if(isset($p[3])){
-	    switch(strtolower($p[3])){
-		case 'add':
-		    $view='speaker/access_add';
-		    //$f=$this->spm->getProfileFields(); echo '<pre>'; print_r($f); echo '</pre>';
+		$view='';
+		if(isset($p[3])){
+		    switch(strtolower($p[3])){
+			case 'add':
+			    $view='speaker/access_add';
+			    //$f=$this->spm->getProfileFields(); echo '<pre>'; print_r($f); echo '</pre>';
 		    
-		    $rules  = array('fields'=>'required');
-		    $fields = array('fields'=>'Items');
+			    $rules  = array('fields'=>'required');
+			    $fields = array('fields'=>'Items');
 
-		    $this->validation->set_rules($rules);
-		    $this->validation->set_fields($fields);
+			    $this->validation->set_rules($rules);
+			    $this->validation->set_fields($fields);
 
-		    if($this->validation->run()!=FALSE){
-			var_dump($this->input->post('fields'));
-		    }else{
-			$this->validation->set_message('fields','You must select at least one field!');
-			$arr['msg']=$this->validation->error_string;
+			    if($this->validation->run()!=FALSE){
+					//var_dump($this->input->post('fields'));
+					$arr['msg']='There has been an error...';
+			    }else{
+					$this->validation->set_message('fields','You must select at least one field!');
+					$arr['msg']=$this->validation->error_string;
+			    }
+			    break;
 		    }
+		}else{ $view='speaker/access'; }
 
-		    break;
-	    }
-	}else{ $view='speaker/access'; }
-
-	$udata	= $this->user_model->getUser($this->session->userdata('ID'));
+		$udata	= $this->user_model->getUser($this->session->userdata('ID'));
 	
-	$arr['access_data']=$this->spm->getProfileAccess($udata[0]->ID);
+		$arr['access_data']=$this->spm->getProfileAccess($udata[0]->ID);
 	
-	$this->template->write_view('content',$view,$arr);
-	$this->template->render();
+		$this->template->write_view('content',$view,$arr);
+		$this->template->render();
     }
 }
 ?>
