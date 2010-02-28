@@ -105,10 +105,15 @@ class Event_model extends Model {
 		
 		$cols='events.event_name,events.event_start,events.event_end,events.event_lat,events.event_long,';
 		$cols.='events.ID as event_ID,events.event_loc,events.event_desc,events.active,';
-		$cols.='events.event_stub,events.event_tz,events.event_icon,events.pending,events.event_hastag,';
+		$cols.='events.event_stub,events.event_tz_cont,event_tz_place,events.event_icon,events.pending,events.event_hastag,';
 		$cols.='events.event_href,events.event_cfp_start,events.event_cfp_end,events.private';
 		
-	    $this->db->select('events.*, COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments');
+	    $this->db->select('events.*, 
+							CASE 
+								WHEN (((events.event_start - 86400) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
+								ELSE 0
+								END as allow_comments,
+							COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments', false);
 	    $this->db->from('events');
 		$this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
 		$this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');
@@ -149,24 +154,28 @@ class Event_model extends Model {
 				talks.event_id,
 				talks.ID,
 				talks.talk_desc,
+				events.event_tz_cont,
+				events.event_tz_place,
 				(select l.lang_abbr from lang l where talks.lang=l.ID) lang,
 				(select round(avg(rating)) from talk_comments where talk_id=talks.ID) rank,
 				(select count(rating) from talk_comments where talk_id=talks.ID) comment_count,
-				(select 
+				ifnull((select 
 					cat.cat_title
 				from 
-					talk_cat tac,categories cat 
+					talk_cat tac
+					left join categories cat on tac.cat_id=cat.ID
 				where 
-					tac.talk_id=talks.ID and tac.cat_id=cat.ID
-				) tcid
+					tac.talk_id=talks.ID
+				), \'Talk\') tcid
 			from
 				talks
 			inner join lang on (lang.ID = talks.lang)
+			inner join events on events.ID = talks.event_id
 			where
 				event_id=%s and
-				active=1
+				talks.active=1
 			order by
-				speaker asc
+				talks.date_given asc, talks.speaker asc
 		',$id);
 		$q=$this->db->query($sql);
 		return $q->result();

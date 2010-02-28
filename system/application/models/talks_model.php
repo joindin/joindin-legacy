@@ -82,7 +82,8 @@ class Talks_model extends Model {
 					talks.ID tid,
 					events.ID eid,
 					events.event_name,
-					events.event_tz,
+					events.event_tz_cont,
+					events.event_tz_place,
 					events.event_voting,
 					events.private,
 					lang.lang_name,
@@ -120,7 +121,8 @@ class Talks_model extends Model {
 					talks.ID tid,
 					events.ID eid,
 					events.event_name,
-					events.event_tz,
+					events.event_tz_cont,
+					events.event_tz_place,
 					events.private,
 					lang.lang_name,
 					lang.lang_abbr,
@@ -145,7 +147,9 @@ class Talks_model extends Model {
 			',$wh,$ob);
 			$q=$this->db->query($sql);
 		}
-		return $q->result();
+		$db_results = $q->result();
+		
+		return $db_results;
 	}
 	function getTalkComments($tid){
 		$sql=sprintf('
@@ -179,7 +183,6 @@ class Talks_model extends Model {
 				(select round(avg(rating)) from talk_comments where talk_id=t.ID) as tavg,
 				e.ID eid,
 				e.event_name,
-				e.event_tz
 			from
 				talks t,
 				talk_comments tc,
@@ -207,7 +210,6 @@ class Talks_model extends Model {
 				(select round(avg(rating)) from talk_comments where talk_id=t.ID) as tavg,
 				e.ID eid,
 				e.event_name,
-				e.event_tz,
 				e.event_start
 			from
 				talks t,
@@ -386,7 +388,7 @@ class Talks_model extends Model {
 
 	//---------------
 	function search($term,$start,$end){
-		$this->db->select('talks.*, count(talk_comments.ID) as ccount, (select round(avg(rating)) from talk_comments where talk_id=talks.ID) as tavg, events.ID eid, events.event_name, events.event_tz');
+		$this->db->select('talks.*, count(talk_comments.ID) as ccount, (select round(avg(rating)) from talk_comments where talk_id=talks.ID) as tavg, events.ID eid, events.event_name');
 	    $this->db->from('talks');
 	    
 	    $this->db->join('talk_comments', 'talk_comments.talk_id=talks.ID', 'left');
@@ -417,6 +419,50 @@ class Talks_model extends Model {
 	    if($ret){ foreach($ret as $k=>$v){ $uid[]=$v->uid; } }
 
 	    return $uid;
+	}
+
+
+	/**
+	 * setDisplayFields 
+	 *
+	 * Method to set the date (and potentially some other fields later) for
+	 * correct display.  Timezone calculations are needed - call this from a 
+	 * controller before passing data to the view
+	 * 
+	 * @param array $det the array returned by getTalks
+	 * @access public
+	 * @return the amended array with additional fields
+	 */
+	function setDisplayFields($det) {
+		$retval = array();
+
+		foreach($det as $talk) {
+			// create datetime object
+			$talk_datetime = new DateTime("@{$talk->date_given}");
+
+			// if a timezone is specified, adjust times
+			if(!empty($talk->event_tz_cont) && !empty($talk->event_tz_place)) {
+				$event_timezone = new DateTimeZone($talk->event_tz_cont . '/' . $talk->event_tz_place);
+			} else {
+				$event_timezone = new DateTimeZone('UTC');
+			}
+			$talk_datetime->setTimezone($event_timezone);
+
+			// set a datetime string, ignoring talks at midnight and assuming they are without times
+			if($talk_datetime->format('H') != '0') { 
+				$date_string = 'M j, Y \a\t H:i'; 
+			} else { 
+				$date_string = 'M j, Y'; 
+			}
+
+			// set date, time, and datetime display variables
+			$talk->display_date = $talk_datetime->format('M j, Y');
+			$talk->display_datetime = $talk_datetime->format($date_string);
+			$talk->display_time = $talk_datetime->format('H:i');
+
+			$retval[] = $talk;
+		}
+		return $retval;
 	}
 }
 ?>

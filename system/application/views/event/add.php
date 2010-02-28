@@ -2,15 +2,6 @@
 //$tz_list=array('Select Continent');
 //foreach($tz as $k=>$v){ $tz_list[(string)$v->offset]=floor((string)$v->offset/3600); }
 
-$offset_list=array_merge(range(-12,12),range(0,12));
-foreach($offset_list as $k=>$v){ 
-	if($v<0){ 
-		$tz_list[$v]='UTC '.$v.' hours'; 
-	}elseif($v>0){
-		$tz_list[$v]='UTC +'.$v.' hours'; 
-	}else{ $tz_list[$v]='UTC 0 hours'; }
-}
-
 echo $this->validation->error_string;
 if(isset($this->edit_id) && $this->edit_id){
 	echo form_open_multipart('event/edit/'.$this->edit_id);
@@ -73,7 +64,7 @@ echo '<h2>'.$title.'</h2>';
     <div class="clear"></div>
     <div class="row">
     	<label for="event_timezone">Event Timezone:</label>
-	<?php echo form_dropdown('event_tz',$tz_list,$this->validation->event_tz); ?><br/>
+		<?php echo custom_timezone_menu('event_tz', $this->validation->event_tz_cont, $this->validation->event_tz_place ); ?>
 	<span style="color:#3567AC;font-size:11px">For more information on locations and 
 	their time zone, see <a href="http://en.wikipedia.org/wiki/List_of_time_zones">this
 	page on Wikipedia</a></span>

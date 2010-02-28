@@ -133,29 +133,9 @@ class Event extends Controller {
 			}
 
 		}
-
-
 		
-		/*$date_p	= explode('_',$date);
-		if(count($date_p)==2){
-			$start	= mktime(0,0,0,$date_p[0],1,$date_p[1]);
-			$end	= mktime(0,0,0,$date_p[0],date('t',$start),$date_p[1]);	
-		}else{
-			$start	= mktime(0,0,0,$date_p[0],1,$date_p[2]);
-			$end	= mktime(0,0,0,$date_p[0],date('t',$start),$date_p[2]);
-		}		
-		$events	= $this->event_model->getEventDetail(null,$start,$end);
-		*/
 		$reqkey = buildReqKey();
 
-		/*$arr=array('events'=>$events,'mo'=>$date_p[0]);
-		if(count($date_p)==2){
-			$arr['day']	= 1;
-			$arr['yr']	= $date_p[1];
-		}else{ 
-			$arr['day']	= $date_p[1];
-			$arr['yr']	= $date_p[2];
-		}*/
 		$arr=array(
 			'events' => $events,
 			'month'	 => $month,
@@ -168,6 +148,7 @@ class Event extends Controller {
 		$this->template->write_view('content','event/main',$arr,TRUE);
 		$this->template->render();
 	}
+
 	function add($id=null){
 		//check for admin
 		if($id){ 
@@ -178,9 +159,9 @@ class Event extends Controller {
 		
 		if($id){ $this->edit_id=$id; }
 		$this->load->helper('form');
+		$this->load->helper('custom_timezone');
 		$this->load->library('validation');
 		$this->load->model('event_model');
-		$this->load->model('tz_model');
 		
 		$config['upload_path'] 	= $_SERVER['DOCUMENT_ROOT'].'/inc/img/event_icons';
 		$config['allowed_types']= 'gif|jpg|png';
@@ -192,7 +173,8 @@ class Event extends Controller {
 		$rules=array(
 			'event_name'	=> 'required',
 			'event_loc'		=> 'required',
-			//'event_tz'		=> 'required',
+			'event_tz_cont'		=> 'required',
+			'event_tz_place'	=> 'required',
 			'start_mo'		=> 'callback_start_mo_check',
 			'end_mo'		=> 'callback_end_mo_check',
 			'event_stub'	=> 'callback_stub_check'
@@ -209,7 +191,8 @@ class Event extends Controller {
 			'end_yr'	=>'End Year',
 			'event_loc'	=>'Event Location',
 			'event_desc'=>'Event Description',
-			'event_tz'	=>'Event Timezone',
+			'event_tz_cont'		=>'Event Timezone (Continent)',
+			'event_tz_place'	=>'Event Timezone (Place)',
 			'event_href'=>'Event Link(s)',
 			'event_hashtag'=>'Event Hashtag',
 			'event_voting'=>'Event Voting Allowed',
@@ -237,7 +220,6 @@ class Event extends Controller {
 				$this->validation->event_private=$event_detail[0]->private;
 			}
 			$arr=array(
-				'tz'	=> $this->tz_model->getOffsetInfo(),
 				'detail'=> $event_detail
 			);
 			$this->validation->start_yr=date('Y');
@@ -263,7 +245,8 @@ class Event extends Controller {
 				'event_loc'		=>$this->input->post('event_loc'),
 				'event_desc'	=>$this->input->post('event_desc'),
 				'active'		=>'1',
-				'event_tz'		=>$this->input->post('event_tz'),
+				'event_tz_cont'	=>$this->input->post('event_tz_cont'),
+				'event_tz_place'	=>$this->input->post('event_tz_place'),
 				'event_href'	=>$this->input->post('event_href'),
 				'event_hashtag'	=>$this->input->post('event_hashtag'),
 				'event_voting'	=>$this->input->post('event_voting'),
@@ -286,7 +269,6 @@ class Event extends Controller {
 			
 			$arr=array(
 				'msg'	=> 'Data saved! <a href="/event/view/'.$id.'">View event</a>',
-				'tz'	=> $this->tz_model->getContInfo(),
 				'detail'=> $event_detail
 			);
 			$this->template->write_view('content','event/add',$arr);
@@ -305,13 +287,13 @@ class Event extends Controller {
 		$this->load->library('defensio');
 		$this->load->library('spam');
 		$this->load->library('twitter');
-		$this->load->library('timezone',null,'tz');
 		$this->load->model('event_model');
 		$this->load->model('event_comments_model');
 		$this->load->model('user_attend_model','uam');
 		$this->load->model('event_blog_posts_model','ebp');
 		$this->load->model('talk_track_model','ttm');
 		$this->load->model('event_track_model','etm');
+		$this->load->model('talks_model');
 		
 		$events		= $this->event_model->getEventDetail($id);
 		$evt_admins	= $this->event_model->getEventAdmins($id);
@@ -376,6 +358,7 @@ class Event extends Controller {
 		$reqkey=buildReqKey();
 		
 		$attend=$this->uam->getAttendUsers($id);
+		$talks = $this->talks_model->setDisplayFields($talks);
 		$arr=array(
 			'events' =>$events,
 			'talks'  =>$talks,
@@ -387,7 +370,7 @@ class Event extends Controller {
 			'reqkey' =>$reqkey,
 			'seckey' =>buildSecFile($reqkey),
 			'attending'=>$attend,
-			'started'=>$this->tz->hasEvtStarted($id),
+			//'started'=>$this->tz->hasEvtStarted($id),
 			'latest_comment'=>$this->event_model->getLatestComment($id),
 			'admins' =>$evt_admins,
 			'tracks' =>$this->etm->getEventTracks($id),
@@ -718,7 +701,8 @@ class Event extends Controller {
 				'event_desc'	=>$this->input->post('event_desc'),
 				'active'		=>0,
 				'event_stub'	=>$this->input->post('event_stub'),
-				'event_tz'		=>$this->input->post('event_tz'),
+				'event_tz_cont'		=>$this->input->post('event_tz_cont'),
+				'event_tz_place'	=>$this->input->post('event_tz_place'),
 				'pending'		=>1,
 				'private'		=>($this->input->post('is_private')=='n') ? null : $this->input->post('is_private')
 			);
