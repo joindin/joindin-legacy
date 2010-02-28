@@ -182,7 +182,7 @@ class Talks_model extends Model {
 				count(tc.ID) as ccount,
 				(select round(avg(rating)) from talk_comments where talk_id=t.ID) as tavg,
 				e.ID eid,
-				e.event_name,
+				e.event_name
 			from
 				talks t,
 				talk_comments tc,
