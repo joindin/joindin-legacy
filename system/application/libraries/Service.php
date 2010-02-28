@@ -100,17 +100,17 @@ class Service {
 		
 		$xml='<request>';
 		if(isset($js->request->auth)){
-			$xml.='<auth><user>'.$js->request->auth->user.'</user>';
-			$xml.='<pass>'.$js->request->auth->pass.'</pass></auth>';
+			$xml.='<auth><user>'.htmlspecialchars($js->request->auth->user).'</user>';
+			$xml.='<pass>'.htmlspecialchars($js->request->auth->pass).'</pass></auth>';
 		}
 		//see if we have an alternate output format specified
 		if(isset($js->request->action->output)){
-			$alt_out='output="'.$js->request->action->output.'"';
+			$alt_out='output="'.htmlspecialchars($js->request->action->output).'"';
 		}else{ $alt_out=''; }
 		
-		$xml.='<action type="'.$js->request->action->type.'" '.$alt_out.'>';
+		$xml.='<action type="'.htmlspecialchars($js->request->action->type).'" '.$alt_out.'>';
 		foreach($js->request->action->data as $k=>$v){
-			$xml.='<'.$k.'>'.$v.'</'.$k.'>';
+			$xml.='<'.htmlspecialchars($k).'>'.htmlspecialchars($v).'</'.htmlspecialchars($k).'>';
 		}
 		$xml.='</action></request>';
 		
