@@ -95,6 +95,12 @@ menu_pagetitle('Submit an event');
 	 <div class="clear"></div>
     </div>
     
+ <div class="row">
+    	<label for="event_tz_cont">Event Timezone:</label>
+		<?php echo custom_timezone_menu('event_tz', $this->validation->event_tz_cont, $this->validation->event_tz_place ); ?>
+	 <div class="clear"></div>
+    </div>
+    
 	<div class="row">
         <label for="start">Is the event private?</label>
 		<?php

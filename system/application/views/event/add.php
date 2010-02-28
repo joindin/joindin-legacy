@@ -63,7 +63,7 @@ echo '<h2>'.$title.'</h2>';
     </div>
     <div class="clear"></div>
     <div class="row">
-    	<label for="event_timezone">Event Timezone:</label>
+    	<label for="event_tz_cont">Event Timezone:</label>
 		<?php echo custom_timezone_menu('event_tz', $this->validation->event_tz_cont, $this->validation->event_tz_place ); ?>
 	<span style="color:#3567AC;font-size:11px">For more information on locations and 
 	their time zone, see <a href="http://en.wikipedia.org/wiki/List_of_time_zones">this

@@ -251,6 +251,8 @@ class Event extends Controller {
 				'event_hashtag'	=>$this->input->post('event_hashtag'),
 				'event_voting'	=>$this->input->post('event_voting'),
 				'private'		=>$this->input->post('event_private'),
+				'event_tz_cont'		=>$this->input->post('event_tz_cont'),
+				'event_tz_place'	=>$this->input->post('event_tz_place'),
 				'event_stub'	=>$this->input->post('event_stub')
 			);
 			if($this->upload->do_upload('event_icon')){
@@ -607,6 +609,7 @@ class Event extends Controller {
 		$arr=array();
 		$this->load->library('validation');
 		$this->load->plugin('captcha');
+		$this->load->helper('custom_timezone');
 		//$this->load->library('akismet');
 		$this->load->library('defensio');
 		$this->load->model('user_admin_model');
@@ -637,6 +640,8 @@ class Event extends Controller {
 			'end_day'				=> 'Event End Day',
 			'end_yr'				=> 'Event End Year',
 			'event_loc'				=> 'Event Location',
+			'event_tz_cont'			=> 'Event Timezone (Continent)',
+			'event_tz_place'		=> 'Event Timezone (Place)',
 			'event_stub'			=> 'Event Stub'
 		//	'cinput'				=> 'Captcha'
 		);
@@ -645,6 +650,8 @@ class Event extends Controller {
 			'event_loc'				=> 'required',
 			'event_contact_name'	=> 'required',
 			'event_contact_email'	=> 'required|valid_email',
+			'event_tz_cont'		=> 'required',
+			'event_tz_place'	=> 'required',
 			'start_mo'				=> 'callback_start_mo_check',
 			'end_mo'				=> 'callback_end_mo_check',
 			'cfp_start_mo'			=> 'callback_cfp_start_mo_check',
