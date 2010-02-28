@@ -111,16 +111,24 @@ class Talk extends Controller {
 					$this->input->post('given_yr'));
 			if(!empty($events[0]->event_tz_cont) && !empty($events[0]->event_tz_place)) {
 				$talk_timezone = new DateTimeZone($events[0]->event_tz_cont . '/' . $events[0]->event_tz_place);
-				$talk_datetime = date_create(date('d-M-Y ',$talk_date) . $this->input->post('given_hour') . ':' . $this->input->post('given_min'), $talk_timezone);
 			} else {
-				$talk_datetime = date_create(date('d-M-Y ',$talk_date) . $this->input->post('given_hour') . ':' . $this->input->post('given_min'));
+				$talk_timezone = new DateTimeZone('UTC');
 			}
+			$talk_datetime = date_create(date('d-M-Y ',$talk_date) . $this->input->post('given_hour') . ':' . $this->input->post('given_min'), $talk_timezone);
+
+			// How much wrong will ->format("U") be if I do it now, due to DST changes?
+			$unix_offset1 = $talk_timezone->getOffset($talk_datetime);
+			$unix_offset2 = $talk_timezone->getOffset(new DateTime());
+			$unix_correction = $unix_offset1 - $unix_offset2;
+
+			$unix_timestamp = $talk_datetime->format("U") + $unix_correction;
+
 
 			$arr=array(
 				'talk_title'	=> $this->input->post('talk_title'),
 				'speaker'		=> $this->input->post('speaker'),
 				'slides_link'	=> $this->input->post('slides_link'),
-				'date_given'	=> $talk_datetime->format('U'),
+				'date_given'	=> $unix_timestamp,   // Unix timestamp, therefore in UTC
 				'event_id'		=> $this->input->post('event_id'),
 				'talk_desc'		=> $this->input->post('talk_desc'),
 				'active'		=> '1',
