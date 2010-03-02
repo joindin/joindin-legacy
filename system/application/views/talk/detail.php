@@ -84,7 +84,7 @@ $rstr = rating_image($det->tavg);
 		<br/> 
 		<?php echo escape($det->tcid); ?> at <strong><a href="/event/view/<?php echo $det->event_id; ?>"><?php echo escape($det->event_name); ?></a></strong> (<?php echo escape($det->lang_name);?>)
 	</p>
-	
+
 	<p class="rating">
 		<?php echo $rstr; ?>
 	</p>
@@ -97,12 +97,20 @@ $rstr = rating_image($det->tavg);
 		Quicklink: <strong><a href="http://joind.in/<?php echo $det->tid; ?>">http://joind.in/<?php echo $det->tid; ?></a></strong>
 	</p>
 	
+	<?php if(!empty($track_info)): ?>
+	<p class="quicklink">
+	<?php
+	echo '<b>Track(s):</b> '; foreach($track_info as $t){ echo $t->track_name; }
+	?>
+	</p>
+	<?php endif; ?>
+	
 	<?php if(!empty($det->slides_link)): ?>
 	<p class="quicklink">
 		Slides: <strong><a href="<?php echo $det->slides_link; ?>"><?php echo $det->talk_title; ?></a></strong>
 	</p>
 	<?php endif; ?>
-	
+
 	<?php if(isset($claimed[0]) && $this->session->userdata('ID')==$claimed[0]->userid): ?>
 	<!--<p class="opts">
 		<a class="btn-small" href="/user/comemail/talk/<?php echo $det->tid; ?>">Email me my comments</a>
@@ -258,7 +266,7 @@ if(!$det->allow_comments) {
 <p class="info">Want to comment on this talk? <a href="/user/login">Log in</a> or <a href="/user/register">create a new account</a>.</p>
 <?php 
     } else {
-	$title=($det->event_voting=='Y' && !$evt_has_started) ? 'Cast your vote' : 'Write a comment';
+	$title=($det->event_voting=='Y' && !$det->allow_comments) ? 'Cast your vote' : 'Write a comment';
 ?>
 <h3 id="comment-form"><?php echo $title; ?></h3>
 <?php echo form_open('talk/view/'.$det->tid . '#comment-form', array('class' => 'form-talk')); ?>
@@ -268,7 +276,7 @@ if(!$det->allow_comments) {
 <?php endif; ?>
 
 <?php
-if($det->event_voting=='Y' && !$evt_has_started){
+if($det->event_voting=='Y' && !$det->allow_comments){
 	?>
 	<div style="text-align:center" class="row row-buttons">
 		<?php 

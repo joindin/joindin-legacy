@@ -102,7 +102,8 @@ function commentIsSpam(cid,rtype){
 function claimTalk(tid){
 	var obj=new Object();
 	obj.talk_id=tid;
-
+	$('#claim_btn').html('Sending Claim >>');
+	
 	apiRequest('talk','claim',obj, function(obj) {
 		//alert(obj);
 		$('#claim_btn').css('display','none');
@@ -302,7 +303,121 @@ function toggleCfpDates(){
 		});
 	}
 }
+function loadUserData(){
+	var obj		= new Object();
+	obj.uid=$('#uid').val();
+	apiRequest('user','getdetail',obj, function(obj) {
+		$.each(obj,function(k,v){
+			$('#ulist').append('<li>'+v.full_name);
+		});
+	});
+}
 
+function addTrackRow(){
+	rid=$('#track_tbl_body tr').length+1;
+	$('#track_tbl_body').append('\
+		<tr id="rid_'+rid+'">\
+			<td>'+rid+'</td>\
+			<td style="vertical-align:top">\
+				<input type="text" name="name_'+rid+'" id="name_'+rid+'" size="15"/>\
+				<div id="disp_name_'+rid+'" style="display:none"></div>\
+			</td>\
+			<td style="vertical-align:top">\
+				<textarea cols="25" rows="4" name="desc_'+rid+'" id="desc_'+rid+'"></textarea>\
+				<div id="disp_desc_'+rid+'" style="display:none"></div>\
+			</td>\
+			<td colspan="2" style="vertical-align:top" align="right" id="ctrl_cell_'+rid+'">\
+				<a href="#" class="btn-small" onClick="saveTrackAdd('+rid+')">save</a>\
+				<a href="#" class="btn-small" onClick="cancelTrackAdd('+rid+')">cancel</a>\
+			</td>\
+		</tr>\
+	');
+}
+function cancelTrackAdd(rid){
+	$("#track_tbl_body tr[id='rid_"+rid+"']").remove();
+}
+function cancelTrackEdit(rid){
+	//Switch back to display
+	switchTrackDisplay(rid);
+	
+	$('#ctrl_cell_'+rid).html('\
+		<a href="#" class="btn-small" onClick="editTrack('+rid+')">edit</a>\
+	');
+}
+function saveTrackAdd(rid){
+	var obj			= new Object();
+	obj.event_id	= $('#event_id').val();
+	obj.track_name	= $("#track_tbl_body input[id='name_"+rid+"']").val();
+	obj.track_desc	= $("#track_tbl_body textarea[id='desc_"+rid+"']").val();
+	
+	apiRequest('event','addtrack',obj, function(obj) {
+		alert(obj.msg);
+		if(obj.msg=='Success'){
+			//Switch back to display
+			switchTrackDisplay(rid);
+			
+			//And clear out that last cell..
+			$('#ctrl_cell_'+rid).html('');
+		}
+	});
+}
+function saveTrackUpdate(rid){
+	var obj			= new Object();
+	obj.event_id	= $('#event_id').val();
+	obj.track_name	= $("#track_tbl_body input[id='name_"+rid+"']").val();
+	obj.track_desc	= $("#track_tbl_body textarea[id='desc_"+rid+"']").val();
+	obj.track_id	= $("#track_tbl_body input[id='trackid_"+rid+"']").val();
+	obj.track_color	= $("#track_tbl_body input[id='track_color_"+rid+"']").val();
+	
+	apiRequest('event','updatetrack',obj, function(obj) {
+		alert(obj.msg);
+		if(obj.msg=='Success'){
+			//Switch back to display
+			switchTrackDisplay(rid);
+			
+			//And clear out that last cell..
+			$('#ctrl_cell_'+rid).html('');
+		}
+	});
+}
+function deleteTrack(rid,tid){
+	var obj			= new Object();
+	obj.event_id	= $('#event_id').val();
+	obj.track_id	= tid;
+	
+	apiRequest('event','deletetrack',obj, function(obj) {
+		alert(obj.msg);
+		if(obj.msg=='Success'){ $("#track_tbl_body tr[id='rid_"+rid+"']").remove(); }
+	});
+}
+function editTrack(rid){
+	$('#disp_name_'+rid).hide(); $('#name_'+rid).show();
+	$('#disp_desc_'+rid).hide(); $('#desc_'+rid).show();
+	$('#track_color_sel_'+rid).show();
+	//Put the "save" and "cancel" buttons in the last column...
+	
+	$('#ctrl_cell_'+rid).html('\
+		<a href="#" class="btn-small" onClick="saveTrackUpdate(\''+rid+'\')">save</a>\
+		<a href="#" class="btn-small" onClick="cancelTrackEdit(\''+rid+'\')">cancel</a>\
+	');
+}
+function switchTrackDisplay(rid){
+	//Switch over to the display-only versions...
+	$('#name_'+rid).hide();
+	$('#disp_name_'+rid).html($("#track_tbl_body input[id='name_"+rid+"']").val());
+	$('#disp_name_'+rid).show();
+	
+	$('#desc_'+rid).hide();
+	$('#disp_desc_'+rid).html($("#track_tbl_body textarea[id='desc_"+rid+"']").val());
+	$('#disp_desc_'+rid).show();
+	
+	$('#track_color_sel_'+rid).hide();
+}
+
+function updateTrackColor(rid,color){
+	$('#track_color_'+rid+'_block').css('background-color','#'+color);
+	$('#track_color_'+rid).val(color);
+}
 //-------------------------
 
 /*# AVOID COLLISIONS #*/

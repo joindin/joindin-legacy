@@ -82,7 +82,6 @@ class Talks_model extends Model {
 					talks.ID tid,
 					events.ID eid,
 					events.event_name,
-					events.event_tz,
 					events.event_tz_cont,
 					events.event_tz_place,
 					events.event_voting,
@@ -122,7 +121,6 @@ class Talks_model extends Model {
 					talks.ID tid,
 					events.ID eid,
 					events.event_name,
-					events.event_tz,
 					events.event_tz_cont,
 					events.event_tz_place,
 					events.private,
@@ -184,8 +182,7 @@ class Talks_model extends Model {
 				count(tc.ID) as ccount,
 				(select round(avg(rating)) from talk_comments where talk_id=t.ID) as tavg,
 				e.ID eid,
-				e.event_name,
-				e.event_tz
+				e.event_name
 			from
 				talks t,
 				talk_comments tc,
@@ -213,7 +210,6 @@ class Talks_model extends Model {
 				(select round(avg(rating)) from talk_comments where talk_id=t.ID) as tavg,
 				e.ID eid,
 				e.event_name,
-				e.event_tz,
 				e.event_start
 			from
 				talks t,
@@ -392,7 +388,7 @@ class Talks_model extends Model {
 
 	//---------------
 	function search($term,$start,$end){
-		$this->db->select('talks.*, count(talk_comments.ID) as ccount, (select round(avg(rating)) from talk_comments where talk_id=talks.ID) as tavg, events.ID eid, events.event_name, events.event_tz');
+		$this->db->select('talks.*, count(talk_comments.ID) as ccount, (select round(avg(rating)) from talk_comments where talk_id=talks.ID) as tavg, events.ID eid, events.event_name');
 	    $this->db->from('talks');
 	    
 	    $this->db->join('talk_comments', 'talk_comments.talk_id=talks.ID', 'left');
