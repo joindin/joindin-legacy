@@ -679,20 +679,75 @@ class Event extends Controller {
 		
 		if($this->validation->run()!=FALSE){			
 			//TODO: add it to our database, but mark it pending
+
+			$tz = new DateTimeZone($this->input->post('event_tz_cont').'/'.$this->input->post('event_tz_place'));
+
+			// -----------------------------
+
+			// Get offset unix timestamp for start of event
+			$startDateObj = new DateTime();
+			$startDateObj->setTimezone($tz);
+			$startDateObj->setDate($this->input->post('start_yr'), $this->input->post('start_mo'), $this->input->post('start_day'));
+			$startDateObj->setTime(0, 0, 0);
+
+			// How much wrong will ->format("U") be if I do it now, due to DST changes?
+			// Only needed until PHP Bug #51051 delivers a better method
+			$unix_offset1 = $tz->getOffset($startDateObj);
+			$unix_offset2 = $tz->getOffset(new DateTime());
+			$unix_correction = $unix_offset1 - $unix_offset2;
+			$startUnixTimestamp = $startDateObj->format("U") - $unix_correction;
+
+			// ---
+
+			// Get offset unix timestamp for end of event
+			$endDateObj = new DateTime();
+			$endDateObj->setTimezone($tz);
+			$endDateObj->setDate($this->input->post('end_yr'), $this->input->post('end_mo'), $this->input->post('end_day'));
+			$endDateObj->setTime(23, 59, 59);
+
+			// How much wrong will ->format("U") be if I do it now, due to DST changes?
+			// Only needed until PHP Bug #51051 delivers a better method
+			$unix_offset1 = $tz->getOffset($endDateObj);
+			$unix_offset2 = $tz->getOffset(new DateTime());
+			$unix_correction = $unix_offset1 - $unix_offset2;
+			$endUnixTimestamp = $endDateObj->format("U") - $unix_correction;
+
+			// ---
+
+			// Get offset unix timestamp for start of event
+			$cfpStartDateObj = new DateTime();
+			$cfpStartDateObj->setTimezone($tz);
+			$cfpStartDateObj->setDate($this->input->post('cfp_start_yr'), $this->input->post('cfp_start_mo'), $this->input->post('cfp_start_day'));
+			$cfpStartDateObj->setTime(0, 0, 0);
+
+			// How much wrong will ->format("U") be if I do it now, due to DST changes?
+			// Only needed until PHP Bug #51051 delivers a better method
+			$unix_offset1 = $tz->getOffset($cfpStartDateObj);
+			$unix_offset2 = $tz->getOffset(new DateTime());
+			$unix_correction = $unix_offset1 - $unix_offset2;
+			$cfpStartUnixTimestamp = $cfpStartDateObj->format("U") - $unix_correction;
+
+			// ---
+
+			// Get offset unix timestamp for end of event
+			$cfpEndDateObj = new DateTime();
+			$cfpEndDateObj->setTimezone($tz);
+			$cfpEndDateObj->setDate($this->input->post('cfp_end_yr'), $this->input->post('cfp_end_mo'), $this->input->post('cfp_end_day'));
+			$cfpEndDateObj->setTime(23, 59, 59);
+
+			// How much wrong will ->format("U") be if I do it now, due to DST changes?
+			// Only needed until PHP Bug #51051 delivers a better method
+			$unix_offset1 = $tz->getOffset($cfpEndDateObj);
+			$unix_offset2 = $tz->getOffset(new DateTime());
+			$unix_correction = $unix_offset1 - $unix_offset2;
+			$cfpEndUnixTimestamp = $cfpEndDateObj->format("U") - $unix_correction;
+
+			// ------------------------------
+
 			$sub_arr=array(
 				'event_name'	=>$this->input->post('event_title'),
-				'event_start'	=>mktime(
-					0,0,0,
-					$this->input->post('start_mo'),
-					$this->input->post('start_day'),
-					$this->input->post('start_yr')
-				),
-				'event_end'		=>mktime(
-					0,0,0,
-					$this->input->post('end_mo'),
-					$this->input->post('end_day'),
-					$this->input->post('end_yr')
-				),
+				'event_start'	=>$startUnixTimestamp,
+				'event_end'		=>$endUnixTimestamp,
 				'event_loc'		=>$this->input->post('event_loc'),
 				'event_desc'	=>$this->input->post('event_desc'),
 				'active'		=>0,
@@ -706,18 +761,8 @@ class Event extends Controller {
 			// Check to see if our Call for Papers dates are set...
 			$cfp_check=$this->input->post('cfp_start_mo');
 			if(!empty($cfp_check)){
-				$sub_arr['event_cfp_start']=mktime(
-					0,0,0,
-					$this->input->post('cfp_start_mo'),
-					$this->input->post('cfp_start_day'),
-					$this->input->post('cfp_start_yr')
-				);
-				$sub_arr['event_cfp_end']=mktime(
-					0,0,0,
-					$this->input->post('cfp_end_mo'),
-					$this->input->post('cfp_end_day'),
-					$this->input->post('cfp_end_yr')
-				);
+				$sub_arr['event_cfp_start']=$cfpStartUnixTimestamp;
+				$sub_arr['event_cfp_end']=$cfpEndUnixTimestamp;
 			}
 			
 			//echo '<pre>'; print_r($sub_arr); echo '</pre>';
