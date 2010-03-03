@@ -240,7 +240,7 @@ $ct=0;
 										$uid=$cl[$cv]['uid']; 
 									}else{ 
 										if(count($spk_split)>1){ $sp_names[]=escape($ck); continue; }
-										$uid=$claimed_uids[$iv->ID];
+										$uid=$claimed_uids[$talk->ID];
 									}
 									$sp_names[]='<a href="/user/view/'.$uid.'">'.escape($spv).'</a>';
 								}else{
