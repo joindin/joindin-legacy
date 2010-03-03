@@ -27,16 +27,16 @@ class Getdetail extends BaseWsRequest {
 		//getTalkComments
 		$ret=array();
 		if($this->xml->action->rtype=='talk'){
-			$this->CI->load->model('talks_model');
-			$ret=$this->CI->talks_model->getTalkComments($id);
+			$this->CI->load->model('talk_comments_model');
+			$ret=$this->CI->talk_comments_model->getCommentDetail($id);
 		}elseif($this->xml->action->rtype=='event'){
-			$this->CI->load->model('event_model');
+			$this->CI->load->model('event_comments_model');
+			$ret=$this->CI->event_comments_model->getCommentDetail($id);
 		}
 		if(count($ret)>0){
-			$items=array('title'=>'title #1');
-			$ret=array('output'=>'json','data'=>array('items'=>$items));
+			$ret=array('output'=>'json','data'=>array('items'=>$ret));
 		}else{
-			$ret=array('output'=>'msg','data'=>array('msg'=>'Comment not found!'));
+			$ret=array('output'=>'json','data'=>array('items'=>array('msg'=>'Comment not found!')));
 		}
 		return $ret;
 	}

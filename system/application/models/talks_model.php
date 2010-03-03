@@ -151,7 +151,13 @@ class Talks_model extends Model {
 		
 		return $db_results;
 	}
-	function getTalkComments($tid){
+	/**
+	* Gets the comments for a session/talk
+	* $tid Talk ID
+	* $cid [optional] Comment ID (if you want to get only one comment)
+	*/
+	function getTalkComments($tid,$cid=null){
+		$c_addl=($cid) ? ' and tc.ID='.$cid : '';
 		$sql=sprintf('
 			select
 				tc.talk_id,
@@ -168,9 +174,9 @@ class Talks_model extends Model {
 				talk_comments tc
 			where
 				tc.active=1 and
-				tc.talk_id=%s
+				tc.talk_id=%s %s
 			order by tc.date_made asc
-		',$tid);
+		',$tid,$c_addl);
 		$q=$this->db->query($sql);
 		return $q->result();
 	}

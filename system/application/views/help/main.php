@@ -19,6 +19,7 @@ as an event administrator or as an attendee coming to rank your favorite session
 <h3>Talks</h3>
 <ul>
 <li><a href="/help/user_guide_talks">A User's Guide to Talks</a>
+<li><a href="/help/talk_admin">Talk Administration</a>
 </ul>
 
 <h3>User Info</h3>

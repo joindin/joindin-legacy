@@ -38,8 +38,10 @@ if(!empty($claims)){
 		$ct=0;
 		$matched=array();
 		foreach($v->tdata['codes'] as $ck=>$cv){
-			
-			$iscl=(count($sp)==1 && count($v->tdata['codes'])==1) ? true : false;
+			// This was so that, if there's one speaker claim, so ahead and link it...
+			// seems to have backfired a little
+			//$iscl=(count($sp)==1 && count($v->tdata['codes'])==1) ? true : false;
+			$iscl=false;
 			
 		    if($cv==$cd || $iscl){
 			   //echo 'match! '.$ct.' '.$sp[$ct];
@@ -235,6 +237,9 @@ if (empty($comments)) {
     		<?php echo auto_p(escape($v->comment)); ?>
     	</div>
 		<p class="admin">
+			<?php if (user_is_admin() || $v->user_id==$user_id): ?>
+				<a class="btn-small" href="#" onClick="editTalkComment(<?=$v->ID?>);return false;">Edit</a>
+			<?php endif; ?>
 			<?php if (user_is_admin()): ?>
 				<a class="btn-small" href="#" onClick="delTalkComment(<?=$v->ID?>);return false;">Delete</a>
 			<?php endif; ?>
@@ -268,6 +273,7 @@ if(!$det->allow_comments) {
     } else {
 	$title=($det->event_voting=='Y' && !$det->allow_comments) ? 'Cast your vote' : 'Write a comment';
 ?>
+<a name="comment_form"></a>
 <h3 id="comment-form"><?php echo $title; ?></h3>
 <?php echo form_open('talk/view/'.$det->tid . '#comment-form', array('class' => 'form-talk')); ?>
 
@@ -294,6 +300,7 @@ if($det->event_voting=='Y' && !$det->allow_comments){
 ?>
 
 <div class="row">
+	<?php echo form_hidden('edit_comment'); ?>
 	<label for="comment">Comment</label>
 	<?php 
     $arr = array(
