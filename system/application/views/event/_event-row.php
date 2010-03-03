@@ -5,7 +5,7 @@ $this->load->helper('text');
 	<?php $this->load->view('event/_event-icon',array('event'=>$event, 'showlink' => true)); ?>
 	<div class="text">
     	<h3><a href="/event/view/<?php echo $event->ID; ?>"><?php echo escape($event->event_name); ?></a></h3>
-    	<p class="info"><strong><?php echo date('M j, Y',$event->event_start); ?></strong> - <strong><?php echo date('M j, Y',$event->event_end); ?></strong> at <strong><?php echo escape($event->event_loc); ?></strong></p>
+		<p class="info"><strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event->event_start, $event->event_tz_cont.'/'.$event->event_tz_place, 'M j, Y'); ?></strong> - <strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event->event_end, $event->event_tz_cont.'/'.$event->event_tz_place, 'M j, Y'); ?></strong> at <strong><?php echo escape($event->event_loc); ?></strong></p>
     	<div class="desc">
         <?php echo auto_p(escape(word_limiter($event->event_desc, 20))); ?>
     	</div>

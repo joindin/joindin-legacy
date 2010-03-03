@@ -25,6 +25,7 @@ class Event extends Controller {
 		
 		$this->load->helper('form');
 		$this->load->helper('reqkey');
+		$this->load->library('timezone');
 		//$this->load->library('calendar',$prefs);
 		$this->load->model('event_model');
 		$this->load->model('user_attend_model');
@@ -102,6 +103,7 @@ class Event extends Controller {
 		$this->load->model('user_attend_model');
 		$this->load->helper('reqkey');
 		$this->load->helper('mycal');
+		$this->load->library('timezone');
 
 		if (!$year) {
 		    $year = date('Y');
