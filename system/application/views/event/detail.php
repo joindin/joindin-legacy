@@ -37,7 +37,7 @@ foreach($talks as $k=>$v){
             	<h1><?=escape($det->event_name)?> <?=(($det->pending==1) ? '(Pending)':'')?></h1>
             
             	<p class="info">
-            		<strong><?php echo date('M j, Y',$det->event_start); ?></strong> - <strong><?php echo date('M j, Y',$det->event_end); ?></strong>
+					<strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($det->event_start, $det->event_tz_cont.'/'.$det->event_tz_place, 'M j, Y'); ?></strong> - <strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($det->event_end, $det->event_tz_cont.'/'.$det->event_tz_place, 'M j, Y'); ?></strong>
             		<br/> 
             		<strong><?php echo escape($det->event_loc); ?></strong>
             	</p>

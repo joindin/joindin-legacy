@@ -64,6 +64,55 @@ class Timezone {
 		}
 		return $this->hasEvtStarted($tdata[0]->event_id);
 	}
+
+	public function formattedEventDatetimeFromUnixtime($unixtime, $timezone, $format) {
+
+		$datetime = new DateTime("@$unixtime");
+
+		// if a timezone is specified, adjust times
+		if($timezone != '' && $timezone != '/') {
+			$tz = new DateTimeZone($timezone);
+		} else {
+			$tz = new DateTimeZone('UTC');
+		}
+		$datetime->setTimezone($tz);
+
+		// How much wrong will ->format("U") be if I do it now, due to DST changes?
+		// Only needed until PHP Bug #51051 delivers a better method
+		$unix_offset1 = $tz->getOffset($datetime);
+		$unix_offset2 = $tz->getOffset(new DateTime());
+		$unix_correction = $unix_offset1 - $unix_offset2;
+
+		// create datetime object corrected for DST offset
+		$timestamp = $unixtime + $unix_correction;
+		$datetime = new DateTime("@{$timestamp}");
+		$datetime->setTimezone($tz);
+
+		$retval = $datetime->format($format);
+
+		return $retval;
+
+	}
+
+	public function UnixtimeForTimeInTimezone($timezone, $year, $month, $day, $hour, $minute, $second) {
+
+		$tz = new DateTimeZone($timezone);
+
+		// Get offset unix timestamp for start of event
+		$dateObj = new DateTime();
+		$dateObj->setTimezone($tz);
+		$dateObj->setDate($year, $month, $day);
+		$dateObj->setTime($hour, $minute, $second);
+
+		// How much wrong will ->format("U") be if I do it now, due to DST changes?
+		// Only needed until PHP Bug #51051 delivers a better method
+		$unix_offset1 = $tz->getOffset($dateObj);
+		$unix_offset2 = $tz->getOffset(new DateTime());
+		$unix_correction = $unix_offset1 - $unix_offset2;
+		$unixTimestamp = $dateObj->format("U") - $unix_correction;
+
+		return $unixTimestamp;
+	}
 	
 }
 
