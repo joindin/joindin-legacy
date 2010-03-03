@@ -90,6 +90,22 @@ function deleteComment(cid,rtype){
 	});
 	return false;
 }
+function editTalkComment(cid){
+	var obj=new Object();
+	obj.cid		= cid;
+	obj.rtype	= 'talk';
+	apiRequest('comment','getdetail',obj, function(obj) {
+		//jump down to the comments block
+		window.location.hash="#comment_form";
+		
+		// now set the information so they can edit it
+		$('#comment').val(obj[0].comment);
+		if(obj[0].private!=0){ $(':checkbox[name=private]').attr('checked',true); }
+		setStars(obj[0].rating);
+		$(':input[name=edit_comment]').val(cid);
+	});
+}
+
 function commentIsSpam(cid,rtype){
 	var obj=new Object();
 	obj.cid		= cid;
@@ -418,6 +434,12 @@ function updateTrackColor(rid,color){
 	$('#track_color_'+rid+'_block').css('background-color','#'+color);
 	$('#track_color_'+rid).val(color);
 }
+
+
+function setStars(rate){
+	$('.rating .star').eq(rate-1).click();
+}
+
 //-------------------------
 
 /*# AVOID COLLISIONS #*/

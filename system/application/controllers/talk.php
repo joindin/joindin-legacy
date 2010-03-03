@@ -227,6 +227,7 @@ class Talk extends Controller {
 		$this->load->model('invite_list_model','ilm');
 		$this->load->model('user_attend_model');
 		$this->load->model('talk_track_model','ttm');
+		$this->load->model('talk_comments_model','tcm');
 		$this->load->helper('form');
 		$this->load->helper('events');
 		$this->load->helper('reqkey');
@@ -412,7 +413,23 @@ class Talk extends Controller {
 					'user_id'		=> ($this->user_model->isAuth()) ? $this->session->userdata('ID') : '0',
 					'comment_type'	=> $type
 				);
-				$this->db->insert('talk_comments',$arr);
+				
+				$out='';
+				if($this->input->post('edit_comment')){
+					$cid=$this->input->post('edit_comment');
+					$uid=$this->session->userdata('ID');
+					
+					// Be sure they have the right to update the comment
+					$com_detail=$this->tcm->getCommentDetail($cid);
+					if(isset($com_detail[0]) && $com_detail[0]->user_id==$uid){
+						$this->db->where('ID',$cid);
+						$this->db->update('talk_comments',$arr);
+						$out='Comment updated!';
+					}else{ $out='Error on updating comment!'; }
+				}else{
+					$this->db->insert('talk_comments',$arr);
+					$out='Comment added!';
+				}
 			
 				//send an email when a comment's made
 				$msg='';
@@ -425,7 +442,7 @@ class Talk extends Controller {
 					$this->sendemail->sendTalkComment($id,$cl[0]->email,$talk_detail,$arr);
 				}
 			
-				$this->session->set_flashdata('msg', 'Comment added!');
+				$this->session->set_flashdata('msg', $out);
 			}
 			redirect('talk/view/'.$talk_detail[0]->tid . '#comments', 'location', 302);
 		}
@@ -450,7 +467,8 @@ class Talk extends Controller {
 			//'evt_has_started'=>$evt_started,
 			'user_attending'=>($this->user_attend_model->chkAttend($currentUserId,$talk_detail[0]->event_id)) ? true : false,
 			'msg'			=> $msg,
-			'track_info'	=> $this->ttm->getSessionTrackInfo($id)
+			'track_info'	=> $this->ttm->getSessionTrackInfo($id),
+			'user_id'		=> ($this->user_model->isAuth()) ? $this->session->userdata('ID') : null
 		);
 		if(empty($arr['detail'])){ redirect('talk'); }
 		

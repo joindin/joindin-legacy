@@ -20,5 +20,9 @@ class Talk_comments_model extends Model {
 	function deleteComment($cid){
 		$this->db->delete('talk_comments',array('id'=>$cid));
 	}
+	function getCommentDetail($cid){
+		$q=$this->db->get_where('talk_comments',array('ID'=>$cid));
+		return $q->result();	
+	}
 }
 ?>
