@@ -43,6 +43,7 @@ class Talk extends Controller {
 		$this->load->model('lang_model');				
 		$this->load->helper('form');
 		$this->load->library('validation');
+		$this->load->library('timezone');
 		$this->load->model('event_track_model','etm');
 		$this->load->model('talk_track_model','ttm');
 
@@ -89,11 +90,11 @@ class Talk extends Controller {
 				$this->validation->$k=$v;
 			}
 			$this->validation->eid=$det[0]->eid;
-			$this->validation->given_mo = date('m',$det[0]->date_given);
-			$this->validation->given_day= date('d',$det[0]->date_given);
-			$this->validation->given_yr = date('Y',$det[0]->date_given);
-			$this->validation->given_hour= date('H',$det[0]->date_given);
-			$this->validation->given_min= date('i',$det[0]->date_given);
+			$this->validation->given_day = $this->timezone->formattedEventDatetimeFromUnixtime($det[0]->date_given, $det[0]->event_tz_cont.'/'.$det[0]->event_tz_place, 'd');
+			$this->validation->given_mo = $this->timezone->formattedEventDatetimeFromUnixtime($det[0]->date_given, $det[0]->event_tz_cont.'/'.$det[0]->event_tz_place, 'm');
+			$this->validation->given_yr = $this->timezone->formattedEventDatetimeFromUnixtime($det[0]->date_given, $det[0]->event_tz_cont.'/'.$det[0]->event_tz_place, 'Y');
+			$this->validation->given_hour = $this->timezone->formattedEventDatetimeFromUnixtime($det[0]->date_given, $det[0]->event_tz_cont.'/'.$det[0]->event_tz_place, 'H');
+			$this->validation->given_min = $this->timezone->formattedEventDatetimeFromUnixtime($det[0]->date_given, $det[0]->event_tz_cont.'/'.$det[0]->event_tz_place, 'i');
 			
 			$this->validation->session_lang=$det[0]->lang_name;
 			$this->validation->session_type=$det[0]->tcid;
