@@ -85,6 +85,7 @@ class Timezone {
 
 		// create datetime object corrected for DST offset
 		$timestamp = $unixtime + $unix_correction;
+
 		$datetime = new DateTime("@{$timestamp}");
 		$datetime->setTimezone($tz);
 
@@ -109,6 +110,7 @@ class Timezone {
 		$unix_offset1 = $tz->getOffset($dateObj);
 		$unix_offset2 = $tz->getOffset(new DateTime());
 		$unix_correction = $unix_offset1 - $unix_offset2;
+
 		$unixTimestamp = $dateObj->format("U") - $unix_correction;
 
 		return $unixTimestamp;
