@@ -163,6 +163,7 @@ class Event extends Controller {
 		$this->load->helper('form');
 		$this->load->helper('custom_timezone');
 		$this->load->library('validation');
+		$this->load->library('timezone');
 		$this->load->model('event_model');
 		
 		$config['upload_path'] 	= $_SERVER['DOCUMENT_ROOT'].'/inc/img/event_icons';
@@ -210,13 +211,13 @@ class Event extends Controller {
 				$event_detail=$this->event_model->getEventDetail($id);
 				foreach($event_detail[0] as $k=>$v){
 					if($k=='event_start'){
-						$this->validation->start_mo	= date('m',$v);
-						$this->validation->start_day= date('d',$v);
-						$this->validation->start_yr	= date('Y',$v);
+						$this->validation->start_mo	= $this->timezone->formattedEventDatetimeFromUnixtime($v, $event_detail[0]->event_tz_cont.'/'.$event_detail[0]->event_tz_place, 'm');
+						$this->validation->start_day	= $this->timezone->formattedEventDatetimeFromUnixtime($v, $event_detail[0]->event_tz_cont.'/'.$event_detail[0]->event_tz_place, 'd');
+						$this->validation->start_yr	= $this->timezone->formattedEventDatetimeFromUnixtime($v, $event_detail[0]->event_tz_cont.'/'.$event_detail[0]->event_tz_place, 'Y');
 					}elseif($k=='event_end'){
-						$this->validation->end_mo	= date('m',$v);
-						$this->validation->end_day	= date('d',$v);
-						$this->validation->end_yr	= date('Y',$v);
+						$this->validation->end_mo	= $this->timezone->formattedEventDatetimeFromUnixtime($v, $event_detail[0]->event_tz_cont.'/'.$event_detail[0]->event_tz_place, 'm');
+						$this->validation->end_day	= $this->timezone->formattedEventDatetimeFromUnixtime($v, $event_detail[0]->event_tz_cont.'/'.$event_detail[0]->event_tz_place, 'd');
+						$this->validation->end_yr	= $this->timezone->formattedEventDatetimeFromUnixtime($v, $event_detail[0]->event_tz_cont.'/'.$event_detail[0]->event_tz_place, 'Y');
 					}else{ $this->validation->$k=$v; }
 				}
 				$this->validation->event_private=$event_detail[0]->private;
@@ -232,17 +233,19 @@ class Event extends Controller {
 			//success...
 			$arr=array(
 				'event_name'	=>$this->input->post('event_name'),
-				'event_start'	=>mktime(
-					0,0,0,
+				'event_start'	=>$this->timezone->UnixtimeForTimeInTimezone(
+					$this->input->post('event_tz_cont').'/'.$this->input->post('event_tz_place'),
+					$this->input->post('start_yr'),
 					$this->input->post('start_mo'),
 					$this->input->post('start_day'),
-					$this->input->post('start_yr')
+					0,0,0
 				),
-				'event_end'		=>mktime(
-					23,59,59,
+				'event_end'	=>$this->timezone->UnixtimeForTimeInTimezone(
+					$this->input->post('event_tz_cont').'/'.$this->input->post('event_tz_place'),
+					$this->input->post('end_yr'),
 					$this->input->post('end_mo'),
 					$this->input->post('end_day'),
-					$this->input->post('end_yr')
+					23,59,59
 				),
 				'event_loc'		=>$this->input->post('event_loc'),
 				'event_desc'	=>$this->input->post('event_desc'),
