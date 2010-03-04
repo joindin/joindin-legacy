@@ -1,5 +1,6 @@
 <?php 
 $this->load->helper('text');
+$this->load->library('timezone');
 ?>
 <div class="row row-event">
 	<?php $this->load->view('event/_event-icon',array('event'=>$event, 'showlink' => true)); ?>
