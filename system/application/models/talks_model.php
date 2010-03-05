@@ -186,23 +186,22 @@ class Talks_model extends Model {
 				t.talk_title,
 				t.ID,
 				count(tc.ID) as ccount,
-				(select round(avg(rating)) from talk_comments where talk_id=t.ID) as tavg,
+				round(avg(tc.rating)) as tavg,
 				e.ID eid,
 				e.event_name
 			from
-				talks t,
-				talk_comments tc,
-				events e
+				talks t
+			JOIN talk_comments tc
+			ON tc.talk_id=t.ID
+			JOIN events e
+			ON e.ID=t.event_id
 			where
-				tc.talk_id=t.ID and
-				e.ID=t.event_id and
 				t.active=1
 			group by
 				t.ID
-			order by 
+			order by
 				ccount desc
-			limit
-				' . $len . '
+			limit '.$len.'
 		');
 		$q=$this->db->query($sql);
 		return $q->result();
