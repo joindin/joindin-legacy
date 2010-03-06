@@ -209,36 +209,29 @@ class Talks_model extends Model {
 	function getRecentTalks(){
 		$sql=sprintf("
 			select
-				t.talk_title,
-				t.ID,
-				count(tc.ID) as ccount,
-				(select round(avg(rating)) from talk_comments where talk_id=t.ID) as tavg,
-				e.ID eid,
-				e.event_name,
-				e.event_start
+			  DISTINCT t.ID,
+			  t.talk_title,
+			  count(tc.ID) as ccount,
+			  round(avg(tc.rating)) as tavg,
+			  e.ID eid,
+			  e.event_name,
+			  e.event_start
 			from
-				talks t,
-				events e,
-				talk_comments tc
-			where
-				e.ID=t.event_id and
-				tc.talk_id=t.ID and
-				event_id in (
-					(
-						select
-							e.ID
-						from
-							events e
-						where event_start>=%s
-					)
-				) and
-				t.ID in (
-					select rid from user_admin where rtype='talk' and rcode!='pending'
-				)
+			  talks t
+			  JOIN events e
+			    ON e.ID=t.event_id
+			  JOIN talk_comments tc
+			    ON tc.talk_id=t.ID
+			WHERE
+			  e.event_start > %s
+			  and
+			t.ID in (
+			select rid from user_admin where rtype='talk' and rcode!='pending'
+			)
 			group by
-				t.ID
+			  t.ID
 			having
-				tavg>3 and ccount>3
+			  tavg>3 and ccount>3
 		",strtotime('-3 months'));
 		$q=$this->db->query($sql);
 		return $q->result();
