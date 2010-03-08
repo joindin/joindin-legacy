@@ -10,6 +10,7 @@ class About extends Controller {
 		$this->load->helper('form');
 		
 		$this->template->write_view('content','about/main');
+		$this->template->write_view('sidebar2','about/_facebook-sidebar');
 		$this->template->render();
 	}
 	function import(){
