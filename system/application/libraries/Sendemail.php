@@ -29,7 +29,7 @@ Your claim has been approved. This talk will now be listed under your account.
 Thanks,
 The Joind.in Crew
 		",$evt_name,$talk_title);
-		$this->_sendEmail($to,$subj,$msg);
+		$this->_sendEmail($to,$msg,$subj);
 	}
 
 	/**
