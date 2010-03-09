@@ -8,6 +8,10 @@ menu_pagetitle('Manage Speaker Profile Access');
 
 $this->load->view('user/_nav_sidebar');
 
+$edit_select=array();
+if($curr_access){
+	foreach($curr_access as $curr){ $edit_select[]=(is_object($curr)) ? $curr->field_name : $curr; }
+}
 ?>
 
 <div class="menu">
@@ -32,20 +36,43 @@ $fields=array(
     'job_title'=>'Job Title','bio'=>'Bio','picture'=>'Picture'
 );
 
-echo form_open('speaker/access/add',array('id'=>'frm_access_add'));
-$i=0;
-echo '<table cellpadding="0" cellspacing="0" border="0" width="100%"><tr>';
-foreach($fields as $k=>$v){
-    $i++;
-    echo '<td style="padding:3px">';
-    //echo '<input type="checkbox" value="'.$k.'" name="fields[]"> '.$v.'</td>';
-    echo form_checkbox('fields[]',$k).' '.$v."\n";
-    if($i%2==0){ echo '</tr><tr>'; }
-}
-echo '</tr>';
+$path=($req_type=='edit') ? 'speaker/access/edit/'.$token_id : 'speaker/access/add';
+echo form_open($path,array('id'=>'frm_access_add'));
 ?>
-<tr><td style="padding:5px" align="center" colspan="2">
-    <?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Save changes'); ?>
-</td></tr>
-</table>
+
+<div id="box">
+	<div class="row">
+		<label for="token_name">Token Name</label>
+		<?php echo form_input('token_name',$this->validation->token_name); ?>
+		<div class="clear"></div>
+	</div>
+	<div class="row">
+		<label for="token_desc">Token Description</label>
+		<?php echo form_input('token_desc',$this->validation->token_desc); ?>
+		<div class="clear"></div>
+	</div>
+	<div class="row">
+		<label for="access_items"></label>
+		<?php
+		$i=0;
+		echo '<table cellpadding="0" cellspacing="0" border="0" width="100%"><tr>';
+		foreach($fields as $k=>$v){
+		    $i++;
+		    echo '<td style="padding:3px">';
+		    //echo '<input type="checkbox" value="'.$k.'" name="fields[]"> '.$v.'</td>';
+			$is_chk=(in_array($k,$edit_select)) ? true : false;
+		    echo form_checkbox('fields[]',$k, $is_chk).' '.$v."\n";
+		    if($i%2==0){ echo '</tr><tr>'; }
+		}
+		echo '</tr></table>';
+		?>
+		<div class="clear"></div>
+	</div>
+    <div class="row">
+		<label for="event"></label>
+		<?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Save changes'); ?>
+		<div class="clear"></div>
+	</div>
+	<?php if(isset($token_id)){ echo form_hidden('token_id',$token_id); } ?>
+</div>
 <?php echo form_close(); ?>
