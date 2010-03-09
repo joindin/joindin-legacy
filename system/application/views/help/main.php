@@ -24,7 +24,7 @@ as an event administrator or as an attendee coming to rank your favorite session
 
 <h3>User Info</h3>
 <ul>
-<li>Managing Your Account
+<li><a href="/help/manage_user_acct">Managing Your Account</a>
 </ul>
 
 <h3>API</h3>
