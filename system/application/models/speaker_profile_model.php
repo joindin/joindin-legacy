@@ -173,7 +173,7 @@ class Speaker_profile_model extends Model {
 		
 		//Now, for each of the fields they gave us, put its name in the fields table
 		foreach($fields as $f){
-			$arr=array('speaker_token_id'=>$tid,'field_name'=>$f); print_r($arr);
+			$arr=array('speaker_token_id'=>$tid,'field_name'=>$f);
 			$this->db->insert('speaker_token_fields',$arr);
 		}
 		return true;
