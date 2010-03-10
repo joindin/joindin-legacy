@@ -20,8 +20,8 @@ $nav=sprintf('
 <li><a href="/user/manage">Manage Account</a>
 <li><a href="/speaker/profile">Speaker Profile</a>
 <ul>
-    <li><a href="">My Talks</a>
-    <li><a href="">My Sessions</a>
+    <li><a href="/user/main">My Talks</a>
+    <li><a href="/user/main">My Sessions</a>
 </ul>
 %s
 </ul>',$admin_nav_lnks);
