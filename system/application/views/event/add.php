@@ -36,7 +36,7 @@ echo '<h2>'.$title.'</h2>';
 	    $m=date('M',mktime(0,0,0,$v,1,date('Y')));
 	    $start_mo[$v]=$m; }
 	foreach(range(1,32) as $v){ $start_day[$v]=$v; }
-	foreach(range(2008,date('Y')+5) as $v){ $start_yr[$v]=$v; }
+	foreach(range($min_start_yr,date('Y')+5) as $v){ $start_yr[$v]=$v; }
 	echo form_dropdown('start_mo',$start_mo,$this->validation->start_mo);
 	echo form_dropdown('start_day',$start_day,$this->validation->start_day);
 	echo form_dropdown('start_yr',$start_yr,$this->validation->start_yr);
@@ -50,7 +50,7 @@ echo '<h2>'.$title.'</h2>';
 	    $m=date('M',mktime(0,0,0,$v,1,date('Y')));
 	    $end_mo[$v]=$m; }
 	foreach(range(1,32) as $v){ $end_day[$v]=$v; }
-	foreach(range(2008,date('Y')+5) as $v){ $end_yr[$v]=$v; }
+	foreach(range($min_end_yr,date('Y')+5) as $v){ $end_yr[$v]=$v; }
 	echo form_dropdown('end_mo',$end_mo,$this->validation->end_mo);
 	echo form_dropdown('end_day',$end_day,$this->validation->end_day);
 	echo form_dropdown('end_yr',$end_yr,$this->validation->end_yr);
