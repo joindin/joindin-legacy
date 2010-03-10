@@ -1,15 +1,7 @@
 <?php
 error_reporting(E_ALL);
 
-$cl=array();
-$det=$detail[0];
-
-menu_pagetitle('Talk: ' . escape($det->talk_title));
-
-$total	= 0;
-$rstr	= '';
-$anon	= array();
-$anon_total = 0;
+menu_pagetitle('Talk: ' . escape($detail->talk_title));
 
 if(!empty($claim_msg)){
 	$class=($claim_status) ? 'notice' : 'err';
@@ -21,70 +13,20 @@ if(!empty($claim_msg)){
 <?php endif; ?>
 <?php
 $speaker_ids= array();
-$ftalk	    = 0;
 $speaker    = array();
-if(!empty($claims)){
-	foreach($claims as $k=>$v){
-		// Be sure we're only looking at the ones we need
-		if($v->rid!=$det->ID){ continue; }else{ $ftalk++; }
 
-		// Get the claim code
-		$cd=$v->rcode;
-
-		// Break up the speakers
-		$sp=explode(',',$v->tdata['speaker']);
-
-		// Now, check to see if any of the codes match the $cd
-		$ct=0;
-		$matched=array();
-		foreach($v->tdata['codes'] as $ck=>$cv){
-			// This was so that, if there's one speaker claim, so ahead and link it...
-			// seems to have backfired a little
-			//$iscl=(count($sp)==1 && count($v->tdata['codes'])==1) ? true : false;
-			$iscl=false;
-			
-		    if($cv==$cd || $iscl){
-			   //echo 'match! '.$ct.' '.$sp[$ct];
-			   $speaker[$sp[$ct]]='<a href="/user/view/'.$v->uid.'">'.$sp[$ct].'</a>';
-		    }else{
-				if(!isset($speaker[$sp[$ct]])){ $speaker[$sp[$ct]]=$sp[$ct]; }
-		    }
-		    $ct++;
-		}
-	}
-	// if we have no matches, just assign it
-	if(empty($speaker)){ $speaker[]=escape($det->speaker); }
-}else{ $speaker[]=escape($det->speaker); }
-
-$speaker_txt=implode(', ',$speaker);
-
-// Calculate the comment values
-foreach($comments as $k=>$v){ 
-	if($v->comment_type=='vote'){ continue; }
-	
-	//if(in_array($v->user_id,$speaker_ids)){ continue; }
-	if($v->user_id==0 && strlen($v->user_id)>=1){
-		$anon[]=$v;
-		$anon_total+=$v->rating;
-	}else{
-		$total+=$v->rating;
-	}
-}
-$anon=array();
-
-$total+=$anon_total;
-$total_count=count($comments)+count($anon);
-
-$rstr = rating_image($det->tavg);
+if(empty($speaker_claim)){ $speaker[]=escape($detail->speaker); }
+$speaker_txt= implode(', ',$speaker);
+$rstr 		= rating_image($detail->tavg);
 
 ?>
 <div class="detail">
-	<h1><?=$det->talk_title?></h1>
+	<h1><?=$detail->talk_title?></h1>
 
 	<p class="info">
-		<strong><?php echo $speaker_txt; ?></strong> (<?php echo $det->display_datetime; ?>)
+		<strong><?php echo $speaker_txt; ?></strong> (<?php echo $detail->display_datetime; ?>)
 		<br/> 
-		<?php echo escape($det->tcid); ?> at <strong><a href="/event/view/<?php echo $det->event_id; ?>"><?php echo escape($det->event_name); ?></a></strong> (<?php echo escape($det->lang_name);?>)
+		<?php echo escape($detail->tcid); ?> at <strong><a href="/event/view/<?php echo $detail->event_id; ?>"><?php echo escape($detail->event_name); ?></a></strong> (<?php echo escape($detail->lang_name);?>)
 	</p>
 
 	<p class="rating">
@@ -92,11 +34,11 @@ $rstr = rating_image($det->tavg);
 	</p>
 
 	<div class="desc">
-		<?=auto_p(auto_link(escape($det->talk_desc)));?>
+		<?=auto_p(auto_link(escape($detail->talk_desc)));?>
 	</div>
 	
 	<p class="quicklink">
-		Quicklink: <strong><a href="http://joind.in/<?php echo $det->tid; ?>">http://joind.in/<?php echo $det->tid; ?></a></strong>
+		Quicklink: <strong><a href="http://joind.in/<?php echo $detail->tid; ?>">http://joind.in/<?php echo $detail->tid; ?></a></strong>
 	</p>
 	
 	<?php if(!empty($track_info)): ?>
@@ -107,15 +49,15 @@ $rstr = rating_image($det->tavg);
 	</p>
 	<?php endif; ?>
 	
-	<?php if(!empty($det->slides_link)): ?>
+	<?php if(!empty($detail->slides_link)): ?>
 	<p class="quicklink">
-		Slides: <strong><a href="<?php echo $det->slides_link; ?>"><?php echo $det->talk_title; ?></a></strong>
+		Slides: <strong><a href="<?php echo $detail->slides_link; ?>"><?php echo $detail->talk_title; ?></a></strong>
 	</p>
 	<?php endif; ?>
 
 	<?php if(isset($claimed[0]) && $this->session->userdata('ID')==$claimed[0]->userid): ?>
 	<!--<p class="opts">
-		<a class="btn-small" href="/user/comemail/talk/<?php echo $det->tid; ?>">Email me my comments</a>
+		<a class="btn-small" href="/user/comemail/talk/<?php echo $detail->tid; ?>">Email me my comments</a>
 	</p>-->
 	<?php endif; ?>
 	<div class="clear"></div>
@@ -123,12 +65,12 @@ $rstr = rating_image($det->tavg);
 
 <p class="admin">
 <?php if($admin):?>
-	<a class="btn-small" href="/talk/delete/<?php echo $det->tid; ?>">Delete talk</a>	
-	<a class="btn-small" href="/talk/edit/<?php echo $det->tid; ?>">Edit talk</a>
+	<a class="btn-small" href="/talk/delete/<?php echo $detail->tid; ?>">Delete talk</a>	
+	<a class="btn-small" href="/talk/edit/<?php echo $detail->tid; ?>">Edit talk</a>
 <?php endif; ?>
 <?php
 if(empty($claims) || $ftalk<count($speaker)): ?>
-	<a class="btn-small" href="#" id="claim_btn" onClick="claimTalk(<?php echo $det->tid; ?>)">Claim This Talk</a>	
+	<a class="btn-small" href="#" id="claim_btn" onClick="claimTalk(<?php echo $detail->tid; ?>)">Claim This Talk</a>	
 <?php endif; ?>
 </p>
 
@@ -144,8 +86,7 @@ if(empty($claims) || $ftalk<count($speaker)): ?>
 
 <?php
 $msg=$this->session->flashdata('msg');
-if (!empty($msg)): 
-?>
+if (!empty($msg)): ?>
     <?php $this->load->view('msg_info', array('msg' => $msg)); ?>
 <?php endif; ?>
 
@@ -153,7 +94,7 @@ if (!empty($msg)):
 
 
 <?php
-if(!$det->allow_comments) {
+if(!$detail->allow_comments) {
 	$this->load->view('msg_info', array('msg' => 'Comments closed.'));
 	$comment_closed=true;
 }
@@ -261,7 +202,7 @@ if (empty($comments)) {
 ?>
 </div>
 <?php
-if(!$det->allow_comments) {
+if(!$detail->allow_comments) {
 ?>
 <p class="info">Currently not open for comment.</p>
 <?php
@@ -271,18 +212,18 @@ if(!$det->allow_comments) {
 <p class="info">Want to comment on this talk? <a href="/user/login">Log in</a> or <a href="/user/register">create a new account</a>.</p>
 <?php 
     } else {
-	$title=($det->event_voting=='Y' && !$det->allow_comments) ? 'Cast your vote' : 'Write a comment';
+	$title=($detail->event_voting=='Y' && !$detail->allow_comments) ? 'Cast your vote' : 'Write a comment';
 ?>
 <a name="comment_form"></a>
 <h3 id="comment-form"><?php echo $title; ?></h3>
-<?php echo form_open('talk/view/'.$det->tid . '#comment-form', array('class' => 'form-talk')); ?>
+<?php echo form_open('talk/view/'.$detail->tid . '#comment-form', array('class' => 'form-talk')); ?>
 
 <?php if (!empty($this->validation->error_string)): ?>
     <?php $this->load->view('msg_error', array('msg' => $this->validation->error_string)); ?>
 <?php endif; ?>
 
 <?php
-if($det->event_voting=='Y' && !$det->allow_comments){
+if($detail->event_voting=='Y' && !$detail->allow_comments){
 	?>
 	<div style="text-align:center" class="row row-buttons">
 		<?php 
@@ -292,7 +233,7 @@ if($det->event_voting=='Y' && !$det->allow_comments){
 			}
 		?><br/><br/>
 			<span style="color:#3567AC;font-size:11px">You must be listed as attending the event 
-			<a href="/event/view/<?php echo $det->event_id; ?>"><?php echo $det->event_name; ?></a> to vote on 
+			<a href="/event/view/<?php echo $detail->event_id; ?>"><?php echo $detail->event_name; ?></a> to vote on 
 			this talk.</span>
 	</div>
 	<?php
@@ -303,14 +244,13 @@ if($det->event_voting=='Y' && !$det->allow_comments){
 	<?php echo form_hidden('edit_comment'); ?>
 	<label for="comment">Comment</label>
 	<?php 
-    $arr = array(
-			'name'=>'comment',
-            'id'=>'comment',
-			'value'=>$this->validation->comment,
-			'cols'=>40,
-			'rows'=>10
-    );
-    echo form_textarea($arr);
+    echo form_textarea(array(
+		'name'	=> 'comment',
+		'id'	=> 'comment',
+		'value'	=> $this->validation->comment,
+		'cols'	=> 40,
+		'rows'	=> 10
+    ));
     ?>
     <label class="checkbox">
         <?php echo form_checkbox('private','1'); ?>

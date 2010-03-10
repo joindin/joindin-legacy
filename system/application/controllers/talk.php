@@ -230,6 +230,7 @@ class Talk extends Controller {
 		$this->load->model('talk_comments_model','tcm');
 		$this->load->helper('form');
 		$this->load->helper('events');
+		$this->load->helper('talk');
 		$this->load->helper('reqkey');
 		$this->load->plugin('captcha');
 		$this->load->library('akismet');
@@ -450,18 +451,20 @@ class Talk extends Controller {
 		//$this->session->set_userdata(array('cinput'=>$cap['word']));
 		$reqkey=buildReqKey();
 		$this->load->model('talks_model');
-		$talk_detail = $this->talks_model->setDisplayFields($talk_detail);
+		$talk_detail 	= $this->talks_model->setDisplayFields($talk_detail);
+		$claims			= $this->event_model->getClaimedTalks($talk_detail[0]->eid);
 		$arr=array(
-			'detail'		=> $talk_detail,
+			'detail'		=> $talk_detail[0],
 			'comments'		=> $this->talks_model->getTalkComments($id),
 			'admin'	 		=> ($this->user_model->isAdminTalk($id)) ? true : false,
 			'site_admin'	=> ($this->user_model->isSiteAdmin()) ? true : false,
 			'auth'			=> $this->auth,
-		//	'captcha'		=> $cap,
 			'claimed'		=> $this->talks_model->isTalkClaimed($id),
-			'claims'		=> $this->event_model->getClaimedTalks($talk_detail[0]->eid),
+			'claims'		=> $claims,
 			'claim_status'	=> $claim_status,
 			'claim_msg'		=> $claim_msg,
+			'speaker_claims'=> buildClaimData($talk_detail[0],$claims,$ftalk),
+			'ftalk'			=> $ftalk, // this one requires the previous call to buildClaimData
 			'reqkey' 		=> $reqkey,
 			'seckey' 		=> buildSecFile($reqkey),
 			//'evt_has_started'=>$evt_started,
