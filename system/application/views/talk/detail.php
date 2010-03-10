@@ -104,12 +104,9 @@ if (empty($comments)) {
 <?php
 
 } else {
-	
-	// Sort out the votes from the comments
-	$votes=array(); $for=0; $against=0;
+	$for=0; $against=0;
 	foreach($comments as $k=>$v){
 		if($v->rating==1){ $against++; }elseif($v->rating==5){ $for++; }
-		if($v->comment_type=='vote'){ $votes[]=$v; unset($comments[$k]); }
 	}
 	
 	if(count($votes)){ 

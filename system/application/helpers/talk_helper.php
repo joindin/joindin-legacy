@@ -32,4 +32,13 @@ function buildClaimData($talk_detail,$talk_claims,&$ftalk){
 	return $speaker;
 }
 
+function splitCommentTypes($talk_comments){
+	$comments=array();
+	foreach($talk_comments as $k=>$comment){
+		$type=($comment->comment_type===NULL) ? 'comment' : $comment->comment_type; 
+		$comments[$type][]=$comment;
+	}
+	return $comments;
+}
+
 ?>

@@ -452,10 +452,17 @@ class Talk extends Controller {
 		$reqkey=buildReqKey();
 		$this->load->model('talks_model');
 		$talk_detail 	= $this->talks_model->setDisplayFields($talk_detail);
+		
+		// catch this early...if it's not a valid session...
+		if(empty($talk_detail)){ redirect('talk'); }
+		
 		$claims			= $this->event_model->getClaimedTalks($talk_detail[0]->eid);
+		$comments		= splitCommentTypes($this->talks_model->getTalkComments($id));
+		
 		$arr=array(
 			'detail'		=> $talk_detail[0],
-			'comments'		=> $this->talks_model->getTalkComments($id),
+			'comments'		=> (isset($comments['comment'])) ? $comments['comment'] : array(),
+			'votes'			=> (isset($comments['vote'])) ? $comments['vote'] : array(),
 			'admin'	 		=> ($this->user_model->isAdminTalk($id)) ? true : false,
 			'site_admin'	=> ($this->user_model->isSiteAdmin()) ? true : false,
 			'auth'			=> $this->auth,
@@ -464,21 +471,18 @@ class Talk extends Controller {
 			'claim_status'	=> $claim_status,
 			'claim_msg'		=> $claim_msg,
 			'speaker_claims'=> buildClaimData($talk_detail[0],$claims,$ftalk),
-			'ftalk'			=> $ftalk, // this one requires the previous call to buildClaimData
+			'ftalk'			=> $ftalk, // this one requires the previous call to buildClaimData (return by reference)
 			'reqkey' 		=> $reqkey,
 			'seckey' 		=> buildSecFile($reqkey),
-			//'evt_has_started'=>$evt_started,
 			'user_attending'=>($this->user_attend_model->chkAttend($currentUserId,$talk_detail[0]->event_id)) ? true : false,
 			'msg'			=> $msg,
 			'track_info'	=> $this->ttm->getSessionTrackInfo($id),
 			'user_id'		=> ($this->user_model->isAuth()) ? $this->session->userdata('ID') : null
 		);
-		if(empty($arr['detail'])){ redirect('talk'); }
 		
 		$this->template->write('feedurl','/feed/talk/'.$id);
 		$this->template->write_view('content','talk/detail',$arr,TRUE);
 		$this->template->render();
-		//$this->load->view('talk/detail',$arr);
 	}
 	function claim(){
 		if(!$this->user_model->isSiteAdmin()){ redirect(); }
