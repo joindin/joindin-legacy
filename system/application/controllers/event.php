@@ -201,11 +201,21 @@ class Event extends Controller {
 		);
 		$this->validation->set_fields($fields);
 
-		$event_detail=array();
+		$event_detail	= array();
+		$min_start_yr	= date('Y');
+		$min_end_yr		= date('Y');
 		if($this->validation->run()==FALSE){
 			if($id){
 				//we're editing here...
-				$event_detail=$this->event_model->getEventDetail($id);
+				$event_detail=$this->event_model->getEventDetail($id); 
+				
+				if(date('Y',$event_detail[0]->event_start)<$min_start_yr){
+					$min_start_yr=date('Y',$event_detail[0]->event_start);
+				}
+				if(date('Y',$event_detail[0]->event_end)<$min_end_yr){
+					$min_end_yr=date('Y',$event_detail[0]->event_end);
+				}
+				
 				foreach($event_detail[0] as $k=>$v){
 					if($k=='event_start'){
 						$this->validation->start_mo	= date('m',$v);
@@ -220,10 +230,10 @@ class Event extends Controller {
 				$this->validation->event_private=$event_detail[0]->private;
 			}
 			$arr=array(
-				'detail'=> $event_detail
+				'detail'		=> $event_detail,
+				'min_start_yr'	=> $min_start_yr,
+				'min_end_yr'	=> $min_end_yr
 			);
-			$this->validation->start_yr=date('Y');
-			$this->validation->end_yr=date('Y');
 			$this->template->write_view('content','event/add',$arr);
 			$this->template->render();
 		}else{ 
@@ -344,7 +354,6 @@ class Event extends Controller {
 		if($is_auth){ 
 			$uid=$this->session->userdata('ID');
 			$chk_attend=($this->uam->chkAttend($uid,$id)) ? true : false;
-			
 		}else{ $chk_attend=false; }
 		
 		if(empty($events)){ redirect('event'); }
@@ -355,26 +364,34 @@ class Event extends Controller {
 			return true;
 		}
 		
-		$reqkey=buildReqKey();
+		$reqkey			= buildReqKey();
+		$attend			= $this->uam->getAttendUsers($id);
+		$talks 			= $this->talks_model->setDisplayFields($talks);
+		$claimed_talks	= $this->event_model->getClaimedTalks($id);
+		$claim_detail	= buildClaimDetail($claimed_talks);
 		
-		$attend=$this->uam->getAttendUsers($id);
-		$talks = $this->talks_model->setDisplayFields($talks);
+		$sessions_by_type=splitSessionTypes($talks);
+		
 		$arr=array(
-			'events' =>$events,
-			'talks'  =>$talks,
-			'admin'	 =>($this->user_model->isAdminEvent($id)) ? true : false,
-			'claimed'=>$this->event_model->getClaimedTalks($id),
-			'user_id'=>($is_auth) ? $this->session->userdata('ID') : '0',
-			'attend' =>$chk_attend,
-			'attend_ct'=>count($attend),
-			'reqkey' =>$reqkey,
-			'seckey' =>buildSecFile($reqkey),
-			'attending'=>$attend,
-			//'started'=>$this->tz->hasEvtStarted($id),
+			'event_detail'	=>$events[0],
+			'talks'  		=>(isset($sessions_by_type['Talk'])) ? $sessions_by_type['Talk'] : array(),
+			'evt_sessions'	=>(isset($sessions_by_type['Event Related'])) ? $sessions_by_type['Event Related'] : array(),
+			'slides_list'	=>buildSlidesList($talks),
+			'admin'	 		=>($this->user_model->isAdminEvent($id)) ? true : false,
+			'claimed'		=>$claimed_talks,
+			'user_id'		=>($is_auth) ? $this->session->userdata('ID') : '0',
+			'attend' 		=>$chk_attend,
+			'attend_ct'		=>count($attend),
+			'reqkey' 		=>$reqkey,
+			'seckey' 		=>buildSecFile($reqkey),
+			'attending'		=>$attend,
 			'latest_comment'=>$this->event_model->getLatestComment($id),
-			'admins' =>$evt_admins,
-			'tracks' =>$this->etm->getEventTracks($id),
+			'admins' 		=>$evt_admins,
+			'tracks' 		=>$this->etm->getEventTracks($id),
+			'times_claimed'	=>$claim_detail['claim_count'],
+			'claimed_uids'	=>$claim_detail['uids']
 			//'attend' =>$this->uam->getAttendCount($id)
+			//'started'=>$this->tz->hasEvtStarted($id),
 		);
 		if($opt=='track'){ 
 			$arr['track_filter']	= $opt_id;

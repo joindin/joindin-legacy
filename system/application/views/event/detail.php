@@ -1,45 +1,26 @@
 <?php
-$det			= $events[0]; //print_r($det);
 $cl				= array();
-$times_claimed	= array();
-$claimed_uids	= array();
 
 foreach($claimed as $k=>$v){ 
-	//echo '<pre>'; print_r($v); echo '</pre>';
 	$cl[$v->rcode]=array('rid'=>$v->rid,'uid'=>$v->uid); 
-	if(isset($times_claimed[$v->rid])){ $times_claimed[$v->rid]++; }else{ $times_claimed[$v->rid]=1; }
-	$claimed_uids[$v->rid]=$v->uid;
 }
 
-menu_pagetitle('Event: ' . escape($det->event_name));
-
-// Pick out our "event-related" ones...
-$evt_sessions	= array();
-$slides		= array();
-foreach($talks as $k=>$v){
-    if($v->tcid=='Event Related'){
-	$evt_sessions[]=$v; unset($talks[$k]);
-    }
-    // If they have slides, add them to the array
-    if(!empty($v->slides_link)){
-	$slides[$v->ID]=array('link'=>$v->slides_link,'speaker'=>$v->speaker,'title'=>$v->talk_title);
-    }
-}
+menu_pagetitle('Event: ' . escape($event_detail->event_name));
 
 ?>
 <div class="detail">
 	
 	<div class="header">
-        <?php $this->load->view('event/_event-icon',array('event'=>$det)); ?>
+        <?php $this->load->view('event/_event-icon',array('event'=>$event_detail)); ?>
     
     	<div class="title">
         	<div class="head">
-            	<h1><?=escape($det->event_name)?> <?=(($det->pending==1) ? '(Pending)':'')?></h1>
+            	<h1><?=escape($event_detail->event_name)?> <?=(($event_detail->pending==1) ? '(Pending)':'')?></h1>
             
             	<p class="info">
-            		<strong><?php echo date('M j, Y',$det->event_start); ?></strong> - <strong><?php echo date('M j, Y',$det->event_end); ?></strong>
+            		<strong><?php echo date('M j, Y',$event_detail->event_start); ?></strong> - <strong><?php echo date('M j, Y',$event_detail->event_end); ?></strong>
             		<br/> 
-            		<strong><?php echo escape($det->event_loc); ?></strong>
+            		<strong><?php echo escape($event_detail->event_loc); ?></strong>
             	</p>
             	
             	<p class="opts">
@@ -50,11 +31,11 @@ foreach($talks as $k=>$v){
             	if its not set show the "I'll be there/I was there" based on time
             	*/
             	if($attend && user_is_auth()){
-            		if($det->event_end<time()){
+            		if($event_detail->event_end<time()){
             			$link_txt="I attended"; $showt=1;
             		}else{ $link_txt="I'm attending"; $showt=2; }
             	}else{
-            		if($det->event_end<time()){
+            		if($event_detail->event_end<time()){
             			$link_txt="I attended"; $showt=3; 
             		}else{ $link_txt="I'm attending"; $showt=4; }
             	}
@@ -62,12 +43,12 @@ foreach($talks as $k=>$v){
             	if(!user_is_auth()){ $attend=false; }
             	?>
             		
-            		<a class="btn<?php echo $attend ? ' btn-success' : ''; ?>" href="javascript:void(0);" onclick="return markAttending(this,<?=$det->ID?>,<?php echo $det->event_end<time() ? 'true' : 'false'; ?>);"><?=$link_txt?></a>
-            		<span class="attending"><strong><span class="event-attend-count-<?php echo $det->ID; ?>"><?php echo (int)$attend_ct; ?></span> people</strong> <?php echo (time()<=$det->event_end) ? ' attending so far':' said they attended'; ?>. <a href="javascript:void(0);"  onclick="return toggleAttendees(this, <?=$det->ID?>);" class="show">Show &raquo;</a></span>
+            		<a class="btn<?php echo $attend ? ' btn-success' : ''; ?>" href="javascript:void(0);" onclick="return markAttending(this,<?=$event_detail->ID?>,<?php echo $event_detail->event_end<time() ? 'true' : 'false'; ?>);"><?=$link_txt?></a>
+            		<span class="attending"><strong><span class="event-attend-count-<?php echo $event_detail->ID; ?>"><?php echo (int)$attend_ct; ?></span> people</strong> <?php echo (time()<=$event_detail->event_end) ? ' attending so far':' said they attended'; ?>. <a href="javascript:void(0);"  onclick="return toggleAttendees(this, <?=$event_detail->ID?>);" class="show">Show &raquo;</a></span>
             	</p>
             </div>
             <div class="func">
-            	<a class="icon-ical" href="/event/ical/<?php echo $det->ID; ?>">Add to calendar</a>
+            	<a class="icon-ical" href="/event/ical/<?php echo $event_detail->ID; ?>">Add to calendar</a>
             </div>
         	<div class="clear"></div>
 
@@ -76,13 +57,13 @@ foreach($talks as $k=>$v){
 	</div>
 
 	<div class="desc">
-		<?php echo auto_p(auto_link(escape($det->event_desc))); ?>
+		<?php echo auto_p(auto_link(escape($event_detail->event_desc))); ?>
 		<hr/>
 
-	<?php if(!empty($det->event_href) || !empty($det->event_hastag) || !empty($det->event_stub)){ ?>
+	<?php if(!empty($event_detail->event_href) || !empty($event_detail->event_hastag) || !empty($event_detail->event_stub)){ ?>
 		<div class="related">
-		<?php if(!empty($det->event_href)){ ?>
-		<?php $hrefs = array_map('trim', explode(',',$det->event_href)); ?>
+		<?php if(!empty($event_detail->event_href)){ ?>
+		<?php $hrefs = array_map('trim', explode(',',$event_detail->event_href)); ?>
         	<div class="links">
         		<h2 class="h4">Event Link<?php if (count($hrefs) != 1): ?>s<?php endif; ?></h2>
     			<ul>
@@ -92,8 +73,8 @@ foreach($talks as $k=>$v){
                 </ul>
         	</div>
         <?php } ?>
-        <?php if(!empty($det->event_hashtag)){ ?>
-        <?php $hashtags = array_map('trim', explode(',',$det->event_hashtag)); ?>
+        <?php if(!empty($event_detail->event_hashtag)){ ?>
+        <?php $hashtags = array_map('trim', explode(',',$event_detail->event_hashtag)); ?>
         	<div class="hashtags">
         		<h2 class="h4">Hashtag<?php if (count($hashtags) != 1): ?>s<?php endif; ?></h2>
     			<ul>
@@ -104,12 +85,12 @@ foreach($talks as $k=>$v){
                 </ul>
         	</div>
         <?php } ?>
-		<?php if(!empty($det->event_stub)){ ?>
+		<?php if(!empty($event_detail->event_stub)){ ?>
 			<div class="links">
         		<h2 class="h4">Quicklink</h2>
     			<ul>
 					<li>
-					<a href="/event/<?php echo $det->event_stub; ?>">http://joind.in/event/<?php echo $det->event_stub;?></a>
+					<a href="/event/<?php echo $event_detail->event_stub; ?>">http://joind.in/event/<?php echo $event_detail->event_stub;?></a>
 					</li>
                 </ul>
         	</div>
@@ -119,8 +100,8 @@ foreach($talks as $k=>$v){
     <?php } ?>
 			<?php 
 			// If there's a Call for Papers open for the event, let them know
-			if(!empty($det->event_cfp_start) || !empty($det->event_cfp_end)){ 
-			$cfp_status=($det->event_cfp_end>=time() && $det->event_cfp_start<=time()) ? 'Open!' : 'Closed';
+			if(!empty($event_detail->event_cfp_start) || !empty($event_detail->event_cfp_end)){ 
+			$cfp_status=($event_detail->event_cfp_end>=time() && $event_detail->event_cfp_start<=time()) ? 'Open!' : 'Closed';
 			?>
 			<div class="links">
 				<b>Call for Papers Status: <?php echo $cfp_status; ?> </b> 
@@ -132,12 +113,12 @@ foreach($talks as $k=>$v){
 
 <?php if($admin): ?>
 <p class="admin">
-	<!--<a class="btn-small" href="/event/codes/<?=$det->ID?>">Get talk codes</a>-->
-	<?php if(isset($det->pending) && $det->pending==1){
-		echo '<a class="btn-small" href="/event/approve/'.$det->ID.'">Approve Event</a>';
+	<!--<a class="btn-small" href="/event/codes/<?=$event_detail->ID?>">Get talk codes</a>-->
+	<?php if(isset($event_detail->pending) && $event_detail->pending==1){
+		echo '<a class="btn-small" href="/event/approve/'.$event_detail->ID.'">Approve Event</a>';
 	} ?>
-	<a class="btn-small" href="#" onClick="claimEvent(<?=$det->ID?>);return false;">Claim event</a>
-	<a class="btn-small" href="/event/import/<?php echo $det->ID; ?>">Import Event Info</a>
+	<a class="btn-small" href="#" onClick="claimEvent(<?=$event_detail->ID?>);return false;">Claim event</a>
+	<a class="btn-small" href="/event/import/<?php echo $event_detail->ID; ?>">Import Event Info</a>
 </p>
 <?php endif; ?>
 
@@ -170,7 +151,7 @@ $ct=0;
 		<?php if(count($evt_sessions)>0): ?>
 			<li><a href="#evt_related">Event Related (<?php echo count($evt_sessions)?>)</a></li>
 		<?php endif; ?>
-		<li><a href="#slides">Slides (<?php echo count($slides)?>)</a></li>
+		<li><a href="#slides">Slides (<?php echo count($slides_list)?>)</a></li>
 		<?php if($admin): ?>
 		<li><a href="#estats">Statistics</a></li>
 		<?php endif; ?>
@@ -184,7 +165,7 @@ $ct=0;
 	<?php else: 
 		if(isset($track_filter)){
 			echo '<span style="font-size:13px">Sessions for track <b>'.$track_data->track_name.'</b></span>';
-			echo ' <span style="font-size:11px"><a href="/event/view/'.$det->ID.'">[show all sessions]</a></span>';
+			echo ' <span style="font-size:11px"><a href="/event/view/'.$event_detail->ID.'">[show all sessions]</a></span>';
 			echo '<br/><br/>';
 		}
 		?>
@@ -313,7 +294,7 @@ $ct=0;
 	<?php } ?>
 	<div id="slides">
 	    <table summary="" cellpadding="0" cellspacing="0" border="0" width="100%" class="list">
-	    <?php foreach($slides as $sk=>$sv): ?>
+	    <?php foreach($slides_list as $sk=>$sv): ?>
         	<tr class="<?php echo ($ct%2==0) ? 'row1' : 'row2'; ?>">
 		    <td>
 		    <a href="/talk/view/<?php echo $sk; ?>"><?php echo $sv['title']; ?></a>
@@ -333,7 +314,7 @@ $ct=0;
 		foreach($tracks as $k=>$tr){
 			echo '<div style="padding:3px">';
 			if($tr->used>0){
-				echo '<a style="font-size:13px;font-weight:bold" href="/event/view/'.$det->ID.'/track/'.$tr->ID.'">'.$tr->track_name.'</a><br/>';
+				echo '<a style="font-size:13px;font-weight:bold" href="/event/view/'.$event_detail->ID.'/track/'.$tr->ID.'">'.$tr->track_name.'</a><br/>';
 			}else{ echo '<span style="font-size:13px;font-weight:bold;">'.$tr->track_name.'</span><br/>'; }
 			echo $tr->track_desc.'<br/>';
 			echo $tr->used.' sessions';
@@ -363,7 +344,7 @@ $ct=0;
 			} else {
 				$uname = "<span class=\"anonymous\">Anonymous</span>";
 			}
-		    $type	= ($det->event_start>time()) ? 'Suggestion' : 'Feedback';
+		    $type	= ($event_detail->event_start>time()) ? 'Suggestion' : 'Feedback';
 		?>
     	<div id="comment-<?php echo $v->ID ?>" class="row row-event-comment">
         	<div class="text">
@@ -379,11 +360,11 @@ $ct=0;
         <?php endforeach; ?>
     <?php endif;
 
-    $adv_mo=strtotime('+3 months',$det->event_start);
+    $adv_mo=strtotime('+3 months',$event_detail->event_start);
     if(time()<$adv_mo): ?>
 
     	<h3 id="comment-form">Write a comment</h3>
-    	<?php echo form_open('event/view/'.$det->ID.'#comment-form', array('class' => 'form-event')); ?>
+    	<?php echo form_open('event/view/'.$event_detail->ID.'#comment-form', array('class' => 'form-event')); ?>
     
         <?php if (!empty($this->validation->error_string)): ?>
             <?php $this->load->view('msg_error', array('msg' => $this->validation->error_string)); ?>
@@ -397,7 +378,7 @@ $ct=0;
     		'Feedback'			=> 'Feedback'
     	);
     	
-    	$type=($det->event_start>time()) ? 'Suggestion':'Feedback';
+    	$type=($event_detail->event_start>time()) ? 'Suggestion':'Feedback';
 
     	?>
 
