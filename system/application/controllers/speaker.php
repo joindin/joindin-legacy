@@ -113,7 +113,7 @@ class Speaker extends Controller {
 		    $this->upload->do_upload('picture');
 
 		    //$this->upload->do_upload('resume');
-		    $up_err = $this->upload->display_errors();
+		    $up_err = $this->upload->display_errors('', '');
 		    $up_data= $this->upload->data();
 
 		    $data=array(
@@ -136,7 +136,9 @@ class Speaker extends Controller {
 		    }
 		    //echo '<pre>'; print_r($data); echo '</pre>';
 
-		    if(isset($cdata[0])){
+            if ($up_err) {
+                $this->validate->error_string=$up_err;
+		    }elseif(isset($cdata[0])){
 				$this->sp->updateProfile($udata[0]->ID,$data);
 				$this->validation->error_string='Profile successfully updated!';
 		    }else{
