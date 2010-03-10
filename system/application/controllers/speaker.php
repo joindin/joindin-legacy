@@ -290,6 +290,10 @@ class Speaker extends Controller {
     }
 	//------------------
 	function token_name_check($val){
+		// if we're editing, this doesn't matter
+		$p=explode('/',uri_string());
+		if(isset($p[3]) && strtolower($p[3])=='edit'){ return true; }
+		
 		$this->load->model('speaker_profile_model','spm');
 		$ret=$this->spm->getTokenDetail($val);
 		if(!empty($ret)){
