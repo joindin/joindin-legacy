@@ -37,7 +37,7 @@ class Speaker_profile_model extends Model {
      * Fetch the profile information for the given user ID
      */
     function getProfile($uid){
-        $this->db->select('speaker_profile.*, countries.name AS country_name');
+        $this->db->select('speaker_profile.*, countries.name AS country');
         $this->db->from('speaker_profile');
         $this->db->join('countries', 'countries.ID=speaker_profile.country_id', 'left');
         $this->db->where('user_id', $uid);
