@@ -70,7 +70,7 @@ if($profile_pic){ echo '<img src="'.$profile_pic.'"/><br/><br/>'; }
     </div>
     <div class="row">
 	<label for="country">Country</label>
-	<?php echo form_input('country',$this->validation->country);?>
+	<?php echo form_dropdown('country_id',$countries,$this->validation->country_id);?>
 	<div class="clear"></div>
     </div>
 

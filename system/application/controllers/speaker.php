@@ -40,6 +40,7 @@ class Speaker extends Controller {
 		$this->load->helper('form');
 		$this->load->library('validation');
 		$this->load->model('speaker_profile_model','sp');
+        $this->load->model('countries_model','co');
 		$udata=$this->user_model->getUser($this->session->userdata('ID'));
 
 		$fields=array(
@@ -165,9 +166,15 @@ class Speaker extends Controller {
 		    if(is_file($p)){ $profile_pic='/inc/img/profile/'.$cdata[0]->picture; }
 		}
 
+        $countries = array();
+        foreach ($this->co->getCountries() as $row) {
+            $countries[$row->ID] = $row->name;
+        }
+
 		$arr=array(
 		    'msg'	    => $msg,
-		    'profile_pic'   => $profile_pic
+		    'profile_pic'   => $profile_pic,
+            'countries' => $countries
 		);
 
 		$this->template->write_view('content','speaker/edit',$arr);
