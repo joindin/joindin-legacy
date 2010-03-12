@@ -20,9 +20,9 @@ class Speaker extends Controller {
 
 		$profile_pic=null;
 		if(!empty($arr['pdata'][0]->picture)){
-		    $p=$this->config->item('user_data').'/'.$arr['pdata'][0]->picture;
-		    if(is_file($p)){ $profile_pic='/inc/img/profile/'.$arr['pdata'][0]->picture; }
-		    $arr['profile_pic']=$profile_pic;
+		    $p=$this->config->item('user_pic_path').'/'.strtolower($arr['pdata'][0]->picture);
+		    if(is_file($p)){ $profile_pic='/inc/img/profile/'.strtolower($arr['pdata'][0]->picture); }
+		    $arr['pdata'][0]->profile_pic=$profile_pic;
 		}
 	
 		$this->template->write_view('content','speaker/profile',$arr);
@@ -74,14 +74,14 @@ class Speaker extends Controller {
 
 		// Run the form!
 		if($this->validation->run()!=FALSE){
-		    // Set up the upload for the resume
+		    // Set up the upload for the image
 		    $config=array(
-				'upload_path'	=> $this->config->item('user_data'),
+				'upload_path'	=> $this->config->item('user_pic_path'),
 				'allowed_types'	=> 'jpg|gif|png',
-				'overwrite'	=> true,
-				'max_size'	=> 2000,
-				'max_height'	=> 200,
-				'max_width'	=> 200
+				'overwrite'		=> true,
+				'max_size'		=> 2000,
+				//'max_height'	=> 200,
+				//'max_width'	=> 200
 		    );
 		    $this->load->library('upload',$config);
 
@@ -129,7 +129,7 @@ class Speaker extends Controller {
 		    }
 
             if ($up_err) {
-                $this->validate->error_string=$up_err;
+                $this->validation->error_string=$up_err;
 		    }elseif(isset($cdata[0])){
 				$this->sp->updateProfile($udata[0]->ID,$data);
 				$this->validation->error_string='Profile successfully updated!';

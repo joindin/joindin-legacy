@@ -324,5 +324,8 @@ $config['token_rm'] = 5; //time in minutes
 $config['twitter_user']		= '';
 $config['twitter_pass']		= '';
 
+// Set up the config settings for the pics and resumes
+$config['user_pic_path']        = '/www/htdocs/confs/inc/img/profile';
+
 /* End of file config.php */
 /* Location: ./system/application/config/config.php */
