@@ -69,11 +69,15 @@ quick link to the ones you want to share. For example, say you've already set up
 start sharing that information with the world. You can click on the <b>Profile Access</b> tab in the speaker profile management
 section and make a new access profile. You'll see a spot for a "Token Name" and a "Token Descripton". 
 </p>
+<?php
+$msg="<b>NOTE:</b> Token names can only be made up of letters and numbers";
+$this->load->view('msg_info', array('msg' => $msg)); ?>
 <p>
 For our example, you want to only share your full name and blog address for this token, so you click the checkboxes next to 
 those two and put "nameblog" in the token name field. The description might be something like "sharing full name and blog 
 only". When you save that, the token "nameblog" will always point to that access profile. You can then give this token to 
 anyone out there and the only thing they'll ever see is your full name and blog, nothing else.
 </p>
+
 
 

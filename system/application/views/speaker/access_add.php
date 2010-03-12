@@ -47,7 +47,8 @@ echo form_open($path,array('id'=>'frm_access_add'));
 		<span style="color:#3567AC;font-size:11px">
 		<b>What's a token?</b> Think of a token as a shortcut to get to this access profile. You
 		can name your tokens just about anything you want - something easy to remember usually works best.
-		More information on tokens is over in <a href="/help/manage_user_acct#tokens">our Help section</a>.
+		More information on tokens is over in <a href="/help/manage_user_acct#tokens">our Help section</a>. Note: 
+		token names can only use letters and numbers.
 		</span>
 		<div class="clear"></div>
 	</div>
