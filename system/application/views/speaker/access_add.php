@@ -44,6 +44,11 @@ echo form_open($path,array('id'=>'frm_access_add'));
 	<div class="row">
 		<label for="token_name">Token Name</label>
 		<?php echo form_input('token_name',$this->validation->token_name); ?>
+		<span style="color:#3567AC;font-size:11px">
+		<b>What's a token?</b> Think of a token as a shortcut to get to this access profile. You
+		can name your tokens just about anything you want - something easy to remember usually works best.
+		More information on tokens is over in <a href="/help/manage_user_acct#tokens">our Help section</a>.
+		</span>
 		<div class="clear"></div>
 	</div>
 	<div class="row">
