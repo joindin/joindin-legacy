@@ -2,6 +2,11 @@
 Joind.in (http://joind.in)
 #####################
 
+-----------------------------
+PLEASE NOTE: If you had cloned/pulled a copy of this source prior to 03.14.2010, major structure 
+changes were made so you may need to pull down a fresh copy.
+-----------------------------
+
 This is the source code for the Joind.in website - a resource set up to allow
 events to get real-time feedback from those attending. It also gives speakers a 
 way to claim and track their presentations over time.
