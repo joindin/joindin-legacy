@@ -1,5 +1,5 @@
 <?php
-$cl				= array();
+$cl=array();
 
 foreach($claimed as $k=>$v){ 
 	$cl[$v->rcode]=array('rid'=>$v->rid,'uid'=>$v->uid); 

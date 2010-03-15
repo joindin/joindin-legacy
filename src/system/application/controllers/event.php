@@ -349,6 +349,15 @@ class Event extends Controller {
 				$talks[$k]->codes[$val]=buildCode($v->ID,$v->event_id,$v->talk_title,$val);
 			}
 			$talks[$k]->tracks=$this->ttm->getSessionTrackInfo($v->ID);
+			
+			//If we have a track filter, check it!
+			if(strtolower($opt)=='track' && isset($opt_id)){
+				$has_track=false;
+				foreach($talks[$k]->tracks as $track){
+					if($track->ID==$opt_id){ $has_track=true; }
+				}
+				if(!$has_track){ unset($talks[$k]); }
+			}
 		}
 		
 		if($is_auth){ 
