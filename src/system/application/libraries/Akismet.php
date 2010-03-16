@@ -2,16 +2,22 @@
 
 class Akismet {
 	
-	var $key	= 'b8bf76a6e0d8';
-	var $blog	= 'http://joind.in';
+	var $key	= null;
+	var $blog	= null;
+	var $CI		= null;
+	
+	function __construct(){
+		$this->CI=&get_instance();
+	}
 
 	function send($path,$data){
+		$this->key	= $this->CI->config->item('akismet_key');
 		$req_str	= '';
 		$resp		= '';
 		$host		= $this->key.'.rest.akismet.com';
 		$port		= 80;
 		$data['key']	= $this->key;
-		$data['blog']	= $this->blog;
+		$data['blog']	= $this->CI->config->item('akismet_blog')
 		$data['user_ip']= $_SERVER['REMOTE_ADDR'];
 		foreach($data as $k=>$v){ $req_str.=$k.'='.$v.'&'; }
 		
