@@ -384,7 +384,11 @@ class Event extends Controller {
 		$arr=array(
 			'event_detail'	=>$events[0],
 			'talks'  		=>(isset($sessions_by_type['Talk'])) ? $sessions_by_type['Talk'] : array(),
+			'keynote'		=>(isset($sessions_by_type['Keynote'])) ? $sessions_by_type['Keynote'] : array(),
+			'social_event'	=>(isset($sessions_by_type['Social Event'])) ? $sessions_by_type['Social Event'] : array(),
+			'workshop'		=>(isset($sessions_by_type['Workshop'])) ? $sessions_by_type['Workshop'] : array(),
 			'evt_sessions'	=>(isset($sessions_by_type['Event Related'])) ? $sessions_by_type['Event Related'] : array(),
+			'session_types'	=>array_keys($sessions_by_type),
 			'slides_list'	=>buildSlidesList($talks),
 			'admin'	 		=>($this->user_model->isAdminEvent($id)) ? true : false,
 			'claimed'		=>$claimed_talks,

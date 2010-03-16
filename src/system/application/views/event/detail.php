@@ -1,6 +1,12 @@
 <?php
 $cl=array();
 
+// See if we need to add anymore things to the sessions list
+foreach($session_types as $type){
+	$type=str_replace('_',' ',strtolower($type));
+	if(!empty($$type)){ $talks=array_merge($talks,$$type); }
+}
+
 foreach($claimed as $k=>$v){ 
 	$cl[$v->rcode]=array('rid'=>$v->rid,'uid'=>$v->uid); 
 }
