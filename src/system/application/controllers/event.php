@@ -357,6 +357,15 @@ class Event extends Controller {
 				$talks[$k]->codes[$val]=buildCode($v->ID,$v->event_id,$v->talk_title,$val);
 			}
 			$talks[$k]->tracks=$this->ttm->getSessionTrackInfo($v->ID);
+			
+			//If we have a track filter, check it!
+			if(strtolower($opt)=='track' && isset($opt_id)){
+				$has_track=false;
+				foreach($talks[$k]->tracks as $track){
+					if($track->ID==$opt_id){ $has_track=true; }
+				}
+				if(!$has_track){ unset($talks[$k]); }
+			}
 		}
 		
 		if($is_auth){ 
@@ -383,7 +392,11 @@ class Event extends Controller {
 		$arr=array(
 			'event_detail'	=>$events[0],
 			'talks'  		=>(isset($sessions_by_type['Talk'])) ? $sessions_by_type['Talk'] : array(),
+			'keynote'		=>(isset($sessions_by_type['Keynote'])) ? $sessions_by_type['Keynote'] : array(),
+			'social_event'	=>(isset($sessions_by_type['Social Event'])) ? $sessions_by_type['Social Event'] : array(),
+			'workshop'		=>(isset($sessions_by_type['Workshop'])) ? $sessions_by_type['Workshop'] : array(),
 			'evt_sessions'	=>(isset($sessions_by_type['Event Related'])) ? $sessions_by_type['Event Related'] : array(),
+			'session_types'	=>array_keys($sessions_by_type),
 			'slides_list'	=>buildSlidesList($talks),
 			'admin'	 		=>($this->user_model->isAdminEvent($id)) ? true : false,
 			'claimed'		=>$claimed_talks,
