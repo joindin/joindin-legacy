@@ -17,7 +17,7 @@ class Akismet {
 		$host		= $this->key.'.rest.akismet.com';
 		$port		= 80;
 		$data['key']	= $this->key;
-		$data['blog']	= $this->CI->config->item('akismet_blog')
+		$data['blog']	= $this->CI->config->item('akismet_blog');
 		$data['user_ip']= $_SERVER['REMOTE_ADDR'];
 		foreach($data as $k=>$v){ $req_str.=$k.'='.$v.'&'; }
 		
