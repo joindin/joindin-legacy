@@ -22,6 +22,9 @@ function setchk($arr,$key,$label=null){
 		<?php endif; ?>
 	</td>
 </tr>
+<tr><td><?php if(!empty($profile['data']['blog'])){ echo '<b>Blog:</b> '.$profile['data']['blog']; } ?></td></tr>
+<tr><td><?php if(!empty($profile['data']['website'])){ echo '<b>Website:</b> '.$profile['data']['website']; } ?></td></tr>
+
 <tr><td><?php setchk($data,'job_title','Job Title'); ?></td></tr>
 <tr><td><?php setchk($data,'bio','Bio'); ?></td></tr>
 

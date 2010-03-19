@@ -99,7 +99,6 @@ class Speaker extends Controller {
 			// Only run the upload if they've given us an image
 			$up_data=array();
 			$up_err	='';
-			$this->validation->country_id=null;
 			if(isset($_FILES['picture']['name']) && $_FILES['picture']['name']!=''){
 	    
 		    	//$this->upload->do_upload('resume');
