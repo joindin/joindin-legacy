@@ -74,6 +74,14 @@ echo form_open($path,array('id'=>'frm_access_add'));
 		?>
 		<div class="clear"></div>
 	</div>
+	<div class="row">
+		<label for="token_desc">Make Public</label>
+		<?php echo form_checkbox('is_public',1, $this->validation->is_public)." Check to make this access profile public.\n"; ?><br/>
+		<span style="color:#3567AC;font-size:11px">
+		<b>Make Public</b>: Marking this profile as public makes it viewable on your user profile page to any viewer.
+		</span>
+		<div class="clear"></div>
+	</div>
     <div class="row">
 		<label for="event"></label>
 		<?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Save changes'); ?>

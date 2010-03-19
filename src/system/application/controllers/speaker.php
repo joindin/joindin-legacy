@@ -188,7 +188,9 @@ class Speaker extends Controller {
 
 		$view='';
 		if(isset($p[3])){
-			$req_type=strtolower($p[3]);
+			$req_type	= strtolower($p[3]);
+			$is_public	= null;
+			
 		    switch($req_type){
 				case 'add':
 				case 'edit':
@@ -204,7 +206,8 @@ class Speaker extends Controller {
 				    $fields = array(
 						'fields'		=>'Items',
 						'token_name'	=>'Token Name',
-						'token_desc'	=>'Token Description'
+						'token_desc'	=>'Token Description',
+						'is_public'		=>'Publicly Viewable'
 					);
 					$arr['curr_access']=array();
 
@@ -225,8 +228,9 @@ class Speaker extends Controller {
 						$arr['curr_access']	= $this->spm->getTokenAccess($p[4]);
 						$arr['token_id']	= $token->ID;
 						
-						$this->validation->token_name=$token->access_token;
-						$this->validation->token_desc=$token->description;
+						$this->validation->token_name	= $token->access_token;
+						$this->validation->token_desc	= $token->description;
+						$this->validation->is_public	= $token->is_public;
 					}
 
 				    if($this->validation->run()!=FALSE){
@@ -239,18 +243,20 @@ class Speaker extends Controller {
 							
 							// Are we editing?
 							if($req_type=='edit'){
+								$is_public=($this->input->post('is_public')==='1') ? 'Y' : null;
 								$uid	= $this->session->userdata('ID');
 								$tid	= $this->input->post('token_id');
-								$status=$this->spm->updateProfileAccess($uid,$tid,$fields);
+								$status=$this->spm->updateProfileAccess($uid,$tid,$fields,$is_public);
 								$arr['msg']=($status) ? 'Profile Access Updated!' : 'There has been an error!';
 								
 								// We want the latest values out there...
 								$arr['curr_access']	= $fields;
 							}else{
+								$is_public=($this->input->post('is_public')==='1') ? 'Y' : null;
 								$uid	= $this->session->userdata('ID');
 								$name	= $this->input->post('token_name');
 								$desc	= $this->input->post('token_desc');
-								$status=$this->spm->setProfileAccess($uid,$name,$desc,$fields);
+								$status=$this->spm->setProfileAccess($uid,$name,$desc,$fields,$is_public);
 								$arr['msg']=($status) ? 'Profile Access Added!' : 'There has been an error!';
 							}
 						}
