@@ -239,6 +239,7 @@ class User extends Controller {
 		$this->load->model('talks_model');
 		$this->load->model('user_attend_model','uam');
 		$this->load->model('user_admin_model','uadmin');
+		$this->load->model('speaker_profile_model','spm');
 		$this->load->helper('reqkey');
 		$this->load->helper('url');
 		$reqkey=buildReqKey();
@@ -270,7 +271,8 @@ class User extends Controller {
 			'uadmin'	=> $this->uadmin->getUserTypes($uid,array('talk','event')),
 			'reqkey' 	=> $reqkey,
 			'seckey' 	=> buildSecFile($reqkey),
-			'sort_type'	=> $sort_type
+			'sort_type'	=> $sort_type,
+			'pub_profile'=>$this->spm->getUserPublicProfile($uid,true)
 		);
 		if($curr_user){
 			$arr['pending_evt']=$this->uadmin->getUserTypes($curr_user,array('event'),true);

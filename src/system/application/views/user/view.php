@@ -23,6 +23,10 @@ foreach($pending_evt as $e){
 <?php endif; ?>
 
 <?php
+if(!empty($pub_profile)){
+	$this->load->view('user/_public_profile', array('profile'=>$pub_profile));
+}
+
 $uid=$details[0]->ID;
 
 if (!isset($sort_type)) { $sort_type = 'all'; }
