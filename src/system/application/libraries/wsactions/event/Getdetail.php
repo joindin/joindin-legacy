@@ -24,6 +24,7 @@ class Getdetail extends BaseWsRequest {
 		$valid=$this->CI->wsvalidate->validate($rules,$this->xml->action);
 		if(!$valid){
 			$this->CI->load->model('event_model');
+			$this->CI->load->model('event_track_model');
 			$this->CI->load->model('user_attend_model');
 			$ret=$this->CI->event_model->getEventDetail($eid);
 
@@ -37,6 +38,9 @@ class Getdetail extends BaseWsRequest {
 			if($uid) {
 				$ret[0]->user_attending = $this->CI->user_attend_model->chkAttend($uid, $ret[0]->ID);
 			}
+
+			// add a list of tracks
+			$ret[0]->tracks = $this->CI->event_track_model->getEventTracks($eid);
 			return array('output'=>'json','data'=>array('items'=>$ret));
 		}else{
 			return array('output'=>'json','data'=>array('items'=>array('msg'=>'Invalid Event ID!')));
