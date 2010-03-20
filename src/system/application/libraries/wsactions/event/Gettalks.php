@@ -29,7 +29,13 @@ class Gettalks extends BaseWsRequest {
 		$valid=$this->CI->wsvalidate->validate($rules,$this->xml->action);
 		if(!$valid){
 			$this->CI->load->model('event_model');
+			$this->CI->load->model('talk_track_model');
 			$ret=$this->CI->event_model->getEventTalks($eid);
+
+			// add the track information for each talk
+			foreach($ret as $talk) {
+				$talk->tracks = $this->CI->talk_track_model->getSessionTrackInfo($talk->ID);
+			}
 			return array('output'=>'json','data'=>array('items'=>$ret));
 		}else{
 			return array('output'=>'json','data'=>array('items'=>array('msg'=>'Invalid Event ID!')));

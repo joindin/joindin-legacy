@@ -11,7 +11,8 @@ class Talk_track_model extends Model {
 			select
 				et.track_name,
 				et.ID,
-				et.track_desc
+				et.track_desc,
+				et.track_color
 			from
 				talk_track tt,
 				event_track et
