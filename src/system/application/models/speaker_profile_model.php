@@ -128,6 +128,7 @@ class Speaker_profile_model extends Model {
 	*/
 	function getUserPublicProfile($uid,$public=false){
 		$profile= $this->getProfile($uid);
+		if(!isset($profile[0])){ /* no profile! */ return array(); }
 		$access	= $this->getProfileTokens($profile[0]->ID);
 		if($public===true){
 			foreach($access as $a){ if($a->is_public=='Y'){ 

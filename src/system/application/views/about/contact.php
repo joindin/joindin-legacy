@@ -11,7 +11,8 @@ if (!empty($msg)):
 
 <div class="box">
 	<p>
-    Submit the contact form below to send us a note or ask a question.
+    We value any and all feedback you can give us about the site or what features you might like to see.
+	Use the form below to contact us directly! Thanks for your comments!
     </p>
     
     <?php echo form_open('about/contact', array('class' => 'form-contact')); ?>
@@ -50,7 +51,7 @@ if (!empty($msg)):
     </div>
 	
 	<div class="row row-buttons">
-    	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Submit event'); ?>
+    	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Submit'); ?>
     </div>
 
     <?php echo form_close(); ?>
