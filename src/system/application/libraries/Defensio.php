@@ -2,11 +2,18 @@
 
 class Defensio {
 	
-	var $key	= 'd22ba53cb84a0555b2d0f3836cfece5c';
 	var $http	= 'http://api.defensio.com';
-	var $owner	= 'http://joind.in';
+	var $key	= null;
+	var $owner	= null;
+	var $CI		= null;
+	
+	function __construct(){
+		$this->CI=&get_instance();
+	}
 	
 	function check($name,$comment,$trust,$url){
+		$this->key	= $this->CI->config->item('defensio_key');
+		$this->owner= $this->CI->config->item('defensio_owner');
 		$resp='';
 		$loc='/app/1.2/audit-comment/'.$this->key.'.xml';
 		$arr=array(

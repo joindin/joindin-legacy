@@ -325,7 +325,16 @@ $config['twitter_user']		= '';
 $config['twitter_pass']		= '';
 
 // Set up the config settings for the pics and resumes
-$config['user_pic_path']        = '/www/htdocs/confs/inc/img/profile';
+$config['user_pic_path']	= '/www/htdocs/confs/inc/img/profile';
+
+// For the Akismet class
+$config['akismet_key']		= '';
+$config['akismet_blog']		= '';
+
+// For the Defensio class
+$config['defensio_key']		= '';
+$config['defensio_owner']	= '';
+
 
 /* End of file config.php */
 /* Location: ./system/application/config/config.php */

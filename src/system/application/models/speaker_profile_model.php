@@ -119,8 +119,30 @@ class Speaker_profile_model extends Model {
 	* $uid integer User ID
 	*/
 	function getUserProfileAccess($uid){
-		$profile=$this->getProfile($uid);
+		$profile= $this->getProfile($uid);
 		return $this->getProfileTokens($profile[0]->ID);
+	}
+	
+	/**
+	* $public boolean Return only public profile or all
+	*/
+	function getUserPublicProfile($uid,$public=false){
+		$profile= $this->getProfile($uid);
+		$access	= $this->getProfileTokens($profile[0]->ID);
+		if($public===true){
+			foreach($access as $a){ if($a->is_public=='Y'){ 
+				// here's the tokens they have access to
+				$ret =$this->getTokenAccess($a->ID);
+				$data=array();
+				foreach($ret as $k=>$v){ 
+					$field			= $v->field_name;
+					$ret[$k]->val	= $profile[0]->$field;
+					$data[$field]	= $profile[0]->$field;
+				}
+				return array('token'=>$a,'access'=>$ret,'data'=>$data);
+			}}
+		}
+		return $access;
 	}
 	
 	/**
@@ -156,7 +178,7 @@ class Speaker_profile_model extends Model {
 	* $name string Token name (user defined)
 	* $fields array List of access fields
 	*/
-    function setProfileAccess($uid,$name,$desc,$fields){
+    function setProfileAccess($uid,$name,$desc,$fields,$is_public=null){
 		//First, insert into the token table...
 		$profile= $this->getProfile($uid);
 		$pid	= $profile[0]->ID;
@@ -164,6 +186,7 @@ class Speaker_profile_model extends Model {
 			'speaker_profile_id'	=> $pid,
 			'access_token'			=> $name,
 			'description'			=> $desc,
+			'is_public'				=> ($is_public!==null) ? 'Y' : null,
 			'created'				=> time()
 		);
 		
@@ -174,6 +197,8 @@ class Speaker_profile_model extends Model {
 		//Keep going and do the insert...
 		$this->db->insert('speaker_tokens',$arr);
 		$tid=$this->db->insert_id();
+		
+		if($is_public!==null){ $this->setProfileViewable($uid,$tid,$is_public); }
 		
 		//Now, for each of the fields they gave us, put its name in the fields table
 		foreach($fields as $f){
@@ -189,13 +214,15 @@ class Speaker_profile_model extends Model {
 	* $tid integer Token ID
 	* $fields array List of access fields
 	*/
-    function updateProfileAccess($uid,$tid,$fields){
+    function updateProfileAccess($uid,$tid,$fields,$is_public=null){
 		// Be sure we're supposed to work on this token
 		if(!$this->isUserToken($uid,$tid)){ return false; }
 		
 		// drop all of the token access fields for the token...
 		$this->db->where('speaker_token_id',$tid);
 		$this->db->delete('speaker_token_fields');
+		
+		if($is_public!==null){ $this->setProfileViewable($uid,$tid,$is_public); }
 		
 		// Now add in our new ones
 		foreach($fields as $f){
@@ -221,6 +248,33 @@ class Speaker_profile_model extends Model {
 				$this->db->where('speaker_token_id',$tid); $this->db->delete('speaker_token_fields'); 
 			}
 		}
+	}
+	
+	/**
+	* Set the selected access profile's viewable status
+	* $uid integer User ID
+	* $tid integer Token ID
+	* $is_public [optional] Viewable status
+	*/
+	function setProfileViewable($uid,$tid,$is_public=null){
+		//first we need to set all of the current ones to non-public
+		$sql=sprintf('
+			select
+				st.ID
+			from
+				speaker_profile sp,
+				speaker_tokens st
+			where
+				sp.user_id=%s and
+				sp.ID=st.speaker_profile_id
+		',$uid);
+		$q=$this->db->query($sql);
+		foreach($q->result() as $token){ 
+			$this->db->where('ID',$token->ID); $this->db->update('speaker_tokens',array('is_public'=>null)); 
+		}
+		// Now we can just set the one we need
+		$this->db->where('ID',$tid);
+		$this->db->update('speaker_tokens',array('is_public'=>$is_public));
 	}
 }
 
