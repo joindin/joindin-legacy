@@ -136,7 +136,7 @@ Below are the request types that you can make to the API including input and out
 		<li>event_id: integer
 	</ul>
 <br/>
-<b class="req_title">Output:</b>
+<b class="req_title">Output:</b> An array containing a single object.  The object has the following properties:
 	<ul>
 		<li>event_name: string, Name of the event
 		<li>event_start: Unix timestamp
@@ -158,6 +158,7 @@ Below are the request types that you can make to the API including input and out
 		<li>num_attend: integer, number of people marked as attending
 		<li>num_comments: integer, the number of comments on this event
 		<li>user_attending: integer, whether the current user is attending this event
+		<li>tracks: array, List of track objects associated with this session.  Track properties are track_name, ID, track_color used (1 or 0, whether there are sessions in it or not), event_id and track_desc (description)
 	</ul>
 	<a href="#top">[top]</a><br/><br/>
 </div>
@@ -194,7 +195,7 @@ Below are the request types that you can make to the API including input and out
 	<ul>
 		<li>event_id: string, event ID
 	</ul>
-<b class="req_title">Output:</b>
+<b class="req_title">Output:</b> An array of Objects.  Each object has the following properties:
 	<ul>
 		<li>talk_title: string, Title of the talk
 		<li>speaker: string, Speaker of the talk
@@ -209,6 +210,7 @@ Below are the request types that you can make to the API including input and out
 		<li>rank: integer, Average rating of comments on selected talk
 		<li>tcid: string, Type of entry (e.g."Talk")
 		<li>comment_count: integer, Number of comments on this session
+		<li>tracks: array, List of track objects associated with this session.  Track properties are track_name, ID, track_color and track_desc (description)
 	</ul>
 	<a href="#top">[top]</a><br/><br/>
 </div>
@@ -319,7 +321,7 @@ Below are the request types that you can make to the API including input and out
 	<ul>
 		<li>talk_id: integer, ID number of the talk to fetch
 	</ul>
-<b class="req_title">Output:</b>
+<b class="req_title">Output:</b> An array containing a single object.  Object properties are:
 	<ul>
 		<li>talk_title: string, Title of the talk
 		<li>speaker: string, Speaker of the talk
@@ -333,7 +335,7 @@ Below are the request types that you can make to the API including input and out
 		<li>event_name: string, Name of event talk belongs to
 		<li>event_tz: Deprecated
 		<li>event_tz_cont: string, Continent part of timezone name (e.g. 'Europe')
-		<li>event_tz_place: string, Detial part of timezone name (e.g. 'London')
+		<li>event_tz_place: string, Detail part of timezone name (e.g. 'London')
 		<li>tavg: integer, Average rating of comments on selected talk
 		<li>tcid: string, Type of entry ("Talk")
 		<li>event_id: integer, The event ID (same as eid)
@@ -346,6 +348,7 @@ Below are the request types that you can make to the API including input and out
 		<li>ccount: integer, Number of comments on this session
 		<li>last_comment_date: unix timestamp, Date of the last comment added to this session
 		<li>allow_comments: integer, Whether comments are accepted on this talk
+		<li>tracks: array, List of track objects associated with this session.  Track properties are track_name, ID, track_color and track_desc (description)
 	</ul>
 	<a href="#top">[top]</a><br/><br/>
 </div>
