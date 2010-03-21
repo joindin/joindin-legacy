@@ -38,10 +38,11 @@
 				$this->assertTrue(is_numeric($event->num_comments));
 
 				$this->assertTrue(
-									$event->active === '1'
+									$event->active === '1', "Expected active to be 0 for " . $event->event_name . "(" . $event->ID . ")"
 				);
 				$this->assertTrue(
 									$event->pending === '0'
+									|| $event->pending === null, "Expected pending to be 0 or empty for " . $event->event_name . "(" . $event->ID . ")"
 				);
 				$this->assertTrue(
 									$event->event_voting === 'Y'
@@ -53,7 +54,7 @@
 									|| $event->private === null
 				);
 				$this->assertTrue(
-									$event->allow_comments === '0'
+									$event->allow_comments === '0', "Failed asserting comments not allowed on " . $event->event_name ."(" . $event->ID .")"
 				);
 				$this->assertTrue(
 									$event->user_attending === false

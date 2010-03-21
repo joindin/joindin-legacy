@@ -15,7 +15,7 @@
 				$creds = array('kevin', '6228bd57c9a858eb305e0fd0694890f7');
 			}
 
-			$url = "http://joind.in/api/".urlencode($type);
+			$url = "http://lorna.rivendell.local/api/".urlencode($type);
 
 			$req = new StdClass();
 			$req->request = new StdClass();
