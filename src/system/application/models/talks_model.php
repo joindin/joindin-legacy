@@ -59,6 +59,8 @@ class Talks_model extends Model {
 	
 	//---------------
 	function getTalks($tid=null,$latest=false){
+		$this->load->helper("events");
+		$this->load->helper("talk");
 		if($tid){
 			// See if we have any comments to exclude
 			$uids=$this->_findExcludeComments($tid);
@@ -82,6 +84,8 @@ class Talks_model extends Model {
 					talks.ID tid,
 					events.ID eid,
 					events.event_name,
+					events.event_start,
+					events.event_end,
 					events.event_tz_cont,
 					events.event_tz_place,
 					events.event_voting,
@@ -123,6 +127,8 @@ class Talks_model extends Model {
 					events.event_name,
 					events.event_tz_cont,
 					events.event_tz_place,
+					events.event_start,
+					events.event_end,
 					events.private,
 					lang.lang_name,
 					lang.lang_abbr,
@@ -147,9 +153,12 @@ class Talks_model extends Model {
 			',$wh,$ob);
 			$q=$this->db->query($sql);
 		}
-		$db_results = $q->result();
-		
-		return $db_results;
+		$res = $q->result();
+
+		if (is_array($res) && is_object($res[0]) && event_isNowOn($res[0]->event_start, $res[0]->event_end)) {
+			$res[0] = talk_decorateNowNext($res[0]);
+		}
+		return $res;
 	}
 	/**
 	* Gets the comments for a session/talk

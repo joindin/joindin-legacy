@@ -102,6 +102,7 @@ class Event_model extends Model {
 	}
 
 	function getEventDetail($id=null,$start_dt=null,$end_dt=null,$pending=false){
+		$this->load->helper("events");
 		
 		$cols='events.event_name,events.event_start,events.event_end,events.event_lat,events.event_long,';
 		$cols.='events.ID as event_ID,events.event_loc,events.event_desc,events.active,';
@@ -141,10 +142,22 @@ class Event_model extends Model {
 		}
 		$this->db->order_by('event_start','desc');
 		$q=$this->db->get();
-		return $q->result();
+
+		// Decorate result with "event is on now" flag
+		$res = $q->result();
+		if (is_array($res) && is_object($res[0])) {
+			if (event_isNowOn($res[0]->event_start, $res[0]->event_end)) {
+				$res[0]->now = "now";
+			} else {
+				$res[0]->now = "";
+			}
+		}
+		return $res;
 	}
 
 	function getEventTalks($id){
+		$this->load->helper('events');
+		$this->load->helper('talk');
 		$sql=sprintf('
 			select
 				talks.talk_title,
@@ -156,6 +169,8 @@ class Event_model extends Model {
 				talks.talk_desc,
 				events.event_tz_cont,
 				events.event_tz_place,
+				events.event_start,
+				events.event_end,
 				(select l.lang_abbr from lang l where talks.lang=l.ID) lang,
 				(select round(avg(rating)) from talk_comments where talk_id=talks.ID) rank,
 				(select count(rating) from talk_comments where talk_id=talks.ID) comment_count,
@@ -178,7 +193,15 @@ class Event_model extends Model {
 				talks.date_given asc, talks.speaker asc
 		',$id);
 		$q=$this->db->query($sql);
-		return $q->result();
+		$res = $q->result();
+
+		// Loop through the talks deciding if they are currently on
+		$time = time();
+		if (is_array($res) && is_object($res[0]) && event_isNowOn($res[0]->event_start, $res[0]->event_end)) {
+			$res = talk_listDecorateNowNext($res);
+		}
+
+		return $res;
 	}
 
     function getHotEvents($limit = null){
@@ -374,6 +397,17 @@ class Event_model extends Model {
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
+
+	function getEventIsOnNow($eid) {
+		$event = $this->getEventDetail($eid);
+		if (is_array($event)) {
+			$event = $event[0];
+		}
+		$time = time();
+		// Hooray!  No timezone conversions, as we can stay in UTC (ie Unix Epoch)
+		return ($time > $event->event_start && $time < $event->event_end);
+	}
+
 	//----------------------
 	function search($term,$start,$end){
 		$arr=array();

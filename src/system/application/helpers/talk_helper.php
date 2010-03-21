@@ -41,4 +41,44 @@ function splitCommentTypes($talk_comments){
 	return $comments;
 }
 
+/**
+ * Takes a talk, and attempts to add a flag to say whether the talk is on
+ * now or whether it is on next.
+ * 
+ * This logic *WILL* be broken until talks have an end time.  Live with it, or add end times.
+ */
+function talk_decorateNowNext($talk) {
+	$time = time();
+
+	// Define some heuristic time windows for the start time of the "now" and "next" talks
+	$now_start  = $time - 3600;
+	$now_end    = $time;
+	$next_start = $time;
+	$next_end   = $time + 3600;
+
+	if ($talk->date_given > $now_start && $talk->date_given < $now_end) {
+		$talk->now_next = "now";
+	} else if ($talk->date_given > $next_start && $talk->date_given < $next_end) {
+		$talk->now_next = "next";
+	} else {
+		$talk->now_next = "";
+	}
+
+	return $talk;
+}
+
+/**
+ * Takes an array of talks, and attempts to add a flag to each one to say whether the talk is on
+ * now or whether it is on next.
+ * 
+ * This logic *WILL* be broken until talks have an end time.  Live with it, or add end times.
+ */
+function talk_listDecorateNowNext($talks) {
+	foreach ($talks as $key=>$talk) {
+		$talks[$key] = talk_decorateNowNext($talks[$key]);
+	}
+
+	return $talks;
+}
+
 ?>
