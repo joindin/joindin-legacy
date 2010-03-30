@@ -24,7 +24,7 @@ menu_pagetitle('Event: ' . escape($event_detail->event_name));
             	<h1><?=escape($event_detail->event_name)?> <?=(($event_detail->pending==1) ? '(Pending)':'')?></h1>
             
             	<p class="info">
-					<strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($det->event_start, $det->event_tz_cont.'/'.$det->event_tz_place, 'M j, Y'); ?></strong> - <strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($det->event_end, $det->event_tz_cont.'/'.$det->event_tz_place, 'M j, Y'); ?></strong>
+					<strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event_detail->event_start, $event_detail->event_tz_cont.'/'.$event_detail->event_tz_place, 'M j, Y'); ?></strong> - <strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event_detail->event_end, $event_detail->event_tz_cont.'/'.$event_detail->event_tz_place, 'M j, Y'); ?></strong>
             		<br/> 
             		<strong><?php echo escape($event_detail->event_loc); ?></strong>
             	</p>
