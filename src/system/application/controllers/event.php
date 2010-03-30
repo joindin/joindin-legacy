@@ -348,7 +348,7 @@ class Event extends Controller {
 			}
 		}
 		
-		$talks	= $this->event_model->getEventTalks($id);
+		$talks	= $this->event_model->getEventTalks($id, false);
 		$is_auth= $this->user_model->isAuth();
 		
 		foreach($talks as $k=>$v){
@@ -388,17 +388,12 @@ class Event extends Controller {
 		$talks 			= $this->talks_model->setDisplayFields($talks);
 		$claimed_talks	= $this->event_model->getClaimedTalks($id);
 		$claim_detail	= buildClaimDetail($claimed_talks);
-		
-		$sessions_by_type=splitSessionTypes($talks);
+		$event_related_sessions = $this->event_model->getEventRelatedSessions($id);
 		
 		$arr=array(
 			'event_detail'	=>$events[0],
-			'talks'  		=>(isset($sessions_by_type['Talk'])) ? $sessions_by_type['Talk'] : array(),
-			'keynote'		=>(isset($sessions_by_type['Keynote'])) ? $sessions_by_type['Keynote'] : array(),
-			'social_event'	=>(isset($sessions_by_type['Social Event'])) ? $sessions_by_type['Social Event'] : array(),
-			'workshop'		=>(isset($sessions_by_type['Workshop'])) ? $sessions_by_type['Workshop'] : array(),
-			'evt_sessions'	=>(isset($sessions_by_type['Event Related'])) ? $sessions_by_type['Event Related'] : array(),
-			'session_types'	=>array_keys($sessions_by_type),
+			'talks'			=> $talks,
+			'evt_sessions'	=> $event_related_sessions,
 			'slides_list'	=>buildSlidesList($talks),
 			'admin'	 		=>($this->user_model->isAdminEvent($id)) ? true : false,
 			'claimed'		=>$claimed_talks,
