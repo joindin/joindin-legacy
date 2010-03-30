@@ -158,6 +158,7 @@ Below are the request types that you can make to the API including input and out
 		<li>num_attend: integer, number of people marked as attending
 		<li>num_comments: integer, the number of comments on this event
 		<li>user_attending: integer, whether the current user is attending this event
+		<li>now: string, either "now" if the event is now on or "" if it isn't
 		<li>tracks: array, List of track objects associated with this session.  Track properties are track_name, ID, track_color used (1 or 0, whether there are sessions in it or not), event_id and track_desc (description)
 	</ul>
 	<a href="#top">[top]</a><br/><br/>
@@ -210,6 +211,7 @@ Below are the request types that you can make to the API including input and out
 		<li>rank: integer, Average rating of comments on selected talk
 		<li>tcid: string, Type of entry (e.g."Talk")
 		<li>comment_count: integer, Number of comments on this session
+		<li>now_next: string, either "now" if the talk is now on, "next" if it is on next, or "" otherwise. NOTE the logic behind this is *very* crude
 		<li>tracks: array, List of track objects associated with this session.  Track properties are track_name, ID, track_color and track_desc (description)
 	</ul>
 	<a href="#top">[top]</a><br/><br/>
@@ -348,6 +350,7 @@ Below are the request types that you can make to the API including input and out
 		<li>ccount: integer, Number of comments on this session
 		<li>last_comment_date: unix timestamp, Date of the last comment added to this session
 		<li>allow_comments: integer, Whether comments are accepted on this talk
+		<li>now_next: string, either "now" if the talk is now on, "next" if it is on next, or "" otherwise. NOTE the logic behind this is *very* crude
 		<li>tracks: array, List of track objects associated with this session.  Track properties are track_name, ID, track_color and track_desc (description)
 	</ul>
 	<a href="#top">[top]</a><br/><br/>

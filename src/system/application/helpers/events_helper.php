@@ -65,3 +65,37 @@ function buildSlidesList($sessions){
 	}
 	return $slides_list;
 }
+
+/**
+* Return true or false depending on whether the event is currently on
+*/
+function event_isNowOn($event_start, $event_end) {
+	$time = time();
+	return ($time > $event_start && $time < $event_end);
+}
+
+/**
+ * Takes an event, and attempts to add a flag to say whether the event is on
+ * now.
+*/
+function event_decorateNow($event) {
+	$time = time();
+	if (event_isNowOn($event->event_start, $event->event_end)) {
+		$event->now = "now";
+	} else {
+		$event->now = "";
+	}
+	return $event;
+}
+
+/**
+ * Takes an array of events, and attempts to add a flag to each one to say whether the event is on
+ * now.
+*/
+function event_listDecorateNow($events) {
+	$time = time();
+	foreach ($events as $key=>$event) {
+		$events[$key] = event_decorateNow($events[$key]);
+	}
+	return $events;
+}

@@ -23,7 +23,7 @@
 			sourcecode="yes"
 			defaultpackagename="MHTest"
 			output="HTML:Smarty:PHP">
-			<fileset dir="./system/application">
+			<fileset dir="./src/system/application">
 				<include name="**/*.php" />
 			</fileset>
 		</phpdoc>
@@ -32,19 +32,19 @@
 	<!-- PHP copy/paste analysis -->
 	<target name="phpcpd">
 		<echo msg="PHP Copy/Paste..." />
-		<exec command="phpcpd --log-pmd=${builddir}/logs/pmd.xml system/application" escape="false" logoutput="true" />
+		<exec command="phpcpd --log-pmd=${builddir}/logs/pmd.xml src/system/application" escape="false" logoutput="true" />
 	</target>
 
 	<!-- PHP dependency checker -->
 	<target name="pdepend">
 		<echo msg="PHP Depend..." />
-		<exec command="pdepend --jdepend-xml=${builddir}/logs/jdepend.xml ./system/application" escape="false" logoutput="true" />
+		<exec command="pdepend --jdepend-xml=${builddir}/logs/jdepend.xml ./src/system/application" escape="false" logoutput="true" />
 	</target>
 
 	<!-- PHP CodeSniffer -->
 	<target name="phpcs">
 		<echo msg="PHP CodeSniffer..." />
-		<exec command="phpcs --standard=ZEND --report=checkstyle ./system/application > ${builddir}/logs/checkstyle.xml" escape="false" logoutput="true" />
+		<exec command="phpcs --standard=ZEND --report=checkstyle ./src/system/application > ${builddir}/logs/checkstyle.xml" escape="false" logoutput="true" />
 	</target>
 
 	<!-- PHP mess detector -->
@@ -55,13 +55,13 @@
 	<!-- Unit Tests -->
 	<target name="phpunit">
 		<echo msg="PHP Unit..." />
-		<exec command="phpunit ./tests" logoutput="true" />
+		<exec command="phpunit ./src/tests" logoutput="true" />
 	</target>
 
 	<!-- Full reported unit tests & coverage analysis -->
 	<target name="fullphpunit">
 		<echo msg="PHP Unit..." />
-		<exec command="phpunit --log-junit ${builddir}/logs/phpunit.xml --coverage-clover ${builddir}/logs/coverage/clover.xml --coverage-html ${builddir}/logs/coverage/ ./tests" logoutput="true" />
+		<exec command="phpunit --log-junit ${builddir}/logs/phpunit.xml --coverage-clover ${builddir}/logs/coverage/clover.xml --coverage-html ${builddir}/logs/coverage/ ./src/tests" logoutput="true" />
 	</target>
 
 </project>

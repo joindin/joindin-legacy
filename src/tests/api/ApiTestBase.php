@@ -55,6 +55,7 @@
 			if ($useCache) {
 				$cache_data = json_encode( array('payload'=>$response->getBody(), 'expires'=>(time()+3600)) );
 				file_put_contents($cache_filename, $cache_data);
+				chmod( $cache_filename, 0777 );
 			}
 
 			return $response->getBody();
