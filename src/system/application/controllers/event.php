@@ -286,6 +286,8 @@ class Event extends Controller {
 			
 			$arr=array(
 				'msg'	=> 'Data saved! <a href="/event/view/'.$id.'">View event</a>',
+				'min_start_yr'	=> $min_start_yr,
+				'min_end_yr'	=> $min_end_yr,
 				'detail'=> $event_detail
 			);
 			$this->template->write_view('content','event/add',$arr);
