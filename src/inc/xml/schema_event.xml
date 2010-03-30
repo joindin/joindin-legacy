@@ -12,21 +12,18 @@
   <xsd:element name="event">
     <xsd:complexType>
       <xsd:sequence>
-        <xsd:element name="event_title" type="xsd:string" />
-        <xsd:element name="event_start_date" type="xsd:dateTime" />
-        <xsd:element name="event_end_date" type="xsd:dateTime" />
-        <xsd:element name="event_desc" type="xsd:string" />
         <xsd:element name="sessions">
           <xsd:complexType>
             <xsd:sequence>
               <xsd:element maxOccurs="unbounded" name="session">
                 <xsd:complexType>
                   <xsd:sequence>
-                    <xsd:element name="session_title" type="xsd:string" />
-                    <xsd:element name="session_start" type="xsd:dateTime" />
-                    <xsd:element name="session_end" type="xsd:dateTime" />
-                    <xsd:element name="session_desc" type="xsd:string" />
+                    <xsd:element name="session_start" type="xsd:integer" />
+                    <xsd:element name="session_type" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="session_track" type="xsd:string" minOccurs="0"/>
                     <xsd:element name="session_speaker" type="xsd:string" />
+                    <xsd:element name="session_title" type="xsd:string" />
+                    <xsd:element name="session_desc" type="xsd:string" />
                   </xsd:sequence>
                 </xsd:complexType>
               </xsd:element>

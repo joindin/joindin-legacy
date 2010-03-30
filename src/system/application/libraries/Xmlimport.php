@@ -30,44 +30,68 @@ class Xmlimport {
 		return @$xml->schemaValidate($p);
     }
     private function _importEvent($eid,$data){
+		// load the XML
 		$xml=simplexml_load_string($data);
-		//var_dump($xml);
+
+		// get the talk categories
+		$categories_query = $this->CI->db->get('categories');
+		$this->_categories = $categories_query->result();
+
+		// get the talk tracks
+		$tracks_where = array('event_id' => $eid);
+		$tracks_query = $this->CI->db->get_where('event_track', $tracks_where);
+		$this->_tracks = $tracks_query->result();
 
 		foreach($xml->sessions->session as $k=>$ses){
 		    $this->_importSession($eid,$ses);
 		}
     }
     private function _importSession($eid,$data){
-		// Check to see if it exists
-		$arr=array(
-		  'talk_title'	=> (string)$data->session_title,
-		  'date_given'	=> strtotime((string)$data->session_start),
-		  'speaker'		=> (string)$data->session_speaker,
-		  'event_id'	=> $eid
-		);
-		$q=$this->CI->db->get_where('talks',$arr);
-		$ret=$q->result();
 
 		$in=array(
 		    'talk_title'    =>(string)$data->session_title,
 		    'speaker'	    =>(string)$data->session_speaker,
 		    'slides_link'   =>'',
-		    'date_given'    =>strtotime((string)$data->session_start),
+		    'date_given'    =>$data->session_start,
 		    'event_id'	    =>$eid,
 		    'talk_desc'	    =>trim((string)$data->session_desc),
 		    'active'	    =>1,
-		    'owner_id'	    =>null,
-		    'lang'	    =>3
+		    'owner_id'	    =>null
 		);
 
-		if(!empty($ret)){
-		    //we're updating data based on our three keys
-		    $this->CI->db->where('ID',$ret[0]->ID);
-		    $this->CI->db->update('talks',$in);
-		}else{
-		    //new session! add the information!
-		    $this->CI->db->insert('talks',$in);
+		// danger, hardcoded language  TODO include as import field
+		$in['lang'] = 8;
+
+		// save talk detail
+		$this->CI->db->insert('talks',$in);
+		$talk_id = $this->CI->db->insert_id();
+
+		// handle the category - figure out which it is, then save it
+		if(isset($data->session_type)) {
+			$cat_id = false;
+			foreach($this->_categories as $cat) {
+				if($cat->cat_title == $data->session_type) {
+					$cat_id = $cat->ID;
+				}
+			}
+			if($cat_id) {
+				$this->CI->db->insert('talk_cat',array("talk_id" => $talk_id, "cat_id" => $cat_id));
+			}
 		}
+
+		// handle the track - figure out which it is, then save it
+		if(isset($data->session_track)) {
+			$track_id = false;
+			foreach($this->_tracks as $track) {
+				if($track->track_name== $data->session_track) {
+					$track_id = $track->ID;
+				}
+			}
+			if($track_id) {
+				$this->CI->db->insert('talk_track',array("talk_id" => $talk_id, "track_id" => $track_id));
+			}
+		}
+
     }
 }
 

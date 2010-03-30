@@ -1,7 +1,7 @@
 <h2>Importing Event Information</h2>
 
 <p>
-Joind.in allows you to import your event's information via an XML file 
+Joind.in allows you to import your event's sessions via an XML file 
 making it easier to add all at once. See below for and example of the XML
 format to follow to ensure your sessions get imported correctly.
 </p>
@@ -10,41 +10,76 @@ The XML file's contents and format will be validated for correctness.
 </p>
 <p><b>Tips:</b></p>
 <ul>
-<li>If there's multiple speakers on the same session, seperate their names with commas
-<li>All dates must be in the XSD:dateTime format (YYYY-MM-DDTHH24:MI:SS+00:00), <a href="http://books.xmlschemata.org/relaxng/ch19-77049.html">see here</a>
+<li>If there are multiple speakers on the same session, seperate their names with commas</li>
+<li>The session_start time should be the correct unix timestamp for the 
+timezone where the event takes place - you can change this in the event itself.<li>
+<li>session_track is optional and should match (case-sensitively) the track name already
+created in the event itself</li>
+<li>session_type is optional and should be one of "Talk", "Keynote", "Social", "Workshop",
+and "Event Related" (case sensitive matching)</li>
 </ul>
 
 <div style="padding:3px;border:1px solid #000000;background-color:#F8F8F8">
 <pre>
 
-&lt;?xml version="1.0" encoding="UTF-8"?>
-&lt;event> 
-  &lt;event_title>Sample Event #1&lt;/event_title>
-  &lt;event_start_date>2009-02-10T08:00:21+00:00&lt;/event_start_date>
-  &lt;event_end_date>2009-02-14T17:00:21+00:00&lt;/event_end_date>
-  &lt;event_desc>
-    This is my sample event...
-  &lt;/event_desc>
-  &lt;sessions>
-    &lt;session>
-      &lt;session_title>Sample Session #1&lt;/session_title>
-      &lt;session_start>2009-02-12T15:00:21+00:00&lt;/session_start>
-      &lt;session_end>2009-02-12T16:00:21+00:00&lt;/session_end>
-      &lt;session_desc>
-	    This is a sample session #1 by Cal
-      &lt;/session_desc>
-      &lt;session_speaker>Cal Evans&lt;/session_speaker>
-    &lt;/session>
-    &lt;session>
-      &lt;session_title>Sample Session #2&lt;/session_title>
-      &lt;session_start>2009-02-12T15:00:21+00:00&lt;/session_start>
-      &lt;session_end>2009-02-12T16:00:21+00:00&lt;/session_end>
-      &lt;session_desc>
-	    This is a sample session #2
-      &lt;/session_desc>
-      &lt;session_speaker>Chris Shiflett&lt;/session_speaker>
-    &lt;/session>
-  &lt;/sessions>
-&lt;/event>
+&lt;event&gt;
+  &lt;sessions&gt;
+  &lt;session&gt;
+	&lt;session_start&gt;
+	  1276155000
+	&lt;/session_start&gt;
+	&lt;session_type&gt;
+	  Workshop
+	&lt;/session_type&gt;
+	&lt;session_speaker&gt;
+	  Sebastian Bergmann
+	&lt;/session_speaker&gt;
+	&lt;session_title&gt;
+	  Quality Assurance in PHP Projects
+	&lt;/session_title&gt;
+	&lt;session_desc&gt;
+	  When things go wrong in software projects, the team has to work 
+	  overtime and cancel vacations. More often than not, deadlines and 
+	  quality goals are missed nevertheless. Because software usually 
+	  lives longer than originally planned, the real problems crop up 
+	  when changes and extensions become necessary later on.  In this 
+	  tutorial, Sebastian Bergmann, a pioneer in the field of quality 
+	  assurance in PHP projects and creator of PHPUnit, imparts 
+	  comprehensive knowledge and experience about testing and quality 
+	  assurance in Web projects.  Using examples from the PHP world, 
+	  the tutorial elucidates the planning, execution, and automation 
+	  of tests for the different layers and tiers of a Web software 
+	  architecture, the measuring of software quality by means of 
+	  software metrics, as well as establishing successful development 
+	  processes and methods such as continuous integration.
+	&lt;/session_desc&gt;
+  &lt;/session&gt;
+  &lt;session&gt;
+	&lt;session_start&gt;
+	  1276249500
+	&lt;/session_start&gt;
+	&lt;session_type&gt;
+	  Talk
+	&lt;/session_type&gt;
+	&lt;session_track&gt;
+	  Track 3
+	&lt;/session_track&gt;
+	&lt;session_speaker&gt;
+	  Rob Allen
+	&lt;/session_speaker&gt;
+	&lt;session_title&gt;
+	  Zend Framework on Windows
+	&lt;/session_title&gt;
+	&lt;session_desc&gt;
+	  Following the recent investment of time and effort by both Microsoft 
+	  and the core PHP developers, Windows with PHP 5.3 is a good platform choice. 
+	  This session will take a look at the parts of this ecosystem, walking 
+	  through the installation of PHP on Windows and showing how to use the 
+	  FastCGI component of IIS and the URL rewrite module. With SQL Server 
+	  accessed via Zend_Db and the ZF command line tools available on Windows, 
+	  we'll show how we can use the best tools of PHP to build an application 
+	  on this platform.
+	&lt;/session_desc&gt;
+  &lt;/session&gt;
 </pre>
 </div>
