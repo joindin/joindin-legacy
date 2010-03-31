@@ -1,12 +1,6 @@
 <?php
 $cl=array();
 
-// See if we need to add anymore things to the sessions list
-foreach($session_types as $type){
-	$type=str_replace('_',' ',strtolower($type));
-	if(!empty($$type)){ $talks=array_merge($talks,$$type); }
-}
-
 foreach($claimed as $k=>$v){ 
 	$cl[$v->rcode]=array('rid'=>$v->rid,'uid'=>$v->uid); 
 }
@@ -154,7 +148,7 @@ $ct=0;
 	<ul>
 		<li><a href="#talks">Talks (<?php echo count($talks)?>)</a></li>
 		<li><a href="#comments">Comments (<?php echo count($comments)?>)</a></li>
-		<?php if(count($evt_sessions)>0): ?>
+		<?php if(isset($evt_sessions) && count($evt_sessions)>0): ?>
 			<li><a href="#evt_related">Event Related (<?php echo count($evt_sessions)?>)</a></li>
 		<?php endif; ?>
 		<li><a href="#slides">Slides (<?php echo count($slides_list)?>)</a></li>

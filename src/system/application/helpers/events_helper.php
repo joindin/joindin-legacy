@@ -46,14 +46,6 @@ function buildClaimDetail($claimed_talks){
 	return $claim_detail;
 }
 /**
-* Given the full list of sessions, splits them out by type (like "Talk" or "Event Related")
-*/
-function splitSessionTypes($sessions){
-	$sessions_by_type=array();
-	foreach($sessions as $s){ $sessions_by_type[$s->tcid][]=$s; }
-	return $sessions_by_type;
-}
-/**
 * Given the full list of sessions, finds which of them given have slides
 */
 function buildSlidesList($sessions){

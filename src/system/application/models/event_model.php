@@ -155,10 +155,8 @@ class Event_model extends Model {
 		return $res;
 	}
 
-	function getEventTalks($id){
-		$this->load->helper('events');
-		$this->load->helper('talk');
-		$sql=sprintf('
+	function getEventTalks($id,$includeEventRelated = true) {
+		$sql='
 			select
 				talks.talk_title,
 				talks.speaker,
@@ -174,19 +172,20 @@ class Event_model extends Model {
 				(select l.lang_abbr from lang l where talks.lang=l.ID) lang,
 				(select round(avg(rating)) from talk_comments where talk_id=talks.ID) rank,
 				(select count(rating) from talk_comments where talk_id=talks.ID) comment_count,
-				ifnull((select 
-					cat.cat_title
-				from 
-					talk_cat tac
-					left join categories cat on tac.cat_id=cat.ID
-				where 
-					tac.talk_id=talks.ID
-				), \'Talk\') tcid
+				ifnull(categories.cat_title, \'Talk\') tcid
 			from
 				talks
 			inner join lang on (lang.ID = talks.lang)
 			inner join events on events.ID = talks.event_id
+			left join talk_cat on talks.ID = talk_cat.talk_id
+			left join categories on talk_cat.cat_id = categories.ID
 			where
+				';
+		if(!$includeEventRelated) {
+			$sql .= 'categories.cat_title <> "Event Related" and
+			';
+		}
+		$sql .= sprintf('
 				event_id=%s and
 				talks.active=1
 			order by
@@ -396,15 +395,37 @@ class Event_model extends Model {
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
-
-	function getEventIsOnNow($eid) {
-		$event = $this->getEventDetail($eid);
-		if (is_array($event)) {
-			$event = $event[0];
-		}
-		$time = time();
-		// Hooray!  No timezone conversions, as we can stay in UTC (ie Unix Epoch)
-		return ($time > $event->event_start && $time < $event->event_end);
+	function getEventRelatedSessions($id) {
+		$sql=sprintf('
+			select
+				talks.talk_title,
+				talks.speaker,
+				talks.slides_link,
+				talks.date_given,
+				talks.event_id,
+				talks.ID,
+				talks.talk_desc,
+				events.event_tz_cont,
+				events.event_tz_place,
+				(select l.lang_abbr from lang l where talks.lang=l.ID) lang,
+				(select round(avg(rating)) from talk_comments where talk_id=talks.ID) rank,
+				(select count(rating) from talk_comments where talk_id=talks.ID) comment_count,
+				ifnull(categories.cat_title, \'Talk\') tcid
+			from
+				talks
+			inner join lang on (lang.ID = talks.lang)
+			inner join events on events.ID = talks.event_id
+			left join talk_cat on talks.ID = talk_cat.talk_id
+			left join categories on talk_cat.cat_id = categories.ID
+			where
+				categories.cat_title = "Event Related" and
+				event_id=%s and
+				talks.active=1
+			order by
+				talks.date_given asc, talks.speaker asc
+		',$id);
+		$q=$this->db->query($sql);
+		return $q->result();
 	}
 
 	//----------------------
