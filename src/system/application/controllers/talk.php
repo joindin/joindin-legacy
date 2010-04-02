@@ -160,8 +160,10 @@ class Talk extends Controller {
 					$this->validation->session_track=$new_track;
 				}elseif($this->input->post('session_track')=='none'){
 					//remove the track for the session
-					$curr_track	= $track_info[0]->ID;
-					$this->ttm->deleteSessionTrack($id,$curr_track);
+					if (is_array($track_info) && count($track_info) > 0 && is_object($track_info[0])) {
+						$curr_track	= $track_info[0]->ID;
+						$this->ttm->deleteSessionTrack($id,$curr_track);
+					}
 				}
 				
 				$tc_id	= $id;
