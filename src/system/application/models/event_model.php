@@ -156,6 +156,8 @@ class Event_model extends Model {
 	}
 
 	function getEventTalks($id,$includeEventRelated = true) {
+		$this->load->helper("events");
+		$this->load->helper("talk");
 		$sql='
 			select
 				talks.talk_title,
