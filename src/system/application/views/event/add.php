@@ -84,10 +84,10 @@ echo '<h2>'.$title.'</h2>';
 		<table>
 			<tr>
 				<td>
-					Latitude:  <input type="text" name="geo_lat" id="geo_lat" style="width:200px;" />
+					Latitude:  <input type="text" name="event_lat" id="event_lat" style="width:200px;" />
 				</td>
 				<td>
-					Longitude: <input type="text" name="geo_lon" id="geo_lon" style="width:200px;" />
+					Longitude: <input type="text" name="event_long" id="event_long" style="width:200px;" />
 				</td>
 			</tr>
 		</table>
@@ -110,7 +110,7 @@ echo '<h2>'.$title.'</h2>';
 			function load_map() {
 				geocoder = new google.maps.Geocoder();
 				var myOptions = {
-				  zoom: 5,
+				  zoom: 13,
 					center: new google.maps.LatLng(<?php echo $this->validation->event_lat?>, <?php echo $this->validation->event_long?>), // UK
 				  mapTypeId: google.maps.MapTypeId.ROADMAP
 				};
@@ -134,8 +134,8 @@ echo '<h2>'.$title.'</h2>';
 
 				//map.setCenter(location);
 
-				$('#geo_lat').val(location.lat());
-				$('#geo_lon').val(location.lng());
+				$('#event_lat').val(location.lat());
+				$('#event_long').val(location.lng());
 			}
 
 			function chooseAddr(lat, lng) {

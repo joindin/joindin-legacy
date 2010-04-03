@@ -47,10 +47,10 @@ menu_pagetitle('Submit an event');
 		<table>
 			<tr>
 				<td>
-					Latitude:  <input type="text" name="geo_lat" id="geo_lat" style="width:200px;" />
+					Latitude:  <input type="text" name="event_lat" id="event_lat" style="width:200px;" />
 				</td>
 				<td>
-					Longitude: <input type="text" name="geo_lon" id="geo_lon" style="width:200px;" />
+					Longitude: <input type="text" name="event_long" id="event_long" style="width:200px;" />
 				</td>
 			</tr>
 		</table>
@@ -96,8 +96,8 @@ menu_pagetitle('Submit an event');
 
 				//map.setCenter(location);
 
-				$('#geo_lat').val(location.lat());
-				$('#geo_lon').val(location.lng());
+				$('#event_lat').val(location.lat());
+				$('#event_long').val(location.lng());
 			}
 
 			function chooseAddr(lat, lng) {
