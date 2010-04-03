@@ -58,10 +58,123 @@ echo '<h2>'.$title.'</h2>';
     </div>
     <div class="clear"></div>
     <div class="row">
-    	<label for="event_location">Event Location:</label>
+    	<label for="event_location">Venue name:</label>
 	<?php echo form_input('event_loc',$this->validation->event_loc); ?>
     </div>
     <div class="clear"></div>
+
+
+
+
+
+	<div class="row">
+        <label for="geo">Event location</label>
+		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+		Address search: 
+		<table>
+			<tr>
+				<td>
+					<input type="text" name="addr" id="addr" />
+				</td>
+				<td>
+					<button type="button" onclick="addr_search();">Search</button>
+				</td>
+			</tr>
+		</table>
+		<table>
+			<tr>
+				<td>
+					Latitude:  <input type="text" name="geo_lat" id="geo_lat" style="width:200px;" />
+				</td>
+				<td>
+					Longitude: <input type="text" name="geo_lon" id="geo_lon" style="width:200px;" />
+				</td>
+			</tr>
+		</table>
+		<table>
+			<tr>
+				<td>
+					<div id="map_canvas" style="width: 300px; height: 300px"></div>
+				</td>
+				<td>
+					<ul id="addr_selection"></ul>
+				</td>
+			</tr>
+		</table>
+		<script type="text/javascript">
+			var map;
+			var marker;
+			var geocoder;
+			var infowindow = new google.maps.InfoWindow();
+
+			function load_map() {
+				geocoder = new google.maps.Geocoder();
+				var myOptions = {
+				  zoom: 5,
+					center: new google.maps.LatLng(<?php echo $this->validation->event_lat?>, <?php echo $this->validation->event_long?>), // UK
+				  mapTypeId: google.maps.MapTypeId.ROADMAP
+				};
+				map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+				google.maps.event.addListener(map, 'click', function(event) {
+				  placeMarker(event.latLng);
+				});
+				placeMarker(new google.maps.LatLng(<?php echo $this->validation->event_lat?>, <?php echo $this->validation->event_long?>));
+			}
+
+			function placeMarker(location) {
+				var clickedLocation = new google.maps.LatLng(location);
+				if (!marker) {
+					marker = new google.maps.Marker({
+						position: location, 
+						map: map
+					});
+				} else {
+					marker.setPosition(location);
+				}
+
+				//map.setCenter(location);
+
+				$('#geo_lat').val(location.lat());
+				$('#geo_lon').val(location.lng());
+			}
+
+			function chooseAddr(lat, lng) {
+				var location = new google.maps.LatLng(lat, lng);
+				map.setCenter(location);
+				placeMarker(location);
+			}
+
+			function addr_search() {
+				var inp = document.getElementById("addr");
+				if (geocoder) {
+					geocoder.geocode( { 'address': inp.value}, function(results, status) {
+						if (status == google.maps.GeocoderStatus.OK) {
+							$('#addr_selection').empty();
+							if (results.length > 1) {
+								$(results).each(function(result) {
+									var newLI = $('<li><a href="#" onclick="chooseAddr(' + this.geometry.location.lat() + ', ' + this.geometry.location.lng() + ');return false;">' + this.formatted_address + '</a></li>');
+									newLI.appendTo($('#addr_selection'));
+									//console.log(result.geometry.location);
+								});
+							}
+							//map.setCenter(results[0].geometry.location);
+							map.fitBounds(results[0].geometry.viewport);
+							placeMarker(results[0].geometry.location);
+						} else {
+							alert("Geocode was not successful for the following reason: " + status);
+						}
+					});
+				}
+			}
+			window.onload = load_map;
+		</script>
+	  <div class="clear"></div>
+    </div>
+
+
+
+
+
     <div class="row">
     	<label for="event_tz_cont">Event Timezone:</label>
 		<?php echo custom_timezone_menu('event_tz', $this->validation->event_tz_cont, $this->validation->event_tz_place ); ?>

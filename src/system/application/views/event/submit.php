@@ -13,6 +13,7 @@ menu_pagetitle('Submit an event');
             <?php $this->load->view('msg_error', array('msg' => $this->validation->error_string)); ?>
     <?php endif; ?>
     
+
 	<h2>General</h2>
     <div class="row">
     	<label for="event_title">Event Title</label>
@@ -22,12 +23,118 @@ menu_pagetitle('Submit an event');
     </div>
 
 	<div class="row">
-    	<label for="event_location">Event Location</label>
+    	<label for="event_location">Venue name</label>
     	<?php echo form_input(array('name' => 'event_loc', 'id' => 'event_location'), $this->validation->event_loc); ?>
     
         <div class="clear"></div>
     </div>
     
+
+	<div class="row">
+        <label for="geo">Event location</label>
+		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+		Address search: 
+		<table>
+			<tr>
+				<td>
+					<input type="text" name="addr" id="addr" />
+				</td>
+				<td>
+					<button type="button" onclick="addr_search();">Search</button>
+				</td>
+			</tr>
+		</table>
+		<table>
+			<tr>
+				<td>
+					Latitude:  <input type="text" name="geo_lat" id="geo_lat" style="width:200px;" />
+				</td>
+				<td>
+					Longitude: <input type="text" name="geo_lon" id="geo_lon" style="width:200px;" />
+				</td>
+			</tr>
+		</table>
+		<table>
+			<tr>
+				<td>
+					<div id="map_canvas" style="width: 300px; height: 300px"></div>
+				</td>
+				<td>
+					<ul id="addr_selection"></ul>
+				</td>
+			</tr>
+		</table>
+		<script type="text/javascript">
+			var map;
+			var marker;
+			var geocoder;
+			var infowindow = new google.maps.InfoWindow();
+
+			function load_map() {
+				geocoder = new google.maps.Geocoder();
+				var myOptions = {
+				  zoom: 5,
+				  center: new google.maps.LatLng(53.8000, -1.5833), // UK
+				  mapTypeId: google.maps.MapTypeId.ROADMAP
+				};
+				map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+				google.maps.event.addListener(map, 'click', function(event) {
+				  placeMarker(event.latLng);
+				});
+			}
+
+			function placeMarker(location) {
+				var clickedLocation = new google.maps.LatLng(location);
+				if (!marker) {
+					marker = new google.maps.Marker({
+						position: location, 
+						map: map
+					});
+				} else {
+					marker.setPosition(location);
+				}
+
+				//map.setCenter(location);
+
+				$('#geo_lat').val(location.lat());
+				$('#geo_lon').val(location.lng());
+			}
+
+			function chooseAddr(lat, lng) {
+				var location = new google.maps.LatLng(lat, lng);
+				map.setCenter(location);
+				placeMarker(location);
+			}
+
+			function addr_search() {
+				var inp = document.getElementById("addr");
+				if (geocoder) {
+					geocoder.geocode( { 'address': inp.value}, function(results, status) {
+						if (status == google.maps.GeocoderStatus.OK) {
+							$('#addr_selection').empty();
+							if (results.length > 1) {
+								$(results).each(function(result) {
+									var newLI = $('<li><a href="#" onclick="chooseAddr(' + this.geometry.location.lat() + ', ' + this.geometry.location.lng() + ');return false;">' + this.formatted_address + '</a></li>');
+									newLI.appendTo($('#addr_selection'));
+									//console.log(result.geometry.location);
+								});
+							}
+							//map.setCenter(results[0].geometry.location);
+							map.fitBounds(results[0].geometry.viewport);
+							placeMarker(results[0].geometry.location);
+						} else {
+							alert("Geocode was not successful for the following reason: " + status);
+						}
+					});
+				}
+			}
+			window.onload = load_map;
+		</script>
+	  <div class="clear"></div>
+    </div>
+
+
+
 	<h2>Contact Information</h2>
     <div class="row">
     	<label for="event_contact_name">Event Contact Name</label>
@@ -152,6 +259,9 @@ menu_pagetitle('Submit an event');
 		?>
 	 <div class="clear"></div>
     </div>
+
+
+
 
     <div class="row">
     	<label for="event_desc">Event Description</label>
