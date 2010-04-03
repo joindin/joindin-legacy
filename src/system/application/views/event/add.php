@@ -110,15 +110,26 @@ echo '<h2>'.$title.'</h2>';
 			function load_map() {
 				geocoder = new google.maps.Geocoder();
 				var myOptions = {
-				  zoom: 13,
-					center: new google.maps.LatLng(<?php echo $this->validation->event_lat?>, <?php echo $this->validation->event_long?>), // UK
+						<?php
+							if (is_numeric($this->validation->event_lat) && $this->validation->event_lat != '') {
+								$lat  = $this->validation->event_lat;
+								$long = $this->validation->event_long;
+								$zoom = 13;
+							} else {
+								$lat  = 0;
+								$long = 0;
+								$zoom = 0;
+							}
+						?>
+				  zoom: <?php echo $zoom; ?>,
+				  center: new google.maps.LatLng(<?php echo $lat?>, <?php echo $long?>), // UK
 				  mapTypeId: google.maps.MapTypeId.ROADMAP
 				};
 				map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 				google.maps.event.addListener(map, 'click', function(event) {
 				  placeMarker(event.latLng);
 				});
-				placeMarker(new google.maps.LatLng(<?php echo $this->validation->event_lat?>, <?php echo $this->validation->event_long?>));
+				placeMarker(new google.maps.LatLng(<?php echo $lat?>, <?php echo $long?>));
 			}
 
 			function placeMarker(location) {
