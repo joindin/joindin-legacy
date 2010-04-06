@@ -151,6 +151,7 @@ class Event extends Controller {
 		$this->template->render();
 	}
 
+	// Note that add() actually does edit, and submit() does add
 	function add($id=null){
 		//check for admin
 		if($id){ 
@@ -193,6 +194,8 @@ class Event extends Controller {
 			'end_day'	=>'End Day',
 			'end_yr'	=>'End Year',
 			'event_loc'	=>'Event Location',
+			'event_lat'	=>'Latitude',
+			'event_long'	=>'Longitude',
 			'event_desc'=>'Event Description',
 			'event_tz_cont'		=>'Event Timezone (Continent)',
 			'event_tz_place'	=>'Event Timezone (Place)',
@@ -258,6 +261,8 @@ class Event extends Controller {
 					23,59,59
 				),
 				'event_loc'		=>$this->input->post('event_loc'),
+				'event_lat'		=>$this->input->post('event_lat'),
+				'event_long'	=>$this->input->post('event_long'),
 				'event_desc'	=>$this->input->post('event_desc'),
 				'active'		=>'1',
 				'event_tz_cont'	=>$this->input->post('event_tz_cont'),
@@ -754,6 +759,8 @@ class Event extends Controller {
 				'event_start'	=>$startUnixTimestamp,
 				'event_end'		=>$endUnixTimestamp,
 				'event_loc'		=>$this->input->post('event_loc'),
+				'event_lat'		=>$this->input->post('event_lat'),
+				'event_long'	=>$this->input->post('event_long'),
 				'event_desc'	=>$this->input->post('event_desc'),
 				'active'		=>0,
 				'event_stub'	=>$this->input->post('event_stub'),
