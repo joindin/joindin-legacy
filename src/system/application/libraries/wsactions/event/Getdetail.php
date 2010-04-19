@@ -36,6 +36,17 @@ class Getdetail extends BaseWsRequest {
 			}
 
 			if($uid) {
+				// Check to see if it's provate and if they're allowed
+                                if($ret[0]->private){
+                                        $this->load->model('invite_list_model','ilm');
+                                        $is_invited=$this->ilm->isInvited($ret[0]->ID,$uid);
+                                        if(!$is_invited){
+                                                //If not, return an error message...
+                                                return array('output'=>'json','data'=>array(
+                                                        'items'=>array('msg'=>'Not authorized for private event!'))
+                                                );
+                                        }
+                                }
 				$ret[0]->user_attending = $this->CI->user_attend_model->chkAttend($uid, $ret[0]->ID);
 			}
 
