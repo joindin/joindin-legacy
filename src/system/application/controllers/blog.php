@@ -17,6 +17,7 @@ class Blog extends Controller {
 		
 		$this->template->write('feedurl','/feed/blog');
 		$this->template->write_view('content','blog/main',$arr);
+		$this->template->write_view('sidebar2','about/_facebook-sidebar');
 		$this->template->render();
 	}
 	function add($id=null){
@@ -166,7 +167,7 @@ class Blog extends Controller {
 					mail($user->email,$subj,$cont,'From: feedback@joind.in');
 				}
 				
-				redirect('blog/view/'.$id . '#comments', 'location', 302);
+				//redirect('blog/view/'.$id . '#comments', 'location', 302);
 			}
 		}else{
 			//failed...
