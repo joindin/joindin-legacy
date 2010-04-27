@@ -4,6 +4,11 @@
 class SendEmail {
 	
 	private $_from	= 'feedback@joind.in';
+	private $CI		= null;
+	
+	public function __construct(){
+		$this->CI=&get_instance();
+	}
 
 	/**
 	* Generic function for sending emails
@@ -86,6 +91,10 @@ You can reply directly to them by replying to this email.
 		$this->_sendEmail($to,$msg,$subj,$user[0]->email);
 	}
 	
+	/**
+	* Send password reset email to the given user 
+	* (user's email address is looked up by username)
+	*/
 	public function sendPassordReset($user,$pass){
 		$to		= $user[0]->email;
 		$subj	= 'Joind.in - Password Reset Request';
@@ -102,6 +111,9 @@ Please log in in at http://joind.in/user/login and reset your password as soon a
 		$this->_sendEmail($to,$msg,$subj,$user[0]->email);
 	}
 	
+	/**
+	* Send an email when a user is added to the admin list for an event
+	*/
 	public function sendAdminAdd($user,$evt,$added_by=null){
 		$subj='You\'re now an admin on "'.$evt[0]->event_name.'"';
 		$aby=($added_by) ? 'by '.$added_by : '';
@@ -115,6 +127,14 @@ You can view the event here: http://joind.in/event/view/%s
 		$this->_sendEmail($to,$msg,$subj);
 	}
 	
+	/**
+	* Send an email when a comment has been made on a session that's been claimed
+	* Note: these emails are not sent to site admins
+	* @param integer $tid Talk ID
+	* @param string $to Email address
+	* @param array $talk_detail Talk detail information
+	* @param array $in_arr User data for byline
+	*/
 	public function sendTalkComment($tid,$to,$talk_detail,$in_arr){
 		$CI =& get_instance();
 		$byline='';
@@ -136,6 +156,12 @@ Click here to view it: http://joind.in/talk/view/%s
  		$this->_sendEmail($to,$msg,$subj,'comments@joind.in');
 	}
 	
+	/**
+	* Sends an email when an event is approved
+	* @param integer $eid Event ID
+	* @param array $evt_detail Details for the event (to save another fetch)
+	* @param array $admin_list Contains the list of admins and their emails
+	*/
 	public function sendEventApproved($eid,$evt_detail,$admin_list){
 		$subj	= 'Submitted Event "'.$evt_detail[0]->event_name.'" Approved!';
 		$from	= 'From:feedback@joind.in';
@@ -149,6 +175,28 @@ Click here to view it: http://joind.in/talk/view/%s
 			$to=array($to);
 			$this->_sendEmail($to,$msg,$subj);
 		}
+	}
+	
+	/**
+	* Send an email when an event has successfully imported (from event/import)
+	* @param $eid integer Event ID
+	* @param $evt_detail array Event Detail information
+	* @param $admins array Site admin information
+	*/
+	public function sendSuccessfulImport($eid,$evt_detail,$admins=null){
+		$subj='Successful Import for event '.$evt_detail[0]->event_name;
+		$from	= 'From:feedback@joind.in';
+		
+		if(!$admins){ $this->CI->event_model->getEventAdmins($eid); }
+		
+		$msg=sprintf("
+An import for the event %s has been successful.\n\n
+You can view the event here: http://joind.in/event/view/%s
+		",$evt_detail[0]->event_name,$eid);
+		
+		$to=array();
+		foreach($admins as $k=>$v){ $to[]=$v->email; }
+ 		$this->_sendEmail($to,$msg,$subj,'comments@joind.in');
 	}
 }
 ?>

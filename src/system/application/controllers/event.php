@@ -989,6 +989,7 @@ class Event extends Controller {
 
 		$this->load->library('validation');
 		$this->load->library('xmlimport');
+		$this->load->library('sendemail');
 		$this->load->model('event_model','em');
 		
 		$config['upload_path'] 	= $_SERVER['DOCUMENT_ROOT'].'/inc/tmp';
@@ -1002,7 +1003,8 @@ class Event extends Controller {
 		$this->validation->set_rules($rules);
 		$this->validation->set_fields($fields);
 		
-		$msg=null;
+		$msg		= null;
+		$evt_detail	= $this->em->getEventDetail($eid);
 		
 		if($this->upload->do_upload('xml_file')){
 			// The file's there, lets run our import
@@ -1012,6 +1014,9 @@ class Event extends Controller {
 				$data=file_get_contents($p);
 				$this->xmlimport->import($data,'event',$eid);
 				$msg='Import Successful! <a href="/event/view/'.$eid.'">View event</a>';
+				
+				//send an email to the site admins when it's successful
+				$this->sendemail->sendSuccessfulImport($eid,$evt_detail);
 			}catch(Exception $e){
 				$msg='Error: '.$e->getMessage();
 			}
@@ -1022,7 +1027,7 @@ class Event extends Controller {
 		}
 
 		$arr=array(
-			'details'	=> $this->em->getEventDetail($eid),
+			'details'	=> $evt_detail,
 			'msg'		=> $msg
 		);
 		$this->template->write_view('content','event/import',$arr);
