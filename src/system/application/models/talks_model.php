@@ -183,6 +183,7 @@ class Talks_model extends Model {
 				talk_comments tc
 			where
 				tc.active=1 and
+				tc.private=0 and
 				tc.talk_id=%s %s
 			order by tc.date_made asc
 		',$tid,$c_addl);
