@@ -33,8 +33,19 @@ class Addcomment extends BaseWsRequest {
 		$unq=$this->CI->wsvalidate->validate_unique('talk_comments',$this->xml->action);
 
 		if(!$ret && $unq){
-			$in=(array)$this->xml->action;
-			$user=$this->CI->user_model->getUser($this->xml->auth->user);
+			$in			 = (array)$this->xml->action;
+			$talk_detail = $this->CI->talk_model->getTalks($in['talk_id']);
+			$user		 = $this->CI->user_model->getUser($this->xml->auth->user);
+			
+			// Ensure this is a valid talk
+			if(empty($talk_detail)){
+				$ret=array('output'=>'json','data'=>array('items'=>array('msg'=>'Invalid talk ID!')));
+			}
+			// Ensure that they can comment on it (time-based)
+			if(!$detail->allow_comments){
+				$ret=array('output'=>'json','data'=>array('items'=>array('msg'=>'Comments not allowed for this talk!')));
+			}
+			
 
 			$arr=array(
 				'talk_id'	=> $in['talk_id'],
