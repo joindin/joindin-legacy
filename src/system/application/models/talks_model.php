@@ -296,6 +296,24 @@ class Talks_model extends Model {
 		return (isset($ret['event_id'])) ? $ret['event_id'] : false;
 	}
 	
+	/**
+	 * Find the other events where the session was given
+	 *
+	 * @param $tid integer Talk ID
+	 * @return array Details on the events (event ID, talk ID, event name)
+	 */
+	public function talkAlsoGiven($tid){
+		$ret		= array();
+		$talk_detail= $this->getTalks($tid);
+		
+		$this->db->select('event_id eid, talks.ID as tid, talk_title, event_name');
+	    $this->db->from('talks');
+		$this->db->join('events','events.id=talks.event_id','left');
+	    $this->db->where('talk_title',$talk_detail[0]->talk_title);
+	    $q=$this->db->get();
+	    return $q->result();
+	}
+	
 	public function getTalkByCode($code){
 		//$str='ec'.str_pad($v->ID,2,0,STR_PAD_LEFT).str_pad($v->event_id,2,0,STR_PAD_LEFT);
 		//$str.=substr(md5($v->talk_title),5,5);
