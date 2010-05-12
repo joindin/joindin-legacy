@@ -76,6 +76,11 @@ class Talk extends Controller {
 		$this->validation->set_rules($rules);
 		$this->validation->set_fields($fields);
 		
+		// If we have the event ID in our option...
+		if($id==null && $opt!=null){
+			$tracks	= $this->etm->getEventTracks($opt);
+		}
+		
 		if($id){
 			$det	= $this->talks_model->getTalks($id); //print_r($det);
 			$events	= $this->event_model->getEventDetail($det[0]->event_id);
@@ -133,7 +138,6 @@ class Talk extends Controller {
 			$unix_correction = $unix_offset1 - $unix_offset2;
 
 			$unix_timestamp = $talk_datetime->format("U") - $unix_correction;
-
 
 			$arr=array(
 				'talk_title'	=> $this->input->post('talk_title'),
@@ -252,7 +256,8 @@ class Talk extends Controller {
 		$this->load->library('timezone');
 		$this->load->library('sendemail');		
 		
-		$msg='';
+		$msg			= '';
+		$view_private	= false;
 		
 		// Filter it down to just the numeric characters
 		if(preg_match('/[0-9]+/',$id,$m)){
@@ -296,11 +301,7 @@ class Talk extends Controller {
 					
 					$codes[]=$str;
 				}
-				//echo $code.'<br/>'; print_r($codes);
-				
-				//$ret=$this->talks_model->getTalkByCode($code); print_r($ret);
-				
-				//if(isset($ret[0]) && $ret[0]->ID==$id && in_array($code,$codes)){
+
 				if(in_array($code,$codes)){
 					//TODO: linking on the display side to the right user
 					$uid=$this->session->userdata('ID');
@@ -319,7 +320,7 @@ class Talk extends Controller {
 			}
 		}
 		
-		$cl=($r=$this->talks_model->isTalkClaimed($id)) ? $r : false; //print_r($cl);
+		$cl=($r=$this->talks_model->isTalkClaimed($id)) ? $r : false;
 
 		$cap_arr=array(
 			'img_path'		=>$_SERVER['DOCUMENT_ROOT'].'/inc/img/captcha/',
@@ -329,7 +330,6 @@ class Talk extends Controller {
 		);
 		
 		$rules	=array(
-			//'comment'	=> 'required',
 			'rating'	=> $cl && $cl[0]->userid == $currentUserId ? null : 'required'
 		);
 		$fields	=array(
@@ -348,10 +348,12 @@ class Talk extends Controller {
 			unset($rules['comment'],$rules['rating']);
 		}
 		
-		if(!$this->user_model->isAuth()){
+		// This is for the CAPTACHA - it was disabled for authenticatied users
+		//if(!$this->user_model->isAuth()){
 		//	$rules['cinput']	= 'required|callback_cinput_check';
 		//	$fields['cinput']	= 'Captcha';
-		}
+		//}
+		
 		$this->validation->set_rules($rules);
 		$this->validation->set_fields($fields);
 
@@ -461,28 +463,32 @@ class Talk extends Controller {
 		}
 		//$cap = create_captcha($cap_arr);
 		//$this->session->set_userdata(array('cinput'=>$cap['word']));
-		$reqkey=buildReqKey();
-		$this->load->model('talks_model');
+		
+		$reqkey			= buildReqKey();
 		$talk_detail 	= $this->talks_model->setDisplayFields($talk_detail);
 		
 		// catch this early...if it's not a valid session...
 		if(empty($talk_detail)){ redirect('talk'); }
 		
-		$claims			= $this->event_model->getClaimedTalks($talk_detail[0]->eid);
-		$comments		= splitCommentTypes($this->talks_model->getTalkComments($id));
+		$is_talk_admin	= $this->user_model->isAdminTalk($id);
+		
+		// Check to see if they can view private comments....
+		$view_private 	= ($this->user_model->canViewPrivateComments($talk_detail[0]->eid,$id)) ? true : false;
+		$event_claims	= $this->event_model->getClaimedTalks($talk_detail[0]->eid);
+		$talk_comments	= splitCommentTypes($this->talks_model->getTalkComments($id,null,$view_private));
 		
 		$arr=array(
 			'detail'		=> $talk_detail[0],
-			'comments'		=> (isset($comments['comment'])) ? $comments['comment'] : array(),
-			'votes'			=> (isset($comments['vote'])) ? $comments['vote'] : array(),
-			'admin'	 		=> ($this->user_model->isAdminTalk($id)) ? true : false,
+			'comments'		=> (isset($talk_comments['comment'])) ? $talk_comments['comment'] : array(),
+			'votes'			=> (isset($talk_comments['vote'])) ? $talk_comments['vote'] : array(),
+			'admin'	 		=> ($is_talk_admin) ? true : false,
 			'site_admin'	=> ($this->user_model->isSiteAdmin()) ? true : false,
 			'auth'			=> $this->auth,
 			'claimed'		=> $this->talks_model->isTalkClaimed($id),
-			'claims'		=> $claims,
+			'claims'		=> $event_claims,
 			'claim_status'	=> $claim_status,
 			'claim_msg'		=> $claim_msg,
-			'speaker_claims'=> buildClaimData($talk_detail[0],$claims,$ftalk),
+			'speaker_claims'=> buildClaimData($talk_detail[0],$event_claims,$ftalk),
 			'ftalk'			=> $ftalk, // this one requires the previous call to buildClaimData (return by reference)
 			'reqkey' 		=> $reqkey,
 			'seckey' 		=> buildSecFile($reqkey),

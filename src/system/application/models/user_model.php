@@ -67,10 +67,29 @@ class User_model extends Model {
 			return $ad;
 		}else{ return false; }
 	}
+	/**
+	 * Check to see if the currently logged in user can view the private
+	 * comments on the given event/talk combo
+	 *
+	 * @param $eid Event ID
+	 * @param $tid Talk ID
+	 */
+	public function canViewPrivateComments($eid,$tid){
+		if(
+			$this->isAdminEvent($eid) ||
+			$this->isSiteAdmin() || 
+			$this->isAdminTalk($id)
+		){ return true; }else{ return false; }
+	}
 	//---------------------
-	function toggleUserStatus($uid){
-		$udata=$this->getUser((int)$uid); //echo $uid; print_r($udata);
-		$up=($udata[0]->active==1) ? array('active'=>'0') : array('active'=>'1');
+	
+	/**
+	 * Toggle the user's status - active/inactive
+	 * @param $uid User ID
+	 */
+	public function toggleUserStatus($uid){
+		$udata	= $this->getUser((int)$uid);
+		$up		= ($udata[0]->active==1) ? array('active'=>'0') : array('active'=>'1');
 		$this->updateUserinfo($uid,$up);
 	}
 	function toggleUserAdminStatus($uid){
