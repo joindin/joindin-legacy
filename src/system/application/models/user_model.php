@@ -126,7 +126,7 @@ class User_model extends Model {
 		if(
 			$this->isAdminEvent($eid) ||
 			$this->isSiteAdmin() || 
-			$this->isAdminTalk($id)
+			$this->isAdminTalk($tid)
 		){ return true; }else{ return false; }
 	}
 	
