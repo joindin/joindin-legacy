@@ -209,7 +209,7 @@ if(!$detail->allow_comments) {
 <p class="info">Want to comment on this talk? <a href="/user/login">Log in</a> or <a href="/user/register">create a new account</a>.</p>
 <?php 
     } else {
-	$title=($detail->event_voting=='Y' && !$detail->allow_comments) ? 'Cast your vote' : 'Write a comment';
+	$title=($detail->event_voting=='Y' && $detail->event_start>time()) ? 'Cast your vote' : 'Write a comment';
 ?>
 <a name="comment_form"></a>
 <h3 id="comment-form"><?php echo $title; ?></h3>
@@ -220,7 +220,7 @@ if(!$detail->allow_comments) {
 <?php endif; ?>
 
 <?php
-if($detail->event_voting=='Y' && !$detail->allow_comments){
+if($detail->event_voting=='Y' && $detail->event_start>time()){
 	?>
 	<div style="text-align:center" class="row row-buttons">
 		<?php 
