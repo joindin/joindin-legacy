@@ -21,6 +21,9 @@ menu_pagetitle('Event: ' . escape($event_detail->event_name));
 					<strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event_detail->event_start, $event_detail->event_tz_cont.'/'.$event_detail->event_tz_place, 'M j, Y'); ?></strong> - <strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event_detail->event_end, $event_detail->event_tz_cont.'/'.$event_detail->event_tz_place, 'M j, Y'); ?></strong>
             		<br/> 
             		<strong><?php echo escape($event_detail->event_loc); ?></strong>
+					<?php if($event_detail->private): ?>
+						<br/><strong>Private Event</strong>
+					<?php endif; ?>
             	</p>
             	
             	<p class="opts">
