@@ -316,6 +316,10 @@ Below are the request types that you can make to the API including input and out
 <a name="get_talk_detail"></a>
 <b class="req_name" style="color:#5181C1;font-size:14px">Get Talk Detail</b>
 <div style="padding-left:10px">
+	<p>
+		<b>Note:</b> if the event the session belongs to is marked as private, user credentials must be included with the 
+		detail request to check for invite status to the event.
+	</p>
 <b class="req_title">Action Type:</b> getdetail<br/>
 <b class="req_title">Description:</b> Get the details for given talk number<br/>
 <b class="req_title">Authentication:</b> not required<br />
