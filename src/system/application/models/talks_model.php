@@ -310,6 +310,7 @@ class Talks_model extends Model {
 	    $this->db->from('talks');
 		$this->db->join('events','events.id=talks.event_id','left');
 	    $this->db->where('talk_title',$talk_detail[0]->talk_title);
+		$this->db->where('lower(speaker)',strtolower($talk_detail[0]->speaker));
 	    $q=$this->db->get();
 	    return $q->result();
 	}
