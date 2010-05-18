@@ -155,7 +155,7 @@ class Talks_model extends Model {
 		}
 		$res = $q->result();
 
-		if (is_array($res) && is_object($res[0]) && event_isNowOn($res[0]->event_start, $res[0]->event_end)) {
+		if (is_array($res) && isset($res[0]) && is_object($res[0]) && event_isNowOn($res[0]->event_start, $res[0]->event_end)) {
 			$res[0] = talk_decorateNowNext($res[0]);
 		}
 		return $res;
