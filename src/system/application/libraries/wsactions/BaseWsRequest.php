@@ -55,4 +55,10 @@ class BaseWsRequest {
 		return false;
 	}
 	
+	public function throwError($msg){
+		return array('output'=>'json','data'=>array(
+                'items'=>array('msg'=>$msg))
+        );
+	}
+	
 }
