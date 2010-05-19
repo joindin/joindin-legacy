@@ -64,6 +64,10 @@ class Getlist extends BaseWsRequest {
 			// Filter out a few things first
 			foreach($events as $k=>$evt){
 				unset($events[$k]->event_lat,$events[$k]->event_long,$events[$k]->score);
+				
+				// Remove the private events for now...
+				if($evt->private==1){ unset($events[$k]); }
+				
 				if($uid) {
 					$evt->user_attending = $this->CI->user_attend_model->chkAttend($uid, $evt->ID);
 				}
