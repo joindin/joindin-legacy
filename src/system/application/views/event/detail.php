@@ -1,3 +1,5 @@
+
+<script type="text/javascript" src="/inc/js/event.js"></script>
 <?php
 $cl=array();
 
@@ -339,24 +341,27 @@ $ct=0;
 	<?php else: ?>
 
 		<?php 
-		foreach ($comments as $k => $v): 
-			if($v->user_id != 0) {
-				$uname = '<strong><a href="/user/view/'.$v->user_id.'">'.escape($v->cname).'</a></strong>';
-			} elseif(isset($v->cname)) {
-				$uname = '<strong>'.escape($v->cname).'</strong>';
+		foreach ($comments as $k => $comment):
+			if($comment->user_id != 0) {
+				$uname = '<strong><a href="/user/view/'.$comment->user_id.'">'.escape($comment->cname).'</a></strong>';
+			} elseif(isset($comment->cname)) {
+				$uname = '<strong>'.escape($comment->cname).'</strong>';
 			} else {
 				$uname = "<span class=\"anonymous\">Anonymous</span>";
 			}
 		    $type	= ($event_detail->event_start>time()) ? 'Suggestion' : 'Feedback';
 		?>
-    	<div id="comment-<?php echo $v->ID ?>" class="row row-event-comment">
+    	<div id="comment-<?php echo $comment->ID ?>" class="row row-event-comment">
         	<div class="text">
             	<p class="info">
-            		<strong><?php echo date('M j, Y, H:i',$v->date_made); ?></strong> by <strong><?php echo $uname; ?></strong> (<?php echo escape($type); ?>)
+            		<strong><?php echo date('M j, Y, H:i',$comment->date_made); ?></strong> by <strong><?php echo $uname; ?></strong> (<?php echo escape($type); ?>)
             	</p>
             	<div class="desc">
-            		<?php echo auto_p(escape($v->comment)); ?>
+            		<?php echo auto_p(escape($comment->comment)); ?>
             	</div>
+				<?php if($admin): ?>
+					<a class="btn-small delete-evt-commment" id="<?php echo $comment->ID.'_'.$comment->event_id; ?>" href="#">delete</a>
+				<?php endif; ?>
         	</div>
         	<div class="clear"></div>
         </div>
@@ -423,4 +428,7 @@ $(function() {
 	<?php endif; ?>
 	}
 });
+$(document).ready(function(){
+	event.init();
+})
 </script>
