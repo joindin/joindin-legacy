@@ -12,13 +12,19 @@ class Service {
 	function handle($type,$data){
 		$this->CI->load->model('user_admin_model');
 		$data	= trim($data);
+		
+		// check for empty request...
+		if(strlen(trim($data))){
+			return array('output'=>'msg','data'=>array('msg'=>'Invalid request [empty]!'));
+		}
+		
 		$hdrs	= array_change_key_case(getallheaders(),CASE_UPPER);
 		
 		// Split it out if the header includes the character set
 		// Ex: "text/xml; charset=UTF-8"
 		if(!empty($hdrs['CONTENT-TYPE'])){
 			$ct_p=explode(';',$hdrs['CONTENT-TYPE']);
-			$hdrs['Content-Type']=$ct_p[0];
+			$hdrs['CONTENT-TYPE']=$ct_p[0];
 		}
 		
 		// If it's not set, assume it's XML
