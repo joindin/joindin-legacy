@@ -44,7 +44,7 @@ class Addcomment extends BaseWsRequest {
 				$ret=array('output'=>'json','data'=>array('items'=>array('msg'=>'Invalid talk ID!')));
 			}
 			// Ensure that they can comment on it (time-based)
-			if(!$talk_detail->allow_comments){
+			if(!$talk_detail[0]->allow_comments){
 				$ret=array('output'=>'json','data'=>array('items'=>array('msg'=>'Comments not allowed for this talk!')));
 			}
 			
