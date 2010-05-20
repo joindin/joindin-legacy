@@ -12,21 +12,21 @@ class Service {
 	function handle($type,$data){
 		$this->CI->load->model('user_admin_model');
 		$data	= trim($data);
-		$hdrs	= getallheaders();
+		$hdrs	= array_change_key_case(getallheaders(),CASE_UPPER);
 		
 		// Split it out if the header includes the character set
 		// Ex: "text/xml; charset=UTF-8"
-		if(!empty($hdrs['Content-Type'])){
-			$ct_p=explode(';',$hdrs['Content-Type']);
+		if(!empty($hdrs['CONTENT-TYPE'])){
+			$ct_p=explode(';',$hdrs['CONTENT-TYPE']);
 			$hdrs['Content-Type']=$ct_p[0];
 		}
 		
 		// If it's not set, assume it's XML
-		if(!isset($hdrs['Content-Type']) || $hdrs['Content-Type']=='text/xml'){
+		if(!isset($hdrs['CONTENT-TYPE']) || $hdrs['CONTENT-TYPE']=='text/xml'){
 			$xml=$this->parseReqXML($data);
 			if(!$xml){ return array('output'=>'msg','data'=>array('msg'=>'Invalid request!')); }
 			$rtype	= (string)$xml->action['type'];
-		}elseif(in_array($hdrs['Content-Type'],array('text/x-json','text/json','application/json'))){
+		}elseif(in_array($hdrs['CONTENT-TYPE'],array('text/x-json','text/json','application/json'))){
 			// We're working with json now...
 			$xml	= $this->parseReqJson($data);
 			if(!$xml){ return array('output'=>'msg','data'=>array('msg'=>'Invalid request!')); }
