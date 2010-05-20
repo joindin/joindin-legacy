@@ -33,6 +33,8 @@ class Addcomment extends BaseWsRequest {
 		$unq=$this->CI->wsvalidate->validate_unique('talk_comments',$this->xml->action);
 
 		if(!$ret && $unq){
+			$this->CI->load->model('talk_model');
+			
 			$in			 = (array)$this->xml->action;
 			$talk_detail = $this->CI->talk_model->getTalks($in['talk_id']);
 			$user		 = $this->CI->user_model->getUser($this->xml->auth->user);
