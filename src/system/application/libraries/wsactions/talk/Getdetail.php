@@ -21,8 +21,6 @@ class Getdetail extends BaseWsRequest {
 		
 		$ret['items']=$this->CI->talks_model->getTalks($id);
 		
-		print_r($ret);
-		
 		// if the event is private, check their credentials
 		if(isset($ret['items'][0]) && $ret['items'][0]->private=='Y'){
 			if(isset($this->xml->auth) && isset($this->xml->auth->user) && $this->auth->pass){
