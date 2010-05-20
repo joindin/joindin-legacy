@@ -14,7 +14,7 @@ class Service {
 		$data	= trim($data);
 		
 		// check for empty request...
-		if(strlen(trim($data))){
+		if(strlen(trim($data))<0){
 			return array('output'=>'msg','data'=>array('msg'=>'Invalid request [empty]!'));
 		}
 		
