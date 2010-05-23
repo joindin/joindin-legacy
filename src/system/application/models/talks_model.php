@@ -302,7 +302,7 @@ class Talks_model extends Model {
 	 * @param $tid integer Talk ID
 	 * @return array Details on the events (event ID, talk ID, event name)
 	 */
-	public function talkAlsoGiven($tid){
+	public function talkAlsoGiven($tid,$eid){
 		$ret		= array();
 		$talk_detail= $this->getTalks($tid);
 		
@@ -311,6 +311,7 @@ class Talks_model extends Model {
 		$this->db->join('events','events.id=talks.event_id','left');
 	    $this->db->where('talk_title',$talk_detail[0]->talk_title);
 		$this->db->where('lower(speaker)',strtolower($talk_detail[0]->speaker));
+		$this->db->where('event_id !='.$eid);
 	    $q=$this->db->get();
 	    return $q->result();
 	}
