@@ -238,6 +238,14 @@ if($detail->event_voting=='Y' && $detail->event_start>time()){
 ?>
 
 <div class="row">
+
+	<?php if(!user_is_auth()){
+		$this->load->view('msg_error', array('msg'=>
+			'Please note: you are <b>not logged in</b> and will be posting anonymously!'
+		)); 
+	}
+	?>
+
 	<?php echo form_hidden('edit_comment'); ?>
 	<label for="comment">Comment</label>
 	<?php 
