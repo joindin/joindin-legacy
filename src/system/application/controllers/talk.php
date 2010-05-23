@@ -477,10 +477,10 @@ class Talk extends Controller {
 		$event_claims	= $this->event_model->getClaimedTalks($talk_detail[0]->eid);
 		$talk_comments	= splitCommentTypes($this->talks_model->getTalkComments($id,null,$view_private));
 		
-		$also_given=$this->talks_model->talkAlsoGiven($id);
+		$also_given=$this->talks_model->talkAlsoGiven($id,$talk_detail[0]->event_id);
 		$also_given=array(
-			'talks'=>$also_given,
-			'title'=>'Talk Also Given At...'
+			'talks'	=> $also_given,
+			'title'	=> 'Talk Also Given At...'
 		);
 		
 		$arr=array(
@@ -505,7 +505,9 @@ class Talk extends Controller {
 		);
 		
 		$this->template->write('feedurl','/feed/talk/'.$id);
-		$this->template->write_view('sidebar2','talk/_also_given',$also_given,TRUE);
+		if(!empty($also_given['talks'])){
+			$this->template->write_view('sidebar2','talk/_also_given',$also_given,TRUE);
+		}
 		$this->template->write_view('content','talk/detail',$arr,TRUE);
 		$this->template->render();
 	}
