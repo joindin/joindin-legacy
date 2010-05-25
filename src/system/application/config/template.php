@@ -56,7 +56,15 @@ $template['active_template'] = 'default';
 |--------------------------------------------------------------------------
 */
 
-$template['default']['template'] = 'template2';
+$default_template='template2';
+if($key=strtolower(apache_getenv('USE_KEY'))){
+	$path=APPPATH.'views/custom_templates/'.$key.'/_template_'.$key.'.php';
+	if(is_file($path)){
+		$default_template='custom_templates/'.$key.'/_template_'.$key.'.php';
+	}
+}
+
+$template['default']['template'] = $default_template;
 $template['default']['regions'] = array(
 	'header',
 	'content',

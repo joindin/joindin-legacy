@@ -529,6 +529,9 @@ class Event extends Controller {
 				'evt_admin'		=> $this->event_model->getEventAdmins($id)
 			)); 
 		}
+		
+		
+		
 		$this->template->write_view('content','event/detail',$arr,TRUE);
 		if(!empty($t)){ 
 			// If there's no twitter results, don't show this sidebar

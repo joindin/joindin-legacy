@@ -52,7 +52,8 @@ $data=array(
 	'admin'			=> $admin,
 	'tracks'		=> $tracks,
 	'by_day'		=> $by_day,
-	'cl'			=> $cl
+	'cl'			=> $cl,
+	'ct'			=> $ct
 );
 $this->load->view('event/modules/_event_tabs',$data);
 ?>

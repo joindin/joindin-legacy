@@ -18,7 +18,7 @@
 	$this->load->view('event/modules/_event_tab_comments');
 	if($admin){ $this->load->view('event/modules/_event_tab_admin'); }
 	$this->load->view('event/modules/_event_tab_tracks');
-	$this->load->view('event/modules/_event_tab_slides');
+	$this->load->view('event/modules/_event_tab_slides',array('ct'=>$ct));
 	$this->load->view('event/modules/_event_tab_evtrelated');
 	?>
 </div>
