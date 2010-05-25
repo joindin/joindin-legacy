@@ -1,0 +1,106 @@
+<div class="box">
+<?php
+if(!$detail->allow_comments) {
+	$this->load->view('msg_info', array('msg' => 'Comments closed.'));
+	$comment_closed=true;
+}
+if (empty($comments)) {
+?>
+<?php $this->load->view('msg_info', array('msg' => 'No comments yet.')); ?>
+<?php
+
+} else {
+	$for=0; $against=0;
+	foreach($comments as $k=>$v){
+		if($v->rating==1){ $against++; }elseif($v->rating==5){ $for++; }
+	}
+	
+	if(count($votes)){ 
+		echo '<h2 id="comments">Votes '; 
+		echo '<span style="font-size:12px;color:#898989">&nbsp;&nbsp;('.$for.' for / '.$against.' against)</span></h2>'; 
+	}
+	foreach($votes as $k=>$v){
+		$uname 		= '<a href="/user/view/'.$v->user_id.'">'.escape($v->uname).'</a> ';
+		$vote_str	=($v->rating==1) ? '-1 vote' : '+1 vote';
+		?>
+		<div>
+			<div class="text">
+			<p class="info">
+				<a class="btn-small" href="#"><?php echo $vote_str; ?></a>&nbsp;
+	    		<strong><?php echo date('M j, Y, H:i',$v->date_made); ?></strong> by <strong><?php echo $uname; ?></strong>
+	    	</p>
+			</div>
+		</div>
+		<?php
+	}
+	echo '<br/>';
+	echo '<h2 id="comments">Comments</h2>';
+	
+    foreach ($comments as $k => $v) {
+        if ($v->private && !$admin){ 
+            continue; 
+        }
+    
+        if (isset($v->user_id) && $v->user_id != 0){ 
+    		$uname = '<a href="/user/view/'.$v->user_id.'">'.escape($v->uname).'</a> ';
+    	}else{ 
+    		$uname = '<span class="anonymous">Anonymous</span>'; 
+    	}
+
+    	$class = '';
+
+    	if ($v->user_id == 0) {
+    	    $class .= ' row-talk-comment-anonymous';
+    	}
+
+        if ($v->private == 1) {
+    	    $class .= ' row-talk-comment-private';
+    	}
+    	
+    	if (isset($claimed[0]->userid) && $claimed[0]->userid != 0 && isset($v->user_id) && $v->user_id == $claimed[0]->userid) {
+    	    $class .= ' row-talk-comment-speaker';
+    	}
+
+?>
+<div id="comment-<?php echo $v->ID ?>" class="row row-talk-comment<?php echo $class?>">
+	<div class="img">
+	<?php if (isset($claimed[0]->userid) && $claimed[0]->userid != 0 && isset($v->user_id) && $v->user_id == $claimed[0]->userid): ?>
+		<span class="speaker">Speaker comment:</span>
+	<?php else: ?>
+		<?php echo rating_image($v->rating); ?>
+	<?php endif; ?>
+	</div>
+	<div class="text">
+    	<p class="info">
+    		<strong><?php echo date('M j, Y, H:i',$v->date_made); ?></strong> by <strong><?php echo $uname; ?></strong>
+    	<?php if ($v->private == 1): ?>
+    		<span class="private">Private</span>
+    	<?php endif; ?>
+    	</p>
+    	<div class="desc">
+    		<?php echo auto_p(escape($v->comment)); ?>
+    	</div>
+		<p class="admin">
+			<?php if (user_is_admin() || $v->user_id==$user_id): ?>
+				<a class="btn-small" href="#" onClick="editTalkComment(<?=$v->ID?>);return false;">Edit</a>
+			<?php endif; ?>
+			<?php if (user_is_admin()): ?>
+				<a class="btn-small" href="#" onClick="delTalkComment(<?=$v->ID?>);return false;">Delete</a>
+			<?php endif; ?>
+			<?php if (isset($claimed[0]->userid) && $claimed[0]->userid != 0 && isset($v->user_id) && $v->user_id == $claimed[0]->userid): ?>
+				<a class="btn-small" href="#" onClick="commentIsSpam(<?=$v->ID?>,'talk');return false;">Is Spam</a>
+			<?php endif; ?>
+		</p>
+		<?php if (user_is_admin()): ?>
+		<p class="admin">
+			
+		</p>
+		<?php endif; ?>
+	</div>
+	<div class="clear"></div>
+</div>
+<?php
+    }
+}
+?>
+</div>
