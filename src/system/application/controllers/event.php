@@ -78,6 +78,12 @@ class Event extends Controller {
 	}
 
 	function index($pending=false){
+		
+		if(apache_getenv('USE_EID')){
+			$this->view(apache_getenv('USE_EID'));
+			return true;
+		}
+		
 		$type=($pending) ? 'pending' : 'upcoming';
 		$this->_runList($type, $pending);
 	}
