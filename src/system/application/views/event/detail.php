@@ -30,30 +30,12 @@ $this->load->view('event/modules/_event_buttons',$data);
 <!-- end google ad -->
 
 <?php
-$cl=array();
-
-foreach($claimed as $k=>$v){ 
-	$cl[$v->rcode]=array('rid'=>$v->rid,'uid'=>$v->uid); 
-}
-
-// work through the talks list and split into days
-$by_day=array();
-foreach($talks as $t){
-	$day = strtotime($t->display_date);
-	$by_day[$day][]=$t;
-}
-ksort($by_day);
-$ct=0;
-
 $data=array(
 	'talks'			=> $talks,
 	'comments'		=> $comments,
 	'slides_list'	=> $slides_list,
 	'admin'			=> $admin,
-	'tracks'		=> $tracks,
-	'by_day'		=> $by_day,
-	'cl'			=> $cl,
-	'ct'			=> $ct
+	'tracks'		=> $tracks
 );
 $this->load->view('event/modules/_event_tabs',$data);
 ?>

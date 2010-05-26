@@ -1,3 +1,19 @@
+<?php
+$cl=array();
+
+foreach($claimed as $k=>$v){ 
+	$cl[$v->rcode]=array('rid'=>$v->rid,'uid'=>$v->uid); 
+}
+
+// work through the talks list and split into days
+$by_day=array();
+foreach($talks as $t){
+	$day = strtotime($t->display_date);
+	$by_day[$day][]=$t;
+}
+ksort($by_day);
+$ct=0;
+?>
 <div id="event-tabs">
 	<ul>
 		<li><a href="#talks">Talks (<?php echo count($talks)?>)</a></li>
@@ -14,7 +30,11 @@
 		<?php endif; ?>
 	</ul>
 	<?php
-	$this->load->view('event/modules/_event_tab_talks');
+	$this->load->view('event/modules/_event_tab_talks',array(
+		'by_day'	=> $by_day,
+		'cl'		=> $cl,
+		'ct'		=> $ct
+	));
 	$this->load->view('event/modules/_event_tab_comments');
 	if($admin){ $this->load->view('event/modules/_event_tab_admin'); }
 	$this->load->view('event/modules/_event_tab_tracks');
