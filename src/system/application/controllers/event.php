@@ -561,24 +561,25 @@ class Event extends Controller {
 		$this->load->view('event/ical',array('data'=>$arr));
 	}
 	function delete($id){
-		if(!$this->user_model->isSiteAdmin()){ redirect(); }
-		$this->load->helper('form');
-		$this->load->library('validation');
-		$this->load->model('event_model');
+		if($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($id)){ 
+			$this->load->helper('form');
+			$this->load->library('validation');
+			$this->load->model('event_model');
 		
-		$arr=array(
-			'eid'		=> $id,
-			'details'	=> $this->event_model->getEventDetail($id)
-		);
-		$ans=$this->input->post('answer');
-		if(isset($ans) && $ans =='yes'){
-			$this->event_model->deleteEvent($id);
-			$arr=array();
-		}
+			$arr=array(
+				'eid'		=> $id,
+				'details'	=> $this->event_model->getEventDetail($id)
+			);
+			$ans=$this->input->post('answer');
+			if(isset($ans) && $ans =='yes'){
+				$this->event_model->deleteEvent($id);
+				$arr=array();
+			}
 		
-		$this->template->write_view('content','event/delete',$arr,TRUE);
-		$this->template->render();
-		//$this->load->view('event/delete',$arr);
+			$this->template->write_view('content','event/delete',$arr,TRUE);
+			$this->template->render();
+			//$this->load->view('event/delete',$arr);
+		}else{ redirect(); }
 	}
 	function codes($id){
 		$this->load->helper('form');
