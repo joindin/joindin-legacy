@@ -25,7 +25,7 @@ $title[] = 'Joind.in';
 	if(isset($seckey)){ echo "\n\t" . '<script type="text/javascript">var seck="'.$seckey.'";</script>'; }
 	?>
 </head>
-<body id="page-<?= menu_get_current_area(); ?>">
+<body id="page-<?php echo menu_get_current_area(); ?>">
 
 <div id="hd">
     <div class="container_12 top">
@@ -152,8 +152,8 @@ $title[] = 'Joind.in';
                 	</div>
 
             	</div>
-				<?=$sidebar3?>
-				<?=$sidebar2?>
+				<?php echo $sidebar3?>
+				<?php echo $sidebar2?>
             </div>
     	</div>
     	<div class="clear"></div>
@@ -173,7 +173,7 @@ $title[] = 'Joind.in';
         	<a href="/about/contact">Contact</a>
     	</div>
     	<div class="grid_6 rgt">
-    		&copy; joind.in <?=date('Y')?>
+    		&copy; joind.in <?php echo date('Y')?>
     	</div>
     	<div class="clear"></div>
 	</div>

@@ -63,7 +63,7 @@ if(time()<$adv_mo): ?>
 
 	<div class="row">
     	<label for="type">Type</label>
-    	<div class="input"><?=$type?></div>
+    	<div class="input"><?php echo $type?></div>
         <div class="clear"></div>
     </div>
 	

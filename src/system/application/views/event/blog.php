@@ -57,7 +57,7 @@ if(count($posts)==0){
 foreach($posts as $v): ?>
 <div class="detail">
 	<a name="<?php echo $v->ID; ?>"></a>
-	<h1><?=$v->title?></h1>
+	<h1><?php echo $v->title?></h1>
 	
 	<p class="info">
 		Written <strong><?php echo date('M j, Y',$v->date_posted); ?></strong> at <strong><?php echo date('H:i',$v->date_posted); ?></strong> (<?php echo $v->full_name; ?>)

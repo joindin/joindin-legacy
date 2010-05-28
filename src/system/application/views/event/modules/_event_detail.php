@@ -13,7 +13,7 @@ here's what we need
     
     	<div class="title">
         	<div class="head">
-            	<h1><?=escape($event_detail->event_name)?> <?=(($event_detail->pending==1) ? '(Pending)':'')?></h1>
+            	<h1><?php echo escape($event_detail->event_name)?> <?php echo (($event_detail->pending==1) ? '(Pending)':'')?></h1>
             
             	<p class="info">
 					<strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event_detail->event_start, $event_detail->event_tz_cont.'/'.$event_detail->event_tz_place, 'M j, Y'); ?></strong> - <strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event_detail->event_end, $event_detail->event_tz_cont.'/'.$event_detail->event_tz_place, 'M j, Y'); ?></strong>
@@ -44,8 +44,8 @@ here's what we need
             	if(!user_is_auth()){ $attend=false; }
             	?>
             		
-            		<a class="btn<?php echo $attend ? ' btn-success' : ''; ?>" href="javascript:void(0);" onclick="return markAttending(this,<?=$event_detail->ID?>,<?php echo $event_detail->event_end<time() ? 'true' : 'false'; ?>);"><?=$link_txt?></a>
-            		<span class="attending"><strong><span class="event-attend-count-<?php echo $event_detail->ID; ?>"><?php echo (int)$attend_ct; ?></span> people</strong> <?php echo (time()<=$event_detail->event_end) ? ' attending so far':' said they attended'; ?>. <a href="javascript:void(0);"  onclick="return toggleAttendees(this, <?=$event_detail->ID?>);" class="show">Show &raquo;</a></span>
+            		<a class="btn<?php echo $attend ? ' btn-success' : ''; ?>" href="javascript:void(0);" onclick="return markAttending(this,<?php echo $event_detail->ID?>,<?php echo $event_detail->event_end<time() ? 'true' : 'false'; ?>);"><?php echo $link_txt?></a>
+            		<span class="attending"><strong><span class="event-attend-count-<?php echo $event_detail->ID; ?>"><?php echo (int)$attend_ct; ?></span> people</strong> <?php echo (time()<=$event_detail->event_end) ? ' attending so far':' said they attended'; ?>. <a href="javascript:void(0);"  onclick="return toggleAttendees(this, <?php echo $event_detail->ID?>);" class="show">Show &raquo;</a></span>
             	</p>
             </div>
             <div class="func">

@@ -9,7 +9,7 @@
 		<link>http://joind.in</link>
 		<description>Joind.in</description>
 		<language>en-us</language>
-		<pubDate><?=date('r')?></pubDate>
+		<pubDate><?php echo date('r')?></pubDate>
 	</channel>
 	<?php
 	foreach($items as $k=>$v){

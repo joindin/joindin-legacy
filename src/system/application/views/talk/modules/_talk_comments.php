@@ -82,13 +82,13 @@ if (empty($comments)) {
     	</div>
 		<p class="admin">
 			<?php if (user_is_admin() || $v->user_id==$user_id): ?>
-				<a class="btn-small" href="#" onClick="editTalkComment(<?=$v->ID?>);return false;">Edit</a>
+				<a class="btn-small" href="#" onClick="editTalkComment(<?php echo $v->ID?>);return false;">Edit</a>
 			<?php endif; ?>
 			<?php if (user_is_admin()): ?>
-				<a class="btn-small" href="#" onClick="delTalkComment(<?=$v->ID?>);return false;">Delete</a>
+				<a class="btn-small" href="#" onClick="delTalkComment(<?php echo $v->ID?>);return false;">Delete</a>
 			<?php endif; ?>
 			<?php if (isset($claimed[0]->userid) && $claimed[0]->userid != 0 && isset($v->user_id) && $v->user_id == $claimed[0]->userid): ?>
-				<a class="btn-small" href="#" onClick="commentIsSpam(<?=$v->ID?>,'talk');return false;">Is Spam</a>
+				<a class="btn-small" href="#" onClick="commentIsSpam(<?php echo $v->ID?>,'talk');return false;">Is Spam</a>
 			<?php endif; ?>
 		</p>
 		<?php if (user_is_admin()): ?>

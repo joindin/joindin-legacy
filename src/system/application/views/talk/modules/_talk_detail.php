@@ -1,5 +1,5 @@
 <div class="detail">
-	<h1><?=$detail->talk_title?></h1>
+	<h1><?php echo $detail->talk_title?></h1>
 
 	<p class="info">
 		<strong><?php echo $speaker_txt; ?></strong> (<?php echo $detail->display_datetime; ?>)
@@ -12,7 +12,7 @@
 	</p>
 
 	<div class="desc">
-		<?=auto_p(auto_link(escape($detail->talk_desc)));?>
+		<?php echo auto_p(auto_link(escape($detail->talk_desc)));?>
 	</div>
 	
 	<p class="quicklink">
