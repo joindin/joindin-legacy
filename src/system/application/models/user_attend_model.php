@@ -69,7 +69,7 @@ class User_attend_model extends Model {
 				ua.uid=usr.ID and
 				ua.eid=%s
 			order by
-				ua.ID asc
+				usr.full_name asc
 		',(int)$eid,(int)$eid);
 		$q=$this->db->query($sql);
 		return $q->result();
