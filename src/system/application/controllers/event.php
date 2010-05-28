@@ -78,6 +78,12 @@ class Event extends Controller {
 	}
 
 	function index($pending=false){
+		
+		if(apache_getenv('USE_EID')){
+			$this->view(apache_getenv('USE_EID'));
+			return true;
+		}
+		
 		$type=($pending) ? 'pending' : 'upcoming';
 		$this->_runList($type, $pending);
 	}
@@ -151,6 +157,7 @@ class Event extends Controller {
 		$this->template->render();
 	}
 
+	// Note that add() actually does edit, and submit() does add
 	function add($id=null){
 		//check for admin
 		if($id){ 
@@ -193,6 +200,8 @@ class Event extends Controller {
 			'end_day'	=>'End Day',
 			'end_yr'	=>'End Year',
 			'event_loc'	=>'Event Location',
+			'event_lat'	=>'Latitude',
+			'event_long'	=>'Longitude',
 			'event_desc'=>'Event Description',
 			'event_tz_cont'		=>'Event Timezone (Continent)',
 			'event_tz_place'	=>'Event Timezone (Place)',
@@ -258,6 +267,8 @@ class Event extends Controller {
 					23,59,59
 				),
 				'event_loc'		=>$this->input->post('event_loc'),
+				'event_lat'		=>$this->input->post('event_lat'),
+				'event_long'	=>$this->input->post('event_long'),
 				'event_desc'	=>$this->input->post('event_desc'),
 				'active'		=>'1',
 				'event_tz_cont'	=>$this->input->post('event_tz_cont'),
@@ -518,6 +529,9 @@ class Event extends Controller {
 				'evt_admin'		=> $this->event_model->getEventAdmins($id)
 			)); 
 		}
+		
+		
+		
 		$this->template->write_view('content','event/detail',$arr,TRUE);
 		if(!empty($t)){ 
 			// If there's no twitter results, don't show this sidebar
@@ -547,24 +561,25 @@ class Event extends Controller {
 		$this->load->view('event/ical',array('data'=>$arr));
 	}
 	function delete($id){
-		if(!$this->user_model->isSiteAdmin()){ redirect(); }
-		$this->load->helper('form');
-		$this->load->library('validation');
-		$this->load->model('event_model');
+		if($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($id)){ 
+			$this->load->helper('form');
+			$this->load->library('validation');
+			$this->load->model('event_model');
 		
-		$arr=array(
-			'eid'		=> $id,
-			'details'	=> $this->event_model->getEventDetail($id)
-		);
-		$ans=$this->input->post('answer');
-		if(isset($ans) && $ans =='yes'){
-			$this->event_model->deleteEvent($id);
-			$arr=array();
-		}
+			$arr=array(
+				'eid'		=> $id,
+				'details'	=> $this->event_model->getEventDetail($id)
+			);
+			$ans=$this->input->post('answer');
+			if(isset($ans) && $ans =='yes'){
+				$this->event_model->deleteEvent($id);
+				$arr=array();
+			}
 		
-		$this->template->write_view('content','event/delete',$arr,TRUE);
-		$this->template->render();
-		//$this->load->view('event/delete',$arr);
+			$this->template->write_view('content','event/delete',$arr,TRUE);
+			$this->template->render();
+			//$this->load->view('event/delete',$arr);
+		}else{ redirect(); }
 	}
 	function codes($id){
 		$this->load->helper('form');
@@ -754,6 +769,8 @@ class Event extends Controller {
 				'event_start'	=>$startUnixTimestamp,
 				'event_end'		=>$endUnixTimestamp,
 				'event_loc'		=>$this->input->post('event_loc'),
+				'event_lat'		=>$this->input->post('event_lat'),
+				'event_long'	=>$this->input->post('event_long'),
 				'event_desc'	=>$this->input->post('event_desc'),
 				'active'		=>0,
 				'event_stub'	=>$this->input->post('event_stub'),
@@ -982,6 +999,7 @@ class Event extends Controller {
 
 		$this->load->library('validation');
 		$this->load->library('xmlimport');
+		$this->load->library('sendemail');
 		$this->load->model('event_model','em');
 		
 		$config['upload_path'] 	= $_SERVER['DOCUMENT_ROOT'].'/inc/tmp';
@@ -995,7 +1013,8 @@ class Event extends Controller {
 		$this->validation->set_rules($rules);
 		$this->validation->set_fields($fields);
 		
-		$msg=null;
+		$msg		= null;
+		$evt_detail	= $this->em->getEventDetail($eid);
 		
 		if($this->upload->do_upload('xml_file')){
 			// The file's there, lets run our import
@@ -1005,6 +1024,9 @@ class Event extends Controller {
 				$data=file_get_contents($p);
 				$this->xmlimport->import($data,'event',$eid);
 				$msg='Import Successful! <a href="/event/view/'.$eid.'">View event</a>';
+				
+				//send an email to the site admins when it's successful
+				$this->sendemail->sendSuccessfulImport($eid,$evt_detail);
 			}catch(Exception $e){
 				$msg='Error: '.$e->getMessage();
 			}
@@ -1015,7 +1037,7 @@ class Event extends Controller {
 		}
 
 		$arr=array(
-			'details'	=> $this->em->getEventDetail($eid),
+			'details'	=> $evt_detail,
 			'msg'		=> $msg
 		);
 		$this->template->write_view('content','event/import',$arr);

@@ -1,7 +1,7 @@
 <h2>Profile</h2>
 <?php
 //echo '<pre>'; print_r($profile); echo '</pre>';
-$data=$profile['data'];
+$data=(isset($profile['data'])) ? $profile['data'] : array();
 
 function setchk($arr,$key,$label=null){
 	if($label && isset($arr[$key])){ echo '<b>'.$label.':</b> '; }

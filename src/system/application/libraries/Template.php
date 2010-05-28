@@ -355,6 +355,9 @@ class CI_Template {
       
       // Get rid of non-views
       unset($args[0], $args[2], $args[3]);
+
+	  //check to see if it has a custom view
+      $view=$this->has_custom_view($view);
       
       // Do we have more view suggestions?
       if (count($args) > 1)
@@ -671,6 +674,25 @@ class CI_Template {
 
       return $output;
    }
+
+	/**
+	* Check to see if they have a custom template for the style (based on the 
+	* custom directory path in the config)
+	*
+	* @param string $view View passed into the functions above
+	* @return string Returns path to either the same view or the found custom view
+	*/
+	public function has_custom_view($view){
+		$cpath=$this->CI->config->item('custom_template_dir');
+		if($key=apache_getenv('USE_KEY'))
+		{
+			$cpath=$this->CI->config->item('custom_template_dir').'/'.$key.'/'.$view;
+			if(is_file(APPPATH.'/views/'.$cpath.'.php'))
+			{
+				return $cpath;
+			}else{ return $view; }
+		}else{ return $view; }
+	}
    
 }
 // END Template Class

@@ -9,7 +9,8 @@ $title[] = 'Joind.in';
 	<title><?php echo implode(' - ', $title); ?></title>
 
 	<link media="all" rel="stylesheet" type="text/css" href="/inc/css/jquery-ui/theme/ui.all.css"/>
-	<link media="all" rel="stylesheet" type="text/css" href="/inc/css/site.css"/>
+	<?php $css=(!apache_getenv('USE_CSS')) ? '/inc/css/site.css' : apache_getenv('USE_CSS'); ?>
+	<link media="all" rel="stylesheet" type="text/css" href="<?php echo $css; ?>"/>
 	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" /> 
 	<script type="text/javascript" src="/inc/js/jquery.js"></script>
 	<script type="text/javascript" src="/inc/js/jquery.pause.js"></script>

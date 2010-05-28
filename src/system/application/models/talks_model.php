@@ -6,10 +6,10 @@ class Talks_model extends Model {
 		parent::Model();
 	}
 	//---------------
-	function deleteTalk($id){
+	public function deleteTalk($id){
 		$this->db->delete('talks',array('ID'=>$id));
 	}
-	function isTalkClaimed($tid){
+	public function isTalkClaimed($tid){
 		$sql=sprintf('
 			select
 				u.username,
@@ -49,7 +49,7 @@ class Talks_model extends Model {
 	//---------------
 	// Check to see if user has already made that sort of 
 	// comment on the talk
-	function hasUserCommented($tid,$uid,$type=null){
+	public function hasUserCommented($tid,$uid,$type=null){
 		$arr=array('user_id'=>$uid,'talk_id'=>$tid);
 		if($type){ $arr['comment_type']=$type; }
 		$q=$this->db->get_where('talk_comments',$arr);
@@ -58,7 +58,9 @@ class Talks_model extends Model {
 	}
 	
 	//---------------
-	function getTalks($tid=null,$latest=false){
+	public function getTalks($tid=null,$latest=false){
+		$this->load->helper("events");
+		$this->load->helper("talk");
 		if($tid){
 			// See if we have any comments to exclude
 			$uids=$this->_findExcludeComments($tid);
@@ -82,6 +84,8 @@ class Talks_model extends Model {
 					talks.ID tid,
 					events.ID eid,
 					events.event_name,
+					events.event_start,
+					events.event_end,
 					events.event_tz_cont,
 					events.event_tz_place,
 					events.event_voting,
@@ -123,6 +127,8 @@ class Talks_model extends Model {
 					events.event_name,
 					events.event_tz_cont,
 					events.event_tz_place,
+					events.event_start,
+					events.event_end,
 					events.private,
 					lang.lang_name,
 					lang.lang_abbr,
@@ -147,17 +153,21 @@ class Talks_model extends Model {
 			',$wh,$ob);
 			$q=$this->db->query($sql);
 		}
-		$db_results = $q->result();
-		
-		return $db_results;
+		$res = $q->result();
+
+		if (is_array($res) && isset($res[0]) && is_object($res[0]) && event_isNowOn($res[0]->event_start, $res[0]->event_end)) {
+			$res[0] = talk_decorateNowNext($res[0]);
+		}
+		return $res;
 	}
 	/**
 	* Gets the comments for a session/talk
 	* $tid Talk ID
 	* $cid [optional] Comment ID (if you want to get only one comment)
 	*/
-	function getTalkComments($tid,$cid=null){
-		$c_addl=($cid) ? ' and tc.ID='.$cid : '';
+	public function getTalkComments($tid,$cid=null,$private=false){
+		$c_addl	= ($cid) ? ' and tc.ID='.$cid : '';
+		$priv	= (!$private) ? ' and tc.private=0' : '';
 		$sql=sprintf('
 			select
 				tc.talk_id,
@@ -174,13 +184,14 @@ class Talks_model extends Model {
 				talk_comments tc
 			where
 				tc.active=1 and
-				tc.talk_id=%s %s
+				tc.talk_id=%s %s %s
 			order by tc.date_made asc
-		',$tid,$c_addl);
+		',$tid,$c_addl,$priv);
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
-	function getPopularTalks($len=7){
+	
+	public function getPopularTalks($len=7){
 		$sql=sprintf('
 			select
 				t.talk_title,
@@ -206,7 +217,8 @@ class Talks_model extends Model {
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
-	function getRecentTalks(){
+	
+	public function getRecentTalks(){
 		$sql=sprintf("
 			select
 			  DISTINCT t.ID,
@@ -236,14 +248,17 @@ class Talks_model extends Model {
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
-	function getUserTalks($uid){
+	
+	public function getUserTalks($uid){
 		$talks=array();
 		//select rid from user_admin where uid=$uid and rtype='talks'
 		$this->db->select('*');
 		$this->db->from('user_admin');
+		$this->db->join('talks','talks.id=user_admin.rid');
 		$this->db->where('uid',$uid);
 		$this->db->where('rtype','talk');
 		$this->db->where('rcode !=','pending');
+		$this->db->order_by('talks.date_given desc');
 		
 		$q=$this->db->get();
 		//$q=$this->db->get_where('user_admin',array('uid'=>$uid,'rtype'=>'talk'));
@@ -254,7 +269,8 @@ class Talks_model extends Model {
 		}
 		return $talks;
 	}
-	function getUserComments($uid){
+	
+	public function getUserComments($uid){
 		$sql=sprintf('
 			select
 				tc.talk_id,
@@ -275,7 +291,34 @@ class Talks_model extends Model {
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
-	function getTalkByCode($code){
+	
+	public function getTalkEvent($tid){
+		$q	 = $this->db->query('select event_id from talks where id='.$tid);
+		$ret = $q->result();
+		return (isset($ret['event_id'])) ? $ret['event_id'] : false;
+	}
+	
+	/**
+	 * Find the other events where the session was given
+	 *
+	 * @param $tid integer Talk ID
+	 * @return array Details on the events (event ID, talk ID, event name)
+	 */
+	public function talkAlsoGiven($tid,$eid){
+		$ret		= array();
+		$talk_detail= $this->getTalks($tid);
+		
+		$this->db->select('event_id eid, talks.ID as tid, talk_title, event_name');
+	    $this->db->from('talks');
+		$this->db->join('events','events.id=talks.event_id','left');
+	    $this->db->where('talk_title',$talk_detail[0]->talk_title);
+		$this->db->where('lower(speaker)',strtolower($talk_detail[0]->speaker));
+		$this->db->where('event_id !='.$eid);
+	    $q=$this->db->get();
+	    return $q->result();
+	}
+	
+	public function getTalkByCode($code){
 		//$str='ec'.str_pad($v->ID,2,0,STR_PAD_LEFT).str_pad($v->event_id,2,0,STR_PAD_LEFT);
 		//$str.=substr(md5($v->talk_title),5,5);
 		
@@ -296,7 +339,7 @@ class Talks_model extends Model {
 	/**
 	 * Find users with popular talks that are also in upcoming events
 	 */
-	function getPopularUpcomingTalks($rating=4,$rand=true){
+	public function getPopularUpcomingTalks($rating=4,$rand=true){
 		$this->CI=&get_instance();
 		$this->CI->load->model('event_model','em');
 		$this->CI->load->model('talks_model','tm');
@@ -367,7 +410,7 @@ class Talks_model extends Model {
 		}else{ return $ret; }
 	}
 	
-	function linkUserRes($uid,$rid,$type,$code=null){		
+	public function linkUserRes($uid,$rid,$type,$code=null){		
 		$arr=array(
 			'uid'	=> $uid,
 			'rid'	=> $rid,
@@ -385,7 +428,7 @@ class Talks_model extends Model {
 	}
 
 	//---------------
-	function search($term,$start,$end){
+	public function search($term,$start,$end){
 		$this->db->select('talks.*, count(talk_comments.ID) as ccount, (select round(avg(rating)) from talk_comments where talk_id=talks.ID) as tavg, events.ID eid, events.event_name');
 	    $this->db->from('talks');
 	    
@@ -404,7 +447,7 @@ class Talks_model extends Model {
 		return $q->result();
 	}
 	//---------------
-	function _findExcludeComments($tid){
+	public function _findExcludeComments($tid){
 	    $uid=array();
 	    
 	    // See if there's any speaker claims for the talk
@@ -431,7 +474,7 @@ class Talks_model extends Model {
 	 * @access public
 	 * @return the amended array with additional fields
 	 */
-	function setDisplayFields($det) {
+	public function setDisplayFields($det) {
 		$retval = array();
 
 		foreach($det as $talk) {

@@ -18,10 +18,32 @@ class Getdetail extends BaseWsRequest {
 		$id=$this->xml->action->talk_id;
 		$this->CI->load->model('talks_model');
 		$this->CI->load->model('talk_track_model');
+		
 		$ret['items']=$this->CI->talks_model->getTalks($id);
+		
+		// if the event is private, check their credentials
+		if(isset($ret['items'][0]) && $ret['items'][0]->private=='Y'){
+			if(isset($this->xml->auth) && isset($this->xml->auth->user) && $this->auth->pass){
+				$this->CI->load->model('user_model');
+				$user=$this->CI->user_model->getUser($this->xml->auth->user);
+				
+				if(empty($user)){ return $this->throwError('Not authorized for private talk'); }
+				
+				$this->load->model('invite_list_model','ilm');
+                $is_invited=$this->ilm->isInvited($ret[0]->ID,$uid);
+				if(!$is_invited){
+					return $this->throwError('Not authorized for private talk!');
+				}
+			}else{ 
+				// not allowed! no data for you!
+				return $this->throwError('Not authorized for private talk!');
+			}
+		}
 
 		// now add in the track information before sending it
-		$ret['items'][0]->tracks = $this->CI->talk_track_model->getSessionTrackInfo($id);
+		if(!empty($ret['items'])){
+			$ret['items'][0]->tracks = $this->CI->talk_track_model->getSessionTrackInfo($id);
+		}
 
 		return array('output' => 'json', 'data'=>$ret);
 	}

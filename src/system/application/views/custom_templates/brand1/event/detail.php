@@ -8,28 +8,8 @@ $data=array(
 	'event_detail'	=> $event_detail,
 	'attend'		=> $attend
 );
-$this->load->view('event/modules/_event_detail',$data); 
+$this->load->view('event/modules/_event_detail',$data);
 
-// These are our buttons below the event detail
-$data=array(
-	'admin'			=> $admin,
-	'event_detail'	=> $event_detail
-);
-$this->load->view('event/modules/_event_buttons',$data);
-?>
-
-<!-- google ad -->
-<p class="ad">
-    <script type="text/javascript"><!--
-    google_ad_client = "pub-2135094760032194";
-    /* 468x60, created 11/5/08 */
-    google_ad_slot = "4582459016"; google_ad_width = 468; google_ad_height = 60; //-->
-    </script>
-    <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
-</p>
-<!-- end google ad -->
-
-<?php
 $data=array(
 	'talks'			=> $talks,
 	'comments'		=> $comments,

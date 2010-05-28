@@ -14,7 +14,7 @@ class Feed extends Controller {
 		$this->load->helper('form');
 		$this->load->model('talks_model');
 		
-		$com=$this->talks_model->getTalkComments($tid);
+		$com=$this->talks_model->getTalkComments($tid,null,null);
 		$tlk=$this->talks_model->getTalks($tid);
 		//echo '<pre>'; print_r($com); echo '</pre>';
 		//echo '<pre>'; print_r($tlk); echo '</pre>';
