@@ -254,9 +254,11 @@ class Talks_model extends Model {
 		//select rid from user_admin where uid=$uid and rtype='talks'
 		$this->db->select('*');
 		$this->db->from('user_admin');
+		$this->db->join('talks','talks.id=user_admin.rid');
 		$this->db->where('uid',$uid);
 		$this->db->where('rtype','talk');
 		$this->db->where('rcode !=','pending');
+		$this->db->order_by('talks.date_given desc');
 		
 		$q=$this->db->get();
 		//$q=$this->db->get_where('user_admin',array('uid'=>$uid,'rtype'=>'talk'));
