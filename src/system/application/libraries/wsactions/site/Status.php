@@ -25,7 +25,8 @@ class Status extends BaseWsRequest {
 		);
 		// If they give us a test string, echo it back to them
 		if(isset($this->xml->action->test_string)){
-			$arr['data']['items']['test_string']=$this->xml->action->test_string;
+			// cast this to string, otherwise we get the whole SimpleXMLElement object in there
+			$arr['data']['items']['test_string']=(string) $this->xml->action->test_string;
 		}
 		return $arr;
 	}
