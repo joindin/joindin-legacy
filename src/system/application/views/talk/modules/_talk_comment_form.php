@@ -1,9 +1,4 @@
 <?php
-if(!$detail->allow_comments) {
-?>
-<p class="info">Currently not open for comment.</p>
-<?php
-} else {
     if (false && !$auth) {
 ?>
 <p class="info">Want to comment on this talk? <a href="/user/login">Log in</a> or <a href="/user/register">create a new account</a>.</p>
@@ -81,5 +76,4 @@ if($detail->event_voting=='Y' && $detail->event_start>time()){
         echo form_close(); 
         /* close if for date */
     }
-}
 ?>
