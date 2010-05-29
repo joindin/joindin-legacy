@@ -484,7 +484,7 @@ class Event extends Controller {
 				$content='';
 				foreach($ec as $k=>$v){ $content.='['.$k.'] => '.$v."\n\n"; }
 				foreach($to as $tk=>$tv){
-				    @mail($tv,$subj,$content,'From:feedback@joind.in');
+				    @mail($tv,$subj,$content,'From: ' . $this->config->item('email_feedback'));
 				}
 			
 				$this->session->set_flashdata('msg', 'Comment inserted successfully!');
@@ -830,7 +830,7 @@ class Event extends Controller {
 				
 				$admin_emails=$this->user_model->getSiteAdminEmail();
 				foreach($admin_emails as $user){
-					mail($user->email,$subj,$msg,'From: submissions@joind.in');
+					mail($user->email,$subj,$msg,'From: ' . $this->config->item('email_submissions'));
 				}
 				$arr['msg']=sprintf('
 					<style="font-size:16px;font-weight:bold">Event successfully submitted!</span><br/>
@@ -854,7 +854,7 @@ class Event extends Controller {
 					$this->user_admin_model->addPerm($uid,$rid,$type);
 				}
 			}else{ 
-				$arr['msg']='There was an error submitting your event! Please <a href="submissions@joind.in">send us an email</a> with all the details!';
+				$arr['msg']='There was an error submitting your event! Please <a href="' . $this->config->item('email_submissions') . '">send us an email</a> with all the details!';
 			}
 		}else{ $this->validation->is_admin=0; }
 		$arr['is_auth']=$this->user_model->isAuth();

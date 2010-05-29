@@ -105,7 +105,7 @@ http://joind.in/event/claim/%s
 				    ",$talk_det->talk_title,$talk_det->event_id);
 				
 					foreach($to as $email_addr){
-				    	mail($email_addr,'Joind.in: Talk claim submitted! Go check!',$msg,'From: feedback@joind.in');
+				    	mail($email_addr,'Joind.in: Talk claim submitted! Go check!',$msg,'From: ' . $this->CI->config->item('email_feedback'));
 					}
 				    //return the success message
 				    return array('output'=>'json','data'=>array('items'=>array('msg'=>'Success')));

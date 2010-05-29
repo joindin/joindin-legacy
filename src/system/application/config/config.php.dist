@@ -15,6 +15,22 @@ $config['base_url']	= 'http://joindin/';
 
 /*
 |--------------------------------------------------------------------------
+| Transactional Email Addresses
+|--------------------------------------------------------------------------
+|
+| Various transactional emails used throughout the system.
+|
+*/
+$config['email_submissions']	= 'submissions@joind.in';
+$config['email_comments']	= 'comments@joind.in';
+$config['email_feedback']	= 'feedback@joind.in';
+$config['email_events']	= 'eventmgr@joind.in';
+$config['email_iphone']	= 'iphone@joind.in';
+$config['email_info']	= 'info@joind.me';
+$config['email_admin']	= 'enygma@phpdeveloper.org';
+
+/*
+|--------------------------------------------------------------------------
 | Index File
 |--------------------------------------------------------------------------
 |

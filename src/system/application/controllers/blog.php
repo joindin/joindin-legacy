@@ -164,7 +164,7 @@ class Blog extends Controller {
 
 				$admin_emails=$this->user_model->getSiteAdminEmail();
 				foreach($admin_emails as $user){
-					mail($user->email,$subj,$cont,'From: feedback@joind.in');
+					mail($user->email,$subj,$cont,'From: ' . $this->config->item('email_feedback'));
 				}
 				
 				//redirect('blog/view/'.$id . '#comments', 'location', 302);
