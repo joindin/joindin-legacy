@@ -17,7 +17,7 @@ Code: %s
 		',$ret[0]->talk_title,$details[0]->event_name,$code);
 		$to		=$email;
 		$subj	='Talk Code from join.in: '.$ret[0]->talk_title;
-		mail($to,$subj,$msg,'From: eventmgr@joind.in');
+		mail($to,$subj,$msg,'From: ' . $this->config->item('email_events'));
 	}
 	
 }

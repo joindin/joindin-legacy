@@ -3,11 +3,12 @@
 /* Just a few functions to send emails through out the site */
 class SendEmail {
 	
-	private $_from	= 'feedback@joind.in';
+	private $_config;
 	private $CI		= null;
 	
 	public function __construct(){
 		$this->CI=&get_instance();
+                $this->_config = $this->CI->config;
 	}
 
 	/**
@@ -15,7 +16,7 @@ class SendEmail {
 	*/
 	private function _sendEmail($to,$msg,$subj,$from=null){
 		if(!is_array($to)){ $to=array($to); }
-		$from=($from) ? $from : $this->_from;
+		$from=($from) ? $from : $this->_config->item('email_feedback');
 		foreach($to as $email){
 			mail($email,$subj,$msg,'From: '.$from);
 		}
@@ -153,7 +154,7 @@ Click here to view it: http://joind.in/talk/view/%s
 		",$byline,$talk_detail[0]->talk_title,trim($in_arr['comment']),$tid);
 		
 		$to=array($to);
- 		$this->_sendEmail($to,$msg,$subj,'comments@joind.in');
+ 		$this->_sendEmail($to,$msg,$subj, $this->_config->item('email_comments'));
 	}
 	
 	/**
@@ -164,7 +165,7 @@ Click here to view it: http://joind.in/talk/view/%s
 	*/
 	public function sendEventApproved($eid,$evt_detail,$admin_list){
 		$subj	= 'Submitted Event "'.$evt_detail[0]->event_name.'" Approved!';
-		$from	= 'From:feedback@joind.in';
+		$from	= 'From:' . $this->_config->item('email_feedback');
 		
 		foreach($admin_list as $k=>$user){
 			$msg='The event you submitted "'.$evt_detail[0]->event_name.'" has been approved!'."\n";
@@ -185,7 +186,7 @@ Click here to view it: http://joind.in/talk/view/%s
 	*/
 	public function sendSuccessfulImport($eid,$evt_detail,$admins=null){
 		$subj='Successful Import for event '.$evt_detail[0]->event_name;
-		$from	= 'From:feedback@joind.in';
+		$from	= 'From:' . $this->_config->item('email_feedback');
 		
 		if(!$admins){ $this->CI->event_model->getEventAdmins($eid); }
 		
@@ -196,7 +197,7 @@ You can view the event here: http://joind.in/event/view/%s
 		
 		$to=array();
 		foreach($admins as $k=>$v){ $to[]=$v->email; }
- 		$this->_sendEmail($to,$msg,$subj,'comments@joind.in');
+ 		$this->_sendEmail($to,$msg,$subj,$this->_config->item('email_comments'));
 	}
 }
 ?>

@@ -24,7 +24,7 @@ class Isspam extends BaseWsRequest {
 		
 		$admin_emails=$this->CI->user_model->getSiteAdminEmail();
 		foreach($admin_emails as $user){
-			mail($user->email,'Suggested spam comment!',$msg,'From: info@joind.in');
+			mail($user->email,'Suggested spam comment!',$msg,'From: ' . $this->CI->config->item('email_info'));
 		}
 		
 		return array('output'=>'json','data'=>array('msg'=>'Success'));
