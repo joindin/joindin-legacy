@@ -1,10 +1,15 @@
 <?php
-    if (false && !$auth) {
+	if($detail->allow_comments) {
+    if (!$auth) {
 ?>
-<p class="info">Want to comment on this talk? <a href="/user/login">Log in</a> or <a href="/user/register">create a new account</a>.</p>
+<p class="info">Want to comment on this talk? <a href="/user/login">Log in</a> or <a href="/user/register">create a new account</a> or comment anonymously</p>
 <?php 
     } else {
-	$title=($detail->event_voting=='Y' && $detail->event_start>time()) ? 'Cast your vote' : 'Write a comment';
+?>
+<p class="info">You may log out if you wish to comment anonymously</p>
+<?php
+	}
+	$title='Write a comment';
 ?>
 <a name="comment_form"></a>
 <h3 id="comment-form"><?php echo $title; ?></h3>
@@ -13,24 +18,6 @@
 <?php if (!empty($this->validation->error_string)): ?>
     <?php $this->load->view('msg_error', array('msg' => $this->validation->error_string)); ?>
 <?php endif; ?>
-
-<?php
-if($detail->event_voting=='Y' && $detail->event_start>time()){
-	?>
-	<div style="text-align:center" class="row row-buttons">
-		<?php 
-			if($user_attending){
-				echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), '+1 vote'); echo '&nbsp;';
-				echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), '-1 vote'); 
-			}
-		?><br/><br/>
-			<span style="color:#3567AC;font-size:11px">You must be listed as attending the event 
-			<a href="/event/view/<?php echo $detail->event_id; ?>"><?php echo $detail->event_name; ?></a> to vote on 
-			this talk.</span>
-	</div>
-	<?php
-}else{
-?>
 
 <div class="row">
 
@@ -72,8 +59,7 @@ if($detail->event_voting=='Y' && $detail->event_start>time()){
 	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Submit Comment'); ?>
 </div>
 <?php 
-}
         echo form_close(); 
         /* close if for date */
-    }
+} // close comment allowed
 ?>

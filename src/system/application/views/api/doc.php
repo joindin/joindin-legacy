@@ -153,7 +153,7 @@ Below are the request types that you can make to the API including input and out
 		<li>event_href: string, event homepage
 		<li>event_cfp_start: unix timestamp, date the call for papers opens for this event
 		<li>event_cfp_end: unix timestamp, date the call for papers closes for this event
-		<li>event_voting: integer, whether users can vote on the sessions
+		<li>event_voting: integer, whether users can vote on the sessions (currently not in use)
 		<li>private: integer, whether this event is only visible to its members
 		<li>num_attend: integer, number of people marked as attending
 		<li>num_comments: integer, the number of comments on this event
@@ -348,7 +348,7 @@ Below are the request types that you can make to the API including input and out
 		<li>ID: integer, The talk ID number (same as tid)
 		<li>active: integer, Whether this talk is in use 
 		<li>owner_id: integer, The speaker ID number
-		<li>event_voting: integer, Whether voting is active for thi event
+		<li>event_voting: integer, Whether voting is active for thi event (currently not in use)
 		<li>private: integer, If this session is only visible to members
 		<li>lang_abbr: string, Short code for the session language
 		<li>ccount: integer, Number of comments on this session

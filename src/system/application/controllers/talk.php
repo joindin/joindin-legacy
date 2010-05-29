@@ -343,11 +343,6 @@ class Talk extends Controller {
 			$rules['comment']='required';
 		}
 		
-		// If it's before the event has started, we want votes
-		if(!$talk_detail[0]->allow_comments){
-			unset($rules['comment'],$rules['rating']);
-		}
-		
 		// This is for the CAPTACHA - it was disabled for authenticatied users
 		//if(!$this->user_model->isAuth()){
 		//	$rules['cinput']	= 'required|callback_cinput_check';
@@ -359,26 +354,7 @@ class Talk extends Controller {
 
 		if($this->validation->run()==FALSE){
 			
-			// Check to see if it's just a vote...
-			// Let people only vote once per talk
-			$sub		= $this->input->post('sub');
-			$has_voted	= $this->talks_model->hasUserCommented($id,$currentUserId,'vote');
-			
-			if(($sub=='+1 vote' || $sub=='-1 vote') && !$has_voted){
-				$arr=array(
-					'talk_id'		=> $id,
-					'rating'		=> ($sub=='+1 vote') ? 5 : 1,
-					'comment'		=> 'talk_vote',
-					'date_made'		=> time(),
-					'active'		=> 1,
-					'user_id'		=> ($this->user_model->isAuth()) ? $this->session->userdata('ID') : '0',
-					'comment_type'	=> 'vote'
-				);
-				$this->db->insert('talk_comments',$arr);
-				$msg='Vote submitted!';
-			}elseif(($sub=='+1 vote' || $sub=='-1 vote') && $has_voted){ 
-				$msg='You can only vote on a talk once!'; 
-			}
+			// vote processing code removed
 		}else{ 
 			$is_auth	= $this->user_model->isAuth();
 			$arr		= array(
@@ -414,9 +390,6 @@ class Talk extends Controller {
 			}
 			
 			if($is_spam!='true' && $sp_ret==true){
-				// If it's before the event, it's a "vote" & after is 
-				// a normal comment (empty)
-				$type=(time()<$talk_detail[0]->date_given) ? 'vote' : null;
 				
 				$arr=array(
 					'talk_id'		=> $id,
@@ -425,8 +398,7 @@ class Talk extends Controller {
 					'date_made'		=> time(),
 					'private'		=> $priv,
 					'active'		=> 1,
-					'user_id'		=> ($this->user_model->isAuth()) ? $this->session->userdata('ID') : '0',
-					'comment_type'	=> $type
+					'user_id'		=> ($this->user_model->isAuth()) ? $this->session->userdata('ID') : '0'
 				);
 				
 				$out='';
@@ -486,7 +458,6 @@ class Talk extends Controller {
 		$arr=array(
 			'detail'		=> $talk_detail[0],
 			'comments'		=> (isset($talk_comments['comment'])) ? $talk_comments['comment'] : array(),
-			'votes'			=> (isset($talk_comments['vote'])) ? $talk_comments['vote'] : array(),
 			'admin'	 		=> ($is_talk_admin) ? true : false,
 			'site_admin'	=> ($this->user_model->isSiteAdmin()) ? true : false,
 			'auth'			=> $this->auth,
