@@ -207,7 +207,6 @@ class Event extends Controller {
 			'event_tz_place'	=>'Event Timezone (Place)',
 			'event_href'=>'Event Link(s)',
 			'event_hashtag'=>'Event Hashtag',
-			'event_voting'=>'Event Voting Allowed',
 			'event_private'=>'Private Event',
 			'event_stub'=>'Event Stub'
 		);
@@ -275,7 +274,6 @@ class Event extends Controller {
 				'event_tz_place'	=>$this->input->post('event_tz_place'),
 				'event_href'	=>$this->input->post('event_href'),
 				'event_hashtag'	=>$this->input->post('event_hashtag'),
-				'event_voting'	=>$this->input->post('event_voting'),
 				'private'		=>$this->input->post('event_private'),
 				'event_tz_cont'		=>$this->input->post('event_tz_cont'),
 				'event_tz_place'	=>$this->input->post('event_tz_place'),

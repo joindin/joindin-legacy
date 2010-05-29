@@ -10,30 +10,6 @@ if (empty($comments)) {
 <?php
 
 } else {
-	$for=0; $against=0;
-	foreach($comments as $k=>$v){
-		if($v->rating==1){ $against++; }elseif($v->rating==5){ $for++; }
-	}
-	
-	if(count($votes)){ 
-		echo '<h2 id="comments">Votes '; 
-		echo '<span style="font-size:12px;color:#898989">&nbsp;&nbsp;('.$for.' for / '.$against.' against)</span></h2>'; 
-	}
-	foreach($votes as $k=>$v){
-		$uname 		= '<a href="/user/view/'.$v->user_id.'">'.escape($v->uname).'</a> ';
-		$vote_str	=($v->rating==1) ? '-1 vote' : '+1 vote';
-		?>
-		<div>
-			<div class="text">
-			<p class="info">
-				<a class="btn-small" href="#"><?php echo $vote_str; ?></a>&nbsp;
-	    		<strong><?php echo date('M j, Y, H:i',$v->date_made); ?></strong> by <strong><?php echo $uname; ?></strong>
-	    	</p>
-			</div>
-		</div>
-		<?php
-	}
-	echo '<br/>';
 	echo '<h2 id="comments">Comments</h2>';
 	
     foreach ($comments as $k => $v) {

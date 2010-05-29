@@ -215,19 +215,6 @@ echo '<h2>'.$title.'</h2>';
     </div>
 	<div class="clear"></div>
 	<div class="row">
-	<label for="event_icon">Allow Voting?</label>
-	<?php 
-		$ev=($this->validation->event_voting=='Y') ? true : false;
-		echo form_checkbox('event_voting','Y',$ev); 
-	?><br/>
-	<span style="color:#3567AC;font-size:11px">
-		If you'd like to allow voting on event sessions, check here to turn this feature on 
-		(useful for things like Unconferences). This can be enabled at any time, but comments will
-		only count as "votes" prior to the start of the session.
-	</span>
-	</div>
-    <div class="clear"></div>
-	<div class="row">
 	<label for="event_icon">Is event private?</label>
 	<?php
 		$ev_y=($this->validation->event_private=='Y') ? true : false;
