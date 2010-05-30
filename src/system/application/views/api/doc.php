@@ -3,10 +3,10 @@ b.req_title { color: #767676; }
 b.req_name { font-size: 12px; }
 </style>
 
-<h1 style="margin-top:0px;margin-bottom:2px;color:#B86F09">Joind.in API</h1>
+<h1 style="margin-top:0px;margin-bottom:2px;color:#B86F09"><?php echo $this->config->item('site_name'); ?> API</h1>
 
 <p>
-The Joind.in API is XML based and allows for the fetching and updating of information in the service's database. Here's an example structure each request should follow:
+The <?php echo $this->config->item('site_name'); ?> API is XML based and allows for the fetching and updating of information in the service's database. Here's an example structure each request should follow:
 </p>
 
 <h3>Sample Request</h3>
@@ -58,7 +58,7 @@ There are four different URLs you can make requests to:
 </p>
 
 <p>
-Our sample XML above would need to be sent to "http://joind.in/api/event" to work correctly. If you send it to an incorrect URL you probably won't get quite what you're expecting. 
+Our sample XML above would need to be sent to "<?php echo $this->config->site_url(); ?>api/event" to work correctly. If you send it to an incorrect URL you probably won't get quite what you're expecting.
 </p>
 
 <h3>Responses</h3>
@@ -472,7 +472,7 @@ Below are the request types that you can make to the API including input and out
 	</ul>
 <b class="req_title">Output:</b>
 	<ul>
-		<li>username: string, Joind.in username
+		<li>username: string, <?php echo $this->config->item('site_name'); ?> username
 		<li>last_login: string, User's last login time (unix timestamp)
 		<li>ID: integer, user's ID'
 		<li>full_name: string, User's full name'

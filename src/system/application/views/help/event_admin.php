@@ -38,7 +38,7 @@ list. Also, users can only cast one vote per session for each event.
 <li><b>Event Link</b><p>
 This one's pretty easy, but bears mentioning - the <b>Event Link</b> field gives you a chance to point users back to the 
 official website for the event. This is a quick link for them to either head back to where they came from (the event 
-did link back to Joind.in, right?) or to point them in the right direction to get the full details. You can only define 
+did link back to <?php echo $this->config->item('site_name'); ?>, right?) or to point them in the right direction to get the full details. You can only define
 <b>one link</b> in this field.
 </p>
 <li><b>Event Hastag(s)</b><p>

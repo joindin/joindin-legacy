@@ -91,7 +91,7 @@ here's what we need
         		<h2 class="h4">Quicklink</h2>
     			<ul>
 					<li>
-					<a href="/event/<?php echo $event_detail->event_stub; ?>">http://joind.in/event/<?php echo $event_detail->event_stub;?></a>
+					<a href="/event/<?php echo $event_detail->event_stub; ?>"><?php echo $this->config->site_url(); ?>event/<?php echo $event_detail->event_stub;?></a>
 					</li>
                 </ul>
         	</div>
