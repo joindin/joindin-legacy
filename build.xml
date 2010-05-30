@@ -49,7 +49,7 @@
 
 	<!-- PHP mess detector -->
 	<target name="phpmd">
-		<exec command="phpmd system/application xml codesize > ${builddir}/logs/phpmd.xml" logoutput="true" />
+		<exec command="phpmd ./src/system/application xml codesize > ${builddir}/logs/phpmd.xml" logoutput="true" />
 	</target>
 
 	<!-- Unit Tests -->
