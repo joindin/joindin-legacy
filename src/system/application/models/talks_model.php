@@ -71,14 +71,13 @@ class Talks_model extends Model {
 			    from
 				talk_comments tc
 			    where
-				tc.talk_id=talks.ID %s and (tc.comment_type!=\'vote\' or tc.comment_type is null)) as tavg,
+				tc.talk_id=talks.ID %s) as tavg,
 			',$addl);
 			$sql=sprintf('
 				select
 					talks.*,
 					CASE 
 						WHEN (((talks.date_given - 86400) < '.mktime(0,0,0).') and (talks.date_given + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
-						WHEN (events.event_voting = "Y") THEN 1
 						ELSE 0
 						END as allow_comments,
 					talks.ID tid,
@@ -88,7 +87,6 @@ class Talks_model extends Model {
 					events.event_end,
 					events.event_tz_cont,
 					events.event_tz_place,
-					events.event_voting,
 					events.private,
 					lang.lang_name,
 					lang.lang_abbr,
@@ -101,7 +99,7 @@ class Talks_model extends Model {
 					where 
 						tac.talk_id=talks.ID and tac.cat_id=cat.ID
 					) tcid,
-					(select max(date_made) from talk_comments where talk_id=talks.ID and (talk_comments.comment_type=\'vote\' or talk_comments.comment_type is null)) last_comment_date
+					(select max(date_made) from talk_comments where talk_id=talks.ID) last_comment_date
 				from
 					talks
 				left join talk_comments on (talk_comments.talk_id = talks.ID)
@@ -137,7 +135,7 @@ class Talks_model extends Model {
 						round(avg(rating)) 
 					from 
 						talk_comments 
-					where talk_id=talks.ID and talk_comments.comment_type!=\'vote\' or talk_comments.comment_type is null) as tavg,
+					where talk_id=talks.ID) as tavg,
 					(select max(date_made) from talk_comments where talk_id=talks.ID) last_comment_date
 				from
 					talks
