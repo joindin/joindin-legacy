@@ -32,7 +32,7 @@
 	<!-- PHP copy/paste analysis -->
 	<target name="phpcpd">
 		<echo msg="PHP Copy/Paste..." />
-		<exec command="phpcpd --log-pmd=${builddir}/logs/pmd.xml src/system/application" escape="false" logoutput="true" />
+		<exec command="phpcpd --log-pmd ${builddir}/logs/pmd.xml src/system/application" escape="false" logoutput="true" />
 	</target>
 
 	<!-- PHP dependency checker -->
