@@ -5,7 +5,7 @@ menu_pagetitle('Iphone Support');
 
 <p>
 <a href="/about/iphone_support"><img src="/inc/img/iphone.jpg" height="70" style="margin-right:10px" align="left" border="0"/></a>
-	Welcome, iPhone app user!  Whether you want to tell us that you love the joind.in app or hate it, we want to hear from you - simply drop us an email at <a href="mailto:<?php echo $this->config->item('email_iphone'); ?>"><?php echo $this->config->item('email_iphone'); ?></a>.  Comments, suggestions, questions and feature requests are all welcome - we'll add an FAQ here once the questions start coming in.
+	Welcome, iPhone app user!  Whether you want to tell us that you love the <?php echo $this->config->item('site_name'); ?> app or hate it, we want to hear from you - simply drop us an email at <a href="mailto:<?php echo $this->config->item('email_iphone'); ?>"><?php echo $this->config->item('email_iphone'); ?></a>.  Comments, suggestions, questions and feature requests are all welcome - we'll add an FAQ here once the questions start coming in.
 </p>
 
 <hr/>

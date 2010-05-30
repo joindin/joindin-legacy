@@ -101,11 +101,11 @@ Talk claim has been submitted for talk \"%s\"
 Visit the link below to approve or deny the talk. Note: you must
 be logged in to get to the \"Claims\" page for the event!
 
-http://joind.in/event/claim/%s
-				    ",$talk_det->talk_title,$talk_det->event_id);
+%sevent/claim/%s
+				    ", $talk_det->talk_title, $this->CI->config->site_url(), $talk_det->event_id);
 				
 					foreach($to as $email_addr){
-				    	mail($email_addr,'Joind.in: Talk claim submitted! Go check!',$msg,'From: ' . $this->CI->config->item('email_feedback'));
+				    	mail($email_addr, $this->CI->config->item('site_name') . ': Talk claim submitted! Go check!',$msg,'From: ' . $this->CI->config->item('email_feedback'));
 					}
 				    //return the success message
 				    return array('output'=>'json','data'=>array('items'=>array('msg'=>'Success')));

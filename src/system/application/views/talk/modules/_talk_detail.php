@@ -16,7 +16,7 @@
 	</div>
 	
 	<p class="quicklink">
-		Quicklink: <strong><a href="http://joind.in/<?php echo $detail->tid; ?>">http://joind.in/<?php echo $detail->tid; ?></a></strong>
+		Quicklink: <strong><a href="<?php echo $this->config->site_url(); ?><?php echo $detail->tid; ?>"><?php echo $this->config->site_url(); ?><?php echo $detail->tid; ?></a></strong>
 	</p>
 	
 	<?php if(!empty($track_info)): ?>
