@@ -150,8 +150,10 @@ You can view the event here: http://joind.in/event/view/%s
 A comment has been posted to your talk on joind.in %s: \n%s\n
 %s
 \n
+Rating: %s
+\n
 Click here to view it: http://joind.in/talk/view/%s
-		",$byline,$talk_detail[0]->talk_title,trim($in_arr['comment']),$tid);
+		",$byline,$talk_detail[0]->talk_title,trim($in_arr['comment']),$in_arr['rating'],$tid);
 		
 		$to=array($to);
  		$this->_sendEmail($to,$msg,$subj, $this->_config->item('email_comments'));
