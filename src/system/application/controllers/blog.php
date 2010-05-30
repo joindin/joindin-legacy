@@ -156,10 +156,10 @@ class Blog extends Controller {
 			if($is_spam!='true' && $sp_ret==true){
 				$this->db->insert('blog_comments',$arr);
 			
-				$subj='Blog comment on entry '.$id.' from joind.in';
+				$subj='Blog comment on entry '.$id.' from ' . $this->config->item('site_name');
 				$cont= 'Title: '.$this->input->post('title')."\n\n";
 				$cont.='Content: '.$this->input->post('comment')."\n\n";
-				$cont.='Post: http://joind.in/blog/view/'.$id."\n\n";
+				$cont.='Post: ' . $this->config->site_url() . 'blog/view/'.$id."\n\n";
 				$cont.='Spam check: '.($ret=='false') ? 'not spam' : 'spam caught';
 
 				$admin_emails=$this->user_model->getSiteAdminEmail();

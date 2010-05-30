@@ -15,8 +15,8 @@ class External extends Controller {
 		
 		$events=$this->event_model->getUpcomingEvents(null);
 		
-		$msg="Joind.in Update: There's ".count($events)." great events coming up soon! ";
-		$msg.="Check them out! http://joind.in/event/upcoming";
+		$msg = $this->config->item('site_name') . " Update: There's ".count($events)." great events coming up soon! ";
+		$msg.="Check them out! " . $this->config->site_url() . "event/upcoming";
 		
 		$resp=$this->twitter->sendMsg($msg);
 	}
@@ -30,8 +30,8 @@ class External extends Controller {
 		$detail=$this->bpm->getPostDetail();
 		//print_r($detail[0]);
 		
-		$msg='Joind.in Update: Latest blog post - '.$detail[0]->title.' ';
-		$msg.='http://joind.in/blog/view/'.$detail[0]->ID;
+		$msg = $this->config->item('site_name') . ' Update: Latest blog post - '.$detail[0]->title.' ';
+		$msg .= $this->config->site_url() . 'blog/view/'.$detail[0]->ID;
 		
 		$resp=$this->twitter->sendMsg($msg);
 	}

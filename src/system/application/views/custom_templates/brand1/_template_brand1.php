@@ -4,7 +4,7 @@
 <head>
 <?php 
 $title = menu_pagetitle();
-$title[] = 'Joind.in';
+$title[] = $this->config->item('site_name');
 ?>
 	<title><?php echo implode(' - ', $title); ?></title>
 	<link media="all" rel="stylesheet" type="text/css" href="/inc/css/brand/brand1/site.css"/>

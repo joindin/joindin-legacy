@@ -15,7 +15,7 @@ averaged up and shown in an overall ranking for the talk.
 </p>
 <?php
 $msg="Don't see an event for the talk you're giving? Send an email to the event sponsors or staff and let them know about
-Joind.in! They can add the event and your talk quickly!";
+{$this->config->item('site_name')}! They can add the event and your talk quickly!";
 $this->load->view('msg_info', array('msg' => $msg)); ?>
 
 <h3>The Talk Summary</h3>
@@ -39,7 +39,7 @@ in the details section. This is a shortened URL that speakers can use to make it
 their talk. Additionally, if the speaker has updated the session's information, there could be a link to their slides.
 </p>
 <?php
-$msg="<b>NOTE:</b> Joind.in does not host slides of presentations. The link for the slides should point to the external
+$msg="<b>NOTE:</b> {$this->config->item('site_name')} does not host slides of presentations. The link for the slides should point to the external
 location where the presentation live (PDF, Slideshare, etc)";
 $this->load->view('msg_info', array('msg' => $msg)); ?>
 
@@ -75,7 +75,7 @@ adding in the link to your presentation if you'd like it to be visible.
 
 <h3>Adding Talks</h3>
 <p>
-To be able to add talks to an event, you must be an event admin. Joind.in does not currently have the ability for users to submit
+To be able to add talks to an event, you must be an event admin. <?php echo $this->config->item('site_name'); ?> does not currently have the ability for users to submit
 their sessions to a conference. If you are a part of an event and do not see your session listed. Use the <b>Contact Event Admins</b>
 button on the right side of the event's detail page to send them a message.
 </p>

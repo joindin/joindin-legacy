@@ -155,9 +155,10 @@ class Event_model extends Model {
 		return $res;
 	}
 
-	function getEventTalks($id,$includeEventRelated = true) {
+	function getEventTalks($id,$includeEventRelated = true, $includePrivate = false) {
 		$this->load->helper("events");
 		$this->load->helper("talk");
+		$private=($includePrivate) ? '' : ' and private!=1';
 		$sql='
 			select
 				talks.talk_title,
@@ -173,7 +174,7 @@ class Event_model extends Model {
 				events.event_end,
 				(select l.lang_abbr from lang l where talks.lang=l.ID) lang,
 				(select round(avg(rating)) from talk_comments where talk_id=talks.ID) rank,
-				(select count(rating) from talk_comments where talk_id=talks.ID) comment_count,
+				(select count(rating) from talk_comments where talk_id=talks.ID '.$private.') comment_count,
 				ifnull(categories.cat_title, \'Talk\') tcid
 			from
 				talks
