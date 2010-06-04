@@ -50,6 +50,6 @@ The following are the steps you'll need to correctly install the software:
 - Apply any of the other patches in the /db folder
 
 If you'd like some seed data, you can use the seed.sql to load in a few events, 
-users and talks. You'll also need to load in the seed_categories.sql file to
+users and talks. You'll also need to load in the seed_countries.sql file to
 get the complete list of countries for the event details.
 
