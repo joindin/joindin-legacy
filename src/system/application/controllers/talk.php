@@ -422,7 +422,7 @@ class Talk extends Controller {
 				$msg='';
 				$arr['spam']=($ret=='false') ? 'spam' : 'not spam';
 				foreach($arr as $ak=>$av){ $msg.='['.$ak.'] => '.$av."\n"; }
-				@mail('enygma@phpdeveloper.org','Comment on talk '.$id,$msg,'From: comments@joind.in');
+				@mail($this->config->item('email_admin'),'Comment on talk '.$id,$msg,'From: ' . $this->config->item('email_comments'));
 			
 				//if its claimed, be sure to send an email to the person to tell them
 				if($cl){

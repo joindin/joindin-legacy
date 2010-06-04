@@ -48,7 +48,7 @@ class About extends Controller {
 			);
 			$ret=$this->akismet->send('/1.1/comment-check',$arr);
 			
-			$subj='Feedback from joind.in';
+			$subj='Feedback from ' . $this->config->item('site_name');
 			$cont= 'Name: '.$this->input->post('your_name')."\n\n";
 			$cont.='Email: '.$this->input->post('your_email')."\n\n";
 			$cont.='Comment: '.$this->input->post('your_com')."\n\n";
@@ -56,7 +56,7 @@ class About extends Controller {
 			
 			$admin_emails=$this->user_model->getSiteAdminEmail();
 			foreach($admin_emails as $user){
-				mail($user->email,$subj,$cont,'From: feedback@joind.in');
+				mail($user->email,$subj,$cont,'From: ' . $this->config->item('email_feedback'));
 			}
 			$arr=array('msg'=>'Comments sent! Thanks for the feedback!');
 			

@@ -4,7 +4,7 @@
 		<p>Here's a few useful definitions when submitting events:</p>
 		<ul>
 			<li><b>Stub</b>: The stub is the shortcut in the URL to access 
-			your event. For example, in http://joind.in/event/test123 the
+			your event. For example, in <?php echo $this->config->site_url(); ?>event/test123 the
 			"test123" part is the stub.
 			<li><b>Event Admin</b>: If you're an organizer of an event or
 			want to be listed as an administrator, check the "I'm an event

@@ -11,7 +11,7 @@ if(isset($tid)){
 		<td>
 			Are you sure you wish to delete this talk?<br/>
 			<input type="submit" value="yes" name="answer"> 
-			<input type="button" value="no" onClick="document.location='/talk/view/<?=$tid?>'">
+			<input type="button" value="no" onClick="document.location='/talk/view/<?php echo $tid?>'">
 		</td>
 	</tr>
 	</table>

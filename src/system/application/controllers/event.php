@@ -478,11 +478,11 @@ class Event extends Controller {
 				$admins=$this->event_model->getEventAdmins($id);
 				foreach($admins as $ak=>$av){ $to[]=$av->email; }
 				
-				$subj	='Joind.in: Event feedback - '.$id;
+				$subj	= $this->config->site_url() . ': Event feedback - '.$id;
 				$content='';
 				foreach($ec as $k=>$v){ $content.='['.$k.'] => '.$v."\n\n"; }
 				foreach($to as $tk=>$tv){
-				    @mail($tv,$subj,$content,'From:feedback@joind.in');
+				    @mail($tv,$subj,$content,'From: ' . $this->config->item('email_feedback'));
 				}
 			
 				$this->session->set_flashdata('msg', 'Comment inserted successfully!');
@@ -507,7 +507,7 @@ class Event extends Controller {
 		
 		if(!$is_auth){
 			$info=array('msg'=>sprintf('
-				<h4 style="color:#3A74C5">New to Joind.in?</h4> Find out how we can help you make connections 
+				<h4 style="color:#3A74C5">New to ' . $this->config->item('site_name') . '?</h4> Find out how we can help you make connections
 				whether you\'re attending or putting on the show. <a href="/about">Click here</a> to learn more!
 			'));
 			$this->template->write_view('info_block','msg_info',$info,TRUE);
@@ -816,7 +816,7 @@ class Event extends Controller {
 			
 			if($is_spam!='true'){			
 				//send the information via email...
-				$subj	= 'Event submission from Joind.in';
+				$subj	= 'Event submission from ' . $this->config->item('site_name');
 				$msg= 'Event Title: '.$this->input->post('event_title')."\n\n";
 				$msg.='Event Description: '.$this->input->post('event_desc')."\n\n";
 				$msg.='Event Date: '.date('m.d.Y H:i:s',$sub_arr['event_start'])."\n\n";
@@ -828,7 +828,7 @@ class Event extends Controller {
 				
 				$admin_emails=$this->user_model->getSiteAdminEmail();
 				foreach($admin_emails as $user){
-					mail($user->email,$subj,$msg,'From: submissions@joind.in');
+					mail($user->email,$subj,$msg,'From: ' . $this->config->item('email_submissions'));
 				}
 				$arr['msg']=sprintf('
 					<style="font-size:16px;font-weight:bold">Event successfully submitted!</span><br/>
@@ -852,7 +852,7 @@ class Event extends Controller {
 					$this->user_admin_model->addPerm($uid,$rid,$type);
 				}
 			}else{ 
-				$arr['msg']='There was an error submitting your event! Please <a href="submissions@joind.in">send us an email</a> with all the details!';
+				$arr['msg']='There was an error submitting your event! Please <a href="' . $this->config->item('email_submissions') . '">send us an email</a> with all the details!';
 			}
 		}else{ $this->validation->is_admin=0; }
 		$arr['is_auth']=$this->user_model->isAuth();
@@ -916,7 +916,7 @@ class Event extends Controller {
 		
 		// @todo get this and twitter class working with short URL
 		/*echo '<pre>';
-		$link=$this->twitter->short_bitly('http://joind.in/event/view/'.$eid); 
+		$link=$this->twitter->short_bitly($this->config->site_url() . 'event/view/'.$eid);
 		echo '</pre>';*/
 		
 		// Send the new approved event to Twitter
@@ -1220,7 +1220,7 @@ class Event extends Controller {
 		
 		$posts=$this->ebp->getPosts($eid);
 		if($act=='add' || $act=='edit'){
-			$this->template->write('feedurl','http://joind.in/event/blog/feed/'.$eid);
+			$this->template->write('feedurl', $this->config->site_url() . 'event/blog/feed/'.$eid);
 			
 			// Be sure they're either a site admin or event admin
 			if($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($eid)){
@@ -1246,7 +1246,7 @@ class Event extends Controller {
 					$msg='New post added!';
 					
 					//Sent it out to twitter
-					$msg='Event Update: '.$data['title'].' http://joind.in/event/blog/view/'.$eid;
+					$msg='Event Update: '.$data['title']. $this->config->site_url() . 'event/blog/view/'.$eid;
 					$resp=$this->twitter->sendMsg($msg);
 				}
 			}else{
@@ -1257,8 +1257,8 @@ class Event extends Controller {
 			foreach($posts as $k=>$v){
 				$items[]=array(
 					'title'			=> $v->title,
-					'guid'			=> 'http://joind.in/event/blog/view/'.$eid.'#'.$v->ID,
-					'link'			=> 'http://joind.in/event/blog/view/'.$eid.'#'.$v->ID,
+					'guid'			=> $this->config->site_url() . 'event/blog/view/'.$eid.'#'.$v->ID,
+					'link'			=> $this->config->site_url() . 'event/blog/view/'.$eid.'#'.$v->ID,
 					'description' 	=> $v->content,
 					'pubDate'		=> date('t')
 				);
@@ -1270,7 +1270,7 @@ class Event extends Controller {
 			$this->load->view('feed/feed',$arr);
 			return;
 		}else{ 
-			$this->template->write('feedurl','http://joind.in/event/blog/feed/'.$eid);
+			$this->template->write('feedurl', $this->config->site_url() . 'event/blog/feed/'.$eid);
 		}
 		
 		$arr=array(

@@ -54,7 +54,7 @@ class Speaker extends Controller {
 		    'street'	=> 'Street',
 		    'city'		=> 'City',
 		    'zip'		=> 'Zip',
-		    'country'	=> 'Country',
+		    'country_id'	=> 'Country',
 		    'resume'	=> 'Resume',
 		    'picture'	=> 'Picture'
 		);

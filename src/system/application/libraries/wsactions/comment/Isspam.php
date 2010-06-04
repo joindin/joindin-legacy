@@ -20,11 +20,11 @@ class Isspam extends BaseWsRequest {
 		$cid	= $this->xml->action->cid;
 		$rtype	= $this->xml->action->rtype;
 		
-		$msg='Spam comment on : http://joind.in/'.$rtype.'/view/'.$cid;
+		$msg='Spam comment on : ' . $this->CI->config->site_url() . $rtype . '/view/' . $cid;
 		
 		$admin_emails=$this->CI->user_model->getSiteAdminEmail();
 		foreach($admin_emails as $user){
-			mail($user->email,'Suggested spam comment!',$msg,'From: info@joind.in');
+			mail($user->email,'Suggested spam comment!',$msg,'From: ' . $this->CI->config->item('email_info'));
 		}
 		
 		return array('output'=>'json','data'=>array('msg'=>'Success'));

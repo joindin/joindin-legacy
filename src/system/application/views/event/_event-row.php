@@ -21,7 +21,7 @@ $this->load->library('timezone');
 			$link_txt="I attended";
 		}else{ $link_txt="I'm attending"; }
 	?>
-    		<a class="btn-small<?php echo $event->user_attending ? ' btn-success' : ''; ?>" href="#" onclick="markAttending(this,<?=$event->ID?>,<?php echo $event->event_end<time() ? 'true' : 'false'; ?>);return false;"><?=$link_txt?></a>
+    		<a class="btn-small<?php echo $event->user_attending ? ' btn-success' : ''; ?>" href="#" onclick="markAttending(this,<?php echo $event->ID?>,<?php echo $event->event_end<time() ? 'true' : 'false'; ?>);return false;"><?php echo $link_txt?></a>
 
     	</p>
 	</div>

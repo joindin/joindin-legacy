@@ -352,10 +352,12 @@ class User extends Controller {
 		$this->load->helper('reqkey');
 		$this->load->library('validation');
 		$reqkey	= buildReqKey();
-		$page	= (!$page) ? 1 : $page;
-		$rows_in_pg=10;
+		$page = (!$page) ? 1 : $page;
+		$rows_in_pg = 10;
 		$offset	= ($page==1) ? 1 : $page*10;
-		$all_users=$this->user_model->getAllUsers();
+		$all_users = $this->user_model->getAllUsers();
+        $all_user_ct = count($all_users);
+        $page_ct = ceil($all_user_ct / $rows_in_pg);
 		$users	= array_slice($all_users,$offset,$rows_in_pg);
 		
 		$fields=array(
@@ -372,11 +374,12 @@ class User extends Controller {
 		}
 		
 		$arr=array(
-			'users'		=> $users,
-			'all_user_ct'=>count($all_users),
-			'page'		=> $page,
-			'reqkey' 	=> $reqkey,
-			'seckey' 	=> buildSecFile($reqkey),
+			'users'		  => $users,
+			'all_user_ct' => $all_user_ct,
+            'page_ct'     => $page_ct,
+			'page'		  => $page,
+			'reqkey' 	  => $reqkey,
+			'seckey' 	  => buildSecFile($reqkey),
 		);
 		
 		$this->template->write_view('content','user/admin',$arr);

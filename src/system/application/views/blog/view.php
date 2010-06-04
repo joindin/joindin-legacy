@@ -7,7 +7,7 @@ menu_pagetitle('Blog: ' . escape($v->title));
 ?>
 <div class="detail">
 
-	<h1><?=$v->title?></h1>
+	<h1><?php echo $v->title?></h1>
 
 	<p class="info">
 		Written <strong><?php echo date('M j, Y',$v->date_posted); ?></strong> at <strong><?php echo date('H:i',$v->date_posted); ?></strong> (<?php echo $v->author_id; ?>)

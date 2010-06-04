@@ -2,7 +2,7 @@
 <?php echo "<?xml version=\"1.0\"?>"; ?>
 <user>
 	<detail>
-		<username><?=$username?></username>
+		<username><?php echo $username?></username>
 	</detail>
 	<talks>
 		<?php

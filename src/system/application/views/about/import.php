@@ -1,7 +1,7 @@
 <h2>Importing Event Information</h2>
 
 <p>
-Joind.in allows you to import your event's sessions via an XML file 
+<?php echo $this->config->item('site_name'); ?> allows you to import your event's sessions via an XML file
 making it easier to add all at once. See below for and example of the XML
 format to follow to ensure your sessions get imported correctly.
 </p>
