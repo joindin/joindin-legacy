@@ -74,8 +74,46 @@ function talk_decorateNowNext($talk) {
  * This logic *WILL* be broken until talks have an end time.  Live with it, or add end times.
  */
 function talk_listDecorateNowNext($talks) {
+	$now = mktime();
+	
+	// set the default
+	foreach ($talks as $talk) {
+		$talk->now_next = "";
+	}
+
+	// check the event dates - any talk element will do for this
+	// if the event is not in progress, nothing is either now or next
+	if($talks[0]->event_start > $now || $talks[0]->event_end <= $now) {
+		return;
+	}
+
+	// firstly sort the talks into time slots
+	$talks_keyed_on_time = array();
 	foreach ($talks as $key=>$talk) {
-		$talks[$key] = talk_decorateNowNext($talks[$key]);
+		// just set the empty field to default
+		$talk->now_next = "";
+		$talks_keyed_on_time[$talk->date_given][] = $talk;
+	}
+
+	// now work out which slot is most recent - this becomes "now" and the next slot is "next"
+	$old_slot_time = 0;
+	$new_slot_time = 0;
+	foreach($talks_keyed_on_time as $time=>$talk_list) {
+		// the time in this itearation becomes our new time
+		$new_slot_time = $time;
+		if($new_slot_time > mktime()) {
+			break;
+		}
+		// store this time in the old time slot for the next iteration
+		$old_slot_time = $time;
+	}
+
+	// our slot times identify our now and next talk sets
+	foreach($talks_keyed_on_time[$old_slot_time] as $talk) {
+		$talk->now_next = "now";
+	}
+	foreach($talks_keyed_on_time[$new_slot_time] as $talk) {
+		$talk->now_next = "next";
 	}
 
 	return $talks;
