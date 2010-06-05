@@ -41,31 +41,6 @@ function splitCommentTypes($talk_comments){
 	return $comments;
 }
 
-/**
- * Takes a talk, and attempts to add a flag to say whether the talk is on
- * now or whether it is on next.
- * 
- * This logic *WILL* be broken until talks have an end time.  Live with it, or add end times.
- */
-function talk_decorateNowNext($talk) {
-	$time = time();
-
-	// Define some heuristic time windows for the start time of the "now" and "next" talks
-	$now_start  = $time - 3600;
-	$now_end    = $time;
-	$next_start = $time;
-	$next_end   = $time + 3600;
-
-	if ($talk->date_given > $now_start && $talk->date_given < $now_end) {
-		$talk->now_next = "now";
-	} else if ($talk->date_given > $next_start && $talk->date_given < $next_end) {
-		$talk->now_next = "next";
-	} else {
-		$talk->now_next = "";
-	}
-
-	return $talk;
-}
 
 /**
  * Takes an array of talks, and attempts to add a flag to each one to say whether the talk is on
@@ -74,7 +49,7 @@ function talk_decorateNowNext($talk) {
  * This logic *WILL* be broken until talks have an end time.  Live with it, or add end times.
  */
 function talk_listDecorateNowNext($talks) {
-	$now = mktime();
+	$now = time();
 	
 	// set the default
 	foreach ($talks as $talk) {
@@ -90,18 +65,19 @@ function talk_listDecorateNowNext($talks) {
 	// firstly sort the talks into time slots
 	$talks_keyed_on_time = array();
 	foreach ($talks as $key=>$talk) {
-		// just set the empty field to default
-		$talk->now_next = "";
 		$talks_keyed_on_time[$talk->date_given][] = $talk;
 	}
+
+	// sort this so we get things in time order
+	ksort($talks_keyed_on_time);
 
 	// now work out which slot is most recent - this becomes "now" and the next slot is "next"
 	$old_slot_time = 0;
 	$new_slot_time = 0;
 	foreach($talks_keyed_on_time as $time=>$talk_list) {
-		// the time in this itearation becomes our new time
+		// the time in this iteration becomes our new time
 		$new_slot_time = $time;
-		if($new_slot_time > mktime()) {
+		if($new_slot_time > $now) {
 			break;
 		}
 		// store this time in the old time slot for the next iteration
