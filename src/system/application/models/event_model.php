@@ -378,23 +378,34 @@ class Event_model extends Model {
 		// for the this event
 		return $ret;
 	}
-	function getEventFeedback($eid){
+	function getEventFeedback($eid, $order_by = NULL){
+		// handle the ordering
+		if($order_by == 'tc.date_made' || $order_by == 'tc.date_made DESC') {
+			// fine, sensible options that we'll allow
+		} else {
+			// if null, or indeed anything else, order by talk id (the original default)
+			$order_by = 't.ID';
+		}
+
 		$sql=sprintf('
 			select
 				t.talk_title,
 				t.speaker,
 				t.date_given,
+				tc.date_made,
 				tc.rating,
-				tc.comment
+				tc.comment,
+				u.full_name
 			from
 				talks t,
 				talk_comments tc
+			LEFT JOIN user u ON (u.ID = tc.user_id)
 			where
-				t.ID=tc.talk_id and
+				tc.private <> 1 AND
+				t.ID=tc.talk_id AND
 				t.event_id=%s
 			order by
-				t.ID
-		',$eid);
+		'.$order_by,$eid);
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
