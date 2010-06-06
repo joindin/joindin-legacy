@@ -18,24 +18,24 @@ echo form_submit('sub','Search');
 echo form_close(); 
 ?>
 
-<?php 
-echo '<b>Pages:</b>';
-//$rows_in_pg=count($users);
-
-if($rows_in_pg>0){
-	for($i=1;$i<=($all_user_ct/$rows_in_pg);$i++){
-		$style=($i==$page) ? 'style="font-weight:bold"' : '';
-		echo '<a '.$style.' href="/user/admin/'.$i.'">'.$i.'</a> ';
-	} echo '<br/><br/>';
-}else{ echo '1'; }
-
+<b>Pages:</b>
+<?php
+for($i=1;$i<=$page_ct;$i++){
+    $style=($i==$page) ? 'style="font-weight:bold"' : '';
+    echo '<a '.$style.' href="/user/admin/'.$i.'">'.$i.'</a> ';
+}
+?><br/><br/>
+<?php
 if (empty($msg)) {
     $msg=$this->session->flashdata('msg');
 }
-if (!empty($msg)): 
+else
+{
 ?>
 <?php $this->load->view('msg_info', array('msg' => $msg)); ?>
-<?php endif; ?>
+<?php
+}
+?>
 
 <?php echo form_open('user/admin'); ?>
 <table summary="" class="list" width="100%">

@@ -97,6 +97,7 @@ Below are the request types that you can make to the API including input and out
 		<li><a href="#evt_attend">Attend Event</a>
 		<li><a href="#add_evt_comment">Add Comment</a>
 		<li><a href="#get_evt_comment">Get Event Comments</a>
+		<li><a href="#get_evt_talk_comment">Get Event Talk_Comments</a>
 		<li><a href="#add_evt_track">Add Event Track</a>
 	</ul>
 <li>Talks
@@ -289,6 +290,30 @@ Below are the request types that you can make to the API including input and out
 		<li>ID: integer, ID number of the comment
 		<li>cname: string, If a registered user made the comment, their username is here
 		<li>private: integer, If the comment is marked as private or not
+	</ul>
+	<a href="#top">[top]</a><br/><br/>
+</div>
+
+<a name="get_evt_talk_comments"></a>
+<b class="req_name" style="color:#5181C1;font-size:14px">Get Event Talk Comments</b>
+<div style="padding-left:10px">
+<b class="req_title">Action Type:</b> gettalkcomments<br/>
+<b class="req_title">Description:</b> Get all comments associated with sessions at an event.  Private comments are not shown, 
+results are returned in date order with newest first.<br/>
+<b class="req_title">Authentication:</b> not required<br />
+<b class="req_title">Input:</b>
+	<ul>
+		<li>event_id: integer, ID number of event to get comments for
+	</ul>
+<b class="req_title">Output:</b> An array of values containing the following for each comment
+	<ul>
+		<li>talk_title: string, Title of the talk
+		<li>speaker: string, Speaker of the talk
+		<li>date_given: integer, Unix timestamp for the date talk presented
+		<li>date_made: integer, Unix timestamp of when comment was posted
+		<li>rating: integer, The rating the user gave to this talk
+		<li>comment: string, Comments from the user
+		<li>full_name: string, If a registered user made the comment, their username is here
 	</ul>
 	<a href="#top">[top]</a><br/><br/>
 </div>
