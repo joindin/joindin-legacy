@@ -394,6 +394,9 @@ class Event extends Controller {
 			return true;
 		}
 		
+		//echo '<pre>'; print_r($talks); echo '</pre>';
+		
+		$talk_stats		= buildTalkStats($talks);
 		$reqkey			= buildReqKey();
 		$attend			= $this->uam->getAttendUsers($id);
 		$talks 			= $this->talks_model->setDisplayFields($talks);
@@ -421,7 +424,8 @@ class Event extends Controller {
 			'tracks' 		=>$this->etm->getEventTracks($id),
 			'times_claimed'	=>$claim_detail['claim_count'],
 			'claimed_uids'	=>$claim_detail['uids'],
-			'claims'		=>buildClaims($this->event_model->getEventClaims($id))
+			'claims'		=>buildClaims($this->event_model->getEventClaims($id)),
+			'talk_stats'	=>$talk_stats
 			//'attend' =>$this->uam->getAttendCount($id)
 			//'started'=>$this->tz->hasEvtStarted($id),
 		);

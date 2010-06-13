@@ -101,3 +101,14 @@ function event_listDecorateNow($events) {
 	}
 	return $events;
 }
+
+function buildTalkStats($talks){
+	$stats=array('comments_total'=>0,'rating_avg'=>0);
+	foreach($talks as $talk){ 
+		$stats['comments_total']+=$talk->comment_count; 
+		if(!empty($talk->rank)){ $stats['rating_avg']+=$talk->rank; }
+	}
+	// Average the stats out
+	$stats['rating_avg']=$stats['rating_avg']/$stats['comments_total'];
+	return $stats;
+}
