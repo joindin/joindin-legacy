@@ -322,6 +322,7 @@ class Event extends Controller {
 		$this->load->model('event_blog_posts_model','ebp');
 		$this->load->model('talk_track_model','ttm');
 		$this->load->model('event_track_model','etm');
+		$this->load->model('talk_comments_model','tcm');
 		$this->load->model('talks_model');
 		
 		$events		= $this->event_model->getEventDetail($id);
@@ -396,12 +397,11 @@ class Event extends Controller {
 		
 		//echo '<pre>'; print_r($talks); echo '</pre>';
 		
-		$talk_stats		= buildTalkStats($talks);
+		$talk_stats		= buildTalkStats($this->tcm->getEventComments($id));
 		$reqkey			= buildReqKey();
 		$attend			= $this->uam->getAttendUsers($id);
 		$talks 			= $this->talks_model->setDisplayFields($talks);
-		$claimed_talks	= $this->event_model->getClaimedTalks($id); 
-		//echo '<pre>'; print_r($claimed_talks); echo '</pre>';
+		$claimed_talks	= $this->event_model->getClaimedTalks($id);
 		
 		$claim_detail	= buildClaimDetail($claimed_talks);
 		$event_related_sessions = $this->event_model->getEventRelatedSessions($id);

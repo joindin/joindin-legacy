@@ -17,7 +17,7 @@ $ct=0;
 <div id="event-tabs">
 	<ul>
 		<li><a href="#talks">Talks (<?php echo count($talks)?>)</a></li>
-		<li><a href="#comments">Comments (<?php echo $talk_stats['comments_total'] ?>)</a></li>
+		<li><a href="#comments">Comments (<?php echo count($comments) ?>)</a></li>
 		<?php if(isset($evt_sessions) && count($evt_sessions)>0): ?>
 			<li><a href="#evt_related">Event Related (<?php echo count($evt_sessions)?>)</a></li>
 		<?php endif; ?>
