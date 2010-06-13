@@ -227,7 +227,7 @@ class Event_model extends Model {
 		return $q->result();
 	}
 
-	function getUpcomingEvents($inc_curr=false, $limit = null){
+	function getUpcomingEvents($limit = null, $inc_curr = false){
 	    //$this->db->select('events.*, COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments, abs(0) as user_attending');
 		$this->db->select('events.*, 
               CASE 
