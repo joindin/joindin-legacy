@@ -33,7 +33,8 @@ $ct=0;
 	$this->load->view('event/modules/_event_tab_talks',array(
 		'by_day'	=> $by_day,
 		'cl'		=> $cl,
-		'ct'		=> $ct
+		'ct'		=> $ct,
+		'claims'	=> $claims
 	));
 	$this->load->view('event/modules/_event_tab_comments');
 	if($admin){ $this->load->view('event/modules/_event_tab_admin'); }

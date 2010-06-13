@@ -152,6 +152,12 @@ class Talks_model extends Model {
 			$q=$this->db->query($sql);
 		}
 		$res = $q->result();
+		
+		$CI=&get_instance();
+		$CI->load->model('talk_speaker_model','tsm');
+		foreach($res as $k=>$talk){
+			$res[$k]->speaker=$CI->tsm->getTalkSpeakers($talk->ID);
+		}
 
 		return $res;
 	}
@@ -303,11 +309,16 @@ class Talks_model extends Model {
 		$ret		= array();
 		$talk_detail= $this->getTalks($tid);
 		
+		$speakers=array();
+		foreach($talk_detail[0]->speaker as $speaker){
+			$speakers[]=strtolower($speaker->speaker_name);
+		}
+		
 		$this->db->select('event_id eid, talks.ID as tid, talk_title, event_name');
 	    $this->db->from('talks');
 		$this->db->join('events','events.id=talks.event_id','left');
 	    $this->db->where('talk_title',$talk_detail[0]->talk_title);
-		$this->db->where('lower(speaker)',strtolower($talk_detail[0]->speaker));
+		$this->db->where_in('lower(speaker)',$speakers);
 		$this->db->where('event_id !='.$eid);
 	    $q=$this->db->get();
 	    return $q->result();

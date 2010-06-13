@@ -45,6 +45,16 @@ function buildClaimDetail($claimed_talks){
 	}
 	return $claim_detail;
 }
+
+function buildClaims($claimed_talks){
+	$claims=array();
+	
+	foreach($claimed_talks as $talk){
+		$claims[$talk->talk_id][$talk->full_name]=$talk->user_id;
+	}
+	return $claims;
+}
+
 /**
 * Given the full list of sessions, finds which of them given have slides
 */

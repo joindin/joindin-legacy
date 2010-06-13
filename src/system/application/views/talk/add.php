@@ -1,3 +1,4 @@
+<script type="text/javascript" src="/inc/js/talk.js"></script>
 <?php
 $event_list	= array(); 
 $cat_list	= array();
@@ -48,8 +49,32 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
     </div>
     <div class="row">
 	<label for="speaker">Speaker</label>
-	<?php echo form_input('speaker',$this->validation->speaker);?>
+	
+	<span style="color:#3567AC;font-size:11px">
+		One speaker per row, add more rows for more than one speaker.<br/>
+		To <b>remove</b> a speaker, remove their name from the text field and submit.
+	</span>
+	<?php 
+	foreach($this->validation->speaker as $k=>$speaker){
+		echo form_input('speaker_row['.$k.']',$speaker->speaker_name);
+	}
+	?>
+	<div id="speaker_row_container"></div>
+	<?php 
+	$attr=array(
+		'name'	=> 'add_speaker_line',
+		'id'	=> 'add_speaker_line',
+		'value'	=> '+ more',
+		'type'	=> 'button'
+	);
+	echo form_input($attr);
+	?>
+	<noscript>
+	<!-- no javascript? no problem... -->
+	<?php echo form_input('speaker_row[new_1]'); ?>
+	</noscript>
 	<div class="clear"></div>
+	
     </div>
     <div class="row">
 	<label for="session_date">Date and Time of Session</label>
@@ -133,3 +158,11 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
 </div>
 
 <?php form_close(); ?>
+
+<script type="text/javascript">
+$('#add_speaker_line').css('display','block');
+$(document).ready(function(){
+	talk.init();
+})
+</script>
+

@@ -362,11 +362,13 @@ class Event extends Controller {
 		
 		foreach($talks as $k=>$v){
 			$codes=array();
+			/*
 			$p=explode(',',$v->speaker);
 			foreach($p as $ik=>$iv){
 				$val=trim($iv);
 				$talks[$k]->codes[$val]=buildCode($v->ID,$v->event_id,$v->talk_title,$val);
 			}
+			*/
 			$talks[$k]->tracks=$this->ttm->getSessionTrackInfo($v->ID);
 			
 			//If we have a track filter, check it!
@@ -395,7 +397,9 @@ class Event extends Controller {
 		$reqkey			= buildReqKey();
 		$attend			= $this->uam->getAttendUsers($id);
 		$talks 			= $this->talks_model->setDisplayFields($talks);
-		$claimed_talks	= $this->event_model->getClaimedTalks($id);
+		$claimed_talks	= $this->event_model->getClaimedTalks($id); 
+		//echo '<pre>'; print_r($claimed_talks); echo '</pre>';
+		
 		$claim_detail	= buildClaimDetail($claimed_talks);
 		$event_related_sessions = $this->event_model->getEventRelatedSessions($id);
 		
@@ -416,7 +420,8 @@ class Event extends Controller {
 			'admins' 		=>$evt_admins,
 			'tracks' 		=>$this->etm->getEventTracks($id),
 			'times_claimed'	=>$claim_detail['claim_count'],
-			'claimed_uids'	=>$claim_detail['uids']
+			'claimed_uids'	=>$claim_detail['uids'],
+			'claims'		=>buildClaims($this->event_model->getEventClaims($id))
 			//'attend' =>$this->uam->getAttendCount($id)
 			//'started'=>$this->tz->hasEvtStarted($id),
 		);

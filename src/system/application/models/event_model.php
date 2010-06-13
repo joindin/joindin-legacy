@@ -201,6 +201,12 @@ class Event_model extends Model {
 		if (is_array($res) && count($res) > 0 && is_object($res[0]) && event_isNowOn($res[0]->event_start, $res[0]->event_end)) {
 			$res = talk_listDecorateNowNext($res);
 		}
+		
+		$CI=&get_instance();
+		$CI->load->model('talk_speaker_model','tsm');
+		foreach($res as $k=>$talk){
+			$res[$k]->speaker=$CI->tsm->getTalkSpeakers($talk->ID);
+		}
 
 		return $res;
 	}
@@ -326,6 +332,32 @@ class Event_model extends Model {
 		$q=$this->db->get();
 		return $q->result();
 	}
+	
+	function getEventClaims($event_id){
+		$sql=sprintf('
+			select
+				t.id as talk_id,
+				t.talk_title,
+				ua.uid as user_id,
+				ua.rid,
+				u.full_name
+			from
+				user_admin ua,
+				events e,
+				talks t,
+				user u
+			where
+				ua.rid=t.id and
+				e.id=t.event_id and
+				u.id=ua.uid and
+				e.id = %s
+		',$event_id);
+		$q=$this->db->query($sql);
+		$ret=$q->result();
+		
+		return $ret;
+	}
+	
 	function getClaimedTalks($eid){
 		$this->load->helper('events');
 		$ids	= array();
@@ -334,11 +366,14 @@ class Event_model extends Model {
 		// Find all of the talks for the event...
 		$ret 	= $this->getEventTalks($eid); //echo '<pre>'; print_r($ret); echo '</pre>';
 		foreach($ret as $k=>$v){
+			$codes=array();
+			/*
 			$p=explode(',',$v->speaker);
 			$codes=array();
 			foreach($p as $ik=>$iv){
 				$codes[]=buildCode($v->ID,$v->event_id,$v->talk_title,trim($iv));
 			}
+			*/
 			
 			$tdata[$v->ID]=array(
 				'talk_title'=> $v->talk_title,
