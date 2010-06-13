@@ -31,9 +31,9 @@ and "Event Related" (case sensitive matching)</li>
 	&lt;session_type&gt;
 	  Workshop
 	&lt;/session_type&gt;
-	&lt;session_speaker&gt;
-	  Sebastian Bergmann
-	&lt;/session_speaker&gt;
+	&lt;session_speakers&gt;
+	  &lt;speaker&gt;Sebastian Bergmann&lt/speaker&gt;
+	&lt;/session_speakers&gt;
 	&lt;session_title&gt;
 	  Quality Assurance in PHP Projects
 	&lt;/session_title&gt;
@@ -64,9 +64,10 @@ and "Event Related" (case sensitive matching)</li>
 	&lt;session_track&gt;
 	  Track 3
 	&lt;/session_track&gt;
-	&lt;session_speaker&gt;
-	  Rob Allen
-	&lt;/session_speaker&gt;
+	&lt;session_speakers&gt;
+	  &lt;speaker&gt;Rob Allen&lt;/speaker&gt;
+	  &lt;speaker&gt;Keith Casey&lt;/speaker&gt;
+	&lt;/session_speakers&gt;
 	&lt;session_title&gt;
 	  Zend Framework on Windows
 	&lt;/session_title&gt;
