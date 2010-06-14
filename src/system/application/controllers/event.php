@@ -395,7 +395,6 @@ class Event extends Controller {
 			return true;
 		}
 		
-		//echo '<pre>'; print_r($talks); echo '</pre>';
 		
 		$talk_stats		= buildTalkStats($this->tcm->getEventComments($id));
 		$reqkey			= buildReqKey();
