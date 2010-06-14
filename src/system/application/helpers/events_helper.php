@@ -61,8 +61,10 @@ function buildClaims($claimed_talks){
 function buildSlidesList($sessions){
 	$slides_list=array();
 	foreach($sessions as $s){
+		$speaker_list=array();
 		if(!empty($s->slides_link)){
-			$slides_list[$s->ID]=array('link'=>$s->slides_link,'speaker'=>$s->speaker,'title'=>$s->talk_title);
+			foreach($s->speaker as $name){ $speaker_list[]=$name->speaker_name; }
+			$slides_list[$s->ID]=array('link'=>$s->slides_link,'speaker'=>implode(', ',$speaker_list),'title'=>$s->talk_title);
     	}
 	}
 	return $slides_list;

@@ -26,14 +26,7 @@ class Talk extends Controller {
 	}
 	//-------------------
 	function add($id=null,$opt=null){
-		if(isset($id) && $id=='event'){
-			$eid	= $opt; 
-			$id		= null; 
-			$type	= null;
-		}elseif($id){ 
-			$this->edit_id=$id;
-			$eid	= null;
-		}
+		
 		$pass=true;
 		$tracks=array();
 		
@@ -47,6 +40,31 @@ class Talk extends Controller {
 		$this->load->model('event_track_model','etm');
 		$this->load->model('talk_track_model','ttm');
 		$this->load->model('talk_speaker_model','tsm');
+		$this->load->model('user_admin_model','uam');
+		
+		//Check to see if they're supposed to be here
+		if(!$this->auth){ redirect(); }
+
+		$currentUserId = $this->session->userdata('ID');
+		if(isset($id) && $id=='event'){
+			$eid	= $opt; 
+			$id		= null; 
+			$type	= null;
+			
+			if(!$this->user_model->isAdminEvent($eid)){ redirect(); }
+		}elseif($id){ 
+			$this->edit_id=$id;
+			$eid	= null;
+			
+			// See if they have access to the talk (claimed user, site admin, event admin)
+			if($this->user_model->isAdminEvent($eid) || $this->uam->hasPerm($currentUserId,$id,'talk')){
+				/* fine, let them through */
+			}else{ redirect(); }
+			
+		}elseif(!$id && !$opt){
+			//no options specified! redirect
+			redirect();
+		}
 
 		$cats	= $this->categories_model->getCats();
 		$langs	= $this->lang_model->getLangs();
@@ -83,7 +101,7 @@ class Talk extends Controller {
 		}
 		
 		if($id){
-			$det	= $this->talks_model->getTalks($id); print_r($det);
+			$det	= $this->talks_model->getTalks($id);
 			$events	= $this->event_model->getEventDetail($det[0]->event_id);
 			$tracks	= $this->etm->getEventTracks($det[0]->eid);
 			
@@ -234,15 +252,28 @@ class Talk extends Controller {
 		$this->add($id);
 	}
 	function delete($id){
-		$this->load->helper('form');
-		$this->load->library('validation');
 		$this->load->model('talks_model');
+		$this->load->model('user_model');
 		
-		$arr=array('tid'=>$id);
-		if(isset($_POST['answer']) && $_POST['answer']=='yes'){
-			echo 'delete';
-			$this->talks_model->deleteTalk($id);
-			$arr=array();
+		//Check to see if they're supposed to be here
+		if(!$this->auth){ redirect(); }
+		
+		$talk_detail=$this->talks_model->getTalks($id);
+		if(empty($talk_detail)){ redirect('talk'); }
+
+		$currentUserId 	= $this->session->userdata('ID');
+		$arr			= array();
+		
+		if(!$this->user_model->isAdminEvent($talk_detail[0]->eid)){
+			$this->load->helper('form');
+			$this->load->library('validation');
+			$this->load->model('talks_model');
+
+			$arr=array('tid'=>$id);
+			if(isset($_POST['answer']) && $_POST['answer']=='yes'){
+				echo 'delete';
+				$this->talks_model->deleteTalk($id);
+			}
 		}
 		
 		$this->template->write_view('content','talk/delete',$arr,TRUE);
