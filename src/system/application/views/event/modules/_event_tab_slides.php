@@ -5,12 +5,7 @@
 	    <td>
 	    <a href="/talk/view/<?php echo $sk; ?>"><?php echo $sv['title']; ?></a>
 	    </td>
-	    <td>
-                <?php
-                $sp=array();
-                foreach($sv['speaker'] as $speaker){ $sp[]=$speaker->speaker_name; }
-                        echo implode(', ',$sp); ?>
-            </td>
+	    <td><?php echo $sv['speaker']; ?>
 	    <td>
 		<a href="<?php echo $sv['link']; ?>">Slides</a>
 	    </td>
