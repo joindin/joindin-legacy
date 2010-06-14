@@ -83,7 +83,7 @@ class Talk extends Controller {
 		}
 		
 		if($id){
-			$det	= $this->talks_model->getTalks($id); print_r($det);
+			$det	= $this->talks_model->getTalks($id);
 			$events	= $this->event_model->getEventDetail($det[0]->event_id);
 			$tracks	= $this->etm->getEventTracks($det[0]->eid);
 			
