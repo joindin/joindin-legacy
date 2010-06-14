@@ -32,6 +32,12 @@ function buildClaimData($talk_detail,$talk_claims,&$ftalk){
 	return $speaker;
 }
 
+/**
+ * Split out the comment types based on the inputted array (comment, keynote, etc)
+ * @param array $talk_comments Full listing of all talks for an event
+ *
+ * @return array $comments Sorted list of sessions
+ */
 function splitCommentTypes($talk_comments){
 	$comments=array();
 	foreach($talk_comments as $k=>$comment){
@@ -41,6 +47,33 @@ function splitCommentTypes($talk_comments){
 	return $comments;
 }
 
+
+/**
+ * Create the links for the speakers, matching by name
+ */
+function buildClaimedLinks($speakers,$claim_detail){
+	
+	$speaker_data	= array();
+	$speaker_links	= array();
+	
+	foreach($claim_detail as $claim){
+		$speaker_data[$claim->full_name]=$claim->uid;
+	}
+	foreach($speakers as $speaker){
+		$name=$speaker->speaker_name;
+		if(array_key_exists($name,$speaker_data)){
+			$speaker_links[]='<a href="/user/view/'.$speaker_data[$name].'">'.$name.'</a>';
+		}else{ $speaker_links[]=$name; }
+	}
+	
+	//Check the claim...if there's only one claim, assign no matter what
+	if(count($speakers) && count($claim_detail)){
+		$speaker_links	= array();
+		$speaker_links[]= '<a href="/user/view/'.$claim_detail[0]->uid.'">'.$speakers[0]->speaker_name.'</a>';
+	}
+	
+	return implode(', ',$speaker_links);
+}
 
 /**
  * Takes an array of talks, and attempts to add a flag to each one to say whether the talk is on

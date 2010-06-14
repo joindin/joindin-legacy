@@ -6,11 +6,11 @@ class User_admin_model extends Model {
 		parent::Model();
 	}
 	//----------------------
-	function removePerm($aid){
+	public function removePerm($aid){
 		//$arr=array('uid'=>$uid,'rid'=>$rid);
 		$this->db->delete('user_admin',array('ID'=>$aid));
 	}
-	function removeRidPerm($uid,$rid,$type){
+	public function removeRidPerm($uid,$rid,$type){
 		$det=array(
 			'rid'=>$rid,
 			'uid'=>$uid,
@@ -18,7 +18,7 @@ class User_admin_model extends Model {
 		);
 		$this->db->delete('user_admin',$det);
 	}
-	function addPerm($uid,$rid,$type){
+	public function addPerm($uid,$rid,$type){
 		error_log($uid.'-'.$rid.'-'.$type);
 		$arr=array(
 			'uid'	=>$uid,
@@ -29,12 +29,12 @@ class User_admin_model extends Model {
 		$this->db->insert('user_admin',$arr);
 	}
 	//----------------------
-	function hasPerm($uid,$rid,$rtype){
+	public function hasPerm($uid,$rid,$rtype){
 		$q=$this->db->get_where('user_admin',array('uid'=>$uid,'rid'=>$rid,'rtype'=>$rtype));
 		$ret=$q->result(); //print_r($ret);
 		return (empty($ret)) ? false : true;
 	}
-	function getUserTypes($uid,$types=null,$pending=false){
+	public function getUserTypes($uid,$types=null,$pending=false){
 		$CI=&get_instance();
 		
 		$CI->load->model('talks_model');
@@ -73,8 +73,28 @@ class User_admin_model extends Model {
 		//$q=$this->db->get_where('user_admin',array('uid'=>$uid));
 		//return $q->result(); //print_r($ret);
 	}
-
-	function getPendingClaims($type='talk',$rid=null){
+	
+	/**
+	 * Find the claims for a given talk ID
+	 * @param integer $talk_id Talk ID #
+	 * @param boolean $pending[optional] Whether to include pending claims or not
+	 */
+	public function getTalkClaims($talk_id,$pending=false){
+		$this->db->select('*');
+		$this->db->from('user_admin');
+		$this->db->join('user','user_admin.uid=user.ID');
+		$this->db->where('rid',$talk_id);
+		if(!$pending){ 
+			$this->db->where(array('rcode !='=>'pending'));
+		}
+		
+		$q=$this->db->get();
+		$ret=$q->result();
+		
+		return $ret;
+	}
+	
+	public function getPendingClaims($type='talk',$rid=null){
 	    switch($type){
                case 'talk':    return $this->getPendingClaims_Talks($rid); break;
                case 'event':   return $this->getPendingClaims_Events($rid); break;
@@ -85,7 +105,7 @@ class User_admin_model extends Model {
 	* Get the pending talk claims
 	* @param $eid[optional] integer Event ID to restrict on
 	*/
-	function getPendingClaims_Talks($eid=null){
+	public function getPendingClaims_Talks($eid=null){
 		$addl=($eid) ? ' e.ID='.$eid.' and ' : '';
 	    $sql=sprintf("
 		    select
@@ -115,7 +135,7 @@ class User_admin_model extends Model {
 	    $q=$this->db->query($sql);
 	    return $q->result();
 	}
-	function getPendingClaims_Events($eid=null){
+	public function getPendingClaims_Events($eid=null){
 		$addl=($eid) ? ' e.ID='.$eid.' and ' : '';
 	    $sql=sprintf("
 	        select

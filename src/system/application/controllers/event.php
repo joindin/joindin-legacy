@@ -322,6 +322,7 @@ class Event extends Controller {
 		$this->load->model('event_blog_posts_model','ebp');
 		$this->load->model('talk_track_model','ttm');
 		$this->load->model('event_track_model','etm');
+		$this->load->model('talk_comments_model','tcm');
 		$this->load->model('talks_model');
 		
 		$events		= $this->event_model->getEventDetail($id);
@@ -362,11 +363,13 @@ class Event extends Controller {
 		
 		foreach($talks as $k=>$v){
 			$codes=array();
+			/*
 			$p=explode(',',$v->speaker);
 			foreach($p as $ik=>$iv){
 				$val=trim($iv);
 				$talks[$k]->codes[$val]=buildCode($v->ID,$v->event_id,$v->talk_title,$val);
 			}
+			*/
 			$talks[$k]->tracks=$this->ttm->getSessionTrackInfo($v->ID);
 			
 			//If we have a track filter, check it!
@@ -392,10 +395,14 @@ class Event extends Controller {
 			return true;
 		}
 		
+		//echo '<pre>'; print_r($talks); echo '</pre>';
+		
+		$talk_stats		= buildTalkStats($this->tcm->getEventComments($id));
 		$reqkey			= buildReqKey();
 		$attend			= $this->uam->getAttendUsers($id);
 		$talks 			= $this->talks_model->setDisplayFields($talks);
 		$claimed_talks	= $this->event_model->getClaimedTalks($id);
+		
 		$claim_detail	= buildClaimDetail($claimed_talks);
 		$event_related_sessions = $this->event_model->getEventRelatedSessions($id);
 		
@@ -416,7 +423,9 @@ class Event extends Controller {
 			'admins' 		=>$evt_admins,
 			'tracks' 		=>$this->etm->getEventTracks($id),
 			'times_claimed'	=>$claim_detail['claim_count'],
-			'claimed_uids'	=>$claim_detail['uids']
+			'claimed_uids'	=>$claim_detail['uids'],
+			'claims'		=>buildClaims($this->event_model->getEventClaims($id)),
+			'talk_stats'	=>$talk_stats
 			//'attend' =>$this->uam->getAttendCount($id)
 			//'started'=>$this->tz->hasEvtStarted($id),
 		);

@@ -17,8 +17,7 @@ if (!empty($msg)): ?>
 $speaker_ids= array();
 $speaker    = array();
 
-if(empty($speaker_claim)){ $speaker[]=escape($detail->speaker); }
-$speaker_txt= implode(', ',$speaker);
+$speaker_txt= buildClaimedLinks($speakers,$claim_details);
 $rstr 		= rating_image($detail->tavg);
 
 $data=array(
@@ -29,7 +28,8 @@ $data=array(
 $this->load->view('talk/modules/_talk_detail',$data);
 
 $data=array(
-	'speaker'		=> $speaker
+	'speaker'		=> $speakers,
+	'claim'			=> $claim_details
 );
 $this->load->view('talk/modules/_talk_buttons',$data);
 ?>

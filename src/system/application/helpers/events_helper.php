@@ -45,6 +45,16 @@ function buildClaimDetail($claimed_talks){
 	}
 	return $claim_detail;
 }
+
+function buildClaims($claimed_talks){
+	$claims=array();
+	
+	foreach($claimed_talks as $talk){
+		$claims[$talk->talk_id][$talk->full_name]=$talk->user_id;
+	}
+	return $claims;
+}
+
 /**
 * Given the full list of sessions, finds which of them given have slides
 */
@@ -90,4 +100,18 @@ function event_listDecorateNow($events) {
 		$events[$key] = event_decorateNow($events[$key]);
 	}
 	return $events;
+}
+
+/**
+ * Create the stats for an event's talks
+ * @param array $talks Talk comment data
+ * @return array Contains total comment count and rating average
+ */
+function buildTalkStats($talks){
+	$rating=0;
+	foreach($talks as $talk){ $rating+=$talk->rating; }
+	return array(
+		'comments_total'	=> count($talks),
+		'rating_avg'		=> $rating/count($talks)
+	);
 }

@@ -41,7 +41,7 @@ class Getdetail extends BaseWsRequest {
 		}
 
 		// now add in the track information before sending it
-		if(!empty($ret['items'])){
+		if(!empty($ret['items']) && !empty($id)){
 			$ret['items'][0]->tracks = $this->CI->talk_track_model->getSessionTrackInfo($id);
 		}
 

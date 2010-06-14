@@ -50,7 +50,6 @@ class Xmlimport {
 
 		$in=array(
 		    'talk_title'    =>(string)$data->session_title,
-		    'speaker'	    =>(string)$data->session_speaker,
 		    'slides_link'   =>'',
 		    'date_given'    =>$data->session_start,
 		    'event_id'	    =>$eid,
@@ -60,11 +59,23 @@ class Xmlimport {
 		);
 
 		// danger, hardcoded language  TODO include as import field
-		$in['lang'] = 8;
+		$this->CI->load->model('lang_model');
+		if(isset($data->lang) && $lang_id=$this->CI->lang_model->isLang($data->lang)){
+			$in['lang'] = $lang_id;
+		}else{ $in['lang'] = 8; }
 
 		// save talk detail
 		$this->CI->db->insert('talks',$in);
 		$talk_id = $this->CI->db->insert_id();
+		
+		// Import the speakers
+		foreach($data->session_speakers as $speaker){
+			$in=array(
+				'talk_id'		=> $talk_id,
+				'speaker_name'	=> $speaker
+			);
+			$this->CI->db->insert('talk_speaker',$in);
+		}
 
 		// handle the category - figure out which it is, then save it
 		if(isset($data->session_type)) {
