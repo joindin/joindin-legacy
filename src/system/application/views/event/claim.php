@@ -9,7 +9,7 @@
 
 <p>
 Below you'll find a list of claims visitors to the site have made on the sessions for this event. 
-The "Speaker" field shows the speaker name(s) and the "Claiming User" is the Joind.in user trying to
+The "Speaker" field shows the speaker name(s) and the "Claiming User" is the <?php echo $this->config->item('site_name'); ?> user trying to
 claim the session. You can then accept/deny based on any match between them.
 </p>
 

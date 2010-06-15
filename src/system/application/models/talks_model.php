@@ -71,14 +71,13 @@ class Talks_model extends Model {
 			    from
 				talk_comments tc
 			    where
-				tc.talk_id=talks.ID %s and (tc.comment_type!=\'vote\' or tc.comment_type is null)) as tavg,
+				tc.talk_id=talks.ID %s) as tavg,
 			',$addl);
 			$sql=sprintf('
 				select
 					talks.*,
 					CASE 
 						WHEN (((talks.date_given - 86400) < '.mktime(0,0,0).') and (talks.date_given + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
-						WHEN (events.event_voting = "Y") THEN 1
 						ELSE 0
 						END as allow_comments,
 					talks.ID tid,
@@ -88,7 +87,6 @@ class Talks_model extends Model {
 					events.event_end,
 					events.event_tz_cont,
 					events.event_tz_place,
-					events.event_voting,
 					events.private,
 					lang.lang_name,
 					lang.lang_abbr,
@@ -101,7 +99,7 @@ class Talks_model extends Model {
 					where 
 						tac.talk_id=talks.ID and tac.cat_id=cat.ID
 					) tcid,
-					(select max(date_made) from talk_comments where talk_id=talks.ID and (talk_comments.comment_type=\'vote\' or talk_comments.comment_type is null)) last_comment_date
+					(select max(date_made) from talk_comments where talk_id=talks.ID) last_comment_date
 				from
 					talks
 				left join talk_comments on (talk_comments.talk_id = talks.ID)
@@ -137,7 +135,7 @@ class Talks_model extends Model {
 						round(avg(rating)) 
 					from 
 						talk_comments 
-					where talk_id=talks.ID and talk_comments.comment_type!=\'vote\' or talk_comments.comment_type is null) as tavg,
+					where talk_id=talks.ID) as tavg,
 					(select max(date_made) from talk_comments where talk_id=talks.ID) last_comment_date
 				from
 					talks
@@ -154,10 +152,13 @@ class Talks_model extends Model {
 			$q=$this->db->query($sql);
 		}
 		$res = $q->result();
-
-		if (is_array($res) && isset($res[0]) && is_object($res[0]) && event_isNowOn($res[0]->event_start, $res[0]->event_end)) {
-			$res[0] = talk_decorateNowNext($res[0]);
+		
+		$CI=&get_instance();
+		$CI->load->model('talk_speaker_model','tsm');
+		foreach($res as $k=>$talk){
+			$res[$k]->speaker=$CI->tsm->getTalkSpeakers($talk->ID);
 		}
+
 		return $res;
 	}
 	/**
@@ -254,9 +255,11 @@ class Talks_model extends Model {
 		//select rid from user_admin where uid=$uid and rtype='talks'
 		$this->db->select('*');
 		$this->db->from('user_admin');
+		$this->db->join('talks','talks.id=user_admin.rid');
 		$this->db->where('uid',$uid);
 		$this->db->where('rtype','talk');
 		$this->db->where('rcode !=','pending');
+		$this->db->order_by('talks.date_given desc');
 		
 		$q=$this->db->get();
 		//$q=$this->db->get_where('user_admin',array('uid'=>$uid,'rtype'=>'talk'));
@@ -302,15 +305,21 @@ class Talks_model extends Model {
 	 * @param $tid integer Talk ID
 	 * @return array Details on the events (event ID, talk ID, event name)
 	 */
-	public function talkAlsoGiven($tid){
+	public function talkAlsoGiven($tid,$eid){
 		$ret		= array();
 		$talk_detail= $this->getTalks($tid);
+		
+		$speakers=array();
+		foreach($talk_detail[0]->speaker as $speaker){
+			$speakers[]=strtolower($speaker->speaker_name);
+		}
 		
 		$this->db->select('event_id eid, talks.ID as tid, talk_title, event_name');
 	    $this->db->from('talks');
 		$this->db->join('events','events.id=talks.event_id','left');
 	    $this->db->where('talk_title',$talk_detail[0]->talk_title);
-		$this->db->where('lower(speaker)',strtolower($talk_detail[0]->speaker));
+		$this->db->where_in('lower(speaker)',$speakers);
+		$this->db->where('event_id !='.$eid);
 	    $q=$this->db->get();
 	    return $q->result();
 	}

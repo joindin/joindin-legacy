@@ -26,14 +26,7 @@ class Talk extends Controller {
 	}
 	//-------------------
 	function add($id=null,$opt=null){
-		if(isset($id) && $id=='event'){
-			$eid	= $opt; 
-			$id		= null; 
-			$type	= null;
-		}elseif($id){ 
-			$this->edit_id=$id;
-			$eid	= null;
-		}
+		
 		$pass=true;
 		$tracks=array();
 		
@@ -46,6 +39,32 @@ class Talk extends Controller {
 		$this->load->library('timezone');
 		$this->load->model('event_track_model','etm');
 		$this->load->model('talk_track_model','ttm');
+		$this->load->model('talk_speaker_model','tsm');
+		$this->load->model('user_admin_model','uam');
+		
+		//Check to see if they're supposed to be here
+		if(!$this->auth){ redirect(); }
+
+		$currentUserId = $this->session->userdata('ID');
+		if(isset($id) && $id=='event'){
+			$eid	= $opt; 
+			$id		= null; 
+			$type	= null;
+			
+			if(!$this->user_model->isAdminEvent($eid)){ redirect(); }
+		}elseif($id){ 
+			$this->edit_id=$id;
+			$eid	= null;
+			
+			// See if they have access to the talk (claimed user, site admin, event admin)
+			if($this->user_model->isAdminEvent($eid) || $this->uam->hasPerm($currentUserId,$id,'talk')){
+				/* fine, let them through */
+			}else{ redirect(); }
+			
+		}elseif(!$id && !$opt){
+			//no options specified! redirect
+			redirect();
+		}
 
 		$cats	= $this->categories_model->getCats();
 		$langs	= $this->lang_model->getLangs();
@@ -54,7 +73,7 @@ class Talk extends Controller {
 			'event_id'		=>'required',
 			'talk_title'	=>'required',
 			'talk_desc'		=>'required',
-			'speaker'		=>'required',
+			//'speaker'		=>'required',
 			'session_type'	=>'required',
 			'session_lang'	=>'required',
 			'given_mo'		=>'callback_given_mo_check'
@@ -62,7 +81,7 @@ class Talk extends Controller {
 		$fields=array(
 			'event_id'		=>'Event Name',
 			'talk_title'	=>'Talk Title',
-			'speaker'		=>'Speaker',
+			//'speaker'		=>'Speaker',
 			'given_mo'		=>'Given Month',
 			'given_day'		=>'Given Day',
 			'given_yr'		=>'Given Year',
@@ -82,7 +101,7 @@ class Talk extends Controller {
 		}
 		
 		if($id){
-			$det	= $this->talks_model->getTalks($id); //print_r($det);
+			$det	= $this->talks_model->getTalks($id);
 			$events	= $this->event_model->getEventDetail($det[0]->event_id);
 			$tracks	= $this->etm->getEventTracks($det[0]->eid);
 			
@@ -94,6 +113,10 @@ class Talk extends Controller {
 			foreach($det[0] as $k=>$v){
 				$this->validation->$k=$v;
 			}
+			
+			// set our speaker information
+			$this->validation->speaker=$this->tsm->getSpeakerByTalkId($id);
+			
 			$this->validation->eid=$det[0]->eid;
 			$this->validation->given_day = $this->timezone->formattedEventDatetimeFromUnixtime($det[0]->date_given, $det[0]->event_tz_cont.'/'.$det[0]->event_tz_place, 'd');
 			$this->validation->given_mo = $this->timezone->formattedEventDatetimeFromUnixtime($det[0]->date_given, $det[0]->event_tz_cont.'/'.$det[0]->event_tz_place, 'm');
@@ -141,7 +164,7 @@ class Talk extends Controller {
 
 			$arr=array(
 				'talk_title'	=> $this->input->post('talk_title'),
-				'speaker'		=> $this->input->post('speaker'),
+				//'speaker'		=> $this->input->post('speaker'),
 				'slides_link'	=> $this->input->post('slides_link'),
 				'date_given'	=> $unix_timestamp,   // Unix timestamp, therefore in UTC
 				'event_id'		=> $this->input->post('event_id'),
@@ -151,6 +174,9 @@ class Talk extends Controller {
 			);
 
 			if($id){ 
+				//update the speaker information
+				$this->tsm->handleSpeakerData($id,$this->input->post('speaker_row'));
+					
 				$this->db->where('id',$id);
 				$this->db->update('talks',$arr);
 				//remove the current reference for the talk category and add a new one				
@@ -180,6 +206,9 @@ class Talk extends Controller {
 				if(count($ret)==0){
 					$this->db->insert('talks',$arr);
 					$tc_id=$this->db->insert_id();
+					
+					// Add the new speakers
+					$this->tsm->handleSpeakerData($tc_id,$this->input->post('speaker_row'));
 					
 					//check to see if we have a track and it's not the "none"
 					if($this->input->post('session_track')!='none'){
@@ -223,15 +252,28 @@ class Talk extends Controller {
 		$this->add($id);
 	}
 	function delete($id){
-		$this->load->helper('form');
-		$this->load->library('validation');
 		$this->load->model('talks_model');
+		$this->load->model('user_model');
 		
-		$arr=array('tid'=>$id);
-		if(isset($_POST['answer']) && $_POST['answer']=='yes'){
-			echo 'delete';
-			$this->talks_model->deleteTalk($id);
-			$arr=array();
+		//Check to see if they're supposed to be here
+		if(!$this->auth){ redirect(); }
+		
+		$talk_detail=$this->talks_model->getTalks($id);
+		if(empty($talk_detail)){ redirect('talk'); }
+
+		$currentUserId 	= $this->session->userdata('ID');
+		$arr			= array();
+		
+		if(!$this->user_model->isAdminEvent($talk_detail[0]->eid)){
+			$this->load->helper('form');
+			$this->load->library('validation');
+			$this->load->model('talks_model');
+
+			$arr=array('tid'=>$id);
+			if(isset($_POST['answer']) && $_POST['answer']=='yes'){
+				echo 'delete';
+				$this->talks_model->deleteTalk($id);
+			}
 		}
 		
 		$this->template->write_view('content','talk/delete',$arr,TRUE);
@@ -242,8 +284,10 @@ class Talk extends Controller {
 		$this->load->model('event_model');
 		$this->load->model('invite_list_model','ilm');
 		$this->load->model('user_attend_model');
+		$this->load->model('user_admin_model','uam');
 		$this->load->model('talk_track_model','ttm');
 		$this->load->model('talk_comments_model','tcm');
+		$this->load->model('talk_speaker_model','tsm');
 		$this->load->helper('form');
 		$this->load->helper('events');
 		$this->load->helper('talk');
@@ -343,11 +387,6 @@ class Talk extends Controller {
 			$rules['comment']='required';
 		}
 		
-		// If it's before the event has started, we want votes
-		if(!$talk_detail[0]->allow_comments){
-			unset($rules['comment'],$rules['rating']);
-		}
-		
 		// This is for the CAPTACHA - it was disabled for authenticatied users
 		//if(!$this->user_model->isAuth()){
 		//	$rules['cinput']	= 'required|callback_cinput_check';
@@ -359,26 +398,7 @@ class Talk extends Controller {
 
 		if($this->validation->run()==FALSE){
 			
-			// Check to see if it's just a vote...
-			// Let people only vote once per talk
-			$sub		= $this->input->post('sub');
-			$has_voted	= $this->talks_model->hasUserCommented($id,$currentUserId,'vote');
-			
-			if(($sub=='+1 vote' || $sub=='-1 vote') && !$has_voted){
-				$arr=array(
-					'talk_id'		=> $id,
-					'rating'		=> ($sub=='+1 vote') ? 5 : 1,
-					'comment'		=> 'talk_vote',
-					'date_made'		=> time(),
-					'active'		=> 1,
-					'user_id'		=> ($this->user_model->isAuth()) ? $this->session->userdata('ID') : '0',
-					'comment_type'	=> 'vote'
-				);
-				$this->db->insert('talk_comments',$arr);
-				$msg='Vote submitted!';
-			}elseif(($sub=='+1 vote' || $sub=='-1 vote') && $has_voted){ 
-				$msg='You can only vote on a talk once!'; 
-			}
+			// vote processing code removed
 		}else{ 
 			$is_auth	= $this->user_model->isAuth();
 			$arr		= array(
@@ -414,9 +434,6 @@ class Talk extends Controller {
 			}
 			
 			if($is_spam!='true' && $sp_ret==true){
-				// If it's before the event, it's a "vote" & after is 
-				// a normal comment (empty)
-				$type=(time()<$talk_detail[0]->date_given) ? 'vote' : null;
 				
 				$arr=array(
 					'talk_id'		=> $id,
@@ -425,8 +442,7 @@ class Talk extends Controller {
 					'date_made'		=> time(),
 					'private'		=> $priv,
 					'active'		=> 1,
-					'user_id'		=> ($this->user_model->isAuth()) ? $this->session->userdata('ID') : '0',
-					'comment_type'	=> $type
+					'user_id'		=> ($this->user_model->isAuth()) ? $this->session->userdata('ID') : '0'
 				);
 				
 				$out='';
@@ -450,7 +466,7 @@ class Talk extends Controller {
 				$msg='';
 				$arr['spam']=($ret=='false') ? 'spam' : 'not spam';
 				foreach($arr as $ak=>$av){ $msg.='['.$ak.'] => '.$av."\n"; }
-				@mail('enygma@phpdeveloper.org','Comment on talk '.$id,$msg,'From: comments@joind.in');
+				@mail($this->config->item('email_admin'),'Comment on talk '.$id,$msg,'From: ' . $this->config->item('email_comments'));
 			
 				//if its claimed, be sure to send an email to the person to tell them
 				if($cl){
@@ -477,16 +493,15 @@ class Talk extends Controller {
 		$event_claims	= $this->event_model->getClaimedTalks($talk_detail[0]->eid);
 		$talk_comments	= splitCommentTypes($this->talks_model->getTalkComments($id,null,$view_private));
 		
-		$also_given=$this->talks_model->talkAlsoGiven($id);
+		$also_given=$this->talks_model->talkAlsoGiven($id,$talk_detail[0]->event_id);
 		$also_given=array(
-			'talks'=>$also_given,
-			'title'=>'Talk Also Given At...'
+			'talks'	=> $also_given,
+			'title'	=> 'Talk Also Given At...'
 		);
 		
 		$arr=array(
 			'detail'		=> $talk_detail[0],
 			'comments'		=> (isset($talk_comments['comment'])) ? $talk_comments['comment'] : array(),
-			'votes'			=> (isset($talk_comments['vote'])) ? $talk_comments['vote'] : array(),
 			'admin'	 		=> ($is_talk_admin) ? true : false,
 			'site_admin'	=> ($this->user_model->isSiteAdmin()) ? true : false,
 			'auth'			=> $this->auth,
@@ -494,8 +509,10 @@ class Talk extends Controller {
 			'claims'		=> $event_claims,
 			'claim_status'	=> $claim_status,
 			'claim_msg'		=> $claim_msg,
-			'speaker_claims'=> buildClaimData($talk_detail[0],$event_claims,$ftalk),
-			'ftalk'			=> $ftalk, // this one requires the previous call to buildClaimData (return by reference)
+			'claim_details'	=> $this->uam->getTalkClaims($id),
+			//'speaker_claims'=> buildClaimData($talk_detail[0],$event_claims,$ftalk),
+			'speakers'		=> $this->tsm->getSpeakerByTalkId($id),
+			//'ftalk'			=> $ftalk, // this one requires the previous call to buildClaimData (return by reference)
 			'reqkey' 		=> $reqkey,
 			'seckey' 		=> buildSecFile($reqkey),
 			'user_attending'=>($this->user_attend_model->chkAttend($currentUserId,$talk_detail[0]->event_id)) ? true : false,
@@ -505,7 +522,9 @@ class Talk extends Controller {
 		);
 		
 		$this->template->write('feedurl','/feed/talk/'.$id);
-		$this->template->write_view('sidebar2','talk/_also_given',$also_given,TRUE);
+		if(!empty($also_given['talks'])){
+			$this->template->write_view('sidebar2','talk/_also_given',$also_given,TRUE);
+		}
 		$this->template->write_view('content','talk/detail',$arr,TRUE);
 		$this->template->render();
 	}

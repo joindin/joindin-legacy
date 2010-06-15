@@ -45,14 +45,26 @@ function buildClaimDetail($claimed_talks){
 	}
 	return $claim_detail;
 }
+
+function buildClaims($claimed_talks){
+	$claims=array();
+	
+	foreach($claimed_talks as $talk){
+		$claims[$talk->talk_id][$talk->full_name]=$talk->user_id;
+	}
+	return $claims;
+}
+
 /**
 * Given the full list of sessions, finds which of them given have slides
 */
 function buildSlidesList($sessions){
 	$slides_list=array();
 	foreach($sessions as $s){
+		$speaker_list=array();
 		if(!empty($s->slides_link)){
-			$slides_list[$s->ID]=array('link'=>$s->slides_link,'speaker'=>$s->speaker,'title'=>$s->talk_title);
+			foreach($s->speaker as $name){ $speaker_list[]=$name->speaker_name; }
+			$slides_list[$s->ID]=array('link'=>$s->slides_link,'speaker'=>implode(', ',$speaker_list),'title'=>$s->talk_title);
     	}
 	}
 	return $slides_list;
@@ -90,4 +102,22 @@ function event_listDecorateNow($events) {
 		$events[$key] = event_decorateNow($events[$key]);
 	}
 	return $events;
+}
+
+/**
+ * Create the stats for an event's talks
+ * @param array $talks Talk comment data
+ * @return array Contains total comment count and rating average
+ */
+function buildTalkStats($talks){
+	$rating=0;
+	if(is_array($talks)) {
+		foreach($talks as $talk){ 
+			$rating+=$talk->rating; 
+		}
+	}
+	return array(
+		'comments_total'	=> count($talks),
+		'rating_avg'		=> $talks ? $rating/count($talks) : 0
+	);
 }

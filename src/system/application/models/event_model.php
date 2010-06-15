@@ -155,9 +155,10 @@ class Event_model extends Model {
 		return $res;
 	}
 
-	function getEventTalks($id,$includeEventRelated = true) {
+	function getEventTalks($id,$includeEventRelated = true, $includePrivate = false) {
 		$this->load->helper("events");
 		$this->load->helper("talk");
+		$private=($includePrivate) ? '' : ' and private!=1';
 		$sql='
 			select
 				talks.talk_title,
@@ -173,7 +174,7 @@ class Event_model extends Model {
 				events.event_end,
 				(select l.lang_abbr from lang l where talks.lang=l.ID) lang,
 				(select round(avg(rating)) from talk_comments where talk_id=talks.ID) rank,
-				(select count(rating) from talk_comments where talk_id=talks.ID) comment_count,
+				(select count(rating) from talk_comments where talk_id=talks.ID '.$private.') comment_count,
 				ifnull(categories.cat_title, \'Talk\') tcid
 			from
 				talks
@@ -199,6 +200,12 @@ class Event_model extends Model {
 		// Loop through the talks deciding if they are currently on
 		if (is_array($res) && count($res) > 0 && is_object($res[0]) && event_isNowOn($res[0]->event_start, $res[0]->event_end)) {
 			$res = talk_listDecorateNowNext($res);
+		}
+		
+		$CI=&get_instance();
+		$CI->load->model('talk_speaker_model','tsm');
+		foreach($res as $k=>$talk){
+			$res[$k]->speaker=$CI->tsm->getTalkSpeakers($talk->ID);
 		}
 
 		return $res;
@@ -226,7 +233,7 @@ class Event_model extends Model {
 		return $q->result();
 	}
 
-	function getUpcomingEvents($inc_curr=false, $limit = null){
+	function getUpcomingEvents($limit = null, $inc_curr = false){
 	    //$this->db->select('events.*, COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments, abs(0) as user_attending');
 		$this->db->select('events.*, 
               CASE 
@@ -325,6 +332,32 @@ class Event_model extends Model {
 		$q=$this->db->get();
 		return $q->result();
 	}
+	
+	function getEventClaims($event_id){
+		$sql=sprintf('
+			select
+				t.id as talk_id,
+				t.talk_title,
+				ua.uid as user_id,
+				ua.rid,
+				u.full_name
+			from
+				user_admin ua,
+				events e,
+				talks t,
+				user u
+			where
+				ua.rid=t.id and
+				e.id=t.event_id and
+				u.id=ua.uid and
+				e.id = %s
+		',$event_id);
+		$q=$this->db->query($sql);
+		$ret=$q->result();
+		
+		return $ret;
+	}
+	
 	function getClaimedTalks($eid){
 		$this->load->helper('events');
 		$ids	= array();
@@ -333,11 +366,14 @@ class Event_model extends Model {
 		// Find all of the talks for the event...
 		$ret 	= $this->getEventTalks($eid); //echo '<pre>'; print_r($ret); echo '</pre>';
 		foreach($ret as $k=>$v){
+			$codes=array();
+			/*
 			$p=explode(',',$v->speaker);
 			$codes=array();
 			foreach($p as $ik=>$iv){
 				$codes[]=buildCode($v->ID,$v->event_id,$v->talk_title,trim($iv));
 			}
+			*/
 			
 			$tdata[$v->ID]=array(
 				'talk_title'=> $v->talk_title,
@@ -377,23 +413,34 @@ class Event_model extends Model {
 		// for the this event
 		return $ret;
 	}
-	function getEventFeedback($eid){
+	function getEventFeedback($eid, $order_by = NULL){
+		// handle the ordering
+		if($order_by == 'tc.date_made' || $order_by == 'tc.date_made DESC') {
+			// fine, sensible options that we'll allow
+		} else {
+			// if null, or indeed anything else, order by talk id (the original default)
+			$order_by = 't.ID';
+		}
+
 		$sql=sprintf('
 			select
 				t.talk_title,
 				t.speaker,
 				t.date_given,
+				tc.date_made,
 				tc.rating,
-				tc.comment
+				tc.comment,
+				u.full_name
 			from
 				talks t,
 				talk_comments tc
+			LEFT JOIN user u ON (u.ID = tc.user_id)
 			where
-				t.ID=tc.talk_id and
+				tc.private <> 1 AND
+				t.ID=tc.talk_id AND
 				t.event_id=%s
 			order by
-				t.ID
-		',$eid);
+		'.$order_by,$eid);
 		$q=$this->db->query($sql);
 		return $q->result();
 	}

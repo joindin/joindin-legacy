@@ -5,7 +5,7 @@ event = function (){
 	
 	var _deleteEventComment = function(){
 		$('.delete-evt-commment').live('click',function(){
-			var p		= this.id.split('_'); alert(p);
+			var p		= this.id.split('_');
 			var obj		= new Object();
 			obj.cid		= p[0];
 			obj.eid		= p[1];

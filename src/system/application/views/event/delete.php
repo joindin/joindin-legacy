@@ -10,7 +10,7 @@ if(isset($eid)){
 		<td>
 			Are you sure you wish to delete this event?<br/>
 			<input type="submit" value="yes" name="answer"> 
-			<input type="button" value="no" onClick="document.location='/event/view/<?=$eid?>'">
+			<input type="button" value="no" onClick="document.location='/event/view/<?php echo $eid?>'">
 		</td>
 	</tr>
 	</table>

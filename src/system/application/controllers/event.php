@@ -78,6 +78,12 @@ class Event extends Controller {
 	}
 
 	function index($pending=false){
+		
+		if(apache_getenv('USE_EID')){
+			$this->view(apache_getenv('USE_EID'));
+			return true;
+		}
+		
 		$type=($pending) ? 'pending' : 'upcoming';
 		$this->_runList($type, $pending);
 	}
@@ -201,7 +207,6 @@ class Event extends Controller {
 			'event_tz_place'	=>'Event Timezone (Place)',
 			'event_href'=>'Event Link(s)',
 			'event_hashtag'=>'Event Hashtag',
-			'event_voting'=>'Event Voting Allowed',
 			'event_private'=>'Private Event',
 			'event_stub'=>'Event Stub'
 		);
@@ -269,7 +274,6 @@ class Event extends Controller {
 				'event_tz_place'	=>$this->input->post('event_tz_place'),
 				'event_href'	=>$this->input->post('event_href'),
 				'event_hashtag'	=>$this->input->post('event_hashtag'),
-				'event_voting'	=>$this->input->post('event_voting'),
 				'private'		=>$this->input->post('event_private'),
 				'event_tz_cont'		=>$this->input->post('event_tz_cont'),
 				'event_tz_place'	=>$this->input->post('event_tz_place'),
@@ -318,6 +322,7 @@ class Event extends Controller {
 		$this->load->model('event_blog_posts_model','ebp');
 		$this->load->model('talk_track_model','ttm');
 		$this->load->model('event_track_model','etm');
+		$this->load->model('talk_comments_model','tcm');
 		$this->load->model('talks_model');
 		
 		$events		= $this->event_model->getEventDetail($id);
@@ -358,11 +363,13 @@ class Event extends Controller {
 		
 		foreach($talks as $k=>$v){
 			$codes=array();
+			/*
 			$p=explode(',',$v->speaker);
 			foreach($p as $ik=>$iv){
 				$val=trim($iv);
 				$talks[$k]->codes[$val]=buildCode($v->ID,$v->event_id,$v->talk_title,$val);
 			}
+			*/
 			$talks[$k]->tracks=$this->ttm->getSessionTrackInfo($v->ID);
 			
 			//If we have a track filter, check it!
@@ -388,10 +395,13 @@ class Event extends Controller {
 			return true;
 		}
 		
+		
+		$talk_stats		= buildTalkStats($this->tcm->getEventComments($id));
 		$reqkey			= buildReqKey();
 		$attend			= $this->uam->getAttendUsers($id);
 		$talks 			= $this->talks_model->setDisplayFields($talks);
 		$claimed_talks	= $this->event_model->getClaimedTalks($id);
+		
 		$claim_detail	= buildClaimDetail($claimed_talks);
 		$event_related_sessions = $this->event_model->getEventRelatedSessions($id);
 		
@@ -412,7 +422,9 @@ class Event extends Controller {
 			'admins' 		=>$evt_admins,
 			'tracks' 		=>$this->etm->getEventTracks($id),
 			'times_claimed'	=>$claim_detail['claim_count'],
-			'claimed_uids'	=>$claim_detail['uids']
+			'claimed_uids'	=>$claim_detail['uids'],
+			'claims'		=>buildClaims($this->event_model->getEventClaims($id)),
+			'talk_stats'	=>$talk_stats
 			//'attend' =>$this->uam->getAttendCount($id)
 			//'started'=>$this->tz->hasEvtStarted($id),
 		);
@@ -474,11 +486,11 @@ class Event extends Controller {
 				$admins=$this->event_model->getEventAdmins($id);
 				foreach($admins as $ak=>$av){ $to[]=$av->email; }
 				
-				$subj	='Joind.in: Event feedback - '.$id;
+				$subj	= $this->config->site_url() . ': Event feedback - '.$id;
 				$content='';
 				foreach($ec as $k=>$v){ $content.='['.$k.'] => '.$v."\n\n"; }
 				foreach($to as $tk=>$tv){
-				    @mail($tv,$subj,$content,'From:feedback@joind.in');
+				    @mail($tv,$subj,$content,'From: ' . $this->config->item('email_feedback'));
 				}
 			
 				$this->session->set_flashdata('msg', 'Comment inserted successfully!');
@@ -503,7 +515,7 @@ class Event extends Controller {
 		
 		if(!$is_auth){
 			$info=array('msg'=>sprintf('
-				<h4 style="color:#3A74C5">New to Joind.in?</h4> Find out how we can help you make connections 
+				<h4 style="color:#3A74C5">New to ' . $this->config->item('site_name') . '?</h4> Find out how we can help you make connections
 				whether you\'re attending or putting on the show. <a href="/about">Click here</a> to learn more!
 			'));
 			$this->template->write_view('info_block','msg_info',$info,TRUE);
@@ -523,6 +535,9 @@ class Event extends Controller {
 				'evt_admin'		=> $this->event_model->getEventAdmins($id)
 			)); 
 		}
+		
+		
+		
 		$this->template->write_view('content','event/detail',$arr,TRUE);
 		if(!empty($t)){ 
 			// If there's no twitter results, don't show this sidebar
@@ -552,24 +567,25 @@ class Event extends Controller {
 		$this->load->view('event/ical',array('data'=>$arr));
 	}
 	function delete($id){
-		if(!$this->user_model->isSiteAdmin()){ redirect(); }
-		$this->load->helper('form');
-		$this->load->library('validation');
-		$this->load->model('event_model');
+		if($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($id)){ 
+			$this->load->helper('form');
+			$this->load->library('validation');
+			$this->load->model('event_model');
 		
-		$arr=array(
-			'eid'		=> $id,
-			'details'	=> $this->event_model->getEventDetail($id)
-		);
-		$ans=$this->input->post('answer');
-		if(isset($ans) && $ans =='yes'){
-			$this->event_model->deleteEvent($id);
-			$arr=array();
-		}
+			$arr=array(
+				'eid'		=> $id,
+				'details'	=> $this->event_model->getEventDetail($id)
+			);
+			$ans=$this->input->post('answer');
+			if(isset($ans) && $ans =='yes'){
+				$this->event_model->deleteEvent($id);
+				$arr=array();
+			}
 		
-		$this->template->write_view('content','event/delete',$arr,TRUE);
-		$this->template->render();
-		//$this->load->view('event/delete',$arr);
+			$this->template->write_view('content','event/delete',$arr,TRUE);
+			$this->template->render();
+			//$this->load->view('event/delete',$arr);
+		}else{ redirect(); }
 	}
 	function codes($id){
 		$this->load->helper('form');
@@ -808,7 +824,7 @@ class Event extends Controller {
 			
 			if($is_spam!='true'){			
 				//send the information via email...
-				$subj	= 'Event submission from Joind.in';
+				$subj	= 'Event submission from ' . $this->config->item('site_name');
 				$msg= 'Event Title: '.$this->input->post('event_title')."\n\n";
 				$msg.='Event Description: '.$this->input->post('event_desc')."\n\n";
 				$msg.='Event Date: '.date('m.d.Y H:i:s',$sub_arr['event_start'])."\n\n";
@@ -820,7 +836,7 @@ class Event extends Controller {
 				
 				$admin_emails=$this->user_model->getSiteAdminEmail();
 				foreach($admin_emails as $user){
-					mail($user->email,$subj,$msg,'From: submissions@joind.in');
+					mail($user->email,$subj,$msg,'From: ' . $this->config->item('email_submissions'));
 				}
 				$arr['msg']=sprintf('
 					<style="font-size:16px;font-weight:bold">Event successfully submitted!</span><br/>
@@ -844,7 +860,7 @@ class Event extends Controller {
 					$this->user_admin_model->addPerm($uid,$rid,$type);
 				}
 			}else{ 
-				$arr['msg']='There was an error submitting your event! Please <a href="submissions@joind.in">send us an email</a> with all the details!';
+				$arr['msg']='There was an error submitting your event! Please <a href="' . $this->config->item('email_submissions') . '">send us an email</a> with all the details!';
 			}
 		}else{ $this->validation->is_admin=0; }
 		$arr['is_auth']=$this->user_model->isAuth();
@@ -908,7 +924,7 @@ class Event extends Controller {
 		
 		// @todo get this and twitter class working with short URL
 		/*echo '<pre>';
-		$link=$this->twitter->short_bitly('http://joind.in/event/view/'.$eid); 
+		$link=$this->twitter->short_bitly($this->config->site_url() . 'event/view/'.$eid);
 		echo '</pre>';*/
 		
 		// Send the new approved event to Twitter
@@ -1212,7 +1228,7 @@ class Event extends Controller {
 		
 		$posts=$this->ebp->getPosts($eid);
 		if($act=='add' || $act=='edit'){
-			$this->template->write('feedurl','http://joind.in/event/blog/feed/'.$eid);
+			$this->template->write('feedurl', $this->config->site_url() . 'event/blog/feed/'.$eid);
 			
 			// Be sure they're either a site admin or event admin
 			if($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($eid)){
@@ -1238,7 +1254,7 @@ class Event extends Controller {
 					$msg='New post added!';
 					
 					//Sent it out to twitter
-					$msg='Event Update: '.$data['title'].' http://joind.in/event/blog/view/'.$eid;
+					$msg='Event Update: '.$data['title']. $this->config->site_url() . 'event/blog/view/'.$eid;
 					$resp=$this->twitter->sendMsg($msg);
 				}
 			}else{
@@ -1249,8 +1265,8 @@ class Event extends Controller {
 			foreach($posts as $k=>$v){
 				$items[]=array(
 					'title'			=> $v->title,
-					'guid'			=> 'http://joind.in/event/blog/view/'.$eid.'#'.$v->ID,
-					'link'			=> 'http://joind.in/event/blog/view/'.$eid.'#'.$v->ID,
+					'guid'			=> $this->config->site_url() . 'event/blog/view/'.$eid.'#'.$v->ID,
+					'link'			=> $this->config->site_url() . 'event/blog/view/'.$eid.'#'.$v->ID,
 					'description' 	=> $v->content,
 					'pubDate'		=> date('t')
 				);
@@ -1262,7 +1278,7 @@ class Event extends Controller {
 			$this->load->view('feed/feed',$arr);
 			return;
 		}else{ 
-			$this->template->write('feedurl','http://joind.in/event/blog/feed/'.$eid);
+			$this->template->write('feedurl', $this->config->site_url() . 'event/blog/feed/'.$eid);
 		}
 		
 		$arr=array(

@@ -17,8 +17,8 @@ Check out past, recent and upcoming events from our list.
 Every event has their talks but you can get a quick summary here of talks across all events
 </p>
 <p>
-<b><a href="/about">About Joind.in</a></b><br/>
-Learn all about Joind.in and what it has to offer you as both a user and conference planner
+<b><a href="/about">About <?php echo $this->config->item('site_name'); ?></a></b><br/>
+Learn all about <?php echo $this->config->item('site_name'); ?> and what it has to offer you as both a user and conference planner
 </p>
 
 <?php

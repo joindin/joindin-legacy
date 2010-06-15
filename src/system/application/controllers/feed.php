@@ -21,9 +21,9 @@ class Feed extends Controller {
 		
 		foreach($com as $k=>$v){
 			$items[]=array(
-				'guid'			=> 'http://joind.in/talk/view/'.$v->talk_id,
+				'guid'			=> $this->config->site_url() . 'talk/view/'.$v->talk_id,
 				'title'			=> 'Comment on: '.$tlk[0]->talk_title,
-				'link'			=> 'http://joind.in/talk/view/'.$v->talk_id,
+				'link'			=> $this->config->site_url() . 'talk/view/'.$v->talk_id,
 				'description'	=> $v->comment,
 				'pubDate'		=> date('r',$v->date_made)
 			);
@@ -39,11 +39,11 @@ class Feed extends Controller {
 		foreach($this->bpm->getPostDetail() as $k=>$v){
 			//print_r($v);
 			$items[]=array(
-				'guid'			=>'http://joind.in/blog/view/'.$v->ID,
-				'title'			=>$v->title,
-				'link'			=>'http://joind.in/blog/view/'.$v->ID,
-				'description'	=>$v->content,
-				'pubDate'		=>date('r',$v->date_posted)
+				'guid'			=> $this->config->site_url() . 'blog/view/'.$v->ID,
+				'title'			=> $v->title,
+				'link'			=> $this->config->site_url() . 'blog/view/'.$v->ID,
+				'description'	=> $v->content,
+				'pubDate'		=> date('r',$v->date_posted)
 			);
 		}
 		$this->load->view('feed/feed',array('items'=>$items));
@@ -57,11 +57,11 @@ class Feed extends Controller {
 		$items=array();
 		foreach($ret as $k=>$v){ //print_r($v);
 			$items[]=array(
-				'guid'			=>'http://joind.in/event/view/'.$eid.'#comments',
-				'title'			=>'Comment on Event "'.$edata[0]->event_name.'"',
-				'link'			=>'http://joind.in/event/view/'.$eid.'#comments',
-				'description'	=>$v->comment,
-				'pubDate'		=>date('r',$v->date_made)
+				'guid'			=> $this->config->site_url() . 'event/view/'.$eid.'#comments',
+				'title'			=> 'Comment on Event "'.$edata[0]->event_name.'"',
+				'link'			=> $this->config->site_url() . 'event/view/'.$eid.'#comments',
+				'description'	=> $v->comment,
+				'pubDate'		=> date('r',$v->date_made)
 			);
 		}
 		$this->load->view('feed/feed',array('items'=>$items,'title'=>'Event Comments - "'.$edata[0]->event_name.'"'));
@@ -92,7 +92,7 @@ class Feed extends Controller {
 					'speaker'	=> $v->speaker,
 					'date'		=> date('r',$v->date_given),
 					'tid'		=> $v->tid,
-					'link'		=> 'http://joind.in/talk/view/'.$v->tid
+					'link'		=> $this->config->site_url() . 'talk/view/'.$v->tid
 				);
 			}
 			$coms=array();

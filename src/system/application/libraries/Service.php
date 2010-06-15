@@ -95,7 +95,7 @@ class Service {
 	function parseReqXML($xml){ error_log($xml);
 		$ret_xml=null;
 		try {
-			$ret_xml=simplexml_load_string($xml); //print_r($ret_xml);
+			$ret_xml=simplexml_load_string($xml);
 		}catch(Exception $e){ /* exceptions */ }
 		return $ret_xml;
 	}

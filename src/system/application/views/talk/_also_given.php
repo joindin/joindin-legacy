@@ -4,12 +4,12 @@
 	<?php $ct=0; ?>
 
 	<table cellpadding="10" cellspacing="0" border="0">
-	<?php 
+	<?php
 	foreach($talks as $t){
 	?>
 	<tr>
 	<td valign="top" width="50%" style="padding-bottom:10px">
-		<a href=""><?php echo $t->event_name; ?></a><br/>
+		<a href="/event/view/<?php echo $t->eid; ?>"><?php echo $t->event_name; ?></a><br/>
 	</td>
 	</tr>
 	<?php } ?>

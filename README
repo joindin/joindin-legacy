@@ -45,5 +45,11 @@ The following are the steps you'll need to correctly install the software:
 	> Make a database.php file using the database.php.dist as a guide
 	> Make a config.php file using the config.php.dist as a guide
 	
-Grab the /doc/db/curr_db.sql file and drop it into your database 
-and you should be good to go!
+- Push the doc/db/init_db.sql file into your database
+
+- Apply any of the other patches in the /db folder
+
+If you'd like some seed data, you can use the seed.sql to load in a few events, 
+users and talks. You'll also need to load in the seed_countries.sql file to
+get the complete list of countries for the event details.
+
