@@ -118,8 +118,12 @@ function talk_listDecorateNowNext($talks) {
 	}
 
 	// our slot times identify our now and next talk sets
-	foreach($talks_keyed_on_time[$old_slot_time] as $talk) {
-		$talk->now_next = "now";
+
+	// if there's nothing set, the first session hasn't started
+	if($old_slot_time > 0) {
+		foreach($talks_keyed_on_time[$old_slot_time] as $talk) {
+			$talk->now_next = "now";
+		}
 	}
 	foreach($talks_keyed_on_time[$new_slot_time] as $talk) {
 		$talk->now_next = "next";

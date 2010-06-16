@@ -111,9 +111,13 @@ function event_listDecorateNow($events) {
  */
 function buildTalkStats($talks){
 	$rating=0;
-	foreach($talks as $talk){ $rating+=$talk->rating; }
+	if(is_array($talks)) {
+		foreach($talks as $talk){ 
+			$rating+=$talk->rating; 
+		}
+	}
 	return array(
 		'comments_total'	=> count($talks),
-		'rating_avg'		=> $rating/count($talks)
+		'rating_avg'		=> $talks ? $rating/count($talks) : 0
 	);
 }

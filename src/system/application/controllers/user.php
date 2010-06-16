@@ -113,21 +113,31 @@ class User extends Controller {
 	/**
 	* Swap the user's status - active/inactive
 	*/
-	function changestat($uid){
+	function changestat($uid, $from=null){
 	    // Kick them back out if they're not an admin
 	    if(!$this->user_model->isSiteAdmin()){ redirect(); }
 	    $this->user_model->toggleUserStatus($uid);
-	    redirect('user/view/'.$uid);
+		if (isset($from) && 'admin' == $from) {
+			redirect('user/admin');
+		}
+		else {
+			redirect('user/view/'.$uid);	
+		}
 	}
 	
 	/**
 	* Toggle the user's admin status
 	*/
-	function changeastat($uid){
+	function changeastat($uid, $from=null){
 	    // Kick them back out if they're not an admin
 	    if(!$this->user_model->isSiteAdmin()){ redirect(); }
 	    $this->user_model->toggleUserAdminStatus($uid);
-	    redirect('user/view/'.$uid);
+	    if (isset($from) && 'admin' == $from) {
+			redirect('user/admin');
+		}
+		else {
+			redirect('user/view/'.$uid);	
+		}
 	}
 
 	/**
