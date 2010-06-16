@@ -323,6 +323,7 @@ class Event extends Controller {
 		$this->load->model('talk_track_model','ttm');
 		$this->load->model('event_track_model','etm');
 		$this->load->model('talk_comments_model','tcm');
+		$this->load->model('user_admin_model','uadm');
 		$this->load->model('talks_model');
 		
 		$events		= $this->event_model->getEventDetail($id);
@@ -428,6 +429,7 @@ class Event extends Controller {
 			//'attend' =>$this->uam->getAttendCount($id)
 			//'started'=>$this->tz->hasEvtStarted($id),
 		);
+		
 		if($opt=='track'){ 
 			$arr['track_filter']	= $opt_id;
 			$arr['track_data']		= null;
@@ -532,7 +534,8 @@ class Event extends Controller {
 			array(
 				'eid'			=> $id,
 				'is_private'	=> $events[0]->private,
-				'evt_admin'		=> $this->event_model->getEventAdmins($id)
+				'evt_admin'		=> $this->event_model->getEventAdmins($id),
+				'claim_count'	=> count($this->uadm->getPendingClaims_Talks($id))
 			)); 
 		}
 		

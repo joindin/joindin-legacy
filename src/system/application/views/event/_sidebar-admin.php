@@ -7,7 +7,7 @@
 		<ul>
 		<li><a href="/event/edit/<?php echo $eid; ?>">Edit Event</a>
 		<li><a href="/talk/add/event/<?php echo $eid; ?>">Add a New Talk</a>
-		<li><a href="/event/claim/<?php echo $eid; ?>">Pending Claims</a>
+		<li><a href="/event/claim/<?php echo $eid; ?>">Pending Claims</a> (<?php echo $claim_count; ?>)
 		<li><a href="/event/tracks/<?php echo $eid; ?>">Event Tracks</a>
 		<li><a href="/event/import/<?php echo $eid; ?>">Import Event Info</a>
 		<li><a href="/event/delete/<?php echo $eid; ?>" style="color:#D3000E;font-weight:bold">Delete event</a>
