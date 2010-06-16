@@ -947,47 +947,53 @@ class Event extends Controller {
 		$this->load->model('user_admin_model','uam');
 		$this->load->helper('events_helper');
 		$this->load->library('sendemail');
-		$ret 	= $this->uam->getPendingClaims('talk',$eid);
-		
+
 		$claim	= $this->input->post('claim');
 		$sub	= $this->input->post('sub');
 		
+		$msg	= array();
+		$claims	= array();
+		foreach($this->uam->getPendingClaims('talk',$eid) as $claim_data){
+			$claims[$claim_data->ua_id]=$claim_data;
+		}
+		$approved = 0;
+		$denied	  = 0;
+				
 		// If we have claims to process...
 		if($claim && count($claim)>0 && isset($sub)){
 			foreach($claim as $k=>$v){
-				// p[0] is record from $ret, p[1] is the user ID, p[2] is the session ID
-				$p=explode('_',$k);
-				if($v=='approve'){
-					$t_id		= $p[2];
-					$t_title	= $ret[$p[0]]->talk_title;
-					$c_name		= $ret[$p[0]]->claiming_name;
-					$code		= buildCode($t_id,$eid,$t_title,$c_name);
-					
-					// Put the code in the database to claim their talk!
-					$this->db->where('ID',$ret[$p[0]]->ua_id);
-					$this->db->update('user_admin',array('rcode'=>$code));
-					
-					$email		= $ret[$p[0]]->email;
-					$evt_name	= $ret[$p[0]]->event_name;
-					$this->sendemail->claimSuccess($email,$t_title,$evt_name);
-					unset($ret[$p[0]]);
-				}else{
-					// Remove the claim...it's not valid
-					$tdata=array(
-						'rid'	=> $p[2],
-						'rtype'	=> 'talk',
-						'rcode'	=> 'pending'
-					);
-					$this->db->delete('user_admin',$tdata);
-					unset($ret[$p[0]]);
+				switch(strtolower($v)){
+					case 'approve': 
+						$this->db->where('ID',$k);
+						$this->db->update('user_admin',array('rcode'=>''));
+						
+						$email		= $claims[$k]->email;
+						$evt_name	= $claims[$k]->event_name;
+						$talk_title	= $claims[$k]->talk_title;
+						$this->sendemail->claimSuccess($email,$talk_title,$evt_name);
+						
+						$approved++;
+						break;
+					case 'deny':
+						$this->db->delete('user_admin',array('ID'=>$k));
+						$denied++;
+						break;
+					default:
+						/* do nothing, no action taken */
 				}
+				
+				echo '<br/>';
 			}
 		}
+		if($approved>0){ $msg[]=$approved.' approved'; }
+		if($denied>0){ $msg[]=$denied.' denied'; }
+		$msg=implode(',',$msg);
 		
 		// Data to pass out to the view
 		$arr=array(
-			'claims'	=> $ret,
-			'eid'		=> $eid
+			'claims'	=> $this->uam->getPendingClaims('talk',$eid),
+			'eid'		=> $eid,
+			'msg'		=> $msg
 		);
 
 		$this->template->write_view('content','event/claim',$arr);
