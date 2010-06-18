@@ -64,7 +64,7 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
 			echo form_input('speaker_row['.$k.']',$speaker->speaker_name);
 		}
 	} else {
-		echo form_input('speaker_row[new_0]','');
+		echo form_input('speaker_row[new_1]','');
 	}
 	?>
 	<div id="speaker_row_container">

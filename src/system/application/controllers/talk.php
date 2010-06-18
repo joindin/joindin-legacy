@@ -102,10 +102,12 @@ class Talk extends Controller {
 		
 		if($id){
 			$det	= $this->talks_model->getTalks($id);
+			$thisTalk = $det[0];
+			
 			$events	= $this->event_model->getEventDetail($thisTalk->event_id);
 			$tracks	= $this->eventTracks->getEventTracks($thisTalk->eid);
 			
-			$thisTalk = $det[0];
+
 			$thisTalksEvent = $events[0];
 			$thisTalksTrack = $tracks[0];
 			
@@ -133,6 +135,7 @@ class Talk extends Controller {
 			$this->validation->session_type=$thisTalk->tcid;
 		}else{
 			$events	= $this->event_model->getEventDetail($eid);
+			$thisTalksEvent = $events[0];
 			$det=array();
 			//set the date to the start date of the event
 			$this->validation->given_mo = date('m',$thisTalksEvent->event_start);
@@ -602,11 +605,11 @@ class Talk extends Controller {
 		); //echo $t.' '.date('m.d.Y H:i:s',$t);
 		//get the duration of the selected event
 		$det=$this->event_model->getEventDetail($this->validation->event_id);
-		$det=$thisTalk;
-		//echo '<pre>'; print_r($det); echo '</pre>';
-		$day_start	= mktime(0,0,0,date('m',$det->event_start),date('d',$det->event_start),date('Y',$det->event_start));
-		$day_end	= mktime(23,59,59,date('m',$det->event_end),date('d',$det->event_end),date('Y',$det->event_end));
-		//if($t>=$det->event_start && $t<=$det->event_end){
+		$thisTalk=$det[0];
+		//echo '<pre>'; print_r($thisTalk); echo '</pre>';
+		$day_start	= mktime(0,0,0,date('m',$thisTalk->event_start),date('d',$thisTalk->event_start),date('Y',$thisTalk->event_start));
+		$day_end	= mktime(23,59,59,date('m',$thisTalk->event_end),date('d',$thisTalk->event_end),date('Y',$thisTalk->event_end));
+		//if($t>=$thisTalk->event_start && $t<=$thisTalk->event_end){
 		if($t>=$day_start && $t<=$day_end){
 			return true;
 		}else{
