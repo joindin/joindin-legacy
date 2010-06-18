@@ -55,9 +55,11 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
 		To <b>remove</b> a speaker, remove their name from the text field and submit.
 	</span>
 	<?php 
-	foreach($this->validation->speaker as $k=>$speaker){
-		echo form_input('speaker_row['.$k.']',$speaker->speaker_name);
-	}
+	if(count($this->validation->speaker)){
+		foreach($this->validation->speaker as $k=>$speaker){
+			echo form_input('speaker_row['.$k.']',$speaker->speaker_name);
+		}
+	}else{ echo form_input('speaker_row[0]'); }
 	?>
 	<div id="speaker_row_container"></div>
 	<?php 

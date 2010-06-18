@@ -136,7 +136,8 @@ class Talk extends Controller {
 			$this->validation->given_hour= date('H',$events[0]->event_start);
 			$this->validation->given_min= date('i',$events[0]->event_start);
 			
-			$this->validation->session_track=null;
+			$this->validation->session_track	= null;
+			$this->validation->speaker			= array();
 			
 			$is_private=false;
 		}
