@@ -263,18 +263,20 @@ class Talk extends Controller {
 		if(empty($talk_detail)){ redirect('talk'); }
 
 		$currentUserId 	= $this->session->userdata('ID');
-		$arr			= array();
+		$arr			= array('error' => '');
 		
-		if(!$this->user_model->isAdminEvent($talk_detail[0]->eid)){
+		if($this->user_model->isAdminEvent($talk_detail[0]->eid)){
 			$this->load->helper('form');
 			$this->load->library('validation');
 			$this->load->model('talks_model');
 
-			$arr=array('tid'=>$id);
+			$arr['tid'] = $id;
 			if(isset($_POST['answer']) && $_POST['answer']=='yes'){
-				echo 'delete';
 				$this->talks_model->deleteTalk($id);
+				unset($arr['tid']);
 			}
+		} else {
+		    $arr['error'] = 'No event administration rights';
 		}
 		
 		$this->template->write_view('content','talk/delete',$arr,TRUE);
