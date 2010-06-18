@@ -44,7 +44,7 @@ class Talk_speaker_model extends Model {
 			
 			if($speaker_row=$this->_speakerExists($talk_id,$speaker)){
 				//Update the current information
-				$this->db->update('talk_speaker',$data,array('ID'=>$speaker_row[0]->id));
+				$this->db->update('talk_speaker',$data,array('ID'=>$speaker_row[0]->ID));
 			}else{
 				// Add the new speaker
 				$this->db->insert('talk_speaker',$data);

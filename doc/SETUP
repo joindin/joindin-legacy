@@ -2,6 +2,8 @@
 You'll need to do a few things to set up the environment 
 for this code:
 
+- Short open tag must be set on
+
 - Create a webserver writable directory in system/cache
 called "ctokens"
 
