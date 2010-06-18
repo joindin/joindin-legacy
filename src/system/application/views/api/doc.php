@@ -328,7 +328,7 @@ results are returned in date order with newest first.<br/>
 	<ul>
 		<li>event_id: integer, ID number of event to get comments for
 		<li>track_name: string, name for the track
-		<li>track_desc: string, descrption for the track
+		<li>track_desc: string, description for the track
 	</ul>
 <b class="req_title">Output:</b> An array of values containing the following for each comment
 	<ul>
