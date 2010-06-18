@@ -76,6 +76,7 @@ function delBlogComment(cid,bid){
 	obj.cid=cid;
 	obj.bid=bid;
 	apiRequest('blog','deletecomment',obj, function(obj) {
+		$('#comment-'+cid).remove();
 		alert('Comment removed!'); return false;
 	});
 	return false;
