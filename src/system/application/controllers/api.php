@@ -53,10 +53,14 @@ class Api extends Controller {
 	
 	//---------------------
 	function output($ret){
+		// ret contains element out with elements output (format) and data
 		$out=null;
 		if(isset($ret['out'])){
-			if(isset($ret['out']['output'])){ $out=(string)$ret['out']['output']; }
-			$out=(!empty($out)) ? 'out_'.$out : 'out_json';
+			if(isset($ret['out']['output']) && is_string($ret['out']['output'])){ 
+				$out = 'out_' . $ret['out']['output'];
+			} else {
+				$out = 'out_json';
+			}
 			$this->load->view('api/'.$out,$ret['out']['data']);
 		}else{
 			$this->load->view('api/out_json',array('items'=>array('msg'=>'Unknown Error'))); 
