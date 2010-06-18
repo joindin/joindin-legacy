@@ -37,10 +37,10 @@ class Talk extends Controller {
 		$this->load->helper('form');
 		$this->load->library('validation');
 		$this->load->library('timezone');
-		$this->load->model('event_track_model','etm');
-		$this->load->model('talk_track_model','ttm');
-		$this->load->model('talk_speaker_model','tsm');
-		$this->load->model('user_admin_model','uam');
+		$this->load->model('event_track_model','eventTracks');
+		$this->load->model('talk_track_model','talkTracks');
+		$this->load->model('talk_speaker_model','talkSpeakers');
+		$this->load->model('user_admin_model','userAdmins');
 		
 		//Check to see if they're supposed to be here
 		if(!$this->auth){ redirect(); }
@@ -57,7 +57,7 @@ class Talk extends Controller {
 			$eid	= null;
 			
 			// See if they have access to the talk (claimed user, site admin, event admin)
-			if($this->user_model->isAdminEvent($eid) || $this->uam->hasPerm($currentUserId,$id,'talk')){
+			if($this->user_model->isAdminEvent($eid) || $this->userAdmins->hasPerm($currentUserId,$id,'talk')){
 				/* fine, let them through */
 			}else{ redirect(); }
 			
@@ -97,44 +97,49 @@ class Talk extends Controller {
 		
 		// If we have the event ID in our option...
 		if($id==null && $opt!=null){
-			$tracks	= $this->etm->getEventTracks($opt);
+			$tracks	= $this->eventTracks->getEventTracks($opt);
 		}
 		
 		if($id){
 			$det	= $this->talks_model->getTalks($id);
-			$events	= $this->event_model->getEventDetail($det[0]->event_id);
-			$tracks	= $this->etm->getEventTracks($det[0]->eid);
+			$events	= $this->event_model->getEventDetail($thisTalk->event_id);
+			$tracks	= $this->eventTracks->getEventTracks($thisTalk->eid);
 			
-			$track_info=$this->ttm->getSessionTrackInfo($det[0]->ID); //print_r($track_info);
-			$this->validation->session_track=(isset($track_info[0]->ID)) ? $track_info[0]->ID : null;
+			$thisTalk = $det[0];
+			$thisTalksEvent = $events[0];
+			$thisTalksTrack = $tracks[0];
 			
-			$is_private=($events[0]->private=='Y') ? true : false;
 			
-			foreach($det[0] as $k=>$v){
+			$track_info=$this->talkTracks->getSessionTrackInfo($thisTalk->ID); //print_r($track_info);
+			$this->validation->session_track=(isset($thisTalksTrack->ID)) ? $thisTalksTrack->ID : null;
+			
+			$is_private=($thisTalksEvent->private=='Y') ? true : false;
+			
+			foreach($thisTalk as $k=>$v){
 				$this->validation->$k=$v;
 			}
 			
 			// set our speaker information
-			$this->validation->speaker=$this->tsm->getSpeakerByTalkId($id);
+			$this->validation->speaker=$this->talkSpeakers->getSpeakerByTalkId($id);
 			
-			$this->validation->eid=$det[0]->eid;
-			$this->validation->given_day = $this->timezone->formattedEventDatetimeFromUnixtime($det[0]->date_given, $det[0]->event_tz_cont.'/'.$det[0]->event_tz_place, 'd');
-			$this->validation->given_mo = $this->timezone->formattedEventDatetimeFromUnixtime($det[0]->date_given, $det[0]->event_tz_cont.'/'.$det[0]->event_tz_place, 'm');
-			$this->validation->given_yr = $this->timezone->formattedEventDatetimeFromUnixtime($det[0]->date_given, $det[0]->event_tz_cont.'/'.$det[0]->event_tz_place, 'Y');
-			$this->validation->given_hour = $this->timezone->formattedEventDatetimeFromUnixtime($det[0]->date_given, $det[0]->event_tz_cont.'/'.$det[0]->event_tz_place, 'H');
-			$this->validation->given_min = $this->timezone->formattedEventDatetimeFromUnixtime($det[0]->date_given, $det[0]->event_tz_cont.'/'.$det[0]->event_tz_place, 'i');
+			$this->validation->eid=$thisTalk->eid;
+			$this->validation->given_day = $this->timezone->formattedEventDatetimeFromUnixtime($thisTalk->date_given, $thisTalk->event_tz_cont.'/'.$thisTalk->event_tz_place, 'd');
+			$this->validation->given_mo = $this->timezone->formattedEventDatetimeFromUnixtime($thisTalk->date_given, $thisTalk->event_tz_cont.'/'.$thisTalk->event_tz_place, 'm');
+			$this->validation->given_yr = $this->timezone->formattedEventDatetimeFromUnixtime($thisTalk->date_given, $thisTalk->event_tz_cont.'/'.$thisTalk->event_tz_place, 'Y');
+			$this->validation->given_hour = $this->timezone->formattedEventDatetimeFromUnixtime($thisTalk->date_given, $thisTalk->event_tz_cont.'/'.$thisTalk->event_tz_place, 'H');
+			$this->validation->given_min = $this->timezone->formattedEventDatetimeFromUnixtime($thisTalk->date_given, $thisTalk->event_tz_cont.'/'.$thisTalk->event_tz_place, 'i');
 			
-			$this->validation->session_lang=$det[0]->lang_name;
-			$this->validation->session_type=$det[0]->tcid;
+			$this->validation->session_lang=$thisTalk->lang_name;
+			$this->validation->session_type=$thisTalk->tcid;
 		}else{
 			$events	= $this->event_model->getEventDetail($eid);
 			$det=array();
 			//set the date to the start date of the event
-			$this->validation->given_mo = date('m',$events[0]->event_start);
-			$this->validation->given_day= date('d',$events[0]->event_start);
-			$this->validation->given_yr = date('Y',$events[0]->event_start);
-			$this->validation->given_hour= date('H',$events[0]->event_start);
-			$this->validation->given_min= date('i',$events[0]->event_start);
+			$this->validation->given_mo = date('m',$thisTalksEvent->event_start);
+			$this->validation->given_day= date('d',$thisTalksEvent->event_start);
+			$this->validation->given_yr = date('Y',$thisTalksEvent->event_start);
+			$this->validation->given_hour= date('H',$thisTalksEvent->event_start);
+			$this->validation->given_min= date('i',$thisTalksEvent->event_start);
 			
 			$this->validation->session_track=null;
 			
@@ -143,12 +148,16 @@ class Talk extends Controller {
 		if(isset($eid)){ $this->validation->event_id=$eid; }
 		
 		if($this->validation->run()!=FALSE){
-			$talk_date = mktime(0,0,0,
-					$this->input->post('given_mo'),
-					$this->input->post('given_day'),
-					$this->input->post('given_yr'));
-			if(!empty($events[0]->event_tz_cont) && !empty($events[0]->event_tz_place)) {
-				$talk_timezone = new DateTimeZone($events[0]->event_tz_cont . '/' . $events[0]->event_tz_place);
+			$talk_date = mktime(
+				0,
+				0,
+				0,
+				$this->input->post('given_mo'),
+				$this->input->post('given_day'),
+				$this->input->post('given_yr')
+			);
+			if(!empty($thisTalksEvent->event_tz_cont) && !empty($thisTalksEvent->event_tz_place)) {
+				$talk_timezone = new DateTimeZone($thisTalksEvent->event_tz_cont . '/' . $thisTalksEvent->event_tz_place);
 			} else {
 				$talk_timezone = new DateTimeZone('UTC');
 			}
@@ -175,7 +184,7 @@ class Talk extends Controller {
 
 			if($id){ 
 				//update the speaker information
-				$this->tsm->handleSpeakerData($id,$this->input->post('speaker_row'));
+				$this->talkSpeakers->handleSpeakerData($id,$this->input->post('speaker_row'));
 					
 				$this->db->where('id',$id);
 				$this->db->update('talks',$arr);
@@ -184,15 +193,15 @@ class Talk extends Controller {
 				
 				//check to see if we have a track and it's not the "none"
 				if($this->input->post('session_track')!='none'){
-					$curr_track	= (isset($track_info[0]->ID)) ? $track_info[0]->ID : null;
+					$curr_track	= (isset($thisTalksTrack->ID)) ? $thisTalksTrack->ID : null;
 					$new_track	= $this->input->post('session_track');
-					$this->ttm->updateSessionTrack($id,$curr_track,$new_track);
+					$this->talkTracks->updateSessionTrack($id,$curr_track,$new_track);
 					$this->validation->session_track=$new_track;
 				}elseif($this->input->post('session_track')=='none'){
 					//remove the track for the session
-					if (is_array($track_info) && count($track_info) > 0 && is_object($track_info[0])) {
-						$curr_track	= $track_info[0]->ID;
-						$this->ttm->deleteSessionTrack($id,$curr_track);
+					if (is_array($track_info) && count($track_info) > 0 && is_object($thisTalksTrack)) {
+						$curr_track	= $thisTalksTrack->ID;
+						$this->talkTracks->deleteSessionTrack($id,$curr_track);
 					}
 				}
 				
@@ -208,19 +217,19 @@ class Talk extends Controller {
 					$tc_id=$this->db->insert_id();
 					
 					// Add the new speakers
-					$this->tsm->handleSpeakerData($tc_id,$this->input->post('speaker_row'));
+					$this->talkSpeakers->handleSpeakerData($tc_id,$this->input->post('speaker_row'));
 					
 					//check to see if we have a track and it's not the "none"
 					if($this->input->post('session_track')!='none'){
-						$this->ttm->setSessionTrack($tc_id,$this->input->post('session_track'));
+						$this->talkTracks->setSessionTrack($tc_id,$this->input->post('session_track'));
 					}
 				
-					$msg='Talk information successfully added!</br><a href="/talk/add/event/'.$events[0]->ID.'">Add another</a> ';
-					$msg.='or <a href="/event/view/'.$events[0]->ID.'">View Event</a>';
+					$msg='Talk information successfully added!</br><a href="/talk/add/event/'.$thisTalksEvent->ID.'">Add another</a> ';
+					$msg.='or <a href="/event/view/'.$thisTalksEvent->ID.'">View Event</a>';
 					$pass=true;
 				}else{
 					$err='There was an error adding the talk information! (Duplicate talk)<br/>';
-					$err.='<a href="/event/view/'.$events[0]->ID.'">View Event</a>';
+					$err.='<a href="/event/view/'.$thisTalksEvent->ID.'">View Event</a>';
 					$pass=false;
 				}
 			}
@@ -284,10 +293,10 @@ class Talk extends Controller {
 		$this->load->model('event_model');
 		$this->load->model('invite_list_model','ilm');
 		$this->load->model('user_attend_model');
-		$this->load->model('user_admin_model','uam');
-		$this->load->model('talk_track_model','ttm');
+		$this->load->model('user_admin_model','userAdmins');
+		$this->load->model('talk_track_model','talkTracks');
 		$this->load->model('talk_comments_model','tcm');
-		$this->load->model('talk_speaker_model','tsm');
+		$this->load->model('talk_speaker_model','talkSpeakers');
 		$this->load->helper('form');
 		$this->load->helper('events');
 		$this->load->helper('talk');
@@ -509,15 +518,15 @@ class Talk extends Controller {
 			'claims'		=> $event_claims,
 			'claim_status'	=> $claim_status,
 			'claim_msg'		=> $claim_msg,
-			'claim_details'	=> $this->uam->getTalkClaims($id),
+			'claim_details'	=> $this->userAdmins->getTalkClaims($id),
 			//'speaker_claims'=> buildClaimData($talk_detail[0],$event_claims,$ftalk),
-			'speakers'		=> $this->tsm->getSpeakerByTalkId($id),
+			'speakers'		=> $this->talkSpeakers->getSpeakerByTalkId($id),
 			//'ftalk'			=> $ftalk, // this one requires the previous call to buildClaimData (return by reference)
 			'reqkey' 		=> $reqkey,
 			'seckey' 		=> buildSecFile($reqkey),
 			'user_attending'=>($this->user_attend_model->chkAttend($currentUserId,$talk_detail[0]->event_id)) ? true : false,
 			'msg'			=> $msg,
-			'track_info'	=> $this->ttm->getSessionTrackInfo($id),
+			'track_info'	=> $this->talkTracks->getSessionTrackInfo($id),
 			'user_id'		=> ($this->user_model->isAuth()) ? $this->session->userdata('ID') : null
 		);
 		
@@ -530,7 +539,7 @@ class Talk extends Controller {
 	}
 	function claim(){
 		if(!$this->user_model->isSiteAdmin()){ redirect(); }
-		$this->load->model('user_admin_model','uam');
+		$this->load->model('user_admin_model','userAdmins');
 		$this->load->library('validation');
 		$this->load->library('sendemail');
 		$this->load->helper('events_helper');		
@@ -540,7 +549,7 @@ class Talk extends Controller {
 		//$this->validation->set_rules($rules);
 		//$this->validation->set_fields($fields);
 		
-		$claims=$this->uam->getPendingClaims();
+		$claims=$this->userAdmins->getPendingClaims();
 		
 		$approved=0;
 		$deleted=0;
@@ -593,7 +602,7 @@ class Talk extends Controller {
 		); //echo $t.' '.date('m.d.Y H:i:s',$t);
 		//get the duration of the selected event
 		$det=$this->event_model->getEventDetail($this->validation->event_id);
-		$det=$det[0];
+		$det=$thisTalk;
 		//echo '<pre>'; print_r($det); echo '</pre>';
 		$day_start	= mktime(0,0,0,date('m',$det->event_start),date('d',$det->event_start),date('Y',$det->event_start));
 		$day_end	= mktime(23,59,59,date('m',$det->event_end),date('d',$det->event_end),date('Y',$det->event_end));
