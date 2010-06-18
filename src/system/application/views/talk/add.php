@@ -16,12 +16,12 @@ if(!empty($this->validation->error_string)){
 }
 
 if(isset($this->edit_id)){
-	echo form_open('talk/edit/'.$this->edit_id);
+	$actionUrl = 'talk/edit/'.$this->edit_id;
 	$sub	= 'Save Edits';
 	$title	= 'Edit Session: '.$detail[0]->talk_title;
 	menu_pagetitle('Edit Session: '.$detail[0]->talk_title);
 }else{ 
-	echo form_open('talk/add/event/'.$ev->ID);
+	$actionUrl =  'talk/add/event/'.$ev->ID;
 	$sub	= 'Add Session';
 	$title	= 'Add Session';
 	menu_pagetitle('Add Session');
@@ -33,7 +33,10 @@ if(isset($err) && !empty($err)){ $this->load->view('msg_info', array('msg' => $e
 $priv=($evt_priv===true) ? ', Private Event' : '';
 ?>
 
+<?php echo form_open($actionUrl); ?>
+
 <div id="box">
+	
     <div class="row">
 	<label for="event"></label>
 	<?php
@@ -49,19 +52,24 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
     </div>
     <div class="row">
 	<label for="speaker">Speaker</label>
-	
+
 	<span style="color:#3567AC;font-size:11px">
 		One speaker per row, add more rows for more than one speaker.<br/>
 		To <b>remove</b> a speaker, remove their name from the text field and submit.
 	</span>
-	<?php 
-	if(count($this->validation->speaker)){
+	<?php
+	// if editing and already have speakers...
+	if (isset($this->validation->speaker) && count($this->validation->speaker) != 0) {
 		foreach($this->validation->speaker as $k=>$speaker){
 			echo form_input('speaker_row['.$k.']',$speaker->speaker_name);
 		}
-	}else{ echo form_input('speaker_row[0]'); }
+	} else {
+		echo form_input('speaker_row[new_1]','');
+	}
 	?>
-	<div id="speaker_row_container"></div>
+	<div id="speaker_row_container">
+		
+	</div>
 	<?php 
 	$attr=array(
 		'name'	=> 'add_speaker_line',

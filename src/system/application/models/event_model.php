@@ -145,7 +145,7 @@ class Event_model extends Model {
 
 		// Decorate result with "event is on now" flag
 		$res = $q->result();
-		if (is_array($res) && is_object($res[0])) {
+		if (is_array($res) && 0 != count($res)&& is_object($res[0])) {
 			if (event_isNowOn($res[0]->event_start, $res[0]->event_end)) {
 				$res[0]->now = "now";
 			} else {
