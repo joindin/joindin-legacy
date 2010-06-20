@@ -152,20 +152,21 @@ class Talk extends Controller {
 		if(isset($eid)){ $this->validation->event_id=$eid; }
 		
 		if($this->validation->run()!=FALSE){
-			$talk_date = mktime(
-				0,
-				0,
-				0,
-				$this->input->post('given_mo'),
-				$this->input->post('given_day'),
-				$this->input->post('given_yr')
-			);
+			//$talk_date = mktime(
+			//	0,
+			//	0,
+			//	0,
+			//	$this->input->post('given_mo'),
+			//	$this->input->post('given_day'),
+			//	$this->input->post('given_yr')
+			//);
+			$talk_datetime = new DateTime($this->input->post('talkDate'));
 			if(!empty($thisTalksEvent->event_tz_cont) && !empty($thisTalksEvent->event_tz_place)) {
 				$talk_timezone = new DateTimeZone($thisTalksEvent->event_tz_cont . '/' . $thisTalksEvent->event_tz_place);
 			} else {
 				$talk_timezone = new DateTimeZone('UTC');
 			}
-			$talk_datetime = date_create(date('d-M-Y ',$talk_date) . $this->input->post('given_hour') . ':' . $this->input->post('given_min'), $talk_timezone);
+			//$talk_datetime = date_create(date('d-M-Y ',$talk_date) . $this->input->post('given_hour') . ':' . $this->input->post('given_min'), $talk_timezone);
 
 			// How much wrong will ->format("U") be if I do it now, due to DST changes?
 			// Only needed until PHP Bug #51051 delivers a better method
@@ -256,7 +257,8 @@ class Talk extends Controller {
 			'langs'		=>$langs,
 			'detail'	=>$det,
 			'evt_priv'	=>$is_private,
-			'tracks'	=>$tracks
+			'tracks'	=>$tracks, 
+			'thisTalksEvent' => $thisTalksEvent
 		);
 		$this->template->write_view('content','talk/add',$out,TRUE);
 		$this->template->render();
