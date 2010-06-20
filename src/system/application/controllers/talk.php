@@ -160,12 +160,13 @@ class Talk extends Controller {
 			//	$this->input->post('given_day'),
 			//	$this->input->post('given_yr')
 			//);
-			$talk_datetime = new DateTime($this->input->post('talkDate'));
 			if(!empty($thisTalksEvent->event_tz_cont) && !empty($thisTalksEvent->event_tz_place)) {
 				$talk_timezone = new DateTimeZone($thisTalksEvent->event_tz_cont . '/' . $thisTalksEvent->event_tz_place);
 			} else {
 				$talk_timezone = new DateTimeZone('UTC');
 			}
+			$talk_datetime = new DateTime($this->input->post('talkDate').' '.$this->input->post('given_hour') . ':' . $this->input->post('given_min'), $talk_timezone);
+			
 			//$talk_datetime = date_create(date('d-M-Y ',$talk_date) . $this->input->post('given_hour') . ':' . $this->input->post('given_min'), $talk_timezone);
 
 			// How much wrong will ->format("U") be if I do it now, due to DST changes?
