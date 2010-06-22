@@ -267,6 +267,7 @@ class Talk extends Controller {
 	function delete($id){
 		$this->load->model('talks_model');
 		$this->load->model('user_model');
+		$this->load->model('talk_track_model','talkTracks');
 		
 		//Check to see if they're supposed to be here
 		if(!$this->auth){ redirect(); }
@@ -285,6 +286,9 @@ class Talk extends Controller {
 			$arr['tid'] = $id;
 			if(isset($_POST['answer']) && $_POST['answer']=='yes'){
 				$this->talks_model->deleteTalk($id);
+				
+				// Delete any records in the tracks table too
+				$this->talkTracks->deleteSessionTrack($id);
 				unset($arr['tid']);
 			}
 		} else {
