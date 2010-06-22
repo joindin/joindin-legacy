@@ -195,6 +195,8 @@ class Talk extends Controller {
 				//remove the current reference for the talk category and add a new one				
 				$this->db->delete('talk_cat',array('talk_id'=>$id));
 				
+				$this->validation->speaker=$this->talkSpeakers->getTalkSpeakers($id);
+				
 				//check to see if we have a track and it's not the "none"
 				if($this->input->post('session_track')!='none'){
 					$curr_track	= (isset($thisTalksTrack->ID)) ? $thisTalksTrack->ID : null;
