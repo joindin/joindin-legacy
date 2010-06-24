@@ -5,6 +5,10 @@ function addArrayToXML($xml, $data) {
 			$key = "item";
 		}
 		if(is_string($item) or empty($item)) {
+			// we might have an empty array, this is expected
+			if(is_array($item) AND count($item) == 0) {
+				$item = '';
+			}
 			$xml->addChild($key,$item);
 		} else {
 			$child = $xml->addChild($key);
