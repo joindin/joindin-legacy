@@ -22,13 +22,19 @@
 				$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->num_attend);
 				$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->num_comments);
 
-				$this->assertTrue(is_string($event->stub) || $event->stub === null);
+				$this->assertTrue(is_string($event->event_stub) || $event->event_stub === null);
 				$this->assertTrue(is_string($event->event_icon) || $event->event_icon === null);
 				$this->assertTrue(is_string($event->event_cfp_start) || $event->event_cfp_start === null);
 				$this->assertTrue(is_string($event->event_cfp_end) || $event->event_cfp_end === null);
 				$this->assertTrue(is_string($event->event_hashtag) || $event->event_hashtag === null);
 				$this->assertTrue(is_string($event->event_href) || $event->event_href === null);
-				$this->assertTrue($event->tz === '0' || $event->tz === null, "Event timezone [".$event->tz."] unrecognized");
+				$this->assertTrue(is_string($event->event_tz_cont) || $event->event_tz_cont === null);
+				$this->assertTrue(is_string($event->event_tz_place) || $event->event_tz_place === null);
+				if($event->event_tz_cont && $event->event_tz_place) {
+					$tz = $event->event_tz_cont.'/'.$event->event_tz_place;
+					$tzObj = new DateTimeZone($tz);
+					$this->assertTrue($tzObj instanceOf DateTimeZone);
+				}
 
 				$this->assertTrue(is_numeric($event->event_start));
 				$this->assertTrue(is_numeric($event->event_end));
