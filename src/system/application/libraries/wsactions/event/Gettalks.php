@@ -30,7 +30,7 @@ class Gettalks extends BaseWsRequest {
 		if(!$valid){
 			$this->CI->load->model('event_model');
 			$this->CI->load->model('talk_track_model');
-			$ret=$this->CI->event_model->getEventTalks($eid);
+			$ret=$this->CI->event_model->getEventTalks($eid, false);
 
 			// add the track information for each talk
 			foreach($ret as $talk) {

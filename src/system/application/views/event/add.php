@@ -210,23 +210,10 @@ echo '<h2>'.$title.'</h2>';
 	<div class="row">
     	<label for="event_stub">Event Stub</label>
     	<?php echo form_input(array('name' => 'event_stub', 'id' => 'event_stub'), $this->validation->event_stub); ?>
-    	<span style="color:#3567AC;font-size:11px">What's a <b>stub</b>? It's the "shortcut" part of the URL to help visitors get to your event faster. An example might be "phpevent" in the address "joind.in/event/phpevent". If no stub is given, you can still get to it via the event ID.</span>
+    	<span style="color:#3567AC;font-size:11px">What's a <b>stub</b>? It's the "shortcut" part of the URL to help visitors get to your event faster. An example might be "phpevent" in the address "<?php echo $this->config->site_url(); ?>event/phpevent". If no stub is given, you can still get to it via the event ID.</span>
         <div class="clear"></div>
     </div>
 	<div class="clear"></div>
-	<div class="row">
-	<label for="event_icon">Allow Voting?</label>
-	<?php 
-		$ev=($this->validation->event_voting=='Y') ? true : false;
-		echo form_checkbox('event_voting','Y',$ev); 
-	?><br/>
-	<span style="color:#3567AC;font-size:11px">
-		If you'd like to allow voting on event sessions, check here to turn this feature on 
-		(useful for things like Unconferences). This can be enabled at any time, but comments will
-		only count as "votes" prior to the start of the session.
-	</span>
-	</div>
-    <div class="clear"></div>
 	<div class="row">
 	<label for="event_icon">Is event private?</label>
 	<?php

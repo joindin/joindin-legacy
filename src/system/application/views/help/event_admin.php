@@ -25,20 +25,10 @@ you can't submit this with the original event request, you can use the <b>Edit E
 Images can be in any image type but the need to be <b>90 pixels by 90 pixels (square)</b>. If the image is the wrong
 size, the form will kick it back and let you know.
 </p>
-<li><b>Allow Voting</b><p>
-Because not all events are handled the same way, we wanted to build in a feature that would let events, like
-unconferences, get user feedback on the sessions before the event even starts. By checking the <b>Allow Voting</b>
-checkbox and saving the edits, you give your event's visitors a chance to give their "thumbs up" or "thumbs down"
-to each of the sessions.
-</p>
-<p>
-There's a few restrictions on this - the only users that can cast their votes are ones that are in the <b>Atending</b>
-list. Also, users can only cast one vote per session for each event.
-</p>
 <li><b>Event Link</b><p>
 This one's pretty easy, but bears mentioning - the <b>Event Link</b> field gives you a chance to point users back to the 
 official website for the event. This is a quick link for them to either head back to where they came from (the event 
-did link back to Joind.in, right?) or to point them in the right direction to get the full details. You can only define 
+did link back to <?php echo $this->config->item('site_name'); ?>, right?) or to point them in the right direction to get the full details. You can only define
 <b>one link</b> in this field.
 </p>
 <li><b>Event Hastag(s)</b><p>

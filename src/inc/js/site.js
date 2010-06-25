@@ -9,7 +9,7 @@ function setVote(rate){
 	return false;
 }
 function toggleAnon(tid){
-	lnk=$('#anonLink').html();
+	var lnk=$('#anonLink').html();
 	$.each($("tr[id^='com_anon_"+tid+"']"),function(k,v){
 		if(v.style.display=='none'){
 			v.style.display='block';
@@ -21,12 +21,12 @@ function toggleAnon(tid){
 	});
 }
 function getArea(field){
-	obj = document.getElementsByName(field);
+	var obj = document.getElementsByName(field);
 	cont= obj[0][obj[0].selectedIndex].value; //alert(cont);
 	$.getJSON(
 		'/api/tz/'+cont,
 		function(data){ //alert(data);
-			obj = document.getElementsByName('event_tz_area');
+			var obj = document.getElementsByName('event_tz_area');
 			//clear it out first...
 			obj[0].options.length=-1;
 			$.each(data,function(k,v){
@@ -37,6 +37,7 @@ function getArea(field){
 		}
 	);
 }
+
 //-------------------------
 function apiRequest(rtype,raction,data,callback){
 	var xml_str='';
@@ -44,7 +45,7 @@ function apiRequest(rtype,raction,data,callback){
 		xml_str+='<'+k+'>'+v+'</'+k+'>';
 	});
 	xml_str='<request><action type="'+raction+'" output="json">'+xml_str+'</action></request>';
-	gt_url="/api/"+rtype+'?reqk='+reqk+'&seck='+seck;
+	var gt_url="/api/"+rtype+'?reqk='+reqk+'&seck='+seck;
 	
 	$.ajax({
 		type: "POST",
@@ -52,14 +53,17 @@ function apiRequest(rtype,raction,data,callback){
 		data: xml_str,
 		contentType: "text/xml",
 		processData: false,
+		dataType: 'json',
 		success: function(rdata){
 			//alert(rdata);
-			obj=eval('('+rdata+')'); //alert(obj.msg);
+			//obj=eval('('+rdata+')'); //alert(obj.msg);
+			/* rdata should be json now ... parsed properly by the browser */
+			var obj = rdata;
 			
 			//check for the redirect
 			if(obj.msg && obj.msg.match('redirect:')){
-				goto=obj.msg.replace(/redirect:/,'');
-				document.location.href=goto;
+				var targetLocation=obj.msg.replace(/redirect:/,'');
+				document.location.href=targetLocation;
 			}else{
 				//maybe add some callback method here 
 				//alert('normal'); 
@@ -76,6 +80,7 @@ function delBlogComment(cid,bid){
 	obj.cid=cid;
 	obj.bid=bid;
 	apiRequest('blog','deletecomment',obj, function(obj) {
+		$('#comment-'+cid).remove();
 		alert('Comment removed!'); return false;
 	});
 	return false;
@@ -135,11 +140,12 @@ function claimTalk(tid){
 
 function markAttending(el,eid,isPast){
 	var $loading;
-	if (!$(el).next().is('.loading')) {
+	var $el = $(el);
+	if (!$el.next().is('.loading')) {
 		$loading = $('<span class="loading">Loading...</span>');
-		var pos = $(el).position();
+		var pos = $el.position();
 		$loading.css({left: pos.left + 15, top: pos.top - 30}).hide();
-		$(el).after($loading);
+		$el.after($loading);
 		$loading.fadeIn('fast');
 	}
 
@@ -147,17 +153,17 @@ function markAttending(el,eid,isPast){
 	obj.eid=eid;
 
 	apiRequest('event','attend',obj, function(obj) {
-		if ($(el).is('.btn-success')) {
-			$(el).removeClass('btn-success');
+		if ($el.is('.btn-success')) {
+			$el.removeClass('btn-success');
 			link_txt=isPast ? 'I attended' : 'I\'m attending';
 			adjustAttendCount(eid, -1);
 		} else {
-			$(el).addClass('btn-success');
+			$el.addClass('btn-success');
 			link_txt=isPast ? 'I attended' : 'I\'m attending';
 			adjustAttendCount(eid, 1);
 		}
 
-		$(el).html(link_txt);
+		$el.html(link_txt);
 		
 		function hideLoading()
 		{

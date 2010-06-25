@@ -5,7 +5,6 @@
 <li><a href="#add_session">Adding a session</a>
 <li><a href="#approve_claims">Approve session claim requests</a>
 <li><a href="#evt_import">Importing session information</a>
-<li><a href="#evt_voting">Pre-event Voting</a>
 <li><a href="#session_types">Session types</a>
 </ul>
 <hr/>
@@ -34,7 +33,7 @@ based on the speaker(s) of the talk and the person requesting).
 <a name="evt_import"></a>
 <h3>Importing session information</h3>
 <p>
-With the XML import feature (<a href="http://joind.in/about/import">more info here</a>) you can define the XML 
+With the XML import feature (<a href="<?php echo $this->config->site_url(); ?>about/import">more info here</a>) you can define the XML
 structure with your session data. To import your data, navigate to the event's detail page and look for the 
 "Import Event Info" button. Click on that and select your XML file to submit.
 <br/>
@@ -42,19 +41,7 @@ structure with your session data. To import your data, navigate to the event's d
 </p>
 <br/>
 
-<a name="evt_voting"></a>
-<h3>Pre-event Voting</h3>
-<p>
-If you have an event that wants to use voting as a part of selecting the sessions for the event, you can enable
-the pre-event voting in the event's settings. To enable it, go to your event's detail page and click to edit the 
-event. When you do, you'll see a checkbox to enable the feature. With it on, users will be able to add thier votes 
-to the session before the event starts.
-<br/>
-<a href="#top">Back to top</a>
-</p>
-<br/>
-
-<a name="evt_voting"></a>
+<a name="session_types"></a>
 <h3>Session Types</h3>
 <p>
 There's several different session types you can use for your event, some with some special features:

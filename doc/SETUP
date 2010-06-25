@@ -2,6 +2,8 @@
 You'll need to do a few things to set up the environment 
 for this code:
 
+- Short open tag must be set on
+
 - Create a webserver writable directory in system/cache
 called "ctokens"
 
@@ -11,5 +13,8 @@ called "ctokens"
 
 Grab the init_db.sql file and drop it into your database, run the
 numbered patches in order and you should be good to go!
+
+To load some test data, drop seed.sql and seed_countries.sql into the 
+database.
 
 ccornutt@phpdeveloper.org

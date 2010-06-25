@@ -32,6 +32,12 @@ function buildClaimData($talk_detail,$talk_claims,&$ftalk){
 	return $speaker;
 }
 
+/**
+ * Split out the comment types based on the inputted array (comment, keynote, etc)
+ * @param array $talk_comments Full listing of all talks for an event
+ *
+ * @return array $comments Sorted list of sessions
+ */
 function splitCommentTypes($talk_comments){
 	$comments=array();
 	foreach($talk_comments as $k=>$comment){
@@ -41,30 +47,32 @@ function splitCommentTypes($talk_comments){
 	return $comments;
 }
 
+
 /**
- * Takes a talk, and attempts to add a flag to say whether the talk is on
- * now or whether it is on next.
- * 
- * This logic *WILL* be broken until talks have an end time.  Live with it, or add end times.
+ * Create the links for the speakers, matching by name
  */
-function talk_decorateNowNext($talk) {
-	$time = time();
-
-	// Define some heuristic time windows for the start time of the "now" and "next" talks
-	$now_start  = $time - 3600;
-	$now_end    = $time;
-	$next_start = $time;
-	$next_end   = $time + 3600;
-
-	if ($talk->date_given > $now_start && $talk->date_given < $now_end) {
-		$talk->now_next = "now";
-	} else if ($talk->date_given > $next_start && $talk->date_given < $next_end) {
-		$talk->now_next = "next";
-	} else {
-		$talk->now_next = "";
+function buildClaimedLinks($speakers,$claim_detail){
+	
+	$speaker_data	= array();
+	$speaker_links	= array();
+	
+	foreach($claim_detail as $claim){
+		$speaker_data[$claim->full_name]=$claim->uid;
 	}
-
-	return $talk;
+	foreach($speakers as $speaker){
+		$name=$speaker->speaker_name;
+		if(array_key_exists($name,$speaker_data)){
+			$speaker_links[]='<a href="/user/view/'.$speaker_data[$name].'">'.$name.'</a>';
+		}else{ $speaker_links[]=$name; }
+	}
+	
+	//Check the claim...if there's only one claim, assign no matter what
+	if(count($speakers) && count($claim_detail)){
+		$speaker_links	= array();
+		$speaker_links[]= '<a href="/user/view/'.$claim_detail[0]->uid.'">'.$speakers[0]->speaker_name.'</a>';
+	}
+	
+	return implode(', ',$speaker_links);
 }
 
 /**
@@ -74,8 +82,51 @@ function talk_decorateNowNext($talk) {
  * This logic *WILL* be broken until talks have an end time.  Live with it, or add end times.
  */
 function talk_listDecorateNowNext($talks) {
+	$now = time();
+	
+	// set the default
+	foreach ($talks as $talk) {
+		$talk->now_next = "";
+	}
+
+	// check the event dates - any talk element will do for this
+	// if the event is not in progress, nothing is either now or next
+	if($talks[0]->event_start > $now || $talks[0]->event_end <= $now) {
+		return;
+	}
+
+	// firstly sort the talks into time slots
+	$talks_keyed_on_time = array();
 	foreach ($talks as $key=>$talk) {
-		$talks[$key] = talk_decorateNowNext($talks[$key]);
+		$talks_keyed_on_time[$talk->date_given][] = $talk;
+	}
+
+	// sort this so we get things in time order
+	ksort($talks_keyed_on_time);
+
+	// now work out which slot is most recent - this becomes "now" and the next slot is "next"
+	$old_slot_time = 0;
+	$new_slot_time = 0;
+	foreach($talks_keyed_on_time as $time=>$talk_list) {
+		// the time in this iteration becomes our new time
+		$new_slot_time = $time;
+		if($new_slot_time > $now) {
+			break;
+		}
+		// store this time in the old time slot for the next iteration
+		$old_slot_time = $time;
+	}
+
+	// our slot times identify our now and next talk sets
+
+	// if there's nothing set, the first session hasn't started
+	if($old_slot_time > 0) {
+		foreach($talks_keyed_on_time[$old_slot_time] as $talk) {
+			$talk->now_next = "now";
+		}
+	}
+	foreach($talks_keyed_on_time[$new_slot_time] as $talk) {
+		$talk->now_next = "next";
 	}
 
 	return $talks;

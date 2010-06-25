@@ -9,9 +9,13 @@
 
 <p>
 Below you'll find a list of claims visitors to the site have made on the sessions for this event. 
-The "Speaker" field shows the speaker name(s) and the "Claiming User" is the Joind.in user trying to
+The "Speaker" field shows the speaker name(s) and the "Claiming User" is the <?php echo $this->config->item('site_name'); ?> user trying to
 claim the session. You can then accept/deny based on any match between them.
 </p>
+
+<?php if(!empty($msg)){
+	$this->load->view('msg_info', array('msg' => $msg));
+} ?>
 
 <?php echo form_open('event/claim/'.$eid); ?>
 <div class="box">
@@ -28,8 +32,8 @@ claim the session. You can then accept/deny based on any match between them.
 	<?php
 		foreach($claims as $k=>$claim): ?>
 		<tr>
-			<td align="center"><?php echo form_radio('claim['.$k.'_'.$claim->uid.'_'.$claim->rid.']','approve'); ?></td>
-			<td align="center"><?php echo form_radio('claim['.$k.'_'.$claim->uid.'_'.$claim->rid.']','deny'); ?></td>
+			<td align="center"><?php echo form_radio('claim['.$claim->ua_id.']','approve'); ?></td>
+			<td align="center"><?php echo form_radio('claim['.$claim->ua_id.']','deny'); ?></td>
 			<td>
 				<?php echo '<a href="/talk/view/'.$claim->rid.'">'.$claim->talk_title.'</a>'; ?><br/>
 				<span style="font-size:9px">@<?php echo $claim->event_name; ?></span>

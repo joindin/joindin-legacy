@@ -3,14 +3,6 @@ Please note! This assumes that you've already loaded in
 the structure of the database via the other SQL file. Without
 the table structure, this seed data cannot be added.
 */
-
-/* Load blog categories */
-/* TODO */
-
-/* Load a list of languages */
-insert into lang (lang_name,lang_abbr,ID) values ('English - US','en',NULL);
-insert into lang (lang_name,lang_abbr,ID) values ('English - UK','uk',NULL);
-insert into lang (lang_name,lang_abbr,ID) values ('Dutch','de',NULL);
 	
 /* Add in some sample users */
 /* John Doe is a normal site user, is password is "password" */
@@ -113,6 +105,18 @@ insert into talks (
 	NULL
 );
 SELECT @ftalkid:=LAST_INSERT_ID();
+
+/* Insert speaker data for the talk */
+insert into talk_speaker (
+	talk_id,
+	speaker,
+	ID
+)values(
+	@ftalkid,
+	'John Doe',
+	NULL
+)
+
 insert into talks (
 	talk_title,speaker,slides_link,
 	date_given,event_id,talk_desc,
@@ -131,6 +135,18 @@ insert into talks (
 	NULL
 );
 SELECT @stalkid:=LAST_INSERT_ID();
+
+/* Insert speaker data for the talk */
+insert into talk_speaker (
+	talk_id,
+	speaker,
+	ID
+)values(
+	@stalkid,
+	'Jane Doe',
+	NULL
+)
+
 /* ----------------------------------*/
 
 /* Add a pending claim for John Doe on the first talk */

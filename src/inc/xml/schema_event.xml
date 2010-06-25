@@ -18,10 +18,15 @@
               <xsd:element maxOccurs="unbounded" name="session">
                 <xsd:complexType>
                   <xsd:sequence>
-                    <xsd:element name="session_start" type="xsd:integer" />
-                    <xsd:element name="session_type" type="xsd:string" minOccurs="0"/>
-                    <xsd:element name="session_track" type="xsd:string" minOccurs="0"/>
-                    <xsd:element name="session_speaker" type="xsd:string" />
+                    <xsd:element name="session_start" type="xsd:int" />
+                    <xsd:element name="session_type" type="xsd:string" />
+                    <xsd:element name="session_speakers">
+                      <xsd:complexType>
+                        <xsd:sequence>
+                          <xsd:element name="speaker" type="xsd:string" />
+                        </xsd:sequence>
+                      </xsd:complexType>
+                    </xsd:element>
                     <xsd:element name="session_title" type="xsd:string" />
                     <xsd:element name="session_desc" type="xsd:string" />
                   </xsd:sequence>

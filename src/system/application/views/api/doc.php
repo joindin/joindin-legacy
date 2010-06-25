@@ -3,10 +3,10 @@ b.req_title { color: #767676; }
 b.req_name { font-size: 12px; }
 </style>
 
-<h1 style="margin-top:0px;margin-bottom:2px;color:#B86F09">Joind.in API</h1>
+<h1 style="margin-top:0px;margin-bottom:2px;color:#B86F09"><?php echo $this->config->item('site_name'); ?> API</h1>
 
 <p>
-The Joind.in API is XML based and allows for the fetching and updating of information in the service's database. Here's an example structure each request should follow:
+The <?php echo $this->config->item('site_name'); ?> API is XML based and allows for the fetching and updating of information in the service's database. Here's an example structure each request should follow:
 </p>
 
 <h3>Sample Request</h3>
@@ -58,7 +58,7 @@ There are four different URLs you can make requests to:
 </p>
 
 <p>
-Our sample XML above would need to be sent to "http://joind.in/api/event" to work correctly. If you send it to an incorrect URL you probably won't get quite what you're expecting. 
+Our sample XML above would need to be sent to "<?php echo $this->config->site_url(); ?>api/event" to work correctly. If you send it to an incorrect URL you probably won't get quite what you're expecting.
 </p>
 
 <h3>Responses</h3>
@@ -97,6 +97,7 @@ Below are the request types that you can make to the API including input and out
 		<li><a href="#evt_attend">Attend Event</a>
 		<li><a href="#add_evt_comment">Add Comment</a>
 		<li><a href="#get_evt_comment">Get Event Comments</a>
+		<li><a href="#get_evt_talk_comment">Get Event Talk_Comments</a>
 		<li><a href="#add_evt_track">Add Event Track</a>
 	</ul>
 <li>Talks
@@ -141,25 +142,29 @@ Below are the request types that you can make to the API including input and out
 		<li>event_name: string, Name of the event
 		<li>event_start: Unix timestamp
 		<li>event_end: Unix timestamp
+		<li>event_lat: number, Latitude of the venue location
+		<li>event_long: number, Longitude of the venue location
 		<li>ID: integer, ID for the event
 		<li>event_loc: string, Event location
 		<li>event_desc: string, Event description
 		<li>active: integer, Whether the event is active or not
 		<li>event_stub: string, Stub/shortcut value for event
-		<li>event_tz: integer, Defines offset from GMT for event times
 		<li>event_icon: string, path to image icon
 		<li>pending: integer, whether the event is awaiting approval
 		<li>event_hashtag: string, twitter/blogging hashtag for this event
 		<li>event_href: string, event homepage
 		<li>event_cfp_start: unix timestamp, date the call for papers opens for this event
 		<li>event_cfp_end: unix timestamp, date the call for papers closes for this event
-		<li>event_voting: integer, whether users can vote on the sessions
+		<li>event_voting: integer, whether users can vote on the sessions (currently not in use)
 		<li>private: integer, whether this event is only visible to its members
+		<li>event_tz_cont: string, Continent part of timezone name (e.g. 'Europe')
+		<li>event_tz_place: string, Detial part of timezone name (e.g. 'London')
+		<li>allow_comments: integer, Whether comments are accepted on this talk (1 for yes, 0 for no)
 		<li>num_attend: integer, number of people marked as attending
 		<li>num_comments: integer, the number of comments on this event
 		<li>user_attending: integer, whether the current user is attending this event
-		<li>now: string, either "now" if the event is now on or "" if it isn't
-		<li>tracks: array, List of track objects associated with this session.  Track properties are track_name, ID, track_color used (1 or 0, whether there are sessions in it or not), event_id and track_desc (description)
+		<li>now: string, either "now" if the event is now on or "" if it isn't (not present in event/getlist)
+		<li>tracks: array, List of track objects associated with this session.  Track properties are track_name, ID, track_color used (1 or 0, whether there are sessions in it or not), event_id and track_desc (description) (not present in event/getlist)
 	</ul>
 	<a href="#top">[top]</a><br/><br/>
 </div>
@@ -293,6 +298,30 @@ Below are the request types that you can make to the API including input and out
 	<a href="#top">[top]</a><br/><br/>
 </div>
 
+<a name="get_evt_talk_comments"></a>
+<b class="req_name" style="color:#5181C1;font-size:14px">Get Event Talk Comments</b>
+<div style="padding-left:10px">
+<b class="req_title">Action Type:</b> gettalkcomments<br/>
+<b class="req_title">Description:</b> Get all comments associated with sessions at an event.  Private comments are not shown, 
+results are returned in date order with newest first.<br/>
+<b class="req_title">Authentication:</b> not required<br />
+<b class="req_title">Input:</b>
+	<ul>
+		<li>event_id: integer, ID number of event to get comments for
+	</ul>
+<b class="req_title">Output:</b> An array of values containing the following for each comment
+	<ul>
+		<li>talk_title: string, Title of the talk
+		<li>speaker: string, Speaker of the talk
+		<li>date_given: integer, Unix timestamp for the date talk presented
+		<li>date_made: integer, Unix timestamp of when comment was posted
+		<li>rating: integer, The rating the user gave to this talk
+		<li>comment: string, Comments from the user
+		<li>full_name: string, If a registered user made the comment, their username is here
+	</ul>
+	<a href="#top">[top]</a><br/><br/>
+</div>
+
 <a name="add_evt_track"></a>
 <b class="req_name" style="color:#5181C1;font-size:14px">Add Event Track</b>
 <div style="padding-left:10px">
@@ -303,7 +332,7 @@ Below are the request types that you can make to the API including input and out
 	<ul>
 		<li>event_id: integer, ID number of event to get comments for
 		<li>track_name: string, name for the track
-		<li>track_desc: string, descrption for the track
+		<li>track_desc: string, description for the track
 	</ul>
 <b class="req_title">Output:</b> An array of values containing the following for each comment
 	<ul>
@@ -316,6 +345,10 @@ Below are the request types that you can make to the API including input and out
 <a name="get_talk_detail"></a>
 <b class="req_name" style="color:#5181C1;font-size:14px">Get Talk Detail</b>
 <div style="padding-left:10px">
+	<p>
+		<b>Note:</b> if the event the session belongs to is marked as private, user credentials must be included with the 
+		detail request to check for invite status to the event.
+	</p>
 <b class="req_title">Action Type:</b> getdetail<br/>
 <b class="req_title">Description:</b> Get the details for given talk number<br/>
 <b class="req_title">Authentication:</b> not required<br />
@@ -344,7 +377,7 @@ Below are the request types that you can make to the API including input and out
 		<li>ID: integer, The talk ID number (same as tid)
 		<li>active: integer, Whether this talk is in use 
 		<li>owner_id: integer, The speaker ID number
-		<li>event_voting: integer, Whether voting is active for thi event
+		<li>event_voting: integer, Whether voting is active for thi event (currently not in use)
 		<li>private: integer, If this session is only visible to members
 		<li>lang_abbr: string, Short code for the session language
 		<li>ccount: integer, Number of comments on this session
@@ -468,7 +501,7 @@ Below are the request types that you can make to the API including input and out
 	</ul>
 <b class="req_title">Output:</b>
 	<ul>
-		<li>username: string, Joind.in username
+		<li>username: string, <?php echo $this->config->item('site_name'); ?> username
 		<li>last_login: string, User's last login time (unix timestamp)
 		<li>ID: integer, user's ID'
 		<li>full_name: string, User's full name'

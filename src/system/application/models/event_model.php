@@ -145,7 +145,7 @@ class Event_model extends Model {
 
 		// Decorate result with "event is on now" flag
 		$res = $q->result();
-		if (is_array($res) && is_object($res[0])) {
+		if (is_array($res) && 0 != count($res)&& is_object($res[0])) {
 			if (event_isNowOn($res[0]->event_start, $res[0]->event_end)) {
 				$res[0]->now = "now";
 			} else {
@@ -155,9 +155,10 @@ class Event_model extends Model {
 		return $res;
 	}
 
-	function getEventTalks($id,$includeEventRelated = true) {
+	function getEventTalks($id,$includeEventRelated = true, $includePrivate = false) {
 		$this->load->helper("events");
 		$this->load->helper("talk");
+		$private=($includePrivate) ? '' : ' and private!=1';
 		$sql='
 			select
 				talks.talk_title,
@@ -173,7 +174,7 @@ class Event_model extends Model {
 				events.event_end,
 				(select l.lang_abbr from lang l where talks.lang=l.ID) lang,
 				(select round(avg(rating)) from talk_comments where talk_id=talks.ID) rank,
-				(select count(rating) from talk_comments where talk_id=talks.ID) comment_count,
+				(select count(rating) from talk_comments where talk_id=talks.ID '.$private.') comment_count,
 				ifnull(categories.cat_title, \'Talk\') tcid
 			from
 				talks
@@ -200,79 +201,81 @@ class Event_model extends Model {
 		if (is_array($res) && count($res) > 0 && is_object($res[0]) && event_isNowOn($res[0]->event_start, $res[0]->event_end)) {
 			$res = talk_listDecorateNowNext($res);
 		}
+		
+		$CI=&get_instance();
+		$CI->load->model('talk_speaker_model','tsm');
+		foreach($res as $k=>$talk){
+			$res[$k]->speaker=$CI->tsm->getTalkSpeakers($talk->ID);
+		}
 
 		return $res;
 	}
 
-    function getHotEvents($limit = null){
-		// the "score" field is a weighting to make things that are more soon/recent than others appear here
-		// these results pay attention to "soon ness" and to number of attendees
-	    $this->db->select('events.*,
-			(select count(*) from user_attend where user_attend.eid = events.ID) as num_attend,
-			(select count(*) from event_comments where event_comments.event_id = events.ID) as num_comments, abs(0) as user_attending, '
-		  			.' abs(datediff(from_unixtime(events.event_start), from_unixtime('.mktime(0,0,0).'))) as score');
-	    $this->db->from('events');
+	function getEventsOfType($type, $limit = NULL) {
+		$where = NULL;
+		$order_by = NULL;
 
-		$this->db->where('((events.event_start<='.(mktime(0,0,0) + (60*60*24*14)).' AND events.event_end>='.mktime(0,0,0).') OR (events.event_start<='.mktime(0,0,0).' AND events.event_end>='.(mktime(0,0,0) - (60*60*24*14)).'))');
-
-		$this->db->where('(events.pending is null or events.pending=0)');
-		$this->db->order_by('(num_attend - score)','desc');
-
-		if (null !== $limit) {
-		    $this->db->limit((int)$limit);
+		if($type == "hot") {
+			$order_by = "(num_attend - score) desc";
 		}
-		
-		$q=$this->db->get();
-		return $q->result();
+
+		if($type == "upcoming") {
+			$order_by = "events.event_start asc";
+			$where = '(events.event_start>='.mktime(0,0,0).')';
+		}
+
+		if($type == "past") {
+			$where = '(events.event_end < '.mktime(0,0,0).')';
+			$order_by = "events.event_start desc";
+		}
+
+		$result = $this->getEvents($where, $order_by, $limit);
+		return $result;
 	}
 
-	function getUpcomingEvents($inc_curr=false, $limit = null){
-	    //$this->db->select('events.*, COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments, abs(0) as user_attending');
-		$this->db->select('events.*, 
+	public function getEvents($where=NULL, $order_by = NULL, $limit = NULL) {
+		$sql = 'SELECT * ,
+			(select count(*) from user_attend where user_attend.eid = events.ID) as num_attend,
+			(select count(*) from event_comments where event_comments.event_id = events.ID) as num_comments, abs(0) as user_attending, '
+		  			.' abs(datediff(from_unixtime(events.event_start), from_unixtime('.mktime(0,0,0).'))) as score,
               CASE 
                 WHEN (((events.event_start - 86400) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
-                END as allow_comments,
-              COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments', false);
-	    $this->db->from('events');
-		$this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
-		$this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');
+                END as allow_comments
+			FROM events
+			WHERE active = 1 AND (pending = 0 OR pending = NULL)';
 
-		if($inc_curr){ 
-			$add='or events.event_end>='.(mktime(0,0,0));
-		}else{ $add=''; }
-		$this->db->where('(events.event_start>='.mktime(0,0,0).' '.$add.')');
-		
-		$this->db->where('(events.pending is null or events.pending=0)');
-		$this->db->order_by('events.event_start','asc');
-
-	    if (null !== $limit) {
-		    $this->db->limit((int)$limit);
+		if($where) {
+			$sql .= ' AND (' . $where . ')';
 		}
 
-		$this->db->group_by('events.ID');
-		$q=$this->db->get();
-		return $q->result();
+		if($order_by) {
+			$sql .= ' ORDER BY ' . $order_by;
+		}
+
+		if($limit) {
+			$sql .= ' LIMIT ' . $limit;
+		}
+
+	    $query = $this->db->query($sql);
+	    return $query->result();
+	}
+
+    function getHotEvents($limit = null){
+		$result = $this->getEventsOfType("hot", $limit);
+		return $result;
+	}
+
+	function getUpcomingEvents($limit = null, $inc_curr = false){
+		// inc_curr not handled
+
+		$result = $this->getEventsOfType("upcoming", $limit);
+		return $result;
 	}
 	
     function getPastEvents($limit = null){
-	    $this->db->select('events.*, COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments, abs(0) as user_attending');
-	    $this->db->from('events');
-		$this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
-		$this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');
-
-		$this->db->where('(events.event_end < '.mktime(0,0,0).')');
-		
-		$this->db->where('(events.pending is null or events.pending=0)');
-		$this->db->order_by('events.event_start','desc');
-
-	    if (null !== $limit) {
-		    $this->db->limit((int)$limit);
-		}
-
-		$this->db->group_by('events.ID');
-		$q=$this->db->get();
-		return $q->result();
+		$result = $this->getEventsOfType("past", $limit);
+		return $result;
 	}
 
 	function getEventAdmins($eid){
@@ -325,6 +328,32 @@ class Event_model extends Model {
 		$q=$this->db->get();
 		return $q->result();
 	}
+	
+	function getEventClaims($event_id){
+		$sql=sprintf('
+			select
+				t.id as talk_id,
+				t.talk_title,
+				ua.uid as user_id,
+				ua.rid,
+				u.full_name
+			from
+				user_admin ua,
+				events e,
+				talks t,
+				user u
+			where
+				ua.rid=t.id and
+				e.id=t.event_id and
+				u.id=ua.uid and
+				e.id = %s
+		',$event_id);
+		$q=$this->db->query($sql);
+		$ret=$q->result();
+		
+		return $ret;
+	}
+	
 	function getClaimedTalks($eid){
 		$this->load->helper('events');
 		$ids	= array();
@@ -333,11 +362,14 @@ class Event_model extends Model {
 		// Find all of the talks for the event...
 		$ret 	= $this->getEventTalks($eid); //echo '<pre>'; print_r($ret); echo '</pre>';
 		foreach($ret as $k=>$v){
+			$codes=array();
+			/*
 			$p=explode(',',$v->speaker);
 			$codes=array();
 			foreach($p as $ik=>$iv){
 				$codes[]=buildCode($v->ID,$v->event_id,$v->talk_title,trim($iv));
 			}
+			*/
 			
 			$tdata[$v->ID]=array(
 				'talk_title'=> $v->talk_title,
@@ -377,23 +409,34 @@ class Event_model extends Model {
 		// for the this event
 		return $ret;
 	}
-	function getEventFeedback($eid){
+	function getEventFeedback($eid, $order_by = NULL){
+		// handle the ordering
+		if($order_by == 'tc.date_made' || $order_by == 'tc.date_made DESC') {
+			// fine, sensible options that we'll allow
+		} else {
+			// if null, or indeed anything else, order by talk id (the original default)
+			$order_by = 't.ID';
+		}
+
 		$sql=sprintf('
 			select
 				t.talk_title,
 				t.speaker,
 				t.date_given,
+				tc.date_made,
 				tc.rating,
-				tc.comment
+				tc.comment,
+				u.full_name
 			from
 				talks t,
 				talk_comments tc
+			LEFT JOIN user u ON (u.ID = tc.user_id)
 			where
-				t.ID=tc.talk_id and
+				tc.private <> 1 AND
+				t.ID=tc.talk_id AND
 				t.event_id=%s
 			order by
-				t.ID
-		',$eid);
+		'.$order_by,$eid);
 		$q=$this->db->query($sql);
 		return $q->result();
 	}

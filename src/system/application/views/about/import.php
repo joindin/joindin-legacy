@@ -1,7 +1,7 @@
 <h2>Importing Event Information</h2>
 
 <p>
-Joind.in allows you to import your event's sessions via an XML file 
+<?php echo $this->config->item('site_name'); ?> allows you to import your event's sessions via an XML file
 making it easier to add all at once. See below for and example of the XML
 format to follow to ensure your sessions get imported correctly.
 </p>
@@ -31,9 +31,9 @@ and "Event Related" (case sensitive matching)</li>
 	&lt;session_type&gt;
 	  Workshop
 	&lt;/session_type&gt;
-	&lt;session_speaker&gt;
-	  Sebastian Bergmann
-	&lt;/session_speaker&gt;
+	&lt;session_speakers&gt;
+	  &lt;speaker&gt;Sebastian Bergmann&lt/speaker&gt;
+	&lt;/session_speakers&gt;
 	&lt;session_title&gt;
 	  Quality Assurance in PHP Projects
 	&lt;/session_title&gt;
@@ -64,9 +64,10 @@ and "Event Related" (case sensitive matching)</li>
 	&lt;session_track&gt;
 	  Track 3
 	&lt;/session_track&gt;
-	&lt;session_speaker&gt;
-	  Rob Allen
-	&lt;/session_speaker&gt;
+	&lt;session_speakers&gt;
+	  &lt;speaker&gt;Rob Allen&lt;/speaker&gt;
+	  &lt;speaker&gt;Keith Casey&lt;/speaker&gt;
+	&lt;/session_speakers&gt;
 	&lt;session_title&gt;
 	  Zend Framework on Windows
 	&lt;/session_title&gt;

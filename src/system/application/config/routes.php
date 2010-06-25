@@ -44,39 +44,42 @@ $route['default_controller'] = "main";
 $route['scaffolding_trigger'] = "";
 
 //$route['event/([^add|view|edit|delete])'] = 'event/cust/$1';
-$route['event/add']='event/add';
-$route['event/pending']='event/pending';
-$route['event/submit']='event/submit';
-$route['event/approve/(:num)']='event/approve/$1';
-$route['event/ical/(:num)']='event/ical/$1';
+$route['event/add']								= 'event/add';
+$route['event/pending']							= 'event/pending';
+$route['event/submit']							= 'event/submit';
+$route['event/approve/(:num)']					= 'event/approve/$1';
+$route['event/ical/(:num)']						= 'event/ical/$1';
 $route['event/calendar/(:num)/(:num)/(:num)']	= 'event/calendar/$1/$2/$3';
-$route['event/calendar/(:num)/(:num)']	= 'event/calendar/$1/$2';
-$route['event/calendar/(:num)/']	= 'event/calendar/$1';
-$route['event/export/(:num)']	= 'event/export/$1';
-$route['event/edit/(:num)']		= 'event/edit/$1';
-$route['event/view/(:num)']		= 'event/view/$1';
-$route['event/view/(:num)']		= 'event/view/$1';
-$route['event/view/(:num)/track/(:num)']= 'event/view/$1/track/$2';
-$route['event/attendees/(:num)'] = 'event/attendees/$1';
-$route['event/delete/(:num)']	= 'event/delete/$1';
-$route['event/codes/(:num)']	= 'event/codes/$1';
-$route['event/hot']	            = 'event/hot';
-$route['event/all']	            = 'event/all';
-$route['event/upcoming']	    = 'event/upcoming';
-$route['event/past']	        = 'event/past';
-$route['event/import/(:num)']		= 'event/import/$1';
-$route['event/claim/(:num)']	= 'event/claim/$1';
-$route['event/tracks/(:num)']	= 'event/tracks/$1';
-$route['event/contact/(:num)']	= 'event/contact/$1';
-$route['event/invite/([0-9]+)/?(.*)']='event/invite/$1/$2';
-$route['event/blog/(:any)/(:any)']='event/blog/$1/$2';
-$route['event/blog/feed']='event/blog/feed';
+$route['event/calendar/(:num)/(:num)']			= 'event/calendar/$1/$2';
+$route['event/calendar/(:num)/']				= 'event/calendar/$1';
+$route['event/export/(:num)']					= 'event/export/$1';
+$route['event/edit/(:num)']						= 'event/edit/$1';
+$route['event/view/(:num)']						= 'event/view/$1';
+$route['event/view/(:num)']						= 'event/view/$1';
+$route['event/view/(:num)/track/(:num)']		= 'event/view/$1/track/$2';
+$route['event/attendees/(:num)'] 				= 'event/attendees/$1';
+$route['event/delete/(:num)']					= 'event/delete/$1';
+$route['event/codes/(:num)']					= 'event/codes/$1';
+$route['event/hot']	            				= 'event/hot';
+$route['event/all']	            				= 'event/all';
+$route['event/upcoming']	    				= 'event/upcoming';
+$route['event/past']	        				= 'event/past';
+$route['event/import/(:num)']					= 'event/import/$1';
+$route['event/claim/(:num)']					= 'event/claim/$1';
+$route['event/tracks/(:num)']					= 'event/tracks/$1';
+$route['event/contact/(:num)']					= 'event/contact/$1';
+$route['event/invite/([0-9]+)/?(.*)']			= 'event/invite/$1/$2';
+$route['event/blog/(:any)/(:any)']				= 'event/blog/$1/$2';
+$route['event/blog/feed']						= 'event/blog/feed';
 //now our catch all...
-$route['event/(:any)']			= 'event/cust/$1';
-$route['(:num)']				= 'talk/view/$1';
+$route['event/(:any)']							= 'event/cust/$1';
+$route['(:num)']								= 'talk/view/$1';
 
-$route['search/(:any)']			= 'search/index/$1';
+$route['search/(:any)']							= 'search/index/$1';
 
+if($eid=apache_getenv('USE_EID')){
+	$route['default_controller']='event';
+}
 
 /* End of file routes.php */
 /* Location: ./system/application/config/routes.php */
