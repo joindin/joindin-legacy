@@ -211,75 +211,71 @@ class Event_model extends Model {
 		return $res;
 	}
 
-    function getHotEvents($limit = null){
-		// the "score" field is a weighting to make things that are more soon/recent than others appear here
-		// these results pay attention to "soon ness" and to number of attendees
-	    $this->db->select('events.*,
-			(select count(*) from user_attend where user_attend.eid = events.ID) as num_attend,
-			(select count(*) from event_comments where event_comments.event_id = events.ID) as num_comments, abs(0) as user_attending, '
-		  			.' abs(datediff(from_unixtime(events.event_start), from_unixtime('.mktime(0,0,0).'))) as score');
-	    $this->db->from('events');
+	function getEventsOfType($type, $limit = NULL) {
+		$where = NULL;
+		$order_by = NULL;
 
-		$this->db->where('((events.event_start<='.(mktime(0,0,0) + (60*60*24*14)).' AND events.event_end>='.mktime(0,0,0).') OR (events.event_start<='.mktime(0,0,0).' AND events.event_end>='.(mktime(0,0,0) - (60*60*24*14)).'))');
-
-		$this->db->where('(events.pending is null or events.pending=0)');
-		$this->db->order_by('(num_attend - score)','desc');
-
-		if (null !== $limit) {
-		    $this->db->limit((int)$limit);
+		if($type == "hot") {
+			$order_by = "(num_attend - score) desc";
 		}
-		
-		$q=$this->db->get();
-		return $q->result();
+
+		if($type == "upcoming") {
+			$order_by = "events.event_start asc";
+			$where = '(events.event_start>='.mktime(0,0,0).')';
+		}
+
+		if($type == "past") {
+			$where = '(events.event_end < '.mktime(0,0,0).')';
+			$order_by = "events.event_start desc";
+		}
+
+		$result = $this->getEvents($where, $order_by, $limit);
+		return $result;
 	}
 
-	function getUpcomingEvents($limit = null, $inc_curr = false){
-	    //$this->db->select('events.*, COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments, abs(0) as user_attending');
-		$this->db->select('events.*, 
+	public function getEvents($where=NULL, $order_by = NULL, $limit = NULL) {
+		$sql = 'SELECT * ,
+			(select count(*) from user_attend where user_attend.eid = events.ID) as num_attend,
+			(select count(*) from event_comments where event_comments.event_id = events.ID) as num_comments, abs(0) as user_attending, '
+		  			.' abs(datediff(from_unixtime(events.event_start), from_unixtime('.mktime(0,0,0).'))) as score,
               CASE 
                 WHEN (((events.event_start - 86400) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
-                END as allow_comments,
-              COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments', false);
-	    $this->db->from('events');
-		$this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
-		$this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');
+                END as allow_comments
+			FROM events
+			WHERE active = 1 AND (pending = 0 OR pending = NULL)';
 
-		if($inc_curr){ 
-			$add='or events.event_end>='.(mktime(0,0,0));
-		}else{ $add=''; }
-		$this->db->where('(events.event_start>='.mktime(0,0,0).' '.$add.')');
-		
-		$this->db->where('(events.pending is null or events.pending=0)');
-		$this->db->order_by('events.event_start','asc');
-
-	    if (null !== $limit) {
-		    $this->db->limit((int)$limit);
+		if($where) {
+			$sql .= ' AND (' . $where . ')';
 		}
 
-		$this->db->group_by('events.ID');
-		$q=$this->db->get();
-		return $q->result();
+		if($order_by) {
+			$sql .= ' ORDER BY ' . $order_by;
+		}
+
+		if($limit) {
+			$sql .= ' LIMIT ' . $limit;
+		}
+
+	    $query = $this->db->query($sql);
+	    return $query->result();
+	}
+
+    function getHotEvents($limit = null){
+		$result = $this->getEventsOfType("hot", $limit);
+		return $result;
+	}
+
+	function getUpcomingEvents($limit = null, $inc_curr = false){
+		// inc_curr not handled
+
+		$result = $this->getEventsOfType("upcoming", $limit);
+		return $result;
 	}
 	
     function getPastEvents($limit = null){
-	    $this->db->select('events.*, COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments, abs(0) as user_attending');
-	    $this->db->from('events');
-		$this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
-		$this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');
-
-		$this->db->where('(events.event_end < '.mktime(0,0,0).')');
-		
-		$this->db->where('(events.pending is null or events.pending=0)');
-		$this->db->order_by('events.event_start','desc');
-
-	    if (null !== $limit) {
-		    $this->db->limit((int)$limit);
-		}
-
-		$this->db->group_by('events.ID');
-		$q=$this->db->get();
-		return $q->result();
+		$result = $this->getEventsOfType("past", $limit);
+		return $result;
 	}
 
 	function getEventAdmins($eid){

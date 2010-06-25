@@ -47,6 +47,7 @@ function splitCommentTypes($talk_comments){
 	return $comments;
 }
 
+
 /**
  * Create the links for the speakers, matching by name
  */
@@ -73,7 +74,6 @@ function buildClaimedLinks($speakers,$claim_detail){
 	
 	return implode(', ',$speaker_links);
 }
-
 
 /**
  * Takes an array of talks, and attempts to add a flag to each one to say whether the talk is on
