@@ -109,7 +109,7 @@ Your new password is below:
 
 Please log in in at %suser/login and reset your password as soon as possible.
 		', $user[0]->username, $this->_config->item('site_name'), $pass, $this->_config->site_url());
-		$this->_sendEmail($to,$msg,$subj,$user[0]->email);
+		$this->_sendEmail($to,$msg,$subj);
 	}
 	
 	/**
