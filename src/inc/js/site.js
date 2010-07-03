@@ -75,16 +75,6 @@ function apiRequest(rtype,raction,data,callback){
 	});
 }
 //-------------------------
-function delBlogComment(cid,bid){
-	var obj=new Object();
-	obj.cid=cid;
-	obj.bid=bid;
-	apiRequest('blog','deletecomment',obj, function(obj) {
-		$('#comment-'+cid).remove();
-		alert('Comment removed!'); return false;
-	});
-	return false;
-}
 function delEventComment(cid){ deleteComment(cid,'event'); }
 function delTalkComment(cid){ 
 	deleteComment(cid,'talk'); 
