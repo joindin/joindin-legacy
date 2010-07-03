@@ -86,7 +86,10 @@ function delBlogComment(cid,bid){
 	return false;
 }
 function delEventComment(cid){ deleteComment(cid,'event'); }
-function delTalkComment(cid){ deleteComment(cid,'talk'); }
+function delTalkComment(cid){ 
+	deleteComment(cid,'talk'); 
+	$('#comment-'+cid).remove();
+}
 function deleteComment(cid,rtype){
 	var obj=new Object();
 	obj.cid=cid;
