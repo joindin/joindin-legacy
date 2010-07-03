@@ -8,6 +8,7 @@ if(!empty($claim_msg)){
 	if($claim_msg && !empty($claim_msg)){ echo '<div class="'.$class.'">'.escape($claim_msg).'</div><br/>'; }
 }
 ?>
+<script type="text/javascript" src="/inc/js/talk.js"></script>
 <?php 
 $msg=$this->session->flashdata('msg');
 if (!empty($msg)): ?>
@@ -49,5 +50,8 @@ $data=array();
 $this->load->view('talk/modules/_talk_comments',$data);
 $this->load->view('talk/modules/_talk_comment_form',$data); 
 ?>
+<input type="hidden" name="talk_id" id="talk_id" value="<?php echo $detail->ID ?>" />
 
-
+<script type="text/javascript">
+$(document).ready(function(){ talk.init(); })
+</script>
