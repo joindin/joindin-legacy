@@ -9,7 +9,7 @@ function addArrayToXML($xml, $data) {
 			if(is_array($item) AND count($item) == 0) {
 				$item = '';
 			}
-			$xml->addChild($key,$item);
+			$xml->addChild($key,htmlspecialchars($item, ENT_NOQUOTES));
 		} else {
 			$child = $xml->addChild($key);
 			addArrayToXML($child, $item);
