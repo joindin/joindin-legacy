@@ -116,9 +116,10 @@ function buildTalkStats($talks){
 			$rating+=$talk->rating; 
 		}
 	}
+	$avg=(count($talks)>0) ? $rating/count($talks) : $rating;
 
 	return array(
 		'comments_total'	=> count($talks),
-		'rating_avg'		=> $talks ? $rating/count($talks) : 0
+		'rating_avg'		=> $avg
 	);
 }

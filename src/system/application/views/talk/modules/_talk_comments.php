@@ -58,7 +58,7 @@ if (empty($comments)) {
     	</div>
 		<p class="admin">
 			<?php if (user_is_admin() || $v->user_id==$user_id): ?>
-				<a class="btn-small" href="#" onClick="editTalkComment(<?php echo $v->ID?>);return false;">Edit</a>
+				<a class="btn-small edit-talk-comment-btn" href="#" id="<?php echo $v->ID; ?>">Edit</a>
 			<?php endif; ?>
 			<?php if (user_is_admin()): ?>
 				<a class="btn-small" href="#" onClick="delTalkComment(<?php echo $v->ID?>);return false;">Delete</a>

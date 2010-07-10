@@ -10,10 +10,11 @@
 		<li><a href="/event/claim/<?php echo $eid; ?>">Pending Claims</a> (<?php echo $claim_count; ?>)
 		<li><a href="/event/tracks/<?php echo $eid; ?>">Event Tracks</a>
 		<li><a href="/event/import/<?php echo $eid; ?>">Import Event Info</a>
-		<li><a href="/event/delete/<?php echo $eid; ?>" style="color:#D3000E;font-weight:bold">Delete event</a>
+		<li><a href="/theme">Event Themes</a>
 		<?php
 		if($is_private=='Y'){ echo '<br/><br/><li><a href="/event/invite/'.$eid.'">Invite list</a>'; }
 		?>
+		<li style="padding-top:10px"><a href="/event/delete/<?php echo $eid; ?>" style="color:#D3000E;font-weight:bold">Delete event</a>
 		</ul>
 	</div>
 	<h4>Admins</h4>

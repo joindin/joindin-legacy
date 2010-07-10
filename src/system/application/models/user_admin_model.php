@@ -75,6 +75,26 @@ class User_admin_model extends Model {
 	}
 	
 	/**
+	 * Get the event details of the events the user is an admin on
+	 */
+	public function getUserEventAdmin($uid){
+		$sql=sprintf("
+			select
+				e.event_name,
+				e.ID as event_id
+			from
+				events e,
+				user_admin ua
+			where
+				ua.rid=e.ID and
+				ua.rtype='event' and
+				ua.uid = %s
+		",$uid);
+		$q=$this->db->query($sql);
+		return $q->result();
+	}
+	
+	/**
 	 * Find the claims for a given talk ID
 	 * @param integer $talk_id Talk ID #
 	 * @param boolean $pending[optional] Whether to include pending claims or not

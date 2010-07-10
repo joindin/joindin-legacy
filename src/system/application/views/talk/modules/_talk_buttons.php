@@ -5,6 +5,6 @@
 <?php endif; ?>
 <?php
 if(empty($claim_details) || count($claim_details)<count($speaker)): ?>
-	<a class="btn-small" href="#" id="claim_btn" onClick="claimTalk(<?php echo $detail->tid; ?>)">Claim This Talk</a>	
+	<a class="btn-small" href="#" id="claim_btn">Claim This Talk</a>	
 <?php endif; ?>
 </p>

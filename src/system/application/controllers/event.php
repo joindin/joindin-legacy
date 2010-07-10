@@ -5,6 +5,16 @@ class Event extends Controller {
 	function Event(){
 		parent::Controller();
 		$this->user_model->logStatus();
+		
+		// Check to see if they need a custom CSS layout
+		$this->load->model('event_themes_model','eventThemes');
+		$ret	    = explode('/',$_SERVER['REQUEST_URI']);
+		$event_id	= (is_numeric($ret[3])) ? $ret[3] : null;
+		$theme		= $this->eventThemes->getActiveTheme($event_id);
+		if($event_id && $theme){
+			// has active theme...use it!
+			$this->template->write('css','/inc/css/event/'.$theme[0]->css_file);
+		}
 	}
 	function cust($in){
 	    $this->load->helper('url');

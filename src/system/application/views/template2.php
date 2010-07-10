@@ -9,7 +9,8 @@ $title[] = $this->config->item('site_name');
 	<title><?php echo implode(' - ', $title); ?></title>
 
 	<link media="all" rel="stylesheet" type="text/css" href="/inc/css/jquery-ui/theme/ui.all.css"/>
-	<?php $css=(!apache_getenv('USE_CSS')) ? '/inc/css/site.css' : apache_getenv('USE_CSS'); ?>
+	<?php if(!$css){ $css='/inc/css/site.css'; } ?>
+	
 	<link media="all" rel="stylesheet" type="text/css" href="<?php echo $css; ?>"/>
 	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" /> 
 	<script type="text/javascript" src="/inc/js/jquery.js"></script>

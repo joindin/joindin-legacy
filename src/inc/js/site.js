@@ -1,44 +1,3 @@
-function setVote(rate){
-	$("input[name='rating']").val(rate);
-	$.each($("img[id^='rate_']"),function(k,v){
-		mk=k+1;
-		if(mk==rate){ 
-			v.style.border='1px solid #000000';
-		}else{ v.style.border='0px'; }
-	});
-	return false;
-}
-function toggleAnon(tid){
-	var lnk=$('#anonLink').html();
-	$.each($("tr[id^='com_anon_"+tid+"']"),function(k,v){
-		if(v.style.display=='none'){
-			v.style.display='block';
-			$('#anonLink').html(lnk.replace(/show/,'hide'));
-		}else{
-			v.style.display='none';			
-			$('#anonLink').html(lnk.replace(/hide/,'show'));
-		}
-	});
-}
-function getArea(field){
-	var obj = document.getElementsByName(field);
-	cont= obj[0][obj[0].selectedIndex].value; //alert(cont);
-	$.getJSON(
-		'/api/tz/'+cont,
-		function(data){ //alert(data);
-			var obj = document.getElementsByName('event_tz_area');
-			//clear it out first...
-			obj[0].options.length=-1;
-			$.each(data,function(k,v){
-				//alert(k+' : '+v['area']);
-				area=v['area'].replace(/_/,' ');
-				obj[0].options[k]=new Option(area,area);
-			});
-		}
-	);
-}
-
-//-------------------------
 function apiRequest(rtype,raction,data,callback){
 	var xml_str='';
 	$.each(data,function(k,v){
@@ -75,18 +34,11 @@ function apiRequest(rtype,raction,data,callback){
 	});
 }
 //-------------------------
-function delBlogComment(cid,bid){
-	var obj=new Object();
-	obj.cid=cid;
-	obj.bid=bid;
-	apiRequest('blog','deletecomment',obj, function(obj) {
-		$('#comment-'+cid).remove();
-		alert('Comment removed!'); return false;
-	});
-	return false;
-}
 function delEventComment(cid){ deleteComment(cid,'event'); }
-function delTalkComment(cid){ deleteComment(cid,'talk'); }
+function delTalkComment(cid){ 
+	deleteComment(cid,'talk'); 
+	$('#comment-'+cid).remove();
+}
 function deleteComment(cid,rtype){
 	var obj=new Object();
 	obj.cid=cid;
@@ -95,45 +47,12 @@ function deleteComment(cid,rtype){
 	});
 	return false;
 }
-function editTalkComment(cid){
-	var obj=new Object();
-	obj.cid		= cid;
-	obj.rtype	= 'talk';
-	apiRequest('comment','getdetail',obj, function(obj) {
-		//jump down to the comments block
-		window.location.hash="#comment_form";
-		
-		// now set the information so they can edit it
-		$('#comment').val(obj[0].comment);
-		if(obj[0].private!=0){ $(':checkbox[name=private]').attr('checked',true); }
-		setStars(obj[0].rating);
-		$(':input[name=edit_comment]').val(cid);
-	});
-}
-
 function commentIsSpam(cid,rtype){
 	var obj=new Object();
 	obj.cid		= cid;
 	obj.rtype	= rtype;
 	apiRequest('comment','isspam',obj, function(obj) {
 		alert('Thanks for letting us know!'); return false;
-	});
-	return false;
-}
-function claimTalk(tid){
-	var obj=new Object();
-	obj.talk_id=tid;
-	$('#claim_btn').html('Sending Claim >>');
-	
-	apiRequest('talk','claim',obj, function(obj) {
-		//alert(obj);
-		$('#claim_btn').css('display','none');
-		if(obj.msg=='Success'){
-			alert("Thanks for claiming this talk! You will be emailed when the claim is approved!");
-		}else{
-			alert(obj.msg);
-		}
-		return false;
 	});
 	return false;
 }
@@ -191,42 +110,6 @@ function adjustAttendCount(eid, num)
 	});
 }
 
-function toggleAttendees(el, eid)
-{
-	if ($('#attendees').length == 0) {
-		$('#ctn .main .detail .header .opts').after('<p id="attendees" style="display:none;">qegegqeg</p>');
-	}
-
-	if ($('#attendees').is(':hidden')) {
-		if ($('#attendees').data('loaded') == true) {
-			$('#attendees').slideDown(function() {
-				$(el).html('Hide &laquo;');
-			});
-		} else {
-			var $loading;
-			if (!$(el).next().is('.loading')) {
-				$loading = $('<span class="loading">Loading...</span>');
-				var pos = $(el).position();
-				$loading.css({left: pos.left + 15, top: pos.top - 30}).hide();
-				$(el).after($loading);
-				$loading.fadeIn('fast');
-			}
-			
-			$('#attendees').load('/event/attendees/' + eid, function() {
-				$('#attendees').slideDown(function() {
-					$(el).html('Hide &laquo;');
-				});
-				if ($loading)
-					$loading.fadeOut(function() { $(this).remove() });
-			}).data('loaded', true);
-		}
-	} else {
-		$('#attendees').slideUp(function() {
-			$(el).html('Show &raquo;');
-		});
-	}
-	return false;
-}
 function toggleUserStatus(uid){
 	var obj=new Object();
 	obj.uid=uid;
