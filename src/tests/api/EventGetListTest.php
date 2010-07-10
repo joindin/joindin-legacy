@@ -27,29 +27,31 @@
 				$this->assertLooksLikeAString($event->num_attend);
 				$this->assertLooksLikeAString($event->num_comments);
 
-				$this->assertTrue(is_string($event->event_stub) || $event->event_stub === null);
-				$this->assertTrue(is_string($event->event_icon) || $event->event_icon === null);
-				$this->assertTrue(is_string($event->event_cfp_start) || $event->event_cfp_start === null);
-				$this->assertTrue(is_string($event->event_cfp_end) || $event->event_cfp_end === null);
-				$this->assertTrue(is_string($event->event_hashtag) || $event->event_hashtag === null);
-				$this->assertTrue(is_string($event->event_href) || $event->event_href === null);
-				$this->assertTrue(is_string($event->event_tz_cont) || $event->event_tz_cont === null);
-				$this->assertTrue(is_string($event->event_tz_place) || $event->event_tz_place === null);
-				if($event->event_tz_cont && $event->event_tz_place) {
+				$this->assertLooksLikeAStringOrNull($event->event_stub);
+				$this->assertLooksLikeAStringOrNull($event->event_icon);
+				$this->assertLooksLikeAStringOrNull($event->event_cfp_start);
+				$this->assertLooksLikeAStringOrNull($event->event_cfp_end);
+				$this->assertLooksLikeAStringOrNull($event->event_hashtag);
+				$this->assertLooksLikeAStringOrNull($event->event_href);
+				$this->assertLooksLikeAStringOrNull($event->event_tz_cont);
+				$this->assertLooksLikeAStringOrNull($event->event_tz_place);
+				$this->assertLooksLikeAStringOrNull($event->event_cfp_start);
+				$this->assertLooksLikeAStringOrNull($event->event_cfp_end);
+				if((string)$event->event_tz_cont && (string)$event->event_tz_place) {
 					$tz = $event->event_tz_cont.'/'.$event->event_tz_place;
 					$tzObj = new DateTimeZone($tz);
 					$this->assertTrue($tzObj instanceOf DateTimeZone);
 				}
 
-				$this->assertTrue(is_numeric($event->event_start));
-				$this->assertTrue(is_numeric($event->event_end));
-				$this->assertTrue($event->event_cfp_start === null || is_numeric($event->event_cfp_start));
-				$this->assertTrue($event->event_cfp_end   === null || is_numeric($event->event_cfp_end));
-				$this->assertTrue(is_numeric($event->num_attend));
-				$this->assertTrue(is_numeric($event->num_comments));
+				$this->assertTrue(is_numeric((string)$event->event_start));
+				$this->assertTrue(is_numeric((string)$event->event_end));
+				$this->assertTrue(is_numeric((string)$event->event_cfp_start));
+				$this->assertTrue(is_numeric((string)$event->event_cfp_end));
+				$this->assertTrue(is_numeric((string)$event->num_attend));
+				$this->assertTrue(is_numeric((string)$event->num_comments));
 
 				$this->assertTrue(
-									$event->active === '1', "Expected active to be 0 for " . $event->event_name . "(" . $event->ID . ")"
+									$event->active === '1', "Expected active to be 1 for " . $event->event_name . "(" . $event->ID . ")"
 				);
 				$this->assertTrue(
 									$event->pending === '0'
