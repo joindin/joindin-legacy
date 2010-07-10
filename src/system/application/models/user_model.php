@@ -180,6 +180,25 @@ class User_model extends Model {
 	}
 	
 	/**
+	 * Search for publicly-available user information based on a user ID or username
+	 *
+	 * A reduced version of the getUser() method so we can safely return these results to the service.
+	 * Should be used in preference to getUser wherever possible
+	 *
+	 * @param $in integer/string User ID or Username
+	 * @return array User details
+	 */
+	function getUserDetail($in){
+		$this->db->select('username, full_name, ID, last_login');
+		if(is_numeric($in)){
+			$q=$this->db->get_where('user',array('ID'=>$in));
+		}else{ 
+			$q = $this->db->get_where('user',array('username'=>(string)$in));
+		}
+		return $q->result();
+	}
+	
+	/**
 	 * Search for a user by their email address
 	 * @param $email string User email address
 	 * @return array User detail information 
