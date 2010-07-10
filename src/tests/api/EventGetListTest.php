@@ -8,8 +8,12 @@
 
 			$response = self::makeApiRequest('event', 'getlist', array('event_type'=>'upcoming'));
 
-			$res = json_decode($response);
+			$res = $this->decode_response($response, 'json');
 			$this->assertTrue( $res !== null, "Could not decode JSON response");
+			$this->assertExpectedFields($res);
+		}
+
+		protected function assertExpectedFields($res) {
 			foreach($res as $event) {
 				$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_OBJECT, $event);
 				$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->event_name);
@@ -71,4 +75,14 @@
 			}
 		}
 
+		public function testGetListUpcomingWithAuthXML() {
+
+			$response = self::makeApiRequest('event', 'getlist', array('event_type'=>'upcoming'), 'xml');
+
+			$res = $this->decode_response($response, 'xml');
+//			var_dump($res); exit;
+
+			$this->assertTrue( $res !== false, "Could not decode XML response");
+			$this->assertExpectedFields($res);
+		}
 	}
