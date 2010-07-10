@@ -2,11 +2,6 @@
 
 class Theme extends Controller {
 	
-	var $_css_upload_config	= array(
-		'upload_path'	=> '/inc/css/event',
-		'allowed_types'	=> 'css'
-	);
-	
 	public function Theme(){
 		parent::Controller();
 		$this->auth=($this->user_model->isAuth()) ? true : false;
@@ -15,9 +10,11 @@ class Theme extends Controller {
 	public function index(){
 		
 		$this->load->model('event_themes_model','eventThemes');
-		$this->eventThemes->getUserThemes();
-		
-		$this->template->write_view('content','theme/index');
+
+		$arr=array(
+			'themes'=>$this->eventThemes->getUserThemes()
+		);
+		$this->template->write_view('content','theme/index',$arr);
 		$this->template->render();
 	}
 	public function add($id=null){
@@ -25,16 +22,21 @@ class Theme extends Controller {
 		//Check to see if they're supposed to be here
 		if(!$this->auth){ redirect(); }
 		
+		$_css_upload_config	= array(
+			'upload_path'	=> $_SERVER['DOCUMENT_ROOT'].'/inc/css/event',
+			'allowed_types'	=> 'css',
+			'overwrite'		=> true
+		);
+		
 		$this->load->model('event_themes_model','eventThemes');
 		$this->load->model('user_admin_model','userAdmin');
 		$this->load->library('validation');
-		$this->load->library('upload',$this->_css_upload_config);
+		$this->load->library('upload',$_css_upload_config);
 		
 		$rules=array(
 			'theme_name'	=>'required',
 			'theme_event'	=>'required',
-			'theme_desc'	=>'required',
-			'theme_style'	=>'required'
+			'theme_desc'	=>'required'
 		);
 		$fields=array(
 			'theme_name'	=>'Theme Name',
@@ -53,12 +55,25 @@ class Theme extends Controller {
 			$this->user_events[$event->event_id]=$event->event_name;
 		}
 		
-		if(!$this->upload->do_upload()){
-			var_dump($this->upload->display_errors());
-		}
-
-		
 		if($this->validation->run()!=FALSE){
+			
+			if(!$this->upload->do_upload('theme_style')){
+				var_dump($this->upload->display_errors());
+			}else{ $upload_data=$this->upload->data(); }
+			
+			echo 'success!';
+			
+			// By default, this new theme won't be active...
+			$detail=array(
+				'theme_name'=> $this->input->post('theme_name'),
+				'theme_desc'=> $this->input->post('theme_desc'),
+				'active'	=> 0,
+				'event_id'	=> $this->input->post('theme_event'),
+				'css_file'	=> $upload_data['file_name'],
+				'created_by'=> $uid,
+				'created_at'=> time()
+			);
+			$this->eventThemes->addEventTheme($detail);
 			
 			/* 
 			When the submit is successful:
@@ -83,6 +98,19 @@ class Theme extends Controller {
 		$this->add($id);
 	}
 	
+	public function activate($theme_id){
+		
+		// Be sure that they have access to that theme (event admin)
+		$this->load->model('event_themes_model','eventThemes');
+		$uid=$this->session->userdata('ID');
+		foreach($this->eventThemes->getUserThemes($uid) as $theme){
+			if($theme->ID==$theme_id){
+				$this->eventThemes->activateTheme($theme->ID,$theme->event_id);
+			}
+		}
+		redirect('theme');
+		
+	}
 }
 
 

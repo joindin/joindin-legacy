@@ -22,11 +22,29 @@ class Event_themes_model extends Model {
 		$q=$this->db->get_where('user_admin',array('uid'=>$uid,'rtype'=>'event'));
 		foreach($q->result() as $event){ $event_ids[]=$event->rid; }
 
-		$this->db->select('*')
+		$this->db->select('event_themes.*,events.event_name')
 			->from('event_themes')
+			->join('events','events.ID=event_themes.event_id')
 			->where_in('event_id',$event_ids);
 		$q=$this->db->get();
 		return $q->result();
+	}
+	
+	/**
+	 * Get the active theme for an event
+	 *
+	 * @param integer $event_id Event ID
+	 * @return mixed Returns either the theme information or false 
+	 *   if no theme is found
+	 */
+	public function getActiveTheme($event_id){
+		$arr=array(
+			'active'	=> 1,
+			'event_id'	=> $event_id
+		);
+		$q=$this->db->get_where('event_themes',$arr);
+		$ret=$q->result();
+		return (!empty($ret)) ? $ret : false;
 	}
 	
 	/**
@@ -34,7 +52,7 @@ class Event_themes_model extends Model {
 	 * Involves database change and file(s) upload
 	 */
 	public function addEventTheme($data){
-		
+		$this->db->insert('event_themes',$data);
 	}
 	
 	/**
@@ -63,7 +81,7 @@ class Event_themes_model extends Model {
 		$this->db->update('event_themes',array('active'=>1));
 		
 		// deactivate all the rest
-		$this->db->where(array('ID 1='=>$theme_id,'event_id'=>$event_id));
+		$this->db->where(array('ID !='=>$theme_id,'event_id'=>$event_id));
 		$this->db->update('event_themes',array('active'=>0));
 	}
 }
