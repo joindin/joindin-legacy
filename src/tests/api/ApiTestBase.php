@@ -116,11 +116,19 @@
 		 * @param mixed $value Variable to check type of
 		 * @param string $message Error message
 		 */
-		protected function assertLooksLikeAString($value, $message='') {
+		protected function assertLooksLikeAString($value, $message=null) {
 			if($value instanceOf SimpleXMLElement) {
-				$value = sprintf($value);
-			} 
-			$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $value);
+				$this->assertEquals(1, $value->count(), $message);
+			} else {
+				$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $value, $message);
+			}
+		}
+
+		protected function assertLooksLikeAStringOrNull($value, $message=null) {
+			if ($value === null) {
+				return;
+			}
+			$this->assertLooksLikeAString($value, $message);
 		}
 
 	}
