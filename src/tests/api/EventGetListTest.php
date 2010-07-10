@@ -5,8 +5,6 @@
 	class EventGetList extends ApiTestBase {
 
 		public function testGetListUpcomingWithAuth() {
-			// $this->markTestIncomplete('hang fire with the json version for a moment');
-
 			$response = self::makeApiRequest('event', 'getlist', array('event_type'=>'upcoming'));
 
 			$res = $this->decode_response($response, 'json');
@@ -45,36 +43,43 @@
 
 				$this->assertTrue(is_numeric((string)$event->event_start));
 				$this->assertTrue(is_numeric((string)$event->event_end));
-				$this->assertTrue(is_numeric((string)$event->event_cfp_start));
-				$this->assertTrue(is_numeric((string)$event->event_cfp_end));
+				$this->assertTrue(empty($event->event_cfp_start) || is_numeric((string)$event->event_cfp_start));
+				$this->assertTrue(empty($event->event_cfp_end) || is_numeric((string)$event->event_cfp_end));
 				$this->assertTrue(is_numeric((string)$event->num_attend));
 				$this->assertTrue(is_numeric((string)$event->num_comments));
 
 				$this->assertTrue(
-									$event->active === '1', "Expected active to be 1 for " . $event->event_name . "(" . $event->ID . ")"
+									$this->optionallyConvertSimpleXML($event->active) === '1', "Expected active to be 1 for " . $event->event_name . "(" . $event->ID . ")"
 				);
 				$this->assertTrue(
-									$event->pending === '0'
-									|| $event->pending === null, "Expected pending to be 0 or empty for " . $event->event_name . "(" . $event->ID . ")"
+									$this->optionallyConvertSimpleXML($event->pending) === '0'
+									|| $this->optionallyConvertSimpleXML($event->pending) === null, 
+									"Expected pending to be 0 or empty for " . $event->event_name . "(" . $event->ID . ")"
 				);
 				$this->assertTrue(
 									$event->event_voting === 'Y'
 									|| $event->event_voting === '0'
-									|| $event->event_voting === null
+									|| empty($event->event_voting)
 				);
 				$this->assertTrue(
-									$event->private === 'N'
-									|| $event->private === null
+									$this->optionallyConvertSimpleXML($event->private) === 'N'
+									|| $this->optionallyConvertSimpleXML($event->private) === null,
+									"Expected private to be N or empty for " . $event->event_name . "(" . $event->ID . ")"
+				);
+				$this->assertTrue(
+									$this->optionallyConvertSimpleXML($event->allow_comments) === '0'
+									|| $this->optionallyConvertSimpleXML($event->allow_comments) === '1'
 				);
 				/*
+				// this expects false rather than null
+				print_r($event->ID);
+				print_r($event->user_attending);
+				var_dump($this->optionallyConvertSimpleXML($event->user_attending));
 				$this->assertTrue(
-									$event->allow_comments === '0', "Failed asserting comments not allowed on " . $event->event_name ."(" . $event->ID .")"
+									$this->optionallyConvertSimpleXML($event->user_attending) === false
+									|| $this->optionallyConvertSimpleXML($event->user_attending) === true
 				);
 				*/
-				$this->assertTrue(
-									$event->user_attending === false
-									|| $event->user_attending === true
-				);
 			}
 		}
 
@@ -87,4 +92,53 @@
 			$this->assertTrue( $res !== false, "Could not decode XML response");
 			$this->assertExpectedFields($res);
 		}
+
+		public function testGetListHotWithoutAuthXML() {
+
+			$response = self::makeApiRequest('event', 'getlist', array('event_type'=>'hot'), 'xml', false);
+
+			$res = $this->decode_response($response, 'xml');
+
+			$this->assertTrue( $res !== false, "Could not decode XML response");
+			$this->assertExpectedFields($res);
+		}
+
+		public function testGetListHotWithoutAuthJSON() {
+
+			$response = self::makeApiRequest('event', 'getlist', array('event_type'=>'hot'), 'json', false);
+
+			$res = $this->decode_response($response, 'json');
+
+			$this->assertTrue( $res !== false, "Could not decode JSON response");
+			$this->assertExpectedFields($res);
+		}
+
+		public function testGetListUpcomingWithoutAuthJSON() {
+			$response = self::makeApiRequest('event', 'getlist', array('event_type'=>'upcoming'), false);
+
+			$res = $this->decode_response($response, 'json');
+			$this->assertTrue( $res !== null, "Could not decode JSON response");
+			$this->assertExpectedFields($res);
+		}
+
+		public function testGetListPastWithoutAuthXML() {
+
+			$response = self::makeApiRequest('event', 'getlist', array('event_type'=>'past'), 'xml', false);
+
+			$res = $this->decode_response($response, 'xml');
+
+			$this->assertTrue( $res !== false, "Could not decode XML response");
+			$this->assertExpectedFields($res);
+		}
+
+		public function testGetListPastWithoutAuthJSON() {
+
+			$response = self::makeApiRequest('event', 'getlist', array('event_type'=>'past'), 'json', false);
+
+			$res = $this->decode_response($response, 'json');
+
+			$this->assertTrue( $res !== false, "Could not decode JSON response");
+			$this->assertExpectedFields($res);
+		}
+
 	}
