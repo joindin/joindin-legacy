@@ -5,6 +5,7 @@
 	class EventGetList extends ApiTestBase {
 
 		public function testGetListUpcomingWithAuth() {
+			// $this->markTestIncomplete('hang fire with the json version for a moment');
 
 			$response = self::makeApiRequest('event', 'getlist', array('event_type'=>'upcoming'));
 
@@ -16,15 +17,15 @@
 		protected function assertExpectedFields($res) {
 			foreach($res as $event) {
 				$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_OBJECT, $event);
-				$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->event_name);
-				$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->event_start);
-				$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->event_end);
-				$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->ID);
-				$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->event_loc);
-				$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->event_desc);
-				$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->active);
-				$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->num_attend);
-				$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->num_comments);
+				$this->assertLooksLikeAString($event->event_name);
+				$this->assertLooksLikeAString($event->event_start);
+				$this->assertLooksLikeAString($event->event_end);
+				$this->assertLooksLikeAString($event->ID);
+				$this->assertLooksLikeAString($event->event_loc);
+				$this->assertLooksLikeAString($event->event_desc);
+				$this->assertLooksLikeAString($event->active);
+				$this->assertLooksLikeAString($event->num_attend);
+				$this->assertLooksLikeAString($event->num_comments);
 
 				$this->assertTrue(is_string($event->event_stub) || $event->event_stub === null);
 				$this->assertTrue(is_string($event->event_icon) || $event->event_icon === null);
@@ -80,7 +81,6 @@
 			$response = self::makeApiRequest('event', 'getlist', array('event_type'=>'upcoming'), 'xml');
 
 			$res = $this->decode_response($response, 'xml');
-//			var_dump($res); exit;
 
 			$this->assertTrue( $res !== false, "Could not decode XML response");
 			$this->assertExpectedFields($res);

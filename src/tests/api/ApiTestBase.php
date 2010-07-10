@@ -62,7 +62,7 @@
 			if ($useCache) {
 				$cache_data = json_encode( array('payload'=>$response->getBody(), 'expires'=>(time()+3600)) );
 				file_put_contents($cache_filename, $cache_data);
-				chmod( $cache_filename, 0777 );
+				// chmod( $cache_filename, 0777 );
 			}
 
 			return $response->getBody();
@@ -106,6 +106,21 @@
 				// json is the default
 				return json_decode($response);
 			}
+		}
+
+		/**
+		 * assertLooksLikeAString: to handle the fact that SimpleXMLElements have all their
+		 * child elements as SimpleXMLElements as well.  Just casting seems a bit silly, if
+		 * we then test it is a string
+		 * 
+		 * @param mixed $value Variable to check type of
+		 * @param string $message Error message
+		 */
+		protected function assertLooksLikeAString($value, $message='') {
+			if($value instanceOf SimpleXMLElement) {
+				$value = sprintf($value);
+			} 
+			$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $value);
 		}
 
 	}
