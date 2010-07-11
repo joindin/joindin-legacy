@@ -9,7 +9,7 @@ class Event extends Controller {
 		// Check to see if they need a custom CSS layout
 		$this->load->model('event_themes_model','eventThemes');
 		$ret	    = explode('/',$_SERVER['REQUEST_URI']);
-		$event_id	= (is_numeric($ret[3])) ? $ret[3] : null;
+		$event_id	= (isset($ret[3]) && is_numeric($ret[3])) ? $ret[3] : null;
 		$theme		= $this->eventThemes->getActiveTheme($event_id);
 		if($event_id && $theme){
 			// has active theme...use it!
