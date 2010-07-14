@@ -37,7 +37,7 @@ if(!empty($this->validation->error_string)){
 
 	<div class="row">
 	<label for="theme_title">Make theme active?</label>
-	<?php echo form_checkbox('theme_active'); ?> Yes
+	<?php echo form_checkbox('theme_active',1); ?> Yes
 	<div class="clear"></div>
     </div>
 

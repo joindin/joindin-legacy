@@ -146,6 +146,10 @@ a {
 	padding-left: 23px;
 }
 
+.stdTable td {
+	padding: 3px;
+}
+
 .loading {
 	display: inline;
 	position: absolute;

@@ -109,13 +109,13 @@ SELECT @ftalkid:=LAST_INSERT_ID();
 /* Insert speaker data for the talk */
 insert into talk_speaker (
 	talk_id,
-	speaker,
+	speaker_name,
 	ID
 )values(
 	@ftalkid,
 	'John Doe',
 	NULL
-)
+);
 
 insert into talks (
 	talk_title,speaker,slides_link,
@@ -139,13 +139,13 @@ SELECT @stalkid:=LAST_INSERT_ID();
 /* Insert speaker data for the talk */
 insert into talk_speaker (
 	talk_id,
-	speaker,
+	speaker_name,
 	ID
 )values(
 	@stalkid,
 	'Jane Doe',
 	NULL
-)
+);
 
 /* ----------------------------------*/
 

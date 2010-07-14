@@ -7,9 +7,23 @@ class Event_themes_model extends Model {
 	}
 
 	/**
+	 * Check to see if the given user has access to a certain theme/event
+	 * @param integer $uid User ID
+	 * @param integer $theme_id Theme ID
+	 * @return boolean Allowed/not allowed
+	 */
+	public function isAuthTheme($uid,$theme_id){
+		foreach($this->getUserThemes($uid) as $theme){
+			if($theme->ID==$theme_id){ return true; }
+		}
+		return false;
+	}
+
+	/**
 	 * Grab all themes that are linked to an event this user
 	 * is an admin for
 	 * @param integer uid[optional] User ID (if not given, tries to pull from session)
+	 * @return array Theme information
 	 */
 	public function getUserThemes($uid=null){
 		$event_ids	= array();
@@ -50,13 +64,18 @@ class Event_themes_model extends Model {
 	/**
 	 * Add a new theme for a given event
 	 * Involves database change and file(s) upload
+	 * @param array $data Event date from the frontend
+	 * @return integer Last insert ID
 	 */
 	public function addEventTheme($data){
 		$this->db->insert('event_themes',$data);
+		return $this->db->insert_id();
 	}
 	
 	/**
 	 * Update the given theme with new data/file(s)
+	 * @param integer $theme_id Theme ID
+	 * @param array $data Theme data to update record with
 	 */
 	public function saveEventTheme($theme_id,$data){
 		
@@ -65,9 +84,10 @@ class Event_themes_model extends Model {
 	/**
 	 * Remove the given theme
 	 * @param integer $theme_id Theme ID number to remove
+	 * @return void
 	 */
 	public function deleteEventTheme($theme_id){
-		
+		$this->db->delete('event_themes',array('ID'=>$theme_id));
 	}
 	
 	/**
@@ -75,6 +95,7 @@ class Event_themes_model extends Model {
 	 * NOTE: All others for the event will be disabled
 	 * 
 	 * @param integer $theme_id Theme ID number to enable
+	 * @return void
 	 */
 	public function activateTheme($theme_id,$event_id){
 		$this->db->where('ID',$theme_id);
