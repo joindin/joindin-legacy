@@ -222,6 +222,7 @@ class Talk extends Controller {
 					
 					// Add the new speakers
 					$this->talkSpeakers->handleSpeakerData($tc_id,$this->input->post('speaker_row'));
+					$this->validation->speaker=$this->talkSpeakers->getTalkSpeakers($tc_id);
 					
 					//check to see if we have a track and it's not the "none"
 					if($this->input->post('session_track')!='none'){
