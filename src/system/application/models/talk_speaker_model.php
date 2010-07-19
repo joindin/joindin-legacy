@@ -36,10 +36,13 @@ class Talk_speaker_model extends Model {
 		$speaker_names=array();
 		
 		foreach($speaker_data as $speaker){
+			
 			$data=array(
 				'talk_id'		=> $talk_id,
 				'speaker_name'	=> $speaker
 			);
+			if(empty($speaker)){ continue; }
+			
 			if(!empty($speaker)){ $speaker_names[]=$speaker; }
 			$speaker_row = $this->_speakerExists($talk_id,$speaker);
 			if($speaker_row){
@@ -52,6 +55,7 @@ class Talk_speaker_model extends Model {
 		}
 		
 		// Now lets find the ones that aren't in our list and remove them
+		// This means we can't deleet the last speaker on a talk...that's a good thing!
 		if(!empty($speaker_names)){
 			$this->db->where_not_in('speaker_name',$speaker_names);
 			$this->db->where('talk_id',$talk_id);

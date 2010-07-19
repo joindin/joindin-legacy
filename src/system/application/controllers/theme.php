@@ -56,12 +56,11 @@ class Theme extends Controller {
 		}
 		
 		if($this->validation->run()!=FALSE){
+			$msg=array();
 			
 			if(!$this->upload->do_upload('theme_style')){
 				var_dump($this->upload->display_errors());
 			}else{ $upload_data=$this->upload->data(); }
-			
-			echo 'success!';
 			
 			// By default, this new theme won't be active...
 			$detail=array(
@@ -73,18 +72,19 @@ class Theme extends Controller {
 				'created_by'=> $uid,
 				'created_at'=> time()
 			);
-			$this->eventThemes->addEventTheme($detail);
+			$theme_id=$this->eventThemes->addEventTheme($detail);
+			$msg[]='Theme successfully added!';
 			
-			/* 
-			When the submit is successful:
-				- add a record to the database 
-				- maybe make it active
-				- move the CSS upload to the /inc/css/event folder 
-					with the event ID as a part of the name
-			*/
-			$data=array();
-			//$this->eventThemes->addEventTheme($data);
+			if($this->input->post('theme_active')==1){
+				$this->eventThemes->activateTheme($theme_id,$this->input->post('theme_event'));
+				$msg[]='Theme marked as active!';
+			}
 			
+			$msg[]='<a href="/theme">Back to theme list</a>';
+			
+			if(!empty($msg)){
+				$this->validation->error_string=implode("<br/>",$msg);
+			}
 		}
 		
 		$this->template->write_view('content','theme/add');
@@ -94,8 +94,14 @@ class Theme extends Controller {
 	/**
 	 * Edit the given theme - logic lives in add()
 	 */
-	public function edit($id){
-		$this->add($id);
+	public function edit($theme_id){
+		$this->add($theme_id);
+	}
+	
+	public function delete($theme_id){
+		if($this->eventThemes->isAuthTheme($uid,$theme_id)){
+			$this->eventThemes->deleteTheme($theme_id);
+		}
 	}
 	
 	public function activate($theme_id){
@@ -103,10 +109,9 @@ class Theme extends Controller {
 		// Be sure that they have access to that theme (event admin)
 		$this->load->model('event_themes_model','eventThemes');
 		$uid=$this->session->userdata('ID');
-		foreach($this->eventThemes->getUserThemes($uid) as $theme){
-			if($theme->ID==$theme_id){
-				$this->eventThemes->activateTheme($theme->ID,$theme->event_id);
-			}
+		
+		if($this->eventThemes->isAuthTheme($uid,$theme_id)){
+			$this->eventThemes->activateTheme($theme->ID,$theme->event_id);
 		}
 		redirect('theme');
 		

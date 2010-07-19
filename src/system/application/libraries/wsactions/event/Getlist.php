@@ -50,9 +50,9 @@ class Getlist extends BaseWsRequest {
 				if($uid) {
 					$evt->user_attending = $this->CI->user_attend_model->chkAttend($uid, $evt->ID);
 				}
-				if($evt->private==1 && !$evt->user_attending){
+				if(($evt->private==1 || $evt->private == 'Y') && !$evt->user_attending){
 					// not allowed to see the event!
-					unset($event[$k]);
+ 					unset($events[$k]);
 				}
 			}
 			return array('output'=>'json','data'=>array('items'=>$events));

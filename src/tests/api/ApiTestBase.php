@@ -11,6 +11,8 @@
 			// TODO pull this from config
 			$url = "http://lorna.rivendell.local/api/".urlencode($type);
 
+			$useCache = false;
+
 			// $creds === false means don't use credentials
 			// $creds === null  means use default credentials
 			// $creds === array($user, $pass) otherwise (where pass is md5)
@@ -81,7 +83,7 @@
 				}
 				$retval .= '
 	</action>';
-				if($req->request->auth) {
+				if(isset($req->request->auth)) {
 					$retval .= '
 	<auth>
 		<user>' . $req->request->auth->user . '</user>
@@ -129,6 +131,19 @@
 				return;
 			}
 			$this->assertLooksLikeAString($value, $message);
+		}
+
+		protected function optionallyConvertSimpleXML($value) {
+			if($value instanceOf SimpleXMLElement) {
+				$retval = sprintf('%s', $value);
+				if(strlen($retval) == '') {
+					// WARNING: may go badly if the string should have existed and been empty?
+					// FAIL: seems like we get here if we're false as well
+					return null;
+				}
+				return $retval;
+			} 
+			return  $value;
 		}
 
 	}
