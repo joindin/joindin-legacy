@@ -108,8 +108,8 @@ class Talk extends Controller {
 			$tracks	= $this->eventTracks->getEventTracks($thisTalk->eid);
 			
 
-			$thisTalksEvent = $events[0];
-			$thisTalksTrack = $tracks[0];
+			$thisTalksEvent = (isset($events[0])) ? $events[0] : array();
+			$thisTalksTrack = (isset($tracks[0])) ? $tracks[0] : array();
 			
 			
 			$track_info=$this->talkTracks->getSessionTrackInfo($thisTalk->ID); //print_r($track_info);
@@ -153,9 +153,7 @@ class Talk extends Controller {
 		
 		if($this->validation->run()!=FALSE){
 			$talk_date = mktime(
-				0,
-				0,
-				0,
+				0,0,0,
 				$this->input->post('given_mo'),
 				$this->input->post('given_day'),
 				$this->input->post('given_yr')
@@ -224,6 +222,7 @@ class Talk extends Controller {
 					
 					// Add the new speakers
 					$this->talkSpeakers->handleSpeakerData($tc_id,$this->input->post('speaker_row'));
+					$this->validation->speaker=$this->talkSpeakers->getTalkSpeakers($tc_id);
 					
 					//check to see if we have a track and it's not the "none"
 					if($this->input->post('session_track')!='none'){
