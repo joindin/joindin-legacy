@@ -55,6 +55,10 @@ class Getlist extends BaseWsRequest {
  					unset($events[$k]);
 				}
 			}
+
+			// Re-index the array, as the unsetting may have upset the apple-cart
+			$events = array_values($events);
+
 			return array('output'=>'json','data'=>array('items'=>$events));
 		}else{
 			return array('output'=>'json','data'=>array('items'=>array('msg'=>'Invalid event type!')));
