@@ -34,7 +34,6 @@ class Search extends Controller {
 			//success! search the talks and events
 			
 			$query = 'q:'.urlencode($this->input->post('search_term'));
-			echo 'query: '.$query;
 			
 			$start_mo=$this->input->post('start_mo');
 			$end_mo=$this->input->post('end_mo');			
