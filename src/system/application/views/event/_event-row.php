@@ -12,7 +12,7 @@ $this->load->library('timezone');
     	</div>
     	<p class="opts">
     		<a href="/event/view/<?php echo $event->ID; ?>#comments"><?php echo $event->num_comments; ?> comment<?php echo $event->num_comments == 1 ? '' : 's'?></a> |
-    		<strong><span class="event-attend-count-<?php echo $event->ID; ?>"><?php echo $event->num_attend; ?></span> attending</strong> | 
+    		<strong><span class="event-attend-count-<?php echo $event->ID; ?>"><?php echo $event->num_attend; ?></span> <?php echo ($event->event_end<time()) ? 'Attended' : 'Attending' ?></strong> | 
 
 			<!--<input type="checkbox" name="attend" value="1"/> Attending?-->
 
