@@ -137,6 +137,7 @@ class Talk extends Controller {
 			$events	= $this->event_model->getEventDetail($eid);
 			$thisTalksEvent = $events[0];
 			$det=array();
+			
 			//set the date to the start date of the event
 			$this->validation->given_mo = date('m',$thisTalksEvent->event_start);
 			$this->validation->given_day= date('d',$thisTalksEvent->event_start);
@@ -146,6 +147,16 @@ class Talk extends Controller {
 			
 			$this->validation->session_track	= null;
 			$this->validation->speaker			= array();
+			
+			// If we have an error but have posted speakers, load them...
+			if($posted_speakers=$this->input->post('speaker_row')){
+				foreach($posted_speakers as $speaker){
+					$obj=new stdClass();
+					$obj->speaker_name=$speaker;
+					$this->validation->speaker[]=$obj;
+					unset($obj);
+				}
+			}
 			
 			$is_private=false;
 		}
@@ -216,6 +227,11 @@ class Talk extends Controller {
 				//check to be sure its unique
 				$q=$this->db->get_where('talks',$arr);
 				$ret=$q->result();
+				
+				
+				//Check to be sure that all of the talk information is new
+				$this->talks_model->isTalkDataUnique($arr,$this->input->post('speaker_row'));
+				
 				if(count($ret)==0){
 					$this->db->insert('talks',$arr);
 					$tc_id=$this->db->insert_id();
