@@ -106,18 +106,16 @@ class Talk extends Controller {
 			
 			$events	= $this->event_model->getEventDetail($thisTalk->event_id);
 			$tracks	= $this->eventTracks->getEventTracks($thisTalk->eid);
-			
 
 			$thisTalksEvent = (isset($events[0])) ? $events[0] : array();
 			$thisTalksTrack = (isset($tracks[0])) ? $tracks[0] : array();
 			
-			
-			$track_info=$this->talkTracks->getSessionTrackInfo($thisTalk->ID); //print_r($track_info);
-			$this->validation->session_track=(isset($thisTalksTrack->ID)) ? $thisTalksTrack->ID : null;
+			$track_info=$this->talkTracks->getSessionTrackInfo($thisTalk->ID);
+			$this->validation->session_track=(empty($track_info)) ? null : $track_info[0]->ID;
 			
 			$is_private=($thisTalksEvent->private=='Y') ? true : false;
 			
-			foreach($thisTalk as $k=>$v){
+			foreach($thisTalk as $k=>$v){	
 				$this->validation->$k=$v;
 			}
 			
