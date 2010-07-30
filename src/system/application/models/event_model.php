@@ -336,7 +336,8 @@ class Event_model extends Model {
 				t.talk_title,
 				ua.uid as user_id,
 				ua.rid,
-				u.full_name
+				u.full_name,
+				ua.rcode
 			from
 				user_admin ua,
 				events e,
