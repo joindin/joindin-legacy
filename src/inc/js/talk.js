@@ -17,7 +17,7 @@ talk = function (){
 	
 	// Requires API
 	var _claimTalk = function(){
-		$('#claim_btn').click(function(){ alert('here');
+		$('#claim_btn').click(function(){
 			var obj={ "talk_id": $('#talk_id').val() };
 			$('#claim_btn').html('Sending Claim >>');
 
