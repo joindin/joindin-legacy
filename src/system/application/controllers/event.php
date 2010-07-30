@@ -411,7 +411,7 @@ class Event extends Controller {
 		$reqkey			= buildReqKey();
 		$attend			= $this->uam->getAttendUsers($id);
 		$talks 			= $this->talks_model->setDisplayFields($talks);
-		$claimed_talks	= $this->event_model->getClaimedTalks($id);
+		$claimed_talks	= $this->event_model->getClaimedTalks($id, $talks);
 		
 		$claim_detail	= buildClaimDetail($claimed_talks);
 		$event_related_sessions = $this->event_model->getEventRelatedSessions($id);
@@ -646,7 +646,7 @@ class Event extends Controller {
 		
 		$claimed=array();
 		
-		$cl=$this->event_model->getClaimedTalks($id); //echo '<pre>'; print_r($cl); echo '</pre>';
+		$cl=$this->event_model->getClaimedTalks($id, $talks); //echo '<pre>'; print_r($cl); echo '</pre>';
 		foreach($cl as $k=>$v){
 			//$cstr='ec'.str_pad(substr($v->rid,0,2),2,0,STR_PAD_LEFT).str_pad($v->tdata['event_id'],2,0,STR_PAD_LEFT);
 			//$cstr.=substr(md5($v->tdata['talk_title'].$sk),5,5);
