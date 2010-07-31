@@ -28,7 +28,7 @@ class Getdetail extends BaseWsRequest {
 		$ret=$this->CI->wsvalidate->validate($rules,$this->xml->action);
 
 		if(!$ret) {
-			$ret=$this->CI->user_model->getUserDetail($uid);
+			$ret=$this->CI->user_model->getUserDetail(sprintf('%s', $uid));
 
 			return array('output'=>'json','data'=>array('items'=>$ret));
 		} else {
