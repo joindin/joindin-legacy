@@ -57,14 +57,16 @@
 									"Expected pending to be 0 or empty for " . $event->event_name . "(" . $event->ID . ")"
 				);
 				$this->assertTrue(
-									$event->event_voting === 'Y'
-									|| $event->event_voting === '0'
-									|| empty($event->event_voting)
+									$this->optionallyConvertSimpleXML($event->event_voting === 'Y')
+									|| $this->optionallyConvertSimpleXML($event->event_voting === '0')
+									|| empty($event->event_voting),
+									"Expected event_voting to be Y, 0 or empty for " . $event->event_name . "(" . $event->ID . ")"
 				);
 				$this->assertTrue(
 									$this->optionallyConvertSimpleXML($event->private) === 'N'
+									|| $this->optionallyConvertSimpleXML($event->private) ==='0' 
 									|| $this->optionallyConvertSimpleXML($event->private) === null,
-									"Expected private to be N or empty for " . $event->event_name . "(" . $event->ID . ")"
+									"Expected private to be zero, N or empty for " . $event->event_name . "(" . $event->ID . ")"
 				);
 				$this->assertTrue(
 									$this->optionallyConvertSimpleXML($event->allow_comments) === '0'
@@ -122,7 +124,6 @@
 		}
 
 		public function testGetListPastWithoutAuthXML() {
-
 			$response = self::makeApiRequest('event', 'getlist', array('event_type'=>'past'), 'xml', false);
 
 			$res = $this->decode_response($response, 'xml');
@@ -139,6 +140,7 @@
 
 			$this->assertTrue( $res !== false, "Could not decode JSON response");
 			$this->assertExpectedFields($res);
+//			exit;
 		}
 
 	}
