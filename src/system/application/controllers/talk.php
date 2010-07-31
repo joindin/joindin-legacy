@@ -524,7 +524,6 @@ class Talk extends Controller {
 		
 		// Check to see if they can view private comments....
 		$view_private 	= ($this->user_model->canViewPrivateComments($talk_detail[0]->eid,$id)) ? true : false;
-		$event_claims	= $this->event_model->getClaimedTalks($talk_detail[0]->eid);
 		$talk_comments	= splitCommentTypes($this->talks_model->getTalkComments($id,null,$view_private));
 		
 		$also_given=$this->talks_model->talkAlsoGiven($id,$talk_detail[0]->event_id);
@@ -540,7 +539,6 @@ class Talk extends Controller {
 			'site_admin'	=> ($this->user_model->isSiteAdmin()) ? true : false,
 			'auth'			=> $this->auth,
 			'claimed'		=> $this->talks_model->isTalkClaimed($id),
-			'claims'		=> $event_claims,
 			'claim_status'	=> $claim_status,
 			'claim_msg'		=> $claim_msg,
 			'claim_details'	=> $this->userAdmins->getTalkClaims($id),

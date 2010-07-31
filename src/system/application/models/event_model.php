@@ -355,13 +355,17 @@ class Event_model extends Model {
 		return $ret;
 	}
 	
-	function getClaimedTalks($eid){
+	function getClaimedTalks($eid, $talks = null){
 		$this->load->helper('events');
 		$ids	= array();
 		$tdata	= array();
 
 		// Find all of the talks for the event...
-		$ret 	= $this->getEventTalks($eid); //echo '<pre>'; print_r($ret); echo '</pre>';
+		if ($talks === null) {
+			$ret = $this->getEventTalks($eid); //echo '<pre>'; print_r($ret); echo '</pre>';
+		} else {
+			$ret = $talks;
+		}
 		foreach($ret as $k=>$v){
 			$codes=array();
 			/*

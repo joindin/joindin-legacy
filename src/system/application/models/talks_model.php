@@ -263,12 +263,14 @@ class Talks_model extends Model {
 			    ON e.ID=t.event_id
 			  JOIN talk_comments tc
 			    ON tc.talk_id=t.ID
+			  INNER JOIN user_admin ua
+			    ON t.ID = ua.rid
 			WHERE
-			  e.event_start > %s
+			    e.event_start > %s
 			  and
-			t.ID in (
-			select rid from user_admin where rtype='talk' and rcode!='pending'
-			)
+			    ua.rtype = 'talk'
+			  and
+				ua.rcode != 'pending'
 			group by
 			  t.ID
 			having
