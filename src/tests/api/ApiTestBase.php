@@ -146,5 +146,31 @@
 			return  $value;
 		}
 
-	}
+		protected function assertIsASessionType($type, $message = null) {
+			$this->assertTrue($type === 'Talk' || $type === 'Workshop' || $type === 'Keynote' 
+						|| $type === 'Social Event' || $type === 'Event Related', 
+						$message
+			);
+		}
 
+		/**
+		 * Check speaker structure
+		 * This will change as speaker functionality is improved
+		 *
+		 * @param StdClass $speaker The object containing the speaker info
+		 * @param string   $message The error message to return (contains info about calling context)
+		 */
+
+		protected function assertIsASpeaker($speaker, $message = null) {
+			$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, (string)$speaker->speaker_name, $message);
+		}
+
+		protected function assertIsATrack($track, $message = null) {
+			$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, (string)$track->track_name, $message . ' - field: track_name');
+			$this->assertTrue(is_numeric((string)$track->ID), $message . "(field: ID) " . (string)$track->ID);
+			$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, (string)$track->track_desc, $message . ' - field: track_desc');
+		}
+
+
+
+	}
