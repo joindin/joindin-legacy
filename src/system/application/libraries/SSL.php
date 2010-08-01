@@ -36,7 +36,7 @@ class SSL {
 	 * Check to see if the current request is on HTTPS
 	 */
 	private function isRequestSecure(){
-		return ($_SERVER['SECURE']==1) ? true : false;
+		return (isset($_SERVER['SECURE']) && $_SERVER['SECURE']==1) ? true : false;
 	}
 	
 	/**
@@ -46,7 +46,7 @@ class SSL {
 	private function buildRedirect($path=''){
 		if(empty($path)){ $path=$_SERVER['REQUEST_URI']; }
 		$ci=&get_instance();
-		$base_url=$this->ci->config->item('base_url');
+		$base_url=$ci->config->item('base_url');
 		return str_replace('http','https',$base_url).$path;
 	}
 	
