@@ -974,6 +974,9 @@ class Event extends Controller {
 		// If we have claims to process...
 		if($claim && count($claim)>0 && isset($sub)){
 			foreach($claim as $k=>$v){
+				// be sure it's still a valid claim
+				$this->uam->isPendingClaim($k);
+				
 				switch(strtolower($v)){
 					case 'approve': 
 						$this->db->where('ID',$k);
