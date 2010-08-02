@@ -63,7 +63,8 @@ if (empty($comments)) {
 			<?php if (user_is_admin()): ?>
 				<a class="btn-small" href="#" onClick="delTalkComment(<?php echo $v->ID?>);return false;">Delete</a>
 			<?php endif; ?>
-			<?php if (isset($claimed[0]->userid) && $claimed[0]->userid != 0 && isset($v->user_id) && $v->user_id == $claimed[0]->userid): ?>
+			<?php if (
+				(isset($claimed[0]->userid) && $claimed[0]->userid != 0 && isset($v->user_id) && $v->user_id == $claimed[0]->userid) || $admin): ?>
 				<a class="btn-small" href="#" onClick="commentIsSpam(<?php echo $v->ID?>,'talk');return false;">Is Spam</a>
 			<?php endif; ?>
 		</p>
