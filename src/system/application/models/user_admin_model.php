@@ -166,7 +166,8 @@ class User_admin_model extends Model {
 	 */
 	public function isPendingClaim($claim_id){
 		$q=$this->db->get_where('user_admin',array('ID'=>$claim_id,'rcode'=>'pending'));
-		return (empty($q->result())) ? false : true;
+		$ret=$q->result();
+		return (empty($ret)) ? false : true;
 	}
 	
 	/**
