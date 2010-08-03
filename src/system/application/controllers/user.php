@@ -15,7 +15,7 @@ class User extends Controller {
 		$this->load->helper('url');
 		$this->load->library('validation');
 		$this->load->model('user_model');
-		$this->load->library('ssl');
+		$this->load->library('SSL');
 		
 		$this->ssl->sslRoute();
 		

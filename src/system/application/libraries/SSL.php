@@ -8,9 +8,13 @@ class SSL {
 	private $_secure_url	= array(
 		"/user/login"
 	);
+	/**
+	 * CodeIgniter instance
+	 */
+	private $ci				= null;
 	
-	public function __consturct(){
-		/* empty */
+	public function __construct(){
+		$this->ci=&get_instance();
 	}
 	
 	/**
@@ -18,6 +22,10 @@ class SSL {
 	 * @param string $path User-defined path
 	 */
 	public function sslRoute($path=''){
+		// Check to see if the "USE_SSL" is in config
+		$use_ssl=$this->ci->config->item('use_ssl');
+		if(!$use_ssl) return;
+		
 		if(empty($path)){ $path=$_SERVER['REQUEST_URI']; }
 		if($this->isSecure($path) && !$this->isRequestSecure()){
 			header('Location: '.$this->buildRedirect($path));
@@ -45,8 +53,7 @@ class SSL {
 	 */
 	private function buildRedirect($path=''){
 		if(empty($path)){ $path=$_SERVER['REQUEST_URI']; }
-		$ci=&get_instance();
-		$base_url=$ci->config->item('base_url');
+		$base_url=$this->ci->config->item('base_url');
 		return str_replace('http','https',$base_url).$path;
 	}
 	
