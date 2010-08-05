@@ -172,7 +172,9 @@ class Talk extends Controller {
 			} else {
 				$talk_timezone = new DateTimeZone('UTC');
 			}
-			$talk_datetime = date_create(date('d-M-Y ',$talk_date) . $this->input->post('given_hour') . ':' . $this->input->post('given_min'), $talk_timezone);
+			$talk_datetime = new DateTime($this->input->post('talkDate').' '.$this->input->post('given_hour') . ':' . $this->input->post('given_min'), $talk_timezone);
+			
+			//$talk_datetime = date_create(date('d-M-Y ',$talk_date) . $this->input->post('given_hour') . ':' . $this->input->post('given_min'), $talk_timezone);
 
 			// How much wrong will ->format("U") be if I do it now, due to DST changes?
 			// Only needed until PHP Bug #51051 delivers a better method
@@ -271,7 +273,8 @@ class Talk extends Controller {
 			'langs'		=>$langs,
 			'detail'	=>$det,
 			'evt_priv'	=>$is_private,
-			'tracks'	=>$tracks
+			'tracks'	=>$tracks, 
+			'thisTalksEvent' => $thisTalksEvent
 		);
 		$this->template->write_view('content','talk/add',$out,TRUE);
 		$this->template->render();

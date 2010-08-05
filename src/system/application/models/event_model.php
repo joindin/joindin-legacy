@@ -151,6 +151,7 @@ class Event_model extends Model {
 			} else {
 				$res[0]->now = "";
 			}
+			$res[0]->timezoneString = $res[0]->event_tz_cont.'/'.$res[0]->event_tz_place;
 		}
 		return $res;
 	}
