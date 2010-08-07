@@ -54,6 +54,17 @@ class User_admin_model extends Model {
 	}
 	
 	/**
+	 * Update the permissions in the table based on the table ID
+	 * @param integer $id Table ID
+	 * @param array $perms Permission settings to change
+	 * @return void
+	 */
+	public function updatePerm($id,$perms){
+		$this->db->where('id',$id);
+		$this->db->update('user_admin',$perms);
+	}
+	
+	/**
 	 * Check to see if given user has a claim on the ID+type combo
 	 *
 	 * @param integer $uid User ID
