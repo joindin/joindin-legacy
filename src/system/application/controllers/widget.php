@@ -28,6 +28,12 @@ class Widget extends Controller {
 		$this->load->model('talk_comments_model','tcm');
 		$p=explode('/',uri_string());
 		
+		//The talk ID is in $p[3]
+		//The type is in $p[5]
+		
+		error_log('type: '.$p[5]);
+		if(!$p[5]){ $p[5]='large'; }
+		
 		$talk_detail	= $this->talk->getTalks($p[3]);
 		$has_commented	= false;		
 		$uid			= $this->session->userdata('ID');
@@ -36,9 +42,11 @@ class Widget extends Controller {
 		}
 		
 		$data=array(
-			'talk'=>$talk_detail[0]
+			'talk' => $talk_detail[0],
+			'site' => $_SERVER['SERVER_NAME']
 		);
-		$this->load->view('widget/talk',$data);
+		$widget='widget/modules/talk_'.strtolower($p[5]);
+		$this->load->view($widget,$data);
 	}
 	
 }
