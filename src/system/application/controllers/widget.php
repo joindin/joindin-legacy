@@ -8,6 +8,29 @@ class Widget extends Controller {
 	public function index(){
 	}
 	
+	public function fetchdata($type,$id){
+		$render_to	 = $this->input->get('render_to');
+		$display_type= $this->input->get('display_type');
+		
+		switch(strtolower($type)){
+			case 'talk': 
+				$this->load->model('talks_model');
+				$data=$this->talks_model->getTalks($id);
+				break;
+			case 'event': 
+				$this->load->model('event_model');
+				$data=$this->event_model->getEventDetail($id);
+				break;
+		}
+		echo 'joindin.jsonpCallback(
+			'.$id.',
+			"'.strtolower($type).'",
+			"'.$display_type.'",
+			"'.$render_to.'",
+			'.json_encode($data).')';
+		
+	}
+	
 	public function event(){
 		$this->load->helper('url');
 		$this->load->model('event_model','event');
