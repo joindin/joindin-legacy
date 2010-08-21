@@ -16,6 +16,17 @@ var widget_template = {
 		'.content': {
 			'color' 			: '#999999',
 			'font-size'			: '11px'
+		},
+		'.username': {
+			'font-size'			: '14px',
+			'font-weight'		: 'bold'
+		},
+		'.byline': {
+			'font-size'			: '10px',
+			'color' 			: '#999999',
+		},
+		'.byline a': {
+			'text-decoration'	: 'underline'
 		}
 	},
 	js: ' \
@@ -50,7 +61,8 @@ var widget_template = {
 		<br/> \
 		<a class="talk_title_link" href="#" onClick="goTo(\'{{talk_url}}\')"> \
 			<img src="{{rating_url}}" border="0"/> \
-		</a> \
+		</a><br/> \
+		<span class="byline" align="right">by <a href="">joind.in</a></span> \
 		</div> \
 	',
 	event_small: ' \
@@ -65,9 +77,27 @@ var widget_template = {
 				{{event_loc}} <br/> \
 				{{event_dates}} <br/> \
 				</span> \
+				<span class="byline" align="right">by <a href="">joind.in</a></span> \
 			</td> \
 		</tr> \
 		</table> \
+		</div> \
+	',
+	user_large: ' \
+		<div style="width:130px;margin:4px;vertical-align:top"> \
+		<a href="{{base_url}}/user/view/{{username}}" class="username">{{username}}</a><br/><br/> \
+		{{#talks}} \
+			<div style="padding-bottom:3px"> \
+			<a href="{{base_url}}/talk/view/{{ID}}">{{talk_title}}</a><br/> \
+			{{#tavg}} \
+				<img height="12" src="{{base_url}}/inc/img/rating-{{tavg}}.gif"/><br/> \
+			{{/tavg}} \
+			{{^tavg}} \
+				<img height="12" src="{{base_url}}/inc/img/rating-0.gif"/><br/> \
+			{{/tavg}} \
+			</div> \
+		{{/talks}} \
+		<center><span class="byline">by <a href="">joind.in</a></span></center> \
 		</div> \
 	'
 }
