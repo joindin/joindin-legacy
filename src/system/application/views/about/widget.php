@@ -58,6 +58,7 @@ load multiple widgets all in one page.
 <li><a href="#talk_small">Talk - Small</a>
 <li><a href="#talk_large">Talk - Large</a>
 <li><a href="#event_large">Event - Large</a>
+<li><a href="#user_large">User - Large</a>
 </ul>
 <a name="talk_small"></a>
 <p>
@@ -85,4 +86,14 @@ it has one.
 Called with event ID number.
 <br/><br/>
 joindin.display_event_large(num)
+</p>
+
+<a name="user_large"></a>
+<p>
+<h3>User Large</h3>
+The larger version of the user widget includes: username, list of speaker's sessions and ratings
+it has one.
+Called with user ID number.
+<br/><br/>
+joindin.display_user_large(num)
 </p>
