@@ -21,6 +21,10 @@ class Widget extends Controller {
 				$this->load->model('event_model');
 				$data=$this->event_model->getEventDetail($id);
 				break;
+			case 'user':
+				$this->load->model('talks_model');
+				$data=array('username'=>'enygma','talks'=>$this->talks_model->getUserTalks($id));
+				break;
 		}
 		echo 'joindin.jsonpCallback(
 			'.$id.',

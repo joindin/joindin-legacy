@@ -17,9 +17,9 @@ var joindin = {
 		var date = new Date(ts*1000);
 		return date.getMonth()+'/'+date.getDate()+'/'+date.getFullYear();
 	},
-	request_data: function(talk_id,request_type,display_type){
+	request_data: function(rid,request_type,display_type){
 		$.getJSON(
-			'http://'+this.host+'/widget/fetchdata/'+request_type+'/'+talk_id+'?&jsoncallback=?',
+			'http://'+this.host+'/widget/fetchdata/'+request_type+'/'+rid+'?&jsoncallback=?',
 			{
 				"display_type" 	: display_type,
 				"render_to"		: this.render_div
@@ -50,6 +50,10 @@ var joindin = {
 	display_event_large: function(event_id, render_to_div){
 		if(render_to_div){ this.setRenderDiv(render_to_div); }
 		this.request_data(event_id,'event','small');
+	},
+	display_user_large: function(user_id,render_to_div){
+		if(render_to_div){ this.setRenderDiv(render_to_div); }
+		this.request_data(user_id,'user','large');
 	},
 	_render_event: function(data,size){
 		// render event....
@@ -86,6 +90,14 @@ var joindin = {
 		}
 		this._apply_template(content,eval('widget_template.talk_'+size));
 		
+	},
+	_render_user: function(data,size){
+		var content = {
+			username	: data.username,
+			talks		: data.talks,
+			base_url	: 'http://<?php echo $_SERVER['SERVER_NAME']; ?>'
+		}
+		this._apply_template(content,eval('widget_template.user_'+size));
 	},
 	// Apply our data to the Mustache template and CSS
 	_apply_template: function(content,template){
