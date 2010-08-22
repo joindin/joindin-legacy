@@ -85,7 +85,8 @@ var widget_template = {
 	',
 	user_large: ' \
 		<div style="width:130px;margin:4px;vertical-align:top"> \
-		<a href="{{base_url}}/user/view/{{username}}" class="username">{{username}}</a><br/><br/> \
+		<a href="{{base_url}}/user/view/{{username}}" class="username">{{full_name}}</a><br/> \
+		(<a href="{{base_url}}/user/view/{{username}}">{{username}}</a>)<br/><br/> \
 		{{#talks}} \
 			<div style="padding-bottom:3px"> \
 			<a href="{{base_url}}/talk/view/{{ID}}">{{talk_title}}</a><br/> \

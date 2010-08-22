@@ -23,7 +23,13 @@ class Widget extends Controller {
 				break;
 			case 'user':
 				$this->load->model('talks_model');
-				$data=array('username'=>'enygma','talks'=>$this->talks_model->getUserTalks($id));
+				$this->load->model('user_model');
+				$user=$this->user_model->getUser($id);
+				$data=array(
+					'username'	=> $user[0]->username,
+					'full_name'	=> $user[0]->full_name,
+					'talks'		=> $this->talks_model->getUserTalks($id)
+				);
 				break;
 		}
 		echo 'joindin.jsonpCallback(

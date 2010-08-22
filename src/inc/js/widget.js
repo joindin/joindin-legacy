@@ -94,6 +94,7 @@ var joindin = {
 	_render_user: function(data,size){
 		var content = {
 			username	: data.username,
+			full_name	: data.full_name,
 			talks		: data.talks,
 			base_url	: 'http://<?php echo $_SERVER['SERVER_NAME']; ?>'
 		}
