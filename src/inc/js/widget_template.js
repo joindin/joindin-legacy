@@ -27,6 +27,16 @@ var widget_template = {
 		},
 		'.byline a': {
 			'text-decoration'	: 'underline'
+		},
+		'.rating_img': {
+			'padding'			: '0px',
+			'margin'			: '0px',
+			'border'			: '0px sold #000000'
+		},
+		'.widget_iframe': {
+			'border'			: '0px solid #000000',
+			'height'			: '180px',
+			'width'				: '240px'
 		}
 	},
 	js: ' \
@@ -35,6 +45,71 @@ var widget_template = {
 				alert(url); \
 				window.top.location.href=url; \
 			} \
+			$(\'#joindin_user_back\').click(function(){ \
+				alert(\'here\'); \
+				return false; \
+			});\
+			$(\'#btn_vote\').live(\'click\',function(){ \
+				$(\'#vote_container\').css(\'display\',\'block\'); \
+				$(\'#btn_vote\').css(\'display\',\'none\'); \
+				$(\'#btn_cancel\').css(\'display\',\'block\'); \
+				return false; \
+			});\
+			$(\'#btn_cancel\').live(\'click\',function(){ \
+				$(\'#vote_container\').css(\'display\',\'none\'); \
+				$(\'#btn_vote\').css(\'display\',\'block\'); \
+				$(\'#btn_cancel\').css(\'display\',\'none\'); \
+				return false; \
+			}); \
+			$(\'#btn_vote_submit\').live(\'click\',function(){ \
+				var comment = $(\'#vote_comment\').val(); \
+				var rating	= $(\'#vote_rank\').val(); \
+				alert(comment+\' \'+rating); \
+				alert("{{post_to}} "+window.location.hostname); \
+				$.ajax({ \
+					url: "{{post_to}}", \
+					type: "POST", \
+					dataType: "json", \
+					data: { "test":"1"}, \
+					processData: false, \
+					success: function(data){ \
+						alert(data); \
+					} \
+				}); \
+			}); \
+			$(\'.rating_img_link\').live(\'mouseover\',function(){ \
+				var curr_id=this.id.replace(\'r\',\'\'); \
+				var img_url=$(\'#\'+this.id+\' img\').attr(\'src\').replace(/rating-.+\.jpg/,\'\'); \
+				for(i=1;i<=5;i++){ \
+					if(i<=curr_id){ \
+						$(\'#r\'+i+\' img\').attr(\'src\',img_url+\'/rating-on.jpg\'); \
+					}else{ \
+						$(\'#r\'+i+\' img\').attr(\'src\',img_url+\'/rating-off.jpg\'); \
+					} \
+				} \
+			}); \
+			$(\'.rating_img_link\').live(\'mouseout\',function(){ \
+				for(i=1;i<=5;i++){ \
+					var img_url=$(\'#\'+this.id+\' img\').attr(\'src\').replace(/rating-.+\.jpg/,\'\'); \
+					if(!$(\'#vote_rank\').val()){ \
+						$(\'#r\'+i+\' img\').attr(\'src\',img_url+\'/rating-off.jpg\'); \
+					}else{ \
+						if(i<=$(\'#vote_rank\').val()){ \
+							$(\'#r\'+i+\' img\').attr(\'src\',img_url+\'/rating-on.jpg\'); \
+						}else{ \
+							$(\'#r\'+i+\' img\').attr(\'src\',img_url+\'/rating-off.jpg\'); \
+						} \
+					} \
+				} \
+			}); \
+			$(\'.rating_img_link\').live(\'click\',function(){ \
+				var sel_val = this.id.replace(\'r\',\'\'); \
+				var img_url = $(\'#\'+this.id+\' img\').attr(\'src\').replace(/rating-.+\.jpg/,\'\'); \
+				$(\'#vote_rank\').val(sel_val); \
+				for(i=1;i<=sel_val;i++){ \
+					$(\'#r\'+i+\' img\').attr(\'src\',img_url+\'/rating-on.jpg\'); \
+				} \
+			}); \
 		</script> \
 	',
 	talk_small: ' \
@@ -84,9 +159,10 @@ var widget_template = {
 		</div> \
 	',
 	user_large: ' \
-		<div style="width:130px;margin:4px;vertical-align:top"> \
-		<a href="{{base_url}}/user/view/{{username}}" class="username">{{full_name}}</a><br/> \
-		(<a href="{{base_url}}/user/view/{{username}}">{{username}}</a>)<br/><br/> \
+		talks: <br/> \
+		{{talks}} \
+	',
+	user_talks_panel: ' \
 		{{#talks}} \
 			<div style="padding-bottom:3px"> \
 			<a href="{{base_url}}/talk/view/{{ID}}">{{talk_title}}</a><br/> \
@@ -97,8 +173,36 @@ var widget_template = {
 				<img height="12" src="{{base_url}}/inc/img/rating-0.gif"/><br/> \
 			{{/tavg}} \
 			</div> \
-		{{/talks}} \
-		<center><span class="byline">by <a href="">joind.in</a></span></center> \
-		</div> \
-	'
+		{{/talks}} end\
+	',
+	vote_small: ' \
+		<table cellpadding="0" cellspacing="0" border="0"> \
+		<tr><td align="right"><input type="button" id="btn_cancel" value="x" style="display:none" align="right"></td></tr> \
+		<tr><td><div id="vote_container" style="display:none">\
+			{{{vote_container}}} \
+		</div></td></tr> \
+		<tr><td><input type="button" id="btn_vote" value="vote"></td></tr></table> \
+	',
+	vote_container: ' \
+		<iframe src="{{frame_url}}" class="widget_iframe" id="widget_iframe"></iframe> \
+	',
+	//user_large: ' \
+	//	<div style="width:130px;margin:4px;vertical-align:top"> \
+	//	<a href="{{base_url}}/user/view/{{username}}" class="username">{{full_name}}</a><br/> \
+	//	(<a href="{{base_url}}/user/view/{{username}}">{{username}}</a>)<br/><br/> \
+	//	{{#talks}} \
+	//		<div style="padding-bottom:3px"> \
+	//		<a href="{{base_url}}/talk/view/{{ID}}">{{talk_title}}</a><br/> \
+	//		{{#tavg}} \
+	//			<img height="12" src="{{base_url}}/inc/img/rating-{{tavg}}.gif"/><br/> \
+	//		{{/tavg}} \
+	//		{{^tavg}} \
+	//			<img height="12" src="{{base_url}}/inc/img/rating-0.gif"/><br/> \
+	//		{{/tavg}} \
+	//		</div> \
+	//	{{/talks}} \
+	//	<a href="" id="joindin_user_back">back</a> || <a href="">fwd</a> \
+	//	<center><span class="byline">by <a href="">joind.in</a></span></center> \
+	//	</div> \
+	//',
 }

@@ -31,6 +31,10 @@ class Widget extends Controller {
 					'talks'		=> $this->talks_model->getUserTalks($id)
 				);
 				break;
+			case 'vote':
+				$this->load->model('talks_model');
+				$data=$this->talks_model->getTalks($id);
+				break;
 		}
 		echo 'joindin.jsonpCallback(
 			'.$id.',
@@ -39,6 +43,10 @@ class Widget extends Controller {
 			"'.$render_to.'",
 			'.json_encode($data).')';
 		
+	}
+	
+	public function postdata(){
+		error_log('vote comment: '.$this->input->post('vote_comment'));
 	}
 	
 	public function event(){
@@ -64,7 +72,7 @@ class Widget extends Controller {
 		//The talk ID is in $p[3]
 		//The type is in $p[5]
 		
-		error_log('type: '.$p[5]);
+		error_log('type: '.$p[5].' '.$p[3]);
 		if(!$p[5]){ $p[5]='large'; }
 		
 		$talk_detail	= $this->talk->getTalks($p[3]);
@@ -74,9 +82,18 @@ class Widget extends Controller {
 			$has_commented=$this->tcm->hasUserCommented($p[3],$uid);
 		}
 		
+		$rank=$this->input->post('vote_rank');
+		if(!empty($rank)){
+			$comment	= $this->input->post('vote_comment');
+			$rank		= $this->input->post('vote_rank');
+		}
+		
 		$data=array(
-			'talk' => $talk_detail[0],
-			'site' => $_SERVER['SERVER_NAME']
+			'talk' 			=> $talk_detail[0],
+			'site' 			=> $_SERVER['SERVER_NAME'],
+			'hasCommented'	=> $has_commented,
+			'userId'		=> $uid,
+			'userName'		=> $this->session->userdata('username')
 		);
 		$widget='widget/modules/talk_'.strtolower($p[5]);
 		$this->load->view($widget,$data);
