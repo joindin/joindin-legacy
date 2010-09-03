@@ -93,8 +93,18 @@ class Talk_speaker_model extends Model {
 	 */
 	public function getSpeakerByTalkId($talk_id){
 		
-		$q=$this->db->get_where('talk_speaker','talk_id ='.$talk_id);
-		$ret=$q->result();
+		$this->db->select('talk_id,speaker_name,talk_speaker.ID,email');
+		$this->db->from('talk_speaker');
+		$this->db->where('talk_id',$talk_id);
+		$this->db->join('user','user.full_name=talk_speaker.speaker_name');
+		$result=$this->db->get();
+		$ret=$result->result();
+		
+		// For some reason there's no matching names....just get the speakers
+		if(empty($ret)){
+			$result=$this->db->get_Where('talk_speaker',array('talk_id'=>$talk_id));
+			$ret=$result->result();
+		}
 		
 		return $ret;
 	}
