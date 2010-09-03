@@ -1,3 +1,4 @@
+<?php if($gravatar){ echo $gravatar.'<br/><br/>'; } ?>
 <h1><?php 
 	echo (!empty($details[0]->full_name)) ? $details[0]->full_name.' ('.$details[0]->username.')': $details[0]->username;
 ?></h1>

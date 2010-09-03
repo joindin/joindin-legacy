@@ -42,6 +42,8 @@ if (!empty($msg)):
 <?php $this->load->view('msg_info', array('msg' => $msg)); ?>
 <?php endif; ?>
 
+<?php if($gravatar){ echo $gravatar.'<br/><br/>'; } ?>
+
 <div class="box">
     <h2>MyTalks</h2>
 <?php if (count($talks) == 0): ?>
