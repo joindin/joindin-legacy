@@ -9,15 +9,21 @@
 		$icon_file=$gravatar_cache_dir.'/user'.$attendee->ID.'.jpg';
 		if(is_file($icon_file)){
 			$has_icons=true;
-			echo '<img src="/inc/img/user_gravatar/user'.$attendee->ID.'.jpg" height="15"/><br/>';
+			echo '<img src="/inc/img/user_gravatar/user'.$attendee->ID.'.jpg" height="20"/><br/>';
 		}
 	}
 	if(!$has_icons){
 		echo '<ul>';
-		$rand=array_rand($attend_list,10);
-		foreach($rand as $rand_id){ 
-			$attendee=$attend_list[$rand_id];
+		$end=(count($attend_list)>10) ? 10 : count($attend_list);
+		$rand=array_rand($attend_list,$end);
+		if(!is_array($rand)){
+			$attendee=$attend_list[$rand];
 			echo '<li><a href="">'.$attendee->full_name.'</a><br/>';
+		}else{
+			foreach($rand as $rand_id){ 
+				$attendee=$attend_list[$rand_id];
+				echo '<li><a href="">'.$attendee->full_name.'</a><br/>';
+			}
 		}
 		echo '</ul>';
 	}
