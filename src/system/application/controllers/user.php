@@ -272,6 +272,9 @@ class User extends Controller {
 		
 		$details = $this->user_model->getUser($uid);
 		
+		// If the user doesn't exist, redirect!
+		if(!isset($details[0])){ redirect(); }
+		
 		$this->gravatar->getUserImage($uid,$details[0]->email);
 		$imgStr=$this->gravatar->displayUserImage($uid,true);
 		
