@@ -326,6 +326,7 @@ class Event extends Controller {
 		$this->load->library('spam');
 		$this->load->library('twitter');
 		$this->load->library('timezone');
+		$this->load->library('gravatar');
 		$this->load->model('event_model');
 		$this->load->model('event_comments_model');
 		$this->load->model('user_attend_model','uam');
@@ -338,6 +339,14 @@ class Event extends Controller {
 		
 		$events		= $this->event_model->getEventDetail($id);
 		$evt_admins	= $this->event_model->getEventAdmins($id);
+		
+		/* see if the admins have gravatars */
+		foreach($evt_admins as $k=>$admin){
+			if($img=$this->gravatar->displayUserImage($admin->ID,true)){
+				$evt_admins[$k]->gravatar=$img;
+			}
+		}
+		
 		if($events[0]->private=='Y'){
 			$this->load->model('invite_list_model','ilm');
 						
@@ -534,10 +543,15 @@ class Event extends Controller {
 		}
 		
 		$this->template->write('feedurl','/feed/event/'.$id);
-		// Only show if they're an admin...
-		$this->template->write_view('sidebar3','event/_event_blog',array(
+		
+		
+		/*$this->template->write_view('sidebar3','event/_event_blog',array(
 			'entries'	=> $this->ebp->getPosts($id,true),
 			'eid'		=> $id
+		));*/
+		$this->template->write_view('sidebar3','event/_event_attend_gravatar',array(
+			'attend_list'		=> $attend,
+			'gravatar_cache_dir'=> $this->config->item('gravatar_cache_dir')
 		));
 		
 		if($arr['admin']){ $this->template->write_view('sidebar2','event/_sidebar-admin',
