@@ -9,7 +9,7 @@
 		$icon_file=$gravatar_cache_dir.'/user'.$attendee->ID.'.jpg';
 		if(is_file($icon_file)){
 			$has_icons=true;
-			echo '<img src="/inc/img/user_gravatar/user'.$attendee->ID.'.jpg"/><br/>';
+			echo '<img src="/inc/img/user_gravatar/user'.$attendee->ID.'.jpg" height="15"/><br/>';
 		}
 	}
 	if(!$has_icons){
