@@ -58,24 +58,9 @@ here's what we need
         <div class="clear"></div>
 	</div>
 
-	<div class="desc">
+	<div class="desc" style="display:none">
 		<?php echo auto_p(auto_link(escape($event_detail->event_desc))); ?>
 		<hr/>
-		
-	<b>Your host(s):</b><br/>
-	<table cellpadding="5" cellspacing="0" border="0">
-	<tr>
-	<?php
-	foreach($admins as $admin_user){
-		echo '<td style="padding-right:5px;font-size:11px">';
-		if(isset($admin_user->gravatar)){
-			echo $admin_user->gravatar;
-		}
-		echo '<a href="">'.$admin_user->full_name.'</a></td>';
-	}
-	?>
-	</tr>
-	</table>
 
 	<?php if(!empty($event_detail->event_href) || !empty($event_detail->event_hastag) || !empty($event_detail->event_stub)){ ?>
 		<div class="related">
