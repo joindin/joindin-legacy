@@ -195,6 +195,8 @@ class Talks_model extends Model {
 	* $cid [optional] Comment ID (if you want to get only one comment)
 	*/
 	public function getTalkComments($tid,$cid=null,$private=false){
+		$this->load->library('gravatar');
+		
 		$c_addl	= ($cid) ? ' and tc.ID='.$cid : '';
 		$priv	= (!$private) ? ' and tc.private=0' : '';
 		$sql=sprintf('
@@ -217,7 +219,11 @@ class Talks_model extends Model {
 			order by tc.date_made asc
 		',$tid,$c_addl,$priv);
 		$q=$this->db->query($sql);
-		return $q->result();
+		$comments=$q->result();
+		foreach($comments as $k=>$comment){
+			$comments[$k]->gravatar=$this->gravatar->displayUserImage($comment->user_id,true);
+		}
+		return $comments;
 	}
 	
 	public function getPopularTalks($len=7){
