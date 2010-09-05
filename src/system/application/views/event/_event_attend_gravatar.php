@@ -7,9 +7,10 @@
 	$has_icons=false;
 	foreach($attend_list as $attendee){
 		$icon_file=$gravatar_cache_dir.'/user'.$attendee->ID.'.jpg';
+		//if(is_file($icon_file) && filesize($icon_file)!=1323){
 		if(is_file($icon_file)){
 			$has_icons=true;
-			echo '<img src="/inc/img/user_gravatar/user'.$attendee->ID.'.jpg" height="20"/><br/>';
+			echo '<a href="/user/view/'.$attendee->ID.'"><img src="/inc/img/user_gravatar/user'.$attendee->ID.'.jpg" height="20" style="margin:2px"i alt="'.$attendee->full_name.'"/></a>';
 		}
 	}
 	if(!$has_icons){
