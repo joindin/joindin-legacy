@@ -54,7 +54,8 @@ class Talk extends Controller {
 			if(!$this->user_model->isAdminEvent($eid)){ redirect(); }
 		}elseif($id){ 
 			$this->edit_id=$id;
-			$eid	= null;
+			$det	= $this->talks_model->getTalks($id);
+			$eid	= $det[0]->eid;
 			
 			// See if they have access to the talk (claimed user, site admin, event admin)
 			if($this->user_model->isAdminEvent($eid) || $this->userAdmins->hasPerm($currentUserId,$id,'talk')){
@@ -436,7 +437,7 @@ class Talk extends Controller {
 		if($this->validation->run()==FALSE){
 			
 			// vote processing code removed
-		}else{ 
+		}else{
 			$is_auth	= $this->user_model->isAuth();
 			$arr		= array(
 				'comment_type'		=> 'comment',
