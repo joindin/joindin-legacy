@@ -209,7 +209,7 @@ class Talk extends Controller {
 				
 				//check to see if we have a track and it's not the "none"
 				if($this->input->post('session_track')!='none'){
-					$curr_track	= (isset($thisTalksTrack->ID)) ? $thisTalksTrack->ID : null;
+					$curr_track	= (isset($track_info[0]->ID)) ? $track_info[0]->ID : null;
 					$new_track	= $this->input->post('session_track');
 					$this->talkTracks->updateSessionTrack($id,$curr_track,$new_track);
 					$this->validation->session_track=$new_track;
