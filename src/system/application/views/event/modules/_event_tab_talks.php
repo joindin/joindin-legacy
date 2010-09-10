@@ -64,7 +64,7 @@
 						}
 					}else{ $speaker_list[]=$sp->speaker_name; }
 				}
-				if(empty($speaker_list)){ $speaker_list[]=$sp->speaker_name; }
+				if(empty($speaker_list)){ $speaker_list[]='None'; }
 				echo implode(', ',$speaker_list);
 				?>
     		</td>
