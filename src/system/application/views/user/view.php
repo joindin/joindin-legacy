@@ -1,4 +1,6 @@
-<?php if($gravatar){ echo $gravatar.'<br/><br/>'; } ?>
+<?php 
+menu_pagetitle('User: ' . escape($details[0]->full_name));
+if($gravatar){ echo $gravatar.'<br/><br/>'; } ?>
 <h1><?php 
 	echo (!empty($details[0]->full_name)) ? $details[0]->full_name.' ('.$details[0]->username.')': $details[0]->username;
 ?></h1>
