@@ -254,6 +254,17 @@ class User extends Controller {
 	}
 	
 	/**
+	 * Refreshes the user's gravatar from their servers
+	 * Uses logged in user, cannot be specified
+	 */
+	function refresh_gravatar(){
+		$this->load->library('gravatar');
+		$uid = $this->session->userData('ID');
+		$this->gravatar->getUserImage($uid);
+		redirect('/user/main');
+	}
+	
+	/**
 	* View a user's information...input can be either username of user ID
 	*/
 	function view($uid){
