@@ -50,7 +50,10 @@ function buildClaims($claimed_talks){
 	$claims=array();
 	
 	foreach($claimed_talks as $talk){
-		$claims[$talk->talk_id][$talk->full_name]=$talk->user_id;
+		$claims[$talk->talk_id][$talk->full_name]	= array(
+			'uid'	=> $talk->user_id,
+			'rcode'	=> $talk->rcode
+		);
 	}
 	return $claims;
 }

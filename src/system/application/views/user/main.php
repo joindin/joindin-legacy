@@ -42,6 +42,11 @@ if (!empty($msg)):
 <?php $this->load->view('msg_info', array('msg' => $msg)); ?>
 <?php endif; ?>
 
+<?php if($gravatar): ?>
+	<?php echo str_replace('/>',' style="margin-bottom:5px"/>',$gravatar).'<br/>'; ?>
+	<a href="/user/refresh_gravatar" class="btn-small">refresh image</a><br/><br/>
+<?php endif; ?>
+
 <div class="box">
     <h2>MyTalks</h2>
 <?php if (count($talks) == 0): ?>

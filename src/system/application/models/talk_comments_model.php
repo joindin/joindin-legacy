@@ -18,6 +18,19 @@ class Talk_comments_model extends Model {
 	}
 	
 	/**
+	 * Check to see if the user has commented on a given talk
+	 * @param integer $talk_id Talk ID
+	 * @param integer $user_id User ID
+	 * @return boolean
+	 */
+	public function hasUserCommented($talk_id,$user_id){
+		$data=array('talk_id'=>$talk_id,'user_id'=>$user_id);
+		$q=$this->db->get_where('talk_comments',$data);
+		$ret=$q->result();
+		return (!empty($ret)) ? true : false;
+	}
+	
+	/**
 	 * Get the comments for a specific user ID
 	 * @param integer $uid User ID
 	 * @return array Comment data

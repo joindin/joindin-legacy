@@ -73,5 +73,9 @@ class About extends Controller {
 		$this->template->write_view('content','about/iphone_support');
 		$this->template->render();
 	}
+	function widget(){
+		$this->template->write_view('content','about/widget');
+		$this->template->render();
+	}
 }
 ?>

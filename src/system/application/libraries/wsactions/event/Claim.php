@@ -28,24 +28,24 @@ class Claim extends BaseWsRequest {
 		if(!$ret){
 		    // Passed validation...
 		    // Be sure they're logged in
-		    if($this->CI->wsvalidate->validate_loggedin()){
-			$uid=$this->CI->session->userdata('ID');
-			$arr=array(
-			    'uid' 	=> $uid,
-			    'rid' 	=> $eid,
-			    'rtype'	=> 'event',
-			    'rcode'	=> 'pending'
-			);
-			// Be sure we don't already have a claim pending
-			$q=$this->CI->db->get_where('user_admin',$arr);
-			$ret=$q->result();
-			if(isset($ret[0]->ID)){
-			    return array('output'=>'json','items'=>array('msg'=>'Fail: Duplicate Claim!'));
-			}else{
-			    //we're good isert the row!
-			    $this->CI->db->insert('user_admin',$arr);
-			    return array('output'=>'json','items'=>array('msg'=>'Success'));
-			}
+		    if($this->CI->wsvalidate->validate_loggedin()){ error_log('logged in!');
+				$uid=$this->CI->session->userdata('ID');
+				$arr=array(
+				    'uid' 	=> $uid,
+				    'rid' 	=> $eid,
+				    'rtype'	=> 'event',
+				    'rcode'	=> 'pending'
+				);
+				// Be sure we don't already have a claim pending
+				$q=$this->CI->db->get_where('user_admin',$arr);
+				$ret=$q->result();
+				if(isset($ret[0]->ID)){
+					return array('output'=>'json','data'=>array('items'=>array('msg'=>'Fail: Diplicate Claim!')));
+				}else{
+				    //we're good isert the row!
+				    $this->CI->db->insert('user_admin',$arr);
+					return array('output'=>'json','data'=>array('items'=>array('msg'=>'Success')));
+				}
 		    }
 		}
 		return array('output'=>'json','items'=>array('msg'=>'Fail'));

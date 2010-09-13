@@ -17,7 +17,7 @@ talk = function (){
 	
 	// Requires API
 	var _claimTalk = function(){
-		$('#claim_btn').click(function(){ alert('here');
+		$('#claim_btn').click(function(){
 			var obj={ "talk_id": $('#talk_id').val() };
 			$('#claim_btn').html('Sending Claim >>');
 
@@ -37,7 +37,8 @@ talk = function (){
 	
 	var _editTalkComment = function(){
 		$('.edit-talk-comment-btn').click(function(){
-			var obj={ "cid": this.id, "rtype" : "talk" };			
+			var comment_id	= this.id;
+			var obj			= { "cid": comment_id, "rtype" : "talk" };			
 			apiRequest('comment','getdetail',obj, function(obj) {
 				//jump down to the comments block
 				window.location.hash="#comment_form";
@@ -46,7 +47,7 @@ talk = function (){
 				$('#comment').val(obj[0].comment);
 				if(obj[0].private!=0){ $(':checkbox[name=private]').attr('checked',true); }
 				setStars(obj[0].rating);
-				$(':input[name=edit_comment]').val(this.id);
+				$(':input[name=edit_comment]').val(comment_id);
 			});
 			return false;
 		});
