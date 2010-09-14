@@ -46,6 +46,34 @@ class Talks_model extends Model {
 		return $ret;
 	}
 	
+	/**
+	 * Takes in the talk information and the speaker data to see if it's unique
+	 * Checks the "talks" table with the data
+	 */
+	public function isTalkDataUnique($talk_data,$speakers){
+		$talk_speakers	= array();
+		$q	 = $this->db->get_where('talks',$talk_data);
+		$ret = $q->result();
+		
+		if(count($ret)>0){
+			$CI=&get_instance();
+			$CI->load->model('talk_speaker_model','talkSpeaker');
+			
+			// We have a match, lets see if the speakers match too
+			// For each of the speakers we're given, see if they're in the talk data
+			foreach($ret as $talk){
+				$tid		= $talk->ID;
+				$tspeakers	= $CI->talkSpeaker->getSpeakerByTalkId($tid);
+				
+				foreach($tspeakers as $tsp){ $talk_speakers[]=$tsp->speaker_name; }
+				foreach($speakers as $sp){
+					if(in_array($sp,$talk_speakers)){ return false; }
+				}
+			}
+		}
+		return true;
+	}
+	
 	//---------------
 	// Check to see if user has already made that sort of 
 	// comment on the talk
@@ -167,6 +195,8 @@ class Talks_model extends Model {
 	* $cid [optional] Comment ID (if you want to get only one comment)
 	*/
 	public function getTalkComments($tid,$cid=null,$private=false){
+		$this->load->library('gravatar');
+		
 		$c_addl	= ($cid) ? ' and tc.ID='.$cid : '';
 		$priv	= (!$private) ? ' and tc.private=0' : '';
 		$sql=sprintf('
@@ -189,7 +219,11 @@ class Talks_model extends Model {
 			order by tc.date_made asc
 		',$tid,$c_addl,$priv);
 		$q=$this->db->query($sql);
-		return $q->result();
+		$comments=$q->result();
+		foreach($comments as $k=>$comment){
+			$comments[$k]->gravatar=$this->gravatar->displayUserImage($comment->user_id,true);
+		}
+		return $comments;
 	}
 	
 	public function getPopularTalks($len=7){

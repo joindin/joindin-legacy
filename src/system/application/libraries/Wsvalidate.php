@@ -109,7 +109,7 @@ class Wsvalidate {
 	// Talk Specific
 	function validate_istalk($k,$obj){
 		$this->CI->load->model('talks_model');
-		$ret=$this->CI->talks_model->getTalks($obj->tid);
+		$ret=$this->CI->talks_model->getTalks($obj->talk_id);
 		return (!empty($ret)) ? true : false;
 	}
 		

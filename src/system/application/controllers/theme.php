@@ -59,31 +59,33 @@ class Theme extends Controller {
 			$msg=array();
 			
 			if(!$this->upload->do_upload('theme_style')){
-				var_dump($this->upload->display_errors());
-			}else{ $upload_data=$this->upload->data(); }
+				$this->validation->error_string=$this->upload->display_errors();
+			}else{ 
+				$upload_data=$this->upload->data();
 			
-			// By default, this new theme won't be active...
-			$detail=array(
-				'theme_name'=> $this->input->post('theme_name'),
-				'theme_desc'=> $this->input->post('theme_desc'),
-				'active'	=> 0,
-				'event_id'	=> $this->input->post('theme_event'),
-				'css_file'	=> $upload_data['file_name'],
-				'created_by'=> $uid,
-				'created_at'=> time()
-			);
-			$theme_id=$this->eventThemes->addEventTheme($detail);
-			$msg[]='Theme successfully added!';
+				// By default, this new theme won't be active...
+				$detail=array(
+					'theme_name'=> $this->input->post('theme_name'),
+					'theme_desc'=> $this->input->post('theme_desc'),
+					'active'	=> 0,
+					'event_id'	=> $this->input->post('theme_event'),
+					'css_file'	=> $upload_data['file_name'],
+					'created_by'=> $uid,
+					'created_at'=> time()
+				);
+				$theme_id=$this->eventThemes->addEventTheme($detail);
+				$msg[]='Theme successfully added!';
 			
-			if($this->input->post('theme_active')==1){
-				$this->eventThemes->activateTheme($theme_id,$this->input->post('theme_event'));
-				$msg[]='Theme marked as active!';
-			}
+				if($this->input->post('theme_active')==1){
+					$this->eventThemes->activateTheme($theme_id,$this->input->post('theme_event'));
+					$msg[]='Theme marked as active!';
+				}
 			
-			$msg[]='<a href="/theme">Back to theme list</a>';
+				$msg[]='<a href="/theme">Back to theme list</a>';
 			
-			if(!empty($msg)){
-				$this->validation->error_string=implode("<br/>",$msg);
+				if(!empty($msg)){
+					$this->validation->error_string=implode("<br/>",$msg);
+				}
 			}
 		}
 		
@@ -99,8 +101,12 @@ class Theme extends Controller {
 	}
 	
 	public function delete($theme_id){
-		if($this->eventThemes->isAuthTheme($uid,$theme_id)){
-			$this->eventThemes->deleteTheme($theme_id);
+		$this->load->model('event_themes_model','eventThemes');
+		$uid=$this->session->userdata('ID');
+		
+		if(isset($uid) && $this->eventThemes->isAuthTheme($uid,$theme_id)){
+			$this->eventThemes->deleteEventTheme($theme_id);
+			redirect('theme');
 		}
 	}
 	

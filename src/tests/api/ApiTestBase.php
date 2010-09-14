@@ -110,6 +110,43 @@
 			}
 		}
 
+		protected function assertExpectedTalkFields($talks) {
+
+			foreach($talks as $talk) {
+				$this->assertLooksLikeAString($talk->talk_title);
+				if(count($talk->speaker) > 0) {
+					foreach($talk->speaker as $speaker) {
+						$this->assertIsASpeaker($speaker, "Expected valid speaker info for " . $talk->talk_title . " (" . $talk->ID . ")");
+					}
+				}
+				$this->assertLooksLikeAStringOrNull($talk->slides_link);
+				$this->assertTrue(is_numeric((string)$talk->date_given));
+				$this->assertTrue(is_numeric((string)$talk->event_id));
+				$this->assertTrue(is_numeric((string)$talk->ID));
+				$this->assertLooksLikeAString($talk->talk_desc);
+				$this->assertLooksLikeAStringOrNull($talk->event_tz_cont);
+				$this->assertLooksLikeAStringOrNull($talk->event_tz_place);
+				$this->assertTrue(is_numeric((string)$talk->event_start));
+				$this->assertTrue(is_numeric((string)$talk->event_end));
+				$this->assertLooksLikeAString($talk->lang);
+				$this->assertTrue((isset($talk->comment_count) && is_numeric((string)$talk->comment_count)) 
+						|| (isset($talk->ccount) && is_numeric((string)$talk->ccount)));
+				$this->assertIsASessionType($this->optionallyConvertSimpleXML($talk->tcid), "Expected valid category for " . $talk->talk_title . " (" . $talk->ID . ")");
+				if(count($talk->tracks) > 0) {
+					foreach($talk->tracks as $track) {
+						if(isset($track->item)) {
+							// it was XML, fiddle data
+							$track = $track->item;
+						}
+						if(!empty($track)) {
+							$this->assertIsATrack($track, "Expected valid track info for " . $talk->talk_title . " (" . $talk->ID . ")");
+						}
+					}
+				}
+
+			}
+		}
+
 		/**
 		 * assertLooksLikeAString: to handle the fact that SimpleXMLElements have all their
 		 * child elements as SimpleXMLElements as well.  Just casting seems a bit silly, if
@@ -146,5 +183,31 @@
 			return  $value;
 		}
 
-	}
+		protected function assertIsASessionType($type, $message = null) {
+			$this->assertTrue($type === 'Talk' || $type === 'Workshop' || $type === 'Keynote' 
+						|| $type === 'Social Event' || $type === 'Event Related', 
+						$message
+			);
+		}
 
+		/**
+		 * Check speaker structure
+		 * This will change as speaker functionality is improved
+		 *
+		 * @param StdClass $speaker The object containing the speaker info
+		 * @param string   $message The error message to return (contains info about calling context)
+		 */
+
+		protected function assertIsASpeaker($speaker, $message = null) {
+			$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, (string)$speaker->speaker_name, $message);
+		}
+
+		protected function assertIsATrack($track, $message = null) {
+			$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, (string)$track->track_name, $message . ' - field: track_name');
+			$this->assertTrue(is_numeric((string)$track->ID), $message . "(field: ID) " . (string)$track->ID);
+			$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, (string)$track->track_desc, $message . ' - field: track_desc');
+		}
+
+
+
+	}

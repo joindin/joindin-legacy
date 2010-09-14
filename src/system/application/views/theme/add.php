@@ -7,7 +7,7 @@ if(!empty($this->validation->error_string)){
 
 <?php echo form_open_multipart('theme/add');?>
 <div id="box">
-	
+	<a href="/theme">Back to Theme List</a><br/><br/>
 	<div class="row">
 	<label for="theme_title">Theme Name:</label>
 	<?php echo form_input('theme_name',$this->validation->theme_name);?>

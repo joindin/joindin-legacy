@@ -151,6 +151,7 @@ class Event_model extends Model {
 			} else {
 				$res[0]->now = "";
 			}
+			$res[0]->timezoneString = $res[0]->event_tz_cont.'/'.$res[0]->event_tz_place;
 		}
 		return $res;
 	}
@@ -336,7 +337,8 @@ class Event_model extends Model {
 				t.talk_title,
 				ua.uid as user_id,
 				ua.rid,
-				u.full_name
+				u.full_name,
+				ua.rcode
 			from
 				user_admin ua,
 				events e,

@@ -326,6 +326,7 @@ class Event extends Controller {
 		$this->load->library('spam');
 		$this->load->library('twitter');
 		$this->load->library('timezone');
+		$this->load->library('gravatar');
 		$this->load->model('event_model');
 		$this->load->model('event_comments_model');
 		$this->load->model('user_attend_model','uam');
@@ -338,6 +339,14 @@ class Event extends Controller {
 		
 		$events		= $this->event_model->getEventDetail($id);
 		$evt_admins	= $this->event_model->getEventAdmins($id);
+		
+		/* see if the admins have gravatars */
+		foreach($evt_admins as $k=>$admin){
+			if($img=$this->gravatar->displayUserImage($admin->ID,true)){
+				$evt_admins[$k]->gravatar=$img;
+			}
+		}
+		
 		if($events[0]->private=='Y'){
 			$this->load->model('invite_list_model','ilm');
 						
@@ -534,10 +543,15 @@ class Event extends Controller {
 		}
 		
 		$this->template->write('feedurl','/feed/event/'.$id);
-		// Only show if they're an admin...
-		$this->template->write_view('sidebar3','event/_event_blog',array(
+		
+		
+		/*$this->template->write_view('sidebar3','event/_event_blog',array(
 			'entries'	=> $this->ebp->getPosts($id,true),
 			'eid'		=> $id
+		));*/
+		$this->template->write_view('sidebar3','event/_event_attend_gravatar',array(
+			'attend_list'		=> $attend,
+			'gravatar_cache_dir'=> $this->config->item('gravatar_cache_dir')
 		));
 		
 		if($arr['admin']){ $this->template->write_view('sidebar2','event/_sidebar-admin',
@@ -974,6 +988,9 @@ class Event extends Controller {
 		// If we have claims to process...
 		if($claim && count($claim)>0 && isset($sub)){
 			foreach($claim as $k=>$v){
+				// be sure it's still a valid claim
+				$this->uam->isPendingClaim($k);
+				
 				switch(strtolower($v)){
 					case 'approve': 
 						$this->db->where('ID',$k);
@@ -1009,6 +1026,48 @@ class Event extends Controller {
 		);
 
 		$this->template->write_view('content','event/claim',$arr);
+		$this->template->render();
+	}
+	
+	/**
+	 * Manage the claims that have been made on events
+	 * Not the same as the claims on talks in an event
+	 */
+	function claims(){
+		if($this->user_model->isSiteAdmin()){ 
+			//they're okay
+		}else{ redirect('event'); }
+		
+		$this->load->model('user_admin_model','uam');
+		
+		$claims			= $this->uam->getPendingClaims('event');
+		$posted_claims	= $this->input->post('claim');
+		$sub			= $this->input->post('sub');
+		
+		if(isset($sub) && !empty($posted_claims)){
+			echo 'sub!';
+			foreach($posted_claims as $uam_key => $claim){
+				switch(strtolower($claim)){
+					case 'approve': 
+						//Approve the claim
+						echo 'approve';
+						$this->uam->updatePerm($uam_key,array('rcode'=>''));
+						break;
+					case 'deny': 
+						//Deny the claim - delete it!
+						echo 'deny';
+						$this->uam->removePerm($uam_key);
+						break;
+				}
+			}
+		}
+		
+		$claims	= $this->uam->getPendingClaims('event');
+		$arr	= array(
+			'claims' => $claims
+		);
+		
+		$this->template->write_view('content','event/claims',$arr);
 		$this->template->render();
 	}
 	
