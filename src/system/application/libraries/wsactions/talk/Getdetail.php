@@ -40,9 +40,15 @@ class Getdetail extends BaseWsRequest {
 			}
 		}
 
-		// now add in the track information before sending it
+		// now reformat speakers and add in the track information before sending it
 		if(!empty($ret['items']) && !empty($id)){
 			$ret['items'][0]->tracks = $this->CI->talk_track_model->getSessionTrackInfo($id);
+			$speaker = '';
+			foreach($ret['items'][0]->speaker as $speaker_obj) {
+				$speaker .= $speaker_obj->speaker_name . ', ';
+			}
+			$speaker = substr($speaker, 0, -2);
+			$ret['items'][0]->speaker = $speaker;
 		}
 
 		return array('output' => 'json', 'data'=>$ret);
