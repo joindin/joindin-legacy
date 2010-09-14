@@ -324,13 +324,11 @@ class Event extends Controller {
 		$this->load->library('validation');
 		$this->load->library('defensio');
 		$this->load->library('spam');
-		$this->load->library('twitter');
 		$this->load->library('timezone');
 		$this->load->library('gravatar');
 		$this->load->model('event_model');
 		$this->load->model('event_comments_model');
 		$this->load->model('user_attend_model','uam');
-		$this->load->model('event_blog_posts_model','ebp');
 		$this->load->model('talk_track_model','ttm');
 		$this->load->model('event_track_model','etm');
 		$this->load->model('talk_comments_model','tcm');
@@ -522,18 +520,6 @@ class Event extends Controller {
 
 		$arr['comments']	= $this->event_comments_model->getEventComments($id);
 		
-		//$t=$this->twitter->querySearchAPI(explode(',',$arr['events'][0]->event_hashtag));
-
-		// @tood for testing
-		$t=array();
-		$other_data=array('title'=>'Tagged on Twitter');
-		if(!empty($t)){
-			$other_data=array(
-				'title'		=> 'Tagged on Twitter',
-				'results'	=> $t,
-			);
-		}
-		
 		if(!$is_auth){
 			$info=array('msg'=>sprintf('
 				<h4 style="color:#3A74C5">New to ' . $this->config->item('site_name') . '?</h4> Find out how we can help you make connections
@@ -544,11 +530,6 @@ class Event extends Controller {
 		
 		$this->template->write('feedurl','/feed/event/'.$id);
 		
-		
-		/*$this->template->write_view('sidebar3','event/_event_blog',array(
-			'entries'	=> $this->ebp->getPosts($id,true),
-			'eid'		=> $id
-		));*/
 		$this->template->write_view('sidebar3','event/_event_attend_gravatar',array(
 			'attend_list'		=> $attend,
 			'gravatar_cache_dir'=> $this->config->item('gravatar_cache_dir')
@@ -563,13 +544,7 @@ class Event extends Controller {
 			)); 
 		}
 		
-		
-		
 		$this->template->write_view('content','event/detail',$arr,TRUE);
-		if(!empty($t)){ 
-			// If there's no twitter results, don't show this sidebar
-			$this->template->write_view('sidebar2','event/_twitter-search',$other_data);
-		}
 		$this->template->write_view('sidebar2','event/_event_contact',array('eid'=>$id));
 		$this->template->render();
 		//$this->load->view('event/detail',$arr);
@@ -937,7 +912,6 @@ class Event extends Controller {
 		
 		$this->load->model('event_model');
 		$this->load->library('sendemail');
-		$this->load->library('twitter');
 		$this->event_model->approvePendingEvent($eid);
 		
 		//print_r($this->event_model->getEventDetail($eid));
@@ -948,14 +922,6 @@ class Event extends Controller {
 			$evt_detail	= $this->event_model->getEventDetail($eid);
 			$this->sendemail->sendEventApproved($eid,$evt_detail,$admin_list);
 		}
-		
-		// @todo get this and twitter class working with short URL
-		/*echo '<pre>';
-		$link=$this->twitter->short_bitly($this->config->site_url() . 'event/view/'.$eid);
-		echo '</pre>';*/
-		
-		// Send the new approved event to Twitter
-		//$this->twitter->sendMsg($msg);
 		
 		// Finally, redirect back to the event!
 		redirect('event/view/'.$eid); 
@@ -1286,89 +1252,6 @@ class Event extends Controller {
 		$this->template->render();
 	}
 	
-	function blog($act='view',$eid,$pid=null){
-		$this->load->model('event_model');
-		$this->load->library('validation');
-		$this->load->library('twitter');
-		$this->load->model('event_blog_posts_model','ebp');
-		
-		$msg	= '';
-		$rules	= array(
-			'title'		=> 'required',
-			'content'	=> 'required'
-		);
-		$fields	= array(
-			'title'		=> 'Post Title',
-			'content'	=> 'Post Content'
-		);
-		$this->validation->set_rules($rules);
-		$this->validation->set_fields($fields);
-		
-		$posts=$this->ebp->getPosts($eid);
-		if($act=='add' || $act=='edit'){
-			$this->template->write('feedurl', $this->config->site_url() . 'event/blog/feed/'.$eid);
-			
-			// Be sure they're either a site admin or event admin
-			if($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($eid)){
-				//they're okay
-			}else{ redirect('event/blog/view/'.$eid); }
-			
-			if($act=='edit'){
-				$detail=$this->ebp->getPostDetail($pid); //print_r($detail);
-				$this->validation->title	= $detail[0]->title;
-				$this->validation->content	= $detail[0]->content;
-			}
-			
-			if($this->validation->run()!=FALSE){
-				$data=array(
-					'title'		=> $this->input->post('title'),
-					'content'	=> $this->input->post('content')
-				);
-				if($pid){
-					$this->ebp->updatePost($pid,$data);
-					$msg='Post updated!';
-				}else{ 
-					$id=$this->ebp->addPost($eid,$data); 
-					$msg='New post added!';
-					
-					//Sent it out to twitter
-					$msg='Event Update: '.$data['title']. $this->config->site_url() . 'event/blog/view/'.$eid;
-					$resp=$this->twitter->sendMsg($msg);
-				}
-			}else{
-				$msg=$this->validation->error_string;
-			}
-		}elseif($act=='feed'){
-			$items=array();
-			foreach($posts as $k=>$v){
-				$items[]=array(
-					'title'			=> $v->title,
-					'guid'			=> $this->config->site_url() . 'event/blog/view/'.$eid.'#'.$v->ID,
-					'link'			=> $this->config->site_url() . 'event/blog/view/'.$eid.'#'.$v->ID,
-					'description' 	=> $v->content,
-					'pubDate'		=> date('t')
-				);
-			}
-			$arr=array(
-				'title'=>'Event Feed '.$eid,
-				'items'=>$items
-			);
-			$this->load->view('feed/feed',$arr);
-			return;
-		}else{ 
-			$this->template->write('feedurl', $this->config->site_url() . 'event/blog/feed/'.$eid);
-		}
-		
-		$arr=array(
-			'evt_detail'=>$this->event_model->getEventDetail($eid),
-			'action'	=>$act,
-			'posts'		=>$posts,
-			'pid'		=>$pid,
-			'msg'		=>$msg
-		);
-		$this->template->write_view('content','event/blog',$arr);
-		$this->template->render();
-	}
 	function tracks($eid){
 		if($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($eid)){ 
 			//they're okay
