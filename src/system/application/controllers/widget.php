@@ -67,12 +67,32 @@ class Widget extends Controller {
 		$this->load->helper('cookie');
 		$this->load->model('talks_model','talk');
 		$this->load->model('talk_comments_model','tcm');
-		$p=explode('/',uri_string());
+		//$p=explode('/',uri_string());
 		
 		//The talk ID is in $p[3]
 		//The type is in $p[5]
 		
-		error_log('type: '.$p[5].' '.$p[3]);
+		//error_log('type: '.$p[5].' '.$p[3]);
+		error_log('uri: '.uri_string());
+		error_log('cb: '.$this->input->get('callback'));
+		error_log('rating: '.$this->input->get('rating'));
+		error_log('comment: '.$this->input->get('comment'));
+
+		echo "joindin.voteCallback('test')";
+		
+		$arr=array(
+			'talk_id'		=> 1,
+			'rating'		=> $this->input->get('rating'),
+			'comment'		=> $this->input->get('comment'),
+			'date_made'		=> time(),
+			'user_id'		=> 0,
+			'comment_type'	=> 'comment'
+		);
+		error_log(print_r($arr,true));
+		
+		//$this->db->insert('talk_comments',$arr);
+		
+		/*
 		if(!$p[5]){ $p[5]='large'; }
 		
 		$talk_detail	= $this->talk->getTalks($p[3]);
@@ -97,6 +117,7 @@ class Widget extends Controller {
 		);
 		$widget='widget/modules/talk_'.strtolower($p[5]);
 		$this->load->view($widget,$data);
+		*/
 	}
 	
 }

@@ -34,7 +34,11 @@ var joindin = {
 		
 		var func = '_render_'+type;
 		this[func](data,disp_type);
-	},	
+	},
+	voteCallback: function(vote_container){
+		$('#container_show_vote').css('display','none');
+		$('#btn_show_vote').css('display','block');
+	},
 	// render functions....
 	display_talk_large: function(talk_id,render_to_div){
 		if(render_to_div){ this.setRenderDiv(render_to_div); }

@@ -35,8 +35,8 @@ var widget_template = {
 		},
 		'.widget_iframe': {
 			'border'			: '0px solid #000000',
-			'height'			: '180px',
-			'width'				: '240px'
+			'height'			: '185px',
+			'width'				: '250px'
 		}
 	},
 	js: ' \
@@ -110,6 +110,46 @@ var widget_template = {
 					$(\'#r\'+i+\' img\').attr(\'src\',img_url+\'/rating-on.jpg\'); \
 				} \
 			}); \
+			\
+			\
+			$(\'#btn_show_vote\').live(\'click\',function(){ \
+				$(\'#container_show_vote\').css(\'display\',\'block\'); \
+				$(\'#container_show_vote\').html(\'\'); \
+				\
+				$(\'#btn_show_vote\').css(\'display\',\'none\'); \
+				$(\'#container_show_vote\') \
+					.append($(\'<textarea>\',{ \
+						cols	: 10, \
+						rows	: 3, \
+						name	: \'comment\', \
+						id		: \'comment\' \
+					})) \
+					.append($(\'<br/>\')) \
+					.append($(\'<input>\',{ \
+						type	: \'hidden\', \
+						name	: \'vote_rank\', \
+						id		: \'vote_rank\' \
+					})); \
+				for(i=1;i<=5;i++){ \
+					$(\'#container_show_vote\').append(\' \
+						<a href="#" class="rating_img_link" id="r\'+i+\'"><img border="0" src="http://ji-enygma.localhost/inc/img/rating-off.jpg"/></a> \
+					\'); \
+				} \
+				$(\'#container_show_vote\') \
+					.append($(\'<br/>\')) \
+					.append($(\'<button>\',{ \
+						value	: \'submit\', \
+						text	: \'submit\', \
+						id		: \'btn_submit_comment\' \
+					})); \
+			}); \
+			$(\'#btn_submit_comment\').live(\'click\',function(){ \
+				var comment = $(\'#comment\').val(); \
+				var rating  = $(\'#vote_rank\').val(); \
+				$(\'<script>\',{ \
+					src	: "http://ji-enygma.localhost/widget/talk?callback=voteCallback&rating="+rating+"&comment="+comment \
+				}).appendTo(\'body\'); \
+			}); \
 		</script> \
 	',
 	talk_small: ' \
@@ -176,15 +216,12 @@ var widget_template = {
 		{{/talks}} end\
 	',
 	vote_small: ' \
-		<table cellpadding="0" cellspacing="0" border="0"> \
-		<tr><td align="right"><input type="button" id="btn_cancel" value="x" style="display:none" align="right"></td></tr> \
-		<tr><td><div id="vote_container" style="display:none">\
-			{{{vote_container}}} \
-		</div></td></tr> \
-		<tr><td><input type="button" id="btn_vote" value="vote"></td></tr></table> \
+		vote small \
+		<input type="button" name="btn_show_vote" id="btn_show_vote" value="vote"/> \
+		<div id="container_show_vote"></div> \
 	',
 	vote_container: ' \
-		<iframe src="{{frame_url}}" class="widget_iframe" id="widget_iframe"></iframe> \
+		\
 	',
 	//user_large: ' \
 	//	<div style="width:130px;margin:4px;vertical-align:top"> \
