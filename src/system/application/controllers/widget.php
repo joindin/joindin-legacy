@@ -42,7 +42,6 @@ class Widget extends Controller {
 			"'.$display_type.'",
 			"'.$render_to.'",
 			'.json_encode($data).')';
-		
 	}
 	
 	public function postdata(){
@@ -81,16 +80,17 @@ class Widget extends Controller {
 		echo "joindin.voteCallback('test')";
 		
 		$arr=array(
-			'talk_id'		=> 1,
+			'talk_id'		=> $this->input->get('talk_id'),
 			'rating'		=> $this->input->get('rating'),
 			'comment'		=> $this->input->get('comment'),
 			'date_made'		=> time(),
-			'user_id'		=> 0,
-			'comment_type'	=> 'comment'
+			'user_id'		=> ($this->user_model->isAuth()) ? $this->session->userdata('ID') : '0',
+			'comment_type'	=> 'comment',
+			'active'		=> 1,
+			'private'		=> 0
 		);
 		error_log(print_r($arr,true));
-		
-		//$this->db->insert('talk_comments',$arr);
+		$this->db->insert('talk_comments',$arr);
 		
 		/*
 		if(!$p[5]){ $p[5]='large'; }

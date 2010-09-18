@@ -100,26 +100,16 @@ var joindin = {
 	},
 	_render_vote: function(data,size){
 
-		var img_str	= '';
-		var img_path= 'http://<?php echo $_SERVER['SERVER_NAME']; ?>/inc/img';
-		var post_to = 'http://<?php echo $_SERVER['SERVER_NAME']; ?>/api/talk/addcomment';
-		var base_url= 'http://<?php echo $_SERVER['SERVER_NAME']; ?>';
-		
-		for(i=1;i<=5;i++){
-			img_str+='<a href="#" class="rating_img_link" id="r'+i+'"><img class="rating_img" src="'+img_path+'/rating-off.jpg" style="border:0px;margin:0px;padding:0px"></a>';
-		}
-		
-		var vc_data = {
-			talk_title		: data[0].talk_title,
-			img_path		: img_path,
-			rating_images	: img_str,
-			base_url		: base_url,
-			frame_url		: base_url+'/widget/talk/'+data[0].ID+'/type/'+size
-		}
+		var speaker_data = '';
+		$.each(data[0].speaker,function(k,v){
+			speaker_data+=v.speaker_name.replace(/\'/,"&rsquo;")+', ';
+		});
+		speaker_data=speaker_data.substring(0,speaker_data.length-2);
+
 		var content = {
 			talk_id			: data[0].ID,
-			post_to			: post_to,
-			vote_container 	: Mustache.to_html(widget_template.vote_container,vc_data)
+			talk_title		: data[0].talk_title,
+			speaker_name	: speaker_data
 		}
 		this._apply_template(content,eval('widget_template.vote_'+size));
 	},
@@ -144,6 +134,8 @@ var joindin = {
 	},
 	// Apply our data to the Mustache template and CSS
 	_apply_template: function(content,template){
+		content.base_url='http://<?php echo $_SERVER['SERVER_NAME']; ?>';
+		
 		var talk_cont	= $('<div>');
 		var talk_obj	= $('<div>');
 		talk_obj.css({

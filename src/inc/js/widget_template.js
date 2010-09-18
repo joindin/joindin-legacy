@@ -36,7 +36,12 @@ var widget_template = {
 		'.widget_iframe': {
 			'border'			: '0px solid #000000',
 			'height'			: '185px',
-			'width'				: '250px'
+			'width'				: '250px',
+		},
+		'.vote': {
+			'border'			: '1px solid #CCCCCC',
+			'background-color'	: '#FFFFFF',
+			'padding'			: '3px',
 		}
 	},
 	js: ' \
@@ -117,38 +122,45 @@ var widget_template = {
 				$(\'#container_show_vote\').html(\'\'); \
 				\
 				$(\'#btn_show_vote\').css(\'display\',\'none\'); \
-				$(\'#container_show_vote\') \
-					.append($(\'<textarea>\',{ \
-						cols	: 10, \
-						rows	: 3, \
-						name	: \'comment\', \
-						id		: \'comment\' \
-					})) \
-					.append($(\'<br/>\')) \
-					.append($(\'<input>\',{ \
-						type	: \'hidden\', \
-						name	: \'vote_rank\', \
-						id		: \'vote_rank\' \
-					})); \
+				$(\'#container_show_vote\').append(\' \
+					<table cellpadding="2" cellspacing="0" border="0"> \
+					<tr><td colspan="2"><a href="{{base_url}}/talk/view/{{talk_id}}" style="text-decoration:none;font-size:14px;color:#7A7A7A">{{talk_title}}</a><br/> \
+					<span style="font-size:11px;color:#999999">{{speaker_name}}</span></td></tr> \
+					<tr> \
+						<td colspan="2"> \
+							<textarea cols="30" rows="3" name="comment" id="comment"></textarea> \
+						</td> \
+					</tr> \
+					<tr> \
+						<td id="ratings"></td> \
+						<td align="right"> \
+							<input type="button" id="btn_submit_comment" value="submit" /> \
+							<input type="button" id="btn_cancel_comment" value="x" /> \
+							<input type="hidden" name="vote_rank" id="vote_rank" /> \
+							<input type="hidden" name="talk_id" id="talk_id" value="{{talk_id}}"/> \
+						</td> \
+					</tr></table> \
+				\'); \
 				for(i=1;i<=5;i++){ \
-					$(\'#container_show_vote\').append(\' \
-						<a href="#" class="rating_img_link" id="r\'+i+\'"><img border="0" src="http://ji-enygma.localhost/inc/img/rating-off.jpg"/></a> \
-					\'); \
+					$(\'#ratings\').append(\'<a href="#" class="rating_img_link" id="r\'+i+\'"><img border="0" src="{{base_url}}/inc/img/rating-off.jpg"/></a>\'); \
 				} \
-				$(\'#container_show_vote\') \
-					.append($(\'<br/>\')) \
-					.append($(\'<button>\',{ \
-						value	: \'submit\', \
-						text	: \'submit\', \
-						id		: \'btn_submit_comment\' \
-					})); \
 			}); \
 			$(\'#btn_submit_comment\').live(\'click\',function(){ \
 				var comment = $(\'#comment\').val(); \
 				var rating  = $(\'#vote_rank\').val(); \
+				var talk_id  = $(\'#talk_id\').val(); \
+				if(!comment || !rating){ \
+					alert(\'You must enter both a rating and comment!\'); \
+					return false; \
+				} \
 				$(\'<script>\',{ \
-					src	: "http://ji-enygma.localhost/widget/talk?callback=voteCallback&rating="+rating+"&comment="+comment \
+					src	: "{{base_url}}/widget/talk?callback=voteCallback&rating="+rating+"&talk_id="+talk_id+"&comment="+comment \
 				}).appendTo(\'body\'); \
+				alert(\'Thanks for the submission!\'); \
+			}); \
+			$(\'#btn_cancel_comment\').live(\'click\',function(){ \
+				$(\'#container_show_vote\').css(\'display\',\'none\'); \
+				$(\'#btn_show_vote\').css(\'display\',\'block\'); \
 			}); \
 		</script> \
 	',
@@ -216,30 +228,12 @@ var widget_template = {
 		{{/talks}} end\
 	',
 	vote_small: ' \
-		vote small \
 		<input type="button" name="btn_show_vote" id="btn_show_vote" value="vote"/> \
-		<div id="container_show_vote"></div> \
+		<div class="vote" id="container_show_vote" style="display:none">{{talk_title}}</div> \
 	',
 	vote_container: ' \
 		\
 	',
 	//user_large: ' \
-	//	<div style="width:130px;margin:4px;vertical-align:top"> \
-	//	<a href="{{base_url}}/user/view/{{username}}" class="username">{{full_name}}</a><br/> \
-	//	(<a href="{{base_url}}/user/view/{{username}}">{{username}}</a>)<br/><br/> \
-	//	{{#talks}} \
-	//		<div style="padding-bottom:3px"> \
-	//		<a href="{{base_url}}/talk/view/{{ID}}">{{talk_title}}</a><br/> \
-	//		{{#tavg}} \
-	//			<img height="12" src="{{base_url}}/inc/img/rating-{{tavg}}.gif"/><br/> \
-	//		{{/tavg}} \
-	//		{{^tavg}} \
-	//			<img height="12" src="{{base_url}}/inc/img/rating-0.gif"/><br/> \
-	//		{{/tavg}} \
-	//		</div> \
-	//	{{/talks}} \
-	//	<a href="" id="joindin_user_back">back</a> || <a href="">fwd</a> \
-	//	<center><span class="byline">by <a href="">joind.in</a></span></center> \
-	//	</div> \
 	//',
 }
