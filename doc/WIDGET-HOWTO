@@ -1,0 +1,25 @@
+
+Using the widgets:
+----------------------------
+
+The Joind.in widgets are all javascript based and can be called by including the main
+javascript widget file - widget.js - and calling various functions. Below you'll find
+an example of an HTML page that uses a widget:
+
+<html>
+	<head>
+		<title>Widget Test Page</title>
+	</head>
+	<body>
+		<script src="http://joind.in/inc/js/widget.js" id="joindin_widget"></script>
+		<script>
+			joindin.display_vote_small(175);
+		</script>
+	</body>
+</html>
+
+This example loads one of the feedback widgets for the talk #175. When the page loads, 
+you'll see a "vote" button that, when clicked, will expand out into the full voting widget.
+
+As an optional argument to all of the widget functions, you can also provide the ID of
+an element you want to inject the widget into.
