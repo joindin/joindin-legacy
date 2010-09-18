@@ -1,3 +1,5 @@
+<?php if(is_array($attend_list) && count($attend_list) > 0) {
+?>
 <div class="box">
 	<h4>Check out who's attending!</h4>
 	<div class="ctn">
@@ -31,3 +33,5 @@
 	</div>
 
 </div>
+<?php
+} ?>
