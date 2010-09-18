@@ -530,11 +530,14 @@ class Talk extends Controller {
 		$view_private 	= ($this->user_model->canViewPrivateComments($talk_detail[0]->eid,$id)) ? true : false;
 		$talk_comments	= splitCommentTypes($this->talks_model->getTalkComments($id,null,$view_private));
 		
-		$also_given=$this->talks_model->talkAlsoGiven($id,$talk_detail[0]->event_id);
-		$also_given=array(
-			'talks'	=> $also_given,
-			'title'	=> 'Talk Also Given At...'
-		);
+		// also given only makes sense if there's a speaker set
+		if(!empty($talk_detail[0]->speaker)) {
+			$also_given=$this->talks_model->talkAlsoGiven($id,$talk_detail[0]->event_id);
+			$also_given=array(
+				'talks'	=> $also_given,
+				'title'	=> 'Talk Also Given At...'
+			);
+		}
 		
 		$arr=array(
 			'detail'		=> $talk_detail[0],
