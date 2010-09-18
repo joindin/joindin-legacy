@@ -13,6 +13,7 @@ here's what we need
     
     	<div class="title">
         	<div class="head">
+				<input type="hidden" name="eid" id="eid" value="<?php echo $event_detail->ID; ?>"/>
             	<h1><?php echo escape($event_detail->event_name)?> <?php echo (($event_detail->pending==1) ? '(Pending)':'')?></h1>
             
             	<p class="info">
@@ -44,8 +45,8 @@ here's what we need
             	if(!user_is_auth()){ $attend=false; }
             	?>
             		
-            		<a class="btn<?php echo $attend ? ' btn-success' : ''; ?>" href="javascript:void(0);" onclick="return markAttending(this,<?php echo $event_detail->ID?>,<?php echo $event_detail->event_end<time() ? 'true' : 'false'; ?>);"><?php echo $link_txt?></a>
-            		<span class="attending"><strong><span class="event-attend-count-<?php echo $event_detail->ID; ?>"><?php echo (int)$attend_ct; ?></span> people</strong> <?php echo (time()<=$event_detail->event_end) ? ' attending so far':' said they attended'; ?>. <a href="javascript:void(0);"  onclick="return toggleAttendees(this, <?php echo $event_detail->ID?>);" class="show">Show &raquo;</a></span>
+            		<a class="btn<?php echo $attend ? ' btn-success' : ''; ?>" id="mark-attending" href="javascript:void(0);" onclick="return markAttending(this,<?php echo $event_detail->ID?>,<?php echo $event_detail->event_end<time() ? 'true' : 'false'; ?>);"><?php echo $link_txt?></a>
+            		<span class="attending"><strong><span class="event-attend-count-<?php echo $event_detail->ID; ?>"><?php echo (int)$attend_ct; ?></span> people</strong> <?php echo (time()<=$event_detail->event_end) ? ' attending so far':' said they attended'; ?>. <a href="javascript:void(0);" id="toggle-attendees" class="show">Show &raquo;</a></span>
             	</p>
             </div>
             <div class="func">
@@ -60,6 +61,21 @@ here's what we need
 	<div class="desc">
 		<?php echo auto_p(auto_link(escape($event_detail->event_desc))); ?>
 		<hr/>
+		
+	<b>Your host(s):</b><br/>
+	<table cellpadding="5" cellspacing="0" border="0">
+	<tr>
+	<?php
+	foreach($admins as $admin_user){
+		echo '<td style="padding-right:5px;font-size:11px">';
+		if(isset($admin_user->gravatar)){
+			//echo $admin_user->gravatar;
+		}
+		echo '<a href="">'.$admin_user->full_name.'</a></td>';
+	}
+	?>
+	</tr>
+	</table>
 
 	<?php if(!empty($event_detail->event_href) || !empty($event_detail->event_hastag) || !empty($event_detail->event_stub)){ ?>
 		<div class="related">

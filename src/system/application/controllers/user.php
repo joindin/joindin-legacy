@@ -15,6 +15,9 @@ class User extends Controller {
 		$this->load->helper('url');
 		$this->load->library('validation');
 		$this->load->model('user_model');
+		$this->load->library('SSL');
+		
+		$this->ssl->sslRoute();
 		
 		$fields=array(
 			'user'=>'Username',
@@ -113,21 +116,31 @@ class User extends Controller {
 	/**
 	* Swap the user's status - active/inactive
 	*/
-	function changestat($uid){
+	function changestat($uid, $from=null){
 	    // Kick them back out if they're not an admin
 	    if(!$this->user_model->isSiteAdmin()){ redirect(); }
 	    $this->user_model->toggleUserStatus($uid);
-	    redirect('user/view/'.$uid);
+		if (isset($from) && 'admin' == $from) {
+			redirect('user/admin');
+		}
+		else {
+			redirect('user/view/'.$uid);	
+		}
 	}
 	
 	/**
 	* Toggle the user's admin status
 	*/
-	function changeastat($uid){
+	function changeastat($uid, $from=null){
 	    // Kick them back out if they're not an admin
 	    if(!$this->user_model->isSiteAdmin()){ redirect(); }
 	    $this->user_model->toggleUserAdminStatus($uid);
-	    redirect('user/view/'.$uid);
+	    if (isset($from) && 'admin' == $from) {
+			redirect('user/admin');
+		}
+		else {
+			redirect('user/view/'.$uid);	
+		}
 	}
 
 	/**
@@ -202,6 +215,13 @@ class User extends Controller {
 		$this->load->library('validation');
 		$this->load->model('talks_model');
 		
+		$this->load->library('gravatar');
+		$this->gravatar->getUserImage(
+			$this->session->userData('ID'),
+			$this->session->userData('email')
+		);
+		$imgStr=$this->gravatar->displayUserImage($this->session->userData('ID'),true);
+		
 		if (!$this->user_model->isAuth()) { redirect('user/login'); }
 		
 		$fields=array(
@@ -227,9 +247,21 @@ class User extends Controller {
 		$arr['talks']	= $this->talks_model->getUserTalks($this->session->userdata('ID'));
 		$arr['comments']= $this->talks_model->getUserComments($this->session->userdata('ID'));
 		$arr['is_admin']= $this->user_model->isSiteAdmin();
+		$arr['gravatar']= $imgStr;
 		
 		$this->template->write_view('content','user/main',$arr);
 		$this->template->render();
+	}
+	
+	/**
+	 * Refreshes the user's gravatar from their servers
+	 * Uses logged in user, cannot be specified
+	 */
+	function refresh_gravatar(){
+		$this->load->library('gravatar');
+		$uid = $this->session->userData('ID');
+		$this->gravatar->getUserImage($uid);
+		redirect('/user/main');
 	}
 	
 	/**
@@ -242,6 +274,7 @@ class User extends Controller {
 		$this->load->model('speaker_profile_model','spm');
 		$this->load->helper('reqkey');
 		$this->load->helper('url');
+		$this->load->library('gravatar');
 		$reqkey=buildReqKey();
 
 		// See if we have a sort type and apply it
@@ -249,6 +282,12 @@ class User extends Controller {
 		if(isset($p[4])){ $sort_type=$p[4]; }else{ $sort_type=null; }
 		
 		$details = $this->user_model->getUser($uid);
+		
+		// If the user doesn't exist, redirect!
+		if(!isset($details[0])){ redirect(); }
+		
+		$this->gravatar->getUserImage($uid,$details[0]->email);
+		$imgStr=$this->gravatar->displayUserImage($uid,true);
 		
 		if (empty($details[0])) {
 			redirect();
@@ -272,7 +311,8 @@ class User extends Controller {
 			'reqkey' 	=> $reqkey,
 			'seckey' 	=> buildSecFile($reqkey),
 			'sort_type'	=> $sort_type,
-			'pub_profile'=>$this->spm->getUserPublicProfile($uid,true)
+			'pub_profile'=>$this->spm->getUserPublicProfile($uid,true),
+			'gravatar'	=> $imgStr
 		);
 		if($curr_user){
 			$arr['pending_evt']=$this->uadmin->getUserTypes($curr_user,array('event'),true);

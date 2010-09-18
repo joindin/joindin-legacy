@@ -19,5 +19,12 @@ if(isset($tid)){
 	<?php 
 	echo form_close(); 
 
-}else{ echo 'talk removed!'; }
+}else{ 
+    if(isset($error) && $error == ''){
+        echo 'talk removed!'; 
+    } else {
+        echo 'Error: ' . htmlentities($error); 
+    }
+}
+    
 ?>

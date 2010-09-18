@@ -117,7 +117,6 @@ Below are the request types that you can make to the API including input and out
 		<li><a href="#get_user_detail">Get Detail</a>
 		<li><a href="#get_user_comments">Get User Comments</a>
 		<li><a href="#validate_user">Validate User</a>
-		<li><a href="#get_speaker_profile">Get Speaker Profile</a>
 	</ul>
 <li>Site
 	<ul>
@@ -142,12 +141,13 @@ Below are the request types that you can make to the API including input and out
 		<li>event_name: string, Name of the event
 		<li>event_start: Unix timestamp
 		<li>event_end: Unix timestamp
+		<li>event_lat: number, Latitude of the venue location
+		<li>event_long: number, Longitude of the venue location
 		<li>ID: integer, ID for the event
 		<li>event_loc: string, Event location
 		<li>event_desc: string, Event description
 		<li>active: integer, Whether the event is active or not
 		<li>event_stub: string, Stub/shortcut value for event
-		<li>event_tz: integer, Defines offset from GMT for event times
 		<li>event_icon: string, path to image icon
 		<li>pending: integer, whether the event is awaiting approval
 		<li>event_hashtag: string, twitter/blogging hashtag for this event
@@ -156,11 +156,14 @@ Below are the request types that you can make to the API including input and out
 		<li>event_cfp_end: unix timestamp, date the call for papers closes for this event
 		<li>event_voting: integer, whether users can vote on the sessions (currently not in use)
 		<li>private: integer, whether this event is only visible to its members
+		<li>event_tz_cont: string, Continent part of timezone name (e.g. 'Europe')
+		<li>event_tz_place: string, Detial part of timezone name (e.g. 'London')
+		<li>allow_comments: integer, Whether comments are accepted on this talk (1 for yes, 0 for no)
 		<li>num_attend: integer, number of people marked as attending
 		<li>num_comments: integer, the number of comments on this event
 		<li>user_attending: integer, whether the current user is attending this event
-		<li>now: string, either "now" if the event is now on or "" if it isn't
-		<li>tracks: array, List of track objects associated with this session.  Track properties are track_name, ID, track_color used (1 or 0, whether there are sessions in it or not), event_id and track_desc (description)
+		<li>now: string, either "now" if the event is now on or "" if it isn't (not present in event/getlist)
+		<li>tracks: array, List of track objects associated with this session.  Track properties are track_name, ID, track_color used (1 or 0, whether there are sessions in it or not), event_id and track_desc (description) (not present in event/getlist)
 	</ul>
 	<a href="#top">[top]</a><br/><br/>
 </div>
@@ -226,7 +229,7 @@ Below are the request types that you can make to the API including input and out
 <b class="req_title">Authentication:</b> not required<br />
 <b class="req_title">Input:</b>
 	<ul>
-		<li>event_type: string, event type [hot,upcoming,past,pending]
+		<li>event_type: string, event type [hot,upcoming,past]
 	</ul>
 <b class="req_title">Output:</b>
 <ul>
@@ -328,7 +331,7 @@ results are returned in date order with newest first.<br/>
 	<ul>
 		<li>event_id: integer, ID number of event to get comments for
 		<li>track_name: string, name for the track
-		<li>track_desc: string, descrption for the track
+		<li>track_desc: string, description for the track
 	</ul>
 <b class="req_title">Output:</b> An array of values containing the following for each comment
 	<ul>
@@ -372,7 +375,7 @@ results are returned in date order with newest first.<br/>
 		<li>event_id: integer, The event ID (same as eid)
 		<li>ID: integer, The talk ID number (same as tid)
 		<li>active: integer, Whether this talk is in use 
-		<li>owner_id: integer, The speaker ID number
+		<li>owner_id: empty, not used
 		<li>event_voting: integer, Whether voting is active for thi event (currently not in use)
 		<li>private: integer, If this session is only visible to members
 		<li>lang_abbr: string, Short code for the session language
@@ -553,36 +556,6 @@ results are returned in date order with newest first.<br/>
 	<a href="#top">[top]</a><br/><br/>
 </div>
 
-<a name="get_speaker_profile"></a>
-<b class="req_name" style="color:#5181C1;font-size:14px">Get Speaker Profile</b>
-<div style="padding-left:10px">
-<b class="req_title">Action Type:</b> getprofile<br/>
-<b class="req_title">Description:</b> Request the information for a certain speaker profile<br/>
-<b class="req_title">Authentication:</b> not required<br />
-<b class="req_title">Input:</b>
-	<ul>
-		<li>spid: Speaker access key
-	</ul>
-<b class="req_title">Output:</b>
-	<ul>
-		<li>speaker_data: contaning one or more of the following:
-			<ul>
-			<li>full_name: Full name of the speaker
-			<li>website: Website address
-			<li>blog: Blog website address 
-			<li>phone: Phone number
-			<li>zip: Zip code of speaker's location
-			<li>job_title: Title of the job currently held by speaker
-			<li>picture: Name of the image speaker uploaded
-			<li>contact_email: Email to contact the speaker directly
-			<li>city: City of location of speaker
-			<li>street_address: Street address
-			<li>bio: Biography information
-			</ul>
-	</ul>
-	<a href="#top">[top]</a><br/><br/>
-</div>
-	
 <h2 style="color:#5181C1">Site (/api/site)</h2>
 <a name="site_status"></a>
 <b class="req_name" style="color:#5181C1;font-size:14px">Status</b>

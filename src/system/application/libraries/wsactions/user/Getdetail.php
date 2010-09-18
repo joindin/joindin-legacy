@@ -9,9 +9,7 @@ class Getdetail extends BaseWsRequest {
 		$this->CI=&get_instance(); //print_r($this->CI);
 		$this->xml=$xml;
 	}
-	/**
-	* Only site admins can use this functionality
-	*/
+
 	public function checkSecurity($xml){
 		//public function!
 		return true;
@@ -19,16 +17,23 @@ class Getdetail extends BaseWsRequest {
 	
 	public function run(){
 		$this->CI->load->model('user_model');
+		$this->CI->load->library('wsvalidate');
+
+		// uid can be either numeric user id or username
 		$uid=$this->xml->action->uid;
-		$ret=$this->CI->user_model->getUser($uid);
-	
-		
-		//if they're not a site admin, remove some of the info
-		if(!$this->CI->user_model->isSiteAdmin($this->xml->auth->user)){
-			unset($ret[0]->email,$ret[0]->password,$ret[0]->admin,$ret[0]->active);
+
+		$rules=array(
+			'uid'	=>'required'
+		);
+		$ret=$this->CI->wsvalidate->validate($rules,$this->xml->action);
+
+		if(!$ret) {
+			$ret=$this->CI->user_model->getUserDetail(sprintf('%s', $uid));
+
+			return array('output'=>'json','data'=>array('items'=>$ret));
+		} else {
+			return array('output'=>'json','data'=>array('items'=>array('msg'=>'Required field uid missing!')));
 		}
-		
-		return array('output'=>'json','data'=>array('items'=>$ret));
 	}
 	
 }

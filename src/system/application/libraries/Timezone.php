@@ -65,8 +65,7 @@ class Timezone {
 		return $this->hasEvtStarted($tdata[0]->event_id);
 	}
 
-	public function formattedEventDatetimeFromUnixtime($unixtime, $timezone, $format) {
-
+	public function getDatetimeFromUnixtime($unixtime, $timezone) {
 		$datetime = new DateTime("@$unixtime");
 
 		// if a timezone is specified, adjust times
@@ -88,11 +87,13 @@ class Timezone {
 
 		$datetime = new DateTime("@{$timestamp}");
 		$datetime->setTimezone($tz);
+		return $datetime;
+	}
 
+	public function formattedEventDatetimeFromUnixtime($unixtime, $timezone, $format) {
+		$datetime = $this->getDatetimeFromUnixtime($unixtime, $timezone);
 		$retval = $datetime->format($format);
-
 		return $retval;
-
 	}
 
 	public function UnixtimeForTimeInTimezone($timezone, $year, $month, $day, $hour, $minute, $second) {

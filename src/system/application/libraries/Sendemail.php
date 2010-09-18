@@ -109,7 +109,7 @@ Your new password is below:
 
 Please log in in at %suser/login and reset your password as soon as possible.
 		', $user[0]->username, $this->_config->item('site_name'), $pass, $this->_config->site_url());
-		$this->_sendEmail($to,$msg,$subj,$user[0]->email);
+		$this->_sendEmail($to,$msg,$subj);
 	}
 	
 	/**
@@ -175,7 +175,7 @@ Click here to view it: %stalk/view/%s
 			$msg.='If you need some help getting started with managing your event, try our '."\n";
 			$msg.='helpful Event Admin Cheat Sheet! ' . $this->_config->site_url() . 'about/evt_admin';
 			
-			$to=array($to);
+			$to=array($user['email']);
 			$this->_sendEmail($to,$msg,$subj);
 		}
 	}

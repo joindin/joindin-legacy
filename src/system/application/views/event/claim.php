@@ -13,6 +13,10 @@ The "Speaker" field shows the speaker name(s) and the "Claiming User" is the <?p
 claim the session. You can then accept/deny based on any match between them.
 </p>
 
+<?php if(!empty($msg)){
+	$this->load->view('msg_info', array('msg' => $msg));
+} ?>
+
 <?php echo form_open('event/claim/'.$eid); ?>
 <div class="box">
 	<a href="/event/view/<?php echo $eid; ?>">Back to event</a>
@@ -28,8 +32,8 @@ claim the session. You can then accept/deny based on any match between them.
 	<?php
 		foreach($claims as $k=>$claim): ?>
 		<tr>
-			<td align="center"><?php echo form_radio('claim['.$k.'_'.$claim->uid.'_'.$claim->rid.']','approve'); ?></td>
-			<td align="center"><?php echo form_radio('claim['.$k.'_'.$claim->uid.'_'.$claim->rid.']','deny'); ?></td>
+			<td align="center"><?php echo form_radio('claim['.$claim->ua_id.']','approve'); ?></td>
+			<td align="center"><?php echo form_radio('claim['.$claim->ua_id.']','deny'); ?></td>
 			<td>
 				<?php echo '<a href="/talk/view/'.$claim->rid.'">'.$claim->talk_title.'</a>'; ?><br/>
 				<span style="font-size:9px">@<?php echo $claim->event_name; ?></span>

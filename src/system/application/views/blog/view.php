@@ -5,6 +5,7 @@ if(isset($full_name)){ $this->validation->name=escape($full_name); }
  
 menu_pagetitle('Blog: ' . escape($v->title));
 ?>
+<script src="/inc/js/blog.js"></script>
 <div class="detail">
 
 	<h1><?php echo $v->title?></h1>
@@ -71,7 +72,7 @@ if (empty($comments)) {
     </div>
     <?php if (user_is_admin()): ?>
     <p class="admin">
-		<a class="btn-small" href="#" onClick="delBlogComment(<?php echo $v->ID; ?>,<?php echo $bid; ?>);return false;">Delete</a>
+		<a class="btn-small delete-comment-btn" id="<?php echo $v->ID ?>" href="#" >Delete</a>
 	</p>
 	<?php endif; ?>
 
@@ -134,3 +135,5 @@ if (empty($comments)) {
 	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Make Comment'); ?>
 </div>
 <?php  echo form_close(); ?>
+
+<script type="text/javascript"> blog.init(); </script>

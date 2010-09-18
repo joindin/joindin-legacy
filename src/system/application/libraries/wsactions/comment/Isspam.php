@@ -27,6 +27,6 @@ class Isspam extends BaseWsRequest {
 			mail($user->email,'Suggested spam comment!',$msg,'From: ' . $this->CI->config->item('email_info'));
 		}
 		
-		return array('output'=>'json','data'=>array('msg'=>'Success'));
+		return array('output'=>'json','data'=>array('items'=>array('msg'=>'Success')));
 	}
 }

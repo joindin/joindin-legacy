@@ -34,10 +34,19 @@ class Addcomment extends BaseWsRequest {
 
 		if(!$ret && $unq){
 			$this->CI->load->model('talks_model');
+			$this->CI->load->model('event_model');
 			
 			$in			 = (array)$this->xml->action;
 			$talk_detail = $this->CI->talks_model->getTalks($in['talk_id']);
 			$user		 = $this->CI->user_model->getUser($this->xml->auth->user);
+			
+			// event ID in $talk_detial[0]->eid
+			
+			// Check to see if you can submit a comment to the event....
+			$event_detail=$this->CI->event_model->getEventDetail($talk_detail[0]->eid);
+			if($event_detail[0]->now!='now'){
+				return array('output'=>'json','data'=>array('items'=>array('msg'=>'Comments not allowed on the event/talk!')));
+			}
 			
 			// Ensure this is a valid talk
 			if(empty($talk_detail)){

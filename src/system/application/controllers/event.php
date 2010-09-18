@@ -5,6 +5,16 @@ class Event extends Controller {
 	function Event(){
 		parent::Controller();
 		$this->user_model->logStatus();
+		
+		// Check to see if they need a custom CSS layout
+		$this->load->model('event_themes_model','eventThemes');
+		$ret	    = explode('/',$_SERVER['REQUEST_URI']);
+		$event_id	= (isset($ret[3]) && is_numeric($ret[3])) ? $ret[3] : null;
+		$theme		= $this->eventThemes->getActiveTheme($event_id);
+		if($event_id && $theme){
+			// has active theme...use it!
+			$this->template->write('css','/inc/css/event/'.$theme[0]->css_file);
+		}
 	}
 	function cust($in){
 	    $this->load->helper('url');
@@ -314,18 +324,27 @@ class Event extends Controller {
 		$this->load->library('validation');
 		$this->load->library('defensio');
 		$this->load->library('spam');
-		$this->load->library('twitter');
 		$this->load->library('timezone');
+		$this->load->library('gravatar');
 		$this->load->model('event_model');
 		$this->load->model('event_comments_model');
 		$this->load->model('user_attend_model','uam');
-		$this->load->model('event_blog_posts_model','ebp');
 		$this->load->model('talk_track_model','ttm');
 		$this->load->model('event_track_model','etm');
+		$this->load->model('talk_comments_model','tcm');
+		$this->load->model('user_admin_model','uadm');
 		$this->load->model('talks_model');
 		
 		$events		= $this->event_model->getEventDetail($id);
 		$evt_admins	= $this->event_model->getEventAdmins($id);
+		
+		/* see if the admins have gravatars */
+		foreach($evt_admins as $k=>$admin){
+			if($img=$this->gravatar->displayUserImage($admin->ID,true)){
+				$evt_admins[$k]->gravatar=$img;
+			}
+		}
+		
 		if($events[0]->private=='Y'){
 			$this->load->model('invite_list_model','ilm');
 						
@@ -362,11 +381,13 @@ class Event extends Controller {
 		
 		foreach($talks as $k=>$v){
 			$codes=array();
+			/*
 			$p=explode(',',$v->speaker);
 			foreach($p as $ik=>$iv){
 				$val=trim($iv);
 				$talks[$k]->codes[$val]=buildCode($v->ID,$v->event_id,$v->talk_title,$val);
 			}
+			*/
 			$talks[$k]->tracks=$this->ttm->getSessionTrackInfo($v->ID);
 			
 			//If we have a track filter, check it!
@@ -392,10 +413,13 @@ class Event extends Controller {
 			return true;
 		}
 		
+		
+		$talk_stats		= buildTalkStats($this->tcm->getEventComments($id));
 		$reqkey			= buildReqKey();
 		$attend			= $this->uam->getAttendUsers($id);
 		$talks 			= $this->talks_model->setDisplayFields($talks);
-		$claimed_talks	= $this->event_model->getClaimedTalks($id);
+		$claimed_talks	= $this->event_model->getClaimedTalks($id, $talks);
+		
 		$claim_detail	= buildClaimDetail($claimed_talks);
 		$event_related_sessions = $this->event_model->getEventRelatedSessions($id);
 		
@@ -416,10 +440,13 @@ class Event extends Controller {
 			'admins' 		=>$evt_admins,
 			'tracks' 		=>$this->etm->getEventTracks($id),
 			'times_claimed'	=>$claim_detail['claim_count'],
-			'claimed_uids'	=>$claim_detail['uids']
+			'claimed_uids'	=>$claim_detail['uids'],
+			'claims'		=>buildClaims($this->event_model->getEventClaims($id)),
+			'talk_stats'	=>$talk_stats
 			//'attend' =>$this->uam->getAttendCount($id)
 			//'started'=>$this->tz->hasEvtStarted($id),
 		);
+		
 		if($opt=='track'){ 
 			$arr['track_filter']	= $opt_id;
 			$arr['track_data']		= null;
@@ -493,18 +520,6 @@ class Event extends Controller {
 
 		$arr['comments']	= $this->event_comments_model->getEventComments($id);
 		
-		//$t=$this->twitter->querySearchAPI(explode(',',$arr['events'][0]->event_hashtag));
-
-		// @tood for testing
-		$t=array();
-		$other_data=array('title'=>'Tagged on Twitter');
-		if(!empty($t)){
-			$other_data=array(
-				'title'		=> 'Tagged on Twitter',
-				'results'	=> $t,
-			);
-		}
-		
 		if(!$is_auth){
 			$info=array('msg'=>sprintf('
 				<h4 style="color:#3A74C5">New to ' . $this->config->item('site_name') . '?</h4> Find out how we can help you make connections
@@ -514,27 +529,22 @@ class Event extends Controller {
 		}
 		
 		$this->template->write('feedurl','/feed/event/'.$id);
-		// Only show if they're an admin...
-		$this->template->write_view('sidebar3','event/_event_blog',array(
-			'entries'	=> $this->ebp->getPosts($id,true),
-			'eid'		=> $id
+		
+		$this->template->write_view('sidebar3','event/_event_attend_gravatar',array(
+			'attend_list'		=> $attend,
+			'gravatar_cache_dir'=> $this->config->item('gravatar_cache_dir')
 		));
 		
 		if($arr['admin']){ $this->template->write_view('sidebar2','event/_sidebar-admin',
 			array(
 				'eid'			=> $id,
 				'is_private'	=> $events[0]->private,
-				'evt_admin'		=> $this->event_model->getEventAdmins($id)
+				'evt_admin'		=> $this->event_model->getEventAdmins($id),
+				'claim_count'	=> count($this->uadm->getPendingClaims_Talks($id))
 			)); 
 		}
 		
-		
-		
 		$this->template->write_view('content','event/detail',$arr,TRUE);
-		if(!empty($t)){ 
-			// If there's no twitter results, don't show this sidebar
-			$this->template->write_view('sidebar2','event/_twitter-search',$other_data);
-		}
 		$this->template->write_view('sidebar2','event/_event_contact',array('eid'=>$id));
 		$this->template->render();
 		//$this->load->view('event/detail',$arr);
@@ -625,7 +635,7 @@ class Event extends Controller {
 		
 		$claimed=array();
 		
-		$cl=$this->event_model->getClaimedTalks($id); //echo '<pre>'; print_r($cl); echo '</pre>';
+		$cl=$this->event_model->getClaimedTalks($id, $talks); //echo '<pre>'; print_r($cl); echo '</pre>';
 		foreach($cl as $k=>$v){
 			//$cstr='ec'.str_pad(substr($v->rid,0,2),2,0,STR_PAD_LEFT).str_pad($v->tdata['event_id'],2,0,STR_PAD_LEFT);
 			//$cstr.=substr(md5($v->tdata['talk_title'].$sk),5,5);
@@ -902,7 +912,6 @@ class Event extends Controller {
 		
 		$this->load->model('event_model');
 		$this->load->library('sendemail');
-		$this->load->library('twitter');
 		$this->event_model->approvePendingEvent($eid);
 		
 		//print_r($this->event_model->getEventDetail($eid));
@@ -913,14 +922,6 @@ class Event extends Controller {
 			$evt_detail	= $this->event_model->getEventDetail($eid);
 			$this->sendemail->sendEventApproved($eid,$evt_detail,$admin_list);
 		}
-		
-		// @todo get this and twitter class working with short URL
-		/*echo '<pre>';
-		$link=$this->twitter->short_bitly($this->config->site_url() . 'event/view/'.$eid);
-		echo '</pre>';*/
-		
-		// Send the new approved event to Twitter
-		//$this->twitter->sendMsg($msg);
 		
 		// Finally, redirect back to the event!
 		redirect('event/view/'.$eid); 
@@ -938,50 +939,101 @@ class Event extends Controller {
 		$this->load->model('user_admin_model','uam');
 		$this->load->helper('events_helper');
 		$this->load->library('sendemail');
-		$ret 	= $this->uam->getPendingClaims('talk',$eid);
-		
+
 		$claim	= $this->input->post('claim');
 		$sub	= $this->input->post('sub');
 		
+		$msg	= array();
+		$claims	= array();
+		foreach($this->uam->getPendingClaims('talk',$eid) as $claim_data){
+			$claims[$claim_data->ua_id]=$claim_data;
+		}
+		$approved = 0;
+		$denied	  = 0;
+				
 		// If we have claims to process...
 		if($claim && count($claim)>0 && isset($sub)){
 			foreach($claim as $k=>$v){
-				// p[0] is record from $ret, p[1] is the user ID, p[2] is the session ID
-				$p=explode('_',$k);
-				if($v=='approve'){
-					$t_id		= $p[2];
-					$t_title	= $ret[$p[0]]->talk_title;
-					$c_name		= $ret[$p[0]]->claiming_name;
-					$code		= buildCode($t_id,$eid,$t_title,$c_name);
-					
-					// Put the code in the database to claim their talk!
-					$this->db->where('ID',$ret[$p[0]]->ua_id);
-					$this->db->update('user_admin',array('rcode'=>$code));
-					
-					$email		= $ret[$p[0]]->email;
-					$evt_name	= $ret[$p[0]]->event_name;
-					$this->sendemail->claimSuccess($email,$t_title,$evt_name);
-					unset($ret[$p[0]]);
-				}else{
-					// Remove the claim...it's not valid
-					$tdata=array(
-						'rid'	=> $p[2],
-						'rtype'	=> 'talk',
-						'rcode'	=> 'pending'
-					);
-					$this->db->delete('user_admin',$tdata);
-					unset($ret[$p[0]]);
+				// be sure it's still a valid claim
+				$this->uam->isPendingClaim($k);
+				
+				switch(strtolower($v)){
+					case 'approve': 
+						$this->db->where('ID',$k);
+						$this->db->update('user_admin',array('rcode'=>''));
+						
+						$email		= $claims[$k]->email;
+						$evt_name	= $claims[$k]->event_name;
+						$talk_title	= $claims[$k]->talk_title;
+						$this->sendemail->claimSuccess($email,$talk_title,$evt_name);
+						
+						$approved++;
+						break;
+					case 'deny':
+						$this->db->delete('user_admin',array('ID'=>$k));
+						$denied++;
+						break;
+					default:
+						/* do nothing, no action taken */
+				}
+				
+				echo '<br/>';
+			}
+		}
+		if($approved>0){ $msg[]=$approved.' approved'; }
+		if($denied>0){ $msg[]=$denied.' denied'; }
+		$msg=implode(',',$msg);
+		
+		// Data to pass out to the view
+		$arr=array(
+			'claims'	=> $this->uam->getPendingClaims('talk',$eid),
+			'eid'		=> $eid,
+			'msg'		=> $msg
+		);
+
+		$this->template->write_view('content','event/claim',$arr);
+		$this->template->render();
+	}
+	
+	/**
+	 * Manage the claims that have been made on events
+	 * Not the same as the claims on talks in an event
+	 */
+	function claims(){
+		if($this->user_model->isSiteAdmin()){ 
+			//they're okay
+		}else{ redirect('event'); }
+		
+		$this->load->model('user_admin_model','uam');
+		
+		$claims			= $this->uam->getPendingClaims('event');
+		$posted_claims	= $this->input->post('claim');
+		$sub			= $this->input->post('sub');
+		
+		if(isset($sub) && !empty($posted_claims)){
+			echo 'sub!';
+			foreach($posted_claims as $uam_key => $claim){
+				switch(strtolower($claim)){
+					case 'approve': 
+						//Approve the claim
+						echo 'approve';
+						$this->uam->updatePerm($uam_key,array('rcode'=>''));
+						break;
+					case 'deny': 
+						//Deny the claim - delete it!
+						echo 'deny';
+						$this->uam->removePerm($uam_key);
+						break;
 				}
 			}
 		}
 		
-		// Data to pass out to the view
-		$arr=array(
-			'claims'	=> $ret,
-			'eid'		=> $eid
+		$claims	= $this->uam->getPendingClaims('event');
+		$arr	= array(
+			'claims' => $claims
 		);
-
-		$this->template->write_view('content','event/claim',$arr);
+		
+		$this->template->write_view('content','event/claims',$arr);
 		$this->template->render();
 	}
 	
@@ -997,46 +1049,47 @@ class Event extends Controller {
 
 		$this->load->library('validation');
 		$this->load->library('xmlimport');
+		$this->load->library('csvimport');
 		$this->load->library('sendemail');
 		$this->load->model('event_model','em');
 		
 		$config['upload_path'] 	= $_SERVER['DOCUMENT_ROOT'].'/inc/tmp';
-		$config['allowed_types']= 'xml';
+		$config['allowed_types']= 'csv';
 		$this->load->library('upload', $config);
 
 		// Allow them to upload the XML or pull it from another resource
-		//$rules   = array('xml_file'=>'required');
 		$rules	 = array();
-		$fields  = array('xml_file'=>'XML File');
+		$fields  = array('xml_file'=>'File');
 		$this->validation->set_rules($rules);
 		$this->validation->set_fields($fields);
 		
 		$msg		= null;
+		$error_msg  = null;
 		$evt_detail	= $this->em->getEventDetail($eid);
 		
-		if($this->upload->do_upload('xml_file')){
+		if(!empty($_POST) && $this->upload->do_upload('xml_file')){
 			// The file's there, lets run our import
-			$updata	= $this->upload->data(); //print_r($updata);
+			$updata	= $this->upload->data(); 
 			$p		= $config['upload_path'].'/'.$updata['file_name'];
 			try{
-				$data=file_get_contents($p);
-				$this->xmlimport->import($data,'event',$eid);
+				$this->csvimport->import($p,$eid);
 				$msg='Import Successful! <a href="/event/view/'.$eid.'">View event</a>';
 				
 				//send an email to the site admins when it's successful
 				$this->sendemail->sendSuccessfulImport($eid,$evt_detail);
 			}catch(Exception $e){
-				$msg='Error: '.$e->getMessage();
+				$error_msg='Error: '.$e->getMessage();
 			}
 			unlink($p);
 		}else{
 			//print_r($this->upload->display_errors()); 
-			$msg=$this->upload->display_errors();
+			$error_msg=$this->upload->display_errors();
 		}
 
 		$arr=array(
 			'details'	=> $evt_detail,
-			'msg'		=> $msg
+			'msg'		=> $msg,
+			'error_msg' => $error_msg
 		);
 		$this->template->write_view('content','event/import',$arr);
 		$this->template->render();
@@ -1200,89 +1253,6 @@ class Event extends Controller {
 		$this->template->render();
 	}
 	
-	function blog($act='view',$eid,$pid=null){
-		$this->load->model('event_model');
-		$this->load->library('validation');
-		$this->load->library('twitter');
-		$this->load->model('event_blog_posts_model','ebp');
-		
-		$msg	= '';
-		$rules	= array(
-			'title'		=> 'required',
-			'content'	=> 'required'
-		);
-		$fields	= array(
-			'title'		=> 'Post Title',
-			'content'	=> 'Post Content'
-		);
-		$this->validation->set_rules($rules);
-		$this->validation->set_fields($fields);
-		
-		$posts=$this->ebp->getPosts($eid);
-		if($act=='add' || $act=='edit'){
-			$this->template->write('feedurl', $this->config->site_url() . 'event/blog/feed/'.$eid);
-			
-			// Be sure they're either a site admin or event admin
-			if($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($eid)){
-				//they're okay
-			}else{ redirect('event/blog/view/'.$eid); }
-			
-			if($act=='edit'){
-				$detail=$this->ebp->getPostDetail($pid); //print_r($detail);
-				$this->validation->title	= $detail[0]->title;
-				$this->validation->content	= $detail[0]->content;
-			}
-			
-			if($this->validation->run()!=FALSE){
-				$data=array(
-					'title'		=> $this->input->post('title'),
-					'content'	=> $this->input->post('content')
-				);
-				if($pid){
-					$this->ebp->updatePost($pid,$data);
-					$msg='Post updated!';
-				}else{ 
-					$id=$this->ebp->addPost($eid,$data); 
-					$msg='New post added!';
-					
-					//Sent it out to twitter
-					$msg='Event Update: '.$data['title']. $this->config->site_url() . 'event/blog/view/'.$eid;
-					$resp=$this->twitter->sendMsg($msg);
-				}
-			}else{
-				$msg=$this->validation->error_string;
-			}
-		}elseif($act=='feed'){
-			$items=array();
-			foreach($posts as $k=>$v){
-				$items[]=array(
-					'title'			=> $v->title,
-					'guid'			=> $this->config->site_url() . 'event/blog/view/'.$eid.'#'.$v->ID,
-					'link'			=> $this->config->site_url() . 'event/blog/view/'.$eid.'#'.$v->ID,
-					'description' 	=> $v->content,
-					'pubDate'		=> date('t')
-				);
-			}
-			$arr=array(
-				'title'=>'Event Feed '.$eid,
-				'items'=>$items
-			);
-			$this->load->view('feed/feed',$arr);
-			return;
-		}else{ 
-			$this->template->write('feedurl', $this->config->site_url() . 'event/blog/feed/'.$eid);
-		}
-		
-		$arr=array(
-			'evt_detail'=>$this->event_model->getEventDetail($eid),
-			'action'	=>$act,
-			'posts'		=>$posts,
-			'pid'		=>$pid,
-			'msg'		=>$msg
-		);
-		$this->template->write_view('content','event/blog',$arr);
-		$this->template->render();
-	}
 	function tracks($eid){
 		if($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($eid)){ 
 			//they're okay

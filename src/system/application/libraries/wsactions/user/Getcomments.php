@@ -13,7 +13,8 @@ class Getcomments extends BaseWsRequest {
 	* Just be sure they've given us a valid login
 	*/
 	public function checkSecurity($xml){
-		return ($this->isValidLogin($xml)) ? true : false;
+		// public function
+		return true;
 	}
 	
 	public function run(){
