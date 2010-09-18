@@ -31,6 +31,10 @@ class Widget extends Controller {
 					'talks'		=> $this->talks_model->getUserTalks($id)
 				);
 				break;
+			case 'vote':
+				$this->load->model('talks_model');
+				$data=$this->talks_model->getTalks($id);
+				break;
 		}
 		echo 'joindin.jsonpCallback(
 			'.$id.',
@@ -38,7 +42,10 @@ class Widget extends Controller {
 			"'.$display_type.'",
 			"'.$render_to.'",
 			'.json_encode($data).')';
-		
+	}
+	
+	public function postdata(){
+		error_log('vote comment: '.$this->input->post('vote_comment'));
 	}
 	
 	public function event(){
@@ -59,27 +66,31 @@ class Widget extends Controller {
 		$this->load->helper('cookie');
 		$this->load->model('talks_model','talk');
 		$this->load->model('talk_comments_model','tcm');
-		$p=explode('/',uri_string());
+		//$p=explode('/',uri_string());
 		
 		//The talk ID is in $p[3]
 		//The type is in $p[5]
 		
-		error_log('type: '.$p[5]);
-		if(!$p[5]){ $p[5]='large'; }
+		error_log('uri: '.uri_string());
+		error_log('cb: '.$this->input->get('callback'));
+		error_log('rating: '.$this->input->get('rating'));
+		error_log('comment: '.$this->input->get('comment'));
+
+		echo "joindin.voteCallback('test')";
 		
-		$talk_detail	= $this->talk->getTalks($p[3]);
-		$has_commented	= false;		
-		$uid			= $this->session->userdata('ID');
-		if($uid){
-			$has_commented=$this->tcm->hasUserCommented($p[3],$uid);
-		}
-		
-		$data=array(
-			'talk' => $talk_detail[0],
-			'site' => $_SERVER['SERVER_NAME']
+		$arr=array(
+			'talk_id'		=> $this->input->get('talk_id'),
+			'rating'		=> $this->input->get('rating'),
+			'comment'		=> $this->input->get('comment'),
+			'date_made'		=> time(),
+			'user_id'		=> ($this->user_model->isAuth()) ? $this->session->userdata('ID') : '0',
+			'comment_type'	=> 'comment',
+			'active'		=> 1,
+			'private'		=> 0
 		);
-		$widget='widget/modules/talk_'.strtolower($p[5]);
-		$this->load->view($widget,$data);
+		error_log(print_r($arr,true));
+		$this->db->insert('talk_comments',$arr);
+		
 	}
 	
 }

@@ -83,7 +83,9 @@ $title[] = $this->config->item('site_name');
 <div id="splash">
     <div class="container_12">
     	<div class="grid_12">
+			<?php if(!$this->session->userdata('ID')): ?>
     		<a href="/user/register"><img src="/inc/img/splash.jpg" border="0" alt="Join <?php echo $this->config->item('site_name'); ?> now!"/></a>
+			<?php endif; ?>
     	</div>
     	<div class="clear"></div>
 	</div>
