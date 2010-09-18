@@ -1049,46 +1049,47 @@ class Event extends Controller {
 
 		$this->load->library('validation');
 		$this->load->library('xmlimport');
+		$this->load->library('csvimport');
 		$this->load->library('sendemail');
 		$this->load->model('event_model','em');
 		
 		$config['upload_path'] 	= $_SERVER['DOCUMENT_ROOT'].'/inc/tmp';
-		$config['allowed_types']= 'xml';
+		$config['allowed_types']= 'csv';
 		$this->load->library('upload', $config);
 
 		// Allow them to upload the XML or pull it from another resource
-		//$rules   = array('xml_file'=>'required');
 		$rules	 = array();
-		$fields  = array('xml_file'=>'XML File');
+		$fields  = array('xml_file'=>'File');
 		$this->validation->set_rules($rules);
 		$this->validation->set_fields($fields);
 		
 		$msg		= null;
+		$error_msg  = null;
 		$evt_detail	= $this->em->getEventDetail($eid);
 		
-		if($this->upload->do_upload('xml_file')){
+		if(!empty($_POST) && $this->upload->do_upload('xml_file')){
 			// The file's there, lets run our import
-			$updata	= $this->upload->data(); //print_r($updata);
+			$updata	= $this->upload->data(); 
 			$p		= $config['upload_path'].'/'.$updata['file_name'];
 			try{
-				$data=file_get_contents($p);
-				$this->xmlimport->import($data,'event',$eid);
+				$this->csvimport->import($p,$eid);
 				$msg='Import Successful! <a href="/event/view/'.$eid.'">View event</a>';
 				
 				//send an email to the site admins when it's successful
 				$this->sendemail->sendSuccessfulImport($eid,$evt_detail);
 			}catch(Exception $e){
-				$msg='Error: '.$e->getMessage();
+				$error_msg='Error: '.$e->getMessage();
 			}
 			unlink($p);
 		}else{
 			//print_r($this->upload->display_errors()); 
-			$msg=$this->upload->display_errors();
+			$error_msg=$this->upload->display_errors();
 		}
 
 		$arr=array(
 			'details'	=> $evt_detail,
-			'msg'		=> $msg
+			'msg'		=> $msg,
+			'error_msg' => $error_msg
 		);
 		$this->template->write_view('content','event/import',$arr);
 		$this->template->render();
