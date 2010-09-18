@@ -118,22 +118,12 @@ var joindin = {
 		this._apply_template(content,eval('widget_template.vote_'+size));
 	},
 	_render_user: function(data,size){
-		//var content = {
-		//	username	: data.username,
-		//	full_name	: data.full_name,
-		//	talks		: data.talks,
-		//	base_url	: 'http://<?php echo $_SERVER['SERVER_NAME']; ?>'
-		//}
-		
-		var talk_content = '';
-		$.each(data.talks,function(k,v){
-			talk_content+=v.talk_title+'|';
-		});
-		
 		var content = {
-			talks		: talk_content
+			username	: data.username,
+			full_name	: data.full_name,
+			talks		: data.talks,
+			base_url	: 'http://<?php echo $_SERVER['SERVER_NAME']; ?>'
 		}
-		
 		this._apply_template(content,eval('widget_template.user_'+size));
 	},
 	// Apply our data to the Mustache template and CSS
@@ -146,7 +136,7 @@ var joindin = {
 		talk_obj.css({
 			'height'	: 'auto',
 			'width'		: 'auto',
-			'border'	: '0px solid #999999',
+			'border'	: '1px solid #999999',
 			'overflow'	: 'hidden',
 			'display'	: 'inline-block',
 			'background-color':'#FFFFFF',

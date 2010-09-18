@@ -26,7 +26,7 @@
 			$response = self::makeApiRequest('event', 'getlist', array('event_type'=>'upcoming'), 'xml');
 			$res = $this->decode_response($response, 'xml');
 			// Pick a random event from the list
-			$event = $res->item[ rand(0, (count($res)-1)) ];
+			$event = $res[ rand(0, (count($res)-1)) ];
 
 			// Get the event detail
 			$eventDetailStr = self::makeApiRequest('event', 'getdetail', array('event_id'=>$event->ID), 'xml');

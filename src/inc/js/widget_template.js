@@ -36,7 +36,7 @@ var widget_template = {
 		'.widget_iframe': {
 			'border'			: '0px solid #000000',
 			'height'			: '185px',
-			'width'				: '250px',
+			'width'				: '250px'
 		},
 		'.vote': {
 			'border'			: '1px solid #CCCCCC',
@@ -211,10 +211,9 @@ var widget_template = {
 		</div> \
 	',
 	user_large: ' \
-		talks: <br/> \
-		{{talks}} \
-	',
-	user_talks_panel: ' \
+		<div style="width:130px;margin:4px;vertical-align:top"> \
+		<a href="{{base_url}}/user/view/{{username}}" class="username">{{full_name}}</a><br/> \
+		(<a href="{{base_url}}/user/view/{{username}}">{{username}}</a>)<br/><br/> \
 		{{#talks}} \
 			<div style="padding-bottom:3px"> \
 			<a href="{{base_url}}/talk/view/{{ID}}">{{talk_title}}</a><br/> \

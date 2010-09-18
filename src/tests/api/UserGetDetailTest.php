@@ -6,8 +6,8 @@ class UserGetDetail extends ApiTestBase {
 
 			foreach($res as $user) {
 				$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_OBJECT, $user);
-				$this->assertLooksLikeAString($user->username, "User name for user " . $user->ID . " should be a string");
-				$this->assertLooksLikeAString($user->full_name);
+				$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $user->username, "User name for user " . $user->ID . " should be a string");
+				$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $user->full_name);
 				$this->assertTrue(is_numeric((string)$user->ID));
 				$this->assertTrue(is_numeric((string)$user->last_login));
 			}

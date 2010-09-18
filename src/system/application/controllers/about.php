@@ -77,7 +77,6 @@ class About extends Controller {
 		$this->template->write_view('content','about/widget');
 		$this->template->render();
 	}
-	
 	/**
 	 * Pull in the current list of gravatars and push out a random set
 	 */

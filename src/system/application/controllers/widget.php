@@ -71,7 +71,6 @@ class Widget extends Controller {
 		//The talk ID is in $p[3]
 		//The type is in $p[5]
 		
-		//error_log('type: '.$p[5].' '.$p[3]);
 		error_log('uri: '.uri_string());
 		error_log('cb: '.$this->input->get('callback'));
 		error_log('rating: '.$this->input->get('rating'));
@@ -92,32 +91,6 @@ class Widget extends Controller {
 		error_log(print_r($arr,true));
 		$this->db->insert('talk_comments',$arr);
 		
-		/*
-		if(!$p[5]){ $p[5]='large'; }
-		
-		$talk_detail	= $this->talk->getTalks($p[3]);
-		$has_commented	= false;		
-		$uid			= $this->session->userdata('ID');
-		if($uid){
-			$has_commented=$this->tcm->hasUserCommented($p[3],$uid);
-		}
-		
-		$rank=$this->input->post('vote_rank');
-		if(!empty($rank)){
-			$comment	= $this->input->post('vote_comment');
-			$rank		= $this->input->post('vote_rank');
-		}
-		
-		$data=array(
-			'talk' 			=> $talk_detail[0],
-			'site' 			=> $_SERVER['SERVER_NAME'],
-			'hasCommented'	=> $has_commented,
-			'userId'		=> $uid,
-			'userName'		=> $this->session->userdata('username')
-		);
-		$widget='widget/modules/talk_'.strtolower($p[5]);
-		$this->load->view($widget,$data);
-		*/
 	}
 	
 }
