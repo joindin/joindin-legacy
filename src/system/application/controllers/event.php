@@ -530,10 +530,12 @@ class Event extends Controller {
 		
 		$this->template->write('feedurl','/feed/event/'.$id);
 		
-		$this->template->write_view('sidebar3','event/_event_attend_gravatar',array(
-			'attend_list'		=> $attend,
-			'gravatar_cache_dir'=> $this->config->item('gravatar_cache_dir')
-		));
+		if(count($attend)>0){
+			$this->template->write_view('sidebar3','event/_event_attend_gravatar',array(
+				'attend_list'		=> $attend,
+				'gravatar_cache_dir'=> $this->config->item('gravatar_cache_dir')
+			));
+		}
 		
 		if($arr['admin']){ $this->template->write_view('sidebar2','event/_sidebar-admin',
 			array(

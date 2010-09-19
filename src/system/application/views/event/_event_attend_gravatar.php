@@ -2,7 +2,6 @@
 	<h4>Check out who's attending!</h4>
 	<div class="ctn">
 	<?php
-	//print_r($attend_list);
 	
 	$has_icons=false;
 	foreach($attend_list as $attendee){
@@ -12,7 +11,7 @@
 			echo '<a href="/user/view/'.$attendee->ID.'"><img src="/inc/img/user_gravatar/user'.$attendee->ID.'.jpg" height="20" style="margin:2px"i alt="'.$attendee->full_name.'"/></a>';
 		}
 	}
-	if(!$has_icons){
+	if(!$has_icons && count($attend_list)>0){
 		echo '<ul>';
 		$end=(count($attend_list)>10) ? 10 : count($attend_list);
 		$rand=array_rand($attend_list,$end);
