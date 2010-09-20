@@ -37,6 +37,7 @@ var widget_template = {
 			'border'			: '0px solid #000000',
 			'height'			: '185px',
 			'width'				: '250px'
+			'width'				: '250px',
 		},
 		'.vote': {
 			'border'			: '1px solid #CCCCCC',
