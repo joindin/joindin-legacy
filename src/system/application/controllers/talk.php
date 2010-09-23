@@ -130,6 +130,9 @@ class Talk extends Controller {
 			$this->validation->given_hour = $this->timezone->formattedEventDatetimeFromUnixtime($thisTalk->date_given, $thisTalk->event_tz_cont.'/'.$thisTalk->event_tz_place, 'H');
 			$this->validation->given_min = $this->timezone->formattedEventDatetimeFromUnixtime($thisTalk->date_given, $thisTalk->event_tz_cont.'/'.$thisTalk->event_tz_place, 'i');
 			
+			$this->validation->talkDate=$this->validation->given_yr.'-'.
+				$this->validation->given_mo.'-'.$this->validation->given_day;
+			
 			$this->validation->session_lang=$thisTalk->lang_name;
 			$this->validation->session_type=$thisTalk->tcid;
 		}else{

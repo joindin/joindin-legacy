@@ -106,7 +106,9 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
         $listData[$eventStart->format('Y-m-d')] = $eventStart->format('jS M Y');
         $eventStart->modify('+1 day');
     }
-    echo form_dropdown('talkDate', $listData, $eventSelected), ' at ';
+	$talkDate = (!isset($this->validation->talkDate)) ? $eventSelected : $this->validation->talkDate;
+
+    echo form_dropdown('talkDate', $listData, $talkDate), ' at ';
 	foreach(range(0,23) as $v){ $given_hour[$v]=str_pad($v,2,'0',STR_PAD_LEFT); }
 	foreach(range(0,55, 5) as $v){ $given_min[$v]=str_pad($v,2,'0',STR_PAD_LEFT); }
 	echo form_dropdown('given_hour', $given_hour, $this->validation->given_hour);
