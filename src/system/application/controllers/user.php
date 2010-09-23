@@ -354,18 +354,20 @@ class User extends Controller {
 			'pass_conf'	=>'trim',
 		);
 		$fields=array(
-			'full_name'	=>'Full Name',
-			'email'		=>'Email',
-			'pass'		=>'Password',
-			'pass_conf'	=>'Confirm Password'
+			'full_name'			=>'Full Name',
+			'email'				=>'Email',
+			'twitter_username'	=>'Twitter Username',
+			'pass'				=>'Password',
+			'pass_conf'			=>'Confirm Password'
 		);
 		$this->validation->set_rules($rules);
 		$this->validation->set_fields($fields);
 		
 		if($this->validation->run()!=FALSE){
 			$data=array(
-				'full_name'	=> $this->input->post('full_name'),
-				'email'		=> $this->input->post('email')
+				'full_name'			=> $this->input->post('full_name'),
+				'email'				=> $this->input->post('email'),
+				'twitter_username'	=> $this->input->post('twitter_username'),
 			);
 
 			$pass=$this->input->post('pass');
