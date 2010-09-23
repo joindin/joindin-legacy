@@ -58,6 +58,7 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
 		To <b>remove</b> a speaker, remove their name from the text field and submit.
 	</span>
 	<?php
+	
 	// if editing and already have speakers...
 	if (isset($this->validation->speaker) && count($this->validation->speaker) != 0) {
 		foreach($this->validation->speaker as $k=>$speaker){
