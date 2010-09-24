@@ -89,3 +89,16 @@ function auto_p($pee, $br = 1) {
 
 	return $pee;
 }
+
+/**
+ * Function to make HTML presentable, but strip out anything potentially harmful
+ *
+ * Can be adapted and evolved as needed this is just a starter for ten
+ */
+function escape_allowing_presentation_tags($str) {
+	$allowed_tags = "<p>,<br>,<b>,<i>,<strong>,<emphasis>,<em>";
+	$str = strip_tags($str,$allowed_tags);
+	return $str;
+}
+
+

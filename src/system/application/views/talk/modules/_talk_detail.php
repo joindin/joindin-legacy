@@ -20,7 +20,7 @@
 			}
 		}
 		?></span>
-		<?php echo auto_p(auto_link(escape($detail->talk_desc)));?>
+		<?php echo auto_p(auto_link(escape_allowing_presentation_tags($detail->talk_desc)));?>
 	</div>
 	
 	<p class="quicklink">
