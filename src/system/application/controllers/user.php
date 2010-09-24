@@ -160,11 +160,12 @@ class User extends Controller {
 			);*/
 
 			$fields=array(
-				'user'	=> 'Username',
-				'pass'	=> 'Password',
-				'passc'	=> 'Confirm Password',
-				'email'	=> 'Email',
-				'full_name'=>'Full Name',
+				'user'				=> 'Username',
+				'pass'				=> 'Password',
+				'passc'				=> 'Confirm Password',
+				'email'				=> 'Email',
+				'full_name'			=> 'Full Name',
+				'twitter_username'	=> 'Twitter Username'
 			//	'cinput'	=> 'Captcha'				
 			);
 			$rules=array(
@@ -184,12 +185,13 @@ class User extends Controller {
 				//echo 'Success!';
 				$this->session->set_flashdata('msg', 'Account successfully created!');
 				$arr=array(
-					'username'	=> $this->input->post('user'),
-					'password'	=> $this->input->post('pass'),
-					'email'		=> $this->input->post('email'),
-					'full_name'	=> $this->input->post('full_name'),
-					'active'	=> 1,
-					'last_login'=> time()
+					'username'			=> $this->input->post('user'),
+					'password'			=> $this->input->post('pass'),
+					'email'				=> $this->input->post('email'),
+					'full_name'			=> $this->input->post('full_name'),
+					'twitter_username'	=> $this->input->post('twitter_username'),
+					'active'			=> 1,
+					'last_login'		=> time()
 				);
 				$this->db->insert('user',$arr);
 				
