@@ -126,7 +126,7 @@ class Event_model extends Model {
 		// select all events, return whether they are allowed to comment (start -1 days till start + 90 days) and count
 		// attendees and comments
 		$db->select(<<<SQL
-			*,
+			events.*,
 			IF((((events.event_start - $day_in_seconds) < $now) AND ((events.event_start + $closing_days_in_seconds) > $now)), 1, 0) AS allow_comments,
 			COUNT(DISTINCT user_attend.ID) AS num_attend,
 			COUNT(DISTINCT event_comments.ID) AS num_comments
