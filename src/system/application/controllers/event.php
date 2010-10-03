@@ -334,12 +334,6 @@ class Event extends Controller {
 		$this->load->model('talk_comments_model','tcm');
 		$this->load->model('user_admin_model','uadm');
 		$this->load->model('talks_model');
-
-		// validate user input (id)
-		if (!ctype_digit($id))
-		{
-			show_error('An invalid event id was provided');
-		}
 		
 		$events		= $this->event_model->getEventDetail($id);
 		$evt_admins	= $this->event_model->getEventAdmins($id);
