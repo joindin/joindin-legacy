@@ -101,58 +101,82 @@ class Event_model extends Model {
         return $dates;
 	}
 
-	function getEventDetail($id=null,$start_dt=null,$end_dt=null,$pending=false){
+	/**
+	 * Returns the details for a specific event, a series within a given date range, or all events if
+	 * no arguments have been provided.
+	 *
+	 * @param integer $id
+	 * @param integer $start_dt
+	 * @param integer $end_dt
+	 * @param bool 		$pending	Show only pending events, or only active
+	 *
+	 * @return stdClass[]
+	 */
+	function getEventDetail($id = null, $start_dt = null, $end_dt = null, $pending = false){
 		$this->load->helper("events");
-		
-		$cols='events.event_name,events.event_start,events.event_end,events.event_lat,events.event_long,';
-		$cols.='events.ID as event_ID,events.event_loc,events.event_desc,events.active,';
-		$cols.='events.event_stub,events.event_tz_cont,event_tz_place,events.event_icon,events.pending,events.event_hastag,';
-		$cols.='events.event_href,events.event_cfp_start,events.event_cfp_end,events.private';
-		
-	    $this->db->select('events.*, 
-							CASE 
-								WHEN (((events.event_start - 86400) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
-								ELSE 0
-								END as allow_comments,
-							COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments', false);
-	    $this->db->from('events');
-		$this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
-		$this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');
-		$this->db->group_by('events.ID');
-		
-		if($this->user_model->isSiteAdmin() && isset($id)){
-			/*show it no matter what the status*/
-		}else{
-			if(!$pending){ 
-				$pd='(events.active=1 AND (events.pending is null or events.pending=0))'; 
-			}else{ $pd='(events.active=0 AND events.pending=1)'; }
-			$this->db->where($pd);
-		}
-		if($id){
-			//looking for a specific one...
-			$this->db->where('events.ID',$id);
-		}else{
-			if($start_dt && $end_dt){
-			    $this->db->where('((events.event_start >='.$start_dt.' AND events.event_start <='.$end_dt.')');
-			    $this->db->or_where('(events.event_end >='.$start_dt.' AND events.event_end <='.$end_dt.')');
-			    $this->db->or_where('(events.event_start <='.$start_dt.' AND events.event_end >='.$end_dt.'))');
-			    
-				$this->db->order_by('events.event_start','desc');
-			}
-		}
-		$this->db->order_by('event_start','desc');
-		$q=$this->db->get();
 
-		// Decorate result with "event is on now" flag
-		$res = $q->result();
-		if (is_array($res) && 0 != count($res)&& is_object($res[0])) {
-			if (event_isNowOn($res[0]->event_start, $res[0]->event_end)) {
-				$res[0]->now = "now";
+		// get the current date (with out time)
+		$now 											= mktime(0, 0, 0);
+		$day_in_seconds 					= 86400;
+		$closing_days_in_seconds 	= 90 * $day_in_seconds;
+
+		/** @var CI_DB_active_record $db  */
+		$db = $this->db;
+
+		// select all events, return whether they are allowed to comment (start -1 days till start + 90 days) and count
+		// attendees and comments
+		$db->select(<<<SQL
+			*,
+			IF((((events.event_start - $day_in_seconds) < $now) AND ((events.event_start + $closing_days_in_seconds) > $now)), 1, 0) AS allow_comments,
+			COUNT(DISTINCT user_attend.ID) AS num_attend,
+			COUNT(DISTINCT event_comments.ID) AS num_comments
+SQL
+				, false)->
+			from('events')->
+			join('user_attend', 'user_attend.eid=events.ID', 'left')->
+			join('event_comments', 'event_comments.event_id=events.ID', 'left')->
+			group_by('events.ID');
+
+		// if the user is not an admin or $id is not null, limit the results based on the pending state
+		if(!$this->user_model->isSiteAdmin() || ($id !== null)) {
+			if ($pending) {
+				$db->where('(events.active', 0)->
+					where('events.pending', 1)->
+					ar_where[] = ')';
 			} else {
-				$res[0]->now = "";
+				$db->where('(events.active', 1)->
+					where('(events.pending', null)->
+					or_where('events.pending', 0)->
+					ar_where[] = '))';
 			}
-			$res[0]->timezoneString = $res[0]->event_tz_cont.'/'.$res[0]->event_tz_place;
 		}
+
+		// determine the selection criteria, if $id is a number use that, otherwise limit based on start and end date
+		if (is_numeric($id)) {
+			$db->where('events.ID', $id);
+		} elseif (($end_dt !== null) && ($start_dt !== null)) {
+			// check whether the event start and end overlaps with the given date range
+			$db->where('events.event_start <=', $end_dt);
+			$db->where('events.event_end >=', $start_dt);
+			$db->order_by('events.event_start', 'DESC');
+		}
+
+		// retrieve the resultset
+		$q 		= $db->get();
+		$res	= $q->result();
+
+		// Decorate results with "event is on now" flag
+		if (is_array($res)) {
+			foreach($res as &$event) {
+				if (!is_object($event)) {
+					continue;
+				}
+
+				$event->now 						= (event_isNowOn($event->event_start, $event->event_end)) ? "now" : "";
+				$event->timezoneString	= $event->event_tz_cont.'/'.$event->event_tz_place;
+			}
+		}
+
 		return $res;
 	}
 
