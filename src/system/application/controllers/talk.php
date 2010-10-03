@@ -452,6 +452,9 @@ class Talk extends Controller {
 			$priv=$this->input->post('private');
 			$priv=(empty($priv)) ? 0 : 1;
 
+			$anonymous=$this->input->post('anonymous');
+			$anonymous=(empty($anonymous)) ? 0 : 1;
+
 			if(!$is_auth){
 				$sp_ret=$this->spam->check('regex',$this->input->post('comment'));
 				error_log('sp: '.$sp_ret);
@@ -483,7 +486,7 @@ class Talk extends Controller {
 					'date_made'		=> time(),
 					'private'		=> $priv,
 					'active'		=> 1,
-					'user_id'		=> ($this->user_model->isAuth()) ? $this->session->userdata('ID') : '0'
+					'user_id'		=> ($this->user_model->isAuth() && !$anonymous) ? $this->session->userdata('ID') : '0'
 				);
 				
 				$out='';

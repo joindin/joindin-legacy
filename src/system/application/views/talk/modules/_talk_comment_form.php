@@ -4,12 +4,8 @@
 ?>
 <p class="info">Want to comment on this talk? <a href="/user/login">Log in</a> or <a href="/user/register">create a new account</a> or comment anonymously</p>
 <?php 
-    } else {
-?>
-<p class="info">You may log out if you wish to comment anonymously</p>
-<?php
-	}
-	$title='Write a comment';
+    }
+		$title='Write a comment';
 ?>
 <a name="comment_form"></a>
 <h3 id="comment-form"><?php echo $title; ?></h3>
@@ -43,6 +39,12 @@
         <?php echo form_checkbox('private','1'); ?>
         Mark as private?
     </label>
+<?php if ($auth) { ?>
+    <label class="checkbox">
+        <?php echo form_checkbox('anonymous', '1'); ?>
+        Post anonymously?
+    </label>
+<?php } ?>
     <div class="clear"></div>
 </div>
 <?php if (isset($claimed[0]->userid) && $claimed[0]->userid != 0 && user_get_id() == $claimed[0]->userid): ?>
