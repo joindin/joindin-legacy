@@ -25,7 +25,10 @@
 	?>
 
 	<?php echo form_hidden('edit_comment'); ?>
-	<label for="comment">Comment</label>
+	<label for="comment">Comment
+		<span id="comment_as_user" <?php if (!$auth):?>style="display: none;"<?php endif; ?>> as <a href="/user/view/<?php echo user_get_id(); ?>"><?php echo user_get_username(); ?></a></span>
+		<span id="comment_anonymously" <?php if ($auth):?>style="display: none;"<?php endif; ?>> anonymously</span>
+	</label>
 	<?php 
     echo form_textarea(array(
 		'name'	=> 'comment',
