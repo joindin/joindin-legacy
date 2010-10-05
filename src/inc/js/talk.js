@@ -55,12 +55,32 @@ talk = function (){
 		});
 	}
 	
+	var _changeAnonymous = function(){
+		$('input[name="anonymous"]').click(function(){
+			console.debug(this.checked);
+			if (this.checked) {
+				$('#comment_as_user, #comment_as_user a').css({
+					'text-decoration':  'line-through',
+					'color':            'silver'
+				});
+				$('#comment_anonymously').css('display', '');
+			} else {
+				$('#comment_as_user, #comment_as_user a').css({
+					'text-decoration':  '',
+					'color':            ''
+				});
+				$('#comment_anonymously').css('display', 'none');
+			}
+		});
+	}
+
 	return {
 		init: function(){
 			$(document).ready(function(){
 				_addSpeakerLine();
 				_claimTalk();
 				_editTalkComment();
+                _changeAnonymous();
 			});
 		}
 	}

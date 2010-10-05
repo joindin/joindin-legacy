@@ -287,7 +287,9 @@ class Event extends Controller {
 				'private'		=>$this->input->post('event_private'),
 				'event_tz_cont'		=>$this->input->post('event_tz_cont'),
 				'event_tz_place'	=>$this->input->post('event_tz_place'),
-				'event_stub'	=>$this->input->post('event_stub')
+				'event_stub'	=>$this->input->post('event_stub'),
+				'event_contact_name'  => $this->input->post('event_contact_name'),
+				'event_contact_email'	=> $this->input->post('event_contact_email'),
 			);
 			if($this->upload->do_upload('event_icon')){
 				$updata=$this->upload->data();
@@ -340,7 +342,7 @@ class Event extends Controller {
 		{
 			show_error('An invalid event id was provided');
 		}
-		
+
 		$events		= $this->event_model->getEventDetail($id);
 		$evt_admins	= $this->event_model->getEventAdmins($id);
 		
@@ -793,7 +795,9 @@ class Event extends Controller {
 				'event_tz_cont'		=>$this->input->post('event_tz_cont'),
 				'event_tz_place'	=>$this->input->post('event_tz_place'),
 				'pending'		=>1,
-				'private'		=>($this->input->post('is_private')=='n') ? null : $this->input->post('is_private')
+				'private'		=>($this->input->post('is_private')=='n') ? null : $this->input->post('is_private'),
+				'event_contact_name'  => $this->input->post('event_contact_name'),
+				'event_contact_email'	=> $this->input->post('event_contact_email'),
 			);
 			
 			// Check to see if our Call for Papers dates are set...
