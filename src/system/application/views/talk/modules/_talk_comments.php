@@ -47,6 +47,9 @@ if (empty($comments)) {
 		<span class="speaker">Speaker comment:</span>
 	<?php else: ?>
 		<?php echo rating_image($v->rating); ?><br/>
+		<?php if(!empty($v->twitter_username)): ?>
+		<a href="http://twitter.com/<?php echo $v->twitter_username; ?>"><img src="/inc/img/twitter_share_icon.gif" style="margin-top:10px" width="20"/></a>
+		<?php endif; ?>
 		<?php if(!empty($v->gravatar)){ 
 			echo '<a href="/user/view/'.$v->user_id.'">'.str_replace('/>','height="45" align="right" style="margin:10px"/>',$v->gravatar).'</a>'; } 
 		?>
