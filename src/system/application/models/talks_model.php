@@ -210,6 +210,7 @@ class Talks_model extends Model {
 				tc.active,
 				tc.user_id,
 				(select username from user where user.ID=tc.user_id) uname,
+				(select twitter_username from user where user.ID=tc.user_id) twitter_username,
 				tc.comment_type
 			from
 				talk_comments tc
