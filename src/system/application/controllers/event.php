@@ -342,7 +342,7 @@ class Event extends Controller {
 		{
 			show_error('An invalid event id was provided');
 		}
-
+		
 		$events		= $this->event_model->getEventDetail($id);
 		$evt_admins	= $this->event_model->getEventAdmins($id);
 		

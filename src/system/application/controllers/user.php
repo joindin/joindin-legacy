@@ -160,11 +160,12 @@ class User extends Controller {
 			);*/
 
 			$fields=array(
-				'user'	=> 'Username',
-				'pass'	=> 'Password',
-				'passc'	=> 'Confirm Password',
-				'email'	=> 'Email',
-				'full_name'=>'Full Name',
+				'user'				=> 'Username',
+				'pass'				=> 'Password',
+				'passc'				=> 'Confirm Password',
+				'email'				=> 'Email',
+				'full_name'			=> 'Full Name',
+				'twitter_username'	=> 'Twitter Username'
 			//	'cinput'	=> 'Captcha'				
 			);
 			$rules=array(
@@ -184,12 +185,13 @@ class User extends Controller {
 				//echo 'Success!';
 				$this->session->set_flashdata('msg', 'Account successfully created!');
 				$arr=array(
-					'username'	=> $this->input->post('user'),
-					'password'	=> $this->input->post('pass'),
-					'email'		=> $this->input->post('email'),
-					'full_name'	=> $this->input->post('full_name'),
-					'active'	=> 1,
-					'last_login'=> time()
+					'username'			=> $this->input->post('user'),
+					'password'			=> $this->input->post('pass'),
+					'email'				=> $this->input->post('email'),
+					'full_name'			=> $this->input->post('full_name'),
+					'twitter_username'	=> $this->input->post('twitter_username'),
+					'active'			=> 1,
+					'last_login'		=> time()
 				);
 				$this->db->insert('user',$arr);
 				
@@ -354,18 +356,20 @@ class User extends Controller {
 			'pass_conf'	=>'trim',
 		);
 		$fields=array(
-			'full_name'	=>'Full Name',
-			'email'		=>'Email',
-			'pass'		=>'Password',
-			'pass_conf'	=>'Confirm Password'
+			'full_name'			=>'Full Name',
+			'email'				=>'Email',
+			'twitter_username'	=>'Twitter Username',
+			'pass'				=>'Password',
+			'pass_conf'			=>'Confirm Password'
 		);
 		$this->validation->set_rules($rules);
 		$this->validation->set_fields($fields);
 		
 		if($this->validation->run()!=FALSE){
 			$data=array(
-				'full_name'	=> $this->input->post('full_name'),
-				'email'		=> $this->input->post('email')
+				'full_name'			=> $this->input->post('full_name'),
+				'email'				=> $this->input->post('email'),
+				'twitter_username'	=> $this->input->post('twitter_username'),
 			);
 
 			$pass=$this->input->post('pass');
