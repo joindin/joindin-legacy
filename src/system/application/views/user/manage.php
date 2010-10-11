@@ -39,6 +39,13 @@ if (!empty($msg)):
 
         <div class="clear"></div>
     </div>
+
+    <div class="row">
+    	<label for="twitter">Twitter Username</label>
+    	<?php echo form_input(array('name' => 'twitter_username', 'id' => 'twitter_username', 'value' => $curr_data[0]->twitter_username), $this->validation->twitter_username); ?>
+
+        <div class="clear"></div>
+    </div>
     
     <div class="row">
     	<label for="pass">Password</label>

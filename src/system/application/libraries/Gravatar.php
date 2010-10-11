@@ -20,12 +20,20 @@ class Gravatar {
 	 * @param string $userEmail[optional] User email address
 	 */
 	public function getUserImage($userId,$userEmail=null){
+		if ($userId === false) {
+			return false;
+		}
+		
 		$hash=$this->buildEmailHash($userEmail);
 		$path=$this->_servicePath.'/'.$hash.'?d=mm';
 		
 		if(!$userEmail){
 			$this->CI->load->model('user_model');
-			$userDetail=$this->CI->user_model->getUser($userId);
+			$userDetail = $this->CI->user_model->getUser($userId);
+			if (empty($userDetail)) {
+				return false;
+			}
+			
 			$userEmail=$userDetail[0]->email;
 		}
 		
@@ -41,6 +49,10 @@ class Gravatar {
 	 * @param boolean $return Return as string or echo
 	 */
 	public function displayUserImage($userId,$return=false){
+		if ($userId === false) {
+			return false;
+		}
+
 		if(is_file($this->_cacheDir.'/user'.$userId.'.jpg')){
 			// Check the time on the file....
 			if(filectime($this->_cacheDir.'/user'.$userId.'.jpg')+$this->_imgTimeout<time()){

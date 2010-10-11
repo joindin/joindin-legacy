@@ -175,7 +175,7 @@ Click here to view it: %stalk/view/%s
 			$msg.='If you need some help getting started with managing your event, try our '."\n";
 			$msg.='helpful Event Admin Cheat Sheet! ' . $this->_config->site_url() . 'about/evt_admin';
 			
-			$to=array($user['email']);
+			$to=array($user->email);
 			$this->_sendEmail($to,$msg,$subj);
 		}
 	}

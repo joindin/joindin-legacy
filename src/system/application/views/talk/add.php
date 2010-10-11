@@ -58,6 +58,7 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
 		To <b>remove</b> a speaker, remove their name from the text field and submit.
 	</span>
 	<?php
+	
 	// if editing and already have speakers...
 	if (isset($this->validation->speaker) && count($this->validation->speaker) != 0) {
 		foreach($this->validation->speaker as $k=>$speaker){
@@ -106,7 +107,9 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
         $listData[$eventStart->format('Y-m-d')] = $eventStart->format('jS M Y');
         $eventStart->modify('+1 day');
     }
-    echo form_dropdown('talkDate', $listData, $eventSelected), ' at ';
+	$talkDate = (!isset($this->validation->talkDate)) ? $eventSelected : $this->validation->talkDate;
+
+    echo form_dropdown('talkDate', $listData, $talkDate), ' at ';
 	foreach(range(0,23) as $v){ $given_hour[$v]=str_pad($v,2,'0',STR_PAD_LEFT); }
 	foreach(range(0,55, 5) as $v){ $given_min[$v]=str_pad($v,2,'0',STR_PAD_LEFT); }
 	echo form_dropdown('given_hour', $given_hour, $this->validation->given_hour);
@@ -146,7 +149,7 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
 		$slang=null;
 		if(isset($this->validation->session_lang)){
 			foreach($lang_list as $k=>$v){
-				if(trim($v)==trim($this->validation->session_lang)){ $slang=$k; }
+				if(trim($k)==trim($this->validation->session_lang)){ $slang=$k; }
 			}
 		}else{ $slang=$this->validation->session_lang; }
 		echo form_dropdown('session_lang',$lang_list,$slang); 

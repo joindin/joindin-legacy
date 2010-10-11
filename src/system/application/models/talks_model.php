@@ -90,6 +90,11 @@ class Talks_model extends Model {
 		$this->load->helper("events");
 		$this->load->helper("talk");
 		if($tid){
+			if (!ctype_digit($tid))
+			{
+				show_error('Invalid talk identifier was provided, expected a number');
+ 			}
+            
 			// See if we have any comments to exclude
 			$uids=$this->_findExcludeComments($tid);
 			$addl=(!empty($uids)) ? 'and user_id not in ('.implode(',',$uids).')': '';
@@ -138,7 +143,7 @@ class Talks_model extends Model {
 					talks.active=1
 				group by
 					talks.ID
-			',$tc_sql,$tid);
+			', $tc_sql, $this->db->escape($tid));
 			$q=$this->db->query($sql);
 		}else{
 			if($latest){ 
@@ -210,6 +215,7 @@ class Talks_model extends Model {
 				tc.active,
 				tc.user_id,
 				(select username from user where user.ID=tc.user_id) uname,
+				(select twitter_username from user where user.ID=tc.user_id) twitter_username,
 				tc.comment_type
 			from
 				talk_comments tc

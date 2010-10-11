@@ -130,6 +130,9 @@ class Talk extends Controller {
 			$this->validation->given_hour = $this->timezone->formattedEventDatetimeFromUnixtime($thisTalk->date_given, $thisTalk->event_tz_cont.'/'.$thisTalk->event_tz_place, 'H');
 			$this->validation->given_min = $this->timezone->formattedEventDatetimeFromUnixtime($thisTalk->date_given, $thisTalk->event_tz_cont.'/'.$thisTalk->event_tz_place, 'i');
 			
+			$this->validation->talkDate=$this->validation->given_yr.'-'.
+				$this->validation->given_mo.'-'.$this->validation->given_day;
+			
 			$this->validation->session_lang=$thisTalk->lang_name;
 			$this->validation->session_type=$thisTalk->tcid;
 		}else{
@@ -449,6 +452,9 @@ class Talk extends Controller {
 			$priv=$this->input->post('private');
 			$priv=(empty($priv)) ? 0 : 1;
 
+			$anonymous=$this->input->post('anonymous');
+			$anonymous=(empty($anonymous)) ? 0 : 1;
+
 			if(!$is_auth){
 				$sp_ret=$this->spam->check('regex',$this->input->post('comment'));
 				error_log('sp: '.$sp_ret);
@@ -480,7 +486,7 @@ class Talk extends Controller {
 					'date_made'		=> time(),
 					'private'		=> $priv,
 					'active'		=> 1,
-					'user_id'		=> ($this->user_model->isAuth()) ? $this->session->userdata('ID') : '0'
+					'user_id'		=> ($this->user_model->isAuth() && !$anonymous) ? $this->session->userdata('ID') : '0'
 				);
 				
 				$out='';
