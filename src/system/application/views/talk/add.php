@@ -149,7 +149,7 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
 		$slang=null;
 		if(isset($this->validation->session_lang)){
 			foreach($lang_list as $k=>$v){
-				if(trim($v)==trim($this->validation->session_lang)){ $slang=$k; }
+				if(trim($k)==trim($this->validation->session_lang)){ $slang=$k; }
 			}
 		}else{ $slang=$this->validation->session_lang; }
 		echo form_dropdown('session_lang',$lang_list,$slang); 
