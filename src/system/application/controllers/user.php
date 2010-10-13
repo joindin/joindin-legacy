@@ -15,6 +15,9 @@ class User extends Controller {
 		$this->load->helper('url');
 		$this->load->library('validation');
 		$this->load->model('user_model');
+		$this->load->library('SSL');
+		
+		$this->ssl->sslRoute();
 		
 		$fields=array(
 			'user'=>'Username',
@@ -66,8 +69,8 @@ class User extends Controller {
 			'email'	=> 'Email Address'
 		);
 		$rules=array(
-			'user'	=> 'trim|xss_clean|callback_login_exist_check',
-			'email'	=> 'trim|xss_clean|valid_email|callback_email_exist_check'
+			'user'	=> 'required|trim|xss_clean',
+			'email'	=> 'required|trim|xss_clean|valid_email|callback_user_email_match_check'
 		);
 		$this->validation->set_rules($rules);
 		$this->validation->set_fields($fields);
@@ -84,7 +87,7 @@ class User extends Controller {
 			}
 			
 			if(empty($ret)){
-				$arr['msg']='You must specify either a username or email address!';
+				$arr['msg']='You must specify a username and email address!';
 			}else{			
 				//generate the new password...
 				$sel		= array_merge(range('a','z'),range('A','Z'),range(0,9)); shuffle($sel);
@@ -157,11 +160,12 @@ class User extends Controller {
 			);*/
 
 			$fields=array(
-				'user'	=> 'Username',
-				'pass'	=> 'Password',
-				'passc'	=> 'Confirm Password',
-				'email'	=> 'Email',
-				'full_name'=>'Full Name',
+				'user'				=> 'Username',
+				'pass'				=> 'Password',
+				'passc'				=> 'Confirm Password',
+				'email'				=> 'Email',
+				'full_name'			=> 'Full Name',
+				'twitter_username'	=> 'Twitter Username'
 			//	'cinput'	=> 'Captcha'				
 			);
 			$rules=array(
@@ -181,12 +185,13 @@ class User extends Controller {
 				//echo 'Success!';
 				$this->session->set_flashdata('msg', 'Account successfully created!');
 				$arr=array(
-					'username'	=> $this->input->post('user'),
-					'password'	=> $this->input->post('pass'),
-					'email'		=> $this->input->post('email'),
-					'full_name'	=> $this->input->post('full_name'),
-					'active'	=> 1,
-					'last_login'=> time()
+					'username'			=> $this->input->post('user'),
+					'password'			=> $this->input->post('pass'),
+					'email'				=> $this->input->post('email'),
+					'full_name'			=> $this->input->post('full_name'),
+					'twitter_username'	=> $this->input->post('twitter_username'),
+					'active'			=> 1,
+					'last_login'		=> time()
 				);
 				$this->db->insert('user',$arr);
 				
@@ -211,6 +216,13 @@ class User extends Controller {
 		$this->load->helper('form');
 		$this->load->library('validation');
 		$this->load->model('talks_model');
+		
+		$this->load->library('gravatar');
+		$this->gravatar->getUserImage(
+			$this->session->userData('ID'),
+			$this->session->userData('email')
+		);
+		$imgStr=$this->gravatar->displayUserImage($this->session->userData('ID'),true);
 		
 		if (!$this->user_model->isAuth()) { redirect('user/login'); }
 		
@@ -237,9 +249,21 @@ class User extends Controller {
 		$arr['talks']	= $this->talks_model->getUserTalks($this->session->userdata('ID'));
 		$arr['comments']= $this->talks_model->getUserComments($this->session->userdata('ID'));
 		$arr['is_admin']= $this->user_model->isSiteAdmin();
+		$arr['gravatar']= $imgStr;
 		
 		$this->template->write_view('content','user/main',$arr);
 		$this->template->render();
+	}
+	
+	/**
+	 * Refreshes the user's gravatar from their servers
+	 * Uses logged in user, cannot be specified
+	 */
+	function refresh_gravatar(){
+		$this->load->library('gravatar');
+		$uid = $this->session->userData('ID');
+		$this->gravatar->getUserImage($uid);
+		redirect('/user/main');
 	}
 	
 	/**
@@ -252,6 +276,7 @@ class User extends Controller {
 		$this->load->model('speaker_profile_model','spm');
 		$this->load->helper('reqkey');
 		$this->load->helper('url');
+		$this->load->library('gravatar');
 		$reqkey=buildReqKey();
 
 		// See if we have a sort type and apply it
@@ -259,6 +284,12 @@ class User extends Controller {
 		if(isset($p[4])){ $sort_type=$p[4]; }else{ $sort_type=null; }
 		
 		$details = $this->user_model->getUser($uid);
+		
+		// If the user doesn't exist, redirect!
+		if(!isset($details[0])){ redirect(); }
+		
+		$this->gravatar->getUserImage($uid,$details[0]->email);
+		$imgStr=$this->gravatar->displayUserImage($uid,true);
 		
 		if (empty($details[0])) {
 			redirect();
@@ -282,7 +313,8 @@ class User extends Controller {
 			'reqkey' 	=> $reqkey,
 			'seckey' 	=> buildSecFile($reqkey),
 			'sort_type'	=> $sort_type,
-			'pub_profile'=>$this->spm->getUserPublicProfile($uid,true)
+			'pub_profile'=>$this->spm->getUserPublicProfile($uid,true),
+			'gravatar'	=> $imgStr
 		);
 		if($curr_user){
 			$arr['pending_evt']=$this->uadmin->getUserTypes($curr_user,array('event'),true);
@@ -324,18 +356,20 @@ class User extends Controller {
 			'pass_conf'	=>'trim',
 		);
 		$fields=array(
-			'full_name'	=>'Full Name',
-			'email'		=>'Email',
-			'pass'		=>'Password',
-			'pass_conf'	=>'Confirm Password'
+			'full_name'			=>'Full Name',
+			'email'				=>'Email',
+			'twitter_username'	=>'Twitter Username',
+			'pass'				=>'Password',
+			'pass_conf'			=>'Confirm Password'
 		);
 		$this->validation->set_rules($rules);
 		$this->validation->set_fields($fields);
 		
 		if($this->validation->run()!=FALSE){
 			$data=array(
-				'full_name'	=> $this->input->post('full_name'),
-				'email'		=> $this->input->post('email')
+				'full_name'			=> $this->input->post('full_name'),
+				'email'				=> $this->input->post('email'),
+				'twitter_username'	=> $this->input->post('twitter_username'),
 			);
 
 			$pass=$this->input->post('pass');
@@ -427,9 +461,24 @@ class User extends Controller {
 	function login_exist_check($str){
 		$ret=$this->user_model->getUser($str);
 		if(empty($ret)){
-			$this->validation->_error_messages['login_exist_check'] = 'Username does not exist!';
+			$this->validation->_error_messages['login_exist_check'] = 'Invalid username!';
 			return false;
 		}else{ return true; }
+	}
+	function user_email_match_check($str){
+		$ret=$this->user_model->getUserByEmail($str);
+		if(empty($ret)){
+			// no email like that on file - error!
+			$this->validation->_error_messages['user_email_match_check'] = 'Invalid user information!';
+			return false;
+		}else{
+			// see if the username and email we've been given match up
+			if($this->input->post('user')!=$ret[0]->username){
+				$this->validation->_error_messages['user_email_match_check'] = 'Invalid user information!';
+				return false;
+			}
+		}
+		return true;
 	}
 }
 ?>

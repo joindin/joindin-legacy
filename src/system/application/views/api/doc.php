@@ -117,7 +117,6 @@ Below are the request types that you can make to the API including input and out
 		<li><a href="#get_user_detail">Get Detail</a>
 		<li><a href="#get_user_comments">Get User Comments</a>
 		<li><a href="#validate_user">Validate User</a>
-		<li><a href="#get_speaker_profile">Get Speaker Profile</a>
 	</ul>
 <li>Site
 	<ul>
@@ -376,7 +375,7 @@ results are returned in date order with newest first.<br/>
 		<li>event_id: integer, The event ID (same as eid)
 		<li>ID: integer, The talk ID number (same as tid)
 		<li>active: integer, Whether this talk is in use 
-		<li>owner_id: integer, The speaker ID number
+		<li>owner_id: empty, not used
 		<li>event_voting: integer, Whether voting is active for thi event (currently not in use)
 		<li>private: integer, If this session is only visible to members
 		<li>lang_abbr: string, Short code for the session language
@@ -557,36 +556,6 @@ results are returned in date order with newest first.<br/>
 	<a href="#top">[top]</a><br/><br/>
 </div>
 
-<a name="get_speaker_profile"></a>
-<b class="req_name" style="color:#5181C1;font-size:14px">Get Speaker Profile</b>
-<div style="padding-left:10px">
-<b class="req_title">Action Type:</b> getprofile<br/>
-<b class="req_title">Description:</b> Request the information for a certain speaker profile<br/>
-<b class="req_title">Authentication:</b> not required<br />
-<b class="req_title">Input:</b>
-	<ul>
-		<li>spid: Speaker access key
-	</ul>
-<b class="req_title">Output:</b>
-	<ul>
-		<li>speaker_data: contaning one or more of the following:
-			<ul>
-			<li>full_name: Full name of the speaker
-			<li>website: Website address
-			<li>blog: Blog website address 
-			<li>phone: Phone number
-			<li>zip: Zip code of speaker's location
-			<li>job_title: Title of the job currently held by speaker
-			<li>picture: Name of the image speaker uploaded
-			<li>contact_email: Email to contact the speaker directly
-			<li>city: City of location of speaker
-			<li>street_address: Street address
-			<li>bio: Biography information
-			</ul>
-	</ul>
-	<a href="#top">[top]</a><br/><br/>
-</div>
-	
 <h2 style="color:#5181C1">Site (/api/site)</h2>
 <a name="site_status"></a>
 <b class="req_name" style="color:#5181C1;font-size:14px">Status</b>

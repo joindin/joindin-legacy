@@ -59,6 +59,7 @@ function buildClaimedLinks($speakers,$claim_detail){
 	foreach($claim_detail as $claim){
 		$speaker_data[$claim->full_name]=$claim->uid;
 	}
+	
 	foreach($speakers as $speaker){
 		$name=$speaker->speaker_name;
 		if(array_key_exists($name,$speaker_data)){
@@ -67,12 +68,28 @@ function buildClaimedLinks($speakers,$claim_detail){
 	}
 	
 	//Check the claim...if there's only one claim, assign no matter what
-	if(count($speakers) && count($claim_detail)){
+	if(count($speakers)==1 && count($claim_detail)){
 		$speaker_links	= array();
 		$speaker_links[]= '<a href="/user/view/'.$claim_detail[0]->uid.'">'.$speakers[0]->speaker_name.'</a>';
 	}
-	
+
 	return implode(', ',$speaker_links);
+}
+
+function buildSpeakerImg($claims){
+	$ci=&get_instance();
+	$ci->load->library('gravatar');	
+	$user_images=array();
+
+	foreach($claims as $claim){
+		if($img_data=$ci->gravatar->displayUserImage($claim->uid,true)){
+			$user_images[$claim->uid]=$img_data;
+		}else{
+			$ci->gravatar->getUserImage($claim->uid,$claim->email);
+			$user_images[$claim->uid]=$ci->gravatar->displayUserImage($claim->uid,true);
+		}
+	}
+	return $user_images;
 }
 
 /**

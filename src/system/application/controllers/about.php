@@ -73,5 +73,37 @@ class About extends Controller {
 		$this->template->write_view('content','about/iphone_support');
 		$this->template->render();
 	}
+	function widget(){
+		$this->template->write_view('content','about/widget');
+		$this->template->render();
+	}
+	/**
+	 * Pull in the current list of gravatars and push out a random set
+	 */
+	function who(){
+		$dir=$this->config->item('gravatar_cache_dir');
+		
+		$default_size	= 1323;
+		$users			= array();
+		foreach(new DirectoryIterator($dir) as $file){
+			if(!$file->isDot() && filesize($dir.'/'.$file->getFilename())!=1323){
+				if(preg_match('/user([0-9]+)\.jpg/',$file->getFilename(),$m)){
+					//$users[$m[1]]=$file->getFilename();
+					$users[]=$m[1];
+				}
+			}
+		}
+		
+		$arr=array('users'=>$users);
+		$this->template->write_view('content','about/who',$arr);
+		$this->template->render();
+	}
+	
+	function services(){
+		
+		$arr=array();
+		$this->template->write_view('content','about/services',$arr);
+		$this->template->render();
+	}
 }
 ?>

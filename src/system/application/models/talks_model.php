@@ -46,6 +46,34 @@ class Talks_model extends Model {
 		return $ret;
 	}
 	
+	/**
+	 * Takes in the talk information and the speaker data to see if it's unique
+	 * Checks the "talks" table with the data
+	 */
+	public function isTalkDataUnique($talk_data,$speakers){
+		$talk_speakers	= array();
+		$q	 = $this->db->get_where('talks',$talk_data);
+		$ret = $q->result();
+		
+		if(count($ret)>0){
+			$CI=&get_instance();
+			$CI->load->model('talk_speaker_model','talkSpeaker');
+			
+			// We have a match, lets see if the speakers match too
+			// For each of the speakers we're given, see if they're in the talk data
+			foreach($ret as $talk){
+				$tid		= $talk->ID;
+				$tspeakers	= $CI->talkSpeaker->getSpeakerByTalkId($tid);
+				
+				foreach($tspeakers as $tsp){ $talk_speakers[]=$tsp->speaker_name; }
+				foreach($speakers as $sp){
+					if(in_array($sp,$talk_speakers)){ return false; }
+				}
+			}
+		}
+		return true;
+	}
+	
 	//---------------
 	// Check to see if user has already made that sort of 
 	// comment on the talk
@@ -62,6 +90,11 @@ class Talks_model extends Model {
 		$this->load->helper("events");
 		$this->load->helper("talk");
 		if($tid){
+			if (!ctype_digit($tid))
+			{
+				show_error('Invalid talk identifier was provided, expected a number');
+ 			}
+            
 			// See if we have any comments to exclude
 			$uids=$this->_findExcludeComments($tid);
 			$addl=(!empty($uids)) ? 'and user_id not in ('.implode(',',$uids).')': '';
@@ -110,7 +143,7 @@ class Talks_model extends Model {
 					talks.active=1
 				group by
 					talks.ID
-			',$tc_sql,$tid);
+			', $tc_sql, $this->db->escape($tid));
 			$q=$this->db->query($sql);
 		}else{
 			if($latest){ 
@@ -167,6 +200,8 @@ class Talks_model extends Model {
 	* $cid [optional] Comment ID (if you want to get only one comment)
 	*/
 	public function getTalkComments($tid,$cid=null,$private=false){
+		$this->load->library('gravatar');
+		
 		$c_addl	= ($cid) ? ' and tc.ID='.$cid : '';
 		$priv	= (!$private) ? ' and tc.private=0' : '';
 		$sql=sprintf('
@@ -180,6 +215,7 @@ class Talks_model extends Model {
 				tc.active,
 				tc.user_id,
 				(select username from user where user.ID=tc.user_id) uname,
+				(select twitter_username from user where user.ID=tc.user_id) twitter_username,
 				tc.comment_type
 			from
 				talk_comments tc
@@ -189,7 +225,11 @@ class Talks_model extends Model {
 			order by tc.date_made asc
 		',$tid,$c_addl,$priv);
 		$q=$this->db->query($sql);
-		return $q->result();
+		$comments=$q->result();
+		foreach($comments as $k=>$comment){
+			$comments[$k]->gravatar=$this->gravatar->displayUserImage($comment->user_id,true);
+		}
+		return $comments;
 	}
 	
 	public function getPopularTalks($len=7){
@@ -235,12 +275,14 @@ class Talks_model extends Model {
 			    ON e.ID=t.event_id
 			  JOIN talk_comments tc
 			    ON tc.talk_id=t.ID
+			  INNER JOIN user_admin ua
+			    ON t.ID = ua.rid
 			WHERE
-			  e.event_start > %s
+			    e.event_start > %s
 			  and
-			t.ID in (
-			select rid from user_admin where rtype='talk' and rcode!='pending'
-			)
+			    ua.rtype = 'talk'
+			  and
+				ua.rcode != 'pending'
 			group by
 			  t.ID
 			having

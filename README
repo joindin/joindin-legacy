@@ -79,3 +79,14 @@ Make sure you have the following extensions installed and configured
   in php.ini add:
   > linux: extension=http.so
   > windows: extension=http.dll
+
+Tests
+#############
+
+There are some tests set up, which use PHPUnit; these can be found in the
+src/tests directory.  There is a phing task configured to run them - from the
+root directory simply run "phing phpunit" to run the tests.
+
+Note: The API tests actually call the service externally and rely on pecl_http
+being installed to run.
+

@@ -54,10 +54,17 @@ if (!empty($msg)):
     
         <div class="clear"></div>
     </div>
+
+	<div class="row">
+    	<label for="twitter">Twitter Username</label>
+    	<?php echo form_input(array('name' => 'twitter_username', 'id' => 'twitter_username'), $this->validation->twitter_username); ?>
+        <div class="clear"></div>
+    </div>
+
 	<div class="row row-buttons">
     	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Register'); ?>
     </div>
-    
+
     <?php echo form_close(); ?>
 </div>
 

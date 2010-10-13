@@ -9,9 +9,13 @@ $title[] = $this->config->item('site_name');
 	<title><?php echo implode(' - ', $title); ?></title>
 
 	<link media="all" rel="stylesheet" type="text/css" href="/inc/css/jquery-ui/theme/ui.all.css"/>
-	<?php if(!$css){ $css='/inc/css/site.css'; } ?>
+	<link media="all" rel="stylesheet" type="text/css" href="/inc/css/site.css"/>
 	
+	
+	<?php if($css){ ?>
 	<link media="all" rel="stylesheet" type="text/css" href="<?php echo $css; ?>"/>
+	<?php } ?>
+	
 	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" /> 
 	<script type="text/javascript" src="/inc/js/jquery.js"></script>
 	<script type="text/javascript" src="/inc/js/jquery.pause.js"></script>
@@ -79,7 +83,9 @@ $title[] = $this->config->item('site_name');
 <div id="splash">
     <div class="container_12">
     	<div class="grid_12">
+			<?php if(!$this->session->userdata('ID')): ?>
     		<a href="/user/register"><img src="/inc/img/splash.jpg" border="0" alt="Join <?php echo $this->config->item('site_name'); ?> now!"/></a>
+			<?php endif; ?>
     	</div>
     	<div class="clear"></div>
 	</div>

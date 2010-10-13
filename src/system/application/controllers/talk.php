@@ -54,7 +54,8 @@ class Talk extends Controller {
 			if(!$this->user_model->isAdminEvent($eid)){ redirect(); }
 		}elseif($id){ 
 			$this->edit_id=$id;
-			$eid	= null;
+			$det	= $this->talks_model->getTalks($id);
+			$eid	= $det[0]->eid;
 			
 			// See if they have access to the talk (claimed user, site admin, event admin)
 			if($this->user_model->isAdminEvent($eid) || $this->userAdmins->hasPerm($currentUserId,$id,'talk')){
@@ -106,18 +107,16 @@ class Talk extends Controller {
 			
 			$events	= $this->event_model->getEventDetail($thisTalk->event_id);
 			$tracks	= $this->eventTracks->getEventTracks($thisTalk->eid);
-			
 
 			$thisTalksEvent = (isset($events[0])) ? $events[0] : array();
 			$thisTalksTrack = (isset($tracks[0])) ? $tracks[0] : array();
 			
-			
-			$track_info=$this->talkTracks->getSessionTrackInfo($thisTalk->ID); //print_r($track_info);
-			$this->validation->session_track=(isset($thisTalksTrack->ID)) ? $thisTalksTrack->ID : null;
+			$track_info=$this->talkTracks->getSessionTrackInfo($thisTalk->ID);
+			$this->validation->session_track=(empty($track_info)) ? null : $track_info[0]->ID;
 			
 			$is_private=($thisTalksEvent->private=='Y') ? true : false;
 			
-			foreach($thisTalk as $k=>$v){
+			foreach($thisTalk as $k=>$v){	
 				$this->validation->$k=$v;
 			}
 			
@@ -131,12 +130,16 @@ class Talk extends Controller {
 			$this->validation->given_hour = $this->timezone->formattedEventDatetimeFromUnixtime($thisTalk->date_given, $thisTalk->event_tz_cont.'/'.$thisTalk->event_tz_place, 'H');
 			$this->validation->given_min = $this->timezone->formattedEventDatetimeFromUnixtime($thisTalk->date_given, $thisTalk->event_tz_cont.'/'.$thisTalk->event_tz_place, 'i');
 			
+			$this->validation->talkDate=$this->validation->given_yr.'-'.
+				$this->validation->given_mo.'-'.$this->validation->given_day;
+			
 			$this->validation->session_lang=$thisTalk->lang_name;
 			$this->validation->session_type=$thisTalk->tcid;
 		}else{
 			$events	= $this->event_model->getEventDetail($eid);
 			$thisTalksEvent = $events[0];
 			$det=array();
+			
 			//set the date to the start date of the event
 			$this->validation->given_mo = date('m',$thisTalksEvent->event_start);
 			$this->validation->given_day= date('d',$thisTalksEvent->event_start);
@@ -146,6 +149,16 @@ class Talk extends Controller {
 			
 			$this->validation->session_track	= null;
 			$this->validation->speaker			= array();
+			
+			// If we have an error but have posted speakers, load them...
+			if($posted_speakers=$this->input->post('speaker_row')){
+				foreach($posted_speakers as $speaker){
+					$obj=new stdClass();
+					$obj->speaker_name=$speaker;
+					$this->validation->speaker[]=$obj;
+					unset($obj);
+				}
+			}
 			
 			$is_private=false;
 		}
@@ -163,7 +176,9 @@ class Talk extends Controller {
 			} else {
 				$talk_timezone = new DateTimeZone('UTC');
 			}
-			$talk_datetime = date_create(date('d-M-Y ',$talk_date) . $this->input->post('given_hour') . ':' . $this->input->post('given_min'), $talk_timezone);
+			$talk_datetime = new DateTime($this->input->post('talkDate').' '.$this->input->post('given_hour') . ':' . $this->input->post('given_min'), $talk_timezone);
+			
+			//$talk_datetime = date_create(date('d-M-Y ',$talk_date) . $this->input->post('given_hour') . ':' . $this->input->post('given_min'), $talk_timezone);
 
 			// How much wrong will ->format("U") be if I do it now, due to DST changes?
 			// Only needed until PHP Bug #51051 delivers a better method
@@ -197,7 +212,7 @@ class Talk extends Controller {
 				
 				//check to see if we have a track and it's not the "none"
 				if($this->input->post('session_track')!='none'){
-					$curr_track	= (isset($thisTalksTrack->ID)) ? $thisTalksTrack->ID : null;
+					$curr_track	= (isset($track_info[0]->ID)) ? $track_info[0]->ID : null;
 					$new_track	= $this->input->post('session_track');
 					$this->talkTracks->updateSessionTrack($id,$curr_track,$new_track);
 					$this->validation->session_track=$new_track;
@@ -216,6 +231,11 @@ class Talk extends Controller {
 				//check to be sure its unique
 				$q=$this->db->get_where('talks',$arr);
 				$ret=$q->result();
+				
+				
+				//Check to be sure that all of the talk information is new
+				$this->talks_model->isTalkDataUnique($arr,$this->input->post('speaker_row'));
+				
 				if(count($ret)==0){
 					$this->db->insert('talks',$arr);
 					$tc_id=$this->db->insert_id();
@@ -257,7 +277,8 @@ class Talk extends Controller {
 			'langs'		=>$langs,
 			'detail'	=>$det,
 			'evt_priv'	=>$is_private,
-			'tracks'	=>$tracks
+			'tracks'	=>$tracks, 
+			'thisTalksEvent' => $thisTalksEvent
 		);
 		$this->template->write_view('content','talk/add',$out,TRUE);
 		$this->template->render();
@@ -419,7 +440,7 @@ class Talk extends Controller {
 		if($this->validation->run()==FALSE){
 			
 			// vote processing code removed
-		}else{ 
+		}else{
 			$is_auth	= $this->user_model->isAuth();
 			$arr		= array(
 				'comment_type'		=> 'comment',
@@ -430,6 +451,9 @@ class Talk extends Controller {
 
 			$priv=$this->input->post('private');
 			$priv=(empty($priv)) ? 0 : 1;
+
+			$anonymous=$this->input->post('anonymous');
+			$anonymous=(empty($anonymous)) ? 0 : 1;
 
 			if(!$is_auth){
 				$sp_ret=$this->spam->check('regex',$this->input->post('comment'));
@@ -462,7 +486,7 @@ class Talk extends Controller {
 					'date_made'		=> time(),
 					'private'		=> $priv,
 					'active'		=> 1,
-					'user_id'		=> ($this->user_model->isAuth()) ? $this->session->userdata('ID') : '0'
+					'user_id'		=> ($this->user_model->isAuth() && !$anonymous) ? $this->session->userdata('ID') : '0'
 				);
 				
 				$out='';
@@ -510,14 +534,16 @@ class Talk extends Controller {
 		
 		// Check to see if they can view private comments....
 		$view_private 	= ($this->user_model->canViewPrivateComments($talk_detail[0]->eid,$id)) ? true : false;
-		$event_claims	= $this->event_model->getClaimedTalks($talk_detail[0]->eid);
 		$talk_comments	= splitCommentTypes($this->talks_model->getTalkComments($id,null,$view_private));
 		
-		$also_given=$this->talks_model->talkAlsoGiven($id,$talk_detail[0]->event_id);
-		$also_given=array(
-			'talks'	=> $also_given,
-			'title'	=> 'Talk Also Given At...'
-		);
+		// also given only makes sense if there's a speaker set
+		if(!empty($talk_detail[0]->speaker)) {
+			$also_given=$this->talks_model->talkAlsoGiven($id,$talk_detail[0]->event_id);
+			$also_given=array(
+				'talks'	=> $also_given,
+				'title'	=> 'Talk Also Given At...'
+			);
+		}
 		
 		$arr=array(
 			'detail'		=> $talk_detail[0],
@@ -526,7 +552,6 @@ class Talk extends Controller {
 			'site_admin'	=> ($this->user_model->isSiteAdmin()) ? true : false,
 			'auth'			=> $this->auth,
 			'claimed'		=> $this->talks_model->isTalkClaimed($id),
-			'claims'		=> $event_claims,
 			'claim_status'	=> $claim_status,
 			'claim_msg'		=> $claim_msg,
 			'claim_details'	=> $this->userAdmins->getTalkClaims($id),

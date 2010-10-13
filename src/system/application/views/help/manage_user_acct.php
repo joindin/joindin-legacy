@@ -43,6 +43,11 @@ on this gives you a form where you can update some of your personal information.
 Changing this information is instant and will apply as soon as you click the "Save changes" button.
 </p>
 
+<h3>Where does my user icon come from?</h3>
+<p>
+On several pages of the site, like the user profiles and the talk details, you'll notice pictures of the user (or just of something they like). These images are called "gravatars" and are pulled directly from the <a href="http://gravatar.com"">gravatar website</a>. The images are linked to your Joind.in account by email address, so be sure that your Joind.in email account matches the Gravatar profile you want to use. Images are currently refreshed <b>1 day</b> from the last time they were checked, so if you update your profile image on the Gravatar site, it will take a bit to change here.
+</p>
+
 <h3>Speaker Profile</h3>
 <p>
 If you're a speaker at one or more event, you might want to define your speaker profile. This can define a bit more 

@@ -2,14 +2,29 @@
 
 class User_admin_model extends Model {
 
+	/** constructor */
 	function User_admin_model(){
 		parent::Model();
 	}
-	//----------------------
+	
+	/**
+	 * Remove a specific permission row
+	 *
+	 * @param integer $aid Resource ID
+	 * @return void
+	 */
 	public function removePerm($aid){
 		//$arr=array('uid'=>$uid,'rid'=>$rid);
 		$this->db->delete('user_admin',array('ID'=>$aid));
 	}
+	
+	/**
+	 * Remove permission for a user on a resource
+	 * @param integer $uid User ID
+	 * @param integer $rid Resource ID
+	 * @param string $type Resource type (ex. "talk")
+	 * @return void
+	 */
 	public function removeRidPerm($uid,$rid,$type){
 		$det=array(
 			'rid'=>$rid,
@@ -18,6 +33,15 @@ class User_admin_model extends Model {
 		);
 		$this->db->delete('user_admin',$det);
 	}
+	
+	/**
+	 * Add permissions for a user to a resource
+	 *
+	 * @param integer $uid User ID
+	 * @param integer $rid Resource ID
+	 * @param string $type Resource type (ex. "talk")
+	 * @return void
+	 */
 	public function addPerm($uid,$rid,$type){
 		error_log($uid.'-'.$rid.'-'.$type);
 		$arr=array(
@@ -28,12 +52,40 @@ class User_admin_model extends Model {
 		);
 		$this->db->insert('user_admin',$arr);
 	}
-	//----------------------
+	
+	/**
+	 * Update the permissions in the table based on the table ID
+	 * @param integer $id Table ID
+	 * @param array $perms Permission settings to change
+	 * @return void
+	 */
+	public function updatePerm($id,$perms){
+		$this->db->where('id',$id);
+		$this->db->update('user_admin',$perms);
+	}
+	
+	/**
+	 * Check to see if given user has a claim on the ID+type combo
+	 *
+	 * @param integer $uid User ID
+	 * @param integer $rid Resource ID (ex. talk ID)
+	 * @param string $rtype Resource type (ex. "talk")
+	 * @return boolean If they have permission or not
+	 */
 	public function hasPerm($uid,$rid,$rtype){
 		$q=$this->db->get_where('user_admin',array('uid'=>$uid,'rid'=>$rid,'rtype'=>$rtype));
 		$ret=$q->result(); //print_r($ret);
 		return (empty($ret)) ? false : true;
 	}
+	
+	/**
+	 * Get detail for a given user - their talks and events
+	 *
+	 * @param integer $uid User ID
+	 * @param array $types[optional] Admin types (talk, event, etc)
+	 * @param boolean $pending Toggle to show pending claims or not
+	 * @return array $ret User claim information
+	 */
 	public function getUserTypes($uid,$types=null,$pending=false){
 		$CI=&get_instance();
 		
@@ -76,6 +128,9 @@ class User_admin_model extends Model {
 	
 	/**
 	 * Get the event details of the events the user is an admin on
+	 *
+	 * @param integer $uid User ID
+	 * @return array User admin data
 	 */
 	public function getUserEventAdmin($uid){
 		$sql=sprintf("
@@ -114,6 +169,25 @@ class User_admin_model extends Model {
 		return $ret;
 	}
 	
+	/**
+	 * Given the ID from the user_admin table, check to see if the claim is valid & pending
+	 * 
+	 * @param integer $claim_id ID from the claim table
+	 * @return boolean Is valid claim or not
+	 */
+	public function isPendingClaim($claim_id){
+		$q=$this->db->get_where('user_admin',array('ID'=>$claim_id,'rcode'=>'pending'));
+		$ret=$q->result();
+		return (empty($ret)) ? false : true;
+	}
+	
+	/**
+	 * Get the pending claims for either a talk or an even
+	 *
+	 * @param string $type Type to get claims for
+	 * @param integer $rid[optional] Resource ID (could be talk ID or event ID)
+	 * @return array Claim data
+	 */
 	public function getPendingClaims($type='talk',$rid=null){
 	    switch($type){
                case 'talk':    return $this->getPendingClaims_Talks($rid); break;
