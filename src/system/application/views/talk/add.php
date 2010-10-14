@@ -7,7 +7,7 @@ $lang_list	= array();
 //echo '<pre>'; print_r($cats); echo '</pre>';
 //echo '<pre>'; print_r($tracks); echo '</pre>';
 
-$ev=$events[0];
+$ev=$events[0]; echo '<pre>'; print_r($ev); echo '</pre>';
 foreach($cats as $k=>$v){ $cat_list[$v->ID]=$v->cat_title; }
 foreach($langs as $k=>$v){ $lang_list[$v->ID]=$v->lang_name; }
 
@@ -40,8 +40,8 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
     <div class="row">
 	<label for="event"></label>
 	<?php
-	echo form_hidden('event_id',$ev->ID);
-	echo '<b><a href="/event/view/'.$ev->ID.'">'.escape($ev->event_name).'</a> ('.date('M d.Y',$ev->event_start).' - '.date('M d.Y',$ev->event_end).$priv.')</b>';
+	echo form_hidden('event_id',$ev->event_id);
+	echo '<b><a href="/event/view/'.$ev->event_id.'">'.escape($ev->event_name).'</a> ('.date('M d.Y',$ev->event_start).' - '.date('M d.Y',$ev->event_end).$priv.')</b>';
 	?>
 	<div class="clear"></div>
     </div>
