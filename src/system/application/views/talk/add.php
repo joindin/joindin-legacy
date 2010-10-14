@@ -7,7 +7,7 @@ $lang_list	= array();
 //echo '<pre>'; print_r($cats); echo '</pre>';
 //echo '<pre>'; print_r($tracks); echo '</pre>';
 
-$ev=$events[0]; echo '<pre>'; print_r($ev); echo '</pre>';
+$ev=$events[0];
 foreach($cats as $k=>$v){ $cat_list[$v->ID]=$v->cat_title; }
 foreach($langs as $k=>$v){ $lang_list[$v->ID]=$v->lang_name; }
 
