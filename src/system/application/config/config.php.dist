@@ -362,7 +362,9 @@ $config['defensio_key']		= '';
 $config['defensio_owner']	= '';
 
 // Directory to store chached Gravatar images
-$config['gravatar_cache_dir']   = '/tmp';
+// Note that the Gravatar cache must be accessible to the web server
+$config['gravatar_cache_dir']   = realpath(dirname(__FILE__) .'/../../../inc/img/user_gravatar');
+$config['gravatar_cache_relative_url']   = '/inc/img/user_gravatar';
 
 /* End of file config.php */
 /* Location: ./system/application/config/config.php */
