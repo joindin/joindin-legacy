@@ -361,6 +361,8 @@ $config['akismet_blog']		= '';
 $config['defensio_key']		= '';
 $config['defensio_owner']	= '';
 
+// Directory to store chached Gravatar images
+$config['gravatar_cache_dir']   = '/tmp';
 
 /* End of file config.php */
 /* Location: ./system/application/config/config.php */
