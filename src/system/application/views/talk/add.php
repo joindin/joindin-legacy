@@ -40,8 +40,8 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
     <div class="row">
 	<label for="event"></label>
 	<?php
-	echo form_hidden('event_id',$ev->event_id);
-	echo '<b><a href="/event/view/'.$ev->event_id.'">'.escape($ev->event_name).'</a> ('.date('M d.Y',$ev->event_start).' - '.date('M d.Y',$ev->event_end).$priv.')</b>';
+	echo form_hidden('event_id',$ev->ID);
+	echo '<b><a href="/event/view/'.$ev->ID.'">'.escape($ev->event_name).'</a> ('.date('M d.Y',$ev->event_start).' - '.date('M d.Y',$ev->event_end).$priv.')</b>';
 	?>
 	<div class="clear"></div>
     </div>

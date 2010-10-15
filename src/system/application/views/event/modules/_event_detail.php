@@ -13,7 +13,7 @@ here's what we need
     
     	<div class="title">
         	<div class="head">
-				<input type="hidden" name="eid" id="eid" value="<?php echo $event_detail->event_id; ?>"/>
+				<input type="hidden" name="eid" id="eid" value="<?php echo $event_detail->ID; ?>"/>
             	<h1><?php echo escape($event_detail->event_name)?> <?php echo (($event_detail->pending==1) ? '(Pending)':'')?></h1>
             
             	<p class="info">
