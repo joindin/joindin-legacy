@@ -25,7 +25,7 @@ class Invite_list_model extends Model {
 			where
 				il.uid=u.ID and
 				il.eid=%s
-		",$eid);
+		", $this->db->escape($eid));
 		$q=$this->db->query($sql);
 		return $q->result();
 	}

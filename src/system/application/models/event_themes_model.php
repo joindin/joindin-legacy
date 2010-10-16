@@ -36,6 +36,9 @@ class Event_themes_model extends Model {
 		$q=$this->db->get_where('user_admin',array('uid'=>$uid,'rtype'=>'event'));
 		foreach($q->result() as $event){ $event_ids[]=$event->rid; }
 
+		if (empty($event_ids)) {
+			return array();
+		}
 		$this->db->select('event_themes.*,events.event_name')
 			->from('event_themes')
 			->join('events','events.ID=event_themes.event_id')

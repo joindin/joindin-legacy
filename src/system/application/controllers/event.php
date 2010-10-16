@@ -338,7 +338,7 @@ class Event extends Controller {
 		$this->load->model('talks_model');
 
 		// validate user input (id)
-		if (!ctype_digit($id))
+		if (!ctype_digit((string)$id))
 		{
 			show_error('An invalid event id was provided');
 		}
