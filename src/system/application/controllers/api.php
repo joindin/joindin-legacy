@@ -156,6 +156,7 @@ class Api extends Controller
      * data array for display.
      *
      * @param array $ret The values returned from the service handler
+     * 
      * @return void
      */
     function output($ret)
@@ -163,19 +164,17 @@ class Api extends Controller
         // ret contains element out with elements output (format) and data
         $out = null;
         if (isset($ret['out'])) {
-            if (isset($ret['out']['output']) &&
-                is_string($ret['out']['output'])) {
+            if (isset($ret['out']['output']) && is_string($ret['out']['output'])) {
                 $out = 'out_' . $ret['out']['output'];
             } else {
                 $out = 'out_json';
             }
             $this->load->view('api/' . $out, $ret['out']['data']);
         } else {
-            $this->load->view('api/out_json', array(
-                'items' => array(
-                    'msg' => 'Unknown Error'
-                )
+            $arr = array('items' => array(
+                'msg' => 'Unknown Error'
             ));
+            $this->load->view('api/out_json', $arr);
         }
     }
 
