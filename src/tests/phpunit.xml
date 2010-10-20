@@ -1,4 +1,4 @@
-<phpunit bootstrap="./Bootstrap.php" colors="true">
+<phpunit bootstrap="./bootstrap/CITestBase.php" colors="true">
     <!-- Version: $Id:$ -->
     <testsuite name="Joind.in Test Suite">
         <directory>./</directory>
