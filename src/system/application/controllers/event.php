@@ -722,7 +722,7 @@ class Event extends Controller
         $this->validation->set_fields($fields);
         $this->validation->set_rules($rules);
 
-        if ($this->validation->run() != true) {
+        if ($this->validation->run() != false) {
             $ec = array(
                 'event_id'  => $id,
                 'comment'   => $this->input->post('event_comment'),
