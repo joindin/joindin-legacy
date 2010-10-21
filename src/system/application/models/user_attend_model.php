@@ -21,7 +21,7 @@ class User_attend_model extends Model {
 		}
 	}
 	function getAttendCount($eid){
-		$sql='select count(ID) attend_ct from user_attend where eid='.$eid;
+		$sql='select count(ID) attend_ct from user_attend where eid='.$this->db->escape($eid);
 		$q=$this->db->query($sql);
 		$res=$q->result();
 		return (isset($res[0]->attend_ct)) ? $res[0]->attend_ct : 0;
@@ -70,7 +70,7 @@ class User_attend_model extends Model {
 				ua.eid=%s
 			order by
 				usr.full_name asc
-		',(int)$eid,(int)$eid);
+		',$this->db->escape((int)$eid), $this->db->escape((int)$eid));
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
