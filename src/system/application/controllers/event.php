@@ -1677,7 +1677,7 @@ class Event extends Controller
             'detail' => $this->event_model->getEventDetail($id)
         );
 
-        if ($this->validation->run() != true) {
+        if ($this->validation->run() != false) {
             $user = $this->user_model->getUser($is_auth);
 
             // grab the event admins
