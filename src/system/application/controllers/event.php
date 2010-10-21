@@ -1,6 +1,5 @@
 <?php
 
-<<<<<<< HEAD:src/system/application/controllers/event.php
 /**
  * Event pages controller.
  *
