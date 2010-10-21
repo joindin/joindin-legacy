@@ -58,9 +58,13 @@
 					if(isset($claims[$sp->talk_id])){
 						foreach($claims[$sp->talk_id] as $c=>$claim){
 							//If it matches exactly or if there's only one claim
-							if($c==$sp->speaker_name || count($claims[$sp->talk_id])==1 && $claim['rcode']!='pending'){
+							if(
+								$c==$sp->speaker_name || 
+								(count($claims[$sp->talk_id])==1 && count($talk->speaker)==1) && 
+								$claim['rcode']!='pending'
+							){
 								$speaker_list[]='<a href="/user/view/'.$claim['uid'].'">'.$sp->speaker_name.'</a>';
-							} //else{ echo $sp->speaker_name; }
+							}elseif(count($talk->speaker)>1){ $speaker_list[]=$sp->speaker_name; }
 						}
 					}else{ $speaker_list[]=$sp->speaker_name; }
 				}

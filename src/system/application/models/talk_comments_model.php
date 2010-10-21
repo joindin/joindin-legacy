@@ -78,7 +78,7 @@ class Talk_comments_model extends Model {
 			where
 				t.event_id=%s and
 				t.ID=tc.talk_id;
-		',$event_id);
+		',$this->db->escape($event_id));
 		$q=$this->db->query($sql);
 		return $q->result();
 	}

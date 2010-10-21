@@ -27,7 +27,7 @@ class Speaker_profile_model extends Model {
 				user_id=%s and
 				speaker_profile_id=speaker_profile.ID and
 				speaker_tokens.ID=%s	
-		",$uid,$tid);
+		",$this->db->escape($uid), $this->db->escape($tid));
 		$q=$this->db->query($sql);
 		$ret=$q->result();
 		return (isset($ret[0]->ID)) ? true : false;
@@ -268,7 +268,7 @@ class Speaker_profile_model extends Model {
 			where
 				sp.user_id=%s and
 				sp.ID=st.speaker_profile_id
-		',$uid);
+		',$this->db->escape($uid));
 		$q=$this->db->query($sql);
 		foreach($q->result() as $token){ 
 			$this->db->where('ID',$token->ID); $this->db->update('speaker_tokens',array('is_public'=>null)); 
