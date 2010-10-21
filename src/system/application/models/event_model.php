@@ -137,9 +137,12 @@ SQL
 			join('event_comments', 'event_comments.event_id=events.ID', 'left')->
 			group_by('events.ID');
 
-		// if the user is not an admin or $id is not null, limit the results based on the pending state
-		if(!$this->user_model->isSiteAdmin() || ($id !== null)) {
+		// for a specific event, site admins always see it - for everyone else, or for the list, observe the pending flags
+		if($this->user_model->isSiteAdmin() && isset($id)) {
+			// just show it, no more filtering
+		} else {
 			if ($pending) {
+				// pending events only
 				$db->where('(events.active', 0)->
 					where('events.pending', 1)->
 					ar_where[] = ')';
