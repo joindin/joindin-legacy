@@ -2,6 +2,9 @@
     RewriteEngine On
     RewriteBase /
 
+	RewriteCond %{HTTP_HOST} ^www.(.*) [NC]
+    RewriteRule ^(.*)$ http://%1/$1 [R=301,L]
+
     #Removes access to the system folder by users.
     #Additionally this will allow you to create a System.php controller,
     #previously this would not have been possible.
