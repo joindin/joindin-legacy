@@ -80,6 +80,19 @@ Make sure you have the following extensions installed and configured
   > linux: extension=http.so
   > windows: extension=http.dll
 
+Debugging
+#############
+By default the application is in production mode. This primarily means that
+error messages and notices are suppressed.
+
+To allow errors and notices to be shown on the site you have to change the
+environment variable JOINDIN_DEBUG to the value 'on'. It is discouraged to
+do this on production environments as this will allow visitors to see any
+errors produced by the site.
+
+The JOINDIN_DEBUG environment variable is controlled from the accompanying
+.htaccess file.
+
 Tests
 #############
 

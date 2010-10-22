@@ -7,7 +7,7 @@ class Blog_posts_model extends Model {
 	}
 	//-------------------
 	function getPostDetail($id=null){
-		$w=($id) ? 'where ID='.$id : '';
+		$w=($id) ? 'where ID='.$this->db->escape($id) : '';
 		$sql=sprintf('
 			select
 				bp.title,
@@ -21,7 +21,7 @@ class Blog_posts_model extends Model {
 			%s
 			order by
 				bp.date_posted desc
-		',$w);
+		', $w);
 		
 		$q=$this->db->query($sql);
 		return $q->result();

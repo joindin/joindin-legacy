@@ -11,7 +11,7 @@ class Event_track_model extends Model {
 		$q=$this->db->get_where('event_track',array('event_id'=>$eid));
 		$ret=$q->result();
 		foreach($ret as $k=>$tr){
-			$q=$this->db->query('select count(ID) ct from talk_track where track_id='.$tr->ID);
+			$q=$this->db->query('select count(ID) ct from talk_track where track_id='.$this->db->escape($tr->ID));
 			$u=$q->result();
 			$ret[$k]->used=$u[0]->ct;
 		}
@@ -29,7 +29,7 @@ class Event_track_model extends Model {
 			where
 				tt.track_id=%s and
 				tt.talk_id=t.ID
-		",$tid);
+		", $this->db->escape($tid));
 		
 		//$q=$this->db->get_where('talks',array('event_track_id'=>$tid));
 		$q=$this->db->query($sql);
