@@ -266,9 +266,8 @@ class Talk extends Controller {
 					);
 				$this->db->insert('talk_cat',$tc_arr);
 				
-				if($id){
-					redirect('talk/view/'.$id);
-				}
+				$talkId = ($id) ? $id : $tc_id;
+				redirect('talk/view/'.$id);
 			}
 		}
 
