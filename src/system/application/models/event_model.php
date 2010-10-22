@@ -218,7 +218,7 @@ SQL
 				talks.active=1
 			order by
 				talks.date_given asc, talks.speaker asc
-		',$id);
+		', $this->db->escape($id));
 		$q=$this->db->query($sql);
 		$res = $q->result();
 
@@ -319,7 +319,7 @@ SQL
 		    ua.rtype='event' and
 		    ua.rid=e.ID and
 		    u.ID=ua.uid
-	    ",$eid);
+	    ",$this->db->escape($eid));
 	    $q=$this->db->query($sql);
 	    return $q->result();
 	}
@@ -337,7 +337,7 @@ SQL
 		    tc.talk_id=t.ID
 		group by
 		    t.event_id
-	    ",$eid);
+	    ", $this->db->escape($eid));
 	    $q=$this->db->query($sql);
 	    return $q->result();
 	}
@@ -373,7 +373,7 @@ SQL
 				e.id=t.event_id and
 				u.id=ua.uid and
 				e.id = %s
-		',$event_id);
+		',$this->db->escape($event_id));
 		$q=$this->db->query($sql);
 		$ret=$q->result();
 		
@@ -410,10 +410,16 @@ SQL
 			$ids[]=$v->ID; 
 		}
 
+		// escape all uids
+		foreach ($ids as &$uid) {
+			$uid = $this->db->escape($uid);
+		}
+
 		// Now find the users that are in the user_admin take
 		// and try to match them up...
 		$uids=implode(',',$ids);
 		if(empty($uids)){ return array(); }
+
 		$sql=sprintf('
 			select
 				ua.uid,
@@ -465,8 +471,8 @@ SQL
 				tc.private <> 1 AND
 				t.ID=tc.talk_id AND
 				t.event_id=%s
-			order by
-		'.$order_by,$eid);
+			order by %s
+		', $this->db->escape($eid), $order_by);
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
@@ -498,25 +504,23 @@ SQL
 				talks.active=1
 			order by
 				talks.date_given asc, talks.speaker asc
-		',$id);
+		', $this->db->escape($id));
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
 
 	//----------------------
 	function search($term,$start,$end){
-		$arr=array();
-		
 		//if we have the dates, limit by them
-		$attend = '(SELECT COUNT(*) FROM user_attend WHERE eid = events.ID AND uid = ' . (int)$this->session->userdata('ID') . ')as user_attending';
+		$attend = '(SELECT COUNT(*) FROM user_attend WHERE eid = events.ID AND uid = ' . $this->db->escape((int)$this->session->userdata('ID')) . ')as user_attending';
 
 		$this->db->select('events.*, COUNT(user_attend.ID) AS num_attend, COUNT(event_comments.ID) AS num_comments, ' . $attend);
 		$this->db->from('events');
 		$this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
 		$this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');
 		
-		if($start>0){ $this->db->where('event_start >='.$start); }
-		if($end>0){ $this->db->where('event_start <='.$end); }
+		if($start>0){ $this->db->where('event_start >=', $start); }
+		if($end>0){ $this->db->where('event_start <=', $end); }
 
 		$this->db->like('event_name',$term);
 		$this->db->or_like('event_desc',$term);

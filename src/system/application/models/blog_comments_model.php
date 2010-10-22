@@ -12,7 +12,7 @@ class Blog_comments_model extends Model {
 	    $this->db->from('blog_comments');
 		$this->db->join('user', 'user.ID = blog_comments.author_id', 'left');
 
-		$this->db->where('blog_post_id = ' . (int)$pid);
+		$this->db->where('blog_post_id', (int)$pid);
 
 		$this->db->order_by('blog_post_id','ASC');
 		$q=$this->db->get();

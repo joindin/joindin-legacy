@@ -233,11 +233,15 @@ class User_model extends Model {
 	/**
 	 * Find other users of the system that were speakers at events the given user was a speaker at too
 	 *
-	 * @param $uid integer User ID
-	 * @param $limit[optional] integer Limit the number of results returned
-	 * @return array Return array of user's information (user_id, event_id, username, full_name)
+	 * @param integer $uid   User ID
+	 * @param integer $limit [optional] integer Limit the number of results returned
+	 * @return array         Return array of user's information (user_id, event_id, username, full_name)
 	 */
 	function getOtherUserAtEvt($uid,$limit=15){
+		if (!ctype_digit((string)$limit)) {
+			throw new Exception('Expected $limit to be a number but received '.$limit);
+		}
+
 		//find speakers (users attending too?) that have spoken at conferences this speaker did too
 		$other_speakers=array();
 		$sql=sprintf("
@@ -266,7 +270,7 @@ class User_model extends Model {
 				u.ID!=%s
 			order by rand()
 			limit %s
-		",$uid,$uid,$limit);
+		",$this->db->escape($uid), $this->db->escape($uid), $limit);
 		$q=$this->db->query($sql);
 		$ret=$q->result();
 		foreach($ret as $k=>$v){ $other_speakers[$v->user_id]=$v; }

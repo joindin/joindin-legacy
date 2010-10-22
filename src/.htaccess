@@ -2,6 +2,10 @@
     RewriteEngine On
     RewriteBase /
 
+	# Environment variable to enable or disable the display of errors.
+	# It is commented to allow Virtual Hosts to determine this variable.
+    # SetEnv JOINDIN_DEBUG off
+
     #Removes access to the system folder by users.
     #Additionally this will allow you to create a System.php controller,
     #previously this would not have been possible.

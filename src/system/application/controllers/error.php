@@ -1,14 +1,54 @@
 <?php
 
-class Error extends Controller {
-	
-	function error_404(){
-		$arr=array('msg'=>"404 - File not found");
-		$this->template->write_view('content','error/404',$arr);
-		$this->template->render();
-	}
-	
-}
+/**
+ * Error pages controller.
+ *
+ * PHP version 5
+ *
+ * @category  Joind.in
+ * @package   Controllers
+ * @author    Chris Cornutt <chris@joind.in>
+ * @author    Mike van Riel <mike.vanriel@naenius.com>
+ * @copyright 2009 - 2010 Joind.in
+ * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
+ * @link      http://github.com/joindin/joind.in
+ */
 
+/**
+ * Error pages controller.
+ *
+ * Responsible for displaying the error pages.
+ *
+ * @category  Joind.in
+ * @package   Controllers
+ * @author    Chris Cornutt <chris@joind.in>
+ * @author    Mike van Riel <mike.vanriel@naenius.com>
+ * @copyright 2009 - 2010 Joind.in
+ * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
+ * @link      http://github.com/joindin/joind.in
+ *
+ * @property  CI_Config   $config
+ * @property  CI_Loader   $load
+ * @property  CI_Template $template
+ * @property  CI_Input    $input
+ * @property  User_model  $user_model
+ */
+class Error extends Controller
+{
+
+    /**
+     * Displays the 404 page.
+     *
+     * @return void
+     */
+    function error_404()
+    {
+        $arr = array(
+            'msg' => "404 - File not found"
+        );
+        $this->template->write_view('content', 'error/404', $arr);
+        $this->template->render();
+    }
+}
 
 ?>

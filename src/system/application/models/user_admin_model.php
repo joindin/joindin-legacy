@@ -106,7 +106,7 @@ class User_admin_model extends Model {
 			where
 				ua.uid=%s %s
 				%s
-		",$uid,$pend,$tadd);
+		", $this->db->escape($uid), $pend, $tadd);
 		$q=$this->db->query($sql);
 		$ret=$q->result();
 		
@@ -144,7 +144,7 @@ class User_admin_model extends Model {
 				ua.rid=e.ID and
 				ua.rtype='event' and
 				ua.uid = %s
-		",$uid);
+		", $this->db->escape($uid));
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
@@ -200,7 +200,7 @@ class User_admin_model extends Model {
 	* @param $eid[optional] integer Event ID to restrict on
 	*/
 	public function getPendingClaims_Talks($eid=null){
-		$addl=($eid) ? ' e.ID='.$eid.' and ' : '';
+		$addl=($eid) ? ' e.ID='.$this->db->escape($eid).' and ' : '';
 	    $sql=sprintf("
 		    select
 			    ua.uid,
@@ -230,7 +230,7 @@ class User_admin_model extends Model {
 	    return $q->result();
 	}
 	public function getPendingClaims_Events($eid=null){
-		$addl=($eid) ? ' e.ID='.$eid.' and ' : '';
+		$addl=($eid) ? ' e.ID='.$this->db->escape($eid).' and ' : '';
 	    $sql=sprintf("
 	        select
 	            u.ID,
