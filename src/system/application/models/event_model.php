@@ -244,12 +244,12 @@ SQL
 		$order_by = NULL;
 
 		if($type == "hot") {
-			$order_by = "(num_attend - score) desc";
+			$order_by = "((num_attend * 0.5) - score) desc";
 		}
 
 		if($type == "upcoming") {
 			$order_by = "events.event_start asc";
-			$where = '(events.event_start>='.mktime(0,0,0).')';
+			$where = '(events.event_start>='. (mktime(0,0,0) - (3 * 86400)).')';
 		}
 
 		if($type == "past") {
@@ -271,7 +271,7 @@ SQL
                 ELSE 0
                 END as allow_comments
 			FROM events
-			WHERE active = 1 AND (pending = 0 OR pending = NULL)';
+			WHERE active = 1 AND (pending = 0 OR pending IS NULL)';
 
 		if($where) {
 			$sql .= ' AND (' . $where . ')';
