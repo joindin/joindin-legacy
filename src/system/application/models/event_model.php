@@ -137,9 +137,12 @@ SQL
 			join('event_comments', 'event_comments.event_id=events.ID', 'left')->
 			group_by('events.ID');
 
-		// if the user is not an admin or $id is not null, limit the results based on the pending state
-		if(!$this->user_model->isSiteAdmin() || ($id !== null)) {
+		// for a specific event, site admins always see it - for everyone else, or for the list, observe the pending flags
+		if($this->user_model->isSiteAdmin() && isset($id)) {
+			// just show it, no more filtering
+		} else {
 			if ($pending) {
+				// pending events only
 				$db->where('(events.active', 0)->
 					where('events.pending', 1)->
 					ar_where[] = ')';
@@ -241,12 +244,12 @@ SQL
 		$order_by = NULL;
 
 		if($type == "hot") {
-			$order_by = "(num_attend - score) desc";
+			$order_by = "((num_attend * 0.5) - score) desc";
 		}
 
 		if($type == "upcoming") {
 			$order_by = "events.event_start asc";
-			$where = '(events.event_start>='.mktime(0,0,0).')';
+			$where = '(events.event_start>='. (mktime(0,0,0) - (3 * 86400)).')';
 		}
 
 		if($type == "past") {
@@ -268,7 +271,7 @@ SQL
                 ELSE 0
                 END as allow_comments
 			FROM events
-			WHERE active = 1 AND (pending = 0 OR pending = NULL)';
+			WHERE active = 1 AND (pending = 0 OR pending IS NULL)';
 
 		if($where) {
 			$sql .= ' AND (' . $where . ')';
