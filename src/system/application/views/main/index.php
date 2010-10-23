@@ -16,17 +16,6 @@ foreach($hot_events as $k=>$v){
 </div>
 <?php endif; ?>
 
-<?php if (count($upcoming_events) > 0): ?>
-<div class="box">
-<h2 class="h1 icon-event">Upcoming Events <a class="more" href="/event/upcoming">More &raquo;</a></h2>
-<?php
-foreach($upcoming_events as $k=>$v){
-    $this->load->view('event/_event-row', array('event'=>$v));
-}
-?>
-</div>
-<?php endif; ?>
-
 <?php if (count($talks) > 0): ?>
 <div class="box">
 <h2 class="h1 icon-talk">Popular Talks</h2>
