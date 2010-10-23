@@ -14,9 +14,7 @@ if (empty($comments)) {
 	
     foreach ($comments as $k => $v) {
 	
-		//print_r($v);
-	
-        if ($v->private && !$admin){ 
+        if ($v->private && (!$admin && (!isset($currentUserId) || $v->user_id != $currentUserId))){
             continue; 
         }
     
