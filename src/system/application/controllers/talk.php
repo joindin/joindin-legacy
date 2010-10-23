@@ -19,7 +19,7 @@ class Talk extends Controller {
 		//$talks['popular']=$this->talks_model->getPopularUpcomingTalks();
 		$talks['popular']	= $this->talks_model->getPopularTalks();
 		$talks['recent']	= $this->talks_model->getRecentTalks();
-		
+
 		$this->template->write_view('content','talk/main',array('talks'=>$talks),TRUE);
 		$this->template->render();
 		//$this->load->view('talk/main',array('talks'=>$talks));
@@ -535,9 +535,7 @@ class Talk extends Controller {
 		
 		$is_talk_admin	= $this->user_model->isAdminTalk($id);
 		
-		// Check to see if they can view private comments....
-		$view_private 	= ($this->user_model->canViewPrivateComments($talk_detail[0]->eid,$id)) ? true : false;
-		$talk_comments	= splitCommentTypes($this->talks_model->getTalkComments($id,null,$view_private));
+		$talk_comments	= splitCommentTypes($this->talks_model->getTalkComments($id,null,true));
 		
 		// also given only makes sense if there's a speaker set
 		if(!empty($talk_detail[0]->speaker)) {
@@ -566,7 +564,8 @@ class Talk extends Controller {
 			'user_attending'=>($this->user_attend_model->chkAttend($currentUserId,$talk_detail[0]->event_id)) ? true : false,
 			'msg'			=> $msg,
 			'track_info'	=> $this->talkTracks->getSessionTrackInfo($id),
-			'user_id'		=> ($this->user_model->isAuth()) ? $this->session->userdata('ID') : null
+			'user_id'		=> ($this->user_model->isAuth()) ? $this->session->userdata('ID') : null,
+            'currentUserId' => $currentUserId
 		);
 		
 		$this->template->write('feedurl','/feed/talk/'.$id);
