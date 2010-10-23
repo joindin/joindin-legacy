@@ -24,7 +24,6 @@
  * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
  * @link      http://github.com/joindin/joind.in
  */
-
 class User_Attend_Model extends Model
 {
 
