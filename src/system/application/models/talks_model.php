@@ -215,11 +215,13 @@ class Talks_model extends Model {
 				tc.private,
 				tc.active,
 				tc.user_id,
-				(select username from user where user.ID=tc.user_id) uname,
-				(select twitter_username from user where user.ID=tc.user_id) twitter_username,
+				u.username uname,
+				u.twitter_username twitter_username,
 				tc.comment_type
 			from
 				talk_comments tc
+			left join
+				user u on u.ID = tc.user_id
 			where
 				tc.active=1 and
 				tc.talk_id=%s %s %s
