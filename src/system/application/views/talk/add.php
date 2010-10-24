@@ -61,8 +61,8 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
 	
 	// if editing and already have speakers...
 	if (isset($this->validation->speaker) && count($this->validation->speaker) != 0) {
-		foreach($this->validation->speaker as $k=>$speaker){
-			echo form_input('speaker_row['.$k.']',$speaker->speaker_name);
+		foreach($this->validation->speaker as $speakerId => $speaker){
+			echo form_input('speaker_row['.$speakerId.']',$speaker->speaker_name);
 		}
 	} else {
 		echo form_input('speaker_row[new_1]','');
@@ -122,8 +122,8 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
 	<?php
 		$stype=null;
 		if(isset($this->validation->session_type)){
-			foreach($cat_list as $k=>$v){
-				if($v==$this->validation->session_type){ $stype=$k; }
+			foreach($cat_list as $categoryId => $categoryName){
+				if($categoryName==$this->validation->session_type){ $stype=$categoryId; }
 			}
 		}else{ $stype=$this->validation->session_type; }
 		echo form_dropdown('session_type',$cat_list,$stype); 
@@ -136,7 +136,7 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
 	<label for="session_track">Session Track</label>
 	<?php
 	$tarr=array('none'=>'No track');
-	foreach($tracks as $t){ $tarr[$t->ID]=$t->track_name; }
+	foreach($tracks as $track){ $tarr[$track->ID]=$track->track_name; }
 	echo form_dropdown('session_track',$tarr,$this->validation->session_track); 
 	?>
 	<div class="clear"></div>
@@ -148,8 +148,8 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
 	<?php
 		$slang=null;
 		if(isset($this->validation->session_lang)){
-			foreach($lang_list as $k=>$v){
-				if(trim($v)==trim($this->validation->session_lang)){ $slang=$k; }
+			foreach($lang_list as $langId => $langText){
+				if(trim($langText)==trim($this->validation->session_lang)){ $slang=$langId; }
 			}
 		}else{ $slang=$this->validation->session_lang; }
 		echo form_dropdown('session_lang',$lang_list,$slang); 

@@ -190,7 +190,10 @@ Click here to view it: %stalk/view/%s
 		$subj='Successful Import for event '.$evt_detail[0]->event_name;
 		$from	= 'From:' . $this->_config->item('email_feedback');
 		
-		if(!$admins){ $this->CI->event_model->getEventAdmins($eid); }
+		if(!$admins){ 
+			$this->CI->load->model('event_model');
+			$this->CI->event_model->getEventAdmins($eid); 
+		}
 		
 		$msg=sprintf("
 An import for the event %s has been successful.\n\n

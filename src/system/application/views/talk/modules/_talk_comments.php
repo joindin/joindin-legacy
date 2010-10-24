@@ -47,6 +47,9 @@ if (empty($comments)) {
 		<span class="speaker">Speaker comment:</span>
 	<?php else: ?>
 		<?php echo rating_image($v->rating); ?><br/>
+		<?php if(!empty($v->twitter_username)): ?>
+		<a href="http://twitter.com/<?php echo $v->twitter_username; ?>"><img src="/inc/img/twitter_share_icon.gif" style="margin-top:10px" width="20"/></a>
+		<?php endif; ?>
 		<?php if(!empty($v->gravatar)){ 
 			echo '<a href="/user/view/'.$v->user_id.'">'.str_replace('/>','height="45" align="right" style="margin:10px"/>',$v->gravatar).'</a>'; } 
 		?>
@@ -70,7 +73,7 @@ if (empty($comments)) {
 				<a class="btn-small" href="#" onClick="delTalkComment(<?php echo $v->ID?>);return false;">Delete</a>
 			<?php endif; ?>
 			<?php if (
-				(isset($claimed[0]->userid) && $claimed[0]->userid != 0 && isset($v->user_id) && $v->user_id == $claimed[0]->userid) || $admin): ?>
+				(isset($claimed[0]->userid) && $claimed[0]->userid != 0 && isset($currentUserId) && $currentUserId == $claimed[0]->userid) || $admin): ?>
 				<a class="btn-small" href="#" onClick="commentIsSpam(<?php echo $v->ID?>,'talk');return false;">Is Spam</a>
 			<?php endif; ?>
 		</p>

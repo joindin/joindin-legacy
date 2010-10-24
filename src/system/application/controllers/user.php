@@ -69,8 +69,8 @@ class User extends Controller {
 			'email'	=> 'Email Address'
 		);
 		$rules=array(
-			'user'	=> 'trim|xss_clean|callback_login_exist_check',
-			'email'	=> 'trim|xss_clean|valid_email|callback_email_exist_check'
+			'user'	=> 'required|trim|xss_clean',
+			'email'	=> 'required|trim|xss_clean|valid_email|callback_user_email_match_check'
 		);
 		$this->validation->set_rules($rules);
 		$this->validation->set_fields($fields);
@@ -87,7 +87,7 @@ class User extends Controller {
 			}
 			
 			if(empty($ret)){
-				$arr['msg']='You must specify either a username or email address!';
+				$arr['msg']='You must specify a username and email address!';
 			}else{			
 				//generate the new password...
 				$sel		= array_merge(range('a','z'),range('A','Z'),range(0,9)); shuffle($sel);
@@ -160,11 +160,12 @@ class User extends Controller {
 			);*/
 
 			$fields=array(
-				'user'	=> 'Username',
-				'pass'	=> 'Password',
-				'passc'	=> 'Confirm Password',
-				'email'	=> 'Email',
-				'full_name'=>'Full Name',
+				'user'				=> 'Username',
+				'pass'				=> 'Password',
+				'passc'				=> 'Confirm Password',
+				'email'				=> 'Email',
+				'full_name'			=> 'Full Name',
+				'twitter_username'	=> 'Twitter Username'
 			//	'cinput'	=> 'Captcha'				
 			);
 			$rules=array(
@@ -184,12 +185,13 @@ class User extends Controller {
 				//echo 'Success!';
 				$this->session->set_flashdata('msg', 'Account successfully created!');
 				$arr=array(
-					'username'	=> $this->input->post('user'),
-					'password'	=> $this->input->post('pass'),
-					'email'		=> $this->input->post('email'),
-					'full_name'	=> $this->input->post('full_name'),
-					'active'	=> 1,
-					'last_login'=> time()
+					'username'			=> $this->input->post('user'),
+					'password'			=> $this->input->post('pass'),
+					'email'				=> $this->input->post('email'),
+					'full_name'			=> $this->input->post('full_name'),
+					'twitter_username'	=> $this->input->post('twitter_username'),
+					'active'			=> 1,
+					'last_login'		=> time()
 				);
 				$this->db->insert('user',$arr);
 				
@@ -354,18 +356,20 @@ class User extends Controller {
 			'pass_conf'	=>'trim',
 		);
 		$fields=array(
-			'full_name'	=>'Full Name',
-			'email'		=>'Email',
-			'pass'		=>'Password',
-			'pass_conf'	=>'Confirm Password'
+			'full_name'			=>'Full Name',
+			'email'				=>'Email',
+			'twitter_username'	=>'Twitter Username',
+			'pass'				=>'Password',
+			'pass_conf'			=>'Confirm Password'
 		);
 		$this->validation->set_rules($rules);
 		$this->validation->set_fields($fields);
 		
 		if($this->validation->run()!=FALSE){
 			$data=array(
-				'full_name'	=> $this->input->post('full_name'),
-				'email'		=> $this->input->post('email')
+				'full_name'			=> $this->input->post('full_name'),
+				'email'				=> $this->input->post('email'),
+				'twitter_username'	=> $this->input->post('twitter_username'),
 			);
 
 			$pass=$this->input->post('pass');
@@ -457,9 +461,24 @@ class User extends Controller {
 	function login_exist_check($str){
 		$ret=$this->user_model->getUser($str);
 		if(empty($ret)){
-			$this->validation->_error_messages['login_exist_check'] = 'Username does not exist!';
+			$this->validation->_error_messages['login_exist_check'] = 'Invalid username!';
 			return false;
 		}else{ return true; }
+	}
+	function user_email_match_check($str){
+		$ret=$this->user_model->getUserByEmail($str);
+		if(empty($ret)){
+			// no email like that on file - error!
+			$this->validation->_error_messages['user_email_match_check'] = 'Invalid user information!';
+			return false;
+		}else{
+			// see if the username and email we've been given match up
+			if($this->input->post('user')!=$ret[0]->username){
+				$this->validation->_error_messages['user_email_match_check'] = 'Invalid user information!';
+				return false;
+			}
+		}
+		return true;
 	}
 }
 ?>

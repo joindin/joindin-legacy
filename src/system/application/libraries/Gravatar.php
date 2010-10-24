@@ -5,12 +5,14 @@ class Gravatar {
 	private $_apiKey 		= null;
 	private $_servicePath 	= 'http://www.gravatar.com/avatar';
 	private $_cacheDir		= null;
+	private $_relativeUrl		= null;
 	private $_imgTimeout	= 86400;
 	private $CI				= null;
 
 	public function __construct(){
 		$this->CI=$ci=&get_instance();
 		$this->_cacheDir=$this->CI->config->item('gravatar_cache_dir');
+		$this->_relativeUrl=$this->CI->config->item('gravatar_cache_relative_url');
 	}
 	
 	/**
@@ -58,7 +60,7 @@ class Gravatar {
 			if(filectime($this->_cacheDir.'/user'.$userId.'.jpg')+$this->_imgTimeout<time()){
 				$this->getUserImage($userId);
 			}
-			$imgStr='<img src="/inc/img/user_gravatar/user'.$userId.'.jpg"/>';
+			$imgStr='<img src="'.$this->_relativeUrl.'/user'.$userId.'.jpg"/>';
 			if($return){ return $imgStr; }else{ echo $imgStr; }
 		}else{ 	
 			return false;

@@ -13,8 +13,9 @@
 
 	<div class="row">
 		<p>
-			If you've forgotten your password, enter either the login name or email address associated with the 
-			account below and hit "Send". A new password will be sent to the email address for that account.
+			If you've forgotten your password, enter both the login name and email address associated with the 
+			account below and hit "Request Password". A new password will be sent to the email address for that account
+			if the information validates.
 		</p>
     	<div class="clear"></div>
 	</div>
@@ -22,14 +23,14 @@
 	<div class="row">
     	<label for="user">Username</label>
     	<?php echo form_input(array('name' => 'user', 'id' => 'user'), $this->validation->user); ?>
-		<br/><b>or</b><br/><br/>
+		<br/>
     	<label for="user">Email Address</label>
     	<?php echo form_input(array('name' => 'email', 'id' => 'email'), $this->validation->email); ?>
     
         <div class="clear"></div>
     </div>
 	<div class="row row-buttons">
-    	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Send'); ?>
+    	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Request Password'); ?>
     </div>
     
     <?php echo form_close(); ?>

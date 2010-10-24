@@ -33,9 +33,10 @@ based on the speaker(s) of the talk and the person requesting).
 <a name="evt_import"></a>
 <h3>Importing session information</h3>
 <p>
-With the XML import feature (<a href="<?php echo $this->config->site_url(); ?>about/import">more info here</a>) you can define the XML
-structure with your session data. To import your data, navigate to the event's detail page and look for the 
-"Import Event Info" button. Click on that and select your XML file to submit.
+With the CSV import feature you can quickly and easily add all the talks at your 
+event in one step once your event is set up.  To import your data, navigate 
+to the event's detail page and look for the "Import Event Info" button. There 
+are instructions there on structuring the CSV file to use to import.
 <br/>
 <a href="#top">Back to top</a>
 </p>

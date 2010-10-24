@@ -265,6 +265,9 @@ class Talk extends Controller {
 					'cat_id'	=> $this->input->post('session_type')
 					);
 				$this->db->insert('talk_cat',$tc_arr);
+				
+				$talkId = ($id) ? $id : $tc_id;
+				redirect('talk/view/'.$id);
 			}
 		}
 
