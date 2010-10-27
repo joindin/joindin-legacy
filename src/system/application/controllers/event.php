@@ -1026,7 +1026,6 @@ class Event extends Controller
         $this->load->library('validation');
         $this->load->plugin('captcha');
         $this->load->helper('custom_timezone');
-        //$this->load->library('akismet');
         $this->load->library('defensio');
         $this->load->library('timezone');
         $this->load->model('user_admin_model');
