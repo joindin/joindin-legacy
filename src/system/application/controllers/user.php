@@ -327,7 +327,9 @@ class User extends Controller {
 			'has_talks'	=> (count($arr['talks'])==0) ? false : true
 		);
 
-		$this->template->write_view('sidebar2','user/_other-speakers',$block);
+		if(count($block['udata'])>0){
+			$this->template->write_view('sidebar2','user/_other-speakers',$block);
+		}
 		$this->template->write_view('content','user/view',$arr);
 		$this->template->render();
 	}
