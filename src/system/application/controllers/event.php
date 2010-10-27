@@ -1026,7 +1026,6 @@ class Event extends Controller
         $this->load->library('validation');
         $this->load->plugin('captcha');
         $this->load->helper('custom_timezone');
-        //$this->load->library('akismet');
         $this->load->library('defensio');
         $this->load->library('timezone');
         $this->load->model('user_admin_model');
@@ -1677,7 +1676,7 @@ class Event extends Controller
             'detail' => $this->event_model->getEventDetail($id)
         );
 
-        if ($this->validation->run() != true) {
+        if ($this->validation->run() != false) {
             $user = $this->user_model->getUser($is_auth);
 
             // grab the event admins
