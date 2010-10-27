@@ -835,9 +835,12 @@ class Event extends Controller
         }
 
         $this->template->write_view('content', 'event/detail', $arr, true);
-        $this->template->write_view(
-            'sidebar2', 'event/_event_contact', array('eid' => $id)
-        );
+		// only show the contact button for logged in users
+		if($is_auth) {
+			$this->template->write_view(
+				'sidebar2', 'event/_event_contact', array('eid' => $id)
+			);
+		}
         $this->template->render();
         //$this->load->view('event/detail',$arr);
     }
