@@ -22,21 +22,21 @@ if (!empty($msg)):
     <?php endif; ?>
     
     <div class="row">
-    	<label for="your_name">Your Name</label>
+    	<label for="your_name">Your Name <span style="color:#FF1800">*</span></label>
     	<?php echo form_input(array('name' => 'your_name', 'id' => 'your_name'), $this->validation->your_name); ?>
     
         <div class="clear"></div>
     </div>
     
     <div class="row">
-    	<label for="your_email">Your Email</label>
+    	<label for="your_email">Your Email <span style="color:#FF1800">*</span></label>
     	<?php echo form_input(array('name' => 'your_email', 'id' => 'your_email'), $this->validation->your_email); ?>
     
         <div class="clear"></div>
     </div>
     
     <div class="row">
-    	<label for="your_com">Comments</label>
+    	<label for="your_com">Comments <span style="color:#FF1800">*</span></label>
     	<?php 
 		$attr=array(
 			'name'	=> 'your_com',
