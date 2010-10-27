@@ -103,7 +103,8 @@ class About extends Controller
 
         $rules = array(
             'your_name' => 'required',
-            'your_com'  => 'required'
+            'your_com'  => 'required',
+			'your_email'=> 'required|valid_email'
         );
         
         $this->validation->set_rules($rules);
