@@ -116,19 +116,21 @@ class Event extends Controller
         //$this->load->library('calendar',$prefs);
 
         switch ($type) {
-        case 'hot':
-            $events = $this->event_model->getHotEvents(null);
-            break;
         case 'upcoming':
             $events = $this->event_model->getUpcomingEvents(null);
             break;
         case 'past':
             $events = $this->event_model->getPastEvents(null);
             break;
-        default:
+		case 'pending':
             $events = $this->event_model->getEventDetail(
                 null, null, null, $pending
             );
+            break;
+        case 'hot':
+			// hot is the default case
+        default: 
+            $events = $this->event_model->getHotEvents(null);
             break;
         }
 
@@ -173,7 +175,7 @@ class Event extends Controller
             return true;
         }
 
-        $type = ($pending) ? 'pending' : 'upcoming';
+        $type = ($pending) ? 'pending' : 'hot';
         $this->_runList($type, $pending);
     }
 
