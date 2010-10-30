@@ -68,10 +68,7 @@ here's what we need
 	<?php
 	foreach($admins as $admin_user){
 		echo '<td style="padding-right:5px;font-size:11px">';
-		if(isset($admin_user->gravatar)){
-			//echo $admin_user->gravatar;
-		}
-		echo '<a href="">'.$admin_user->full_name.'</a></td>';
+		echo '<a href="/user/view/'.$admin_user->ID.'">'.$admin_user->full_name.'</a></td>';
 	}
 	?>
 	</tr>
