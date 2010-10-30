@@ -112,8 +112,6 @@ class Event extends Controller
         $this->load->library('timezone');
         $this->load->model('event_model');
         $this->load->model('user_attend_model');
-        $this->load->helper('mycal');
-        //$this->load->library('calendar',$prefs);
 
         switch ($type) {
         case 'upcoming':
@@ -243,68 +241,6 @@ class Event extends Controller
         }
 
         $this->index(true);
-    }
-
-    /**
-     * Displays a list of events in a specific time period with calendar.
-     *
-     * @param integer $year  The year to show
-     * @param integer $month The month to show
-     * @param integer $day   The day to show
-     *
-     * @return void
-     */
-    function calendar($year = null, $month = null, $day = null)
-    {
-        $this->load->model('event_model');
-        $this->load->model('user_attend_model');
-        $this->load->helper('reqkey');
-        $this->load->helper('mycal');
-        $this->load->library('timezone');
-
-        if (!$year) {
-            $year = date('Y');
-        }
-
-        if (!$month) {
-            $month = date('m');
-        }
-
-        $checkDay = $day === null ? 1 : $day;
-
-        if (!checkdate((int) $month, (int) $checkDay, (int) $year)) {
-            $day   = null;
-            $month = date('m');
-            $year  = date('Y');
-        }
-
-        $start  = mktime(0, 0, 0, $month, $day === null ? 1 : $day, $year);
-        $end    = mktime(
-            23, 59, 59, $month, $day === null ? date('t', $start) : $day, $year
-        );
-        $events = $this->event_model->getEventDetail(null, $start, $end);
-
-        // now add the attendance information
-        $uid = $this->user_model->getID();
-        foreach ($events as $e) {
-            $e->user_attending = ($uid)
-                ? $this->user_attend_model->chkAttend($uid, $e->ID)
-                : false;
-        }
-
-        $reqkey = buildReqKey();
-
-        $arr = array(
-            'events' => $events,
-            'month'  => $month,
-            'day'    => $day,
-            'year'   => $year,
-            'reqkey' => $reqkey,
-            'seckey' => buildSecFile($reqkey)
-        );
-
-        $this->template->write_view('content', 'event/main', $arr, true);
-        $this->template->render();
     }
 
     /**
@@ -865,27 +801,6 @@ class Event extends Controller
 
         $this->template->write_view('content', 'event/attendees', $arr, true);
         echo $this->template->render('content');
-    }
-
-    /**
-     * Generates and outputs an ical file of the given event.
-     *
-     * @param integer $id The id of the event
-     *
-     * @return void
-     */
-    function ical($id)
-    {
-        header('Content-type: text/calendar');
-        header('Content-disposition: filename="ical.ics"');
-
-        $this->load->model('event_model');
-        $arr = $this->event_model->getEventDetail($id);
-        $this->load->view(
-            'event/ical', array(
-                'data' => $arr
-            )
-        );
     }
 
     /**

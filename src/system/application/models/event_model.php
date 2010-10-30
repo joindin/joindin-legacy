@@ -73,34 +73,6 @@ class Event_model extends Model {
 		$this->db->update('events',$arr);
 	}
 	
-	//---------------------
-
-	function getDayEventCounts($year, $month)
-	{
-    	$start	= mktime(0,  0, 0, $month, 1,                 $year);
-		$end	= mktime(23,59,59, $month, date('t', $start), $year);
-
-		$events = $this->getEventDetail(null, $start, $end);
-
-	    $dates = array();
-
-        foreach ($events as $v) {
-        	$tsStart = mktime(0, 0, 0, date('m', $v->event_start), date('d', $v->event_start), date('Y', $v->event_start));
-        	$tsEnd   = mktime(0, 0, 0, date('m', $v->event_end), date('d', $v->event_end), date('Y', $v->event_end));
-        	$secDay = 60*60*24;
-
-        	for ($i = $tsStart;$i <= $tsEnd && $i <= $end;$i += $secDay) {
-        	    $d = date('Y-m-d', $i);
-        	    if (!isset($dates[$d])) {
-        	        $dates[$d] = 0;
-        	    }
-        	    $dates[$d]++;
-        	}
-        }
-
-        return $dates;
-	}
-
 	/**
 	 * Returns the details for a specific event, a series within a given date range, or all events if
 	 * no arguments have been provided.

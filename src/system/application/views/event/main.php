@@ -21,10 +21,6 @@ switch ($type) {
 
 menu_pagetitle($title);
 
-//ob_start();
-//buildCal($mo,$day,$yr,$evt);
-menu_sidebar('Calendar', mycal_get_calendar($year, $month, $day));
-
 $subtitle = '';
 if (!empty($year) && !empty($month)) {
     if (!empty($day)) {
