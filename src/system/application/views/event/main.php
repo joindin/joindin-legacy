@@ -60,6 +60,13 @@ foreach($events as $k=>$v){
 	$this->load->view('event/_event-row', array('event'=>$v));
 }
 
+if($current_page && $total_count){
+	$this->load->view('event/modules/_event-paginate', array(
+		'current_page' => $current_page,
+		'total_count'  => $total_count
+	));
+}
+
 if (count($events) == 0) {
     if (!empty($year) && !empty($month)) {
         if (!empty($day)) {

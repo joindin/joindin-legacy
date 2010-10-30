@@ -101,7 +101,7 @@ class Event extends Controller
      *
      * @return void
      */
-    function _runList($type, $pending = false)
+    function _runList($type, $pending = false, $per_page = null, $current_page = null)
     {
         //$prefs = array(
         //    'show_next_prev' => TRUE, 'next_prev_url' => '/event'
@@ -115,12 +115,14 @@ class Event extends Controller
         $this->load->helper('mycal');
         //$this->load->library('calendar',$prefs);
 
+		$total_count = null;
+
         switch ($type) {
         case 'upcoming':
             $events = $this->event_model->getUpcomingEvents(null);
             break;
         case 'past':
-            $events = $this->event_model->getPastEvents(null);
+            $events = $this->event_model->getPastEvents(null,$per_page,$current_page);
             break;
 		case 'pending':
             $events = $this->event_model->getEventDetail(
@@ -133,6 +135,10 @@ class Event extends Controller
             $events = $this->event_model->getHotEvents(null);
             break;
         }
+		if (isset($events['total_count'])) {
+			$total_count = $events['total_count'];
+			unset($events['total_count']);
+		}
 
         // now add the attendance data
         $uid = $this->user_model->getID();
@@ -145,14 +151,16 @@ class Event extends Controller
         $reqkey = buildReqKey();
 
         $arr = array(
-            'type'   => $type,
-            'events' => $events,
-            'month'  => null,
-            'day'    => null,
-            'year'   => null,
-            'all'    => true,
-            'reqkey' => $reqkey,
-            'seckey' => buildSecFile($reqkey)
+            'type'   		=> $type,
+            'events' 		=> $events,
+            'month'  		=> null,
+            'day'    		=> null,
+            'year'   		=> null,
+            'all'    		=> true,
+            'reqkey' 		=> $reqkey,
+            'seckey' 		=> buildSecFile($reqkey),
+			'total_count' 	=> $total_count,
+			'current_page' 	=> $current_page
             //'admin'	 =>($this->user_model->isAdminEvent($id)) ? true : false
         );
 
@@ -221,14 +229,11 @@ class Event extends Controller
     /**
      * Displays an overview of all past events.
      *
-     * @param bool $pending Flag indicating whether to show active or
-     *                      pending events.
-     *
      * @return void
      */
-    function past($pending = false)
+    function past($current_page = null)
     {
-        $this->_runList('past', $pending);
+        $this->_runList('past', $pending, 10, $current_page);
     }
 
     /**
