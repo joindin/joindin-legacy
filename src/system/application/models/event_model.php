@@ -301,8 +301,15 @@ SQL
 		return $result;
 	}
 	
-    function getPastEvents($limit = null){
-		$result = $this->getEventsOfType("past", $limit);
+    function getPastEvents($limit = null, $per_page = null, $current_page = null){
+	
+		$result = $this->getEventsOfType("past", $limit);			
+		if ($per_page && $current_page) {
+			$total_count 	= count($result)/$per_page;
+			$result			= array_slice($result,$current_page*$per_page,$per_page);
+			$result['total_count'] = $total_count;
+		}
+		
 		return $result;
 	}
 
