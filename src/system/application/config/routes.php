@@ -35,7 +35,7 @@
 |
 | This route lets you set a "secret" word that will trigger the
 | scaffolding feature for added security. Note: Scaffolding must be
-| enabled in the controller in which you intend to use it.   The reserved 
+| enabled in the controller in which you intend to use it.   The reserved
 | routes must come before any wildcard or regular expression routes.
 |
 */
@@ -76,8 +76,8 @@ $route['(:num)']								= 'talk/view/$1';
 
 $route['search/(:any)']							= 'search/index/$1';
 
-if($eid=apache_getenv('USE_EID')){
-	$route['default_controller']='event';
+if ($eid = apache_getenv('USE_EID')) {
+	$route['default_controller'] = 'event';
 }
 
 /* End of file routes.php */
