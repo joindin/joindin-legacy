@@ -337,7 +337,6 @@ class Talk extends Controller {
 		$this->load->helper('talk');
 		$this->load->helper('reqkey');
 		$this->load->plugin('captcha');
-		$this->load->library('akismet');
 		$this->load->library('defensio');
 		$this->load->library('spam');		
 		$this->load->library('validation');
@@ -449,8 +448,6 @@ class Talk extends Controller {
 				'comment_type'		=> 'comment',
 				'comment_content'	=> $this->input->post('your_com')
 			);
-			
-			$ret=$this->akismet->send('/1.1/comment-check',$arr);
 
 			$priv=$this->input->post('private');
 			$priv=(empty($priv)) ? 0 : 1;
@@ -460,7 +457,6 @@ class Talk extends Controller {
 
 			if(!$is_auth){
 				$sp_ret=$this->spam->check('regex',$this->input->post('comment'));
-				error_log('sp: '.$sp_ret);
 			
 				if($is_auth){
 					$ec['user_id']	= $this->session->userdata('ID');
@@ -511,7 +507,7 @@ class Talk extends Controller {
 			
 				//send an email when a comment's made
 				$msg='';
-				$arr['spam']=($ret=='false') ? 'spam' : 'not spam';
+				$arr['spam']=($is_spam=='false') ? 'spam' : 'not spam';
 				foreach($arr as $ak=>$av){ $msg.='['.$ak.'] => '.$av."\n"; }
 				@mail($this->config->item('email_admin'),'Comment on talk '.$id,$msg,'From: ' . $this->config->item('email_comments'));
 			

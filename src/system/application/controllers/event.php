@@ -813,7 +813,8 @@ class Event extends Controller
                 'sidebar3',
                 'event/_event_attend_gravatar', array(
                     'attend_list'        => $attend,
-                    'gravatar_cache_dir' => $this->config->item('gravatar_cache_dir')
+                    'gravatar_cache_dir' => $this->config->item('gravatar_cache_dir'),
+					'gravatar_cache_relative_url' => $this->config->item('gravatar_cache_relative_url')
                 )
             );
         }
@@ -1026,7 +1027,6 @@ class Event extends Controller
         $this->load->library('validation');
         $this->load->plugin('captcha');
         $this->load->helper('custom_timezone');
-        //$this->load->library('akismet');
         $this->load->library('defensio');
         $this->load->library('timezone');
         $this->load->model('user_admin_model');
