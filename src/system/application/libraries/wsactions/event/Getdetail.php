@@ -26,7 +26,7 @@ class Getdetail extends BaseWsRequest {
 			$this->CI->load->model('event_model');
 			$this->CI->load->model('event_track_model');
 			$this->CI->load->model('user_attend_model');
-			$ret=$this->CI->event_model->getEventDetail($eid);
+			$ret=$this->CI->event_model->getEventDetail((string)$eid);
 
 			// identify user so we can do the attending (or not if they're not identified)
 			$uid = false;
