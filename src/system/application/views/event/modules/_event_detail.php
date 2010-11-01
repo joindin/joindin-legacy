@@ -49,9 +49,6 @@ here's what we need
             		<span class="attending"><strong><span class="event-attend-count-<?php echo $event_detail->ID; ?>"><?php echo (int)$attend_ct; ?></span> people</strong> <?php echo (time()<=$event_detail->event_end) ? ' attending so far':' said they attended'; ?>. <a href="javascript:void(0);" id="toggle-attendees" class="show">Show &raquo;</a></span>
             	</p>
             </div>
-            <div class="func">
-            	<a class="icon-ical" href="/event/ical/<?php echo $event_detail->ID; ?>">Add to calendar</a>
-            </div>
         	<div class="clear"></div>
 
         </div>
@@ -68,10 +65,7 @@ here's what we need
 	<?php
 	foreach($admins as $admin_user){
 		echo '<td style="padding-right:5px;font-size:11px">';
-		if(isset($admin_user->gravatar)){
-			//echo $admin_user->gravatar;
-		}
-		echo '<a href="">'.$admin_user->full_name.'</a></td>';
+		echo '<a href="/user/view/'.$admin_user->ID.'">'.$admin_user->full_name.'</a></td>';
 	}
 	?>
 	</tr>

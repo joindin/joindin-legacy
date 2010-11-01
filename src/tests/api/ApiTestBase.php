@@ -52,7 +52,7 @@
 			}
 
 			$request = new HttpRequest($url, HttpRequest::METH_POST);
-			$request->addRawPostData($payload);
+			$request->setBody($payload);
 			if($format == 'xml') {
 				$request->setHeaders(array('Content-Type'=>'text/xml'));
 			} else {
