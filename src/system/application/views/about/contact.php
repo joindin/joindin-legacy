@@ -2,10 +2,7 @@
 menu_pagetitle('Contact');
 ?>
 <h1 class="icon-about">Contact</h1>
-<?php 
-$msg=$this->session->flashdata('msg');
-if (!empty($msg)): 
-?>
+<?php if (!empty($msg)): ?>
 <?php $this->load->view('msg_info', array('msg' => $msg)); ?>
 <?php endif; ?>
 
