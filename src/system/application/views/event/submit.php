@@ -37,7 +37,7 @@ menu_pagetitle('Submit an event');
 		<table>
 			<tr>
 				<td>
-					<input type="text" name="addr" id="addr" />
+					<input type="text" name="addr" id="addr" value="<?php echo $this->validation->addr; ?>" />
 				</td>
 				<td>
 					<button type="button" onclick="addr_search();">Search</button>
@@ -47,10 +47,10 @@ menu_pagetitle('Submit an event');
 		<table>
 			<tr>
 				<td>
-					Latitude:  <input type="text" name="event_lat" id="event_lat" style="width:200px;" />
+					Latitude:  <input type="text" name="event_lat" id="event_lat" style="width:200px;" value="<?php echo $this->validation->event_lat; ?>" />
 				</td>
 				<td>
-					Longitude: <input type="text" name="event_long" id="event_long" style="width:200px;" />
+					Longitude: <input type="text" name="event_long" id="event_long" style="width:200px;" value="<?php echo $this->validation->event_long; ?>"/>
 				</td>
 			</tr>
 		</table>
