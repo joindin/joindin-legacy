@@ -1383,7 +1383,6 @@ class Event extends Controller
         }
 
         $this->load->library('validation');
-        $this->load->library('xmlimport');
         $this->load->library('csvimport');
         $this->load->library('sendemail');
         $this->load->model('event_model', 'em');
