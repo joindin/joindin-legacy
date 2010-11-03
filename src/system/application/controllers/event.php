@@ -983,7 +983,10 @@ class Event extends Controller
             'event_loc'           => 'Event Location',
             'event_tz_cont'       => 'Event Timezone (Continent)',
             'event_tz_place'      => 'Event Timezone (Place)',
+			'event_lat'			  => 'Event Latitude',
+			'event_long'		  => 'Event Longitude',
             'event_stub'          => 'Event Stub',
+			'addr'				  => 'Event Address'
             //	'cinput'				=> 'Captcha'
         );
         $rules = array(
@@ -1028,6 +1031,8 @@ class Event extends Controller
         } else {
             $this->validation->cfp_checked = $this->validation->is_cfp;
         }
+
+		echo 'valid: '.$this->validation->event_loc;
 
         if ($this->validation->run() != false) {
             // TODO: add it to our database, but mark it pending
