@@ -6,6 +6,7 @@ menu_pagetitle('Submit an event');
 <?php $this->load->view('msg_info', array('msg' => $msg)); ?>
 <?php endif; ?>
 
+<?php if(empty($msg)): ?>
 <div class="box">
     <?php echo form_open('event/submit', array('class' => 'form-event-submit')); ?>
     
@@ -283,3 +284,4 @@ menu_pagetitle('Submit an event');
     
     <?php echo form_close(); ?>
 </div>
+<?php endif; ?>
