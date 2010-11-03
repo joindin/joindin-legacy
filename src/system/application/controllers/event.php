@@ -1032,8 +1032,6 @@ class Event extends Controller
             $this->validation->cfp_checked = $this->validation->is_cfp;
         }
 
-		echo 'valid: '.$this->validation->event_loc;
-
         if ($this->validation->run() != false) {
             // TODO: add it to our database, but mark it pending
 
