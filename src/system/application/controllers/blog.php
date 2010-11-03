@@ -57,10 +57,10 @@ class Blog extends Controller
      */
     function index()
     {
-        $this->load->model('blog_posts_model', 'bpm');
+        $this->load->model('blog_posts_model', 'blogPostsModel');
 
         $arr = array(
-            'posts'    => $this->bpm->getPostDetail(),
+            'posts'    => $this->blogPostsModel->getPostDetail(),
             'is_admin' => $this->user_model->isSiteAdmin()
         );
 
@@ -200,7 +200,7 @@ class Blog extends Controller
         $this->load->helper('reqkey');
         $this->load->model('blog_posts_model', 'blogPostsModel');
 
-        $this->bpm->updatePostViews($id);
+        $this->blogPostsModel->updatePostViews($id);
         $reqkey = buildReqKey();
 
         $arr = array(
