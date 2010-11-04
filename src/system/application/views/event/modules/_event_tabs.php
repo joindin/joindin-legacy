@@ -13,6 +13,31 @@ foreach($talks as $t){
 }
 ksort($by_day);
 $ct=0;
+
+$tabs = new joindIn_TabContainer();
+$tabs
+	->setBaseUrl($event_url)
+	->setContainerName('event');
+
+$hiTab = new joindIn_Tab('talk', 'Talks ('. count($talks). ')');
+$hiTab->setId('stuff');
+$hiTab->setContent(
+	$this->load->view(
+		'event/modules/_event_tab_talks',
+		array(
+			'by_day'	=> $by_day,
+			'cl'		=> $cl,
+			'ct'		=> $ct,
+			'claims'	=> $claims
+		),
+		true
+	)
+);
+echo $hiTab;
+//$tabs->addTab('hello', 'hi', 'Tab Content', '#hi');
+//$tabs->addTab('hello', 'hi', 'Tab Content 2', '#hi2s');
+
+echo $tabs;
 ?>
 <div id="event-tabs">
 	<ul>

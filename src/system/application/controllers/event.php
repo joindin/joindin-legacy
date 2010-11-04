@@ -492,6 +492,7 @@ class Event extends Controller
         $this->load->helper('form');
         $this->load->helper('reqkey');
         $this->load->helper('events');
+		$this->load->helper('tabs');
         $this->load->library('validation');
         $this->load->library('defensio');
         $this->load->library('spam');
@@ -640,7 +641,8 @@ class Event extends Controller
             'times_claimed'  => $claim_detail['claim_count'],
             'claimed_uids'   => $claim_detail['uids'],
             'claims'         => buildClaims($this->event_model->getEventClaims($id)),
-            'talk_stats'     => $talk_stats
+            'talk_stats'     => $talk_stats,
+			'tab'			 => ''
             //'attend' =>$this->uam->getAttendCount($id)
             //'started'=>$this->tz->hasEvtStarted($id),
         );
@@ -653,7 +655,9 @@ class Event extends Controller
                     $arr['track_data'] = $tr;
                 }
             }
-        }
+        } elseif (in_array(strtolower($opt), array('talks','comments','statistics', 'evt_related', 'slides', 'tracks'))) {
+			$arr['tab'] = strtolower('#'.$opt);
+		} 
 
         //our event comment form
         $rules = array(
