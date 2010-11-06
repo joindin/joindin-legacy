@@ -19,7 +19,6 @@ event = function (){
 	
 	var _claimEvent = function(){
 		$('#claim-event-btn').click(function(){
-			alert('here');
 			var obj={ "eid": $('#eid').val() };
 			apiRequest('event','claim',obj,function(obj){
 				alert(obj.msg);
