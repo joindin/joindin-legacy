@@ -36,10 +36,12 @@ class Gettalks extends BaseWsRequest {
 			foreach($ret as $talk) {
 				$talk->tracks = $this->CI->talk_track_model->getSessionTrackInfo($talk->ID);
 				$speaker = '';
-				foreach($talk->speaker as $speaker_obj) {
-					$speaker .= $speaker_obj->speaker_name . ', ';
+				if(count($talk->speaker)) {
+					foreach($talk->speaker as $speaker_obj) {
+						$speaker .= $speaker_obj->speaker_name . ', ';
+					}
+					$speaker = substr($speaker, 0, -2);
 				}
-				$speaker = substr($speaker, 0, -2);
 				$talk->speaker = $speaker;
 			}
 			return array('output'=>'json','data'=>array('items'=>$ret));

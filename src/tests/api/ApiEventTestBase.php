@@ -45,7 +45,7 @@
 				);
 				$this->assertTrue(
 									$event->pending === '0'
-									|| $event->pending === null, 
+									|| empty($event->pending),
 									"Expected pending to be 0 or empty for " . $event->event_name . "(" . $event->ID . ")"
 				);
 				$this->assertTrue(

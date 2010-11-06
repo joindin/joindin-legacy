@@ -57,10 +57,10 @@ class Blog extends Controller
      */
     function index()
     {
-        $this->load->model('blog_posts_model', 'bpm');
+        $this->load->model('blog_posts_model', 'blogPostsModel');
 
         $arr = array(
-            'posts'    => $this->bpm->getPostDetail(),
+            'posts'    => $this->blogPostsModel->getPostDetail(),
             'is_admin' => $this->user_model->isSiteAdmin()
         );
 
@@ -198,83 +198,19 @@ class Blog extends Controller
         $this->load->library('defensio');
         $this->load->library('spam');
         $this->load->helper('reqkey');
-        $this->load->model('blog_posts_model', 'bpm');
-        $this->load->model('blog_comments_model', 'bcm');
+        $this->load->model('blog_posts_model', 'blogPostsModel');
 
-        $this->bpm->updatePostViews($id);
+        $this->blogPostsModel->updatePostViews($id);
         $reqkey = buildReqKey();
 
-        $fields = array(
-            'title'   => 'Title',
-            'comment' => 'Comment',
-            'name'    => 'Name'
-        );
-        $rules = array(
-            'title'   => 'required',
-            'comment' => 'required',
-            'name'    => 'required'
-        );
-        $this->validation->set_rules($rules);
-        $this->validation->set_fields($fields);
-
-        if ($this->validation->run() != false) {
-            $arr = array(
-                'comment_type'    => 'comment',
-                'comment_content' => $this->input->post('comment')
-            );
-            $ret = $this->akismet->send('/1.1/comment-check', $arr);
-
-            //check with defensio
-            $ec = array();
-            $ec['comment'] = $this->input->post('comment');
-            $def_ret = $this->defensio->check(
-                'anonymous', $ec['comment'], false, '/blog/view/' . $id
-            );
-            $is_spam = (string) $def_ret->spam;
-
-            //check with our local filters
-            $sp_ret = $this->spam->check('regex', $this->input->post('comment'));
-
-            //passed...;
-            $arr = array(
-                'title'        => $this->input->post('title'),
-                'author_id'    => (int) $this->session->userdata('ID'),
-                'author_name'  => $this->input->post('name'),
-                'content'      => $this->input->post('comment'),
-                'blog_post_id' => $id
-            );
-
-            if ($is_spam != 'true' && $sp_ret == true) {
-                $this->db->insert('blog_comments', $arr);
-
-                $subj = 'Blog comment on entry ' . $id . ' from ' .
-                    $this->config->item('site_name');
-                $cont  = 'Title: ' . $this->input->post('title') . "\n\n";
-                $cont .= 'Content: ' . $this->input->post('comment') . "\n\n";
-                $cont .= 'Post: ' . $this->config->site_url() . 'blog/view/' .
-                    $id . "\n\n";
-                $cont .= 'Spam check: ' . ($ret == 'false')
-                    ? 'not spam' : 'spam caught';
-
-                $admin_emails = $this->user_model->getSiteAdminEmail();
-                foreach ($admin_emails as $user) {
-                    $from = 'From: ' . $this->config->item('email_feedback');
-                    mail($user->email, $subj, $cont, $from);
-                }
-            }
-        } else {
-            //failed...
-        }
-
         $arr = array(
-            'details'  => $this->bpm->getPostDetail($id),
+            'details'  => $this->blogPostsModel->getPostDetail($id),
             'is_admin' => $this->user_model->isSiteAdmin(),
-            'comments' => $this->bcm->getPostComments($id), 'pid' => $id,
             'reqkey'   => $reqkey, 'seckey' => buildSecFile($reqkey)
         );
         $other_data = array(
             'title' => 'Popular Blog Posts',
-            'posts' => $this->bpm->getPostDetail(), 'curr_id' => $id
+            'posts' => $this->blogPostsModel->getPostDetail(), 'curr_id' => $id
         );
         if ($this->user_model->isAuth()) {
             $udata = $this->user_model->getUser($this->session->userdata('ID'));
