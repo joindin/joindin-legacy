@@ -2,8 +2,12 @@
 You'll need to do a few things to set up the environment 
 for this code:
 
+- Short open tag must be set on
+
 - Create a webserver writable directory in system/cache
 called "ctokens"
+- Create a webserver writable directory in src/inc/img/
+called "user_gravatar"
 
 - In the system/application/config directory do:
   > Make a database.php file using the database.php.dist as a guide

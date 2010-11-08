@@ -26,7 +26,7 @@ class Getdetail extends BaseWsRequest {
 			$this->CI->load->model('event_model');
 			$this->CI->load->model('event_track_model');
 			$this->CI->load->model('user_attend_model');
-			$ret=$this->CI->event_model->getEventDetail($eid);
+			$ret=$this->CI->event_model->getEventDetail((string)$eid);
 
 			// identify user so we can do the attending (or not if they're not identified)
 			$uid = false;
@@ -37,8 +37,8 @@ class Getdetail extends BaseWsRequest {
 
 			if($uid) {
 				// Check to see if it's provate and if they're allowed
-                                if($ret[0]->private){
-                                        $this->load->model('invite_list_model','ilm');
+                                if($ret[0]->private == "Y"){
+                                        $this->CI->load->model('invite_list_model','ilm');
                                         $is_invited=$this->ilm->isInvited($ret[0]->ID,$uid);
                                         if(!$is_invited){
                                                 //If not, return an error message...

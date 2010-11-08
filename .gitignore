@@ -1,4 +1,7 @@
+.buildpath
 .cache
 .project
 .settings
 build/
+nbproject/
+*.kpf

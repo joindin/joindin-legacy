@@ -1,7 +1,11 @@
+<?php
+menu_pagetitle('User: ' . escape($details[0]->full_name));
+if($gravatar){ echo $gravatar.'<br/><br/>'; } ?>
 <h1><?php 
 	echo (!empty($details[0]->full_name)) ? $details[0]->full_name.' ('.$details[0]->username.')': $details[0]->username;
 ?></h1>
-<?php if($is_admin){
+<?php 
+if($is_admin){
     $txt=($details[0]->active==1) ? 'Disable User Account' : 'Enable User Account'; ?>
     <a class="btn-small" href="/user/changestat/<?php echo $details[0]->ID; ?>"><?php echo $txt; ?></a>
 	<?php $atxt=($details[0]->admin==1) ? 'Remove as Admin' : 'Add as Admin'; ?>
@@ -23,6 +27,9 @@ foreach($pending_evt as $e){
 <?php endif; ?>
 
 <?php
+if(!empty($details[0]->twitter_username)){
+	echo '<a href="http://twitter.com/'.$details[0]->twitter_username.'">@'.$details[0]->twitter_username.'</a><br/><br/>';
+}
 if(!empty($pub_profile)){
 	$this->load->view('user/_public_profile', array('profile'=>$pub_profile));
 }

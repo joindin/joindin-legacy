@@ -1,11 +1,20 @@
 <?php
-
+/**
+ * Interface for the talk_track database table
+ */
 class Talk_track_model extends Model {
 
+	/** constructor */
 	function Talk_track_model(){
 		parent::Model();
 	}
-	//---------------------
+	
+	/**
+	 * Fetch the track information for a given talk
+	 * 
+	 * @param integer $sid Talk ID
+	 * @return array Track Info
+	 */
 	function getSessionTrackInfo($sid){
 		$sql=sprintf('
 			select
@@ -19,10 +28,18 @@ class Talk_track_model extends Model {
 			where
 				tt.talk_id=%s and
 				tt.track_id=et.ID
-		',$sid);
+		', $this->db->escape($sid));
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
+	
+	/**
+	 * Add a track record to the talk
+	 * 
+	 * @param integer $sid Talk ID
+	 * @param integer $tid Track ID
+	 * @return void
+	 */
 	function setSessionTrack($sid,$tid){
 		$arr=array(
 			'talk_id'	=> $sid,
@@ -30,6 +47,15 @@ class Talk_track_model extends Model {
 		);
 		$this->db->insert('talk_track',$arr);
 	}
+	
+	/**
+	 * Update track information for a talk
+	 *
+	 * @param integer $sid Talk ID
+	 * @param integer $curr_tid Current Track ID
+	 * @param integer $tid Track ID
+	 * @return void
+	 */
 	function updateSessionTrack($sid,$curr_tid,$tid){
 		// first be sure we have one to begin with
 		$st=$this->getSessionTrackInfo($sid);
@@ -41,11 +67,20 @@ class Talk_track_model extends Model {
 			$this->db->update('talk_track',array('track_id'=>$tid));
 		}
 	}
-	function deleteSessionTrack($sid,$tid){
+	
+	/**
+	 * Delete the track for a given talk ID
+	 * If the track ID is not specified, removes all tracks for a talk
+	 * 
+	 * @param integer $sid Talk ID
+	 * @param integer $tid[optional] Track ID
+	 * @return void
+	 */
+	function deleteSessionTrack($sid,$tid=null){
 		$arr=array(
-			'talk_id'	=> $sid,
-			'track_id'	=> $tid
+			'talk_id'	=> $sid
 		);
+		if($tid){ $arr['track_id']=$tid; }
 		$this->db->delete('talk_track',$arr);
 	}
 }

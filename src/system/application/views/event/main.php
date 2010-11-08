@@ -21,10 +21,6 @@ switch ($type) {
 
 menu_pagetitle($title);
 
-//ob_start();
-//buildCal($mo,$day,$yr,$evt);
-menu_sidebar('Calendar', mycal_get_calendar($year, $month, $day));
-
 $subtitle = '';
 if (!empty($year) && !empty($month)) {
     if (!empty($day)) {
@@ -58,6 +54,13 @@ if (!empty($year) && !empty($month)) {
 <?php
 foreach($events as $k=>$v){
 	$this->load->view('event/_event-row', array('event'=>$v));
+}
+
+if($current_page && $total_count){
+	$this->load->view('event/modules/_event-paginate', array(
+		'current_page' => $current_page,
+		'total_count'  => $total_count
+	));
 }
 
 if (count($events) == 0) {

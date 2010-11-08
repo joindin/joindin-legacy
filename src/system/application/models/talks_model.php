@@ -30,7 +30,7 @@ class Talks_model extends Model {
 				ua.rid=%s and
 				ua.rcode!=\'pending\' and
 				t.ID=ua.rid
-		',$tid);
+		',$this->db->escape($tid));
 		$q=$this->db->query($sql);
 		$ret=$q->result();
 		//echo '<pre>'; print_r($ret); echo '</pre>';
@@ -44,6 +44,34 @@ class Talks_model extends Model {
 			$ret[$k]->speakers=$speakers;
 		}
 		return $ret;
+	}
+	
+	/**
+	 * Takes in the talk information and the speaker data to see if it's unique
+	 * Checks the "talks" table with the data
+	 */
+	public function isTalkDataUnique($talk_data,$speakers){
+		$talk_speakers	= array();
+		$q	 = $this->db->get_where('talks',$talk_data);
+		$ret = $q->result();
+		
+		if(count($ret)>0){
+			$CI=&get_instance();
+			$CI->load->model('talk_speaker_model','talkSpeaker');
+			
+			// We have a match, lets see if the speakers match too
+			// For each of the speakers we're given, see if they're in the talk data
+			foreach($ret as $talk){
+				$tid		= $talk->ID;
+				$tspeakers	= $CI->talkSpeaker->getSpeakerByTalkId($tid);
+				
+				foreach($tspeakers as $tsp){ $talk_speakers[]=$tsp->speaker_name; }
+				foreach($speakers as $sp){
+					if(in_array($sp,$talk_speakers)){ return false; }
+				}
+			}
+		}
+		return true;
 	}
 	
 	//---------------
@@ -62,6 +90,12 @@ class Talks_model extends Model {
 		$this->load->helper("events");
 		$this->load->helper("talk");
 		if($tid){
+			if (!ctype_digit((string)$tid))
+			{
+				// It's not an integer for some reason...
+				return array();
+ 			}
+            
 			// See if we have any comments to exclude
 			$uids=$this->_findExcludeComments($tid);
 			$addl=(!empty($uids)) ? 'and user_id not in ('.implode(',',$uids).')': '';
@@ -110,7 +144,7 @@ class Talks_model extends Model {
 					talks.active=1
 				group by
 					talks.ID
-			',$tc_sql,$tid);
+			', $tc_sql, $this->db->escape($tid));
 			$q=$this->db->query($sql);
 		}else{
 			if($latest){ 
@@ -152,6 +186,12 @@ class Talks_model extends Model {
 			$q=$this->db->query($sql);
 		}
 		$res = $q->result();
+		
+		$CI=&get_instance();
+		$CI->load->model('talk_speaker_model','tsm');
+		foreach($res as $k=>$talk){
+			$res[$k]->speaker=$CI->tsm->getTalkSpeakers($talk->ID);
+		}
 
 		return $res;
 	}
@@ -161,7 +201,9 @@ class Talks_model extends Model {
 	* $cid [optional] Comment ID (if you want to get only one comment)
 	*/
 	public function getTalkComments($tid,$cid=null,$private=false){
-		$c_addl	= ($cid) ? ' and tc.ID='.$cid : '';
+		$this->load->library('gravatar');
+		
+		$c_addl	= ($cid) ? ' and tc.ID='.$this->db->escape($cid) : '';
 		$priv	= (!$private) ? ' and tc.private=0' : '';
 		$sql=sprintf('
 			select
@@ -173,20 +215,31 @@ class Talks_model extends Model {
 				tc.private,
 				tc.active,
 				tc.user_id,
-				(select username from user where user.ID=tc.user_id) uname,
+				u.username uname,
+				u.twitter_username twitter_username,
 				tc.comment_type
 			from
 				talk_comments tc
+			left join
+				user u on u.ID = tc.user_id
 			where
 				tc.active=1 and
 				tc.talk_id=%s %s %s
 			order by tc.date_made asc
-		',$tid,$c_addl,$priv);
+		',$this->db->escape($tid),$c_addl,$priv);
 		$q=$this->db->query($sql);
-		return $q->result();
+		$comments=$q->result();
+		foreach($comments as $k=>$comment){
+			$comments[$k]->gravatar=$this->gravatar->displayUserImage($comment->user_id,true);
+		}
+		return $comments;
 	}
 	
 	public function getPopularTalks($len=7){
+		if (!ctype_digit((string)$len)) {
+			throw new Exception('Expected length to be a number, received '.$len);
+		}
+
 		$sql=sprintf('
 			select
 				t.talk_title,
@@ -229,12 +282,14 @@ class Talks_model extends Model {
 			    ON e.ID=t.event_id
 			  JOIN talk_comments tc
 			    ON tc.talk_id=t.ID
+			  INNER JOIN user_admin ua
+			    ON t.ID = ua.rid
 			WHERE
-			  e.event_start > %s
+			    e.event_start > %s
 			  and
-			t.ID in (
-			select rid from user_admin where rtype='talk' and rcode!='pending'
-			)
+			    ua.rtype = 'talk'
+			  and
+				ua.rcode != 'pending'
 			group by
 			  t.ID
 			having
@@ -288,7 +343,7 @@ class Talks_model extends Model {
 	}
 	
 	public function getTalkEvent($tid){
-		$q	 = $this->db->query('select event_id from talks where id='.$tid);
+		$q	 = $this->db->query('select event_id from talks where id='.$this->db->escape($tid));
 		$ret = $q->result();
 		return (isset($ret['event_id'])) ? $ret['event_id'] : false;
 	}
@@ -303,12 +358,17 @@ class Talks_model extends Model {
 		$ret		= array();
 		$talk_detail= $this->getTalks($tid);
 		
+		$speakers=array();
+		foreach($talk_detail[0]->speaker as $speaker){
+			$speakers[]=strtolower($speaker->speaker_name);
+		}
+		
 		$this->db->select('event_id eid, talks.ID as tid, talk_title, event_name');
 	    $this->db->from('talks');
 		$this->db->join('events','events.id=talks.event_id','left');
 	    $this->db->where('talk_title',$talk_detail[0]->talk_title);
-		$this->db->where('lower(speaker)',strtolower($talk_detail[0]->speaker));
-		$this->db->where('event_id !='.$eid);
+		$this->db->where_in('lower(speaker)',$speakers);
+		$this->db->where('event_id !=', $eid);
 	    $q=$this->db->get();
 	    return $q->result();
 	}
@@ -326,7 +386,7 @@ class Talks_model extends Model {
 				talks 
 			having
 				code='%s'
-		",$code); //echo $sql;
+		",$this->db->escape($code)); //echo $sql;
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
@@ -356,7 +416,7 @@ class Talks_model extends Model {
 						where
 							t.event_id=%s and ua.rid=t.ID
 					)
-			',$e->ID);
+			', $this->db->escape($e->ID));
 			$q=$this->db->query($sql);
 			$claimed_users=$q->result();
 			//var_dump($claimed_users);
@@ -388,7 +448,7 @@ class Talks_model extends Model {
 						)
 					having
 						rating>=%s
-				",$rating,$u->ID,$rating);
+				", $this->db->escape($rating), $this->db->escape($u->ID), $this->db->escape($rating));
 				$q=$this->db->query($sql);
 				$ratings=$q->result();
 				foreach($ratings as $v){ $ret[]=$v; }
@@ -430,8 +490,8 @@ class Talks_model extends Model {
 	    $this->db->join('talk_comments', 'talk_comments.talk_id=talks.ID', 'left');
 		$this->db->join('events', 'events.ID=talks.event_id', 'left');
 	    
-		if($start>0){ $this->db->where('date_given >='.$start); }
-		if($end>0){ $this->db->where('date_given <='.$end); }
+		if($start>0){ $this->db->where('date_given >=', $start); }
+		if($end>0){ $this->db->where('date_given <=', $end); }
 		
 		$this->db->like('talk_title',$term);
 		$this->db->or_like('talk_desc',$term);

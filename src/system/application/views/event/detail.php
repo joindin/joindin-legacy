@@ -6,7 +6,8 @@ menu_pagetitle('Event: ' . escape($event_detail->event_name));
 // Load up our detail view
 $data=array(
 	'event_detail'	=> $event_detail,
-	'attend'		=> $attend
+	'attend'		=> $attend,
+	'admins'		=> $admins
 );
 $this->load->view('event/modules/_event_detail',$data); 
 
@@ -35,7 +36,9 @@ $data=array(
 	'comments'		=> $comments,
 	'slides_list'	=> $slides_list,
 	'admin'			=> $admin,
-	'tracks'		=> $tracks
+	'tracks'		=> $tracks,
+	'claims'		=> $claims,
+	'talk_stats'	=> $talk_stats
 );
 $this->load->view('event/modules/_event_tabs',$data);
 ?>

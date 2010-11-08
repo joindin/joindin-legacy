@@ -9,7 +9,7 @@ class Getlist extends BaseWsRequest {
 	);
 	
 	public function Getlist($xml){
-		$this->CI=&get_instance(); //print_r($this->CI);
+		$this->CI=&get_instance();
 		$this->xml=$xml;
 	}
 	public function checkSecurity($xml){
@@ -32,28 +32,10 @@ class Getlist extends BaseWsRequest {
 			if(!in_array($type,$this->_valid_types)){
 				return array('output'=>'json','data'=>array('items'=>array('msg'=>'Invalid event type!')));
 			}
-			// if it's pending, they need to be an admin to get it
-			if($type=='pending' && !$this->CI->user_model->isSiteAdmin($this->xml->auth->user)){
-				return array('output'=>'json','data'=>array('items'=>array('msg'=>'Access denied')));
-			}else{ $pending=true; }
-			
-			switch ($type) {
-			    case 'hot':
-			        $events = $this->CI->event_model->getHotEvents(null);
-			        break;
-			    case 'upcoming':
-			        $events = $this->CI->event_model->getUpcomingEvents(null);
-			        break;
-			    case 'past':
-			        $events = $this->CI->event_model->getPastEvents(null);
-			        break;
-				case 'pending':
-					$events = $this->CI->event_model->getEventDetail(null,null,null,$pending);
-			    /*default:
-			        $events = $this->event_model->getEventDetail(null,null,null,$pending);
-			        break;*/
-			}
 
+			// retrieve the events
+			$events = $this->CI->event_model->getEventsOfType($type);
+			
 			// identify user so we can do the attending (or not if they're not identified)
 			$uid = false;
 			$user=$this->CI->user_model->getUser($this->xml->auth->user);
@@ -63,16 +45,20 @@ class Getlist extends BaseWsRequest {
 
 			// Filter out a few things first
 			foreach($events as $k=>$evt){
-				unset($events[$k]->event_lat,$events[$k]->event_long,$events[$k]->score);
+				unset($events[$k]->score);
 				
 				if($uid) {
 					$evt->user_attending = $this->CI->user_attend_model->chkAttend($uid, $evt->ID);
 				}
-				if($evt->private==1 && !$evt->user_attending){
+				if(($evt->private==1 || $evt->private == 'Y') && !$evt->user_attending){
 					// not allowed to see the event!
-					unset($event[$k]);
+ 					unset($events[$k]);
 				}
 			}
+
+			// Re-index the array, as the unsetting may have upset the apple-cart
+			$events = array_values($events);
+
 			return array('output'=>'json','data'=>array('items'=>$events));
 		}else{
 			return array('output'=>'json','data'=>array('items'=>array('msg'=>'Invalid event type!')));

@@ -12,7 +12,7 @@ $this->load->library('timezone');
     	</div>
     	<p class="opts">
     		<a href="/event/view/<?php echo $event->ID; ?>#comments"><?php echo $event->num_comments; ?> comment<?php echo $event->num_comments == 1 ? '' : 's'?></a> |
-    		<strong><span class="event-attend-count-<?php echo $event->ID; ?>"><?php echo $event->num_attend; ?></span> attending</strong> | 
+    		<strong><span class="event-attend-count-<?php echo $event->ID; ?>"><?php echo $event->num_attend; ?></span> <?php echo ($event->event_end<time()) ? 'attended' : 'attending' ?></strong> | 
 
 			<!--<input type="checkbox" name="attend" value="1"/> Attending?-->
 
@@ -21,7 +21,7 @@ $this->load->library('timezone');
 			$link_txt="I attended";
 		}else{ $link_txt="I'm attending"; }
 	?>
-    		<a class="btn-small<?php echo $event->user_attending ? ' btn-success' : ''; ?>" href="#" onclick="markAttending(this,<?php echo $event->ID?>,<?php echo $event->event_end<time() ? 'true' : 'false'; ?>);return false;"><?php echo $link_txt?></a>
+    		<?php if($event->private!='Y'){ ?><a class="btn-small<?php echo $event->user_attending ? ' btn-success' : ''; ?>" href="#" onclick="markAttending(this,<?php echo $event->ID?>,<?php echo $event->event_end<time() ? 'true' : 'false'; ?>);return false;"><?php echo $link_txt?></a> <?php } ?>
 
     	</p>
 	</div>

@@ -32,6 +32,12 @@ function buildClaimData($talk_detail,$talk_claims,&$ftalk){
 	return $speaker;
 }
 
+/**
+ * Split out the comment types based on the inputted array (comment, keynote, etc)
+ * @param array $talk_comments Full listing of all talks for an event
+ *
+ * @return array $comments Sorted list of sessions
+ */
 function splitCommentTypes($talk_comments){
 	$comments=array();
 	foreach($talk_comments as $k=>$comment){
@@ -41,6 +47,50 @@ function splitCommentTypes($talk_comments){
 	return $comments;
 }
 
+
+/**
+ * Create the links for the speakers, matching by name
+ */
+function buildClaimedLinks($speakers,$claim_detail){
+	
+	$speaker_data	= array();
+	$speaker_links	= array();
+	
+	foreach($claim_detail as $claim){
+		$speaker_data[$claim->full_name]=$claim->uid;
+	}
+	
+	foreach($speakers as $speaker){
+		$name=$speaker->speaker_name;
+		if(array_key_exists($name,$speaker_data)){
+			$speaker_links[]='<a href="/user/view/'.$speaker_data[$name].'">'.$name.'</a>';
+		}else{ $speaker_links[]=$name; }
+	}
+	
+	//Check the claim...if there's only one claim, assign no matter what
+	if(count($speakers)==1 && count($claim_detail)){
+		$speaker_links	= array();
+		$speaker_links[]= '<a href="/user/view/'.$claim_detail[0]->uid.'">'.$speakers[0]->speaker_name.'</a>';
+	}
+
+	return implode(', ',$speaker_links);
+}
+
+function buildSpeakerImg($claims){
+	$ci=&get_instance();
+	$ci->load->library('gravatar');	
+	$user_images=array();
+
+	foreach($claims as $claim){
+		if($img_data=$ci->gravatar->displayUserImage($claim->uid,true)){
+			$user_images[$claim->uid]=$img_data;
+		}else{
+			$ci->gravatar->getUserImage($claim->uid,$claim->email);
+			$user_images[$claim->uid]=$ci->gravatar->displayUserImage($claim->uid,true);
+		}
+	}
+	return $user_images;
+}
 
 /**
  * Takes an array of talks, and attempts to add a flag to each one to say whether the talk is on
@@ -85,8 +135,12 @@ function talk_listDecorateNowNext($talks) {
 	}
 
 	// our slot times identify our now and next talk sets
-	foreach($talks_keyed_on_time[$old_slot_time] as $talk) {
-		$talk->now_next = "now";
+
+	// if there's nothing set, the first session hasn't started
+	if($old_slot_time > 0) {
+		foreach($talks_keyed_on_time[$old_slot_time] as $talk) {
+			$talk->now_next = "now";
+		}
 	}
 	foreach($talks_keyed_on_time[$new_slot_time] as $talk) {
 		$talk->now_next = "next";

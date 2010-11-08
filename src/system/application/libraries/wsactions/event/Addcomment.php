@@ -36,6 +36,13 @@ class Addcomment extends BaseWsRequest {
 			if($user && !$this->isValidLogin($this->xml)) {
 				return array('output'=>'json','data'=>array('items'=>array('msg'=>'Invalid permissions')));
 			}
+			
+			// Check to see if you can submit a comment to the event....
+			$this->CI->load->model('event_model');
+			$event_detail=$this->CI->event_model->getEventDetail($in['event_id']);
+			if($event_detail[0]->now!='now'){
+				return array('output'=>'json','data'=>array('items'=>array('msg'=>'Comments not allowed on the event/talk!')));
+			}
 
 			$arr=array(
 				'event_id'	=> $in['event_id'],

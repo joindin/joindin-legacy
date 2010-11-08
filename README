@@ -6,20 +6,36 @@ This is the source code for the Joind.in website - a resource set up to allow
 events to get real-time feedback from those attending. It also gives speakers a 
 way to claim and track their presentations over time.
 
-Included in the source:
-	- doc/db/init_db.sql
-		export of the initial data structure, ready for
+There's a few SQL files that are included with the source to help you get things 
+up and running. The first four will bring your database to the most current, up-to-date
+status and ALL should be run for a new install:
+	-----------------------
+	-> doc/db/init_db.sql
+		Export of the initial data structure, ready for
 		import (as exported from MySQL)
-	- doc/db/patch*.sql
-		numbered patch files to run in order after running init_db.  All database changes to be
+		
+	-> doc/db/init_data.sql
+		This file contains a few handy things for your database's initial setup
+		like languages and session categories
+		
+	-> doc/db/patch*.sql
+		Numbered patch files to run in order after running init_db.  All database changes to be
 		managed using these, init_db does NOT get updated.  For more information on this approach,
 		see http://www.lornajane.net/posts/2010/Simple-Database-Patching-Strategy
 		
-	- doc/db/seed.sql
-		Some seed data you can load into your (MySQL) database to get the ball rolling
-	- doc/db/seed_countries.sql
-		Some seed data for the countries table
+	-> doc/db/seed_countries.sql
+		Some seed data for the countries table (needed for timezone selection)
+	-----------------------
 	
+This last SQL file will give you a jumping off point to see how the system works. It will 
+populate your system with some seed data (talks, users, events) so you can see how they all 
+relate:
+	-----------------------
+	-> doc/db/seed.sql
+		Some seed data you can load into your (MySQL) database to get the ball rolling
+	-----------------------	
+
+Finally, there's some other scripts that come with the source to make things easier to setup.
 	- Release of CodeIgniter
 	- Sample cron jobs (in /src/scripts)
 	
@@ -28,6 +44,7 @@ Issues should be filed at: http://github.com/enygma/joind.in/issues
 
 See LICENSE file for license information for this software
 (located in /doc/LICENSE)
+
 
 Installation
 #####################
@@ -52,4 +69,37 @@ The following are the steps you'll need to correctly install the software:
 If you'd like some seed data, you can use the seed.sql to load in a few events, 
 users and talks. You'll also need to load in the seed_countries.sql file to
 get the complete list of countries for the event details.
+
+Extensions
+###################
+Make sure you have the following extensions installed and configured
+- pecl_http
+  $ pecl install pecl_http
+  
+  in php.ini add:
+  > linux: extension=http.so
+  > windows: extension=http.dll
+
+Debugging
+#############
+By default the application is in production mode. This primarily means that
+error messages and notices are suppressed.
+
+To allow errors and notices to be shown on the site you have to change the
+environment variable JOINDIN_DEBUG to the value 'on'. It is discouraged to
+do this on production environments as this will allow visitors to see any
+errors produced by the site.
+
+The JOINDIN_DEBUG environment variable is controlled from the accompanying
+.htaccess file.
+
+Tests
+#############
+
+There are some tests set up, which use PHPUnit; these can be found in the
+src/tests directory.  There is a phing task configured to run them - from the
+root directory simply run "phing phpunit" to run the tests.
+
+Note: The API tests actually call the service externally and rely on pecl_http
+being installed to run.
 

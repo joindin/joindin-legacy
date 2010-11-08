@@ -18,6 +18,10 @@ $this->load->view('msg_info', array('msg' => $msg));
 $msg='<b>We have an open API!</b> Looking for more information on how you can connect your applications to the 
 	' . $this->config->item('site_name') . ' API? <a href="/api">Check out the docs here!</a>';
 $this->load->view('msg_info', array('msg' => $msg)); 
+
+$msg='<b>We Have Widgets!</b> Want to put a little bit of '.$this->config->item('site_name').'into your site? Check out <a href="/about/widget">the widget info here!</a>';
+$this->load->view('msg_info', array('msg' => $msg)); 
+
 ?><br/>
 
 <h3 style="color:#5181C1">Like the talk? Let 'em know!</h3>
@@ -57,6 +61,5 @@ can help.
 <br/>
 <h3 style="color:#5181C1">Other Information</h3>
 <ul>
-<li><a href="/about/import">Importing Event Information</a> (XML)
 <li><a href="/about/evt_admin">Event Admin Cheat Sheet</a>
 </ul>

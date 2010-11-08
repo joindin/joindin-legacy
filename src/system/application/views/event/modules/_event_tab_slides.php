@@ -5,9 +5,7 @@
 	    <td>
 	    <a href="/talk/view/<?php echo $sk; ?>"><?php echo $sv['title']; ?></a>
 	    </td>
-	    <td>
-		<?php echo $sv['speaker']; ?>
-	    </td>
+	    <td><?php echo $sv['speaker']; ?>
 	    <td>
 		<a href="<?php echo $sv['link']; ?>">Slides</a>
 	    </td>

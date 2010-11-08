@@ -109,7 +109,7 @@ Your new password is below:
 
 Please log in in at %suser/login and reset your password as soon as possible.
 		', $user[0]->username, $this->_config->item('site_name'), $pass, $this->_config->site_url());
-		$this->_sendEmail($to,$msg,$subj,$user[0]->email);
+		$this->_sendEmail($to,$msg,$subj);
 	}
 	
 	/**
@@ -175,7 +175,7 @@ Click here to view it: %stalk/view/%s
 			$msg.='If you need some help getting started with managing your event, try our '."\n";
 			$msg.='helpful Event Admin Cheat Sheet! ' . $this->_config->site_url() . 'about/evt_admin';
 			
-			$to=array($to);
+			$to=array($user->email);
 			$this->_sendEmail($to,$msg,$subj);
 		}
 	}
@@ -190,7 +190,10 @@ Click here to view it: %stalk/view/%s
 		$subj='Successful Import for event '.$evt_detail[0]->event_name;
 		$from	= 'From:' . $this->_config->item('email_feedback');
 		
-		if(!$admins){ $this->CI->event_model->getEventAdmins($eid); }
+		if(!$admins){ 
+			$this->CI->load->model('event_model');
+			$this->CI->event_model->getEventAdmins($eid); 
+		}
 		
 		$msg=sprintf("
 An import for the event %s has been successful.\n\n

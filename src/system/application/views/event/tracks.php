@@ -25,7 +25,7 @@ div.track_color {
 <tr class="header">
 	<td>&nbsp;</td>
 	<td>Title</td>
-	<td>Descrption</td>
+	<td>Description</td>
 	<td>In use</td>
 	<td>&nbsp;</td>
 </tr>

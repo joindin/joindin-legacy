@@ -1,50 +1,10 @@
-function setVote(rate){
-	$("input[name='rating']").val(rate);
-	$.each($("img[id^='rate_']"),function(k,v){
-		mk=k+1;
-		if(mk==rate){ 
-			v.style.border='1px solid #000000';
-		}else{ v.style.border='0px'; }
-	});
-	return false;
-}
-function toggleAnon(tid){
-	lnk=$('#anonLink').html();
-	$.each($("tr[id^='com_anon_"+tid+"']"),function(k,v){
-		if(v.style.display=='none'){
-			v.style.display='block';
-			$('#anonLink').html(lnk.replace(/show/,'hide'));
-		}else{
-			v.style.display='none';			
-			$('#anonLink').html(lnk.replace(/hide/,'show'));
-		}
-	});
-}
-function getArea(field){
-	obj = document.getElementsByName(field);
-	cont= obj[0][obj[0].selectedIndex].value; //alert(cont);
-	$.getJSON(
-		'/api/tz/'+cont,
-		function(data){ //alert(data);
-			obj = document.getElementsByName('event_tz_area');
-			//clear it out first...
-			obj[0].options.length=-1;
-			$.each(data,function(k,v){
-				//alert(k+' : '+v['area']);
-				area=v['area'].replace(/_/,' ');
-				obj[0].options[k]=new Option(area,area);
-			});
-		}
-	);
-}
-//-------------------------
 function apiRequest(rtype,raction,data,callback){
 	var xml_str='';
 	$.each(data,function(k,v){
 		xml_str+='<'+k+'>'+v+'</'+k+'>';
 	});
 	xml_str='<request><action type="'+raction+'" output="json">'+xml_str+'</action></request>';
-	gt_url="/api/"+rtype+'?reqk='+reqk+'&seck='+seck;
+	var gt_url="/api/"+rtype+'?reqk='+reqk+'&seck='+seck;
 	
 	$.ajax({
 		type: "POST",
@@ -52,14 +12,17 @@ function apiRequest(rtype,raction,data,callback){
 		data: xml_str,
 		contentType: "text/xml",
 		processData: false,
+		dataType: 'json',
 		success: function(rdata){
 			//alert(rdata);
-			obj=eval('('+rdata+')'); //alert(obj.msg);
+			//obj=eval('('+rdata+')'); //alert(obj.msg);
+			/* rdata should be json now ... parsed properly by the browser */
+			var obj = rdata;
 			
 			//check for the redirect
 			if(obj.msg && obj.msg.match('redirect:')){
-				goto=obj.msg.replace(/redirect:/,'');
-				document.location.href=goto;
+				var targetLocation=obj.msg.replace(/redirect:/,'');
+				document.location.href=targetLocation;
 			}else{
 				//maybe add some callback method here 
 				//alert('normal'); 
@@ -71,17 +34,11 @@ function apiRequest(rtype,raction,data,callback){
 	});
 }
 //-------------------------
-function delBlogComment(cid,bid){
-	var obj=new Object();
-	obj.cid=cid;
-	obj.bid=bid;
-	apiRequest('blog','deletecomment',obj, function(obj) {
-		alert('Comment removed!'); return false;
-	});
-	return false;
-}
 function delEventComment(cid){ deleteComment(cid,'event'); }
-function delTalkComment(cid){ deleteComment(cid,'talk'); }
+function delTalkComment(cid){ 
+	deleteComment(cid,'talk'); 
+	$('#comment-'+cid).remove();
+}
 function deleteComment(cid,rtype){
 	var obj=new Object();
 	obj.cid=cid;
@@ -90,22 +47,6 @@ function deleteComment(cid,rtype){
 	});
 	return false;
 }
-function editTalkComment(cid){
-	var obj=new Object();
-	obj.cid		= cid;
-	obj.rtype	= 'talk';
-	apiRequest('comment','getdetail',obj, function(obj) {
-		//jump down to the comments block
-		window.location.hash="#comment_form";
-		
-		// now set the information so they can edit it
-		$('#comment').val(obj[0].comment);
-		if(obj[0].private!=0){ $(':checkbox[name=private]').attr('checked',true); }
-		setStars(obj[0].rating);
-		$(':input[name=edit_comment]').val(cid);
-	});
-}
-
 function commentIsSpam(cid,rtype){
 	var obj=new Object();
 	obj.cid		= cid;
@@ -115,31 +56,15 @@ function commentIsSpam(cid,rtype){
 	});
 	return false;
 }
-function claimTalk(tid){
-	var obj=new Object();
-	obj.talk_id=tid;
-	$('#claim_btn').html('Sending Claim >>');
-	
-	apiRequest('talk','claim',obj, function(obj) {
-		//alert(obj);
-		$('#claim_btn').css('display','none');
-		if(obj.msg=='Success'){
-			alert("Thanks for claiming this talk! You will be emailed when the claim is approved!");
-		}else{
-			alert(obj.msg);
-		}
-		return false;
-	});
-	return false;
-}
 
 function markAttending(el,eid,isPast){
 	var $loading;
-	if (!$(el).next().is('.loading')) {
+	var $el = $(el);
+	if (!$el.next().is('.loading')) {
 		$loading = $('<span class="loading">Loading...</span>');
-		var pos = $(el).position();
+		var pos = $el.position();
 		$loading.css({left: pos.left + 15, top: pos.top - 30}).hide();
-		$(el).after($loading);
+		$el.after($loading);
 		$loading.fadeIn('fast');
 	}
 
@@ -147,17 +72,17 @@ function markAttending(el,eid,isPast){
 	obj.eid=eid;
 
 	apiRequest('event','attend',obj, function(obj) {
-		if ($(el).is('.btn-success')) {
-			$(el).removeClass('btn-success');
+		if ($el.is('.btn-success')) {
+			$el.removeClass('btn-success');
 			link_txt=isPast ? 'I attended' : 'I\'m attending';
 			adjustAttendCount(eid, -1);
 		} else {
-			$(el).addClass('btn-success');
+			$el.addClass('btn-success');
 			link_txt=isPast ? 'I attended' : 'I\'m attending';
 			adjustAttendCount(eid, 1);
 		}
 
-		$(el).html(link_txt);
+		$el.html(link_txt);
 		
 		function hideLoading()
 		{
@@ -185,42 +110,6 @@ function adjustAttendCount(eid, num)
 	});
 }
 
-function toggleAttendees(el, eid)
-{
-	if ($('#attendees').length == 0) {
-		$('#ctn .main .detail .header .opts').after('<p id="attendees" style="display:none;">qegegqeg</p>');
-	}
-
-	if ($('#attendees').is(':hidden')) {
-		if ($('#attendees').data('loaded') == true) {
-			$('#attendees').slideDown(function() {
-				$(el).html('Hide &laquo;');
-			});
-		} else {
-			var $loading;
-			if (!$(el).next().is('.loading')) {
-				$loading = $('<span class="loading">Loading...</span>');
-				var pos = $(el).position();
-				$loading.css({left: pos.left + 15, top: pos.top - 30}).hide();
-				$(el).after($loading);
-				$loading.fadeIn('fast');
-			}
-			
-			$('#attendees').load('/event/attendees/' + eid, function() {
-				$('#attendees').slideDown(function() {
-					$(el).html('Hide &laquo;');
-				});
-				if ($loading)
-					$loading.fadeOut(function() { $(this).remove() });
-			}).data('loaded', true);
-		}
-	} else {
-		$('#attendees').slideUp(function() {
-			$(el).html('Show &raquo;');
-		});
-	}
-	return false;
-}
 function toggleUserStatus(uid){
 	var obj=new Object();
 	obj.uid=uid;

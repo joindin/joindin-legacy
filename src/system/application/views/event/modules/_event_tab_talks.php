@@ -21,6 +21,8 @@
     		</th>
     	</tr>
     	<?php foreach($talk_section_talks as $ik=>$talk): 
+//print_r($talk); echo '<br/><br/>';
+
 	    $session_rate+=$talk->rank;
 		
 		if(isset($track_filter)){
@@ -43,34 +45,6 @@
     			<?php $type = !empty($talk->tcid) ? $talk->tcid : 'Talk'; ?>
     			<span class="talk-type talk-type-<?php echo strtolower(str_replace(' ', '-', $type)); ?>" title="<?php echo escape($type); ?>"><?php echo escape(strtoupper($type)); ?></span>
     		</td>
-    	    <?php 
-				$sp_names=array();
-				foreach($talk->codes as $ck => $cv){
-					
-					$iscl=(array_key_exists($talk->ID, $times_claimed)) ? true : false;
-				
-					//If there's an exactly matching claim (name too) or... 
-					if(array_key_exists($cv,$cl) || $iscl){
-						//we match the code, but we need to find the speaker...
-
-						$spk_split=explode(',',$talk->speaker);
-						foreach($spk_split as $spk=>$spv){
-							if(trim($spv)==trim($ck)){
-								if(isset($cl[$cv])){ 
-									$uid=$cl[$cv]['uid']; 
-								}else{ 
-									if(count($spk_split)>1){ $sp_names[]=escape($ck); continue; }
-									$uid=$claimed_uids[$talk->ID];
-								}
-								$sp_names[]='<a href="/user/view/'.$uid.'">'.escape($spv).'</a>';
-							}else{
-								
-							}
-						}
-					}else{ $sp_names[]=escape($ck); }
-					$sp=implode(', ',$sp_names);
-				}
-				?>
     		<td>
     			<a href="/talk/view/<?php echo $talk->ID; ?>"><?php echo escape($talk->talk_title); ?></a>
 				<?php
@@ -78,7 +52,25 @@
 				?>
     		</td>
     		<td>
-    			<?php echo $sp; ?>
+    			<?php
+				$speaker_list=array();
+				foreach($talk->speaker as $sp){
+					if(isset($claims[$sp->talk_id])){
+						foreach($claims[$sp->talk_id] as $c=>$claim){
+							//If it matches exactly or if there's only one claim
+							if(
+								$c==$sp->speaker_name || 
+								(count($claims[$sp->talk_id])==1 && count($talk->speaker)==1) && 
+								$claim['rcode']!='pending'
+							){
+								$speaker_list[]='<a href="/user/view/'.$claim['uid'].'">'.$sp->speaker_name.'</a>';
+							}elseif(count($talk->speaker)>1){ $speaker_list[]=$sp->speaker_name; }
+						}
+					}else{ $speaker_list[]=$sp->speaker_name; }
+				}
+				if(empty($speaker_list)){ $speaker_list[]='None'; }
+				echo implode(', ',$speaker_list);
+				?>
     		</td>
     		<td>
 				<a class="comment-count" href="/talk/view/<?php echo $talk->ID; ?>/#comments"><?php echo $talk->comment_count; ?></a>

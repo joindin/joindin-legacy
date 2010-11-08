@@ -67,6 +67,7 @@ if($key=strtolower(apache_getenv('USE_KEY'))){
 $template['default']['template'] = $default_template;
 $template['default']['regions'] = array(
 	'header',
+	'css',
 	'content',
 	'footer',
 	'logged',

@@ -51,13 +51,3 @@ prospect of adding in all of those sessions by hand can be intimidating. We've g
 easier to drop your content into the site. See that little button that says "Import Event Info"? If you click on that
 you'll see a page that lets you upload a file with the details of your sessions.
 </p>
-<p>
-The tricky part about the process is the format for the file - it's a custom XML format that you'll need to match against
-to get our site to import it all and drop it into the event. You can read more about this custom format over on the 
-<a href="/about/import">Import page</a> in the <b>About</b> section. 
-</p>
-<?php
-$msg="Or, for the more technically minded, you can grab the <a href=\"/inc/xml/schema_event.xml\">schema we're validating against</a>";
-$this->load->view('msg_info', array('msg' => $msg)); ?>
-</p>
-

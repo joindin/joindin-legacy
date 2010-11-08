@@ -8,6 +8,7 @@ if(!empty($claim_msg)){
 	if($claim_msg && !empty($claim_msg)){ echo '<div class="'.$class.'">'.escape($claim_msg).'</div><br/>'; }
 }
 ?>
+<script type="text/javascript" src="/inc/js/talk.js"></script>
 <?php 
 $msg=$this->session->flashdata('msg');
 if (!empty($msg)): ?>
@@ -17,19 +18,21 @@ if (!empty($msg)): ?>
 $speaker_ids= array();
 $speaker    = array();
 
-if(empty($speaker_claim)){ $speaker[]=escape($detail->speaker); }
-$speaker_txt= implode(', ',$speaker);
-$rstr 		= rating_image($detail->tavg);
+$speaker_images	= buildSpeakerImg($claim_details);
+$speaker_txt	= buildClaimedLinks($speakers,$claim_details);
+$rstr 			= rating_image($detail->tavg);
 
 $data=array(
 	'detail'		=> $detail,
 	'speaker_txt'	=> $speaker_txt,
+	'speaker_img'	=> $speaker_images,
 	'rstr'			=> $rstr
 );
 $this->load->view('talk/modules/_talk_detail',$data);
 
 $data=array(
-	'speaker'		=> $speaker
+	'speaker'		=> $speakers,
+	'claim'			=> $claim_details
 );
 $this->load->view('talk/modules/_talk_buttons',$data);
 ?>
@@ -49,5 +52,8 @@ $data=array();
 $this->load->view('talk/modules/_talk_comments',$data);
 $this->load->view('talk/modules/_talk_comment_form',$data); 
 ?>
+<input type="hidden" name="talk_id" id="talk_id" value="<?php echo $detail->ID ?>" />
 
-
+<script type="text/javascript">
+$(document).ready(function(){ talk.init(); })
+</script>

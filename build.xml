@@ -63,5 +63,7 @@
 		<echo msg="PHP Unit..." />
 		<exec command="phpunit --log-junit ${builddir}/logs/phpunit.xml --coverage-clover ${builddir}/logs/coverage/clover.xml --coverage-html ${builddir}/logs/coverage/ ./src/tests" logoutput="true" />
 	</target>
+	
+	<target name="app" depends="clean, prepare, phpdoc, phpcpd, pdepend, phpcs, phpmd, phpunit, fullphpunit"/>
 
 </project>

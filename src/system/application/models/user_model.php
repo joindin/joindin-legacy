@@ -180,6 +180,25 @@ class User_model extends Model {
 	}
 	
 	/**
+	 * Search for publicly-available user information based on a user ID or username
+	 *
+	 * A reduced version of the getUser() method so we can safely return these results to the service.
+	 * Should be used in preference to getUser wherever possible
+	 *
+	 * @param $in integer/string User ID or Username
+	 * @return array User details
+	 */
+	function getUserDetail($in){
+		$this->db->select('username, full_name, ID, last_login');
+		if(is_numeric($in)){
+			$q=$this->db->get_where('user',array('ID'=>$in));
+		}else{ 
+			$q = $this->db->get_where('user',array('username'=>(string)$in));
+		}
+		return $q->result();
+	}
+	
+	/**
 	 * Search for a user by their email address
 	 * @param $email string User email address
 	 * @return array User detail information 
@@ -214,11 +233,15 @@ class User_model extends Model {
 	/**
 	 * Find other users of the system that were speakers at events the given user was a speaker at too
 	 *
-	 * @param $uid integer User ID
-	 * @param $limit[optional] integer Limit the number of results returned
-	 * @return array Return array of user's information (user_id, event_id, username, full_name)
+	 * @param integer $uid   User ID
+	 * @param integer $limit [optional] integer Limit the number of results returned
+	 * @return array         Return array of user's information (user_id, event_id, username, full_name)
 	 */
 	function getOtherUserAtEvt($uid,$limit=15){
+		if (!ctype_digit((string)$limit)) {
+			throw new Exception('Expected $limit to be a number but received '.$limit);
+		}
+
 		//find speakers (users attending too?) that have spoken at conferences this speaker did too
 		$other_speakers=array();
 		$sql=sprintf("
@@ -247,7 +270,7 @@ class User_model extends Model {
 				u.ID!=%s
 			order by rand()
 			limit %s
-		",$uid,$uid,$limit);
+		",$this->db->escape($uid), $this->db->escape($uid), $limit);
 		$q=$this->db->query($sql);
 		$ret=$q->result();
 		foreach($ret as $k=>$v){ $other_speakers[$v->user_id]=$v; }

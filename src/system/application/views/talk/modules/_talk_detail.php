@@ -1,3 +1,4 @@
+
 <div class="detail">
 	<h1><?php echo $detail->talk_title?></h1>
 
@@ -12,7 +13,14 @@
 	</p>
 
 	<div class="desc">
-		<?php echo auto_p(auto_link(escape($detail->talk_desc)));?>
+		<span align="left"><?php
+		if(!empty($speaker_img)){
+			foreach($speaker_img as $uid => $img){ 
+				echo '<a href="/user/view/'.$uid.'">'.str_replace('>','align="left" border="0" style="margin-right:10px;height:50px">',$img).'</a>'; 
+			}
+		}
+		?></span>
+		<?php echo auto_p(auto_link(escape_allowing_presentation_tags($detail->talk_desc)));?>
 	</div>
 	
 	<p class="quicklink">
