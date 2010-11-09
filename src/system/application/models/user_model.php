@@ -285,6 +285,7 @@ class User_model extends Model {
 	 * @param $end[optional] Ending point for search (not currently used)
 	 */
 	function search($term,$start=null,$end=null){
+		$term = mysql_real_escape_string(strtolower($term));
 		$sql=sprintf("
 			select
 				u.username,
@@ -301,7 +302,7 @@ class User_model extends Model {
 			where
 				lower(username) like '%%%s%%' or
 				lower(full_name) like '%%%s%%'
-		",strtolower($term),strtolower($term));
+		",$term,$term);
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
