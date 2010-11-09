@@ -983,7 +983,10 @@ class Event extends Controller
             'event_loc'           => 'Event Location',
             'event_tz_cont'       => 'Event Timezone (Continent)',
             'event_tz_place'      => 'Event Timezone (Place)',
+			'event_lat'			  => 'Event Latitude',
+			'event_long'		  => 'Event Longitude',
             'event_stub'          => 'Event Stub',
+			'addr'				  => 'Event Address'
             //	'cinput'				=> 'Captcha'
         );
         $rules = array(
@@ -1380,7 +1383,6 @@ class Event extends Controller
         }
 
         $this->load->library('validation');
-        $this->load->library('xmlimport');
         $this->load->library('csvimport');
         $this->load->library('sendemail');
         $this->load->model('event_model', 'em');

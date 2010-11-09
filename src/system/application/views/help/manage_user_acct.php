@@ -62,9 +62,6 @@ To set up an access code, you'll need to click on the "Profile Access" tab and a
 like to include in the profile and hit "Save Changes". This will go back to the main list including the code you'll need to give
 to the requesting party.
 </p>
-<p>
-You can find out more about calling the web service to request a speaker profile in <a href="/api#get_speaker_profile">this section</a> of the API documentation.
-</p>
 
 <a name="tokens"></a>
 <h3>Tokens</h3>

@@ -63,17 +63,6 @@ class About extends Controller
     }
 
     /**
-     * Displays a help page for the import functionality.
-     *
-     * @return void
-     */
-    function import()
-    {
-        $this->template->write_view('content', 'about/import');
-        $this->template->render();
-    }
-
-    /**
      * Displays the help page for the event admin section.
      *
      * @return void
