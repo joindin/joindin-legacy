@@ -310,14 +310,38 @@ class Talks_model extends Model {
 		$this->db->where('rcode !=','pending');
 		$this->db->order_by('talks.date_given desc');
 		
-		$q=$this->db->get();
-		//$q=$this->db->get_where('user_admin',array('uid'=>$uid,'rtype'=>'talk'));
-		$ret=$q->result();
+		$q	= $this->db->get();
+		$ret= $q->result(); 
+		
+		$claimed = $this->getSpeakerTalks($uid);
+		$ret = array_merge($ret,$claimed);
+		
 		foreach($ret as $k=>$v){ 
 			$t=$this->getTalks($v->rid);
 			if(isset($t[0])){ $talks[]=$t[0]; }
 		}
 		return $talks;
+	}
+	
+	public function getSpeakerTalks($speakerId)
+	{
+		$talks = array();
+		
+		$this->db->select('*');
+		$this->db->from('talk_speaker');
+		$this->db->join('talks','talks.id=talk_speaker.talk_id');
+		$this->db->where('speaker_id',$speakerId);
+		$this->db->order_by('talks.date_given desc');
+		
+		$q 		= $this->db->get();
+		$ret 	= $q->result();
+		
+		// the RID isn't set like the other talk info - lets set it!
+		foreach($ret as $key => $talk){
+			$ret[$key]->rid = $talk->talk_id;
+		}
+		
+		return $ret;
 	}
 	
 	public function getUserComments($uid){
