@@ -90,6 +90,19 @@ class Claim extends BaseWsRequest {
 						foreach($evt_admin as $k=>$v){ $to[]=$v->email; }
 					}
 					
+					// update the talk_speakers with the speaker ID
+					// $this->CI->db->update('talk_speaker',$ts_arr,);
+					// talk_id
+					// user_id
+					
+					
+					error_log('test: '.$tid.' - '.$rid.' - '.$this->xml->action->talk_speaker_id);
+					
+					if(isset($this->xml->action->talk_speaker_id)){
+						$this->CI->db->where('id',$this->xml->action->talk_speaker_id);
+						$this->CI->db->update('talk_speaker',array('speaker_id'=>$uid));
+					}
+					
 				    //insert a row into user_admin for the user/talk ID but with a code of "pending"
 				    $this->CI->db->insert('user_admin',$arr);
 
