@@ -21,6 +21,10 @@ talk = function (){
 	var _claimTalk = function(){
 		$('#claim_btn').click(function(){
 			var obj={ "talk_id": $('#talk_id').val() };
+			$('#claim_select_div').css('display','block');
+			$('#claim_btn').css('display','none');
+			return false;
+			
 			$('#claim_btn').html('Sending Claim >>');
 
 			apiRequest('talk','claim',obj, function(obj) {
@@ -32,6 +36,14 @@ talk = function (){
 					alert(obj.msg);
 				}
 				return false;
+			});
+			return false;
+		});
+		$('#claim-cancel-btn').click(function(){
+			$('#claim_select_div').css('display','none');
+			$('#claim_btn').css({
+				'display'	: 'inline',
+				'width'		: '90px'
 			});
 			return false;
 		});
