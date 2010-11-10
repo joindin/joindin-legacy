@@ -73,6 +73,21 @@ talk = function (){
 			}
 		});
 	}
+	
+	var _claimButton = function(){
+		$('#claim-btn').click(function(){
+			var obj=new Object();
+			//obj.cid		= cid;
+			//obj.rtype	= rtype;
+			obj.talk_id = 2345;
+			obj.talk_speaker_id = $('#claim_name_select').val();
+			apiRequest('talk','claim',obj, function(obj) {
+				console.log('sending claim');
+				return false;
+			});
+			return false;
+		});
+	}
 
 	return {
 		init: function(){
@@ -81,6 +96,7 @@ talk = function (){
 				_claimTalk();
 				_editTalkComment();
                 _changeAnonymous();
+				_claimButton();
 			});
 		}
 	}

@@ -56,6 +56,15 @@ function buildClaimedLinks($speakers,$claim_detail){
 	$speaker_data	= array();
 	$speaker_links	= array();
 	
+	// find ones that have a speaker ID
+	foreach($speakers as $speakerKey => $speaker){
+		if(isset($speaker->speaker_id)){
+			// we know this one is right
+			$speaker_links[]='<a href="/user/view/'.$speaker->speaker_id.'">'.$speaker->speaker_name.'</a>';
+			unset($speakers[$speakerKey]);
+		}
+	}
+	
 	foreach($claim_detail as $claim){
 		$speaker_data[$claim->full_name]=$claim->uid;
 	}

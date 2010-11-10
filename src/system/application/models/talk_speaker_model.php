@@ -93,7 +93,7 @@ class Talk_speaker_model extends Model {
 	 */
 	public function getSpeakerByTalkId($talk_id){
 		
-		$this->db->select('talk_id,speaker_name,talk_speaker.ID,email');
+		$this->db->select('talk_id,speaker_name,talk_speaker.ID,email,speaker_id');
 		$this->db->from('talk_speaker');
 		$this->db->where('talk_id',$talk_id);
 		$this->db->distinct();
