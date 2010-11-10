@@ -89,15 +89,7 @@ class Claim extends BaseWsRequest {
 					if(count($evt_admin)>0){
 						foreach($evt_admin as $k=>$v){ $to[]=$v->email; }
 					}
-					
-					// update the talk_speakers with the speaker ID
-					// $this->CI->db->update('talk_speaker',$ts_arr,);
-					// talk_id
-					// user_id
-					
-					
-					error_log('test: '.$tid.' - '.$rid.' - '.$this->xml->action->talk_speaker_id);
-					
+
 					if(isset($this->xml->action->talk_speaker_id)){
 						$this->CI->db->where('id',$this->xml->action->talk_speaker_id);
 						$this->CI->db->update('talk_speaker',array('speaker_id'=>$uid));
