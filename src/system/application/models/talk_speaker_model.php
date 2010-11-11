@@ -96,6 +96,7 @@ class Talk_speaker_model extends Model {
 		$this->db->select('talk_id,speaker_name,talk_speaker.ID,email');
 		$this->db->from('talk_speaker');
 		$this->db->where('talk_id',$talk_id);
+		$this->db->distinct();
 		// left join for those of us who think our name is different from 
 		// what conference organisers think it is
 		$this->db->join('user','user.full_name=talk_speaker.speaker_name', 'left');
@@ -107,7 +108,7 @@ class Talk_speaker_model extends Model {
 			$result=$this->db->get_Where('talk_speaker',array('talk_id'=>$talk_id));
 			$ret=$result->result();
 		}
-		
+
 		return $ret;
 	}
 	

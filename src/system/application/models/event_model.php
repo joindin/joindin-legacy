@@ -493,6 +493,8 @@ SQL
 
 	//----------------------
 	function search($term,$start,$end){
+		$term = mysql_real_escape_string($term);
+		
 		//if we have the dates, limit by them
 		$attend = '(SELECT COUNT(*) FROM user_attend WHERE eid = events.ID AND uid = ' . $this->db->escape((int)$this->session->userdata('ID')) . ')as user_attending';
 
