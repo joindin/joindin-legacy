@@ -31,7 +31,5 @@ $(function() {
 	<?php endif; ?>
 	}
 });
-$(document).ready(function(){
-	JI_event.init();
-})
+joindin.event.init();
 </script>

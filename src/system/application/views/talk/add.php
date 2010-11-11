@@ -183,8 +183,6 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
 
 <script type="text/javascript">
 $('#add_speaker_line').css('display','block');
-$(document).ready(function(){
-	talk.init();
-})
+joindin.talk.init();
 </script>
 

@@ -1,48 +1,49 @@
+joindin.event = (function (){
+	var _deleteEventComment, _claimEvent, _markAttending, _toggleAttendees;
 
-if(!JI_event){ var JI_event = {} }
-
-JI_event = function (){
-	
-	var _deleteEventComment = function(){
+	_deleteEventComment = function(){
 		$('.delete-evt-commment').live('click',function(){
-			var p		= this.id.split('_');
-			var obj		= new Object();
-			obj.cid		= p[0];
-			obj.eid		= p[1];
+			var p, obj;
+			p	= this.id.split('_');
+			obj		= {
+				cid: p[0],
+				eid: p[1]
+			};
 			apiRequest('event','deletecomment',obj, function(obj) {
 				$('#comment-'+p[0]).remove();
 				alert('Comment removed!'); return false;
 			});
 		});
 		return false;
-	}
+	};
 	
-	var _claimEvent = function(){
+	_claimEvent = function(){
 		$('#claim-event-btn').click(function(){
 			var obj={ "eid": $('#eid').val() };
 			apiRequest('event','claim',obj,function(obj){
 				alert(obj.msg);
 			});
 		});
-	}
+	};
 	
-	var _markAttending = function(){
+	_markAttending = function(){
 		$('#mark-attending').click(function(){
-		})
-	}
+		});
+	};
 	
-	var _toggleAttendees = function(){
+	_toggleAttendees = function(){
 		var el = this;
 		$('#toggle-attendees').click(function(){
-			var el  = this;
-			var eid = $('#eid').val();
-		
-			if ($('#attendees').length == 0) {
+			var el, eid;
+			el = this;
+			eid = $('#eid').val();
+
+			if ($('#attendees').length === 0) {
 				$('#ctn .main .detail .header .opts').after('<p id="attendees" style="display:none;">qegegqeg</p>');
 			}
 
 			if ($('#attendees').is(':hidden')) {
-				if ($('#attendees').data('loaded') == true) {
+				if ($('#attendees').data('loaded') === true) {
 					$('#attendees').slideDown(function() {
 						$(el).html('Hide &laquo;');
 					});
@@ -60,8 +61,9 @@ JI_event = function (){
 						$('#attendees').slideDown(function() {
 							$(el).html('Hide &laquo;');
 						});
-						if ($loading)
-							$loading.fadeOut(function() { $(this).remove() });
+						if ($loading) {
+							$loading.fadeOut(function() { $(this).remove(); });
+						}
 					}).data('loaded', true);
 				}
 			} else {
@@ -71,7 +73,7 @@ JI_event = function (){
 			}
 			return false;		
 		});
-	}
+	};
 	
 	return {
 		init: function(){
@@ -82,5 +84,10 @@ JI_event = function (){
 				_claimEvent();
 			});
 		}
+<<<<<<< HEAD
 	}
 }();
+=======
+	};
+})();
+>>>>>>> Formatting and namespacing (some of) the js code

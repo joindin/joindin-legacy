@@ -1,6 +1,6 @@
-var joindIn = (function ($, window, document, undefined) {
+joindin.core = (function ($, window, document, undefined) {
     return {
-        'apiRequest': function (rtype, raction, data, callback) {
+        apiRequest: function (rtype, raction, data, callback) {
             var actionNode = {
                 'name': 'action',
                 'attribs': {
@@ -8,7 +8,7 @@ var joindIn = (function ($, window, document, undefined) {
                     'output': 'json'
                 }
             },
-            xml_str = '<request>' + joindIn.toXML(actionNode, data) + '</request>',
+            xml_str = '<request>' + joindin.core.toXML(actionNode, data) + '</request>',
             gt_url = "/api/" + rtype + '?reqk=' + reqk + '&seck=' + seck;
             
             $.ajax({
@@ -35,7 +35,7 @@ var joindIn = (function ($, window, document, undefined) {
                 }
             });
         },
-        'toXML': function (parentNode, data) {
+        toXML: function (parentNode, data) {
             var xmlString = '', strNodeName = '', parentXML = '', key = '';
             $.each(data, function (k, v) {
                 xmlString += '<' + k + '>' + v + '</' + k + '>';

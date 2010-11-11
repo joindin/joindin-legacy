@@ -54,6 +54,4 @@ $this->load->view('talk/modules/_talk_comment_form',$data);
 ?>
 <input type="hidden" name="talk_id" id="talk_id" value="<?php echo $detail->ID ?>" />
 
-<script type="text/javascript">
-$(document).ready(function(){ talk.init(); })
-</script>
+<script type="text/javascript"> joindin.talk.init(); </script>

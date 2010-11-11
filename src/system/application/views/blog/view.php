@@ -35,4 +35,4 @@ if (!empty($msg)):
     <?php $this->load->view('msg_info', array('msg' => $msg)); ?>
 <?php endif; ?>
 
-<script type="text/javascript"> blog.init(); </script>
+<script type="text/javascript"> joindin.blog.init(); </script>
