@@ -69,7 +69,7 @@ class Main extends Controller
 
         $arr = array(
             'talks'           => $this->talks_model->getPopularTalks(),
-			'hot_events'      => $this->event_model->getHotEvents(7),
+            'hot_events'      => $this->event_model->getHotEvents(7),
             'logged'          => $this->user_model->isAuth(),
             'latest_blog'     => $this->bpm->getLatestPost(),
             'reqkey'          => $reqkey,
@@ -79,13 +79,6 @@ class Main extends Controller
         // now add the attendance data for the hot events
         $uid = $this->user_model->getID();
         foreach ($arr['hot_events'] as $e) {
-            $e->user_attending = ($uid)
-                ? $this->user_attend_model->chkAttend($uid, $e->ID)
-                : false;
-        }
-
-        // now add the attendance data for the upcoming events
-        foreach ($arr['upcoming_events'] as $e) {
             $e->user_attending = ($uid)
                 ? $this->user_attend_model->chkAttend($uid, $e->ID)
                 : false;
