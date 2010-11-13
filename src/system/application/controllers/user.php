@@ -371,7 +371,7 @@ class User extends Controller
         $arr['is_admin'] = $this->user_model->isSiteAdmin();
         $arr['gravatar'] = $imgStr;
 
-		$arr['pending_events'] = $events = $this->event_model->getEventDetail(
+		$arr['pending_events'] = $this->event_model->getEventDetail(
             null, null, null, true
         );
 
