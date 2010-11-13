@@ -325,6 +325,7 @@ class User extends Controller
         $this->load->helper('form');
         $this->load->library('validation');
         $this->load->model('talks_model');
+		$this->load->model('event_model');
 
         $this->load->library('gravatar');
         $this->gravatar->getUserImage(
@@ -369,6 +370,10 @@ class User extends Controller
             ->getUserComments($this->session->userdata('ID'));
         $arr['is_admin'] = $this->user_model->isSiteAdmin();
         $arr['gravatar'] = $imgStr;
+
+		$arr['pending_events'] = $events = $this->event_model->getEventDetail(
+            null, null, null, true
+        );
 
         $this->template->write_view('content', 'user/main', $arr);
         $this->template->render();

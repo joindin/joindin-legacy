@@ -1,5 +1,5 @@
 <?php
-$this->load->view('user/_nav_sidebar');
+$this->load->view('user/_nav_sidebar',array('pending_events'=>$pending_events));
 
 ob_start();
 ?>
