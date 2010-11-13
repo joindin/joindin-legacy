@@ -85,7 +85,9 @@ class Event extends Controller
         if (isset($id[0]->ID)) {
             redirect('event/view/' . $id[0]->ID);
         } else {
-            echo 'error';
+			$arr=array();
+ 			$this->template->write_view('content', 'error/404', $arr);
+			$this->template->render();
         }
     }
 
