@@ -1,5 +1,4 @@
 <?php
-header('HTTP/1.1 404 Not Found', true, 404);
 menu_pagetitle('Error!');
 ?>
 
@@ -21,7 +20,3 @@ Every event has their talks but you can get a quick summary here of talks across
 <b><a href="/about">About <?php echo $this->config->item('site_name'); ?></a></b><br/>
 Learn all about <?php echo $this->config->item('site_name'); ?> and what it has to offer you as both a user and conference planner
 </p>
-
-<?php
-//echo $msg;
-?>
