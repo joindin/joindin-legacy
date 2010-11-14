@@ -1,11 +1,12 @@
 <?php
+header('HTTP/1.1 404 Not Found', true, 404);
 menu_pagetitle('Error!');
 ?>
 
 <h1 class="icon-event">Error!</h1>
 
 <p>
-The page you were looking for wasn't found! Here's a few others that 
+The page you were looking for wasn't found! Here's a few others that
 might be what you're looking for - give them a try!
 </p>
 <p>
