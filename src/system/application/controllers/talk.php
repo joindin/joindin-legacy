@@ -506,7 +506,6 @@ class Talk extends Controller
         $this->load->library('sendemail');
 
         $msg          = '';
-        $view_private = false;
 
         // filter it down to just the numeric characters
         if (preg_match('/[0-9]+/', $id, $m)) {
@@ -729,12 +728,10 @@ class Talk extends Controller
 
         $is_talk_admin = $this->user_model->isAdminTalk($id);
 
-        // Check to see if they can view private comments....
-        $view_private = ($this->user_model->canViewPrivateComments(
-            $talk_detail[0]->eid, $id
-        )) ? true : false;
+        // Retrieve ALL comments, then Reformat and filter out private comments
+		$all_talk_comments = $this->talks_model->getTalkComments($id, null, true);
         $talk_comments = splitCommentTypes(
-            $this->talks_model->getTalkComments($id, null, $view_private)
+			$all_talk_comments, $is_talk_admin, $this->session->userdata('ID')
         );
 
         // also given only makes sense if there's a speaker set
@@ -758,11 +755,7 @@ class Talk extends Controller
             'claimed'        => $this->talks_model->isTalkClaimed($id),
             'claim_status'   => $claim_status, 'claim_msg' => $claim_msg,
             'claim_details'  => $this->userAdmins->getTalkClaims($id),
-            //'speaker_claims'=> buildClaimData($talk_detail[0],
-            //   $event_claims,$ftalk),
             'speakers'       => $this->talkSpeakers->getSpeakerByTalkId($id),
-            //'ftalk'			=> $ftalk, // this one requires the previous
-                    // call to buildClaimData (return by reference)
             'reqkey'         => $reqkey, 'seckey' => buildSecFile($reqkey),
             'user_attending' => ($this->user_attend_model->chkAttend(
                 $currentUserId, $talk_detail[0]->event_id
