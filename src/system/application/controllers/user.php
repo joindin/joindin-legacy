@@ -339,31 +339,6 @@ class User extends Controller
             redirect('user/login');
         }
 
-        $fields = array(
-            'talk_code' => 'Talk Code'
-        );
-        $rules = array(
-            'talk_code' => 'required'
-        );
-        $this->validation->set_rules($rules);
-        $this->validation->set_fields($fields);
-
-        $arr = array();
-        if ($this->validation->run() != false) {
-            $code = $this->input->post('talk_code');
-            $ret  = $this->talks_model->getTalkByCode($code);
-
-            //link our user and talk
-            if (!empty($ret)) {
-                $uid = $this->session->userdata('ID');
-                $rid = $ret[0]->ID;
-
-                $this->talks_model->linkUserRes($uid, $rid, 'talk');
-
-                $arr['msg'] = 'Talk claimed successfully!';
-            }
-        }
-
         $arr['talks']    = $this->talks_model
             ->getUserTalks($this->session->userdata('ID'));
         $arr['comments'] = $this->talks_model
