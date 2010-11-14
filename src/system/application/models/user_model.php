@@ -116,21 +116,6 @@ class User_model extends Model {
 	}
 	
 	/**
-	 * Check to see if the currently logged in user can view the private
-	 * comments on the given event/talk combo
-	 *
-	 * @param $eid integer Event ID
-	 * @param $tid integer Talk ID
-	 */
-	public function canViewPrivateComments($eid,$tid){
-		if(
-			$this->isAdminEvent($eid) ||
-			$this->isSiteAdmin() || 
-			$this->isAdminTalk($tid)
-		){ return true; }else{ return false; }
-	}
-	
-	/**
 	 * Toggle the user's status - active/inactive
 	 * @param $uid integer User ID
 	 * @return null
@@ -285,6 +270,7 @@ class User_model extends Model {
 	 * @param $end[optional] Ending point for search (not currently used)
 	 */
 	function search($term,$start=null,$end=null){
+		$term = mysql_real_escape_string(strtolower($term));
 		$sql=sprintf("
 			select
 				u.username,
@@ -301,7 +287,7 @@ class User_model extends Model {
 			where
 				lower(username) like '%%%s%%' or
 				lower(full_name) like '%%%s%%'
-		",strtolower($term),strtolower($term));
+		",$term,$term);
 		$q=$this->db->query($sql);
 		return $q->result();
 	}

@@ -21,7 +21,7 @@ $this->load->view('event/modules/_event_tabs',$data);
 ?>
 
 <script type="text/javascript">
-$(function() { 
+$(function() {
 	$('#event-tabs').tabs();
 	if (window.location.hash == '#comment-form') {
 		$('#event-tabs').tabs('select', '#comments');
@@ -32,6 +32,6 @@ $(function() {
 	}
 });
 $(document).ready(function(){
-	event.init();
+	JI_event.init();
 })
 </script>

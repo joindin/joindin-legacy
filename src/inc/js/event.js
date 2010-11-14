@@ -1,7 +1,7 @@
 
-if(!event){ var event = {} }
+if(!JI_event){ var JI_event = {} }
 
-event = function (){
+JI_event = function (){
 	
 	var _deleteEventComment = function(){
 		$('.delete-evt-commment').live('click',function(){
@@ -19,7 +19,6 @@ event = function (){
 	
 	var _claimEvent = function(){
 		$('#claim-event-btn').click(function(){
-			alert('here');
 			var obj={ "eid": $('#eid').val() };
 			apiRequest('event','claim',obj,function(obj){
 				alert(obj.msg);

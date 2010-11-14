@@ -197,8 +197,10 @@ class Talks_model extends Model {
 	}
 	/**
 	* Gets the comments for a session/talk
-	* $tid Talk ID
-	* $cid [optional] Comment ID (if you want to get only one comment)
+	* @param $tid Talk ID
+	* @param $cid [optional] Comment ID (if you want to get only one comment)
+	* @param $private Whether to include private comments
+	* @return array The comments, from database
 	*/
 	public function getTalkComments($tid,$cid=null,$private=false){
 		$this->load->library('gravatar');
@@ -484,6 +486,8 @@ class Talks_model extends Model {
 
 	//---------------
 	public function search($term,$start,$end){
+		$term = mysql_real_escape_string($term);
+		
 		$this->db->select('talks.*, count(talk_comments.ID) as ccount, (select round(avg(rating)) from talk_comments where talk_id=talks.ID) as tavg, events.ID eid, events.event_name');
 	    $this->db->from('talks');
 	    
