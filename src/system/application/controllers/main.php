@@ -73,8 +73,7 @@ class Main extends Controller
             'logged'          => $this->user_model->isAuth(),
             'latest_blog'     => $this->bpm->getLatestPost(),
             'reqkey'          => $reqkey,
-            'seckey'          => buildSecFile($reqkey),
-            'upcoming_events' => array()
+            'seckey'          => buildSecFile($reqkey)
         );
 
         // now add the attendance data for the hot events
