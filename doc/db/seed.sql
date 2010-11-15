@@ -5,7 +5,7 @@ the table structure, this seed data cannot be added.
 */
 	
 /* Add in some sample users */
-/* John Doe is a normal site user, is password is "password" */
+/* John Doe is a normal site user, his password is "password" */
 insert into user (
 	username,password,
 	email,last_login,
@@ -101,7 +101,7 @@ insert into talks (
 	'This is sample talk #1 from the seed load. This description is here to provide an example.',
 	1,
 	NULL,
-	'en',
+	1,
 	NULL
 );
 SELECT @ftalkid:=LAST_INSERT_ID();
@@ -115,6 +115,15 @@ insert into talk_speaker (
 	@ftalkid,
 	'John Doe',
 	NULL
+);
+
+/* Insert talk category info for the talk */
+insert into talk_cat (
+    talk_id, cat_id, ID
+) values (
+    @ftalkid,
+    1,
+    NULL
 );
 
 insert into talks (
@@ -131,7 +140,7 @@ insert into talks (
 	'This is sample talk #2 from the seed load. This description is here to provide an example.',
 	1,
 	NULL,
-	'en',
+	1,
 	NULL
 );
 SELECT @stalkid:=LAST_INSERT_ID();
@@ -145,6 +154,15 @@ insert into talk_speaker (
 	@stalkid,
 	'Jane Doe',
 	NULL
+);
+
+/* Insert talk category info for the talk */
+insert into talk_cat (
+    talk_id, cat_id, ID
+) values (
+    @stalkid,
+    1,
+    NULL
 );
 
 /* ----------------------------------*/
