@@ -5,7 +5,7 @@ menu_pagetitle('Error!');
 <h1 class="icon-event">Error!</h1>
 
 <p>
-The page you were looking for wasn't found! Here's a few others that 
+The page you were looking for wasn't found! Here's a few others that
 might be what you're looking for - give them a try!
 </p>
 <p>
@@ -20,7 +20,3 @@ Every event has their talks but you can get a quick summary here of talks across
 <b><a href="/about">About <?php echo $this->config->item('site_name'); ?></a></b><br/>
 Learn all about <?php echo $this->config->item('site_name'); ?> and what it has to offer you as both a user and conference planner
 </p>
-
-<?php
-//echo $msg;
-?>

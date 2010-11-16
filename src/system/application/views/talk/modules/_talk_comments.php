@@ -13,13 +13,6 @@ if (empty($comments)) {
 	echo '<h2 id="comments">Comments</h2>';
 	
     foreach ($comments as $k => $v) {
-	
-		//print_r($v);
-	
-        if ($v->private && !$admin){ 
-            continue; 
-        }
-    
         if (isset($v->user_id) && $v->user_id != 0){ 
     		$uname = '<a href="/user/view/'.$v->user_id.'">'.escape($v->uname).'</a> ';
     	}else{ 

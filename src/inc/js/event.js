@@ -1,7 +1,7 @@
 
-if(!event){ var event = {} }
+if(!JI_event){ var JI_event = {} }
 
-event = function (){
+JI_event = function (){
 	
 	var _deleteEventComment = function(){
 		$('.delete-evt-commment').live('click',function(){

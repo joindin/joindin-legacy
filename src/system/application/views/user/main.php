@@ -6,21 +6,6 @@ ob_start();
 <?php if (!empty($this->validation->error_string)): ?>
 	<?php $this->load->view('msg_error', array('msg' => $this->validation->error_string)); ?>
 <?php endif; ?>
-<?php
-		
-		echo form_open('user/main');
-		echo form_input(array('name' => 'talk_code', 'style' => 'width:95%'));
-		echo form_submit(array('name' => 'sub', 'class' => 'btn'), 'Submit');
-		echo form_close();
-		?>
-		<p>
-		Enter your talk code above to claim your talk and have access to private comments from visitors. <a href="/about/contact">Contact Us</a> to have the code for your talk sent via email.
-		</p>
-
-<?php
-menu_sidebar('Claim a talk', ob_get_clean());
-
-?>
 <div class="menu">
 	<ul>
 		<li class="active"><a href="/user/main">Dashboard</a>

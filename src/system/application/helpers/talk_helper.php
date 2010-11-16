@@ -34,15 +34,41 @@ function buildClaimData($talk_detail,$talk_claims,&$ftalk){
 
 /**
  * Split out the comment types based on the inputted array (comment, keynote, etc)
- * @param array $talk_comments Full listing of all talks for an event
  *
+ * Used by the talk controller *WARNING* includes filtering of private comments
+ *
+ * @param array $talk_comments Full listing of all talks for an event
+ * @param bool  $admin Whether this user is a talk/event/site admin
+ * @param int   $user_id The ID of the current user, so we can show you your own comments
  * @return array $comments Sorted list of sessions
  */
-function splitCommentTypes($talk_comments){
+function splitCommentTypes($talk_comments, $admin, $user_id){
 	$comments=array();
+
 	foreach($talk_comments as $k=>$comment){
-		$type=($comment->comment_type===NULL) ? 'comment' : $comment->comment_type; 
-		$comments[$type][]=$comment;
+		// should comment be included?
+		if($comment->private) {
+			$include_comment = false;
+
+			if($admin) {
+				// user is admin
+				$include_comment = true;
+			}
+
+			if($user_id == $comment->user_id) {
+				// this user made the comment
+				$include_comment = true;
+			}
+
+		} else {
+			$include_comment = true;
+		}
+
+		// split the comments
+		if($include_comment) {
+			$type=($comment->comment_type===NULL) ? 'comment' : $comment->comment_type; 
+			$comments[$type][]=$comment;
+		}
 	}
 	return $comments;
 }

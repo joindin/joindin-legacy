@@ -116,21 +116,6 @@ class User_model extends Model {
 	}
 	
 	/**
-	 * Check to see if the currently logged in user can view the private
-	 * comments on the given event/talk combo
-	 *
-	 * @param $eid integer Event ID
-	 * @param $tid integer Talk ID
-	 */
-	public function canViewPrivateComments($eid,$tid){
-		if(
-			$this->isAdminEvent($eid) ||
-			$this->isSiteAdmin() || 
-			$this->isAdminTalk($tid)
-		){ return true; }else{ return false; }
-	}
-	
-	/**
 	 * Toggle the user's status - active/inactive
 	 * @param $uid integer User ID
 	 * @return null
