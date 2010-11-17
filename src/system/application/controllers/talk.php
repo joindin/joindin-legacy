@@ -583,7 +583,7 @@ class Talk extends Controller
             }
         }
 
-        $cl = ($r = $this->talks_model->isTalkClaimed($id)) ? $r : false;
+        $cl = ($r = $this->talks_model->talkClaimDetail($id)) ? $r : false;
 
         //$cap_arr = array(
         //    'img_path' => $_SERVER['DOCUMENT_ROOT'] . '/inc/img/captcha/',
@@ -752,9 +752,10 @@ class Talk extends Controller
             'admin'          => ($is_talk_admin) ? true : false,
             'site_admin'     => ($this->user_model->isSiteAdmin()) ? true : false,
             'auth'           => $this->auth,
-            'claimed'        => $this->talks_model->isTalkClaimed($id),
+            'claimed'        => $this->talks_model->talkClaimDetail($id),
             'claim_status'   => $claim_status, 'claim_msg' => $claim_msg,
             'claim_details'  => $this->userAdmins->getTalkClaims($id),
+			'is_claimed'	 => $this->talkSpeakers->isTalkClaimed($id),
             'speakers'       => $this->talkSpeakers->getSpeakerByTalkId($id),
             'reqkey'         => $reqkey, 'seckey' => buildSecFile($reqkey),
             'user_attending' => ($this->user_attend_model->chkAttend(

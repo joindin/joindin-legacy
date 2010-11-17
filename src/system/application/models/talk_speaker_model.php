@@ -93,7 +93,7 @@ class Talk_speaker_model extends Model {
 	 */
 	public function getSpeakerByTalkId($talk_id){
 		
-		$this->db->select('talk_id,speaker_name,talk_speaker.ID,email,speaker_id');
+		$this->db->select('talk_id,speaker_name,talk_speaker.ID,email,speaker_id,status');
 		$this->db->from('talk_speaker');
 		$this->db->where('talk_id',$talk_id);
 		$this->db->distinct();
@@ -112,6 +112,26 @@ class Talk_speaker_model extends Model {
 		return $ret;
 	}
 	
+	/**
+	 * Find if a talk has been claimed, returns false if not
+	 * otherwise, returns a count of current claims
+	 * 
+	 * @param integer $talk_id Talk ID #
+	 * @return mixed Either boolean or integer
+	 */
+	public function isTalkClaimed($talk_id){
+
+		$this->db->select('count(id) as claimCount');
+		$this->db->from('talk_speaker');
+		$this->db->where(array(
+			'talk_id'	=> $talk_id,
+			'status'	=> ''
+		));
+		$query = $this->db->get();
+		
+		$result = $query->result();
+		return ($result[0]->claimCount && $result[0]->claimCount>0) ? $result[0]->claimCount : false;
+	}
 	
 }
 

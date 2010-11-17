@@ -9,7 +9,7 @@ class Talks_model extends Model {
 	public function deleteTalk($id){
 		$this->db->delete('talks',array('ID'=>$id));
 	}
-	public function isTalkClaimed($tid){
+	public function talkClaimDetail($tid){
 		$sql=sprintf('
 			select
 				u.username,

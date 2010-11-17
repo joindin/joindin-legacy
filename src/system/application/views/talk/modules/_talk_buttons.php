@@ -16,7 +16,7 @@
 	<a class="btn-small" href="/talk/edit/<?php echo $detail->tid; ?>">Edit talk</a>
 <?php endif; ?>
 <?php
-if(empty($claim_details) || count($claim_details)<count($speaker)): ?>
+if(count($speaker)>$is_claimed): ?>
 	<a class="btn-small" href="#" id="claim_btn">Claim This Talk</a>	
 <?php endif; ?>
 </p>
