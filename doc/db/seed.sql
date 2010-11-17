@@ -39,7 +39,7 @@ insert into user (
 SELECT @suserid:=LAST_INSERT_ID();
 /* ----------------------------------*/
 
-/* Insert sample event data */
+/* Insert sample past event data */
 insert into events (
 	event_name,
 	event_start,event_end,
@@ -53,6 +53,48 @@ insert into events (
 	ID
 ) values (
 	'Test Event #1',
+	(select unix_timestamp()-345600),
+	(select unix_timestamp()-259200),
+	'','','New York, NY',
+	'This is a sample event from the seed load script',
+	'seedload',
+	'','seedload_hash',
+	'http://sampledomain.com',
+	'','',0,
+	0,0,1,NULL
+);
+SELECT @pevtid:=LAST_INSERT_ID();
+/* ----------------------------------*/
+
+/* Insert past event attendees */
+insert into user_attend (
+    uid, eid, ID
+) values (
+    @fuserid,
+    @pevtid,
+    NULL
+),
+(
+    @suserid,
+    @pevtid,
+    NULL
+);  
+/* ----------------------------------*/
+
+/* Insert sample event data */
+insert into events (
+	event_name,
+	event_start,event_end,
+	event_lat,event_long,
+	event_loc,event_desc,
+	event_stub,
+	event_icon,event_hashtag,
+	event_href,event_cfp_start,event_cfp_end,
+	event_voting,private,
+	pending,active,
+	ID
+) values (
+	'Test Event #2',
 	unix_timestamp(),
 	(select unix_timestamp()+86400),
 	'','','Dallas, Tx',
@@ -78,7 +120,7 @@ insert into event_comments (
 	ID
 ) values (
 	@evtid,
-	'This is a sample comment on the Test Event #1',
+	'This is a sample comment on the Test Event #2',
 	unix_timestamp(),
 	@fuserid,
 	1,
