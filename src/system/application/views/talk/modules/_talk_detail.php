@@ -3,7 +3,17 @@
 	<h1><?php echo $detail->talk_title?></h1>
 
 	<p class="info">
-		<strong><?php echo $speaker_txt; ?></strong> (<?php echo $detail->display_datetime; ?>)
+		<strong>
+			<?php foreach($speakers as $speaker): ?>
+			<?php 
+			if(!empty($speaker->speaker_id) && $speaker->status!='pending'){
+				echo '<a href="/user/view/'.$speaker->speaker_id.'">'.$speaker->full_name.'</a>';
+			}else{
+				echo $speaker->speaker_name;
+			}
+			?>
+			<?php endforeach; ?>
+		</strong> (<?php echo $detail->display_datetime; ?>)
 		<br/> 
 		<?php echo escape($detail->tcid); ?> at <strong><a href="/event/view/<?php echo $detail->event_id; ?>"><?php echo escape($detail->event_name); ?></a></strong> (<?php echo escape($detail->lang_name);?>)
 	</p>

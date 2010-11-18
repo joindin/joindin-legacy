@@ -53,22 +53,17 @@
     		</td>
     		<td>
     			<?php
-				$speaker_list=array();
-				foreach($talk->speaker as $sp){
-					if(isset($claims[$sp->talk_id])){
-						foreach($claims[$sp->talk_id] as $c=>$claim){
-							//If it matches exactly or if there's only one claim
-							if(
-								$c==$sp->speaker_name || 
-								(count($claims[$sp->talk_id])==1 && count($talk->speaker)==1) && 
-								$claim['rcode']!='pending'
-							){
-								$speaker_list[]='<a href="/user/view/'.$claim['uid'].'">'.$sp->speaker_name.'</a>';
-							}elseif(count($talk->speaker)>1){ $speaker_list[]=$sp->speaker_name; }
+				$speaker_list = array();
+				foreach($talk->speaker as $speaker){ 
+					if(array_key_exists($talk->ID,$claimed)){
+						// we know we have at least one speaker - loop!
+						foreach($claimed[$talk->ID] as $speaker_claim){
+							$speaker_list[]='<a href="/user/view/'.$speaker_claim->speaker_id.'">'.$speaker_claim->full_name.'</a>';
 						}
-					}else{ $speaker_list[]=$sp->speaker_name; }
+					}else{ 
+						$speaker_list[]=$speaker->speaker_name; 
+					}
 				}
-				if(empty($speaker_list)){ $speaker_list[]='None'; }
 				echo implode(', ',$speaker_list);
 				?>
     		</td>

@@ -18,15 +18,14 @@ if (!empty($msg)): ?>
 $speaker_ids= array();
 $speaker    = array();
 
-$speaker_images	= buildSpeakerImg($claim_details);
-$speaker_txt	= buildClaimedLinks($speakers,$claim_details);
+$speaker_images	= buildSpeakerImg($speakers);
 $rstr 			= rating_image($detail->tavg);
 
 $data=array(
 	'detail'		=> $detail,
-	'speaker_txt'	=> $speaker_txt,
 	'speaker_img'	=> $speaker_images,
-	'rstr'			=> $rstr
+	'rstr'			=> $rstr,
+	'speakers'		=> $speakers
 );
 $this->load->view('talk/modules/_talk_detail',$data);
 

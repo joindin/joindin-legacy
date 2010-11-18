@@ -111,17 +111,19 @@ function buildClaimedLinks($speakers,$claim_detail){
 	return implode(', ',$speaker_links);
 }
 
-function buildSpeakerImg($claims){
+function buildSpeakerImg($speakers){
 	$ci=&get_instance();
 	$ci->load->library('gravatar');	
 	$user_images=array();
-
-	foreach($claims as $claim){
-		if($img_data=$ci->gravatar->displayUserImage($claim->uid,true)){
-			$user_images[$claim->uid]=$img_data;
-		}else{
-			$ci->gravatar->getUserImage($claim->uid,$claim->email);
-			$user_images[$claim->uid]=$ci->gravatar->displayUserImage($claim->uid,true);
+	
+	foreach($speakers as $speaker){
+		if(!empty($speaker->speaker_id)){
+			if($img_data=$ci->gravatar->displayUserImage($speaker->speaker_id,true)){
+				$user_images[$speaker->speaker_id]=$img_data;
+			}else{
+				$ci->gravatar->getUserImage($claim->uid,$claim->email);
+				$user_images[$speaker->speaker_id]=$ci->gravatar->displayUserImage($speaker->speaker_id,true);
+			}
 		}
 	}
 	return $user_images;

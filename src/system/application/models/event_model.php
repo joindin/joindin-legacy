@@ -364,68 +364,34 @@ SQL
 	
 	function getClaimedTalks($eid, $talks = null){
 		$this->load->helper('events');
-		$ids	= array();
-		$tdata	= array();
-
-		// Find all of the talks for the event...
-		if ($talks === null) {
-			$ret = $this->getEventTalks($eid); //echo '<pre>'; print_r($ret); echo '</pre>';
-		} else {
-			$ret = $talks;
-		}
-		foreach($ret as $k=>$v){
-			$codes=array();
-			/*
-			$p=explode(',',$v->speaker);
-			$codes=array();
-			foreach($p as $ik=>$iv){
-				$codes[]=buildCode($v->ID,$v->event_id,$v->talk_title,trim($iv));
-			}
-			*/
-			
-			$tdata[$v->ID]=array(
-				'talk_title'=> $v->talk_title,
-				'event_id'	=> $v->event_id,
-				'speaker'	=> $v->speaker,
-				'codes'		=> $codes
-			);
-			$ids[]=$v->ID; 
-		}
-
-		// escape all uids
-		foreach ($ids as &$uid) {
-			$uid = $this->db->escape($uid);
-		}
-
-		// Now find the users that are in the user_admin take
-		// and try to match them up...
-		$uids=implode(',',$ids);
-		if(empty($uids)){ return array(); }
-
-		$sql=sprintf('
+		
+		$sql=sprintf("
 			select
-				ua.uid,
-				ua.rid,
-				ua.rtype,
-				ua.ID,
-				ua.rcode,
-				u.email
+				ts.speaker_id,
+				u.username,
+				u.full_name,
+				t.ID talk_id,
+				ts.speaker_name
 			from
-				user_admin ua,
-				user u
+				talks t,
+				user u,
+				talk_speaker ts
 			where
-				ua.uid=u.ID and 
-				ua.rid in (%s)
-		',$uids);
-		$q=$this->db->query($sql);
-		$ret=$q->result();
-		foreach($ret as $k=>$v){ 
-			$ret[$k]->tdata=$tdata[$v->rid];
+				ts.talk_id = t.ID and
+				t.event_id = %s and
+				u.ID = ts.speaker_id
+		",$eid);
+		$query		= $this->db->query($sql);
+		$claims 	= $query->result();
+		
+		$claimedTalks = array();
+		foreach($claims as $claim){
+			$claimedTalks[$claim->talk_id][$claim->speaker_id]=$claim;
 		}
-
+		
 		// This gives us a return array of all of the claimed talks
 		// for the this event
-		return $ret;
+		return $claimedTalks;
 	}
 	function getEventFeedback($eid, $order_by = NULL){
 		// handle the ordering

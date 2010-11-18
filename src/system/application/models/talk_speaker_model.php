@@ -93,13 +93,13 @@ class Talk_speaker_model extends Model {
 	 */
 	public function getSpeakerByTalkId($talk_id){
 		
-		$this->db->select('talk_id,speaker_name,talk_speaker.ID,email,speaker_id,status');
+		$this->db->select('talk_id,speaker_name,talk_speaker.ID,email,speaker_id,status,full_name');
 		$this->db->from('talk_speaker');
 		$this->db->where('talk_id',$talk_id);
 		$this->db->distinct();
 		// left join for those of us who think our name is different from 
 		// what conference organisers think it is
-		$this->db->join('user','user.full_name=talk_speaker.speaker_name', 'left');
+		$this->db->join('user','user.ID=talk_speaker.speaker_id', 'left');
 		$result=$this->db->get();
 		$ret=$result->result();
 		
