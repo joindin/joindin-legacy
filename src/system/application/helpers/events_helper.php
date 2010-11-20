@@ -75,57 +75,6 @@ function buildClaimedUids($claimed_talks)
 }
 
 /**
- * Given the full list of claimed talks (event_model->getClaimedTalks),
- * figure out the user IDs that have claims in there and the count of
- * claims on a session.
- *
- * @param array $claimed_talks The array of claimed talks
- *
- * @return array[]
- */
-function buildClaimDetail($claimed_talks)
-{
-    $claim_detail = array(
-        'uids' => array(),
-        'claim_count' => array()
-    );
-
-    foreach ($claimed_talks as $k => $v) {
-        $claim_detail['uids'][$v->rid] = $v->uid;
-
-        if (isset($times_claimed[$v->rid])) {
-            $claim_detail['claim_count'][$v->rid]++;
-        } else {
-            $claim_detail['claim_count'][$v->rid] = 1;
-        }
-    }
-
-    return $claim_detail;
-}
-
-/**
- * Given the full list of claimed talks (event_model->getClaimedTalks),
- * build an overview of claims.
- *
- * @param array $claimed_talks
- *
- * @return array
- */
-function buildClaims($claimed_talks)
-{
-    $claims = array();
-
-    foreach ($claimed_talks as $talk) {
-        $claims[$talk->talk_id][$talk->full_name] = array(
-            'uid' => $talk->user_id,
-            'rcode' => $talk->rcode
-        );
-    }
-
-    return $claims;
-}
-
-/**
  * Given the full list of sessions, finds which of them given have slides.
  *
  * @param array $sessions

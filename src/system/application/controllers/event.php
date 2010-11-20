@@ -615,7 +615,6 @@ class Event extends Controller
         $talks         = $this->talks_model->setDisplayFields($talks);
         $claimed_talks = $this->event_model->getClaimedTalks($id, $talks);
 
-        $claim_detail           = buildClaimDetail($claimed_talks);
         $event_related_sessions = $this->event_model->getEventRelatedSessions($id);
 
         $arr = array(
@@ -635,11 +634,7 @@ class Event extends Controller
             'latest_comment' => $this->event_model->getLatestComment($id),
             'admins'         => $evt_admins,
             'tracks'         => $this->etm->getEventTracks($id),
-            'times_claimed'  => $claim_detail['claim_count'],
-            'claimed_uids'   => $claim_detail['uids'],
-            'claims'         => buildClaims($this->event_model->getEventClaims($id)),
             'talk_stats'     => $talk_stats
-            //'attend' =>$this->uam->getAttendCount($id)
             //'started'=>$this->tz->hasEvtStarted($id),
         );
 
