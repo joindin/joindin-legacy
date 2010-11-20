@@ -35,14 +35,13 @@ foreach($claimsByTalk as $talkId => $claims){
 	$query = $ci->db->get_where('talk_speaker',array('talk_id' => $talkId));
 	$talkDetail = $query->result();
 	
-	var_dump($talkDetail);
-	var_dump($claims);
+	//var_dump($talkDetail);
+	//var_dump($claims);
 	
 	// So, if there's only one claim and only one talk_speaker row, match
 	if(count($claims)==1 && count($talkDetail)==1){
-		// working - uncomment to run!
-		//$ci->db->where('ID',$talkDetail[0]->ID);
-		//$ci->db->update('talk_speaker',array('speaker_id' => $claims[0]->uid));
+		$ci->db->where('ID',$talkDetail[0]->ID);
+		$ci->db->update('talk_speaker',array('speaker_id' => $claims[0]->uid));
 		
 	}else{
 		// we'll have to try to match by name
@@ -52,8 +51,14 @@ foreach($claimsByTalk as $talkId => $claims){
 				
 				$speakerName = $detail->speaker_name;
 				
-				// not working!
-				
+				// get the information for the claim's UID
+				$query = $ci->db->get_where('user',array('ID'=>$claim->uid));
+				$userDetail = $query->result();
+
+				if($speakerName==$userDetail[0]->full_name){
+					$ci->db->where('ID',$detail->ID);
+					$ci->db->update('talk_speaker',array('speaker_id' => $claim->uid));
+				}
 			}
 			
 		}
