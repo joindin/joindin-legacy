@@ -54,15 +54,14 @@
     		<td>
     			<?php
 				$speaker_list = array();
-				foreach($talk->speaker as $speaker){ 
-					if(array_key_exists($talk->ID,$claimed)){
-						// we know we have at least one speaker - loop!
-						foreach($claimed[$talk->ID] as $speaker_claim){
-							$speaker_list[]='<a href="/user/view/'.$speaker_claim->speaker_id.'">'.$speaker_claim->full_name.'</a>';
-						}
-					}else{ 
+				foreach($talk->speaker as $speaker){
+					if(isset($claimed[$talk->ID][$speaker->speaker_id])){
+						$claim_data = $claimed[$talk->ID][$speaker->speaker_id];
+						$speaker_list[]='<a href="/user/view/'.$claim_data->speaker_id.'">'.$claim_data->full_name.'</a>';
+					}else{
 						$speaker_list[]=$speaker->speaker_name; 
 					}
+					
 				}
 				echo implode(', ',$speaker_list);
 				?>
