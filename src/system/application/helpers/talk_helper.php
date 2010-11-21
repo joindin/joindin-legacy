@@ -121,7 +121,7 @@ function buildSpeakerImg($speakers){
 			if($img_data=$ci->gravatar->displayUserImage($speaker->speaker_id,true)){
 				$user_images[$speaker->speaker_id]=$img_data;
 			}else{
-				$ci->gravatar->getUserImage($claim->uid,$claim->email);
+				$ci->gravatar->getUserImage($speaker->speaker_id,$speaker->email);
 				$user_images[$speaker->speaker_id]=$ci->gravatar->displayUserImage($speaker->speaker_id,true);
 			}
 		}

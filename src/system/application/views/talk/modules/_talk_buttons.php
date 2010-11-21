@@ -3,7 +3,9 @@
 	<?php
 	$speaker_list = array();
 	foreach($speakers as $speaker){
-		$speaker_list[$speaker->ID]=$speaker->speaker_name;
+		if(empty($speaker->speaker_id)){
+			$speaker_list[$speaker->ID]=$speaker->speaker_name;
+		}
 	}
 	echo form_dropdown('claim_name_select', $speaker_list,null,'id="claim_name_select"');
 	?>
