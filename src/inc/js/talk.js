@@ -86,15 +86,21 @@ talk = function (){
 		});
 	}
 	
+	/* remove old method from above for claim_btn */
 	var _claimButton = function(){
 		$('#claim-btn').click(function(){
 			var obj=new Object();
 			//obj.cid		= cid;
 			//obj.rtype	= rtype;
-			obj.talk_id = 2345;
+			obj.talk_id = $('#talk_id').val();
 			obj.talk_speaker_id = $('#claim_name_select').val();
 			apiRequest('talk','claim',obj, function(obj) {
-				console.log('sending claim');
+				if(obj.msg=='Success'){
+					alert("Thanks for claiming this talk! You will be emailed when the claim is approved!");
+				}else{
+					alert(obj.msg);
+				}
+				return false;
 				return false;
 			});
 			return false;
