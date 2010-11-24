@@ -301,30 +301,37 @@ class Talks_model extends Model {
 		return $q->result();
 	}
 	
-	public function getUserTalks($uid){
-		$talks=array();
-		//select rid from user_admin where uid=$uid and rtype='talks'
-		$this->db->select('*');
-		$this->db->from('user_admin');
-		$this->db->join('talks','talks.id=user_admin.rid');
-		$this->db->where('uid',$uid);
-		$this->db->where('rtype','talk');
-		$this->db->where('rcode !=','pending');
-		$this->db->order_by('talks.date_given desc');
-		
-		$q	= $this->db->get();
-		$ret= $q->result(); 
-		
+	/**
+	 * Get the talks successfully claimed by the user
+	 * Results include talk information
+	 * 
+	 * @param integer $uid User ID
+	 * @return array $talks Talk detail information
+	 */
+	public function getUserTalks($uid,$showAll=false){
+		$talks	 = array();
 		$claimed = $this->getSpeakerTalks($uid);
-		$ret = array_merge($ret,$claimed);
 		
-		foreach($ret as $k=>$v){ 
-			$t=$this->getTalks($v->rid);
-			if(isset($t[0])){ $talks[]=$t[0]; }
+		foreach($claimed as $index => $claim){
+			// remove if pending
+			if($claim->status != null && $showAll === false){
+				continue;
+			}
+			
+			$talk=$this->getTalks($claim->talk_id);
+			if(isset($talk[0])){ 
+				$talks[]=$talk[0]; 
+			}
 		}
 		return $talks;
 	}
 	
+	/**
+	 * Get successfully claimed talks by speaker
+	 *
+	 * @param integer $speakerId User ID
+	 * @return array 
+	 */
 	public function getSpeakerTalks($speakerId)
 	{
 		$talks = array();
@@ -335,15 +342,15 @@ class Talks_model extends Model {
 		$this->db->where('speaker_id',$speakerId);
 		$this->db->order_by('talks.date_given desc');
 		
-		$q 		= $this->db->get();
-		$ret 	= $q->result();
+		$query 	= $this->db->get();
+		$talks 	= $query->result();
 		
 		// the RID isn't set like the other talk info - lets set it!
-		foreach($ret as $key => $talk){
-			$ret[$key]->rid = $talk->talk_id;
+		foreach($talks as $index => $talk){
+			$talks[$index]->rid = $talk->talk_id;
 		}
 		
-		return $ret;
+		return $talks;
 	}
 	
 	public function getUserComments($uid){
