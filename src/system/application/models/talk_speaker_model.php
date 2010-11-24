@@ -63,9 +63,29 @@ class Talk_speaker_model extends Model {
 		}
 	}
 	
-	public function getTalkSpeakers($talk_id){
-		$q=$this->db->get_where('talk_speaker',array('talk_id'=>$talk_id));
-		return $q->result();
+	/**
+	 * Return the information for the given talk ID
+	 * 
+	 * @param integer $talk_id Talk ID #
+	 * @param boolean $showAll[optional] Switch to have method return all, no matter the status
+	 * @return array $speaker Speaker data
+	 */
+	public function getTalkSpeakers($talk_id,$showAll=false)
+	{		
+		$query = $this->db->get_where('talk_speaker',array('talk_id'=>$talk_id));
+		$speakers = $query->result();
+		
+		if($showAll == true){
+			return $speakers;
+		}else{		
+			// if the status isn't null, remove the speaker_id
+			foreach($speakers as $speakerIndex => $speaker){
+				if($speaker->status != null){
+					$speakers[$speakerIndex]->speaker_id = null;
+				}
+			}
+		}
+		return $speakers;
 	}
 	
 	/**
@@ -91,14 +111,13 @@ class Talk_speaker_model extends Model {
 	 * 
 	 * @return array Speaker information
 	 */
-	public function getSpeakerByTalkId($talk_id){
+	public function getSpeakerByTalkId($talk_id,$showAll=false){
 		
 		$this->db->select('talk_id,speaker_name,talk_speaker.ID,email,speaker_id,status,full_name');
 		$this->db->from('talk_speaker');
 		$this->db->where('talk_id',$talk_id);
 		$this->db->distinct();
-		// left join for those of us who think our name is different from 
-		// what conference organisers think it is
+		
 		$this->db->join('user','user.ID=talk_speaker.speaker_id', 'left');
 		$result=$this->db->get();
 		$ret=$result->result();
