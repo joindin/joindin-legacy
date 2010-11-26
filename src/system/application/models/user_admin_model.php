@@ -190,9 +190,38 @@ class User_admin_model extends Model {
 	 */
 	public function getPendingClaims($type='talk',$rid=null){
 	    switch($type){
-               case 'talk':    return $this->getPendingClaims_Talks($rid); break;
-               case 'event':   return $this->getPendingClaims_Events($rid); break;
+			//case 'talk':    return $this->getPendingClaims_Talks($rid); break;
+			case 'talk':    return $this->getPendingClaim_TalkSpeaker($rid); break;
+			case 'event':   return $this->getPendingClaims_Events($rid); break;
 	    }
+	}
+	
+	/**
+	 * Get the pending talk clams for the event 
+	 * @param integer $eid[optional] Event Id
+	 */
+	public function getPendingClaim_TalkSpeaker($eid=null)
+	{
+		$sql = sprintf("
+			select
+				ts.talk_id,
+				ts.speaker_name,
+				u.username
+			from
+				talks t,
+				user u,
+				talk_speaker ts
+			where
+				ts.talk_id = t.ID and
+				u.ID = ts.speaker_id and
+				ts.status = 'pending' and
+				t.event_id = %s
+		",$eid);
+		
+		$query = $this->db->query($sql);
+		$results = $query->result();
+		
+		return $results;
 	}
 
 	/**
