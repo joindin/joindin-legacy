@@ -9,7 +9,7 @@
 | For more info visit:  http://www.php.net/error_reporting
 |
 */
-	error_reporting((isset($_SERVER['JOINDIN_DEBUG']) && ($_SERVER['JOINDIN_DEBUG'] == 'on')) ? E_ALL | E_STRICT :  0);
+	error_reporting((isset($_SERVER['JOINDIN_DEBUG']) && ($_SERVER['JOINDIN_DEBUG'] == 'on')) ? E_ALL | E_STRICT : 0);
 
 /*
 |---------------------------------------------------------------

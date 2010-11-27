@@ -145,7 +145,6 @@ class Api extends Controller
     {
         $this->load->library('service');
         $data = file_get_contents('php://input');
-        var_dump($data);
         $ret = array(
             'out' => $this->service->handle('site', $data)
         );

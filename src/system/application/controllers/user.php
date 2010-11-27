@@ -283,7 +283,6 @@ class User extends Controller
         $this->validation->set_fields($fields);
 
         if ($this->validation->run() == false) {
-      
             //$this->load->view('talk/add',array('events'=>$events));
         } else {
             //success!

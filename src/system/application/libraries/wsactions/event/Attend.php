@@ -11,7 +11,6 @@ class Attend extends BaseWsRequest {
 	}
 	public function checkSecurity($xml){
 		// Just check the key combination on the URL
-            
 		if($this->isValidLogin($xml) || $this->checkPublicKey()) {
 			return true;
 		}

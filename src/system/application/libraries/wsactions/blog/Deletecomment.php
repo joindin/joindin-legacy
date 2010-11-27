@@ -26,7 +26,7 @@ class Deletecomment extends BaseWsRequest {
 				return false;
 			}
 			$user=$this->CI->session->userdata('username');
-                        
+			
 			// Now check to see if they're a site admin
 			if(!$this->CI->user_model->isSiteAdmin($user)){
 				return false;

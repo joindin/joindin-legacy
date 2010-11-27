@@ -55,7 +55,6 @@ class Service {
 		// Get the permissions type of the requested action
 		$ret=array();
 		$action=$ws_root.'/'.$type.'/'.ucwords($rtype).'.php';
-                
 		if(is_file($action)){
 			// Get our base web service library
 			$this->CI->load->library('wsactions/BaseWsRequest');
