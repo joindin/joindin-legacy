@@ -14,7 +14,8 @@ class BaseWsRequest {
 	public function isValidLogin($xml){
 		if(!$this->CI){ $this->CI=&get_instance(); }
 		$this->CI->load->model('user_model');
-		
+
+                
 		// Check for a valid login
 		if(isset($xml->auth->user) && isset($xml->auth->pass)){
 			// Check to see if they're a valid user
@@ -34,6 +35,7 @@ class BaseWsRequest {
 		
 		//if it is public, check our "key" they sent along to prevent abuse
 		$get_vars = explode('&',$_SERVER['QUERY_STRING']);
+                
 		if($get_vars) {
 			foreach($get_vars as $k=>$v){ 
 				$x=explode('=',$v); 

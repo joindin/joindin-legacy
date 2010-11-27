@@ -16,6 +16,7 @@ class Wsvalidate {
 		$fail=array();
 		
 		//print_r($rules); print_r($obj);
+               
 		foreach($rules as $k=>$v){
 			$m=explode('|',$v); //print_r($m);
 			//echo $v.' '.$k.' '.$obj->$k."\n";
