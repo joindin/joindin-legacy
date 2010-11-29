@@ -36,8 +36,7 @@ $data=array(
 	'comments'		=> $comments,
 	'slides_list'	=> $slides_list,
 	'admin'			=> $admin,
-	'tracks'		=> $tracks,
-	'claims'		=> $claim,
+	'tracks'		=> $tracks,	
 	'talk_stats'	=> $talk_stats
 );
 $this->load->view('event/modules/_event_tabs',$data);
