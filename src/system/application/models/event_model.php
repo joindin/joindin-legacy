@@ -285,7 +285,7 @@ SQL
 		return $result;
 	}
 
-	function getEventAdmins($eid){
+	function getEventAdmins($eid,$all_results=false){
 	    $sql=sprintf("
 		select
 		    u.username,
@@ -302,6 +302,11 @@ SQL
 		    ua.rid=e.ID and
 		    u.ID=ua.uid
 	    ",$this->db->escape($eid));
+
+	    if(!$all_results){
+		$sql.=" and rcode!='pending'";
+	    }
+
 	    $q=$this->db->query($sql);
 	    return $q->result();
 	}
