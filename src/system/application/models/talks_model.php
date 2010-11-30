@@ -36,7 +36,7 @@ class Talks_model extends Model {
 			where
 				u.ID = ts.speaker_id and
 				ts.talk_id = t.ID and
-				t.ID = %s %s
+				t.ID = %s
 		',$this->db->escape($tid));
 		
 		if(!$show_all){
@@ -44,7 +44,7 @@ class Talks_model extends Model {
 		}
 		
 		$query	= $this->db->query($sql);
-		$talks	= $q->result();
+		$talks	= $query->result();
 		
 		//echo '<pre>'; print_r($ret); echo '</pre>';
 		foreach($talks as $k => $talk){
@@ -281,11 +281,17 @@ class Talks_model extends Model {
 		return $q->result();
 	}
 	
+	/**
+	 * Get recent talks from any and all events
+	 *
+	 * @return array Talk detail information
+	 */
 	public function getRecentTalks(){
 		$sql=sprintf("
 			select
 			  DISTINCT t.ID,
 			  t.talk_title,
+			  t.date_given,
 			  count(tc.ID) as ccount,
 			  round(avg(tc.rating)) as tavg,
 			  e.ID eid,
@@ -297,21 +303,19 @@ class Talks_model extends Model {
 			    ON e.ID=t.event_id
 			  JOIN talk_comments tc
 			    ON tc.talk_id=t.ID
-			  INNER JOIN user_admin ua
-			    ON t.ID = ua.rid
+			  INNER JOIN talk_speaker ts
+			    ON t.ID = ts.talk_id
 			WHERE
 			    e.event_start > %s
 			  and
-			    ua.rtype = 'talk'
-			  and
-				ua.rcode != 'pending'
+				(ts.status != 'pending' OR ts.status is null)
 			group by
 			  t.ID
 			having
 			  tavg>3 and ccount>3
 		",strtotime('-3 months'));
-		$q=$this->db->query($sql);
-		return $q->result();
+		$query = $this->db->query($sql);
+		return $query->result();
 	}
 	
 	/**
@@ -482,6 +486,7 @@ class Talks_model extends Model {
 	 * user IDs to exclude from the talk rating averages
 	 *
 	 * @param integer $tid Talk ID
+	 * @return array User IDs
 	 */
 	public function _findExcludeComments($tid){
 	    $uid	= array();	
@@ -489,8 +494,10 @@ class Talks_model extends Model {
 		$speaker_rows = $query->result();
 		
 		if(count($speaker_rows)){
-			foreach($speaker_row as $speaker){
-				$uid[] = $speaker->speaker_id;
+			foreach($speaker_rows as $speaker){
+				if(!empty($speaker->speaker_id)){
+					$uid[] = $speaker->speaker_id;
+				}
 			}
 		}
 	    return $uid;
