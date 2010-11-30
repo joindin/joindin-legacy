@@ -9,41 +9,54 @@ class Talks_model extends Model {
 	public function deleteTalk($id){
 		$this->db->delete('talks',array('ID'=>$id));
 	}
-	public function talkClaimDetail($tid){
+	
+	/**
+	 * Find details on claims of a talk
+	 *
+	 * @param integer $tid Talk ID
+	 * @param boolean $show_all Switch to show/hide
+	 * @return array $talks Talk claim data
+	 */
+	public function talkClaimDetail($tid,$show_all=false){
+		
 		$sql=sprintf('
 			select
 				u.username,
 				u.email,
-				ua.uid,
-				ua.rid,
-				ua.rcode,
+				ts.speaker_id uid,
+				ts.talk_id rid,
 				u.ID userid,
 				t.talk_title,
 				t.event_id,
-				t.speaker
+				ts.speaker_name speaker
 			from
 				user u,
-				user_admin ua,
-				talks t
+				talks t,
+				talk_speaker ts
 			where
-				u.ID=ua.uid and
-				ua.rid=%s and
-				ua.rcode!=\'pending\' and
-				t.ID=ua.rid
+				u.ID = ts.speaker_id and
+				ts.talk_id = t.ID and
+				t.ID = %s %s
 		',$this->db->escape($tid));
-		$q=$this->db->query($sql);
-		$ret=$q->result();
+		
+		if(!$show_all){
+			$sql.=" and ts.status != 'pending'";
+		}
+		
+		$query	= $this->db->query($sql);
+		$talks	= $q->result();
+		
 		//echo '<pre>'; print_r($ret); echo '</pre>';
-		foreach($ret as $k=>$v){
+		foreach($talks as $k => $talk){
 			$codes=array(); $speakers=array();
-			foreach(explode(',',$v->speaker) as $ik=>$iv){
-				$codes[]=buildCode($v->rid,$v->event_id,$v->talk_title,trim($iv));
+			foreach(explode(',',$talk->speaker) as $ik=>$iv){
+				$codes[]=buildCode($talk->rid,$talk->event_id,$talk->talk_title,trim($iv));
 				$speakers[]=trim($iv);
 			}
-			$ret[$k]->codes=$codes;
-			$ret[$k]->speakers=$speakers;
+			$talks[$k]->codes=$codes;
+			$talks[$k]->speakers=$speakers;
 		}
-		return $ret;
+		return $talks;
 	}
 	
 	/**
@@ -463,18 +476,23 @@ class Talks_model extends Model {
 		return $q->result();
 	}
 	//---------------
+	
+	/**
+	 * Find the user IDs that have claims on a talk. This lets us know which 
+	 * user IDs to exclude from the talk rating averages
+	 *
+	 * @param integer $tid Talk ID
+	 */
 	public function _findExcludeComments($tid){
-	    $uid=array();
-	    
-	    // See if there's any speaker claims for the talk
-	    $this->db->select('uid,rid,ID');
-	    $this->db->from('user_admin');
-	    $this->db->where('rid',$tid);
-	    $this->db->where('rtype','talk');
-	    $q=$this->db->get();
-	    $ret=$q->result();
-	    if($ret){ foreach($ret as $k=>$v){ $uid[]=$v->uid; } }
-
+	    $uid	= array();	
+		$query	= $this->db->get_where('talk_speaker',array('talk_id'=>$tid));
+		$speaker_rows = $query->result();
+		
+		if(count($speaker_rows)){
+			foreach($speaker_row as $speaker){
+				$uid[] = $speaker->speaker_id;
+			}
+		}
 	    return $uid;
 	}
 
