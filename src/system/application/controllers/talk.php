@@ -585,12 +585,6 @@ class Talk extends Controller
 
         $cl = ($r = $this->talks_model->talkClaimDetail($id)) ? $r : false;
 
-        //$cap_arr = array(
-        //    'img_path' => $_SERVER['DOCUMENT_ROOT'] . '/inc/img/captcha/',
-        //    'img_url' => '/inc/img/captcha/', 'img_width' => '130',
-        //    'img_height' => '30'
-        //);
-
         $rules = array(
             'rating' => $cl && $cl[0]->userid == $currentUserId
                 ? null : 'required'
