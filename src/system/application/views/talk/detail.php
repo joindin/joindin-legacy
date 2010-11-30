@@ -31,7 +31,6 @@ $this->load->view('talk/modules/_talk_detail',$data);
 
 $data=array(
 	'speaker'		=> $speakers,
-	'claim'			=> $claim_details,
 	'speakers'		=> $speakers,
 	'is_claimed'	=> $is_claimed
 );
