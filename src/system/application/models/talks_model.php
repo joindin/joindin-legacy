@@ -16,6 +16,7 @@ class Talks_model extends Model {
 				u.email,
 				ua.uid,
 				ua.rid,
+                ua.rtype,
 				ua.rcode,
 				u.ID userid,
 				t.talk_title,
@@ -29,10 +30,12 @@ class Talks_model extends Model {
 				u.ID=ua.uid and
 				ua.rid=%s and
 				ua.rcode!=\'pending\' and
+                ua.rtype=\'talk\' and
 				t.ID=ua.rid
 		',$this->db->escape($tid));
 		$q=$this->db->query($sql);
 		$ret=$q->result();
+        
 		//echo '<pre>'; print_r($ret); echo '</pre>';
 		foreach($ret as $k=>$v){
 			$codes=array(); $speakers=array();
@@ -421,7 +424,7 @@ class Talks_model extends Model {
 			', $this->db->escape($e->ID));
 			$q=$this->db->query($sql);
 			$claimed_users=$q->result();
-			//var_dump($claimed_users);
+            //var_dump($claimed_users);
 			
 			// Now, for these users, lets find ones that have good ratings
 			foreach($claimed_users as $u){
