@@ -98,7 +98,6 @@ class Talk extends Controller
         $this->load->model('event_track_model', 'eventTracks');
         $this->load->model('talk_track_model', 'talkTracks');
         $this->load->model('talk_speaker_model', 'talkSpeakers');
-        $this->load->model('user_admin_model', 'userAdmins');
 
         // check to see if they're supposed to be here
         if (!$this->auth) {
@@ -122,7 +121,7 @@ class Talk extends Controller
             // see if they have access to the talk (claimed user,
             // site admin, event admin)
             if ($this->user_model->isAdminEvent($eid)
-                || $this->userAdmins->hasPerm($currentUserId, $id, 'talk')
+                || $this->talkSpeakers->hasPerm($currentUserId, $id, 'talk')
             ) {
                 // fine, let them through
             } else {
@@ -490,7 +489,6 @@ class Talk extends Controller
         $this->load->model('event_model');
         $this->load->model('invite_list_model', 'ilm');
         $this->load->model('user_attend_model');
-        $this->load->model('user_admin_model', 'userAdmins');
         $this->load->model('talk_track_model', 'talkTracks');
         $this->load->model('talk_comments_model', 'tcm');
         $this->load->model('talk_speaker_model', 'talkSpeakers');
@@ -748,7 +746,6 @@ class Talk extends Controller
             'auth'           => $this->auth,
             'claimed'        => $this->talks_model->talkClaimDetail($id),
             'claim_status'   => $claim_status, 'claim_msg' => $claim_msg,
-            'claim_details'  => $this->userAdmins->getTalkClaims($id),
 			'is_claimed'	 => $this->talkSpeakers->isTalkClaimed($id),
             'speakers'       => $this->talkSpeakers->getSpeakerByTalkId($id),
             'reqkey'         => $reqkey, 'seckey' => buildSecFile($reqkey),
