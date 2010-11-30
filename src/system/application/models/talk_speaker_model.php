@@ -152,6 +152,25 @@ class Talk_speaker_model extends Model {
 		return ($result[0]->claimCount && $result[0]->claimCount>0) ? $result[0]->claimCount : false;
 	}
 	
+	/**
+	 * Check to see if the given user has permissions (claimed)
+	 * the talk ID
+	 *
+	 * @param integer $user_id User ID
+	 * @param integer $talk_id Talk ID
+	 * @return boolean
+	 */
+	public function hasPerm($user_id,$talk_id)
+	{
+		$query = $this->db->get_where('talk_speaker',array(
+			'talk_id'		=> $talk_id,
+			'speaker_id'	=> $user_id,
+			'status !='		=> 'pending'
+		));
+		$result = $query->result();
+		return (count($result)>0) ? true : false;
+	}
+	
 }
 
 ?>
