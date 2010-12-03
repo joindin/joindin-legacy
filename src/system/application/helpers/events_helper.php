@@ -37,7 +37,7 @@ function buildCode($tid, $eid, $title, $speaker_name)
  * Given the full list of claimed talks (event_model->getClaimedTalks),
  * find the number of times they've been claimed.
  *
- * @param array List of claimed talks
+ * @param array $claimed_talks List of claimed talks
  *
  * @return int
  */
@@ -77,7 +77,7 @@ function buildClaimedUids($claimed_talks)
 /**
  * Given the full list of sessions, finds which of them given have slides.
  *
- * @param array $sessions
+ * @param array $sessions The full list of sessions
  *
  * @return array
  */
@@ -122,7 +122,7 @@ function event_isNowOn($event_start, $event_end)
  * Takes an event, and attempts to add a flag to say whether the event is on
  * now.
  *
- * @param object $event
+ * @param object $event The event to add a flag on
  *
  * @return object
  */
@@ -138,7 +138,7 @@ function event_decorateNow($event)
  * Takes an array of events, and attempts to add a flag to each one to say
  * whether the event is on now.
  *
- * @param object[] $events
+ * @param object[] $events The array of events
  *
  * @return object[]
  */

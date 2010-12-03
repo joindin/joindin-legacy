@@ -359,6 +359,7 @@ SQL
 				ua.rid=t.id and
 				e.id=t.event_id and
 				u.id=ua.uid and
+                ua.rtype = \'talk\' and
 				e.id = %s
 		',$this->db->escape($event_id));
 		$q=$this->db->query($sql);

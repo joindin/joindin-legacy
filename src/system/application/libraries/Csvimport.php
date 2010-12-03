@@ -131,7 +131,7 @@ class Csvimport {
 		if(isset($this->_language_index) && isset($row[$this->_language_index])) {
 			// if there's a language, is it valid?
 			if(isset($this->_languages[$row[$this->_language_index]])) {
-				$talk_data['lang'] = $row[$this->_language_index];
+				$talk_data['lang'] = $this->_languages[$row[$this->_language_index]]->ID;
 			} else {
 				 throw new Exception("Language " . $row[$this->_language_index] . " not supported");
 			}

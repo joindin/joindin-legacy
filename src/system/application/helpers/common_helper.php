@@ -89,9 +89,11 @@ function auto_p($pee, $br = 1)
     $pee = preg_replace('!(</' . $allblocks . '>)!', "$1\n\n", $pee);
 
     // cross-platform newlines
-    $pee = str_replace(array(
-        "\r\n", "\r"
-    ), "\n", $pee);
+    $pee = str_replace(
+        array(
+                    "\r\n", "\r"
+        ), "\n", $pee
+    );
 
     if (strpos($pee, '<object') !== false) {
         // no pee inside object/embed
@@ -105,8 +107,7 @@ function auto_p($pee, $br = 1)
     // make paragraphs, including one at the end
     $pees = preg_split('/\n\s*\n/', $pee, -1, PREG_SPLIT_NO_EMPTY);
     $pee = '';
-    foreach ($pees as $tinkle)
-    {
+    foreach ($pees as $tinkle) {
         $pee .= '<p>' . trim($tinkle, "\n") . "</p>\n";
     }
 
@@ -116,7 +117,7 @@ function auto_p($pee, $br = 1)
 
     // don't pee all over a tag
     $pee = preg_replace('!<p>\s*(</?' . $allblocks . '[^>]*>)\s*</p>!', "$1", $pee);
-    $pee = preg_replace("|<p>(<li.+?)</p>|", "$1", $pee); // problem with nested lists
+    $pee = preg_replace("|<p>(<li.+?)</p>|", "$1", $pee); //problem with nested lists
     $pee = preg_replace('|<p><blockquote([^>]*)>|i', "<blockquote$1><p>", $pee);
     $pee = str_replace('</blockquote></p>', '</p></blockquote>', $pee);
     $pee = preg_replace('!<p>\s*(</?' . $allblocks . '[^>]*>)!', "$1", $pee);
@@ -161,7 +162,7 @@ function auto_p($pee, $br = 1)
  *
  * Can be adapted and evolved as needed this is just a starter for ten
  *
- * @param string String to escape
+ * @param string $str String to escape
  *
  * @return string
  */
