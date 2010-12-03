@@ -23,15 +23,8 @@ class Talks_model extends Model {
 			select
 				u.username,
 				u.email,
-<<<<<<< HEAD:src/system/application/models/talks_model.php
 				ts.speaker_id uid,
 				ts.talk_id rid,
-=======
-				ua.uid,
-				ua.rid,
-                ua.rtype,
-				ua.rcode,
->>>>>>> ji-master/master:src/system/application/models/talks_model.php
 				u.ID userid,
 				t.talk_title,
 				t.event_id,
@@ -41,7 +34,6 @@ class Talks_model extends Model {
 				talks t,
 				talk_speaker ts
 			where
-<<<<<<< HEAD:src/system/application/models/talks_model.php
 				u.ID = ts.speaker_id and
 				ts.talk_id = t.ID and
 				t.ID = %s
@@ -53,18 +45,7 @@ class Talks_model extends Model {
 		
 		$query	= $this->db->query($sql);
 		$talks	= $query->result();
-		
-=======
-				u.ID=ua.uid and
-				ua.rid=%s and
-				ua.rcode!=\'pending\' and
-                ua.rtype=\'talk\' and
-				t.ID=ua.rid
-		',$this->db->escape($tid));
-		$q=$this->db->query($sql);
-		$ret=$q->result();
-        
->>>>>>> ji-master/master:src/system/application/models/talks_model.php
+
 		//echo '<pre>'; print_r($ret); echo '</pre>';
 		foreach($talks as $k => $talk){
 			$codes=array(); $speakers=array();
