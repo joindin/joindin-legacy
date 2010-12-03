@@ -277,8 +277,15 @@ class Talks_model extends Model {
 				ccount desc
 			limit '.$len.'
 		');
-		$q=$this->db->query($sql);
-		return $q->result();
+		$query = $this->db->query($sql);
+		$talks = $query->result();
+		
+		$CI=&get_instance();
+		$CI->load->model('talk_speaker_model','tsm');
+		foreach($talks as $k=>$talk){
+			$talks[$k]->speaker=$CI->tsm->getTalkSpeakers($talk->ID);
+		}
+		return $talks;
 	}
 	
 	/**

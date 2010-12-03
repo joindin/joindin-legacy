@@ -9,6 +9,20 @@
 			<?php if(isset($talk->event_start)){ echo '('.date('m.d.Y',$talk->date_given).')'; } ?>
 			|
     		<a href="/talk/view/<?php echo escape($talk->ID); ?>#comments"><?php echo $talk->ccount; ?> comment<?php echo $talk->ccount == 1 ? '' : 's'?></a>
+		|
+		<?php
+		$speaker_list = array();
+		if(isset($talk->speaker) && !empty($talk->speaker)){
+			foreach($talk->speaker as $speaker){
+				if(isset($speaker->speaker_id)){
+					$speaker_list[]='<a href="/user/view/'.$speaker->speaker_id.'">'.$speaker->speaker_name.'</a>';
+				}else{
+					$speaker_list[]=$speaker->speaker_name;
+				}
+			}
+		}
+		echo implode(', ',$speaker_list);
+		?>
     	</p>
 	</div>
 	<div class="clear"></div>
