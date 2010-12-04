@@ -21,10 +21,17 @@ class Event extends Base
 		'event_icon'	=> array('TYPE'=>'varchar(30)')
 		/* more columns go here */
 	);
+
+    public $orm = array(
+        'eventComments' => array(
+            'table' => 'event_comments',
+            'key'   => 'ID = event_comments.event_id'
+        )
+    );
 	
-	public $values = array(
-		
-	);
+	public $values = array( );
+
+    public $table = 'events';
 	
 	public function __construct($id = null)
 	{
