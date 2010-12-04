@@ -9,20 +9,18 @@ abstract class Base
 	public $columns = array();
 	
 	public function __get($name){
-		echo 'get';
+		$name = strtolower($name);
+		return (isset($this->values[$name])) ? $this->values[$name] : null;
 	}
 	
 	public function __call($funcName,$arguments)
 	{
-		echo 'call: '.$funcName;
-		print_r($arguments); echo '<br/><br/>';
-		
 		$functionName = strtolower($funcName);
 		
 		if(strpos($functionName,'getby')==0){
 			//see if it's a function first....
 			if(method_exists($this,$funcName)){
-				echo 'method exists';
+				echo 'method exists - call that instead';
 			}else{
 				// doesn't exist - see if we're trying to use one of the columns
 				$getByType = str_replace('getby','',$functionName);
@@ -30,8 +28,6 @@ abstract class Base
 				
 				foreach($columnNames as $column){
 					if(strtolower($column) == $getByType){
-						echo 'type: '.$column;
-						
 						// call a get where "col = value"
 						$return = $this->fetch('events',array($column=>$arguments[0]));
 

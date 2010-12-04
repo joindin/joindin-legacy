@@ -206,7 +206,8 @@ class About extends Controller
 	public function test()
 	{
 		$event = $this->load->model_obj('Event',459);
-		echo '<pre>'; var_dump($event); echo '</pre>';
+		//echo '<pre>'; var_dump($event); echo '</pre>';
+		echo 'title: '.$event->event_name;
 		
 	}
 }
