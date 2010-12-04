@@ -202,6 +202,13 @@ class About extends Controller
         $this->template->write_view('content', 'about/services', array());
         $this->template->render();
     }
+
+	public function test()
+	{
+		$event = $this->load->model_obj('Event',459);
+		echo '<pre>'; var_dump($event); echo '</pre>';
+		
+	}
 }
 
 ?>
