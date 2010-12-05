@@ -62,6 +62,40 @@ abstract class Base
                 throw new Exception('Column name "'.$submitKey.'" not allowed!');
             }
         }
+
+        $this->validateTypes($inputData);
+    }
+
+    /**
+     * Loop through the values given and ensure they match the type
+     * NOTE: This method does not yet provide a complete check
+     * 
+     * @param  $inputData
+     * @return void
+     */
+    private function validateTypes($inputData)
+    {
+        foreach($inputData as $dataIndex => $data){
+
+            $columnType = $this->columns[$dataIndex];
+            preg_match('/(.*?)\((.*?)\)/',$columnType['TYPE'],$matches);
+
+            switch(strtoupper($matches[1])){
+                case 'VARCHAR':
+                    if(!is_string($data)){
+                        throw new Exception('not correct type (string)!');
+                    }
+                    break;
+                case 'INT':
+                    if(!ctype_digit($data)){
+                        throw new Exception('not correct type (integer)!');
+                    }
+                    break;
+                default:
+                    echo 'Error!';
+            }
+
+        }
     }
 	
 	public function find($where,$filters = null,$table = null,$currentObj = null)

@@ -208,29 +208,31 @@ class About extends Controller
 		/*$event = $this->load->model_obj('Event',459);
 		//echo '<pre>'; var_dump($event); echo '</pre>';
 		echo 'title: '.$event->event_name;
-
+        */
+        
         // makek an empty object
         $event = $this->load->model_obj('Event');
         var_dump($event);
 
         $arr = array(
             'event_name'        => 'create from model',
-            'event_location'    => 'Dallas, Tx',
-            'event_start'       => time()
+            //'event_location'    => 'Dallas, Tx',
+            //'event_start'       => time()
+            'event_start'       => 'testing'
         );
         try {
             $event->create($arr);
         }catch(Exception $e){
-            echo $e->getMessage();
-        }*/
+            echo '<br/><b>ERROR:</b> '.$e->getMessage().'<br/>';
+        }
 
-        $event = $this->load->model_obj('Event');
+        /*$event = $this->load->model_obj('Event');
         $arr = array(
             'id' => 480
         );
         $filters = array('eventComments');
         $eventData = $event->find($arr,$filters);
-        echo '<pre>'; print_r($eventData); echo '</pre>';
+        echo '<pre>'; print_r($eventData); echo '</pre>';*/
 	}
 }
 
