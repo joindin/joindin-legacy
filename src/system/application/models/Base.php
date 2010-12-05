@@ -64,28 +64,46 @@ abstract class Base
         }
     }
 	
-	public function find($where,$filters = null)
+	public function find($where,$filters = null,$table = null,$currentObj = null)
 	{
-        $tableName = $this->table;
+        // check the "where" and see if we need to replace
+        foreach($where as $key => $value){
+            preg_match('/\[(.*?)\]/',$value,$match);
+            if(isset($match[1])){
+                $where[$key]=str_replace('['.$match[1].']',$currentObj->$match[1],$where[$key]);
+            }
+        }
         
+        $tableName = ($table) ? $table : $this->table;
+
 		$ci = &get_instance();
-		$query = $ci->db->get_where($tableName,$where);
-		$result = $query->result();
+        $ci->db->select('*');
+        $ci->db->from($tableName);
+        $ci->db->where($where);
+		//$query = $ci->db->get_where($tableName,$where);
+        $query      = $ci->db->get();
+		$results    = $query->result();
 
         // see if the class has ORM keys
         if(isset($this->orm) && count($this->orm)>0 && $filters!=null){
-            print_r($this->orm);
+            $allowedFilters = array();
 
             // now look at our filters and see which keys to follow
             foreach($filters as $filter){
                 if(array_key_exists($filter,$this->orm)){
-                    echo 'key exists';
-                    // for each of these, use the key to
+                    $allowedFilters[$filter]=$this->orm[$filter];
+                }
+            }
+            
+            // loop through the results and get the linked results
+            foreach($results as $resultIndex => $result){
+                foreach($allowedFilters as $filterName => $filter){
+                   $results[$resultIndex]->$filterName = $this->find($filter['key'],null,$filter['table'],$result);
+                    
                 }
             }
         }
-
-        return $result;
+        return $results;
 	}
 
     /**

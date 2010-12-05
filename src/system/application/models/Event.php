@@ -13,7 +13,7 @@ class Event extends Base
 		'event_end'		=> array('TYPE'=>'int(11)'),
 		'event_lat'		=> array('TYPE'=>'decimal(20,16)'),
 		'event_long'	=> array('TYPE'=>'decimal(20,16)'),
-		'id'			=> array('TYPE'=>'int(11)','PRIMARY_KEY'=>true,'VALUE'=>null),
+		'ID'			=> array('TYPE'=>'int(11)','PRIMARY_KEY'=>true,'VALUE'=>null),
 		'event_loc'		=> array('TYPE'=>'mediumtext'),
 		'event_desc'	=> array('TYPE'=>'mediumtext'),
 		'active'		=> array('TYPE'=>'int(11)'),
@@ -25,7 +25,7 @@ class Event extends Base
     public $orm = array(
         'eventComments' => array(
             'table' => 'event_comments',
-            'key'   => 'ID = event_comments.event_id'
+            'key'   => array('event_id'=>'[ID]')
         )
     );
 	

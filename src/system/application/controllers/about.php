@@ -205,7 +205,7 @@ class About extends Controller
 
 	public function test()
 	{
-		$event = $this->load->model_obj('Event',459);
+		/*$event = $this->load->model_obj('Event',459);
 		//echo '<pre>'; var_dump($event); echo '</pre>';
 		echo 'title: '.$event->event_name;
 
@@ -222,10 +222,11 @@ class About extends Controller
             $event->create($arr);
         }catch(Exception $e){
             echo $e->getMessage();
-        }
+        }*/
 
+        $event = $this->load->model_obj('Event');
         $arr = array(
-            'id' => 459
+            'id' => 480
         );
         $filters = array('eventComments');
         $eventData = $event->find($arr,$filters);
