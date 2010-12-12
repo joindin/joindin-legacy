@@ -212,14 +212,16 @@ class About extends Controller
         
         // makek an empty object
         $event = $this->load->model_obj('Event');
-        var_dump($event);
+        //var_dump($event);
 
         $arr = array(
             'event_name'        => 'create from model',
             //'event_location'    => 'Dallas, Tx',
-            //'event_start'       => time()
-            'event_start'       => 'testing'
+            'event_start'       => time()
+            //'event_start'       => 'testing'
         );
+		echo '<pre>'; print_r($arr); echo '</pre>';
+
         try {
             $event->create($arr);
         }catch(Exception $e){
@@ -233,6 +235,10 @@ class About extends Controller
         $filters = array('eventComments');
         $eventData = $event->find($arr,$filters);
         echo '<pre>'; print_r($eventData); echo '</pre>';*/
+
+		$eventData = $event->getByEvent_Name('ZendCon 2010');
+		echo '<pre>'; print_r($eventData); echo '</pre>';
+		
 	}
 }
 

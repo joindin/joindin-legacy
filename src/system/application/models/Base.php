@@ -30,21 +30,22 @@ abstract class Base
 				$columnNames = array_keys($this->columns);
 				
 				foreach($columnNames as $column){
-					if(strtolower($column) == $getByType){
+					if(strtolower($column) == $getByType || str_replace('_','',strtolower($column)) == $getByType){
 						// call a get where "col = value"
 						$return = $this->find(array($column=>$arguments[0]));
-
+						
 						// apply the values to the object
 						foreach($return[0] as $k=>$value){
 							if(isset($this->columns[$k])){
 								$this->values[$k]=$value;
 							}
 						}
-						
 					}
 				}
-				// $this->columns
+				return $this->values;
 			}
+		}else{
+			throw new Exception('Find method "'.$funcName.'" not found!');
 		}
 	}
 
@@ -83,12 +84,12 @@ abstract class Base
             switch(strtoupper($matches[1])){
                 case 'VARCHAR':
                     if(!is_string($data)){
-                        throw new Exception('not correct type (string)!');
+                        throw new Exception('field "'.$data.'" not correct type (string)!');
                     }
                     break;
                 case 'INT':
                     if(!ctype_digit($data)){
-                        throw new Exception('not correct type (integer)!');
+                        throw new Exception('field "'.$data.'" not correct type (integer)!');
                     }
                     break;
                 default:
