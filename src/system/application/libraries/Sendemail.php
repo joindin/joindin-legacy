@@ -16,7 +16,9 @@ class SendEmail {
 	*/
 	private function _sendEmail($to,$msg,$subj,$from=null){
 		if(!is_array($to)){ $to=array($to); }
-		$from=($from) ? $from : $this->_config->item('email_feedback');
+		$from	= ($from) ? $from : $this->_config->item('email_feedback');
+		$to 	= ($this->_config->item('debug_email')) : array($this->_config->item('debug_email')) : $to;
+
 		foreach($to as $email){
 			mail($email,$subj,$msg,'From: '.$from);
 		}

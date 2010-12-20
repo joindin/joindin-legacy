@@ -366,5 +366,8 @@ $config['defensio_owner']	= '';
 $config['gravatar_cache_dir']   = realpath(dirname(__FILE__) .'/../../../inc/img/user_gravatar');
 $config['gravatar_cache_relative_url']   = '/inc/img/user_gravatar';
 
+// If you're debugging and want all emails to go to one address, use this
+// $config['debug_email']		= '';
+
 /* End of file config.php */
 /* Location: ./system/application/config/config.php */
