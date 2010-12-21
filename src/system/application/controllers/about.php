@@ -236,7 +236,10 @@ class About extends Controller
         $eventData = $event->find($arr,$filters);
         echo '<pre>'; print_r($eventData); echo '</pre>';*/
 
-		$eventData = $event->getByEvent_Name('ZendCon 2010');
+		//$eventData = $event->getByEventName('ZendCon 2010');
+		$event = $this->load->model_obj('Event');
+		$filters = array('eventComments');
+		$eventData = $event->findByEventName('create from model',$filters);
 		echo '<pre>'; print_r($eventData); echo '</pre>';
 		
 	}

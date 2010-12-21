@@ -20,29 +20,35 @@ abstract class Base
 	{
 		$functionName = strtolower($funcName);
 		
-		if(strpos($functionName,'getby')==0){
+		if(strpos($functionName,'findby')==0){
 			//see if it's a function first....
 			if(method_exists($this,$funcName)){
-				echo 'method exists - call that instead';
+				call_user_func_array(array($this,$functionName),$arguments);
 			}else{
 				// doesn't exist - see if we're trying to use one of the columns
-				$getByType = str_replace('getby','',$functionName);
+				$getByType = str_replace('findby','',$functionName);
 				$columnNames = array_keys($this->columns);
 				
 				foreach($columnNames as $column){
 					if(strtolower($column) == $getByType || str_replace('_','',strtolower($column)) == $getByType){
 						// call a get where "col = value"
-						$return = $this->find(array($column=>$arguments[0]));
+						$returnData = $this->find(
+							array($column=>$arguments[0]),
+							(isset($arguments[1])) ? $arguments[1] : null
+						);
 						
-						// apply the values to the object
-						foreach($return[0] as $k=>$value){
+						// if we only have one, apply the values to the object
+						if(count($returnData)==1){
+						    foreach($returnData[0] as $k=>$value){
 							if(isset($this->columns[$k])){
-								$this->values[$k]=$value;
+							    $this->values[$k]=$value;
 							}
+						    }
+						    return $this->values;
 						}
 					}
 				}
-				return $this->values;
+				return $returnData;
 			}
 		}else{
 			throw new Exception('Find method "'.$funcName.'" not found!');
@@ -117,7 +123,7 @@ abstract class Base
         $ci->db->where($where);
 		//$query = $ci->db->get_where($tableName,$where);
         $query      = $ci->db->get();
-		$results    = $query->result();
+	$results    = $query->result();
 
         // see if the class has ORM keys
         if(isset($this->orm) && count($this->orm)>0 && $filters!=null){
@@ -134,7 +140,6 @@ abstract class Base
             foreach($results as $resultIndex => $result){
                 foreach($allowedFilters as $filterName => $filter){
                    $results[$resultIndex]->$filterName = $this->find($filter['key'],null,$filter['table'],$result);
-                    
                 }
             }
         }
@@ -154,6 +159,20 @@ abstract class Base
         echo '<pre>'; print_r($inputValues); echo '</pre>';
         $ci = &get_instance();
         $result = $ci->db->insert($this->table,$inputValues);
+    }
+
+    /**
+    * Deletes the current object from the database
+    * @return void
+    */
+    public function delete()
+    {
+	// look at the object this is called with, get its properties
+	$properties = get_object_vars($this);
+	$currentProperties = $properties['values'];
+
+	$ci = &get_instance();
+	$ci->db->delete($this->table,$currentProperties);
     }
 	
 }
