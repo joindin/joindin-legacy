@@ -41,4 +41,8 @@ class Event extends Base
 		}
 	}
 	
+	public function getEvents(){
+		
+	}
+	
 }

@@ -24,6 +24,7 @@ abstract class Base
 			//see if it's a function first....
 			if(method_exists($this,$funcName)){
 				echo 'method exists - call that instead';
+				
 			}else{
 				// doesn't exist - see if we're trying to use one of the columns
 				$getByType = str_replace('getby','',$functionName);
@@ -92,6 +93,9 @@ abstract class Base
                         throw new Exception('field "'.$data.'" not correct type (integer)!');
                     }
                     break;
+				case 'DECIMAL':
+					// check for decimal
+					break;
                 default:
                     echo 'Error!';
             }
