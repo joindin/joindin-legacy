@@ -20,6 +20,12 @@ talk = function (){
 	// Requires API
 	var _claimTalk = function(){
 		$('#claim_btn').click(function(){
+			// see if they're logged in...
+			if($('#user_id').val().length<=0){
+				window.location.href = '/user/login';
+				return false;
+			}
+			
 			var obj={ "talk_id": $('#talk_id').val() };
 			$('#claim_select_div').css('display','block');
 			$('#claim_btn').css('display','none');

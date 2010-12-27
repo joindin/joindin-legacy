@@ -53,6 +53,7 @@ $this->load->view('talk/modules/_talk_comments',$data);
 $this->load->view('talk/modules/_talk_comment_form',$data); 
 ?>
 <input type="hidden" name="talk_id" id="talk_id" value="<?php echo $detail->ID ?>" />
+<input type="hidden" name="user_id" id="user_id" value="<?php echo $user_id ?>" />
 
 <script type="text/javascript">
 $(document).ready(function(){ talk.init(); })
