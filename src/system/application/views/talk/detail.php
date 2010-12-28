@@ -32,7 +32,8 @@ $this->load->view('talk/modules/_talk_detail',$data);
 $data=array(
 	'speaker'		=> $speakers,
 	'speakers'		=> $speakers,
-	'is_claimed'	=> $is_claimed
+	'is_claimed'	=> $is_claimed,
+	'user_id'		=> $user_id
 );
 $this->load->view('talk/modules/_talk_buttons',$data);
 ?>

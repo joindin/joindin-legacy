@@ -19,6 +19,6 @@
 <?php endif; ?>
 <?php
 if(count($speaker)>$is_claimed): ?>
-	<a class="btn-small" href="#" id="claim_btn">Claim This Talk</a>	
+	<a class="btn-small" href="<?php echo (!isset($user_id)) ? '/user/login' : ''?>" id="claim_btn">Claim This Talk</a>	
 <?php endif; ?>
 </p>
