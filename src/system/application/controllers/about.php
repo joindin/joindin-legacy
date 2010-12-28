@@ -202,6 +202,18 @@ class About extends Controller
         $this->template->write_view('content', 'about/services', array());
         $this->template->render();
     }
+
+    /**
+     * Displays information about importing CSV files
+     *
+     * @return void
+     */
+    function import()
+    {
+        $this->template->write_view('content', 'about/import');
+        $this->template->render();
+    }
+
 }
 
 ?>

@@ -3,60 +3,28 @@ menu_pagetitle('About');
 ?>
 <h1 class="icon-about">About</h1>
 
-<?php 
-$msg='<a href="/about/iphone_support"><img src="/inc/img/iphone.jpg" height="70" style="margin-right:10px" 
-	align="left" border="0"/></a><b style="font-size:13px">Check out our 
-	new iPhone application!</b><br/>Want the best way to keep up with all of the events and comments from 
-	' . $this->config->item('site_name') . ' directly from your phone? <a href="http://itunes.apple.com/us/app/joind-in/id355184913?mt=8">Download
-	our iPhone app here!</a><br/><a href="/about/iphone_support">Visit our App Support page</a>';
-$this->load->view('msg_info', array('msg' => $msg));
+<h3 style="color:#5181C1">Online Event Feedback</h3>
+<p><?php echo $this->config->item('site_name'); ?> is the replacement for all those paper submission forms that get left on  the floor at the end of an event.  The site gives details of events past, present and future, the sessions, timetable and speakers at each, and allows all attendees to register and leave feedback - for the sessions and for the event itself.</p>
 
-$msg='<b>New to ' . $this->config->item('site_name') . '?</b> Check out our <a href="/inc/files/User_Guide.pdf">User Guide</a> for the ins and outs
-of using ' . $this->config->item('site_name') . '!';
-$this->load->view('msg_info', array('msg' => $msg));
+<p>As well as the website, there is an open API and applications are freely available for iphone and android, and there is a wordpress plugin to show your event information on your own site.</p>
 
-$msg='<b>We have an open API!</b> Looking for more information on how you can connect your applications to the 
-	' . $this->config->item('site_name') . ' API? <a href="/api">Check out the docs here!</a>';
-$this->load->view('msg_info', array('msg' => $msg)); 
+<h3 style="color:#5181C1">For Organizers</h3>
+<p>Collect real time, public feedback on all your sessions - check out how speakers and sessions have been received at other similar events.  Your event appears in the listings on the site and speakers can claim their talks to get the sessions associated with their profiles.  To make adding sessions even quicker (we organize events ourselves and know how much pressure you are under), there is a handy CSV import function (see the <a href="/about/import">importing talks</a> page for more details).<p>
 
-$msg='<b>We Have Widgets!</b> Want to put a little bit of '.$this->config->item('site_name').'into your site? Check out <a href="/about/widget">the widget info here!</a>';
-$this->load->view('msg_info', array('msg' => $msg)); 
+<h3 style="color:#5181C1">For Speakers</h3>
+<p>This is the site that keeps your speaker credentials in one place and brings feedback directly to you, on the day, allowing you to continuously evaluate your sessions and improve to achieve your potential as a speaker.  The online nature of the feedback allows users to share their thoughts and rate your talks, and they can do so either instantly or a few days later.  Remember to ask for feedback and for better responses, place the URL for your talk on your slides</p>
 
-?><br/>
+<h3 style="color:#5181C1">For Developers</h3>
+<p><?php echo $this->config->item('site_name'); ?> is an open source project, written in PHP, and we welcome new contributors, commenters and observers.  You can make contact with the project in many ways:<ul>
+<li>The code and a wiki with developer documentation is on github <a href="http://github.com/joindin/joind.in">http://github.com/joindin/joind.in</a></li>
+<li>The issue tracker is also on github <a href="https://github.com/joindin/joind.in/issues">https://github.com/joindin/joind.in/issues</a> - if you see a problem on the site, feel free to report it here</li>
+<li>We have mailing lists - one for <a href="http://groups.google.com/group/joindin-announce">announcements only</a>, one for discussion of <a href="http://groups.google.com/group/joindin-features">features</a> and one for <a href="http://groups.google.com/group/joindin-developers">development discussion</a>.  They are public and we welcome new additions</li>
+<li>There is an IRC channel on irc.freenode.net that you are welcome to join as well #joind.in</li>
+</ul>
 
-<h3 style="color:#5181C1">Like the talk? Let 'em know!</h3>
-<p>
-<?php echo $this->config->item('site_name'); ?> provides the missing link between the people attending a conference and the ones that presented.
-The usual method of handing out paper forms is outdated and needs to be replaced. That's where we come in - 
-attendees can post their comments directly to each of the talks they attended, giving the speaker direct feedback
-on how they did and what they can do to improve.
-</p>
-<p>
-<?php echo $this->config->item('site_name'); ?> also has something to offer the speakers - you can track your record across the conferences and see
-how changes in your talk might have made a difference in your ratings.
-</p>
+<h3 style="color:#5181C1">Get In Touch</h3>
+<p>If you have any comments, questions, feedback or anything else you'd like us to know, then do please <a href="/about/contact">get in touch</a> - we'd be delighted to hear from you!</p>
 
-<br/>
-Like the site or just want to give us some suggestions? <a href="/about/contact">Drop us a note!</a>
-
-<br/><br/><br/>
-<h3 style="color:#5181C1">How can <?php echo $this->config->item('site_name'); ?> work for you?</h3>
-<p>
-Are you organizing a conference and wondering how you can get good feedback from those attending? <?php echo $this->config->item('site_name'); ?> lets
-the attendees of your event leave the feedback they want (public or private) directly to the speakers and those
-organizing the event. Real reviews like this can give you a better idea of how good the event was and things
-you could do better the next time around.
-</p>
-<p>
-<?php echo $this->config->item('site_name'); ?> can also be a resource to find out what people are looking for in conferences and other events. You can
-see which of the talks were rated the highest and who the speakers were on those talks. Attendees also have the 
-option of leaving feedback or making suggestions on the event as a whole.
-</p>
-<p>
-If you're looking for a good way to get some good, honest feedback about your event, you can either 
-<a href="/event/submit">submit your event</a> or <a href="/about/contact">contact us directly</a> about how <?php echo $this->config->item('site_name'); ?>
-can help.
-</p>
 
 <br/>
 <h3 style="color:#5181C1">Other Information</h3>

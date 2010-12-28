@@ -57,6 +57,9 @@ The following are the steps you'll need to correctly install the software:
 
 - In the /src/system/cache directory, create a web server-writeable 
 	directory called "ctokens"
+
+- In the /src/inc/img directory, create a web server writable directory
+    called "user_gravatar"
 	
 - In your src/system/application/config directory:
 	> Make a database.php file using the database.php.dist as a guide

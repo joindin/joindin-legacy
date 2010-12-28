@@ -24,7 +24,7 @@ CREATE TABLE `blog_cats` (
   `name` varchar(100) default NULL,
   `ID` int(11) NOT NULL auto_increment,
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `blog_comments`
@@ -39,7 +39,7 @@ CREATE TABLE `blog_comments` (
   `blog_post_id` int(11) default NULL,
   `author_name` varchar(100) default NULL,
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=695 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `blog_post_cat`
@@ -51,7 +51,7 @@ CREATE TABLE `blog_post_cat` (
   `cat_id` int(11) default NULL,
   `ID` int(11) NOT NULL auto_increment,
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=42 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `blog_posts`
@@ -66,7 +66,7 @@ CREATE TABLE `blog_posts` (
   `ID` int(11) NOT NULL auto_increment,
   `views` int(11) default NULL,
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `categories`
@@ -78,7 +78,7 @@ CREATE TABLE `categories` (
   `cat_desc` text,
   `ID` int(11) NOT NULL auto_increment,
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `countries`
@@ -89,7 +89,7 @@ CREATE TABLE `countries` (
   `name` varchar(50) default NULL,
   `ID` int(11) NOT NULL auto_increment,
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=248 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `event_blog_posts`
@@ -104,7 +104,7 @@ CREATE TABLE `event_blog_posts` (
   `event_id` int(11) default NULL,
   `ID` int(11) NOT NULL auto_increment,
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `event_comments`
@@ -121,7 +121,7 @@ CREATE TABLE `event_comments` (
   `cname` varchar(100) default NULL,
   `comment_type` varchar(100) default NULL,
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=240 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `event_track`
@@ -135,7 +135,7 @@ CREATE TABLE `event_track` (
   `ID` int(11) NOT NULL auto_increment,
   `track_color` varchar(6) default NULL,
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `events`
@@ -164,7 +164,7 @@ CREATE TABLE `events` (
   `event_tz_cont` varchar(30) default NULL,
   `event_tz_place` varchar(70) default NULL,
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=136 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `invite_list`
@@ -178,7 +178,7 @@ CREATE TABLE `invite_list` (
   `date_added` int(11) default NULL,
   `ID` int(11) NOT NULL auto_increment,
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=35 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `lang`
@@ -190,7 +190,7 @@ CREATE TABLE `lang` (
   `lang_abbr` varchar(20) default NULL,
   `ID` int(11) NOT NULL auto_increment,
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `speaker_profile`
@@ -214,7 +214,7 @@ CREATE TABLE `speaker_profile` (
   `picture` varchar(200) default NULL,
   `ID` int(11) NOT NULL auto_increment,
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `speaker_token_fields`
@@ -226,7 +226,7 @@ CREATE TABLE `speaker_token_fields` (
   `field_name` varchar(200) default NULL,
   `ID` int(11) NOT NULL auto_increment,
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=81 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `speaker_tokens`
@@ -240,7 +240,7 @@ CREATE TABLE `speaker_tokens` (
   `created` int(11) default NULL,
   `ID` int(11) NOT NULL auto_increment,
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `talk_cat`
@@ -252,7 +252,7 @@ CREATE TABLE `talk_cat` (
   `cat_id` int(11) default NULL,
   `ID` int(11) NOT NULL auto_increment,
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=1262 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `talk_comments`
@@ -270,7 +270,7 @@ CREATE TABLE `talk_comments` (
   `user_id` int(11) default NULL,
   `comment_type` varchar(10) default NULL,
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=2517 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `talk_track`
@@ -282,7 +282,7 @@ CREATE TABLE `talk_track` (
   `track_id` int(11) default NULL,
   `ID` int(11) NOT NULL auto_increment,
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `talks`
@@ -301,7 +301,7 @@ CREATE TABLE `talks` (
   `owner_id` int(11) default NULL,
   `lang` int(11) default NULL,
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=1269 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `user`
@@ -318,7 +318,7 @@ CREATE TABLE `user` (
   `full_name` varchar(200) default NULL,
   `active` int(11) default NULL,
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=1674 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `user_admin`
@@ -332,7 +332,7 @@ CREATE TABLE `user_admin` (
   `ID` int(11) NOT NULL auto_increment,
   `rcode` varchar(40) default NULL,
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=833 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `user_attend`
@@ -344,7 +344,7 @@ CREATE TABLE `user_attend` (
   `eid` int(11) default NULL,
   `ID` int(11) NOT NULL auto_increment,
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=1153 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
