@@ -98,6 +98,9 @@ abstract class Base
                         throw new Exception('field "'.$data.'" not correct type (integer)!');
                     }
                     break;
+				case 'DECIMAL':
+					// check for decimal
+					break;
                 default:
                     echo 'Error!';
             }
