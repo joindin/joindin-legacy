@@ -4,7 +4,7 @@
             var $tabContainer = $(this);
             $tabContainer.find('ul li a').bind('click.joindIn_tabs',function(e){
                 e.preventDefault();
-                var $t = $(this),$tp = $t.parent(), $r = $t.attr('rel'), $e = $($r);
+                var $t = $(this),$tp = $t.parent(), $r = $t.attr('rel'), $e = $('#'+$r);
                 if ($e.length != 0) {
                     $tabContainer.find('.ui-tabs-panel').not('.ui-tabs-hide').addClass('ui-tabs-hide');
                     $e.removeClass('ui-tabs-hide');

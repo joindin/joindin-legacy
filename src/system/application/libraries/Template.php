@@ -684,7 +684,7 @@ class CI_Template {
 	*/
 	public function has_custom_view($view){
 		$cpath=$this->CI->config->item('custom_template_dir');
-		if($key=apache_getenv('USE_KEY'))
+		if(function_exists('apache_getenv') && $key=apache_getenv('USE_KEY'))
 		{
 			$cpath=$this->CI->config->item('custom_template_dir').'/'.$key.'/'.$view;
 			if(is_file(APPPATH.'/views/'.$cpath.'.php'))

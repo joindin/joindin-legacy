@@ -10,7 +10,7 @@ $data=array(
 	'attend'		=> $attend,
 	'admins'		=> $admins
 );
-$this->load->view('event/modules/_event_detail',$data); 
+$this->load->view('event/modules/_event_detail',$data);
 
 // These are our buttons below the event detail
 $data=array(
@@ -30,7 +30,6 @@ $this->load->view('event/modules/_event_buttons',$data);
     <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
 </p>
 <!-- end google ad -->
-
 <?php
 $data=array(
 	'talks'			=> $talks,
@@ -58,7 +57,7 @@ $this->load->view('event/modules/_event_tabs',$data);
 		}
 		<?php endif; ?>
 		$('#event-tabs').joindIn_tabs();
-		event.init();
+		JI_event.init();
 	});
 })(jQuery);
 </script>

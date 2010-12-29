@@ -285,7 +285,7 @@ SQL
 		return $result;
 	}
 
-	function getEventAdmins($eid){
+	function getEventAdmins($eid,$all_results=false){
 	    $sql=sprintf("
 		select
 		    u.username,
@@ -302,6 +302,11 @@ SQL
 		    ua.rid=e.ID and
 		    u.ID=ua.uid
 	    ",$this->db->escape($eid));
+
+	    if(!$all_results){
+		$sql.=" and rcode!='pending'";
+	    }
+
 	    $q=$this->db->query($sql);
 	    return $q->result();
 	}
@@ -354,6 +359,7 @@ SQL
 				ua.rid=t.id and
 				e.id=t.event_id and
 				u.id=ua.uid and
+                ua.rtype = \'talk\' and
 				e.id = %s
 		',$this->db->escape($event_id));
 		$q=$this->db->query($sql);
@@ -493,6 +499,8 @@ SQL
 
 	//----------------------
 	function search($term,$start,$end){
+		$term = mysql_real_escape_string($term);
+		
 		//if we have the dates, limit by them
 		$attend = '(SELECT COUNT(*) FROM user_attend WHERE eid = events.ID AND uid = ' . $this->db->escape((int)$this->session->userdata('ID')) . ')as user_attending';
 

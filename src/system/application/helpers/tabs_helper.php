@@ -12,7 +12,6 @@
  * @link      http://github.com/joindin/joind.in
  */
 
-
 class joindIn_TabContainer implements countable {
     /**
      * @var array Internal tab data storage
@@ -36,6 +35,7 @@ class joindIn_TabContainer implements countable {
     
     /**
      * Set this tab instance's container name. Used as a base name for ids in the html render
+     * 
      * @param string $name The New Container name
      * @return joindIn_Tabs Itself for a fluid chainable instance
      **/
@@ -75,8 +75,12 @@ class joindIn_TabContainer implements countable {
      * @param string $hash the hash of the tab to make selected
      * @return joindIn_Tabs Itself for a fluid chainable instance
      **/
-    public function setSelectedTab($hash) {
-        $this->_selectedTab = $hash;
+    public function setSelectedTab($id) {
+        
+        if (isset($this->_tabs[$id])) {
+            $this->_tabs[$id]->setSelected();
+        }
+        $this->_selectedTab = $id;
         return $this;
     }
     
@@ -86,7 +90,7 @@ class joindIn_TabContainer implements countable {
      * @return string The Active Tab's Hash
      **/
     public function getSelectedTab() {
-        return $this->_selectedTab;
+        return $this->_tabs[$this->_selectedTab];
     }
     
     /**
@@ -97,13 +101,34 @@ class joindIn_TabContainer implements countable {
      * @return string ID of tab that was just added
      **/
     public function addTab(joindIn_Tab $tab, $id=null) {
-        $this->_tabs[md5($content.$hash)] = array(
-          'url'     =>$url,
-          'caption' =>$caption,
-          'content' =>$content,
-          'hash'    =>$hash
-        );
+        if ($id===null) {
+            $id = $tab->getId();
+        }
+        $this->_tabs[$id] = $tab;
         return $id;
+    }
+    
+    public function setTabs(array $tabs) {
+        $this->_tabs = $tabs;
+    }
+    
+    public function getTabs() {
+        return $this->_tabs;
+    }
+    
+    public function getTab($id) {
+        if (isset($this->_tabs[$id])) {
+            return $this->_tabs[$id];
+        }
+        return null;
+    }
+    
+    public function addTabs(array $tabs) {
+        if (count($this->_tabs) > 0) {
+            $this->_tabs = array_merge($this->_tabs, $tabs);
+        } else {
+            $this->_tabs = $tabs;
+        }
     }
     
     public function render() {
@@ -113,26 +138,30 @@ class joindIn_TabContainer implements countable {
         ob_start();
         $contentList = array();
         reset($this->_tabs);
-        if (empty($this->_selectedTab)) {
+        if (empty($this->_selectedTab) || !isset($this->_tabs[$this->_selectedTab])) {
             $tmp_tab = current($this->_tabs);
-            $this->_selectedTab = $tmp_tab['hash'];
+            $this->_selectedTab = $tmp_tab->getId();
             reset($this->_tabs);
         }
         ?>
         <div id="<?php echo $this->_containerName; ?>-tabs" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
         <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
-            <?php foreach($this->_tabs as $tab): ?>
-            <li class="ui-state-default ui-corner-top<?php if($tab['hash'] == $this->_selectedTab){?> ui-tabs-selected ui-state-active ui-state-focus<?php } ?>">
-                <a href="<?php echo $this->_baseUrl, $tab['url'],'#'.$this->_containerName.'-tabs'; ?>" rel="<?php echo $tab['hash']; ?>"><?php echo $tab['caption']; ?></a>
-            </li>
             <?php
-            $contentList[$tab['hash']] = $tab['content'];
-            endforeach; ?>
+            foreach($this->_tabs as $tab):
+                if ($tab->getId() == $this->_selectedTab) {
+                    $tab->setSelected();
+                }
+                $tab->setParentId($this->_containerName);
+                $tab->setBaseUrl($this->_baseUrl);
+                list($tabTop,$content) = $tab->render();
+                echo $tabTop;
+                $contentList[$tab->getId()] = $content;
+            endforeach;
+            ?>
         </ul>
-        <?php foreach($contentList as $hash=>$content): 
-            $tabID = substr($hash,1) ?>
-            
-        <?php endforeach; ?>
+        <?php foreach($contentList as $hash=>$tabContent):
+            echo $tabContent;
+        endforeach; ?>
         </div>
         <?php $content = ob_get_clean();
         return $content;
@@ -160,6 +189,7 @@ class joindIn_Tab {
     
     private $_id                        = '';
     private $_url                       = '';
+    private $_baseURL                   = '';
     private $_selected                  = false;
     private $_caption                   = '';
     private $_content                   = '';
@@ -197,10 +227,11 @@ class joindIn_Tab {
      * @param boolean $selected Whether this tab is selected
      **/
     public function __construct($url='', $caption='', $content='', $selected=false) {
-        $this->caption  = $caption;
-        $this->selected = $selected;
-        $this->caption  = $caption;
-        $this->content  = $content;
+        $this->_id          = $url;
+        $this->_url         = $url;
+        $this->_selected    = $selected;
+        $this->_caption     = $caption;
+        $this->_content     = $content;
     }
 
     public function clearContent() {
@@ -235,14 +266,47 @@ class joindIn_Tab {
         $this->_caption = $newCaption;
         return $this;
     }
-    
+
+    public function getCaption() {
+        return $this->_caption;
+    }
+
+
     public function setParentId($newParentId) {
         $this->_parentId = $newParentId;
         return $this;
     }
-    public function render() {
+
+    public function getURL() {
+        return $this->_url;
+    }
+
+    public function setBaseURL($newBaseURL) {
+        $this->_baseURL = $newBaseURL;
+        return $this;
+    }
+    public function getBaseURL() {
+        return $this->_baseURL;
+    }
+
+    public function setSelected($selected=true) {
+        $this->_selected = $selected;
+        return $this;
+    }
+
+    public function getSelected() {
+        return $this->_selected;
+    }
+
+    public function render($headerFormat='', $contentFormat='') {
         $header     = '';
+        if (empty($headerFormat)) {
+            $headerFormat = $this->_headerFormat;
+        }
         $content    = '';
+        if (empty($contentFormat)) {
+            $contentFormat = $this->_contentFormat;
+        }
         
         if (empty($this->_id)) {
             $this->_id = md5($this);
@@ -252,7 +316,7 @@ class joindIn_Tab {
             $classes = array_merge($classes, $this->_selectedHeaderClasses);
         }
         $classText = implode(' ', $classes);
-        $header = sprintf($this->_headerFormat, $classText, $this->_url, $this->_parentId, $this->_id, $this->_caption);
+        $header = sprintf($headerFormat, $classText, $this->_baseURL.$this->_url, (!empty($this->_parentId)?$this->_parentId : $this->_id), $this->_id, $this->_caption);
         
         
         $classes = $this->_contentClasses;
@@ -260,7 +324,7 @@ class joindIn_Tab {
             $classes = array_merge($classes, $this->_hiddenContentClasses);
         }
         $classText = implode(' ', $classes);
-        $content = sprintf($this->_contentFormat, $classText, $this->_id, $this->_content);
+        $content = sprintf($contentFormat, $classText, $this->_id, $this->_content);
         
         return array($header, $content);
     }

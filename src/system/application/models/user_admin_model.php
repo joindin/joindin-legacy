@@ -159,13 +159,13 @@ class User_admin_model extends Model {
 		$this->db->from('user_admin');
 		$this->db->join('user','user_admin.uid=user.ID');
 		$this->db->where('rid',$talk_id);
+        $this->db->where('rtype', 'talk');
 		if(!$pending){ 
 			$this->db->where(array('rcode !='=>'pending'));
 		}
 		
 		$q=$this->db->get();
 		$ret=$q->result();
-		
 		return $ret;
 	}
 	
