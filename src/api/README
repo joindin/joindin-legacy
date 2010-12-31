@@ -1,0 +1,5 @@
+This is the second generation API for joind.in.
+
+To configure:
+ - point a new virtual host at the public directory, one level below this file.
+ - symlink database.php in /src/api/ to the database.php in your joind.in installation.
