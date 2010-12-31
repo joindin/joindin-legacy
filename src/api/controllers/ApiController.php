@@ -1,5 +1,5 @@
 <?php
 
 abstract class ApiController {
-	abstract public function handle($request);
+	abstract public function handle($request, $db);
 }
