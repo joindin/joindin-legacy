@@ -1220,6 +1220,15 @@ class Event extends Controller
         $admin_list = $this->event_model->getEventAdmins($id);
         if ($admin_list && count($admin_list) > 0) {
             $evt_detail = $this->event_model->getEventDetail($id);
+
+			// if the admin list is empty, use the contact info on the event
+			if(empty($admin_list)){
+				$admin_list[]=array(
+					'full_name' => $evt_detail->event_contact_name,
+					'email' 	=> $evt_detail->event_contact_email
+				);
+			}
+
             $this->sendemail->sendEventApproved($id, $evt_detail, $admin_list);
         }
 
