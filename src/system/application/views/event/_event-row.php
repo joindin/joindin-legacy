@@ -24,6 +24,11 @@ $this->load->library('timezone');
     		<?php if($event->private!='Y'){ ?><a class="btn-small<?php echo $event->user_attending ? ' btn-success' : ''; ?>" href="#" onclick="markAttending(this,<?php echo $event->ID?>,<?php echo $event->event_end<time() ? 'true' : 'false'; ?>);return false;"><?php echo $link_txt?></a> <?php } ?>
 
     	</p>
+		<div class="desc" style="padding-top:6px">
+		<?php if($event->is_cfp): ?>
+			Call for papers ends <b><?php echo date('M d, Y',$event->event_cfp_end) ?></b>
+		<?php endif ?>
+		</div>
 	</div>
 	<div class="clear"></div>
 </div>
