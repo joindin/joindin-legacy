@@ -1910,6 +1910,17 @@ class Event extends Controller
 
         return true;
     }
+
+	public function callforpapers($eventId)
+	{	
+		$this->load->model('event_model','eventModel');
+		
+		$arr = array();
+		$arr['current_cfp'] = $this->eventModel->getCurrentCfp();
+		
+		$this->template->write_view('content', 'event/callforpapers', $arr);
+        $this->template->render();
+	}
 }
 
 ?>

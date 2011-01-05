@@ -496,6 +496,19 @@ SQL
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
+	
+	/**
+	 * Find the currently open calls for papers on events
+	 */
+	public function getCurrentCfp()
+	{
+		$this->db->select('*');
+		$this->db->from('events');
+		$this->db->where('event_cfp_start <=',time());
+		$this->db->where('event_cfp_end >=',time());
+		$query = $this->db->get();
+		return $query->result();
+	}
 
 	//----------------------
 	function search($term,$start,$end){
