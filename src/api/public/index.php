@@ -18,6 +18,7 @@ function __autoload($classname) {
 
 // Add exception handler
 function handle_exception($e) {
+    // TODO pass this through the output handlers
 	echo "BADNESS";
 	var_dump($e);
 	error_log('Exception Handled: ' . $e->getMessage());
@@ -40,17 +41,19 @@ parse_str($_SERVER['QUERY_STRING'], &$parameters);
 $request->parameters = $parameters;
 $request->accept = $_SERVER['HTTP_ACCEPT'];
 
-// Authenticate: if this is a valid user, add $request->user_id 
+// TODO Input handling: read in data from whatever format
+
+// TODO Authenticate: if this is a valid user, add $request->user_id 
 
 // Route: call the handle() method of the class with the first URL element
 // (ignoring empty [0] element from leading slash)
 if(!empty($request->url_elements[1])) {
 	$class = ucfirst($request->url_elements[1]) . 'Controller';
 	$handler = new $class();
-	$handler->handle($request, $ji_db); // the DB is set by the database config
-
+	$return_data = $handler->handle($request, $ji_db); // the DB is set by the database config
 
 	// Handle output
+    echo json_encode($return_data);
 	exit;
 } else {
 	throw new Exception('Documentation should appear here');

@@ -16,7 +16,6 @@ class EventController extends ApiController {
 		} else {
             $event_list = EventModel::getEventList($db, $verbose);
 		}
-        var_dump($event_list);
         return $event_list;
 	}
 }
