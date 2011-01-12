@@ -460,7 +460,8 @@ class Event extends Controller
                 'event_tz_place' => $this->input->post('event_tz_place'),
                 'event_stub'     => $this->input->post('event_stub'),
                 'event_contact_name'  => $this->input->post('event_contact_name'),
-                'event_contact_email' => $this->input->post('event_contact_email')
+                'event_contact_email' => $this->input->post('event_contact_email'),
+				'event_cfp_url'	 => $this->input->post('cfp_url')
             );
 		
 			$is_cfp = $this->input->post('is_cfp');
@@ -484,6 +485,7 @@ class Event extends Controller
 				// it's empty, remove any values
 				$arr['event_cfp_start'] = null;
 				$arr['event_cfp_end']	= null;
+				$arr['event_cfp_url']	= null;
 			}
 
             if ($this->upload->do_upload('event_icon')) {
