@@ -1,9 +1,7 @@
 <?php
 //$tz_list=array('Select Continent');
 //foreach($tz as $k=>$v){ $tz_list[(string)$v->offset]=floor((string)$v->offset/3600); }
-var_dump($this->validation->event_cfp_start);
 
-echo $this->validation->error_string;
 if(isset($this->edit_id) && $this->edit_id){
 	echo form_open_multipart('event/edit/'.$this->edit_id);
 	$sub='Save Edits';
@@ -20,8 +18,11 @@ if(isset($this->edit_id) && $this->edit_id){
 
 echo '<h2>'.$title.'</h2>';
 ?>
-<?php if (!empty($msg)): ?>
-<?php $this->load->view('msg_info', array('msg' => $msg)); ?>
+<?php if (!empty($msg) || !empty($this->validation->error_string)): ?>
+<?php 
+	if(!empty($this->validation->error_string)){ $msg.=$this->validation->error_string; }
+	$this->load->view('msg_info', array('msg' => $msg)); 
+?>
 <?php endif; ?>
 
 <div class="box">
@@ -63,10 +64,6 @@ echo '<h2>'.$title.'</h2>';
 	<?php echo form_input('event_loc',$this->validation->event_loc); ?>
     </div>
     <div class="clear"></div>
-
-
-
-
 
 	<div class="row">
         <label for="geo">Event location</label>
