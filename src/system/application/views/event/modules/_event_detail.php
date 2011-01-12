@@ -4,6 +4,8 @@ here's what we need
 	$event_detail
 	$attemd
 */
+
+$is_cfp_open = ($event_detail->event_cfp_end>=time() && $event_detail->event_cfp_start<=time()) ? true : false;
 ?>
 
 <div class="detail">
@@ -15,6 +17,9 @@ here's what we need
         	<div class="head">
 				<input type="hidden" name="eid" id="eid" value="<?php echo $event_detail->ID; ?>"/>
             	<h1><?php echo escape($event_detail->event_name)?> <?php echo (($event_detail->pending==1) ? '(Pending)':'')?></h1>
+				<?php if($is_cfp_open): ?>
+					<div align="right" style="width:400px">Call for Papers<br/>Open!</div>
+				<?php endif; ?>
             
             	<p class="info">
 					<strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event_detail->event_start, $event_detail->event_tz_cont.'/'.$event_detail->event_tz_place, 'M j, Y'); ?></strong> - <strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event_detail->event_end, $event_detail->event_tz_cont.'/'.$event_detail->event_tz_place, 'M j, Y'); ?></strong>
@@ -112,12 +117,12 @@ here's what we need
 			<?php 
 			// If there's a Call for Papers open for the event, let them know
 			if(!empty($event_detail->event_cfp_start) || !empty($event_detail->event_cfp_end)){ 
-			$cfp_status=($event_detail->event_cfp_end>=time() && $event_detail->event_cfp_start<=time()) ? '<span style="color:#00BE02">Open!</span>' : '<span style="color:#BE0002">Closed</span>';
+			$cfp_status=($is_cfp_open) ? '<span style="color:#00BE02">Open!</span>' : '<span style="color:#BE0002">Closed</span>';
 			?>
 			<div class="links">
-				<b>Call for Papers Status: 
+				<b>Call for Papers Status:
 				<?php 
-				echo $cfp_status; 
+				echo $cfp_status;
 				if(strpos(strtolower($cfp_status),'open')!=false){ echo '<br/>(ends '.date('m.d.Y',$event_detail->event_cfp_end).')'; }
 				?> </b> 
 			</div>
