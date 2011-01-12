@@ -342,6 +342,9 @@ class Event extends Controller
                     $min_end_yr = date('Y', $event_detail[0]->event_end);
                 }
 
+				$this->validation->event_cfp_start 	= $event_detail[0]->event_cfp_start;
+				$this->validation->event_cfp_end 	= $event_detail[0]->event_cfp_end;
+
                 foreach ($event_detail[0] as $k => $v) {
                     if ($k == 'event_start') {
                         $this->validation->start_mo = $this->timezone
@@ -394,7 +397,7 @@ class Event extends Controller
                 $this->validation->event_private = $event_detail[0]->private;
 				$this->validation->cfp_checked = ($event_detail[0]->event_cfp_start!=null && $event_detail[0]->event_cfp_end!=null) ? true : false;
 				
-				if($this->input->post('is_cfp')==null){
+				if($this->input->post('is_cfp')==null && $id == null){
 					$this->validation->event_cfp_start 	= time();
 					$this->validation->event_cfp_end 	= time();
 					
