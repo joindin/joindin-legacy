@@ -1,3 +1,5 @@
+<?php menu_pagetitle('Open Call for Papers'); ?>
+
 <h2>Open Call For Papers</h2>
 
 <?php
