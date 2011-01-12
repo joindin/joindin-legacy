@@ -984,6 +984,13 @@ a {
 	color: #fff;
 }
 
+span.ends_soon {
+	color: #F40C00;
+	font-size: 10px;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
 /***/
 
 /* jQuery.Rating Plugin CSS - http://www.fyneworks.com/jquery/star-rating/ */
