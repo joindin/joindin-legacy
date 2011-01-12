@@ -85,18 +85,7 @@ class Main extends Controller
         }
 
 		$events 	= $this->event_model->getCurrentCfp();
-		if(!empty($events)){
-			$cfp_data 	= '<ul>';
-			foreach($events as $event){
-				$cfp_data.='<li><a href="/event/view/'.$event->ID.'">'.$event->event_name.'</a>';
-			}
-			$cfp_data	.= '</ul>';
-
-			$this->template->write_view('sidebar2', 'main/_sidebar-block', array(
-				'title'		=> 'Currently Open Call for Papers',
-				'content'	=> $cfp_data
-			));
-		}
+		$this->template->parse_view('sidebar2','event/_event-cfp-sidebar',array('events'=>$events));
 		
         $this->template->write_view('content', 'main/index', $arr, true);
         $this->template->render();

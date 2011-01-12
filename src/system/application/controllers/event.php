@@ -164,8 +164,11 @@ class Event extends Controller
 			'current_page' 	=> $current_page
             //'admin'	 =>($this->user_model->isAdminEvent($id)) ? true : false
         );
-
         $this->template->write_view('content', 'event/main', $arr, true);
+
+		$events 	= $this->event_model->getCurrentCfp();
+		$this->template->parse_view('sidebar2','event/_event-cfp-sidebar',array('events'=>$events));
+
         $this->template->render();
     }
 
