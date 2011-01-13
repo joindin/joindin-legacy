@@ -4,15 +4,17 @@
 
 	<p class="info">
 		<strong>
-			<?php foreach($speakers as $speaker): ?>
+			<?php 
+			$speaker_names = array();
+			foreach($speakers as $speaker): ?>
 			<?php 
 			if(!empty($speaker->speaker_id) && $speaker->status!='pending'){
-				echo '<a href="/user/view/'.$speaker->speaker_id.'">'.$speaker->full_name.'</a>';
+				$speaker_names[] = '<a href="/user/view/'.$speaker->speaker_id.'">'.$speaker->full_name.'</a>';
 			}else{
-				echo $speaker->speaker_name;
+				$speaker_names[] = $speaker->speaker_name;
 			}
 			?>
-			<?php endforeach; ?>
+			<?php endforeach; echo implode(', ',$speaker_names); ?>
 		</strong> (<?php echo $detail->display_datetime; ?>)
 		<br/> 
 		<?php echo escape($detail->tcid); ?> at <strong><a href="/event/view/<?php echo $detail->event_id; ?>"><?php echo escape($detail->event_name); ?></a></strong> (<?php echo escape($detail->lang_name);?>)
