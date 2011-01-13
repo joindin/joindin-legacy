@@ -763,7 +763,7 @@ class Event extends Controller
                     'is_private'  => $events[0]->private,
                     'evt_admin'   => $this->event_model->getEventAdmins($id),
                     'claim_count' => count(
-                        $this->uadm->getPendingClaims_Talks($id)
+                        $this->uadm->getPendingClaim_TalkSpeaker($id)
                     )
                 )
             );
@@ -1257,44 +1257,29 @@ class Event extends Controller
 
         // If we have claims to process...
         if ($claim && count($claim) > 0 && isset($sub)) {
-            foreach ($claim as $k => $v) {
-                // be sure it's still a valid claim
-                $this->uam->isPendingClaim($k);
-
-                switch (strtolower($v)) {
-                case 'approve':
-                    $this->db->where('ID', $k);
-                    $this->db->update(
-                        'user_admin', array('rcode' => '')
-                    );
-
-                    $email      = $claims[$k]->email;
-                    $evt_name   = $claims[$k]->event_name;
-                    $talk_title = $claims[$k]->talk_title;
-                    $this->sendemail->claimSuccess(
-                        $email, $talk_title, $evt_name
-                    );
-
-                    $approved++;
-                    break;
-                case 'deny':
-                    $this->db->delete(
-                        'user_admin', array('ID' => $k)
-                    );
-                    $denied++;
-                    break;
-                default:
-                    /* do nothing, no action taken */
-                }
-
-                echo '<br/>';
+            foreach ($claim as $talkSpeakerId => $status) {
+				switch(strtolower($status)){
+					case 'approve':
+						// update it from "pending"
+						$this->db->where('ID',$talkSpeakerId);
+						$this->db->update('talk_speaker',array('status'=>null));
+						$approved++;
+						break;
+					case 'deny':
+						// update it to remove claim and set back to null
+						$this->db->update('talk_speaker',array('speaker_id'=>null,'status'=>null));
+						$denied++;
+						break;
+					default:
+						// do nothing, leave the claim alone
+				}
             }
         }
         if ($approved > 0) {
-            $msg[] = $approved . ' approved';
+            $msg[] = $approved . 'claim approved';
         }
         if ($denied > 0) {
-            $msg[] = $denied . ' denied';
+            $msg[] = $denied . ' claim denied';
         }
         $msg = implode(',', $msg);
 
