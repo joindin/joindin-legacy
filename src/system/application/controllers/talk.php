@@ -773,77 +773,43 @@ class Talk extends Controller
      *
      * @return void
      */
-    function claim()
+    function claim($talkId,$claimId)
     {
-        if (!$this->user_model->isSiteAdmin()) {
-            redirect();
+        if (!$this->user_model->isAuth()) {
+            redirect('talk/view/'.$talkId);
         }
 
-        $this->load->model('user_admin_model', 'userAdmins');
-        $this->load->library('validation');
-        $this->load->library('sendemail');
-        $this->load->helper('events_helper');
+		$userId 		= $this->session->userdata('ID');
+		$speakerName 	= $this->session->userdata('full_name');
 
-        //$rules = array();
-        //$fields = array();
-        //$this->validation->set_rules($rules);
-        //$this->validation->set_fields($fields);
-
-        $claims = $this->userAdmins->getPendingClaims();
-
-        $approved = 0;
-        $deleted = 0;
-        foreach ($claims as $k => $v) {
-            //first check to see if it was approved
-            $chk = $this->input->post('claim_' . $v->ua_id);
-            if (!empty($chk)) {
-                // Split the speakers on the commas and see if we have
-                // a match on the name
-                $names = explode(',', $v->speaker);
-                foreach ($names as $nk => $nv) {
-                    if (trim($nv) == $v->claiming_name) {
-                        // match!
-                        $code = buildCode(
-                            $v->talk_id, $v->eid, $v->talk_title,
-                            $v->claiming_name
-                        );
-                        $this->db->where('ID', $v->ua_id);
-                        $this->db->update(
-                            'user_admin', array(
-                                'rcode' => $code
-                            )
-                        );
-                    }
-                }
-
-                //send an email to the person claiming to let them know it
-                // was approved
-                $this->sendemail->claimSuccess(
-                    $v->email, $v->talk_title, $v->event_name
-                );
-                $approved++;
-                unset($claims[$k]);
-            }
-
-            $chk = $this->input->post('del_claim_' . $v->ua_id);
-            if (!empty($chk)) {
-                $this->db->delete(
-                    'user_admin', array(
-                        'ID' => $v->ua_id
-                    )
-                );
-                $deleted++;
-                unset($claims[$k]);
-            }
-        }
-
-        $arr = array(
-            'claims'   => $claims,
-            'approved' => $approved,
-            'deleted'  => $deleted
-        );
-        $this->template->write_view('content', 'talk/claim', $arr);
-        $this->template->render();
+		// look at the claimId (talk_speaker.id) and talkId for a speaker
+		$where = array(
+			'ID' 		=> $claimId,
+			'talk_id' 	=> $talkId,
+			'status'	=> null
+		);
+ 		$query = $this->db->get_where('talk_speaker',$where);
+		$speakerRecord = $query->result();
+		
+		// if we found a row, update it with the ID of the currently 
+		// logged in user and set it to pending
+		if(count($speakerRecord) == 1){
+			
+			$updateData = array(
+				'status'		=> 'pending',
+				'speaker_id'	=> $userId
+			);
+			$this->db->where('ID',$claimId);
+			$this->db->update('talk_speaker',$updateData);
+			redirect('talk/view/'.$talkId);
+			
+		}else{
+			$errorData = array(
+				'msg'=>'There was an error in your attempt to claim the talk ID #'.$talkId
+			);
+			$this->template->write_view('content', 'msg_error', $errorData);
+	        $this->template->render();
+		}
     }
 
     /**
