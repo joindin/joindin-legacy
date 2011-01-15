@@ -156,7 +156,7 @@ function buildSpeakerImg($speakers){
 	$user_images=array();
 	
 	foreach($speakers as $speaker){
-		if(!empty($speaker->speaker_id)){
+		if(!empty($speaker->speaker_id) && $speaker->status!='pending'){
 			if($img_data=$ci->gravatar->displayUserImage($speaker->speaker_id,true)){
 				$user_images[$speaker->speaker_id]=$img_data;
 			}else{
