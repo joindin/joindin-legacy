@@ -1267,6 +1267,7 @@ class Event extends Controller
 						break;
 					case 'deny':
 						// update it to remove claim and set back to null
+						$this->db->where('ID',$talkSpeakerId);
 						$this->db->update('talk_speaker',array('speaker_id'=>null,'status'=>null));
 						$denied++;
 						break;
@@ -1279,7 +1280,7 @@ class Event extends Controller
             $msg[] = $approved . 'claim approved';
         }
         if ($denied > 0) {
-            $msg[] = $denied . ' claim denied';
+            $msg[] = $denied . '  claim denied';
         }
         $msg = implode(',', $msg);
 
