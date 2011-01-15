@@ -27,7 +27,7 @@
 	<div class="desc">
 		<span align="left"><?php
 		if(!empty($speaker_img)){
-			foreach($speaker_img as $uid => $img){ 
+			foreach($speaker_img as $uid => $img){
 				echo '<a href="/user/view/'.$uid.'">'.str_replace('>','align="left" border="0" style="margin-right:10px;height:50px">',$img).'</a>'; 
 			}
 		}
