@@ -773,7 +773,7 @@ class Talk extends Controller
      *
      * @return void
      */
-    function claim($talkId,$claimId)
+    function claim($talkId,$claimId=null)
     {
         if (!$this->user_model->isAuth()) {
             redirect('talk/view/'.$talkId);
@@ -781,6 +781,11 @@ class Talk extends Controller
 
 		$userId 		= $this->session->userdata('ID');
 		$speakerName 	= $this->session->userdata('full_name');
+		
+		// Ie we have no $claimId, look in post for it
+		if($claimId == null){
+			$claimId = $this->input->post('claim_name_select');
+		}
 
 		// look at the claimId (talk_speaker.id) and talkId for a speaker
 		$where = array(
