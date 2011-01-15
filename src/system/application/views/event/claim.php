@@ -39,7 +39,13 @@ claim the session. You can then accept/deny based on any match between them.
 			</td>
 			<td><?php 
 				$speakers = array();
-				foreach($claim->speakers as $speaker){ $speakers[]=$speaker->speaker_name; }
+				foreach($claim->speakers as $speaker){ 
+					if($speaker->ID==$claim->ID){
+						$speakers[]='<b>'.$speaker->speaker_name.'</b>';
+					}else{
+						$speakers[]=$speaker->speaker_name;
+					}
+				}
 				echo implode(', ',$speakers); 
 			?></td>
 			<td><?php echo '<a href="/user/view/'.$claim->user_id.'">'.$claim->claiming_name.'</a>'; ?></td>
