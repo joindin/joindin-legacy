@@ -764,6 +764,13 @@ class Talk extends Controller
                 'sidebar2', 'talk/_also_given', $also_given, true
             );
         }
+		
+		$this->template->write_view('sidebar3','main/_sidebar-block',
+			array(
+				'title'=>'Claiming Talks',
+				'content'=>'<p>Claiming a talk you let us know that you were the speaker for it. When you claim it (and it\'s approved by the event admins) it will be linked to your account.</p><p>You\ll also receive emails when new comments are posted to it.</p>')
+		);
+		
         $this->template->write_view('content', 'talk/detail', $arr, true);
         $this->template->render();
     }
@@ -806,6 +813,8 @@ class Talk extends Controller
 			);
 			$this->db->where('ID',$claimId);
 			$this->db->update('talk_speaker',$updateData);
+			
+			$this->session->set_flashdata('msg', 'Thanks for claiming this talk! You will be emailed when the claim is approved!');
 			redirect('talk/view/'.$talkId);
 			
 		}else{
