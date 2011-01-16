@@ -10,8 +10,7 @@
 	}
 	echo form_dropdown('claim_name_select', $speaker_list,null,'id="claim_name_select"');
 	?>
-	<!--<input type="button" value="claim" id="claim-btn"/>-->
-	<input type="submit" value="claim" id="claim-btn"/>
+	<input type="submit" value="claim" id="claim-btn-submit"/>
 	<input type="button" value="cancel" id="claim-cancel-btn"/>
 	</form>
 </div>
@@ -20,16 +19,17 @@
 	<a class="btn-small" href="/talk/delete/<?php echo $detail->tid; ?>">Delete talk</a>	
 	<a class="btn-small" href="/talk/edit/<?php echo $detail->tid; ?>">Edit talk</a>
 <?php endif; ?>
-<?php if(count($speaker)>$is_claimed): 
+<?php if(count($speaker)>$is_claimed):
 	if(!isset($user_id)){
-		$link = '/user/login';
-		$class = '';
-	}elseif(count($speaker)==1){
-		$link = '/talk/claim/'.$detail->tid.'/'.$speaker->ID;
-		$class = 'single';
+		$link 	= '/user/login';
+		$class 	= '';
+	}elseif(count($speakers)==1){
+		$link 	= '/talk/claim/'.$detail->tid.'/'.$speaker->ID;
+		$class 	= 'single';
 	}else{
 		// multiple speakers, still show the dropdown
-		$class = 'multi';
+		$link 	= '';
+		$class 	= 'multi';
 	}
 	?>
 	<a class="btn-small" href="<?php echo $link ?>" id="claim_btn" name="<?php echo $class; ?>">Claim This Talk</a>	
