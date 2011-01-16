@@ -5,7 +5,9 @@ menu_pagetitle('Talk: ' . escape($detail->talk_title));
 
 if(!empty($claim_msg)){
 	$class=($claim_status) ? 'notice' : 'err';
-	if($claim_msg && !empty($claim_msg)){ echo '<div class="'.$class.'">'.escape($claim_msg).'</div><br/>'; }
+	if($claim_msg && !empty($claim_msg)){
+		$this->load->view('msg_info', array('msg' => escape($claim_msg)));
+	}
 }
 ?>
 <script type="text/javascript" src="/inc/js/talk.js"></script>
