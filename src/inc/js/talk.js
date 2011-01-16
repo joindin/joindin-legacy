@@ -25,9 +25,9 @@ talk = function (){
 				window.location.href = '/user/login';
 				return false;
 			}
-
-			if($('#claim_btn').attr('name')!='single'){
-				return false;
+			
+			if($('#claim_btn').attr('name')=='single'){
+				return true;
 			}
 			
 			var obj={ 
