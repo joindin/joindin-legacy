@@ -1,3 +1,5 @@
+<?php menu_pagetitle('Pending Claims for '.$event_detail[0]->event_name); ?>
+
 <?php echo '<h2>Pending Claims</h2>'; ?>
 
 <style>
