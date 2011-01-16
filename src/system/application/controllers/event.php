@@ -1240,7 +1240,8 @@ class Event extends Controller
             redirect('event/view/' . $id);
         }
 
-        $this->load->model('user_admin_model', 'uam');
+        $this->load->model('user_admin_model', 'userAdmin');
+		$this->load->model('event_model','eventModel');
         $this->load->helper('events_helper');
         $this->load->library('sendemail');
 
@@ -1249,7 +1250,7 @@ class Event extends Controller
 
         $msg = array();
         $claims = array();
-        foreach ($this->uam->getPendingClaims('talk', $id) as $claim_data) {
+        foreach ($this->userAdmin->getPendingClaims('talk', $id) as $claim_data) {
             $claims[$claim_data->ua_id] = $claim_data;
         }
         $approved = 0;
@@ -1286,9 +1287,10 @@ class Event extends Controller
 
         // Data to pass out to the view
         $arr = array(
-            'claims' => $this->uam->getPendingClaims('talk', $id),
+            'claims' => $this->userAdmin->getPendingClaims('talk', $id),
             'eid'    => $id,
-            'msg'    => $msg
+            'msg'    => $msg,
+			'event_detail' => $this->eventModel->getEventDetail($id)
         );
 
         $this->template->write_view('content', 'event/claim', $arr);
