@@ -768,7 +768,7 @@ class Talk extends Controller
 		$this->template->write_view('sidebar3','main/_sidebar-block',
 			array(
 				'title'=>'Claiming Talks',
-				'content'=>'<p>Claiming a talk you let us know that you were the speaker for it. When you claim it (and it\'s approved by the event admins) it will be linked to your account.</p><p>You\ll also receive emails when new comments are posted to it.</p>')
+				'content'=>'<p>Claiming a talk you let us know that you were the speaker for it. When you claim it (and it\'s approved by the event admins) it will be linked to your account.</p><p>You\'ll also receive emails when new comments are posted to it.</p>')
 		);
 		
         $this->template->write_view('content', 'talk/detail', $arr, true);
