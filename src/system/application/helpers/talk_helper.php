@@ -233,4 +233,18 @@ function talk_listDecorateNowNext($talks)
     return $talks;
 }
 
+/**
+ * Check the current speaker data to see if any have no  speaker linked
+ */
+function isTalkClaimFull($claim_data)
+{
+	$isFull = true;
+	foreach($claim_data as $claim){
+		if($claim->speaker_id==null || empty($claim->speaker_id)){
+			$isFull = false;
+		}
+	}
+	return $isFull;
+}
+
 ?>
