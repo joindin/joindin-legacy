@@ -93,13 +93,19 @@ switch ($sort_type) {
 				echo '<h3>'.$talk_title.'</h3><br/>';
 				echo '<div style="padding-left:15px">';
 				foreach($talks as $talk){
-        			$this->load->view('talk/_talk-row', array('talk'=>$talk));
+        			$this->load->view('talk/_talk-row', array(
+						'talk'		=> $talk,
+						'override'	=> array($details[0]->ID=>$details[0]->full_name)
+					));
         		}
 				echo '</div>';
 			}
 		}else{
 			foreach($talks as $talk){
-    			$this->load->view('talk/_talk-row', array('talk'=>$talk));
+    			$this->load->view('talk/_talk-row', array(
+					'talk'		=> $talk,
+					'override'	=> array($details[0]->ID=>$details[0]->full_name)
+				));
     		}
 		}
     ?>

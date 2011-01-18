@@ -15,6 +15,10 @@
 		if(isset($talk->speaker) && !empty($talk->speaker)){
 			foreach($talk->speaker as $speaker){
 				if(isset($speaker->speaker_id)){
+					// see if we have an override
+					if(isset($override) && array_key_exists($speaker->speaker_id,$override)){
+						$speaker->speaker_name = $override[$speaker->speaker_id];
+					}
 					$speaker_list[]='<a href="/user/view/'.$speaker->speaker_id.'">'.$speaker->speaker_name.'</a>';
 				}else{
 					$speaker_list[]=$speaker->speaker_name;
