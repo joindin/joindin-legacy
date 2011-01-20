@@ -32,6 +32,8 @@ echo '<h2>'.$title.'</h2>';
     </div>
     <div class="clear"></div>
     <div class="row">
+		<table cellpadding="0" cellspacing="0" border="0">
+		<tr><td>
     	<label for="event_start">Event Start:</label>
 	<?php
 	foreach(range(1,12) as $v){
@@ -43,9 +45,9 @@ echo '<h2>'.$title.'</h2>';
 	echo form_dropdown('start_day',$start_day,$this->validation->start_day);
 	echo form_dropdown('start_yr',$start_yr,$this->validation->start_yr);
 	?>
-    </div>
-    <div class="clear"></div>
-    <div class="row">
+	&nbsp;&nbsp;
+	</td>
+	<td>
     	<label for="event_end">Event End:</label>
 	<?php
 	foreach(range(1,12) as $v){
@@ -57,6 +59,8 @@ echo '<h2>'.$title.'</h2>';
 	echo form_dropdown('end_day',$end_day,$this->validation->end_day);
 	echo form_dropdown('end_yr',$end_yr,$this->validation->end_yr);
 	?>
+	</td></tr>
+	</table>
     </div>
     <div class="clear"></div>
     <div class="row">
@@ -66,123 +70,65 @@ echo '<h2>'.$title.'</h2>';
     <div class="clear"></div>
 
 	<div class="row">
-        <label for="geo">Event location</label>
+		<label for="geo">Event Location</label>
 		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-		Address search: 
-		<table>
+		<table cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<td>
+			<?php
+			if (is_numeric($this->validation->event_lat) && $this->validation->event_lat != '') {
+				$lat  = $this->validation->event_lat;
+				$long = $this->validation->event_long;
+				$zoom = 13;
+			} else {
+				$lat  = 0;
+				$long = 0;
+				$zoom = 0;
+			}
+			?>
+			<input type="hidden" name="map_latitude" id="map_latitude" value="<?php echo $lat; ?>"/>
+			<input type="hidden" name="map_longitude" id="map_longitude" value="<?php echo $long; ?>"/>
+			<input type="hidden" name="map_zoom" id="map_zoom" value="<?php echo $zoom; ?>"/>
+			
+			<table cellpadding="0" cellspacing="0" border="0">
 			<tr>
-				<td>
-					<input type="text" name="addr" id="addr" />
-				</td>
-				<td>
-					<button type="button" onclick="addr_search();">Search</button>
-				</td>
-			</tr>
-		</table>
-		<table>
-			<tr>
-				<td>
-					Latitude:  <input type="text" name="event_lat" id="event_lat" style="width:200px;" />
-				</td>
-				<td>
-					Longitude: <input type="text" name="event_long" id="event_long" style="width:200px;" />
-				</td>
-			</tr>
-		</table>
-		<table>
-			<tr>
-				<td>
+				<td style="padding-right:5px">
 					<div id="map_canvas" style="width: 300px; height: 300px"></div>
 				</td>
-				<td>
-					<ul id="addr_selection"></ul>
+				<td style="vertical-align:top">
+					Address Search:<br/>
+					<?php 
+						$attr = array(
+							'id' 	=> 'addr',
+							'name' 	=> 'addr',
+							'size'	=> 10,
+							'value'	=> $this->validation->addr,
+							'style'	=> 'width: 250px'
+						);
+						echo form_input($attr); 
+					?>
+					<button type="button" onclick="addr_search();">Search</button>
+					<br/><br/><br/>
+					<table cellpadding="0" cellspacing="0" border="0">
+					<tr>
+						<td style="padding-right:8px"><b>Latitude</b></td>
+						<td id="output_latitude"></td>
+					</tr>
+					<tr><td colspan="2">&nbsp;</td></tr>
+					<tr>
+						<td style="padding-right:8px"><b>Longitude</b></td>
+						<td id="output_longitude"></td>
+					</tr>
+					</table>
 				</td>
 			</tr>
+			</table>
+			
+			<script type="text/javascript" src="/inc/js/event_google_map.js"></script>
+			</td>
+		</tr>
 		</table>
-		<script type="text/javascript">
-			var map;
-			var marker;
-			var geocoder;
-			var infowindow = new google.maps.InfoWindow();
-
-			function load_map() {
-				geocoder = new google.maps.Geocoder();
-				var myOptions = {
-						<?php
-							if (is_numeric($this->validation->event_lat) && $this->validation->event_lat != '') {
-								$lat  = $this->validation->event_lat;
-								$long = $this->validation->event_long;
-								$zoom = 13;
-							} else {
-								$lat  = 0;
-								$long = 0;
-								$zoom = 0;
-							}
-						?>
-				  zoom: <?php echo $zoom; ?>,
-				  center: new google.maps.LatLng(<?php echo $lat?>, <?php echo $long?>), // UK
-				  mapTypeId: google.maps.MapTypeId.ROADMAP
-				};
-				map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-				google.maps.event.addListener(map, 'click', function(event) {
-				  placeMarker(event.latLng);
-				});
-				placeMarker(new google.maps.LatLng(<?php echo $lat?>, <?php echo $long?>));
-			}
-
-			function placeMarker(location) {
-				var clickedLocation = new google.maps.LatLng(location);
-				if (!marker) {
-					marker = new google.maps.Marker({
-						position: location, 
-						map: map
-					});
-				} else {
-					marker.setPosition(location);
-				}
-
-				//map.setCenter(location);
-
-				$('#event_lat').val(location.lat());
-				$('#event_long').val(location.lng());
-			}
-
-			function chooseAddr(lat, lng) {
-				var location = new google.maps.LatLng(lat, lng);
-				map.setCenter(location);
-				placeMarker(location);
-			}
-
-			function addr_search() {
-				var inp = document.getElementById("addr");
-				if (geocoder) {
-					geocoder.geocode( { 'address': inp.value}, function(results, status) {
-						if (status == google.maps.GeocoderStatus.OK) {
-							$('#addr_selection').empty();
-							if (results.length > 1) {
-								$(results).each(function(result) {
-									var newLI = $('<li><a href="#" onclick="chooseAddr(' + this.geometry.location.lat() + ', ' + this.geometry.location.lng() + ');return false;">' + this.formatted_address + '</a></li>');
-									newLI.appendTo($('#addr_selection'));
-									//console.log(result.geometry.location);
-								});
-							}
-							//map.setCenter(results[0].geometry.location);
-							map.fitBounds(results[0].geometry.viewport);
-							placeMarker(results[0].geometry.location);
-						} else {
-							alert("Geocode was not successful for the following reason: " + status);
-						}
-					});
-				}
-			}
-			window.onload = load_map;
-		</script>
-	  <div class="clear"></div>
-    </div>
-
-
-
-
+	</div>
 
     <div class="row">
     	<label for="event_tz_cont">Event Timezone:</label>
