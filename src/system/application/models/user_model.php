@@ -270,6 +270,10 @@ class User_model extends Model {
 	 * @param $end[optional] Ending point for search (not currently used)
 	 */
 	function search($term,$start=null,$end=null){
+		$ci = &get_instance();
+		$ci->load->model('talks_model','talksModel');
+		$ci->load->model('user_attend_model','userAttend');
+		
 		$term = mysql_real_escape_string(strtolower($term));
 		$sql=sprintf("
 			select
@@ -279,9 +283,7 @@ class User_model extends Model {
 				u.admin,
 				u.active,
 				u.last_login,
-				u.email,
-				(select count(ID) from talk_speaker where speaker_id=u.ID and status!='pending') talk_count
-				(select count(ID) from user_attend where uid=u.ID) event_count
+				u.email
 			from
 				user u
 			where
@@ -289,7 +291,12 @@ class User_model extends Model {
 				lower(full_name) like '%%%s%%'
 		",$term,$term);
 		$query	= $this->db->query($sql);
-		return $query->result();
+		$results = $query->result();
+		foreach($results as $key => $user){
+			$results[$key]->talk_count 	= count($ci->talksModel->getSpeakerTalks($user->ID));
+			$results[$key]->event_count	= count($ci->userAttend->getUserAttending($user->ID));
+		}
+		return $results;
 	}
 }
 ?>

@@ -467,6 +467,8 @@ class Talks_model extends Model {
 
 	//---------------
 	public function search($term,$start,$end){
+		$ci = &get_instance();
+		$ci->load->model('talk_speaker_model','talkSpeaker');
 		$term = mysql_real_escape_string($term);
 		
 		$this->db->select('talks.*, count(talk_comments.ID) as ccount, (select round(avg(rating)) from talk_comments where talk_id=talks.ID) as tavg, events.ID eid, events.event_name');
@@ -483,8 +485,14 @@ class Talks_model extends Model {
 		$this->db->or_like('speaker',$term);
 		$this->db->limit(10);
 		$this->db->group_by('talks.ID');
-		$q=$this->db->get();
-		return $q->result();
+		$query = $this->db->get();
+		$results = $query->result();
+		
+		foreach($results as $key => $talk){
+			$results[$key]->speaker = $ci->talkSpeaker->getSpeakerByTalkId($talk->ID);
+		}
+		
+		return $results;
 	}
 	//---------------
 	
