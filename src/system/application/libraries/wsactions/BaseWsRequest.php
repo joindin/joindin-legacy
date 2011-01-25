@@ -61,4 +61,13 @@ class BaseWsRequest {
         );
 	}
 	
+	/**
+	 * Shortut to send a json response message
+	 *
+	 * @param string $message Message
+	 */
+	public function sendJsonMessage($message){
+		return array('output'=>'json','data'=>array('items'=>array('msg'=>$message)));
+	}
+	
 }

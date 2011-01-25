@@ -1,4 +1,3 @@
-
 <?php echo form_open('event/claims'); ?>
 <div class="box">
 	<div class="row">
