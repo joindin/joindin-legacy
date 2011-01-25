@@ -152,10 +152,14 @@ SELECT @ftalkid:=LAST_INSERT_ID();
 insert into talk_speaker (
 	talk_id,
 	speaker_name,
+	speaker_id,
+	status,
 	ID
 )values(
 	@ftalkid,
 	'John Doe',
+	@fuserid,
+	NULL,
 	NULL
 );
 
