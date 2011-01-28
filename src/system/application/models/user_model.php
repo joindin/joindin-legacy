@@ -87,7 +87,7 @@ class User_model extends Model {
 			}else{ return false; }
 		}else{ return false; }
 		
-		$q=$this->db->get_where('user_admin',array('uid'=>$uid,'rid'=>$eid,'rtype'=>'event'));
+		$q=$this->db->get_where('user_admin',array('uid'=>$uid,'rid'=>$eid,'rtype'=>'event','rcode !='=>'pending'));
 		$ret=$q->result();
 		return (isset($ret[0]->ID) || $this->isSiteAdmin()) ? true : false;
 	}
@@ -103,7 +103,7 @@ class User_model extends Model {
 		if($this->isAuth()){
 			$ad		= false;
 			$uid	= $this->session->userdata('ID');
-			$query 	= $this->db->get_where('talk_speaker',array('speaker_id'=>$uid,'talk_id'=>$tid));
+			$query 	= $this->db->get_where('talk_speaker',array('speaker_id'=>$uid,'talk_id'=>$tid,'rcode !='=>'pending'));
 			$talk	= $query->result();
 			//return (isset($ret[0]->ID)) ? true : false;
 			if(isset($talk[0]->ID)){ $ad=true; }
