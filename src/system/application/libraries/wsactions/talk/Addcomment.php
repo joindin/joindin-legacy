@@ -42,7 +42,7 @@ class Addcomment extends BaseWsRequest {
 			
 			// event ID in $talk_detial[0]->eid
 			
-			if(!$talk_detail->allow_comments){
+			if(!$talk_detail[0]->allow_comments){
 				// we can't comment on this! same logic as fromtend
 				return $this->throwError('Comments not allowed on the event/talk!');
 			}
