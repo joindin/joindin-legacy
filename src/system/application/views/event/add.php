@@ -18,6 +18,8 @@ if(isset($this->edit_id) && $this->edit_id){
 
 echo '<h2>'.$title.'</h2>';
 ?>
+<script type="text/javascript" src="/inc/js/event.js"></script>
+
 <?php if (!empty($msg) || !empty($this->validation->error_string)): ?>
 <?php 
 	if(!empty($this->validation->error_string)){ $msg.=$this->validation->error_string; }
@@ -192,6 +194,8 @@ echo '<h2>'.$title.'</h2>';
     </div>
     <div class="clear"></div>
 
+	<h4>Call for Papers</h4> <a id="cfp-fields-toggle-link" class="fieldset-toggle" href="#">show</a>
+	<fieldset id="cfp-fields">
 	<div class="row">
 		<label for="start">Call for Papers</label>
 		<?php 
@@ -240,10 +244,14 @@ echo '<h2>'.$title.'</h2>';
 		<?php echo form_input('cfp_url',$this->validation->cfp_url,'id="cfp_url"'); ?>
 		<div class="clear"></div>
 	</div>
-	
+	</fieldset>
 
     <div class="row">
     	<?php echo form_submit('sub',$sub); ?>
     </div>
 </div>
 <?php echo form_close(); ?>
+
+<script type="text/javascript">
+$(document).ready(function(){ JI_event.init(); var fields = {'cfp-fields'}; console.log(fields); JI_event.hideFieldsets(fields); })
+</script>
