@@ -165,7 +165,7 @@ class Talk_speaker_model extends Model {
 		$query = $this->db->get_where('talk_speaker',array(
 			'talk_id'		=> $talk_id,
 			'speaker_id'	=> $user_id,
-			'status !='		=> 'pending'
+			'IFNULL(status,0) !='=>'pending'
 		));
 		$result = $query->result();
 		return (count($result)>0) ? true : false;
