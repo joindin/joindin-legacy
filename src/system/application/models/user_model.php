@@ -103,7 +103,9 @@ class User_model extends Model {
 		if($this->isAuth()){
 			$ad		= false;
 			$uid	= $this->session->userdata('ID');
-			$query 	= $this->db->get_where('talk_speaker',array('speaker_id'=>$uid,'talk_id'=>$tid,'rcode !='=>'pending'));
+                        // rcode could be NULL, so !=pending isn't sufficient, with ifnull we work around it without having to
+                        // build the where clause manually.. 
+			$query 	= $this->db->get_where('talk_speaker',array('speaker_id'=>$uid,'talk_id'=>$tid,'IFNULL(rcode,0) !='=>'pending'));
 			$talk	= $query->result();
 			//return (isset($ret[0]->ID)) ? true : false;
 			if(isset($talk[0]->ID)){ $ad=true; }
