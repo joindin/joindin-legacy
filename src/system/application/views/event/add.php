@@ -77,7 +77,7 @@ echo '<h2>'.$title.'</h2>';
 					<input type="text" name="addr" id="addr" />
 				</td>
 				<td>
-					<button type="button" onclick="addr_search();">Search</button>
+					<input type="button" onclick="addr_search();" value="Search" />
 				</td>
 			</tr>
 		</table>
