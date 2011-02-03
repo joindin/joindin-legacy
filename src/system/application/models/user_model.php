@@ -247,6 +247,7 @@ class User_model extends Model {
 				talks t,
 				talk_speaker ts
 			where
+				u.ID <> %s and
 				u.ID = ts.speaker_id and
 				t.ID = ts.talk_id and
 				t.event_id in (
@@ -261,7 +262,7 @@ class User_model extends Model {
 				)
 			order by rand()
 			limit %s	
-		",$uid,$limit);
+		",$uid,$uid,$limit);
 		$query 		= $this->db->query($sql);
 		$speakers	= $query->result();
 		
