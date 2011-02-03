@@ -9,7 +9,7 @@ class Talks_model extends Model {
 	public function deleteTalk($id){
 		$this->db->delete('talks',array('ID'=>$id));
 	}
-	
+
 	/**
 	 * Find details on claims of a talk
 	 *
@@ -18,7 +18,7 @@ class Talks_model extends Model {
 	 * @return array $talks Talk claim data
 	 */
 	public function talkClaimDetail($tid,$show_all=false){
-		
+
 		$sql=sprintf('
 			select
 				u.username,
@@ -38,11 +38,11 @@ class Talks_model extends Model {
 				ts.talk_id = t.ID and
 				t.ID = %s
 		',$this->db->escape($tid));
-		
+
 		if(!$show_all){
 			$sql.=" and ts.status != 'pending'";
 		}
-		
+
 		$query	= $this->db->query($sql);
 		$talks	= $query->result();
 
@@ -58,7 +58,7 @@ class Talks_model extends Model {
 		}
 		return $talks;
 	}
-	
+
 	/**
 	 * Takes in the talk information and the speaker data to see if it's unique
 	 * Checks the "talks" table with the data
@@ -67,17 +67,17 @@ class Talks_model extends Model {
 		$talk_speakers	= array();
 		$q	 = $this->db->get_where('talks',$talk_data);
 		$ret = $q->result();
-		
+
 		if(count($ret)>0){
 			$CI=&get_instance();
 			$CI->load->model('talk_speaker_model','talkSpeaker');
-			
+
 			// We have a match, lets see if the speakers match too
 			// For each of the speakers we're given, see if they're in the talk data
 			foreach($ret as $talk){
 				$tid		= $talk->ID;
 				$tspeakers	= $CI->talkSpeaker->getSpeakerByTalkId($tid);
-				
+
 				foreach($tspeakers as $tsp){ $talk_speakers[]=$tsp->speaker_name; }
 				foreach($speakers as $sp){
 					if(in_array($sp,$talk_speakers)){ return false; }
@@ -86,9 +86,9 @@ class Talks_model extends Model {
 		}
 		return true;
 	}
-	
+
 	//---------------
-	// Check to see if user has already made that sort of 
+	// Check to see if user has already made that sort of
 	// comment on the talk
 	public function hasUserCommented($tid,$uid,$type=null){
 		$arr=array('user_id'=>$uid,'talk_id'=>$tid);
@@ -97,7 +97,7 @@ class Talks_model extends Model {
 		$ret=$q->result();
 		return (isset($ret[0])) ? true : false;
 	}
-	
+
 	//---------------
 	public function getTalks($tid=null,$latest=false){
 		$this->load->helper("events");
@@ -108,7 +108,7 @@ class Talks_model extends Model {
 				// It's not an integer for some reason...
 				return array();
  			}
-            
+
 			// See if we have any comments to exclude
 			$uids=$this->_findExcludeComments($tid);
 			$addl=(!empty($uids)) ? 'and user_id not in ('.implode(',',$uids).')': '';
@@ -125,7 +125,7 @@ class Talks_model extends Model {
 			$sql=sprintf('
 				select
 					talks.*,
-					CASE 
+					CASE
 						WHEN (((talks.date_given - 86400) < '.mktime(0,0,0).') and (talks.date_given + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
 						ELSE 0
 						END as allow_comments,
@@ -141,11 +141,11 @@ class Talks_model extends Model {
 					lang.lang_abbr,
 					count(talk_comments.ID) as ccount,
 					%s
-					(select 
+					(select
 						cat.cat_title
-					from 
+					from
 						talk_cat tac,categories cat
-					where 
+					where
 						tac.talk_id=talks.ID and tac.cat_id=cat.ID
 					) tcid,
 					(select max(date_made) from talk_comments where talk_id=talks.ID) last_comment_date
@@ -162,7 +162,7 @@ class Talks_model extends Model {
 			', $tc_sql, $this->db->escape($tid));
 			$q=$this->db->query($sql);
 		}else{
-			if($latest){ 
+			if($latest){
 				$wh=' talks.date_given<='.mktime(0,0,0).' and ';
 				$ob=' order by talks.date_given desc';
 			}else{ $wh=''; $ob=''; }
@@ -185,7 +185,9 @@ class Talks_model extends Model {
 					from
 						talk_comments
 					where
-					   talk_id=talks.ID and
+					   talk_id=talks.ID  and
+		               rating <> 0 and
+		               user_id <> 0) as tavg,
 					(select max(date_made) from talk_comments where talk_id=talks.ID) last_comment_date
 				from
 					talks
@@ -202,7 +204,7 @@ class Talks_model extends Model {
 			$q=$this->db->query($sql);
 		}
 		$res = $q->result();
-		
+
 		$CI=&get_instance();
 		$CI->load->model('talk_speaker_model','tsm');
 		foreach($res as $k=>$talk){
@@ -220,7 +222,7 @@ class Talks_model extends Model {
 	*/
 	public function getTalkComments($tid,$cid=null,$private=false){
 		$this->load->library('gravatar');
-		
+
 		$c_addl	= ($cid) ? ' and tc.ID='.$this->db->escape($cid) : '';
 		$priv	= (!$private) ? ' and tc.private=0' : '';
 		$sql=sprintf('
@@ -252,7 +254,7 @@ class Talks_model extends Model {
 		}
 		return $comments;
 	}
-	
+
 	public function getPopularTalks($len=7){
 		if (!ctype_digit((string)$len)) {
 			throw new Exception('Expected length to be a number, received '.$len);
@@ -263,7 +265,13 @@ class Talks_model extends Model {
 				t.talk_title,
 				t.ID,
 				count(tc.ID) as ccount,
-				round(avg(tc.rating)) as tavg,
+				(select
+                        round(avg(rating))
+                    from
+                        talk_comments
+                    where
+                       rating <> 0 and
+                       user_id <> 0) as tavg,
 				e.ID eid,
 				e.event_name
 			from
@@ -282,7 +290,7 @@ class Talks_model extends Model {
 		');
 		$query = $this->db->query($sql);
 		$talks = $query->result();
-		
+
 		$CI=&get_instance();
 		$CI->load->model('talk_speaker_model','tsm');
 		foreach($talks as $k=>$talk){
@@ -290,7 +298,7 @@ class Talks_model extends Model {
 		}
 		return $talks;
 	}
-	
+
 	/**
 	 * Get recent talks from any and all events
 	 *
@@ -303,7 +311,13 @@ class Talks_model extends Model {
 			  t.talk_title,
 			  t.date_given,
 			  count(tc.ID) as ccount,
-			  round(avg(tc.rating)) as tavg,
+			  (select
+                        round(avg(rating))
+                    from
+                        talk_comments
+                    where
+                       rating <> 0 and
+                       user_id <> 0) as tavg,
 			  e.ID eid,
 			  e.event_name,
 			  e.event_start
@@ -327,59 +341,59 @@ class Talks_model extends Model {
 		$query = $this->db->query($sql);
 		return $query->result();
 	}
-	
+
 	/**
 	 * Get the talks successfully claimed by the user
 	 * Results include talk information
-	 * 
+	 *
 	 * @param integer $uid User ID
 	 * @return array $talks Talk detail information
 	 */
 	public function getUserTalks($uid,$showAll=false){
 		$talks	 = array();
 		$claimed = $this->getSpeakerTalks($uid);
-		
+
 		foreach($claimed as $index => $claim){
 			// remove if pending
 			if($claim->status != null && $showAll === false){
 				continue;
 			}
-			
+
 			$talk=$this->getTalks($claim->talk_id);
-			if(isset($talk[0])){ 
-				$talks[]=$talk[0]; 
+			if(isset($talk[0])){
+				$talks[]=$talk[0];
 			}
 		}
 		return $talks;
 	}
-	
+
 	/**
 	 * Get successfully claimed talks by speaker
 	 *
 	 * @param integer $speakerId User ID
-	 * @return array 
+	 * @return array
 	 */
 	public function getSpeakerTalks($speakerId)
 	{
 		$talks = array();
-		
+
 		$this->db->select('*');
 		$this->db->from('talk_speaker');
 		$this->db->join('talks','talks.id=talk_speaker.talk_id');
 		$this->db->where('speaker_id',$speakerId);
 		$this->db->order_by('talks.date_given desc');
-		
+
 		$query 	= $this->db->get();
 		$talks 	= $query->result();
-		
+
 		// the RID isn't set like the other talk info - lets set it!
 		foreach($talks as $index => $talk){
 			$talks[$index]->rid = $talk->talk_id;
 		}
-		
+
 		return $talks;
 	}
-	
+
 	public function getUserComments($uid){
 		$sql=sprintf('
 			select
@@ -401,13 +415,13 @@ class Talks_model extends Model {
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
-	
+
 	public function getTalkEvent($tid){
 		$q	 = $this->db->query('select event_id from talks where id='.$this->db->escape($tid));
 		$ret = $q->result();
 		return (isset($ret['event_id'])) ? $ret['event_id'] : false;
 	}
-	
+
 	/**
 	 * Find the other events where the session was given
 	 *
@@ -417,12 +431,12 @@ class Talks_model extends Model {
 	public function talkAlsoGiven($tid,$eid){
 		$ret		= array();
 		$talk_detail= $this->getTalks($tid);
-		
+
 		$speakers=array();
 		foreach($talk_detail[0]->speaker as $speaker){
 			$speakers[]=strtolower($speaker->speaker_name);
 		}
-		
+
 		$this->db->select('event_id eid, talks.ID as tid, talk_title, event_name');
 	    $this->db->from('talks');
 		$this->db->join('events','events.id=talks.event_id','left');
@@ -432,33 +446,33 @@ class Talks_model extends Model {
 	    $q=$this->db->get();
 	    return $q->result();
 	}
-	
+
 	public function getTalkByCode($code){
 		//$str='ec'.str_pad($v->ID,2,0,STR_PAD_LEFT).str_pad($v->event_id,2,0,STR_PAD_LEFT);
 		//$str.=substr(md5($v->talk_title),5,5);
-		
+
 		$sql=sprintf("
-			select 
+			select
 				talk_title,
 				ID,
-				concat('ec',lpad(ID,2,'0'),lpad(event_id,2,'0'),substr(md5(talk_title),6,5)) code 
-			from 
-				talks 
+				concat('ec',lpad(ID,2,'0'),lpad(event_id,2,'0'),substr(md5(talk_title),6,5)) code
+			from
+				talks
 			having
 				code='%s'
 		",$this->db->escape($code)); //echo $sql;
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
-	
-	public function linkUserRes($uid,$rid,$type,$code=null){		
+
+	public function linkUserRes($uid,$rid,$type,$code=null){
 		$arr=array(
 			'uid'	=> $uid,
 			'rid'	=> $rid,
 			'rtype'	=> $type
 		);
 		if($code){ $arr['rcode']=$code; }
-		
+
 		//check to be sure its not already claimed first...
 		$q=$this->db->get_where('user_admin',$arr);
 		$ret=$q->result();
@@ -473,16 +487,16 @@ class Talks_model extends Model {
 		$ci = &get_instance();
 		$ci->load->model('talk_speaker_model','talkSpeaker');
 		$term = mysql_real_escape_string($term);
-		
-		$this->db->select('talks.*, count(talk_comments.ID) as ccount, (select round(avg(rating)) from talk_comments where talk_id=talks.ID) as tavg, events.ID eid, events.event_name');
+
+		$this->db->select('talks.*, count(talk_comments.ID) as ccount, (select round(avg(rating)) from talk_comments where talk_id=talks.ID and rating <> 0 and user_id <> 0) as tavg, events.ID eid, events.event_name');
 	    $this->db->from('talks');
-	    
+
 	    $this->db->join('talk_comments', 'talk_comments.talk_id=talks.ID', 'left');
 		$this->db->join('events', 'events.ID=talks.event_id', 'left');
-	    
+
 		if($start>0){ $this->db->where('date_given >=', $start); }
 		if($end>0){ $this->db->where('date_given <=', $end); }
-		
+
 		$this->db->like('talk_title',$term);
 		$this->db->or_like('talk_desc',$term);
 		$this->db->or_like('speaker',$term);
@@ -490,27 +504,27 @@ class Talks_model extends Model {
 		$this->db->group_by('talks.ID');
 		$query = $this->db->get();
 		$results = $query->result();
-		
+
 		foreach($results as $key => $talk){
 			$results[$key]->speaker = $ci->talkSpeaker->getSpeakerByTalkId($talk->ID);
 		}
-		
+
 		return $results;
 	}
 	//---------------
-	
+
 	/**
-	 * Find the user IDs that have claims on a talk. This lets us know which 
+	 * Find the user IDs that have claims on a talk. This lets us know which
 	 * user IDs to exclude from the talk rating averages
 	 *
 	 * @param integer $tid Talk ID
 	 * @return array User IDs
 	 */
 	public function _findExcludeComments($tid){
-	    $uid	= array();	
+	    $uid	= array();
 		$query	= $this->db->get_where('talk_speaker',array('talk_id'=>$tid));
 		$speaker_rows = $query->result();
-		
+
 		if(count($speaker_rows)){
 			foreach($speaker_rows as $speaker){
 				if(!empty($speaker->speaker_id)){
@@ -523,12 +537,12 @@ class Talks_model extends Model {
 
 
 	/**
-	 * setDisplayFields 
+	 * setDisplayFields
 	 *
 	 * Method to set the date (and potentially some other fields later) for
-	 * correct display.  Timezone calculations are needed - call this from a 
+	 * correct display.  Timezone calculations are needed - call this from a
 	 * controller before passing data to the view
-	 * 
+	 *
 	 * @param array $det the array returned by getTalks
 	 * @access public
 	 * @return the amended array with additional fields
@@ -564,10 +578,10 @@ class Talks_model extends Model {
 
 
 			// set a datetime string, ignoring talks at midnight and assuming they are without times
-			if($talk_datetime->format('H') != '0') { 
-				$date_string = 'M j, Y \a\t H:i'; 
-			} else { 
-				$date_string = 'M j, Y'; 
+			if($talk_datetime->format('H') != '0') {
+				$date_string = 'M j, Y \a\t H:i';
+			} else {
+				$date_string = 'M j, Y';
 			}
 
 			// set date, time, and datetime display variables
