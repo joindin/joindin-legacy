@@ -41,7 +41,7 @@ menu_pagetitle('Submit an event');
 					<input type="text" name="addr" id="addr" value="<?php echo $this->validation->addr; ?>" />
 				</td>
 				<td>
-					<button type="button" onclick="addr_search();">Search</button>
+					<input type="button" onclick="addr_search();" value="Search" />
 				</td>
 			</tr>
 		</table>

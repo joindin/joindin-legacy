@@ -775,6 +775,7 @@ a {
 }
 
 /*#ctn .main */form input[type=text],
+/*#ctn .main */form input[type=button],
 /*#ctn .main */form input[type=password] {
 	display: block;
 	width: 98%;
