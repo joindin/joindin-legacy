@@ -112,7 +112,6 @@ class User_model extends Model {
 			$this->db->from('talk_speaker');
 			$this->db->where(array('speaker_id'=>$uid,'talk_id'=>$tid,'IFNULL(status,0) !='=>'pending'));
 			$query = $this->db->get();
-			
 			$talk	= $query->result();
 			if(isset($talk[0]->ID)){ $ad=true; }
 			
