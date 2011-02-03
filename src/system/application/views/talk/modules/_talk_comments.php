@@ -11,12 +11,12 @@ if (empty($comments)) {
 
 } else {
 	echo '<h2 id="comments">Comments</h2>';
-	
+
     foreach ($comments as $k => $v) {
-        if (isset($v->user_id) && $v->user_id != 0){ 
+        if (isset($v->user_id) && $v->user_id != 0){
     		$uname = '<a href="/user/view/'.$v->user_id.'">'.escape($v->uname).'</a> ';
-    	}else{ 
-    		$uname = '<span class="anonymous">Anonymous</span>'; 
+    	}else{
+    		$uname = '<span class="anonymous">Anonymous</span>';
     	}
 
     	$class = '';
@@ -28,25 +28,24 @@ if (empty($comments)) {
         if ($v->private == 1) {
     	    $class .= ' row-talk-comment-private';
     	}
-    	
-    	if (isset($claimed[0]->userid) && $claimed[0]->userid != 0 && isset($v->user_id) && $v->user_id == $claimed[0]->userid) {
+
+    	if (isUserSpeaker($v->user_id, $speakers)) {
     	    $class .= ' row-talk-comment-speaker';
     	}
-
 ?>
 <div id="comment-<?php echo $v->ID ?>" class="row row-talk-comment<?php echo $class?>">
 	<div class="img">
-	<?php if (isset($claimed[0]->userid) && $claimed[0]->userid != 0 && isset($v->user_id) && $v->user_id == $claimed[0]->userid): ?>
+	<?php if (isUserSpeaker($v->user_id, $speakers)): ?>
 		<span class="speaker">Speaker comment:</span>
 	<?php else: ?>
-		<?php echo rating_image($v->rating); ?><br/>
-		<?php if(!empty($v->twitter_username)): ?>
+		<?php echo $v->user_id != 0 ? rating_image($v->rating) : '' ?><br/>
+    <?php endif; ?>
+    <?php if(!empty($v->twitter_username)): ?>
 		<a href="http://twitter.com/<?php echo $v->twitter_username; ?>"><img src="/inc/img/twitter_share_icon.gif" style="margin-top:10px" width="20"/></a>
-		<?php endif; ?>
-		<?php if(!empty($v->gravatar)){ 
-			echo '<a href="/user/view/'.$v->user_id.'">'.str_replace('/>','height="45" align="right" style="margin:10px"/>',$v->gravatar).'</a>'; } 
-		?>
 	<?php endif; ?>
+	<?php if(!empty($v->gravatar)){
+	   echo '<a href="/user/view/'.$v->user_id.'">'.str_replace('/>','height="45" align="right" style="margin:10px"/>',$v->gravatar).'</a>'; }
+	?>
 	</div>
 	<div class="text">
     	<p class="info">
@@ -72,7 +71,7 @@ if (empty($comments)) {
 		</p>
 		<?php if (user_is_admin()): ?>
 		<p class="admin">
-			
+
 		</p>
 		<?php endif; ?>
 	</div>

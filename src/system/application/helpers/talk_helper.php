@@ -14,7 +14,7 @@
 
 /**
  * Build an array of speaker claims
- * 
+ *
  * @param object  $talk_detail The detail information of the talk
  * @param array   $talk_claims Array of claims
  * @param integer $ftalk       Identifier?
@@ -98,7 +98,7 @@ function splitCommentTypes($talk_comments, $admin, $user_id)
 
         // split the comments
         if ($include_comment) {
-                $type=($comment->comment_type === null) 
+                $type=($comment->comment_type === null)
                             ? 'comment'
                             : $comment->comment_type;
                 $comments[$type][]=$comment;
@@ -117,10 +117,10 @@ function splitCommentTypes($talk_comments, $admin, $user_id)
  * @return string List of all speakers of this talk
  */
 function buildClaimedLinks($speakers,$claim_detail){
-	
+
 	$speaker_data	= array();
 	$speaker_links	= array();
-	
+
 	// find ones that have a speaker ID
 	foreach($speakers as $speakerKey => $speaker){
 		if(isset($speaker->speaker_id)){
@@ -129,18 +129,18 @@ function buildClaimedLinks($speakers,$claim_detail){
 			unset($speakers[$speakerKey]);
 		}
 	}
-	
+
 	foreach($claim_detail as $claim){
 		$speaker_data[$claim->full_name]=$claim->uid;
 	}
-	
+
 	foreach($speakers as $speaker){
 		$name=$speaker->speaker_name;
 		if(array_key_exists($name,$speaker_data)){
 			$speaker_links[]='<a href="/user/view/'.$speaker_data[$name].'">'.$name.'</a>';
 		}else{ $speaker_links[]=$name; }
 	}
-	
+
 	//Check the claim...if there's only one claim, assign no matter what
 	if(count($speakers)==1 && count($claim_detail)){
 		$speaker_links	= array();
@@ -150,11 +150,30 @@ function buildClaimedLinks($speakers,$claim_detail){
 	return implode(', ',$speaker_links);
 }
 
+/**
+ * Check wether a given user is a speaker
+ *
+ * @param int   $user_id    The user id to check
+ * @param array $speakers   The array with speakers
+ *
+ * @return bool     Is this user a speaker?
+ */
+function isUserSpeaker($user_id, $speakers){
+    foreach($speakers as $speaker){
+        if(!empty($speaker->speaker_id) && $speaker->status != 'pending'){
+            if(intval($speaker->speaker_id) == intval($user_id)){
+            	return true;
+            }
+        }
+    }
+    return false;
+}
+
 function buildSpeakerImg($speakers){
 	$ci=&get_instance();
-	$ci->load->library('gravatar');	
+	$ci->load->library('gravatar');
 	$user_images=array();
-	
+
 	foreach($speakers as $speaker){
 		if(!empty($speaker->speaker_id) && $speaker->status!='pending'){
 			if($img_data=$ci->gravatar->displayUserImage($speaker->speaker_id,true)){
@@ -171,7 +190,7 @@ function buildSpeakerImg($speakers){
 /**
  * Takes an array of talks, and attempts to add a flag to each one to
  * say whether the talk is on now or whether it is on next.
- * 
+ *
  * This logic *WILL* be broken until talks have an end time.
  * Live with it, or add end times.
  *
