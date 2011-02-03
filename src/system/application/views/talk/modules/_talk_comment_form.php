@@ -50,9 +50,9 @@
 <?php } ?>
     <div class="clear"></div>
 </div>
-<?php if (isset($claimed[0]->userid) && $claimed[0]->userid != 0 && user_get_id() == $claimed[0]->userid): ?>
+<?php if ($admin || !user_is_auth()): ?>
 <?php else: ?>
-<div class="row">
+<div class="row ratingRow">
 	<label for="rating">Rating</label>
 	<div class="rating">
 	    <?php echo rating_form('rating', $this->validation->rating); ?>

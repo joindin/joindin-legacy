@@ -90,12 +90,14 @@ talk = function (){
 					'color':            'silver'
 				});
 				$('#comment_anonymously').css('display', '');
+				$('.ratingRow').slideUp();
 			} else {
 				$('#comment_as_user, #comment_as_user a').css({
 					'text-decoration':  '',
 					'color':            ''
 				});
 				$('#comment_anonymously').css('display', 'none');
+				$('.ratingRow').slideDown();
 			}
 		});
 	}

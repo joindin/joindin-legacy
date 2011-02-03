@@ -515,6 +515,7 @@ class Talk extends Controller
 
         $currentUserId = $this->session->userdata('ID');
         $talk_detail   = $this->talks_model->getTalks($id);
+        $is_talk_admin = $this->user_model->isAdminTalk($id);
         if (empty($talk_detail)) {
             redirect('talk');
         }
@@ -584,9 +585,16 @@ class Talk extends Controller
 
         $cl = ($r = $this->talks_model->talkClaimDetail($id)) ? $r : false;
 
+        //moved anonymous check for the purpose of rating validation
+        $anonymous = $this->input->post('anonymous');
+        $anonymous = (empty($anonymous)) ? 0 : 1;
+        //user logged in? not then force anonymous posting
+        if (!$this->user_model->isAuth()){
+        	$anonymous = 1;
+        }
+
         $rules = array(
-            'rating' => $cl && $cl[0]->userid == $currentUserId
-                ? null : 'required'
+            'rating' => $is_talk_admin || $anonymous ? null : 'required'
         );
         $fields = array(
             'comment' => 'Comment',
@@ -605,8 +613,8 @@ class Talk extends Controller
         //	$fields['cinput']	= 'Captcha';
         //}
 
-        $this->validation->set_rules($rules);
         $this->validation->set_fields($fields);
+        $this->validation->set_rules($rules);
 
         if ($this->validation->run() == false) {
             // vote processing code removed
@@ -619,9 +627,6 @@ class Talk extends Controller
 
             $priv = $this->input->post('private');
             $priv = (empty($priv)) ? 0 : 1;
-
-            $anonymous = $this->input->post('anonymous');
-            $anonymous = (empty($anonymous)) ? 0 : 1;
 
             if (!$is_auth) {
                 $sp_ret = $this->spam->check(
@@ -653,7 +658,7 @@ class Talk extends Controller
 
                 $arr = array(
                     'talk_id'   => $id,
-                    'rating'    => $this->input->post('rating'),
+                    'rating'    => !$anonymous && !$admin ? $this->input->post('rating') : 0,
                     'comment'   => $this->input->post('comment'),
                     'date_made' => time(), 'private' => $priv,
                     'active'    => 1,
@@ -718,8 +723,6 @@ class Talk extends Controller
         if (empty($talk_detail)) {
             redirect('talk');
         }
-
-        $is_talk_admin = $this->user_model->isAdminTalk($id);
 
         // Retrieve ALL comments, then Reformat and filter out private comments
 		$all_talk_comments = $this->talks_model->getTalkComments($id, null, true);
