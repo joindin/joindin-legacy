@@ -118,7 +118,9 @@ class Talks_model extends Model {
 			    from
 				talk_comments tc
 			    where
-				tc.talk_id=talks.ID %s) as tavg,
+				tc.talk_id=talks.ID and
+				tc.rating <> 0 and
+				tc.user_id <> 0 %s) as tavg,
 			',$addl);
 			$sql=sprintf('
 				select
@@ -178,11 +180,12 @@ class Talks_model extends Model {
 					lang.lang_name,
 					lang.lang_abbr,
 					count(talk_comments.ID) as ccount,
-					(select 
-						round(avg(rating)) 
-					from 
-						talk_comments 
-					where talk_id=talks.ID) as tavg,
+					(select
+						round(avg(rating))
+					from
+						talk_comments
+					where
+					   talk_id=talks.ID and
 					(select max(date_made) from talk_comments where talk_id=talks.ID) last_comment_date
 				from
 					talks
