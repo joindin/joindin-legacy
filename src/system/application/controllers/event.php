@@ -490,6 +490,7 @@ class Event extends Controller
         $this->load->helper('form');
         $this->load->helper('reqkey');
         $this->load->helper('events');
+        $this->load->helper('tabs');
         $this->load->library('validation');
         $this->load->library('defensio');
         $this->load->library('spam');
@@ -634,10 +635,12 @@ class Event extends Controller
             'latest_comment' => $this->event_model->getLatestComment($id),
             'admins'         => $evt_admins,
             'tracks'         => $this->etm->getEventTracks($id),
-            'talk_stats'     => $talk_stats
+            'talk_stats'     => $talk_stats,
+			'tab'			 => ''
             //'started'=>$this->tz->hasEvtStarted($id),
         );
 
+        $tabList = array('talks','comments','statistics', 'evt_related', 'slides', 'tracks');
         if ($opt == 'track') {
             $arr['track_filter'] = $opt_id;
             $arr['track_data']   = null;
@@ -646,7 +649,9 @@ class Event extends Controller
                     $arr['track_data'] = $tr;
                 }
             }
-        }
+        } elseif (in_array(strtolower($opt), $tabList)) {
+			$arr['tab'] = strtolower($opt);
+		}
 
         //our event comment form
         $rules = array(
