@@ -826,7 +826,14 @@ class Talk extends Controller
 			
 		}else{
 			$errorData = array(
-				'msg'=>'There was an error in your attempt to claim the talk ID #'.$talkId
+				'msg'=>sprintf('
+					There was an error in your attempt to claim the talk ID #%s
+					<br/>
+					There might already be a pending claim for this session.
+					<br/><br/>
+					If you would like more information on this error, please <a style="color:#FFFFFF" href="/event/contact/">contact 
+					this event\'s admins</a>.'
+				,$talkId)
 			);
 			$this->template->write_view('content', 'msg_error', $errorData);
 	        $this->template->render();
