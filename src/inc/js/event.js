@@ -93,9 +93,15 @@ JI_event = function (){
 	}
 	
 	var _hideFieldsets = function(fieldsToHide){
-		alert(fieldsToHide);
 		$.each($("fieldset[id$='fields']"),function(){
 			$(this).css('display','none');
+		});
+	}
+	
+	var _updateStub = function(){ console.log('here');
+		$('#event_stub').bind('keyup',function(){
+			console.log($(this).val());
+			$('#stub_display').html('http://joind.in/event/'+$(this).val());
 		});
 	}
 	
@@ -107,10 +113,10 @@ JI_event = function (){
 				_toggleAttendees();
 				_claimEvent();
 				_toggleEventFieldsets();
+				_updateStub();
 			});
 		},
 		hideFieldsets: function(fieldsToHide){
-			console.log(fieldsToHide);
 			$(document).ready(function(){
 				_hideFieldsets(fieldsToHide);
 			});
