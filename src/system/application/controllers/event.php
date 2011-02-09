@@ -1224,7 +1224,7 @@ class Event extends Controller
 				);
 			}
 
-            $this->sendemail->sendEventApproved($id, $evt_detail, $admin_list);
+            $this->sendemail->sendEventApproved($evt_detail[0], $admin_list);
         }
 
         // Finally, redirect back to the event!
