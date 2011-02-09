@@ -421,6 +421,13 @@ class Event extends Controller
 				}
             }
 
+			// be sure that the image for the event actually exists
+			$eventIconPath = $_SERVER['DOCUMENT_ROOT'] . '/inc/img/event_icons/'.$event_detail[0]->event_icon;
+			if(!is_file($eventIconPath)){
+				$event_detail[0]->event_icon = 'none.gif';
+			}
+
+
             $arr = array(
                 'detail'       => $event_detail,
                 'min_start_yr' => $min_start_yr,
@@ -507,7 +514,7 @@ class Event extends Controller
 				$this->validation->event_cfp_start 	= time();
 				$this->validation->event_cfp_end 	= time();
 			}
-
+			
             $arr = array(
                 'msg'          => 'Data saved! <a href="/event/view/' . $id .
                     '">View event</a>',
