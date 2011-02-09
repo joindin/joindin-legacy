@@ -991,6 +991,10 @@ span.ends_soon {
 	text-transform: uppercase;
 }
 
+.fieldset-toggle {
+	font-size: 11px;
+}
+
 /***/
 
 /* jQuery.Rating Plugin CSS - http://www.fyneworks.com/jquery/star-rating/ */
