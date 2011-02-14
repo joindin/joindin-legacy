@@ -70,6 +70,7 @@ $route['event/contact/(:num)']					= 'event/contact/$1';
 $route['event/invite/([0-9]+)/?(.*)']			= 'event/invite/$1/$2';
 $route['event/blog/(:any)/(:any)']				= 'event/blog/$1/$2';
 $route['event/blog/feed']						= 'event/blog/feed';
+$route['event/callforpapers']					= 'event/callforpapers';
 //now our catch all...
 $route['event/(:any)']							= 'event/cust/$1';
 $route['(:num)']								= 'talk/view/$1';
