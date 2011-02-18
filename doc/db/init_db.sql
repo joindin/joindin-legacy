@@ -335,6 +335,23 @@ CREATE TABLE `user_admin` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
+-- Table structure for table `talk_speaker`
+--
+
+DROP TABLE IF EXISTS `talk_speaker`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `talk_speaker` (
+  `talk_id` int(11) default NULL,
+  `speaker_name` varchar(200) default NULL,
+  `ID` int(11) NOT NULL auto_increment,
+  `speaker_id` int(11) default NULL,
+  `status` varchar(10) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=2778 DEFAULT CHARSET=utf8;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `user_attend`
 --
 

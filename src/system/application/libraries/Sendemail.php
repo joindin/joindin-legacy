@@ -242,5 +242,29 @@ You can view the event here: %sevent/view/%s
 		
 		$this->_sendEmail($to,$msg,$subj,$this->_config->item('email_comments'));
 	}
+	
+	/**
+	 * Send the email when someone submits a claim on a talk
+	 *
+	 * @param array $talk_detail Talk details
+	 * @param array $to Email addresses
+	 */
+	public function sendPendingClaim($talk_detail,$to)
+	{
+		error_log('sending pending');
+		
+		$subject	= 'Talk claim submitted! Go check!';
+	    $message	= sprintf("
+Talk claim has been submitted for talk \"%s\"
+
+Visit the link below to approve or deny the talk. Note: you must
+be logged in to get to the \"Claims\" page for the event!
+
+%sevent/claim/%s
+	    ", $talk_detail->talk_title, $this->CI->config->site_url(), $talk_detail->event_id);
+		error_log('inside: '.$message);
+	
+		$this->_sendEmail($to,$message,$subject);
+	}
 }
 ?>

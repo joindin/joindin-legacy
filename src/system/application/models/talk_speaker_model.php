@@ -63,9 +63,29 @@ class Talk_speaker_model extends Model {
 		}
 	}
 	
-	public function getTalkSpeakers($talk_id){
-		$q=$this->db->get_where('talk_speaker',array('talk_id'=>$talk_id));
-		return $q->result();
+	/**
+	 * Return the information for the given talk ID
+	 * 
+	 * @param integer $talk_id Talk ID #
+	 * @param boolean $showAll[optional] Switch to have method return all, no matter the status
+	 * @return array $speaker Speaker data
+	 */
+	public function getTalkSpeakers($talk_id,$showAll=false)
+	{		
+		$query = $this->db->get_where('talk_speaker',array('talk_id'=>$talk_id));
+		$speakers = $query->result();
+		
+		if($showAll == true){
+			return $speakers;
+		}else{		
+			// if the status isn't null, remove the speaker_id
+			foreach($speakers as $speakerIndex => $speaker){
+				if($speaker->status != null){
+					$speakers[$speakerIndex]->speaker_id = null;
+				}
+			}
+		}
+		return $speakers;
 	}
 	
 	/**
@@ -91,15 +111,14 @@ class Talk_speaker_model extends Model {
 	 * 
 	 * @return array Speaker information
 	 */
-	public function getSpeakerByTalkId($talk_id){
+	public function getSpeakerByTalkId($talk_id,$showAll=false){
 		
-		$this->db->select('talk_id,speaker_name,talk_speaker.ID,email');
+		$this->db->select('talk_id,speaker_name,talk_speaker.ID,email,speaker_id,status,full_name');
 		$this->db->from('talk_speaker');
 		$this->db->where('talk_id',$talk_id);
 		$this->db->distinct();
-		// left join for those of us who think our name is different from 
-		// what conference organisers think it is
-		$this->db->join('user','user.full_name=talk_speaker.speaker_name', 'left');
+		
+		$this->db->join('user','user.ID=talk_speaker.speaker_id', 'left');
 		$result=$this->db->get();
 		$ret=$result->result();
 		
@@ -112,6 +131,45 @@ class Talk_speaker_model extends Model {
 		return $ret;
 	}
 	
+	/**
+	 * Find if a talk has been claimed, returns false if not
+	 * otherwise, returns a count of current claims
+	 * 
+	 * @param integer $talk_id Talk ID #
+	 * @return mixed Either boolean or integer
+	 */
+	public function isTalkClaimed($talk_id){
+
+		$this->db->select('count(id) as claimCount');
+		$this->db->from('talk_speaker');
+		$this->db->where(array(
+			'talk_id'	=> $talk_id,
+			'status'	=> ''
+		));
+		$query = $this->db->get();
+		
+		$result = $query->result();
+		return ($result[0]->claimCount && $result[0]->claimCount>0) ? $result[0]->claimCount : false;
+	}
+	
+	/**
+	 * Check to see if the given user has permissions (claimed)
+	 * the talk ID
+	 *
+	 * @param integer $user_id User ID
+	 * @param integer $talk_id Talk ID
+	 * @return boolean
+	 */
+	public function hasPerm($user_id,$talk_id)
+	{
+		$query = $this->db->get_where('talk_speaker',array(
+			'talk_id'		=> $talk_id,
+			'speaker_id'	=> $user_id,
+			'IFNULL(status,0) !='=>'pending'
+		));
+		$result = $query->result();
+		return (count($result)>0) ? true : false;
+	}
 	
 }
 

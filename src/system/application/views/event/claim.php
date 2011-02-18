@@ -1,3 +1,4 @@
+<?php menu_pagetitle('Pending Claims for '.$event_detail[0]->event_name); ?>
 
 <?php echo '<h2>Pending Claims</h2>'; ?>
 
@@ -32,14 +33,24 @@ claim the session. You can then accept/deny based on any match between them.
 	<?php
 		foreach($claims as $k=>$claim): ?>
 		<tr>
-			<td align="center"><?php echo form_radio('claim['.$claim->ua_id.']','approve'); ?></td>
-			<td align="center"><?php echo form_radio('claim['.$claim->ua_id.']','deny'); ?></td>
+			<td align="center"><?php echo form_radio('claim['.$claim->ID.']','approve'); ?></td>
+			<td align="center"><?php echo form_radio('claim['.$claim->ID.']','deny'); ?></td>
 			<td>
-				<?php echo '<a href="/talk/view/'.$claim->rid.'">'.$claim->talk_title.'</a>'; ?><br/>
+				<?php echo '<a href="/talk/view/'.$claim->talk_id.'">'.$claim->talk_title.'</a>'; ?><br/>
 				<span style="font-size:9px">@<?php echo $claim->event_name; ?></span>
 			</td>
-			<td><?php echo $claim->speaker; ?></td>
-			<td><?php echo '<a href="/user/view/'.$claim->uid.'">'.$claim->claiming_name.'</a>'; ?></td>
+			<td><?php 
+				$speakers = array();
+				foreach($claim->speakers as $speaker){ 
+					if($speaker->ID==$claim->ID){
+						$speakers[]='<b>'.$speaker->speaker_name.'</b>';
+					}else{
+						$speakers[]=$speaker->speaker_name;
+					}
+				}
+				echo implode(', ',$speakers); 
+			?></td>
+			<td><?php echo '<a href="/user/view/'.$claim->user_id.'">'.$claim->claiming_name.'</a>'; ?></td>
 		</tr>
 		<?php endforeach; ?>
 	</table>

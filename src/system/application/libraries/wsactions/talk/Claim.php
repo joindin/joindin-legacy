@@ -17,6 +17,7 @@ class Claim extends BaseWsRequest {
 	//-----------------------
 	function run(){
 		$this->CI->load->library('wsvalidate');
+		$this->CI->load->library('sendemail');
 		$this->CI->load->model('user_admin_model');
 		$this->CI->load->model('user_model');
 		$this->CI->load->model('talks_model');
@@ -26,9 +27,12 @@ class Claim extends BaseWsRequest {
 			'talk_id'		=>'required|istalk',
 			//'reqkey'	=>'required|reqkey'
 		);
-		$tid=$this->xml->action->talk_id;
+		$tid			= $this->xml->action->talk_id;
+		$talkSpeakerId 	= (int)$this->xml->action->talk_speaker_id;
+		
 		$ret=$this->CI->wsvalidate->validate($rules,$this->xml->action);
 		if(!$ret){
+
 			if($this->CI->wsvalidate->validate_loggedin() || $this->isValidLogin($this->xml)){
 				$uid_session=$this->CI->session->userdata('ID');
 				if(empty($uid_session)){
@@ -52,67 +56,50 @@ class Claim extends BaseWsRequest {
 					$uid=$this->CI->session->userdata('ID');
 				}
 
-				$ret=$this->CI->talks_model->getTalks($tid);
-				$talk_det=$ret[0];
-
-				$arr=array(
-					'uid' 	=> $uid,
-					'rid' 	=> $tid,
-					'rtype'	=> 'talk',
-					'rcode'	=> 'pending'
+				// take the currently logged in user and insert them as a pending record
+				$speakerClaim = array(
+					'id' 		=> $talkSpeakerId,
+					'status'	=> 'pending',
+					'speaker_id'=> $uid
 				);
 				
-				// If we're a site admin, we can add without having to get approval
-				// This will be coming from the API
-				if(isset($this->xml->auth->user)){
-					$is_site_admin=$this->CI->user_model->isSiteAdmin($this->xml->auth->user);
-					if($is_site_admin){
-						$this->CI->load->helper('events_helper');
-						$c_name=$udata[0]->full_name;
-						$arr['rcode']=buildCode($tid,$talk_det->eid,$talk_det->talk_title,$c_name);
-					}
-				}
+				// Be sure there's not one pending
+				$query = $this->CI->db->get_where('talk_speaker',$speakerClaim);
+				$pendingClaim = $query->result();
 				
-				// Be sure we don't already have a claim pending
-				$q=$this->CI->db->get_where('user_admin',$arr);
-				$ret=$q->result();
-				if(isset($ret[0]->ID)){
-				    return array('output'=>'json','data'=>array('items'=>array('msg'=>'Fail: Duplicate Claim!')));
+				error_log(print_r($speakerClaim,true));
+				error_log(print_r($pendingClaim,true));
+				
+				if(empty($pendingClaim)){
+					
+					$talkQuery 	= $this->CI->talks_model->getTalks($tid);
+					$talk_detail= $talkQuery[0];
+					$eventAdmins= $this->CI->event_model->getEventAdmins($talk_detail->event_id);
+					
+					// get our admin emails
+					if(count($eventAdmins)>0){
+						foreach($eventAdmins as $admin){ 
+							error_log($admin->email);
+							$to[]=$admin->email; 
+						}
+					}
+					
+					// Insert the claim
+					$this->CI->db->where('ID',$talkSpeakerId);
+					$this->CI->db->update('talk_speaker',$speakerClaim);
+
+					$this->CI->sendemail->sendPendingClaim($talk_detail,$to);
+					return $this->sendJsonMessage('Success');
 				}else{
-					$to=array();
-					
-					$admin_emails=$this->CI->user_model->getSiteAdminEmail();
-					foreach($admin_emails as $user){ $to[]=$user->email; }
-					
-					// See if there's an admin for the event
-					$evt_admin=$this->CI->event_model->getEventAdmins($talk_det->event_id);
-					if(count($evt_admin)>0){
-						foreach($evt_admin as $k=>$v){ $to[]=$v->email; }
-					}
-					
-				    //insert a row into user_admin for the user/talk ID but with a code of "pending"
-				    $this->CI->db->insert('user_admin',$arr);
-
-				    //send an email about the claim
-				    $subj	= 'Talk claim submitted! Go check!';
-				    $msg	= sprintf("
-Talk claim has been submitted for talk \"%s\"
-
-Visit the link below to approve or deny the talk. Note: you must
-be logged in to get to the \"Claims\" page for the event!
-
-%sevent/claim/%s
-				    ", $talk_det->talk_title, $this->CI->config->site_url(), $talk_det->event_id);
-				
-					foreach($to as $email_addr){
-				    	mail($email_addr, $this->CI->config->item('site_name') . ': Talk claim submitted! Go check!',$msg,'From: ' . $this->CI->config->item('email_feedback'));
-					}
-				    //return the success message
-				    return array('output'=>'json','data'=>array('items'=>array('msg'=>'Success')));
+					return $this->sendJsonMessage('Fail: Duplicate Claim!');
 				}
 			
-			}else{ return array('output'=>'json','data'=>array('items'=>array('msg'=>'redirect:/user/login'))); }
-		}else{ return array('output'=>'json','data'=>array('items'=>array('msg'=>'Fail'))); }
+			}else{ 
+				return $this->sendJsonMessage('redirect:/user/login');
+			}
+		}else{
+			return $this->sendJsonMessage('Fail');
+		}
 	}
 	
 }

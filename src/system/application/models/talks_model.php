@@ -9,44 +9,54 @@ class Talks_model extends Model {
 	public function deleteTalk($id){
 		$this->db->delete('talks',array('ID'=>$id));
 	}
-	public function isTalkClaimed($tid){
+	
+	/**
+	 * Find details on claims of a talk
+	 *
+	 * @param integer $tid Talk ID
+	 * @param boolean $show_all Switch to show/hide
+	 * @return array $talks Talk claim data
+	 */
+	public function talkClaimDetail($tid,$show_all=false){
+		
 		$sql=sprintf('
 			select
 				u.username,
 				u.email,
-				ua.uid,
-				ua.rid,
-                ua.rtype,
-				ua.rcode,
+				ts.speaker_id uid,
+				ts.talk_id rid,
 				u.ID userid,
 				t.talk_title,
 				t.event_id,
-				t.speaker
+				ts.speaker_name speaker
 			from
 				user u,
-				user_admin ua,
-				talks t
+				talks t,
+				talk_speaker ts
 			where
-				u.ID=ua.uid and
-				ua.rid=%s and
-				ua.rcode!=\'pending\' and
-                ua.rtype=\'talk\' and
-				t.ID=ua.rid
+				u.ID = ts.speaker_id and
+				ts.talk_id = t.ID and
+				t.ID = %s
 		',$this->db->escape($tid));
-		$q=$this->db->query($sql);
-		$ret=$q->result();
-        
+		
+		if(!$show_all){
+			$sql.=" and ts.status != 'pending'";
+		}
+		
+		$query	= $this->db->query($sql);
+		$talks	= $query->result();
+
 		//echo '<pre>'; print_r($ret); echo '</pre>';
-		foreach($ret as $k=>$v){
+		foreach($talks as $k => $talk){
 			$codes=array(); $speakers=array();
-			foreach(explode(',',$v->speaker) as $ik=>$iv){
-				$codes[]=buildCode($v->rid,$v->event_id,$v->talk_title,trim($iv));
+			foreach(explode(',',$talk->speaker) as $ik=>$iv){
+				$codes[]=buildCode($talk->rid,$talk->event_id,$talk->talk_title,trim($iv));
 				$speakers[]=trim($iv);
 			}
-			$ret[$k]->codes=$codes;
-			$ret[$k]->speakers=$speakers;
+			$talks[$k]->codes=$codes;
+			$talks[$k]->speakers=$speakers;
 		}
-		return $ret;
+		return $talks;
 	}
 	
 	/**
@@ -267,15 +277,28 @@ class Talks_model extends Model {
 				ccount desc
 			limit '.$len.'
 		');
-		$q=$this->db->query($sql);
-		return $q->result();
+		$query = $this->db->query($sql);
+		$talks = $query->result();
+		
+		$CI=&get_instance();
+		$CI->load->model('talk_speaker_model','tsm');
+		foreach($talks as $k=>$talk){
+			$talks[$k]->speaker=$CI->tsm->getTalkSpeakers($talk->ID);
+		}
+		return $talks;
 	}
 	
+	/**
+	 * Get recent talks from any and all events
+	 *
+	 * @return array Talk detail information
+	 */
 	public function getRecentTalks(){
 		$sql=sprintf("
 			select
 			  DISTINCT t.ID,
 			  t.talk_title,
+			  t.date_given,
 			  count(tc.ID) as ccount,
 			  round(avg(tc.rating)) as tavg,
 			  e.ID eid,
@@ -287,41 +310,70 @@ class Talks_model extends Model {
 			    ON e.ID=t.event_id
 			  JOIN talk_comments tc
 			    ON tc.talk_id=t.ID
-			  INNER JOIN user_admin ua
-			    ON t.ID = ua.rid
+			  INNER JOIN talk_speaker ts
+			    ON t.ID = ts.talk_id
 			WHERE
 			    e.event_start > %s
 			  and
-			    ua.rtype = 'talk'
-			  and
-				ua.rcode != 'pending'
+				(ts.status != 'pending' OR ts.status is null)
 			group by
 			  t.ID
 			having
 			  tavg>3 and ccount>3
 		",strtotime('-3 months'));
-		$q=$this->db->query($sql);
-		return $q->result();
+		$query = $this->db->query($sql);
+		return $query->result();
 	}
 	
-	public function getUserTalks($uid){
-		$talks=array();
-		//select rid from user_admin where uid=$uid and rtype='talks'
+	/**
+	 * Get the talks successfully claimed by the user
+	 * Results include talk information
+	 * 
+	 * @param integer $uid User ID
+	 * @return array $talks Talk detail information
+	 */
+	public function getUserTalks($uid,$showAll=false){
+		$talks	 = array();
+		$claimed = $this->getSpeakerTalks($uid);
+		
+		foreach($claimed as $index => $claim){
+			// remove if pending
+			if($claim->status != null && $showAll === false){
+				continue;
+			}
+			
+			$talk=$this->getTalks($claim->talk_id);
+			if(isset($talk[0])){ 
+				$talks[]=$talk[0]; 
+			}
+		}
+		return $talks;
+	}
+	
+	/**
+	 * Get successfully claimed talks by speaker
+	 *
+	 * @param integer $speakerId User ID
+	 * @return array 
+	 */
+	public function getSpeakerTalks($speakerId)
+	{
+		$talks = array();
+		
 		$this->db->select('*');
-		$this->db->from('user_admin');
-		$this->db->join('talks','talks.id=user_admin.rid');
-		$this->db->where('uid',$uid);
-		$this->db->where('rtype','talk');
-		$this->db->where('rcode !=','pending');
+		$this->db->from('talk_speaker');
+		$this->db->join('talks','talks.id=talk_speaker.talk_id');
+		$this->db->where('speaker_id',$speakerId);
 		$this->db->order_by('talks.date_given desc');
 		
-		$q=$this->db->get();
-		//$q=$this->db->get_where('user_admin',array('uid'=>$uid,'rtype'=>'talk'));
-		$ret=$q->result();
-		foreach($ret as $k=>$v){ 
-			$t=$this->getTalks($v->rid);
-			if(isset($t[0])){ $talks[]=$t[0]; }
+		$query 	= $this->db->get();
+		$talks 	= $query->result();
+		
+		// the RID isn't set like the other talk info - lets set it!
+		foreach($talks as $index => $talk){
+			$talks[$index]->rid = $talk->talk_id;
 		}
+		
 		return $talks;
 	}
 	
@@ -396,80 +448,6 @@ class Talks_model extends Model {
 		return $q->result();
 	}
 	
-	/**
-	 * Find users with popular talks that are also in upcoming events
-	 */
-	public function getPopularUpcomingTalks($rating=4,$rand=true){
-		$this->CI=&get_instance();
-		$this->CI->load->model('event_model','em');
-		$this->CI->load->model('talks_model','tm');
-		$events = $this->CI->em->getUpcomingEvents(null);
-		$ret 	= array();
-		
-		foreach($events as $e){
-			$sql=sprintf('
-				select
-					u.ID
-				from
-					user u
-				where
-					u.ID in (
-						select
-							ua.uid
-						from
-							talks t, user_admin ua
-						where
-							t.event_id=%s and ua.rid=t.ID
-					)
-			', $this->db->escape($e->ID));
-			$q=$this->db->query($sql);
-			$claimed_users=$q->result();
-            //var_dump($claimed_users);
-			
-			// Now, for these users, lets find ones that have good ratings
-			foreach($claimed_users as $u){
-				$sql=sprintf("
-					select 
-						(select 
-							round(avg(tcs.rating)) rate 
-						from 
-							talk_comments tcs 
-						where 
-							tcs.talk_id=t.ID
-						having rate>=%s) rating,
-						t.ID,
-						t.talk_title,
-						t.speaker
-					from 
-						talks t
-					where 
-						t.ID in (
-							select
-								ua.rid
-							from
-								user_admin ua
-							where
-								ua.uid=%s and ua.rcode!='pending'
-						)
-					having
-						rating>=%s
-				", $this->db->escape($rating), $this->db->escape($u->ID), $this->db->escape($rating));
-				$q=$this->db->query($sql);
-				$ratings=$q->result();
-				foreach($ratings as $v){ $ret[]=$v; }
-			}			
-		}
-		if($rand){ 
-			$tmp=array();
-			if(count($ret)>0){
-				$max=(count($ret)<5) ? count($ret)-1 : 5;
-				$rand=array_rand($ret,$max);
-				foreach($rand as $r){ $tmp[]=$ret[$r]; }
-			}
-			return $tmp;
-		}else{ return $ret; }
-	}
-	
 	public function linkUserRes($uid,$rid,$type,$code=null){		
 		$arr=array(
 			'uid'	=> $uid,
@@ -489,6 +467,8 @@ class Talks_model extends Model {
 
 	//---------------
 	public function search($term,$start,$end){
+		$ci = &get_instance();
+		$ci->load->model('talk_speaker_model','talkSpeaker');
 		$term = mysql_real_escape_string($term);
 		
 		$this->db->select('talks.*, count(talk_comments.ID) as ccount, (select round(avg(rating)) from talk_comments where talk_id=talks.ID) as tavg, events.ID eid, events.event_name');
@@ -505,22 +485,36 @@ class Talks_model extends Model {
 		$this->db->or_like('speaker',$term);
 		$this->db->limit(10);
 		$this->db->group_by('talks.ID');
-		$q=$this->db->get();
-		return $q->result();
+		$query = $this->db->get();
+		$results = $query->result();
+		
+		foreach($results as $key => $talk){
+			$results[$key]->speaker = $ci->talkSpeaker->getSpeakerByTalkId($talk->ID);
+		}
+		
+		return $results;
 	}
 	//---------------
+	
+	/**
+	 * Find the user IDs that have claims on a talk. This lets us know which 
+	 * user IDs to exclude from the talk rating averages
+	 *
+	 * @param integer $tid Talk ID
+	 * @return array User IDs
+	 */
 	public function _findExcludeComments($tid){
-	    $uid=array();
-	    
-	    // See if there's any speaker claims for the talk
-	    $this->db->select('uid,rid,ID');
-	    $this->db->from('user_admin');
-	    $this->db->where('rid',$tid);
-	    $this->db->where('rtype','talk');
-	    $q=$this->db->get();
-	    $ret=$q->result();
-	    if($ret){ foreach($ret as $k=>$v){ $uid[]=$v->uid; } }
-
+	    $uid	= array();	
+		$query	= $this->db->get_where('talk_speaker',array('talk_id'=>$tid));
+		$speaker_rows = $query->result();
+		
+		if(count($speaker_rows)){
+			foreach($speaker_rows as $speaker){
+				if(!empty($speaker->speaker_id)){
+					$uid[] = $speaker->speaker_id;
+				}
+			}
+		}
 	    return $uid;
 	}
 

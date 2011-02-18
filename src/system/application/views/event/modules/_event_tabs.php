@@ -1,10 +1,6 @@
 <?php
 $cl=array();
 
-foreach($claimed as $k=>$v){ 
-	$cl[$v->rcode]=array('rid'=>$v->rid,'uid'=>$v->uid); 
-}
-
 // work through the talks list and split into days
 $by_day=array();
 foreach($talks as $t){
@@ -34,7 +30,7 @@ $ct=0;
 		'by_day'	=> $by_day,
 		'cl'		=> $cl,
 		'ct'		=> $ct,
-		'claims'	=> $claims
+		'claims'	=> $claimed
 	));
 	$this->load->view('event/modules/_event_tab_comments');
 	if($admin){ $this->load->view('event/modules/_event_tab_admin',array(
