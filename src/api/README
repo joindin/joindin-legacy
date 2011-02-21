@@ -3,3 +3,10 @@ This is the second generation API for joind.in.
 To configure:
  - point a new virtual host at the public directory, one level below this file.
  - symlink database.php in /src/api/ to the database.php in your joind.in installation.
+
+ Examples:
+ GET /events
+ GET /events/23
+ GET /events/23?verbose=yes
+ GET /events/15/comments
+ GET /events/15/talks

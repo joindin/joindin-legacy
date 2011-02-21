@@ -49,13 +49,15 @@ $request->accept = $_SERVER['HTTP_ACCEPT'];
 // (ignoring empty [0] element from leading slash)
 if(!empty($request->url_elements[1])) {
 	$class = ucfirst($request->url_elements[1]) . 'Controller';
+    // TODO check class exists before instantiation ... otherwise it errors (no exception)
 	$handler = new $class();
 	$return_data = $handler->handle($request, $ji_db); // the DB is set by the database config
 
 	// Handle output
+    // TODO more output handlers?
     echo json_encode($return_data);
 	exit;
 } else {
-	throw new Exception('Documentation should appear here');
+	throw new InvalidArgumentException('Unknown request', 404);
 }
 
