@@ -21,7 +21,7 @@ $config['site_name']	= 'Joind.in';
 |	http://example.com/
 |
 */
-$config['base_url']	= 'http://joind.in/';
+$config['base_url']	= ( empty($_SERVER['HTTPS']) ? 'http' : 'https' ) . '://joind.in/';
 
 /*
 |--------------------------------------------------------------------------
