@@ -1,4 +1,4 @@
-
+<script type="text/javascript" src="/inc/js/jq.joindIn.js"></script>
 <script type="text/javascript" src="/inc/js/event.js"></script>
 <?php
 menu_pagetitle('Event: ' . escape($event_detail->event_name));
@@ -37,22 +37,29 @@ $data=array(
 	'slides_list'	=> $slides_list,
 	'admin'			=> $admin,
 	'tracks'		=> $tracks,	
-	'talk_stats'	=> $talk_stats
+	'talk_stats'	=> $talk_stats,
+	'event_detail'	=> $event_detail,
+	'event_url'		=> '/event/view/'. $event_detail->ID.'/',
+	'tab'			=> $tab
 );
 $this->load->view('event/modules/_event_tabs',$data);
 ?>
 
 <script type="text/javascript">
-$(function() {
-	$('#event-tabs').tabs();
-	if (window.location.hash == '#comment-form') {
-		$('#event-tabs').tabs('select', '#comments');
-	} else {
-	<?php if (count($talks) == 0): ?>
-		$('#event-tabs').tabs('select', '#comments');
-	<?php endif; ?>
-	}
-});
+(function($) {
+	$(document).ready(function(){
+		<?php if (count($talks) == 0): ?>
+			window.location.hash = '#comments';
+		<?php else: ?>
+		if (window.location.hash == '#comment-form') {
+			window.location.hash = '#comments';
+		}
+		<?php endif; ?>
+		$('#event-tabs').joindIn_tabs();
+		event.init();
+	});
+})(jQuery);
+
 $(document).ready(function(){
 	JI_event.init();
 })
