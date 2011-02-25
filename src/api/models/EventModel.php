@@ -37,7 +37,7 @@ class EventModel extends ApiModel {
     public static function getEventById($db, $event_id, $verbose = false) {
         $sql = 'select * from events '
             . 'where active = 1 and '
-            . 'pending = "0" and '
+            . '(pending = 0 or pending is NULL) and '
             . 'ID = :event_id';
         $stmt = $db->prepare($sql);
         $response = $stmt->execute(array(
