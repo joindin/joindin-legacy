@@ -28,7 +28,7 @@ class EventController extends ApiController {
             }
         } else {
             if(isset($event_id)) {
-                $list = EventModel::getEventById($db, (int)$request->url_elements[3], $verbose);
+                $list = EventModel::getEventById($db, $event_id, $verbose);
             } else {
                 $list = EventModel::getEventList($db, $verbose);
             }

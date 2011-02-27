@@ -4,12 +4,12 @@ class EventModel extends ApiModel {
     public static function getDefaultFields() {
         $fields = array(
             'event_id' => 'ID',
-            'event_name' => 'event_name',
-            'event_start' => 'event_start',
-            'event_end' => 'event_end',
-            'event_description' => 'event_desc',
-            'event_href' => 'event_href',
-            'event_icon' => 'event_icon'
+            'name' => 'event_name',
+            'start_date' => 'event_start',
+            'end_date' => 'event_end',
+            'description' => 'event_desc',
+            'href' => 'event_href',
+            'icon' => 'event_icon'
             );
         return $fields;
     }
@@ -17,19 +17,19 @@ class EventModel extends ApiModel {
     public static function getVerboseFields() {
         $fields = array(
             'event_id' => 'ID',
-            'event_name' => 'event_name',
-            'event_start' => 'event_start',
-            'event_end' => 'event_end',
-            'event_description' => 'event_desc',
-            'event_href' => 'event_href',
-            'event_lat' => 'event_lat',
-            'event_long' => 'event_long',
-            'event_tz_cont' => 'event_tz_cont',
-            'event_tz_place' => 'event_tz_place',
-            'event_icon' => 'event_icon',
-            'event_loc' => 'event_location',
-            'event_cfp_start' => 'event_cfp_start',
-            'event_cfp_end' => 'event_cfp_end'
+            'name' => 'event_name',
+            'start_date' => 'event_start',
+            'end_date' => 'event_end',
+            'description' => 'event_desc',
+            'href' => 'event_href',
+            'icon' => 'event_icon'
+            'latitude' => 'event_lat',
+            'longitude' => 'event_long',
+            'tz_continent' => 'event_tz_cont',
+            'tz_place' => 'event_tz_place',
+            'location' => 'event_location',
+            'cfp_start_date' => 'event_cfp_start',
+            'cfp_end_date' => 'event_cfp_end'
             );
         return $fields;
     }
@@ -67,4 +67,14 @@ class EventModel extends ApiModel {
         return false;
     }
 
+    public static function transformResults($results, $verbose) {
+        $retval = parent::transformResults($results, $verbose);
+
+        // loop again and add links specific to this item
+        foreach($retval as $key => $row) {
+            $retval[$key]['comments_link'] = '/v2/event/' . $row['event_id'] . '/comments';
+            $retval[$key]['talks_link'] = '/v2/event/' . $row['event_id'] . '/talks';
+        }
+        return $retval;
+    }
 }
