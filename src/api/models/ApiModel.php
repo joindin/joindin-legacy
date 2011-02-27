@@ -16,6 +16,10 @@ class ApiModel {
         foreach($results as $row) {
             $entry = array();
             foreach($fields as $key => $value) {
+                // special handling for dates
+                if(substr($key, -5) == '_date') {
+                    $entry[$key] = date('c', $row[$value]);
+                }
                 $entry[$key] = $row[$value];
             }
             $retval[] = $entry;
