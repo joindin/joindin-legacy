@@ -16,10 +16,10 @@ class EventController extends ApiController {
 
         if(isset($request->url_elements[4])) {
             switch($request->url_elements[4]) {
-                case 'talks':
+                case 'talk':
                             $list = TalkModel::getTalksByEventId($db, $event_id, $verbose);
                             break;
-                case 'comments':
+                case 'comment':
                             $list = CommentModel::getCommentsByEventId($db, $event_id, $verbose);
                             break;
                 default:
