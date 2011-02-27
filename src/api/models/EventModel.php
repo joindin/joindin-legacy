@@ -22,7 +22,7 @@ class EventModel extends ApiModel {
             'end_date' => 'event_end',
             'description' => 'event_desc',
             'href' => 'event_href',
-            'icon' => 'event_icon'
+            'icon' => 'event_icon',
             'latitude' => 'event_lat',
             'longitude' => 'event_long',
             'tz_continent' => 'event_tz_cont',

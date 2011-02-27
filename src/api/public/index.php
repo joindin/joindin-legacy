@@ -36,7 +36,9 @@ $ji_db = new PDO('mysql:host=' . $db['default']['hostname'] .
 // collect URL and headers
 $request = new Stdclass();
 $request->verb = $_SERVER['REQUEST_METHOD'];
-$request->url_elements = explode('/',$_SERVER['PATH_INFO']);
+if(isset($_SERVER['PATH_INFO'])) {
+    $request->url_elements = explode('/',$_SERVER['PATH_INFO']);
+}
 parse_str($_SERVER['QUERY_STRING'], &$parameters);
 $request->parameters = $parameters;
 $request->accept = $_SERVER['HTTP_ACCEPT'];
