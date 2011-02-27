@@ -10,12 +10,12 @@ class EventController extends ApiController {
             $verbose = false;
         }
 
-		if(!empty($request->url_elements[2]) && is_numeric($request->url_elements[2])) {
-            $event_id = (int)$request->url_elements[2];
+		if(!empty($request->url_elements[3]) && is_numeric($request->url_elements[3])) {
+            $event_id = (int)$request->url_elements[3];
 		}
 
-        if(isset($request->url_elements[3])) {
-            switch($request->url_elements[3]) {
+        if(isset($request->url_elements[4])) {
+            switch($request->url_elements[4]) {
                 case 'talks':
                             $list = TalkModel::getTalksByEventId($db, $event_id, $verbose);
                             break;
@@ -28,7 +28,7 @@ class EventController extends ApiController {
             }
         } else {
             if(isset($event_id)) {
-                $list = EventModel::getEventById($db, (int)$request->url_elements[2], $verbose);
+                $list = EventModel::getEventById($db, (int)$request->url_elements[3], $verbose);
             } else {
                 $list = EventModel::getEventList($db, $verbose);
             }

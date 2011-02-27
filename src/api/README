@@ -5,8 +5,8 @@ To configure:
  - symlink database.php in /src/api/ to the database.php in your joind.in installation.
 
  Examples:
- GET /events
- GET /events/23
- GET /events/23?verbose=yes
- GET /events/15/comments
- GET /events/15/talks
+ GET /v2/events
+ GET /v2/events/23
+ GET /v2/events/23?verbose=yes
+ GET /v2/events/15/comments
+ GET /v2/events/15/talks

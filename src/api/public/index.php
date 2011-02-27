@@ -45,10 +45,20 @@ $request->accept = $_SERVER['HTTP_ACCEPT'];
 
 // TODO Authenticate: if this is a valid user, add $request->user_id 
 
+// check API version
+switch($request->url_elements[1]) {
+    case 'v2':
+                // default routing
+                break;
+    default:
+                throw new Exception('API version must be specified', 404);
+                break;
+}
+
 // Route: call the handle() method of the class with the first URL element
 // (ignoring empty [0] element from leading slash)
-if(!empty($request->url_elements[1])) {
-	$class = ucfirst($request->url_elements[1]) . 'Controller';
+if(!empty($request->url_elements[2])) {
+	$class = ucfirst($request->url_elements[2]) . 'Controller';
     // TODO check class exists before instantiation ... otherwise it errors (no exception)
 	$handler = new $class();
 	$return_data = $handler->handle($request, $ji_db); // the DB is set by the database config
