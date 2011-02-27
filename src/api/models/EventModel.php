@@ -27,7 +27,7 @@ class EventModel extends ApiModel {
             'longitude' => 'event_long',
             'tz_continent' => 'event_tz_cont',
             'tz_place' => 'event_tz_place',
-            'location' => 'event_location',
+            'location' => 'event_loc',
             'cfp_start_date' => 'event_cfp_start',
             'cfp_end_date' => 'event_cfp_end'
             );
