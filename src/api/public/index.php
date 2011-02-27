@@ -13,6 +13,9 @@ function __autoload($classname) {
 	} elseif(preg_match('/[a-zA-Z]+Model$/',$classname)) {
 		include('../models/' . $classname . '.php');
 		return true;
+	} elseif(preg_match('/[a-zA-Z]+View$/',$classname)) {
+		include('../views/' . $classname . '.php');
+		return true;
 	}
 }
 
@@ -40,9 +43,13 @@ if(isset($_SERVER['PATH_INFO'])) {
     $request->url_elements = explode('/',$_SERVER['PATH_INFO']);
 }
 parse_str($_SERVER['QUERY_STRING'], &$parameters);
-$request->parameters = $parameters;
 $request->accept = $_SERVER['HTTP_ACCEPT'];
 $request->host = $_SERVER['HTTP_HOST'];
+$request->parameters = $parameters;
+
+// set some default parameters
+$request->parameters['resultsperpage'] ? $request->parameters['resultsperpage'] : 20;
+$request->parameters['page'] ? $request->parameters['page'] : 1;
 
 // TODO Input handling: read in data from whatever format
 
@@ -75,6 +82,6 @@ if(isset($request->url_elements[1])) {
 // Handle output
 // TODO more output handlers?
 // TODO sort out headers, caching, etc
-echo json_encode($return_data);
-exit;
+$view = new JsonView();
+$view->render($return_data);
 
