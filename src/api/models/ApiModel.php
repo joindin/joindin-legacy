@@ -19,8 +19,12 @@ class ApiModel {
                 // special handling for dates
                 if(substr($key, -5) == '_date' && !empty($row[$value])) {
                     $entry[$key] = date('c', $row[$value]);
+                    /*
+                } elseif($value == 'talk_title') {
+                    var_dump($row[$value]);
+                    */
                 } else {
-                    $entry[$key] = $row[$value];
+                    $entry[$key] = mb_convert_encoding($row[$value], 'UTF-8');
                 }
             }
             $retval[] = $entry;
