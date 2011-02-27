@@ -6,8 +6,13 @@ To configure:
  - mbstring extension is required.
 
  Examples:
- GET /v2/events
- GET /v2/events/23
- GET /v2/events/23?verbose=yes
- GET /v2/events/15/comments
- GET /v2/events/15/talks
+ GET /v2/event
+ GET /v2/event/23
+ GET /v2/event/23
+ GET /v2/event/15/comment
+ GET /v2/event/15/talk
+
+ Supported URL parameters
+ verbose=yes (gives more fields in the response)
+ page (a number, used for pagination. Defaults to 1, the first page)
+ resultsperpage (a number, used for pagination. Defaults to 20, if 0 is passed, all results are returned)

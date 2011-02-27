@@ -48,8 +48,10 @@ $request->host = $_SERVER['HTTP_HOST'];
 $request->parameters = $parameters;
 
 // set some default parameters
-$request->parameters['resultsperpage'] ? $request->parameters['resultsperpage'] : 20;
-$request->parameters['page'] ? $request->parameters['page'] : 1;
+$request->parameters['resultsperpage'] = isset($request->parameters['resultsperpage']) 
+    ? $request->parameters['resultsperpage'] : 20;
+$request->parameters['page'] = isset($request->parameters['page']) 
+    ? $request->parameters['page'] : 1;
 
 // TODO Input handling: read in data from whatever format
 

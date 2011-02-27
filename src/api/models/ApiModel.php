@@ -31,4 +31,16 @@ class ApiModel {
         }
         return $retval;
     }
+
+    protected static function buildLimit($resultsperpage, $page) {
+        if($resultsperpage == 0) {
+            // special case, no limits
+            $limit = '';
+        } else {
+            $limit = ' LIMIT '
+                . $resultsperpage * ($page - 1) . ','
+                . $resultsperpage;
+        }
+        return $limit;
+    }
 }
