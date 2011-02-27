@@ -67,14 +67,12 @@ class EventModel extends ApiModel {
         return false;
     }
 
-    public static function transformResults($results, $verbose) {
-        $retval = parent::transformResults($results, $verbose);
-
+    public static function addHyperMedia($list, $host) {
         // loop again and add links specific to this item
-        foreach($retval as $key => $row) {
-            $retval[$key]['comments_link'] = '/v2/event/' . $row['event_id'] . '/comments';
-            $retval[$key]['talks_link'] = '/v2/event/' . $row['event_id'] . '/talks';
+        foreach($list as $key => $row) {
+            $list[$key]['comments_link'] = 'http://' . $host . '/v2/event/' . $row['event_id'] . '/comments';
+            $list[$key]['talks_link'] = 'http://' . $host . '/v2/event/' . $row['event_id'] . '/talks';
         }
-        return $retval;
+        return $list;
     }
 }
