@@ -20,7 +20,7 @@ class EventController extends ApiController {
                             $list = TalkModel::getTalksByEventId($db, $event_id, $verbose);
                             break;
                 case 'comment':
-                            $list = CommentModel::getCommentsByEventId($db, $event_id, $verbose);
+                            $list = EventCommentModel::getEventCommentsByEventId($db, $event_id, $verbose);
                             break;
                 default:
                             throw new InvalidArgumentException('Unknown Subrequest', 404);
