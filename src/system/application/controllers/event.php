@@ -1337,6 +1337,7 @@ class Event extends Controller
         $msg = array();
         $claims = array();
         foreach ($this->userAdmin->getPendingClaims('talk', $id) as $claim_data) {
+			if(!isset($claim_data->ua_id)){ continue; }
             $claims[$claim_data->ua_id] = $claim_data;
         }
         $approved = 0;
@@ -1364,7 +1365,7 @@ class Event extends Controller
             }
         }
         if ($approved > 0) {
-            $msg[] = $approved . 'claim approved';
+            $msg[] = $approved . ' claim approved';
         }
         if ($denied > 0) {
             $msg[] = $denied . '  claim denied';
