@@ -202,24 +202,40 @@ class User_admin_model extends Model {
 	 */
 	public function getPendingClaim_TalkSpeaker($eid=null)
 	{
+		$CI=&get_instance();
+		$CI->load->model('talk_speaker_model','talkSpeaker');
+		
 		$sql = sprintf("
 			select
 				ts.talk_id,
 				ts.speaker_name,
-				u.username
+				u.username,
+				u.ID as user_id,
+				u.full_name as claiming_name,
+				ts.ID,
+				t.talk_title,
+				e.event_name,
+				t.ID as talk_id,
+				ts.status
 			from
 				talks t,
 				user u,
-				talk_speaker ts
+				talk_speaker ts,
+				events e
 			where
 				ts.talk_id = t.ID and
 				u.ID = ts.speaker_id and
 				ts.status = 'pending' and
-				t.event_id = %s
+				t.event_id = %s and
+				t.event_id = e.ID
 		",$eid);
 		
 		$query = $this->db->query($sql);
 		$results = $query->result();
+		
+		foreach($results as $talkKey => $talk){
+			$results[$talkKey]->speakers = $CI->talkSpeaker->getSpeakerByTalkId($talk->talk_id);
+		}
 		
 		return $results;
 	}

@@ -203,46 +203,17 @@ class About extends Controller
         $this->template->render();
     }
 
-	public function test()
-	{
-		/*$event = $this->load->model_obj('Event',459);
-		//echo '<pre>'; var_dump($event); echo '</pre>';
-		echo 'title: '.$event->event_name;
-        */
-        
-        // makek an empty object
-        $event = $this->load->model_obj('Event');
-        //var_dump($event);
+    /**
+     * Displays information about importing CSV files
+     *
+     * @return void
+     */
+    function import()
+    {
+        $this->template->write_view('content', 'about/import');
+        $this->template->render();
+    }
 
-        $arr = array(
-            'event_name'        => 'create from model',
-            //'event_location'    => 'Dallas, Tx',
-            'event_start'       => time()
-            //'event_start'       => 'testing'
-        );
-		echo '<pre>'; print_r($arr); echo '</pre>';
-
-        try {
-            $event->create($arr);
-        }catch(Exception $e){
-            echo '<br/><b>ERROR:</b> '.$e->getMessage().'<br/>';
-        }
-
-        /*$event = $this->load->model_obj('Event');
-        $arr = array(
-            'id' => 480
-        );
-        $filters = array('eventComments');
-        $eventData = $event->find($arr,$filters);
-        echo '<pre>'; print_r($eventData); echo '</pre>';*/
-
-		//$eventData = $event->getByEventName('ZendCon 2010');
-		$event = $this->load->model_obj('Event');
-		$filters = array('eventComments');
-		$eventData = $event->findByEventName('create from model',$filters);
-		echo '<pre>'; print_r($eventData); echo '</pre>';
-		
-	}
 }
 
 ?>

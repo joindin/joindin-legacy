@@ -763,7 +763,7 @@ class Event extends Controller
                     'is_private'  => $events[0]->private,
                     'evt_admin'   => $this->event_model->getEventAdmins($id),
                     'claim_count' => count(
-                        $this->uadm->getPendingClaims_Talks($id)
+                        $this->uadm->getPendingClaim_TalkSpeaker($id)
                     )
                 )
             );
@@ -1215,7 +1215,16 @@ class Event extends Controller
         $admin_list = $this->event_model->getEventAdmins($id);
         if ($admin_list && count($admin_list) > 0) {
             $evt_detail = $this->event_model->getEventDetail($id);
-            $this->sendemail->sendEventApproved($id, $evt_detail, $admin_list);
+
+			// if the admin list is empty, use the contact info on the event
+			if(empty($admin_list)){
+				$admin_list[]=array(
+					'full_name' => $evt_detail->event_contact_name,
+					'email' 	=> $evt_detail->event_contact_email
+				);
+			}
+
+            $this->sendemail->sendEventApproved($evt_detail[0], $admin_list);
         }
 
         // Finally, redirect back to the event!
@@ -1240,7 +1249,8 @@ class Event extends Controller
             redirect('event/view/' . $id);
         }
 
-        $this->load->model('user_admin_model', 'uam');
+        $this->load->model('user_admin_model', 'userAdmin');
+		$this->load->model('event_model','eventModel');
         $this->load->helper('events_helper');
         $this->load->library('sendemail');
 
@@ -1249,7 +1259,7 @@ class Event extends Controller
 
         $msg = array();
         $claims = array();
-        foreach ($this->uam->getPendingClaims('talk', $id) as $claim_data) {
+        foreach ($this->userAdmin->getPendingClaims('talk', $id) as $claim_data) {
             $claims[$claim_data->ua_id] = $claim_data;
         }
         $approved = 0;
@@ -1257,52 +1267,39 @@ class Event extends Controller
 
         // If we have claims to process...
         if ($claim && count($claim) > 0 && isset($sub)) {
-            foreach ($claim as $k => $v) {
-                // be sure it's still a valid claim
-                $this->uam->isPendingClaim($k);
-
-                switch (strtolower($v)) {
-                case 'approve':
-                    $this->db->where('ID', $k);
-                    $this->db->update(
-                        'user_admin', array('rcode' => '')
-                    );
-
-                    $email      = $claims[$k]->email;
-                    $evt_name   = $claims[$k]->event_name;
-                    $talk_title = $claims[$k]->talk_title;
-                    $this->sendemail->claimSuccess(
-                        $email, $talk_title, $evt_name
-                    );
-
-                    $approved++;
-                    break;
-                case 'deny':
-                    $this->db->delete(
-                        'user_admin', array('ID' => $k)
-                    );
-                    $denied++;
-                    break;
-                default:
-                    /* do nothing, no action taken */
-                }
-
-                echo '<br/>';
+            foreach ($claim as $talkSpeakerId => $status) {
+				switch(strtolower($status)){
+					case 'approve':
+						// update it from "pending"
+						$this->db->where('ID',$talkSpeakerId);
+						$this->db->update('talk_speaker',array('status'=>null));
+						$approved++;
+						break;
+					case 'deny':
+						// update it to remove claim and set back to null
+						$this->db->where('ID',$talkSpeakerId);
+						$this->db->update('talk_speaker',array('speaker_id'=>null,'status'=>null));
+						$denied++;
+						break;
+					default:
+						// do nothing, leave the claim alone
+				}
             }
         }
         if ($approved > 0) {
-            $msg[] = $approved . ' approved';
+            $msg[] = $approved . 'claim approved';
         }
         if ($denied > 0) {
-            $msg[] = $denied . ' denied';
+            $msg[] = $denied . '  claim denied';
         }
         $msg = implode(',', $msg);
 
         // Data to pass out to the view
         $arr = array(
-            'claims' => $this->uam->getPendingClaims('talk', $id),
+            'claims' => $this->userAdmin->getPendingClaims('talk', $id),
             'eid'    => $id,
-            'msg'    => $msg
+            'msg'    => $msg,
+			'event_detail' => $this->eventModel->getEventDetail($id)
         );
 
         $this->template->write_view('content', 'event/claim', $arr);

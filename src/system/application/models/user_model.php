@@ -87,7 +87,11 @@ class User_model extends Model {
 			}else{ return false; }
 		}else{ return false; }
 		
-		$q=$this->db->get_where('user_admin',array('uid'=>$uid,'rid'=>$eid,'rtype'=>'event'));
+		$this->db->select('*');
+		$this->db->from('user_admin');
+		$this->db->where(array('uid'=>$uid,'rid'=>$eid,'rtype'=>'event','IFNULL(rcode,0) !='=>'pending'));
+		$q = $this->db->get();
+		
 		$ret=$q->result();
 		return (isset($ret[0]->ID) || $this->isSiteAdmin()) ? true : false;
 	}
@@ -103,9 +107,12 @@ class User_model extends Model {
 		if($this->isAuth()){
 			$ad		= false;
 			$uid	= $this->session->userdata('ID');
-			$query 	= $this->db->get_where('talk_speaker',array('speaker_id'=>$uid,'talk_id'=>$tid));
+			
+			$this->db->select('*');
+			$this->db->from('talk_speaker');
+			$this->db->where(array('speaker_id'=>$uid,'talk_id'=>$tid,'IFNULL(status,0) !='=>'pending'));
+			$query = $this->db->get();
 			$talk	= $query->result();
-			//return (isset($ret[0]->ID)) ? true : false;
 			if(isset($talk[0]->ID)){ $ad=true; }
 			
 			//also check to see if the user is an admin of the talk's event
@@ -240,6 +247,7 @@ class User_model extends Model {
 				talks t,
 				talk_speaker ts
 			where
+				u.ID <> %s and
 				u.ID = ts.speaker_id and
 				t.ID = ts.talk_id and
 				t.event_id in (
@@ -254,7 +262,7 @@ class User_model extends Model {
 				)
 			order by rand()
 			limit %s	
-		",$uid,$limit);
+		",$uid,$uid,$limit);
 		$query 		= $this->db->query($sql);
 		$speakers	= $query->result();
 		

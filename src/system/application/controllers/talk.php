@@ -154,7 +154,8 @@ class Talk extends Controller
             'slides_link'  => 'Slides Link',
             'talk_desc'    => 'Talk Description',
             'session_type' => 'Session Type',
-            'session_lang' => 'Session Language'
+            'session_lang' => 'Session Language',
+			'session_track' => 'Session Track'
         );
         $this->validation->set_rules($rules);
         $this->validation->set_fields($fields);
@@ -764,6 +765,19 @@ class Talk extends Controller
                 'sidebar2', 'talk/_also_given', $also_given, true
             );
         }
+		
+		if(!isTalkClaimFull($arr['speakers'])){
+			$this->template->write_view('sidebar3','main/_sidebar-block',
+				array(
+					'title'=>'Claiming Talks',
+					'content'=>'<p>Claiming a talk you let us know that you were the speaker 
+					for it. When you claim it (and it\'s approved by the event admins) it will 
+					be linked to your account.</p><p>You\'ll also receive emails when new comments 
+					are posted to 	it.</p>'
+					)
+				);
+		}
+		
         $this->template->write_view('content', 'talk/detail', $arr, true);
         $this->template->render();
     }
@@ -773,77 +787,57 @@ class Talk extends Controller
      *
      * @return void
      */
-    function claim()
+    function claim($talkId,$claimId=null)
     {
-        if (!$this->user_model->isSiteAdmin()) {
-            redirect();
+        if (!$this->user_model->isAuth()) {
+            redirect('talk/view/'.$talkId);
         }
 
-        $this->load->model('user_admin_model', 'userAdmins');
-        $this->load->library('validation');
-        $this->load->library('sendemail');
-        $this->load->helper('events_helper');
+		$userId 		= $this->session->userdata('ID');
+		$speakerName 	= $this->session->userdata('full_name');
+		
+		// Ie we have no $claimId, look in post for it
+		if($claimId == null){
+			$claimId = $this->input->post('claim_name_select');
+		}
 
-        //$rules = array();
-        //$fields = array();
-        //$this->validation->set_rules($rules);
-        //$this->validation->set_fields($fields);
-
-        $claims = $this->userAdmins->getPendingClaims();
-
-        $approved = 0;
-        $deleted = 0;
-        foreach ($claims as $k => $v) {
-            //first check to see if it was approved
-            $chk = $this->input->post('claim_' . $v->ua_id);
-            if (!empty($chk)) {
-                // Split the speakers on the commas and see if we have
-                // a match on the name
-                $names = explode(',', $v->speaker);
-                foreach ($names as $nk => $nv) {
-                    if (trim($nv) == $v->claiming_name) {
-                        // match!
-                        $code = buildCode(
-                            $v->talk_id, $v->eid, $v->talk_title,
-                            $v->claiming_name
-                        );
-                        $this->db->where('ID', $v->ua_id);
-                        $this->db->update(
-                            'user_admin', array(
-                                'rcode' => $code
-                            )
-                        );
-                    }
-                }
-
-                //send an email to the person claiming to let them know it
-                // was approved
-                $this->sendemail->claimSuccess(
-                    $v->email, $v->talk_title, $v->event_name
-                );
-                $approved++;
-                unset($claims[$k]);
-            }
-
-            $chk = $this->input->post('del_claim_' . $v->ua_id);
-            if (!empty($chk)) {
-                $this->db->delete(
-                    'user_admin', array(
-                        'ID' => $v->ua_id
-                    )
-                );
-                $deleted++;
-                unset($claims[$k]);
-            }
-        }
-
-        $arr = array(
-            'claims'   => $claims,
-            'approved' => $approved,
-            'deleted'  => $deleted
-        );
-        $this->template->write_view('content', 'talk/claim', $arr);
-        $this->template->render();
+		// look at the claimId (talk_speaker.id) and talkId for a speaker
+		$where = array(
+			'ID' 		=> $claimId,
+			'talk_id' 	=> $talkId,
+			'status'	=> null
+		);
+ 		$query = $this->db->get_where('talk_speaker',$where);
+		$speakerRecord = $query->result();
+		
+		// if we found a row, update it with the ID of the currently 
+		// logged in user and set it to pending
+		if(count($speakerRecord) == 1){
+			
+			$updateData = array(
+				'status'		=> 'pending',
+				'speaker_id'	=> $userId
+			);
+			$this->db->where('ID',$claimId);
+			$this->db->update('talk_speaker',$updateData);
+			
+			$this->session->set_flashdata('msg', 'Thanks for claiming this talk! You will be emailed when the claim is approved!');
+			redirect('talk/view/'.$talkId);
+			
+		}else{
+			$errorData = array(
+				'msg'=>sprintf('
+					There was an error in your attempt to claim the talk ID #%s
+					<br/>
+					There might already be a pending claim for this session.
+					<br/><br/>
+					If you would like more information on this error, please <a style="color:#FFFFFF" href="/event/contact/">contact 
+					this event\'s admins</a>.'
+				,$talkId)
+			);
+			$this->template->write_view('content', 'msg_error', $errorData);
+	        $this->template->render();
+		}
     }
 
     /**

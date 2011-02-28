@@ -42,19 +42,19 @@ class Addcomment extends BaseWsRequest {
 			
 			// event ID in $talk_detial[0]->eid
 			
-			// Check to see if you can submit a comment to the event....
-			$event_detail=$this->CI->event_model->getEventDetail($talk_detail[0]->eid);
-			if($event_detail[0]->now!='now'){
-				return array('output'=>'json','data'=>array('items'=>array('msg'=>'Comments not allowed on the event/talk!')));
+			if(!$talk_detail[0]->allow_comments){
+				// we can't comment on this! same logic as fromtend
+				return $this->throwError('Comments not allowed on the event/talk!');
 			}
 			
 			// Ensure this is a valid talk
 			if(empty($talk_detail)){
 				$ret=array('output'=>'json','data'=>array('items'=>array('msg'=>'Invalid talk ID!')));
+				return $this->throwError('Invalid talk ID!');
 			}
 			// Ensure that they can comment on it (time-based)
 			if(!isset($talk_detail[0]->allow_comments) || !$talk_detail[0]->allow_comments){
-				$ret=array('output'=>'json','data'=>array('items'=>array('msg'=>'Comments not allowed for this talk!')));
+				return $this->throwError('Comments not allowed for this talk!');
 			}
 			
 
@@ -69,10 +69,10 @@ class Addcomment extends BaseWsRequest {
 			);
 
 			$this->CI->db->insert('talk_comments',$arr);
-			$ret=array('output'=>'json','data'=>array('items'=>array('msg'=>'Comment added!')));
+			return $this->throwError('Comment added!');
 		}else{ 
 			if(!$unq){ $ret='Non-unique entry!'; }
-			$ret=array('output'=>'json','data'=>array('items'=>array('msg'=>$ret)));
+			return $this->throwError($ret);
 		}
 		return $ret;
 	}

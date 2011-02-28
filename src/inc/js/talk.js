@@ -20,7 +20,20 @@ talk = function (){
 	// Requires API
 	var _claimTalk = function(){
 		$('#claim_btn').click(function(){
-			var obj={ "talk_id": $('#talk_id').val() };
+			// see if they're logged in...
+			if($('#user_id').val().length<=0){
+				window.location.href = '/user/login';
+				return false;
+			}
+			
+			if($('#claim_btn').attr('name')=='single'){
+				return true;
+			}
+			
+			var obj={ 
+				"talk_id": $('#talk_id').val(),
+				"talk_speaker_id": $('#claim_name_select').val()
+			};
 			$('#claim_select_div').css('display','block');
 			$('#claim_btn').css('display','none');
 			return false;
@@ -32,6 +45,7 @@ talk = function (){
 				$('#claim_btn').css('display','none');
 				if(obj.msg=='Success'){
 					alert("Thanks for claiming this talk! You will be emailed when the claim is approved!");
+					$('#claim_select_div').css('display','none');
 				}else{
 					alert(obj.msg);
 				}

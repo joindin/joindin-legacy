@@ -28,7 +28,7 @@ class Claim extends BaseWsRequest {
 			//'reqkey'	=>'required|reqkey'
 		);
 		$tid			= $this->xml->action->talk_id;
-		$talkSpeakerId 	= $this->xml->action->talk_speaker_id;
+		$talkSpeakerId 	= (int)$this->xml->action->talk_speaker_id;
 		
 		$ret=$this->CI->wsvalidate->validate($rules,$this->xml->action);
 		if(!$ret){
@@ -58,14 +58,16 @@ class Claim extends BaseWsRequest {
 
 				// take the currently logged in user and insert them as a pending record
 				$speakerClaim = array(
-					'speaker_id' => $talkSpeakerId,
-					'status' 	 => 'pending'
+					'id' 		=> $talkSpeakerId,
+					'status'	=> 'pending',
+					'speaker_id'=> $uid
 				);
 				
 				// Be sure there's not one pending
 				$query = $this->CI->db->get_where('talk_speaker',$speakerClaim);
 				$pendingClaim = $query->result();
 				
+				error_log(print_r($speakerClaim,true));
 				error_log(print_r($pendingClaim,true));
 				
 				if(empty($pendingClaim)){
