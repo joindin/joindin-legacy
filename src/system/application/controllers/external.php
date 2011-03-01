@@ -161,7 +161,7 @@ class External extends Controller
 		$search = $this->twitter->querySearchAPI('#joindin', true);
 		usort($search[0], array($this, 'twitter_sort'));
 		foreach ($search[0] as $item) {
-			if (preg_match('@(?P<talk>\d+)\s+(?P<rating>[1-5])\s+(?P<comment>.*)\s+[#@]joindin@', $item->text, $m)) {
+			if (preg_match('/(?P<talk>\d+)\s+(?P<rating>[1-5])\s+(?P<comment>.*)\s+[#@]joindin/', $item->text, $m)) {
 				$uid = $this->user_model->getUserIdByTwitter($item->from_user);
 
 				$arr = array(
