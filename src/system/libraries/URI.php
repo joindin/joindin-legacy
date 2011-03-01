@@ -88,6 +88,14 @@ class CI_URI {
 				return;
 			}
 
+			// No QUERY_STRING?... What about REQUEST_URI?
+			$path =  (isset($_SERVER['REQUEST_URI'])) ? $_SERVER['REQUEST_URI'] : @getenv('REQUEST_URI');
+			if (trim($path, '/') != '')
+			{
+				$this->uri_string = $path;
+				return;
+			}
+
 			// No QUERY_STRING?... Maybe the ORIG_PATH_INFO variable exists?
 			$path = str_replace($_SERVER['SCRIPT_NAME'], '', (isset($_SERVER['ORIG_PATH_INFO'])) ? $_SERVER['ORIG_PATH_INFO'] : @getenv('ORIG_PATH_INFO'));
 			if (trim($path, '/') != '' && $path != "/".SELF)
