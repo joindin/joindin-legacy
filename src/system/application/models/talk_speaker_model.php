@@ -138,18 +138,24 @@ class Talk_speaker_model extends Model {
 	 * @param integer $talk_id Talk ID #
 	 * @return mixed Either boolean or integer
 	 */
-	public function isTalkClaimed($talk_id){
-
-		$this->db->select('count(id) as claimCount');
-		$this->db->from('talk_speaker');
-		$this->db->where(array(
-			'talk_id'	=> $talk_id,
-			'status'	=> ''
-		));
-		$query = $this->db->get();
+	public function isTalkClaimed($talk_id,$claimComplete=false)
+	{
+		$query 		= $this->db->get_where('talk_speaker',array('talk_id'=>$talk_id));
+		$result 	= $query->result();
 		
-		$result = $query->result();
-		return ($result[0]->claimCount && $result[0]->claimCount>0) ? $result[0]->claimCount : false;
+		$totalCount   = count($result);
+		$totalClaimed = 0;
+		
+		foreach($result as $speaker){
+			if($speaker->speaker_id!=null && $speaker->status!='pending'){
+				$totalClaimed++;
+			}
+		}
+		if($claimComplete==true){
+			return ($totalClaimed == $totalCount) ? true : false;
+		}else{
+			return ($totalClaimed>0) ? $totalClaimed : false;
+		}
 	}
 	
 	/**
