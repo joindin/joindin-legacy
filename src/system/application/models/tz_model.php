@@ -1,12 +1,8 @@
 <?php
 
-class Tz_model extends Model {
-
-	function Tz_model(){
-		parent::Model();
-	}
+class Tz_model extends CI_Model {
 	//--------------------
-	function getContInfo($cid=null){
+	public function getContInfo($cid=null){
 		$this->db->select('cont')
 			->distinct()
 			->from('tz')
@@ -14,7 +10,7 @@ class Tz_model extends Model {
 		$q=$this->db->get();
 		return $q->result();
 	}
-	function getAreaInfo($cont){
+	public function getAreaInfo($cont){
 		$this->db->select('area')
 			->distinct()
 			->where("cont='".$cont."'")
@@ -23,7 +19,7 @@ class Tz_model extends Model {
 		$q=$this->db->get();
 		return $q->result();
 	}
-	function getOffsetInfo(){
+	public function getOffsetInfo(){
 		$this->db->select('offset')
 			->distinct()
 			->from('tz')
@@ -31,9 +27,7 @@ class Tz_model extends Model {
 		$q=$this->db->get();
 		return $q->result();
 	}
-	function getTzInfo($tid=null){
+	public function getTzInfo($tid=null){
 		
 	}
 }
-
-?>

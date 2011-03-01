@@ -1,10 +1,6 @@
 <?php
 
-class Talks_model extends Model {
-
-	function Talks_model(){
-		parent::Model();
-	}
+class Talks_model extends CI_Model {
 	//---------------
 	public function deleteTalk($id){
 		$this->db->delete('talks',array('ID'=>$id));
@@ -577,4 +573,3 @@ class Talks_model extends Model {
 		return $retval;
 	}
 }
-?>

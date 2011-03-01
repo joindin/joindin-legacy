@@ -1,13 +1,9 @@
 <?php
 
-class Event_track_model extends Model {
-
-	function Event_track_model(){
-		parent::Model();
-	}
+class Event_track_model extends CI_Model {
 	//---------------------
 	
-	function getEventTracks($eid){
+	public function getEventTracks($eid){
 		$q=$this->db->get_where('event_track',array('event_id'=>$eid));
 		$ret=$q->result();
 		foreach($ret as $k=>$tr){
@@ -17,7 +13,7 @@ class Event_track_model extends Model {
 		}
 		return $ret;
 	}
-	function getTrackSessions($tid){
+	public function getTrackSessions($tid){
 
 		$sql=sprintf("
 			select
@@ -37,7 +33,7 @@ class Event_track_model extends Model {
 	}
 	
 	//---------------------
-	function addEventTrack($eid,$name,$desc){
+	public function addEventTrack($eid,$name,$desc){
 		$arr=array(
 			'event_id'	=> $eid,
 			'track_name'=> $name,
@@ -45,11 +41,11 @@ class Event_track_model extends Model {
 		);
 		$this->db->insert('event_track',$arr);
 	}
-	function updateEventTrack($tid,$arr){
+	public function updateEventTrack($tid,$arr){
 		$this->db->where('ID',$tid);
 		$this->db->update('event_track',$arr);
 	}
-	function deleteEventTrack($tid){
+	public function deleteEventTrack($tid){
 		//Be sure there's no sessions associated with it first
 		if(count($this->getTrackSessions($tid))>0){
 			return false;
@@ -60,5 +56,3 @@ class Event_track_model extends Model {
 		}
 	}	
 }
-
-?>

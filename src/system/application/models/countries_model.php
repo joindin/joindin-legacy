@@ -1,12 +1,8 @@
 <?php
 
-class Countries_model extends Model {
-
-	function Countries_model(){
-		parent::Model();
-	}
+class Countries_model extends CI_Model {
 	//--------------
-	function getCountries(){
+	public function getCountries(){
 		$this->db->from('countries');
         $this->db->order_by('name', 'asc');
 		$q=$this->db->get();

@@ -32,7 +32,7 @@
  * @property  CI_Input    $input
  * @property  User_model  $user_model
  */
-class User extends Controller
+class User extends CI_Controller
 {
 
     /**
@@ -41,9 +41,9 @@ class User extends Controller
      *
      * @return void
      */
-    function User()
+    public function __construct()
     {
-        parent::Controller();
+        parent::__construct();
 
         // check login status and fill the 'logged' parameter in the template
         $this->user_model->logStatus();
@@ -54,7 +54,7 @@ class User extends Controller
      *
      * @return void
      */
-    function index()
+    public function index()
     {
         $this->load->helper('url');
         redirect('user/login');
@@ -65,7 +65,7 @@ class User extends Controller
      *
      * @return void
      */
-    function login()
+    public function login()
     {
         $this->load->helper('form');
         $this->load->helper('url');
@@ -121,7 +121,7 @@ class User extends Controller
      *
      * @return void
      */
-    function logout()
+    public function logout()
     {
         $this->load->helper('url');
         $this->session->sess_destroy();
@@ -133,7 +133,7 @@ class User extends Controller
      *
      * @return void
      */
-    function forgot()
+    public function forgot()
     {
         $this->load->helper('form');
         $this->load->library('validation');
@@ -203,7 +203,7 @@ class User extends Controller
      *
      * @return void
      */
-    function changestat($uid, $from = null)
+    public function changestat($uid, $from = null)
     {
         // Kick them back out if they're not an admin
         if (!$this->user_model->isSiteAdmin()) {
@@ -228,7 +228,7 @@ class User extends Controller
      *
      * @return void
      */
-    function changeastat($uid, $from = null)
+    public function changeastat($uid, $from = null)
     {
         // Kick them back out if they're not an admin
         if (!$this->user_model->isSiteAdmin()) {
@@ -249,7 +249,7 @@ class User extends Controller
      *
      * @return void
      */
-    function register()
+    public function register()
     {
         $this->load->helper('form');
         $this->load->library('validation');
@@ -320,7 +320,7 @@ class User extends Controller
      *
      * @return void
      */
-    function main()
+    public function main()
     {
         $this->load->helper('form');
         $this->load->library('validation');
@@ -359,7 +359,7 @@ class User extends Controller
      *
      * @return void
      */
-    function refresh_gravatar()
+    public function refresh_gravatar()
     {
         $this->load->library('gravatar');
         $uid = $this->session->userData('ID');
@@ -376,7 +376,7 @@ class User extends Controller
      *
      * @return void
      */
-    function view($uid)
+    public function view($uid)
     {
         $this->load->model('talks_model');
         $this->load->model('user_attend_model', 'uam');
@@ -452,7 +452,7 @@ class User extends Controller
      *
      * @return void
      */
-    function manage()
+    public function manage()
     {
         // be sure they're logged in
         if (!$this->user_model->isAuth()) {
@@ -515,7 +515,7 @@ class User extends Controller
      *
      * @return void
      */
-    function admin($page = null)
+    public function admin($page = null)
     {
         $this->load->helper('reqkey');
         $this->load->library('validation');
@@ -562,7 +562,7 @@ class User extends Controller
      *
      * @return bool
      */
-    function start_up_check($p)
+    public function start_up_check($p)
     {
         $u   = $this->input->post('user');
         $ret = $this->user_model->validate($u, $p);
@@ -583,7 +583,7 @@ class User extends Controller
      *
      * @return bool
      */
-    function cinput_check($str)
+    public function cinput_check($str)
     {
         if ($this->input->post('cinput') != $this->session->userdata('cinput')) {
             $this->validation->_error_messages['cinput_check']
@@ -601,7 +601,7 @@ class User extends Controller
      *
      * @return bool
      */
-    function usern_check($str)
+    public function usern_check($str)
     {
         $ret = $this->user_model->getUser($str);
 
@@ -621,7 +621,7 @@ class User extends Controller
      *
      * @return bool
      */
-    function email_exist_check($str)
+    public function email_exist_check($str)
     {
         $ret = $this->user_model->getUserByEmail($str);
         if (empty($ret)) {
@@ -640,7 +640,7 @@ class User extends Controller
      *
      * @return bool
      */
-    function login_exist_check($str)
+    public function login_exist_check($str)
     {
         $ret = $this->user_model->getUser($str);
 
@@ -660,7 +660,7 @@ class User extends Controller
      *
      * @return bool
      */
-    function user_email_match_check($str)
+    public function user_email_match_check($str)
     {
         $ret = $this->user_model->getUserByEmail($str);
 

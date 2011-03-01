@@ -1,16 +1,11 @@
 <?php
 
-class User_model extends Model {
-
-	function User_model(){
-		parent::Model();
-	}
-	
+class User_model extends CI_Model {
 	/**
 	 * Check to see if the user is authenticated
 	 * @return mixed Return value is either the username or false
 	 */
-	function isAuth(){
+	public function isAuth(){
 		if($u=$this->session->userdata('username')){
 			return $u;
 		}else{ return false; }
@@ -20,7 +15,7 @@ class User_model extends Model {
 	 * Get the user's ID from the session
 	 * @return integer User ID
 	 */
-	function getID() {
+	public function getID() {
 		// this only works for web users!
 		return $this->session->userdata('ID');
 	}
@@ -31,7 +26,7 @@ class User_model extends Model {
 	 * @param $pass string Password
 	 * @param $plaintxt boolean Flag to treat incoming password as plaintext or md5
 	 */
-	function validate($user,$pass,$plaintxt=false){
+	public function validate($user,$pass,$plaintxt=false){
 		$ret=$this->getUser($user);
 		$pass=($plaintxt) ? $pass : md5($pass);
 		$valid = (isset($ret[0]) && $ret[0]->password==$pass) ? true : false;
@@ -44,7 +39,7 @@ class User_model extends Model {
 	 *
 	 * @return null
 	 */
-	function logStatus(){
+	public function logStatus(){
 		//piece to handle the login/logout
 		$u=$this->isAuth();
 		$lstr=($u) ? '<a href="/user/main">'.$u.'</a> <a href="/user/logout">[logout]</a>':'<a href="/user/login">login</a>';
@@ -58,7 +53,7 @@ class User_model extends Model {
 	 * @param $user User ID/username
 	 * @return boolean User's admin status
 	 */
-	function isSiteAdmin($user=null){
+	public function isSiteAdmin($user=null){
 		if(!$this->isAuth()){
 			// get our user information
 			if($user){
@@ -77,7 +72,7 @@ class User_model extends Model {
 	 * @param $uid integer User ID/username
 	 * @return boolean User's site admin status
 	 */
-	function isAdminEvent($eid,$uid=null){
+	public function isAdminEvent($eid,$uid=null){
 		if($this->isAuth()){
 			$uid=$this->session->userdata('ID');
 		}elseif(!$this->isAuth() && $uid){
@@ -103,7 +98,7 @@ class User_model extends Model {
 	 * @param $tid integer Talk ID
 	 * @return boolean User's admin status related to the talk
 	 */
-	function isAdminTalk($tid){
+	public function isAdminTalk($tid){
 		if($this->isAuth()){
 			$ad		= false;
 			$uid	= $this->session->userdata('ID');
@@ -139,7 +134,7 @@ class User_model extends Model {
 	 * @param $uid integer User ID
 	 * @return null
 	 */
-	function toggleUserAdminStatus($uid){
+	public function toggleUserAdminStatus($uid){
 		$udata=$this->getUser((int)$uid); //echo $uid; print_r($udata);
 		$up=($udata[0]->admin==1) ? array('admin'=>null) : array('admin'=>'1');
 		$this->updateUserinfo($uid,$up);
@@ -151,7 +146,7 @@ class User_model extends Model {
 	 * @param $uid integer User ID
 	 * @param $arr array Details to update on user account
 	 */
-	function updateUserInfo($uid,$arr){
+	public function updateUserInfo($uid,$arr){
 		$this->db->where('ID',$uid);
 		$this->db->update('user',$arr);
 	}
@@ -162,7 +157,7 @@ class User_model extends Model {
 	 * @param $in integer/string User ID or Username
 	 * @return array User details
 	 */
-	function getUser($in){
+	public function getUser($in){
 		if(is_numeric($in)){
 			$q=$this->db->get_where('user',array('ID'=>$in));
 		}else{ 
@@ -180,7 +175,7 @@ class User_model extends Model {
 	 * @param $in integer/string User ID or Username
 	 * @return array User details
 	 */
-	function getUserDetail($in){
+	public function getUserDetail($in){
 		$this->db->select('username, full_name, ID, last_login');
 		if(is_numeric($in)){
 			$q=$this->db->get_where('user',array('ID'=>$in));
@@ -195,7 +190,7 @@ class User_model extends Model {
 	 * @param $email string User email address
 	 * @return array User detail information 
 	 */
-	function getUserByEmail($email){
+	public function getUserByEmail($email){
 		$q=$this->db->get_where('user',array('email'=>$email));
 		return $q->result();
 	}
@@ -204,7 +199,7 @@ class User_model extends Model {
 	 * Find email addresses for all users marked as site admins 
 	 * @return array Set of email addresses
 	 */
-	function getSiteAdminEmail(){
+	public function getSiteAdminEmail(){
 		$this->db->select('email')
 			->where('admin',1);
 		$q=$this->db->get('user');
@@ -216,7 +211,7 @@ class User_model extends Model {
 	 *
 	 * @return array User details
 	 */
-	function getAllUsers(){
+	public function getAllUsers(){
 		$this->db->order_by('username','asc');
 		$q=$this->db->get('user');
 		return $q->result();
@@ -229,7 +224,7 @@ class User_model extends Model {
 	 * @param integer $limit [optional] integer Limit the number of results returned
 	 * @return array         Return array of user's information (user_id, event_id, username, full_name)
 	 */
-	function getOtherUserAtEvt($uid,$limit=15){
+	public function getOtherUserAtEvt($uid,$limit=15){
 		if (!ctype_digit((string)$limit)) {
 			throw new Exception('Expected $limit to be a number but received '.$limit);
 		}
@@ -277,7 +272,7 @@ class User_model extends Model {
 	 * @param $start[optional] Starting point for search (not currently used)
 	 * @param $end[optional] Ending point for search (not currently used)
 	 */
-	function search($term,$start=null,$end=null){
+	public function search($term,$start=null,$end=null){
 		$ci = &get_instance();
 		$ci->load->model('talks_model','talksModel');
 		$ci->load->model('user_attend_model','userAttend');
@@ -307,4 +302,3 @@ class User_model extends Model {
 		return $results;
 	}
 }
-?>

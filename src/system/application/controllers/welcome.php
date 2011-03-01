@@ -32,19 +32,8 @@
  * @property  CI_Input    $input
  * @property  User_model  $user_model
  */
-class Welcome extends Controller
+class Welcome extends CI_Controller
 {
-
-    /**
-     * Constructor, responsible for initializing the parent constructor.
-     *
-     * @return void
-     */
-    function Welcome()
-    {
-        parent::Controller();
-    }
-
     /**
      * Displays a welcome message.
      *

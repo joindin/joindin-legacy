@@ -1,10 +1,6 @@
 <?php
 
-class Lang_model extends Model {
-
-	function Lang_model(){
-		parent::Model();
-	}
+class Lang_model extends CI_Model {
 	//--------------
 	public function getLangs(){
 		$this->db->from('lang');

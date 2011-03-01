@@ -33,7 +33,7 @@
  * @property  CI_Input    $input
  * @property  User_model  $user_model
  */
-class Main extends Controller
+class Main extends CI_Controller
 {
 
     /**
@@ -42,9 +42,9 @@ class Main extends Controller
      *
      * @return void
      */
-    function Main()
+    public function  __construct()
     {
-        parent::Controller();
+        parent::__construct();
 
         // check login status and fill the 'logged' parameter in the template
         $this->user_model->logStatus();
@@ -56,7 +56,7 @@ class Main extends Controller
      *
      * @return void
      */
-    function index()
+    public function index()
     {
         $this->load->helper('form');
         $this->load->model('talks_model');
@@ -91,5 +91,3 @@ class Main extends Controller
         $this->template->render();
     }
 }
-
-?>

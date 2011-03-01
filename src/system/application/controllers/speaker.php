@@ -32,19 +32,8 @@
  * @property  CI_Input    $input
  * @property  User_model  $user_model
  */
-class Speaker extends Controller
+class Speaker extends CI_Controller
 {
-
-    /**
-     * Constructor, responsible for initializing the parent constructor.
-     *
-     * @return void
-     */
-    public function Speaker()
-    {
-        parent::Controller();
-    }
-
     /**
      * Displays the profile page for a speaker.
      *
@@ -423,5 +412,3 @@ class Speaker extends Controller
         return true;
     }
 }
-
-?>

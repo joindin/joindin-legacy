@@ -32,19 +32,8 @@
  * @property  CI_Input    $input
  * @property  User_model  $user_model
  */
-class Widget extends Controller
+class Widget extends CI_Controller
 {
-
-    /**
-     * Constructor, responsible for initializing the parent constructor.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::Controller();
-    }
-
     /**
      * Main widget page shows a blank response.
      *
@@ -169,5 +158,3 @@ class Widget extends Controller
         $this->db->insert('talk_comments', $arr);
     }
 }
-
-?>

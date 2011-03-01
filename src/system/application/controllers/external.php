@@ -34,19 +34,8 @@
  * @property  CI_Input    $input
  * @property  User_model  $user_model
  */
-class External extends Controller
+class External extends CI_Controller
 {
-
-    /**
-     * Constructor, responsible for initializing the parent constructor.
-     *
-     * @return void
-     */
-    public function External()
-    {
-        parent::Controller();
-    }
-
     /**
      * Sends an update to twitter notifying the world how many events are coming
      * and where to find them.
@@ -122,5 +111,3 @@ class External extends Controller
 		$this->sendemail->sendPendingEvents($events);
 	}
 }
-
-?>

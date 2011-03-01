@@ -1,12 +1,6 @@
 <?php
 
-class User_admin_model extends Model {
-
-	/** constructor */
-	function User_admin_model(){
-		parent::Model();
-	}
-	
+class User_admin_model extends CI_Model {
 	/**
 	 * Remove a specific permission row
 	 *
@@ -301,5 +295,3 @@ class User_admin_model extends Model {
 	    return $q->result();
 	}
 }
-
-?>

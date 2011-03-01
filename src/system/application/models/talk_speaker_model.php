@@ -1,12 +1,6 @@
 <?php
 
-class Talk_speaker_model extends Model {
-
-	function Talk_speaker_model(){
-		parent::Model();
-	}
-	//----------------
-	
+class Talk_speaker_model extends CI_Model {
 	/**
 	 * Locate a speaker by talk ID and speaker name (string match)
 	 *
@@ -178,5 +172,3 @@ class Talk_speaker_model extends Model {
 	}
 	
 }
-
-?>

@@ -1,15 +1,11 @@
 <?php
 
-class Event_model extends Model {
-
-	function Event_model(){
-		parent::Model();
-	}
+class Event_model extends CI_Model {
 	/**
 	 * Match all data given against the events table to see 
 	 * is there's anything matching
 	 */
-	function isUnique($data){
+	public function isUnique($data){
 		$q=$this->db->get_where('events',$data);
 		$ret=$q->result();
 		return (empty($ret)) ? true : false;
@@ -18,7 +14,7 @@ class Event_model extends Model {
 	 * Check the given string to see if it already exists
 	 * $pid is an optional event ID
 	 */
-	function isUniqueStub($str,$eid=null){
+	public function isUniqueStub($str,$eid=null){
 		$this->db->select('ID')
 			->from('events')
 			->where('event_stub',$str);
@@ -29,7 +25,7 @@ class Event_model extends Model {
 		return (empty($ret)) ? true : false;
 	}
 	//---------------------
-	function deleteEvent($id){
+	public function deleteEvent($id){
 		//we don't actually delete them...just make them inactive
 		//get the event
 		//$this->db->where('ID',$id);
@@ -44,7 +40,7 @@ class Event_model extends Model {
 	/**
 	 * Remove the talks related to an event ID
 	 */
-	function deleteEventTalks($eid){
+	public function deleteEventTalks($eid){
 		$this->db->where('event_id',$eid);
 		$this->db->update('talks',array('active'=>0));
 	}
@@ -52,7 +48,7 @@ class Event_model extends Model {
 	 * Remove the comments related to all of the talks on an event
 	 * (useful for cleanup)
 	 */
-	function deleteTalkComments($eid){
+	public function deleteTalkComments($eid){
 		$talks=$this->getEventTalks($eid);
 		foreach($talks as $k=>$v){
 			$this->db->where('talk_id',$v->ID);
@@ -64,7 +60,7 @@ class Event_model extends Model {
 	/**
 	 * Sets the Active and Pending statuses to make the event show correctly
 	 */
-	function approvePendingEvent($id){
+	public function approvePendingEvent($id){
 		$arr=array(
 			'active'	=> 1,
 			'pending'	=> 0
@@ -84,7 +80,7 @@ class Event_model extends Model {
 	 *
 	 * @return stdClass[]
 	 */
-	function getEventDetail($id = null, $start_dt = null, $end_dt = null, $pending = false){
+	public function getEventDetail($id = null, $start_dt = null, $end_dt = null, $pending = false){
 		$this->load->helper("events");
 
 		// get the current date (with out time)
@@ -155,7 +151,7 @@ SQL
 		return $res;
 	}
 
-	function getEventTalks($id,$includeEventRelated = true, $includePrivate = false) {
+	public function getEventTalks($id,$includeEventRelated = true, $includePrivate = false) {
 		$this->load->helper("events");
 		$this->load->helper("talk");
 		$private=($includePrivate) ? '' : ' and private!=1';
@@ -211,7 +207,7 @@ SQL
 		return $res;
 	}
 
-	function getEventsOfType($type, $limit = NULL) {
+	public function getEventsOfType($type, $limit = NULL) {
 		$where = NULL;
 		$order_by = NULL;
 
@@ -261,19 +257,19 @@ SQL
 	    return $query->result();
 	}
 
-    function getHotEvents($limit = null){
+    public function getHotEvents($limit = null){
 		$result = $this->getEventsOfType("hot", $limit);
 		return $result;
 	}
 
-	function getUpcomingEvents($limit = null, $inc_curr = false){
+	public function getUpcomingEvents($limit = null, $inc_curr = false){
 		// inc_curr not handled
 
 		$result = $this->getEventsOfType("upcoming", $limit);
 		return $result;
 	}
 	
-    function getPastEvents($limit = null, $per_page = null, $current_page = null){
+    public function getPastEvents($limit = null, $per_page = null, $current_page = null){
 	
 		$result = $this->getEventsOfType("past", $limit);			
 		if ($per_page && $current_page) {
@@ -285,7 +281,7 @@ SQL
 		return $result;
 	}
 
-	function getEventAdmins($eid,$all_results=false){
+	public function getEventAdmins($eid,$all_results=false){
 	    $sql=sprintf("
 		select
 		    u.username,
@@ -311,7 +307,7 @@ SQL
 	    return $q->result();
 	}
 
-	function getLatestComment($eid){
+	public function getLatestComment($eid){
 	    $sql=sprintf("
 		select
 		    max(tc.date_made) max_date,
@@ -329,11 +325,11 @@ SQL
 	    return $q->result();
 	}
 	
-	function getEventIdByName($name){
+	public function getEventIdByName($name){
 		$q=$this->db->get_where('events',array('event_stub'=>$name));
 		return $q->result();
 	}
-	function getEventIdByTitle($title){
+	public function getEventIdByTitle($title){
 		$this->db->select('id');
 		$this->db->from('events');
 		$this->db->where("lower(event_name)",strtolower($title));
@@ -341,7 +337,7 @@ SQL
 		return $q->result();
 	}
 	
-	function getEventClaims($event_id){
+	public function getEventClaims($event_id){
 		$sql=sprintf('
 			select
 				t.id as talk_id,
@@ -368,7 +364,7 @@ SQL
 		return $ret;
 	}
 	
-	function getClaimedTalks($eid, $talks = null){
+	public function getClaimedTalks($eid, $talks = null){
 		$this->load->helper('events');
 		
 		$sql=sprintf("
@@ -399,7 +395,7 @@ SQL
 		// for the this event
 		return $claimedTalks;
 	}
-	function getEventFeedback($eid, $order_by = NULL){
+	public function getEventFeedback($eid, $order_by = NULL){
 		// handle the ordering
 		if($order_by == 'tc.date_made' || $order_by == 'tc.date_made DESC') {
 			// fine, sensible options that we'll allow
@@ -430,7 +426,7 @@ SQL
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
-	function getEventRelatedSessions($id) {
+	public function getEventRelatedSessions($id) {
 		$sql=sprintf('
 			select
 				talks.talk_title,
@@ -477,7 +473,7 @@ SQL
 	}
 
 	//----------------------
-	function search($term,$start,$end){
+	public function search($term,$start,$end){
 		$term = mysql_real_escape_string($term);
 		
 		//if we have the dates, limit by them

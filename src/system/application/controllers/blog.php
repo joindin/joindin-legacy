@@ -33,7 +33,7 @@
  * @property  CI_Input    $input
  * @property  User_model  $user_model
  */
-class Blog extends Controller
+class Blog extends CI_Controller
 {
 
     /**
@@ -42,9 +42,9 @@ class Blog extends Controller
      *
      * @return void
      */
-    function Blog()
+    public function __construct()
     {
-        parent::Controller();
+        parent::__construct();
 
         // check login status and fill the 'logged' parameter in the template
         $this->user_model->logStatus();
@@ -55,7 +55,7 @@ class Blog extends Controller
      *
      * @return void
      */
-    function index()
+    public function index()
     {
         $this->load->model('blog_posts_model', 'blogPostsModel');
 
@@ -78,7 +78,7 @@ class Blog extends Controller
      *
      * @return void
      */
-    function add($id = null)
+    public function add($id = null)
     {
         if (!$this->user_model->isSiteAdmin()) {
             redirect();
@@ -175,7 +175,7 @@ class Blog extends Controller
      *
      * @return void
      */
-    function edit($id)
+    public function edit($id)
     {
         if (!$this->user_model->isSiteAdmin()) {
             redirect();
@@ -190,7 +190,7 @@ class Blog extends Controller
      *
      * @return void
      */
-    function view($id)
+    public function view($id)
     {
         $this->load->helper('form');
         $this->load->library('validation');

@@ -3,20 +3,14 @@
  * Speaker profile model
  */
 
-class Speaker_profile_model extends Model {
-
-    function Speaker_profile_model(){
-		parent::Model();
-    }
-    //----------------------
-
-	/**
+class Speaker_profile_model extends CI_Model {
+       /**
 	* Check to see if a token belongs to a user
 	* $uid integer User ID
 	* $tid integer Token ID
 	* Return boolean
 	*/
-	function isUserToken($uid,$tid){
+	public function isUserToken($uid,$tid){
 		$sql=sprintf("
 			select
 				speaker_profile.ID
@@ -36,7 +30,7 @@ class Speaker_profile_model extends Model {
     /**
      * Fetch the profile information for the given user ID
      */
-    function getProfile($uid){
+    public function getProfile($uid){
         $this->db->select('speaker_profile.*, countries.name AS country');
         $this->db->from('speaker_profile');
         $this->db->join('countries', 'countries.ID=speaker_profile.country_id', 'left');
@@ -45,20 +39,20 @@ class Speaker_profile_model extends Model {
 		return $q->result();
     }
 
-	function getProfileById($pid){
+	public function getProfileById($pid){
 		$q=$this->db->get_where('speaker_profile',array('ID'=>$pid));
 		return $q->result();
 	}
     /**
      * Set up a new speaker profile
      */
-    function setProfile($data){
+    public function setProfile($data){
 		$this->db->insert('speaker_profile',$data);
     }
     /**
      * Given a user ID and key/value, update the user's profile
      */
-    function updateProfile($uid,$data){
+    public function updateProfile($uid,$data){
 		$this->db->where('user_id',$uid);
 		$this->db->update('speaker_profile',$data);
     }
@@ -66,7 +60,7 @@ class Speaker_profile_model extends Model {
 	/**
 	* Get the column names for the types of the speaker profile
 	*/
-    function getProfileFields(){
+    public function getProfileFields(){
 		$fields=array();
 		$q=$this->db->query('show columns from speaker_profile');
 		foreach($q->result() as $k=>$v){
@@ -80,7 +74,7 @@ class Speaker_profile_model extends Model {
 	* Get the details from the speaker's profile based on what the token defines
 	* $token string Token name
 	*/
-	function getDetailByToken($token){
+	public function getDetailByToken($token){
 		$tok_detail=$this->getTokenDetail($token);
 		
 		// Get the fields they're allowing for this token
@@ -103,7 +97,7 @@ class Speaker_profile_model extends Model {
 	* $pid integer Profile ID
 	* $tid[optional] integer Token ID
 	*/
-    function getProfileAccess($pid,$tid=null){
+    public function getProfileAccess($pid,$tid=null){
 		$data=array();
 		$q=$this->db->get_where('speaker_tokens',array('speaker_profile_id'=>$pid));
 		$data['token']=$q->result();
@@ -118,7 +112,7 @@ class Speaker_profile_model extends Model {
 	* Based on a user ID, get the token information for the user's profile
 	* $uid integer User ID
 	*/
-	function getUserProfileAccess($uid){
+	public function getUserProfileAccess($uid){
 		$profile= $this->getProfile($uid);
 		return $this->getProfileTokens($profile[0]->ID);
 	}
@@ -126,7 +120,7 @@ class Speaker_profile_model extends Model {
 	/**
 	* $public boolean Return only public profile or all
 	*/
-	function getUserPublicProfile($uid,$public=false){
+	public function getUserPublicProfile($uid,$public=false){
 		$profile= $this->getProfile($uid);
 		if(!isset($profile[0])){ /* no profile! */ return array(); }
 		$access	= $this->getProfileTokens($profile[0]->ID);
@@ -150,7 +144,7 @@ class Speaker_profile_model extends Model {
 	* Based on the token ID, gets the fields that it has access to
 	* $tid integer Token ID
 	*/
-	function getTokenAccess($tid){
+	public function getTokenAccess($tid){
 		$q=$this->db->get_where('speaker_token_fields',array('speaker_token_id'=>$tid));
 		return $q->result();
 	}
@@ -159,7 +153,7 @@ class Speaker_profile_model extends Model {
 	* Given the profile ID, get the tokens related to the profile
 	* $tid integer Token ID
 	*/
-	function getProfileTokens($pid){
+	public function getProfileTokens($pid){
 		$q=$this->db->get_where('speaker_tokens',array('speaker_profile_id'=>$pid));
 		return $q->result();
 	}
@@ -168,7 +162,7 @@ class Speaker_profile_model extends Model {
 	* Based on a token name, Get the detail from the tokens table
 	* $token string Token name
 	*/
-	function getTokenDetail($token){
+	public function getTokenDetail($token){
 		$q=$this->db->get_where('speaker_tokens',array('access_token'=>$token));
 		return $q->result();
 	}
@@ -179,7 +173,7 @@ class Speaker_profile_model extends Model {
 	* $name string Token name (user defined)
 	* $fields array List of access fields
 	*/
-    function setProfileAccess($uid,$name,$desc,$fields,$is_public=null){
+    public function setProfileAccess($uid,$name,$desc,$fields,$is_public=null){
 		//First, insert into the token table...
 		$profile= $this->getProfile($uid);
 		$pid	= $profile[0]->ID;
@@ -215,7 +209,7 @@ class Speaker_profile_model extends Model {
 	* $tid integer Token ID
 	* $fields array List of access fields
 	*/
-    function updateProfileAccess($uid,$tid,$fields,$is_public=null){
+    public function updateProfileAccess($uid,$tid,$fields,$is_public=null){
 		// Be sure we're supposed to work on this token
 		if(!$this->isUserToken($uid,$tid)){ return false; }
 		
@@ -238,7 +232,7 @@ class Speaker_profile_model extends Model {
 	* $uid integer User ID
 	* $tid integer Token ID
 	*/
-	function deleteProfileAccess($uid,$tid){
+	public function deleteProfileAccess($uid,$tid){
 		// Be sure it's theirs first...
 		$profile=$this->getProfile($uid); //print_r($profile);
 		
@@ -257,7 +251,7 @@ class Speaker_profile_model extends Model {
 	* $tid integer Token ID
 	* $is_public [optional] Viewable status
 	*/
-	function setProfileViewable($uid,$tid,$is_public=null){
+	public function setProfileViewable($uid,$tid,$is_public=null){
 		//first we need to set all of the current ones to non-public
 		$sql=sprintf('
 			select
@@ -278,5 +272,3 @@ class Speaker_profile_model extends Model {
 		$this->db->update('speaker_tokens',array('is_public'=>$is_public));
 	}
 }
-
-?>
