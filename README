@@ -39,8 +39,8 @@ Finally, there's some other scripts that come with the source to make things eas
 	- Release of CodeIgniter
 	- Sample cron jobs (in /src/scripts)
 	
-You can find more on github: http://github.com/enygma/joind.in
-Issues should be filed at: http://github.com/enygma/joind.in/issues
+You can find more on github: http://github.com/joindin/joind.in
+Issues should be filed at: http://joindin.jira.com/
 
 See LICENSE file for license information for this software
 (located in /doc/LICENSE)
