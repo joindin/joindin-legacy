@@ -421,14 +421,13 @@ class Event extends Controller
 						$this->input->post('cfp_start_yr')
 					);
 				}
+
+				// be sure that the image for the event actually exists
+				$eventIconPath = $_SERVER['DOCUMENT_ROOT'] . '/inc/img/event_icons/'.$event_detail[0]->event_icon;
+				if(!is_file($eventIconPath)){
+					$event_detail[0]->event_icon = 'none.gif';
+				}
             }
-
-			// be sure that the image for the event actually exists
-			$eventIconPath = $_SERVER['DOCUMENT_ROOT'] . '/inc/img/event_icons/'.$event_detail[0]->event_icon;
-			if(!is_file($eventIconPath)){
-				$event_detail[0]->event_icon = 'none.gif';
-			}
-
 
             $arr = array(
                 'detail'       => $event_detail,
