@@ -243,7 +243,7 @@ SQL
                 WHEN (((events.event_start - 86400) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
                 END as allow_comments
-			FROM events
+			FROM `events`
 			WHERE active = 1 AND (pending = 0 OR pending IS NULL)';
 
 		if($where) {
