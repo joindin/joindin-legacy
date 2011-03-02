@@ -232,6 +232,8 @@ class Event extends Controller
      */
     function past($current_page = null)
     {
+        // Don't display pending "past" events
+        $pending = false;
         $this->_runList('past', $pending, 10, $current_page);
     }
 
