@@ -12,7 +12,12 @@ To configure:
  GET /v2/event/15/comment
  GET /v2/event/15/talk
 
- Supported URL parameters
+ Supported URL parameters:
  verbose=yes (gives more fields in the response)
  page (a number, used for pagination. Defaults to 1, the first page)
  resultsperpage (a number, used for pagination. Defaults to 20, if 0 is passed, all results are returned)
+
+To add credentials for a new consumer:
+ - run scripts/generateNewKeys.php (taken entirely from http://toys.lerdorf.com/archives/55-Writing-an-OAuth-Provider-Service.html)
+ - run the resulting SQL against the database
+ - give consumer key and secret to new consumer, and ask them not to check the secret into source control
