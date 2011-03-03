@@ -11,28 +11,30 @@ class Twitter {
 		$this->CI=&get_instance();
 	}
 	//---------------------
-	public function querySearchAPI($term=null){
+	public function querySearchAPI($term=null, $ignoreCache = false){
 		$this->CI->load->library('cache');
 		
 		if(!$term || empty($term[0])){ return array(); }
-		$ret=array();
+		$ret=false;
 		$arr=(!is_array($term)) ? array($term) : $term;
 		if(!empty($arr)){
-		    foreach($arr as $k=>$v){
-			    $cname='twitter_'.$v;
-			    // See if we have a file first...
-			    $ret=$this->CI->cache->getData($cname); //echo '<pre>'; var_dump($ret); echo '</pre>';
-			    if(!$ret){
-				$url=$this->api_url.str_replace('#','%23',$v); //echo $url;
-				$tmp=json_decode(@file_get_contents($url));
-				$this->CI->cache->cacheData(trim($cname),$tmp);
-				if(!empty($tmp)){ foreach($tmp as $ok=>$ov){ $ret[]=$ov; } }
-			    }else{
-				$tmp=array();
-				foreach($ret->results as $k=>$v){ $tmp[0][$k]=$v; }
-				$ret=$tmp;
-			    }
-		    }
+			foreach($arr as $k=>$v){
+				$cname='twitter_'.$v;
+				// See if we have a file first...
+				if (!$ignoreCache) {
+					$ret=$this->CI->cache->getData($cname); //echo '<pre>'; var_dump($ret); echo '</pre>';
+				}
+				if(!$ret){
+					$url=$this->api_url.str_replace('#','%23',$v); //echo $url;
+					$tmp=json_decode(@file_get_contents($url));
+					$this->CI->cache->cacheData(trim($cname),$tmp);
+					if(!empty($tmp)){ foreach($tmp as $ok=>$ov){ $ret[]=$ov; } }
+				}else{
+					$tmp=array();
+					foreach($ret->results as $k=>$v){ $tmp[0][$k]=$v; }
+					$ret=$tmp;
+				}
+			}
 		}
 		//echo '<!-- <pre>'; print_r($ret); echo '</pre> -->';
 		//echo '<pre>'; print_r($ret); echo '</pre>';
