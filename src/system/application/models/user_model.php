@@ -201,6 +201,20 @@ class User_model extends Model {
 	}
 	
 	/**
+	 * Search for a user by their twitter account name
+	 * @param $twitter string User twitter account name
+	 * @return int User ID (or false if the user wasn't found)
+	 */
+	function getUserIdByTwitter($twitter){
+		$q=$this->db->get_where('user',array('twitter_username'=>$twitter));
+		$user = $q->result();
+		if (isset($user[0])) {
+			return (int) $user[0]->ID;
+		}
+		return false;
+	}
+	
+	/**
 	 * Find email addresses for all users marked as site admins 
 	 * @return array Set of email addresses
 	 */
