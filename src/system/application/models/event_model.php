@@ -482,7 +482,7 @@ SQL
 		//if we have the dates, limit by them
 		$attend = '(SELECT COUNT(*) FROM user_attend WHERE eid = events.ID AND uid = ' . $this->db->escape((int)$this->session->userdata('ID')) . ')as user_attending';
 
-		$this->db->select('events.*, COUNT(user_attend.ID) AS num_attend, COUNT(event_comments.ID) AS num_comments, ' . $attend);
+		$this->db->select('events.*, COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments, ' . $attend);
 		$this->db->from('events');
 		$this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
 		$this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');
