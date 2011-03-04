@@ -25,8 +25,13 @@ class OauthController {
 
     public function handle($request, $db) {
         $this->setUpOAuthAndDb($db);
-        // TODO generate, store and return a request_token
-        return array('login_url' => 'http://' . $request->host . '/v2/oauth/login');
+        $tokens = OAuthModel::newRequestToken($db, $this->provider);
+        $retval = array(
+            'request_token' => $tokens['request_token'],
+            'request_token_secret' => $tokens['request_token_secret'],
+            'auth_url' => urlencode('http://' . $request->host . '/v2/oauth/login?request_token=' . $tokens['request_token'])
+        );
+        return $retval;
     }
 
     /*
