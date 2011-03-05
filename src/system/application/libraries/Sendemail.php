@@ -105,21 +105,36 @@ You can reply directly to them by replying to this email.
 	* Send password reset email to the given user 
 	* (user's email address is looked up by username)
 	*/
-	public function sendPassordReset($user,$pass){
+	public function sendPasswordReset($user,$pass){
 		$to		= $user[0]->email;
-		$subj	= $this->_config->item('site_name') . ' - Password Reset Request';
+		$subj	= $this->_config->item('site_name') . ' - Password Reset';
 		$msg	= sprintf('
 %s,
 
-Someone has requested a password reset for your account on %s.
+Your password has been reset for your account on %s.
 Your new password is below:
 
 %s
 
-Please log in in at %suser/login and reset your password as soon as possible.
+Please log in in at %suser/login and change your password as soon as possible.
 		', $user[0]->username, $this->_config->item('site_name'), $pass, $this->_config->site_url());
 		$this->_sendEmail($to,$msg,$subj);
 	}
+
+    public function sendPasswordResetRequest($user, $request_code) {
+        $to = $user[0]->email;
+        $subj = $this->_config->item('site_name') . ' - Password Reset Requested';
+        $msg = sprintf("
+%s,
+
+Someone has requested a password reset for your account on %s. If this wasn't you, don't worry. Nothing
+has changed. In order to reset your password click on the link below or copy it into your browser:
+
+%suser/forgot/%s/%s
+        ", $user[0]->username, $this->_config->item('site_name'),
+        $this->_config->site_url(), $user[0]->ID, $request_code);
+        $this->_sendEmail($to, $msg, $subj);
+    }
 	
 	/**
 	* Send an email when a user is added to the admin list for an event
