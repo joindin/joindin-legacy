@@ -88,7 +88,7 @@ function splitCommentTypes($talk_comments, $admin, $user_id)
                     $include_comment = true;
             }
 
-            if ($user_id == $comment->user_id) {
+            if ($user_id === $comment->user_id) {
                     // this user made the comment
                     $include_comment = true;
             }
