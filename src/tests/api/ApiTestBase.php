@@ -8,8 +8,8 @@
 		}
 
 		protected function makeApiRequest( $type, $action, $params, $format=null, $creds=null, $useCache=true ) {
-			// TODO pull this from config
-			$url = "http://lorna.rivendell.local/api/".urlencode($type);
+			$config = load_class('Config');
+            $url = $config->config['base_url'] . 'api/' . urlencode($type);
 
 			$useCache = false;
 
@@ -18,7 +18,17 @@
 			// $creds === array($user, $pass) otherwise (where pass is md5)
 			// TODO pull this from config or make default user
 			if ($creds === null) {
-				$creds = array('kevin', '6228bd57c9a858eb305e0fd0694890f7');
+			    // TODO find a better solution here !!!
+			    if (!array_key_exists('api_creds_user', $config->config)) {
+			        $config->config['api_creds_user'] = 'kevin';
+			    }
+			    if (!array_key_exists('api_creds_token', $config->config)) {
+			        $config->config['api_creds_token'] = '6228bd57c9a858eb305e0fd0694890f7';
+			    }
+				$creds = array(
+				    $config->config['api_creds_user'], 
+					$config->config['api_creds_token'],
+				);
 			}
 
 			$req = new StdClass();
