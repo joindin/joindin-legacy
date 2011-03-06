@@ -38,16 +38,6 @@ class External extends Controller
 {
 
     /**
-     * Constructor, responsible for initializing the parent constructor.
-     *
-     * @return void
-     */
-    public function External()
-    {
-        parent::Controller();
-    }
-
-    /**
      * Sends an update to twitter notifying the world how many events are coming
      * and where to find them.
      *
