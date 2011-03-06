@@ -102,7 +102,7 @@ class External extends Controller
 	 *
 	 * @return int
 	 */
-	public function twitter_sort($a, $b)
+	protected function twitter_sort($a, $b)
 	{
 		$tsA = strtotime($a->created_at);
 		$tsB = strtotime($b->created_at);
