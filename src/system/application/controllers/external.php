@@ -64,11 +64,12 @@ class External extends Controller
         $this->load->model('event_model');
 
         $events = $this->event_model->getUpcomingEvents(null);
-        $msg    = $this->config->item('site_name') . " Update: There's " .
+        $msg    = $this->config->item('site_name') . " Update: There are " .
             count($events) . " great events coming up soon! ";
         $msg   .= "Check them out! " . $this->config->site_url() .
             "event/upcoming";
 
+		// @todo: shorten this URL to help fit inside a Twitter message
         $this->twitter->sendMsg($msg);
     }
 
