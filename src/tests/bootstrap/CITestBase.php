@@ -212,4 +212,5 @@ else
 }
 
 // Load the base controller class
-load_class('Controller', FALSE);
+//load_class('Controller', FALSE);
+load_class('Controller');
