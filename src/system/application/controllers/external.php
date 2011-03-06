@@ -174,7 +174,10 @@ class External extends Controller
 				);
 
 				if ($this->talk_comments_model->hasUserCommented($m['talk'], $uid)) {
-					$this->db->where('user_id', $uid);
+					$this->db->where(array(
+						'user_id' => $uid,
+						'talk_id' => $m['talk']
+					));
 					$this->db->update('talk_comments', $arr);
 				} else {
 					$this->db->insert('talk_comments', $arr);
