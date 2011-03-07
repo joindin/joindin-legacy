@@ -76,6 +76,9 @@ class EventModelTest extends PHPUnit_Framework_TestCase
 		}
 	}
 	
+	/**
+	 * Test to ensure that it allows private events
+	 */
 	public function testValidEventTalkDataIncludePrivate()
 	{
 		$query 		= $this->ci->db->get_where('events',array('private'=>1));
@@ -83,11 +86,35 @@ class EventModelTest extends PHPUnit_Framework_TestCase
 		
 		if(isset($result[0])){
 			$eventId 	= $result[0]->event_id;
-			echo $eventId;
+			$talks 		= $this->ci->event_model->getEventTalks($eventId,true,false);
 			
+			$this->markTestIncomplete('Not finished');
 		}else{
 			$this->markTestSkipped('Private event not found.');
-		}
+		}	
+	}
+	
+	/**
+	 * Ensure that the "hot", "Upcoming" and "past" events are all working
+	 */
+	public function testEventsOfType ()
+	{
+		$hotEvents 		= $this->ci->event_model->getEventsOfType('hot');
+		$upcomingEvents = $this->ci->event_model->getEventsOfType('upcoming');
+		$pastEvents 	= $this->ci->event_model->getEventsOfType('past');
 		
+		$this->assertTrue(
+			(count($hotEvents)>0 && isset($hotEvents[0]->ID)) &&
+			(count($upcomingEvents)>0 && isset($upcomingEvents[0]->ID)) &&
+			(count($pastEvents)>0 && isset($pastEvents[0]->ID))
+		);
+	}
+	
+	public function testGetHotEvents()
+	{
+		$this->assertEquals(
+			$this->ci->event_model->getHotEvents(),
+			$this->ci->event_model->getEventsOfType('hot')
+		);
 	}
 }
