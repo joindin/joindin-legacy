@@ -356,21 +356,14 @@ class User extends Controller
 		$this->load->model('event_model');
 
         $this->load->library('gravatar');
-        $this->gravatar->getUserImage(
-            $this->session->userData('ID'), $this->session->userData('email')
-        );
-        $imgStr = $this->gravatar->displayUserImage(
-            $this->session->userData('ID'), true
-        );
+        $imgStr = $this->gravatar->displayUserImage($this->session->userData('ID'), null, 80);
 
         if (!$this->user_model->isAuth()) {
             redirect('user/login');
         }
 
-        $arr['talks']    = $this->talks_model
-            ->getUserTalks($this->session->userdata('ID'));
-        $arr['comments'] = $this->talks_model
-            ->getUserComments($this->session->userdata('ID'));
+        $arr['talks']    = $this->talks_model->getUserTalks($this->session->userdata('ID'));
+        $arr['comments'] = $this->talks_model->getUserComments($this->session->userdata('ID'));
         $arr['is_admin'] = $this->user_model->isSiteAdmin();
         $arr['gravatar'] = $imgStr;
 
@@ -380,21 +373,6 @@ class User extends Controller
 
         $this->template->write_view('content', 'user/main', $arr);
         $this->template->render();
-    }
-
-    /**
-     * Refreshes the current user's gravatar from the servers.
-     *
-     * @return void
-     */
-    function refresh_gravatar()
-    {
-        $this->load->library('gravatar');
-        $uid = $this->session->userData('ID');
-
-        $this->gravatar->getUserImage($uid);
-
-        redirect('/user/main');
     }
 
     /**
@@ -426,8 +404,7 @@ class User extends Controller
             redirect();
         }
 
-        $this->gravatar->getUserImage($uid, $details[0]->email);
-        $imgStr = $this->gravatar->displayUserImage($uid, true);
+		$imgStr = $this->gravatar->displayUserImage($uid, $details['email'], 80);
 
         if (empty($details[0])) {
             redirect();
