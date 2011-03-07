@@ -33,8 +33,11 @@ class Gravatar {
 
 		// Build the Gravatar URL
 		$hash=$this->buildEmailHash($userEmail);
-			// @todo: Check for SSL and switch accordingly
-		$path=$this->_servicePath.'/'.$hash.'?d=mm';
+		if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+			$path=$this->_servicePathSSL.'/'.$hash.'?d=mm';
+		} else {
+			$path=$this->_servicePath.'/'.$hash.'?d=mm';
+		}
 		if ($size !== null && is_int($size)) {
 			$path.='&s=' . urlencode($size);
 		}
