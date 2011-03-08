@@ -43,7 +43,7 @@ if(isset($_SERVER['PATH_INFO'])) {
     $request->url_elements = explode('/',$_SERVER['PATH_INFO']);
 }
 parse_str($_SERVER['QUERY_STRING'], &$parameters);
-$request->accept = $_SERVER['HTTP_ACCEPT'];
+$request->accept = explode(',', $_SERVER['HTTP_ACCEPT']);
 $request->host = $_SERVER['HTTP_HOST'];
 $request->parameters = $parameters;
 
@@ -53,8 +53,32 @@ $request->parameters['resultsperpage'] = isset($request->parameters['resultsperp
 $request->parameters['page'] = isset($request->parameters['page']) 
     ? $request->parameters['page'] : 1;
 
-// TODO Input handling: read in data from whatever format
-
+// Input Handling: parameter takes precedence
+if(isset($request->parameters['format'])) {
+    switch($request->parameters['format']) {
+        case 'html':
+            $request->view = new HtmlView();
+            break;
+        case 'json':
+            $request->view = new JsonView();
+            break;
+        default:
+            // use the accept headers instead
+            break;
+    }
+}
+// Input Handling: then check the accept headers, fall back to json 
+if(!isset($request->view)) {
+    // TODO handle other items in the accept header
+    switch($request->accept[0]) {
+        case 'text/html':
+            $request->view = new HtmlView();
+            break;
+        default:
+            $request->view = new JsonView();
+            break;
+    }
+}
 // TODO Authenticate: if this is a valid user, add $request->user_id 
 
 if(isset($request->url_elements[1])) {
@@ -82,8 +106,6 @@ if(isset($request->url_elements[1])) {
 }
 
 // Handle output
-// TODO more output handlers?
 // TODO sort out headers, caching, etc
-$view = new JsonView();
-$view->render($return_data);
+$request->view->render($return_data);
 
