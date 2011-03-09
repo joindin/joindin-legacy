@@ -25,7 +25,7 @@ class OauthController {
 
     public function handle($request, $db) {
         $this->setUpOAuthAndDb($db);
-        $tokens = OAuthModel::newRequestToken($db, $this->provider);
+        $tokens = OAuthModel::newRequestToken($db, $this->provider, $request->parameters['oauth_callback']);
         $retval = array(
             'request_token' => $tokens['request_token'],
             'request_token_secret' => $tokens['request_token_secret'],
