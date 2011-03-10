@@ -354,6 +354,7 @@ class User extends Controller
         $this->load->library('validation');
         $this->load->model('talks_model');
 		$this->load->model('event_model');
+        $this->load->model('user_admin_model', 'userAdmin');
 
         $this->load->library('gravatar');
         $this->gravatar->getUserImage(
@@ -377,6 +378,10 @@ class User extends Controller
 		$arr['pending_events'] = $this->event_model->getEventDetail(
             null, null, null, true
         );
+        $arr['talk_claims'] = $this->userAdmin->getPendingClaims('talk', null);
+        $arr['event_claims'] = $this->userAdmin->getPendingClaims('event', null);
+
+
 
         $this->template->write_view('content', 'user/main', $arr);
         $this->template->render();

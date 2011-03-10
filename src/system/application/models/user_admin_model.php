@@ -190,8 +190,13 @@ class User_admin_model extends Model {
 	 */
 	public function getPendingClaims($type='talk',$rid=null){
 	    switch($type){
-			//case 'talk':    return $this->getPendingClaims_Talks($rid); break;
-			case 'talk':    return $this->getPendingClaim_TalkSpeaker($rid); break;
+			case 'talk':
+                if ($rid == null) {
+                    return $this->getPendingClaims_Talks();
+                } else {
+                    return $this->getPendingClaim_TalkSpeaker($rid); break;
+                }
+                break;
 			case 'event':   return $this->getPendingClaims_Events($rid); break;
 	    }
 	}
