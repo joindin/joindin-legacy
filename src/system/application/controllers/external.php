@@ -34,8 +34,19 @@
  * @property  CI_Input    $input
  * @property  User_model  $user_model
  */
-class External extends CI_Controller
+class External extends Controller
 {
+
+    /**
+     * Constructor, responsible for initializing the parent constructor.
+     *
+     * @return void
+     */
+    public function External()
+    {
+        parent::Controller();
+    }
+
     /**
      * Sends an update to twitter notifying the world how many events are coming
      * and where to find them.
@@ -110,4 +121,67 @@ class External extends CI_Controller
 		$events = $this->event_model->getEventDetail(null,null,null,true);
 		$this->sendemail->sendPendingEvents($events);
 	}
+
+	/**
+	 * Sorts the twitter search items depending on creation time
+	 *
+	 * @return int
+	 */
+	public function twitter_sort($a, $b)
+	{
+		$tsA = strtotime($a->created_at);
+		$tsB = strtotime($b->created_at);
+
+		if ($tsA > $tsB) {
+			return 1;
+		} else if ($tsA < $tsB) {
+			return -1;
+		} else {
+			return 0;
+		}
+	}
+
+	/**
+	 * Fetches all twitter messages tagged with #joindin since the last
+	 * time it has run and processes those for feedback messages in the form:
+	 * "talkid rating comment #joindin" such as:
+	 * "2 5 I am just testing something here! #joindin"
+	 */
+	public function twitter_process_feedback()
+	{
+		// only execute when invoked from a cron job
+		if (!defined('IS_CRON')) {
+			return false;
+		}
+
+		$this->load->library('twitter');
+		$this->load->model('user_model');
+		$this->load->model('talk_comments_model');
+
+		$search = $this->twitter->querySearchAPI('#joindin', true);
+		usort($search[0], array($this, 'twitter_sort'));
+		foreach ($search[0] as $item) {
+			if (preg_match('/(?P<talk>\d+)\s+(?P<rating>[1-5])\s+(?P<comment>.*)\s+[#@]joindin/', $item->text, $m)) {
+				$uid = $this->user_model->getUserIdByTwitter($item->from_user);
+
+				$arr = array(
+					'talk_id'   => $m['talk'],
+					'rating'    => $m['rating'],
+					'comment'   => $m['comment'],
+					'date_made' => strtotime($item->created_at), 'private' => false,
+					'active'    => 1,
+					'user_id'   => $uid,
+				);
+
+				if ($this->talk_comments_model->hasUserCommented($m['talk'], $uid)) {
+					$this->db->where('user_id', $uid);
+					$this->db->update('talk_comments', $arr);
+				} else {
+					$this->db->insert('talk_comments', $arr);
+				}
+			}
+		}
+	}
 }
+
+?>

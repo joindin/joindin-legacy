@@ -32,7 +32,7 @@
  * @property  CI_Template $template
  * @property  User_model  $user_model
  */
-class Api extends CI_Controller
+class Api extends Controller
 {
 
     /**
@@ -41,9 +41,9 @@ class Api extends CI_Controller
      *
      * @return void
      */
-    public function  __construct()
+    function Api()
     {
-        parent::__construct();
+        parent::Controller();
 
         // check login status and fill the 'logged' parameter in the template
         $this->user_model->logStatus();
@@ -54,7 +54,7 @@ class Api extends CI_Controller
      *
      * @return void
      */
-    public function index()
+    function index()
     {
         //show our docs
         $this->template->write_view('content', 'api/doc');
@@ -66,7 +66,7 @@ class Api extends CI_Controller
      *
      * @return void
      */
-    public function event()
+    function event()
     {
         $this->load->library('service');
         $data = file_get_contents('php://input');
@@ -81,7 +81,7 @@ class Api extends CI_Controller
      *
      * @return void
      */
-    public function talk()
+    function talk()
     {
         $this->load->library('service');
         $data = file_get_contents('php://input');
@@ -96,7 +96,7 @@ class Api extends CI_Controller
      *
      * @return void
      */
-    public function comment()
+    function comment()
     {
         $this->load->library('service');
         $data = file_get_contents('php://input');
@@ -111,7 +111,7 @@ class Api extends CI_Controller
      *
      * @return void
      */
-    public function blog()
+    function blog()
     {
         $this->load->library('service');
         $data = file_get_contents('php://input');
@@ -126,7 +126,7 @@ class Api extends CI_Controller
      *
      * @return void
      */
-    public function user()
+    function user()
     {
         $this->load->library('service');
         $data = file_get_contents('php://input');
@@ -141,7 +141,7 @@ class Api extends CI_Controller
      *
      * @return void
      */
-    public function site()
+    function site()
     {
         $this->load->library('service');
         $data = file_get_contents('php://input');
@@ -159,7 +159,7 @@ class Api extends CI_Controller
      * 
      * @return void
      */
-    public function output($ret)
+    function output($ret)
     {
         // ret contains element out with elements output (format) and data
         $out = null;
@@ -183,7 +183,7 @@ class Api extends CI_Controller
      *
      * @return void
      */
-    public function tz()
+    function tz()
     {
         $this->load->model('tz_model');
 
@@ -191,3 +191,5 @@ class Api extends CI_Controller
         echo json_encode($out);
     }
 }
+
+?>

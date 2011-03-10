@@ -32,7 +32,7 @@
  * @property  CI_Input    $input
  * @property  User_model  $user_model
  */
-class User extends CI_Controller
+class User extends Controller
 {
 
     /**
@@ -41,9 +41,9 @@ class User extends CI_Controller
      *
      * @return void
      */
-    public function __construct()
+    function User()
     {
-        parent::__construct();
+        parent::Controller();
 
         // check login status and fill the 'logged' parameter in the template
         $this->user_model->logStatus();
@@ -54,7 +54,7 @@ class User extends CI_Controller
      *
      * @return void
      */
-    public function index()
+    function index()
     {
         $this->load->helper('url');
         redirect('user/login');
@@ -65,7 +65,7 @@ class User extends CI_Controller
      *
      * @return void
      */
-    public function login()
+    function login()
     {
         $this->load->helper('form');
         $this->load->helper('url');
@@ -121,7 +121,7 @@ class User extends CI_Controller
      *
      * @return void
      */
-    public function logout()
+    function logout()
     {
         $this->load->helper('url');
         $this->session->sess_destroy();
@@ -133,7 +133,7 @@ class User extends CI_Controller
      *
      * @return void
      */
-    public function forgot()
+    function forgot($id = null, $request_code = null)
     {
         $this->load->helper('form');
         $this->load->library('validation');
@@ -152,6 +152,40 @@ class User extends CI_Controller
         $this->validation->set_rules($rules);
         $this->validation->set_fields($fields);
 
+        // ID and Request code are given?
+        if ($id != null and $request_code != null) {
+            $ret = $this->user_model->getUser($id);
+            if (empty($ret) || strcasecmp($ret[0]->request_code, $request_code)) {
+                // Could not find the user. Maybe already used, maybe a false code
+                $arr['msg'] = "The request code is already used or is invalid.";
+            } else {
+                // Code is ok. Reset this user's password
+
+                //generate the new password...
+                $sel = array_merge(range('a', 'z'), range('A', 'Z'), range(0, 9));
+                shuffle($sel);
+                $pass_len = 10;
+                $pass = '';
+                 $uid = $ret[0]->ID;
+                for ($i = 0; $i < $pass_len; $i++) {
+                    $r = mt_rand(0, count($sel) - 1);
+                    $pass .= $sel[$r];
+                }
+                 $arr = array(
+                    'password' => md5($pass),
+                    'request_code' => null
+
+                 );
+                 $this->user_model->updateUserInfo($uid, $arr);
+
+                // Send the email...
+                $this->sendemail->sendPasswordReset($ret, $pass);
+
+                $arr['msg'] = 'A new password has been sent to your email - ' .
+                    'open it and click on the login link to use the new password';
+            }
+        }
+
         if ($this->validation->run() != false) {
             //reset their password and send it out to the account
             $email = $this->input->post('email');
@@ -167,26 +201,20 @@ class User extends CI_Controller
             if (empty($ret)) {
                 $arr['msg'] = 'You must specify a username and email address!';
             } else {
-                //generate the new password...
-                $sel = array_merge(range('a', 'z'), range('A', 'Z'), range(0, 9));
-                shuffle($sel);
-                $pass_len = 10;
-                $pass = '';
                 $uid = $ret[0]->ID;
-                for ($i = 0; $i < $pass_len; $i++) {
-                    $r = mt_rand(0, count($sel) - 1);
-                    $pass .= $sel[$r];
-                }
+
+                // Generate request code and add to db
+                $request_code = substr(md5(uniqid(true)), 0, 8);
                 $arr = array(
-                    'password' => md5($pass)
+                    'request_code' => $request_code
                 );
                 $this->user_model->updateUserInfo($uid, $arr);
 
-                // Send the email...
-                $this->sendemail->sendPassordReset($ret, $pass);
+                // Send the activation email...
+                $this->sendemail->sendPasswordResetRequest($ret, $request_code);
 
-                $arr['msg'] = 'A new password has been sent to your email - ' .
-                    'open it and click on the login link to use the new password';
+                $arr['msg'] = 'Instructions on how to reset your password has been sent to your email - ' .
+                    'open it and follow the details to reset your password';
             }
         }
 
@@ -203,7 +231,7 @@ class User extends CI_Controller
      *
      * @return void
      */
-    public function changestat($uid, $from = null)
+    function changestat($uid, $from = null)
     {
         // Kick them back out if they're not an admin
         if (!$this->user_model->isSiteAdmin()) {
@@ -228,7 +256,7 @@ class User extends CI_Controller
      *
      * @return void
      */
-    public function changeastat($uid, $from = null)
+    function changeastat($uid, $from = null)
     {
         // Kick them back out if they're not an admin
         if (!$this->user_model->isSiteAdmin()) {
@@ -249,7 +277,7 @@ class User extends CI_Controller
      *
      * @return void
      */
-    public function register()
+    function register()
     {
         $this->load->helper('form');
         $this->load->library('validation');
@@ -320,7 +348,7 @@ class User extends CI_Controller
      *
      * @return void
      */
-    public function main()
+    function main()
     {
         $this->load->helper('form');
         $this->load->library('validation');
@@ -359,7 +387,7 @@ class User extends CI_Controller
      *
      * @return void
      */
-    public function refresh_gravatar()
+    function refresh_gravatar()
     {
         $this->load->library('gravatar');
         $uid = $this->session->userData('ID');
@@ -376,7 +404,7 @@ class User extends CI_Controller
      *
      * @return void
      */
-    public function view($uid)
+    function view($uid)
     {
         $this->load->model('talks_model');
         $this->load->model('user_attend_model', 'uam');
@@ -452,7 +480,7 @@ class User extends CI_Controller
      *
      * @return void
      */
-    public function manage()
+    function manage()
     {
         // be sure they're logged in
         if (!$this->user_model->isAuth()) {
@@ -515,7 +543,7 @@ class User extends CI_Controller
      *
      * @return void
      */
-    public function admin($page = null)
+    function admin($page = null)
     {
         $this->load->helper('reqkey');
         $this->load->library('validation');
@@ -562,7 +590,7 @@ class User extends CI_Controller
      *
      * @return bool
      */
-    public function start_up_check($p)
+    function start_up_check($p)
     {
         $u   = $this->input->post('user');
         $ret = $this->user_model->validate($u, $p);
@@ -583,7 +611,7 @@ class User extends CI_Controller
      *
      * @return bool
      */
-    public function cinput_check($str)
+    function cinput_check($str)
     {
         if ($this->input->post('cinput') != $this->session->userdata('cinput')) {
             $this->validation->_error_messages['cinput_check']
@@ -601,7 +629,7 @@ class User extends CI_Controller
      *
      * @return bool
      */
-    public function usern_check($str)
+    function usern_check($str)
     {
         $ret = $this->user_model->getUser($str);
 
@@ -621,7 +649,7 @@ class User extends CI_Controller
      *
      * @return bool
      */
-    public function email_exist_check($str)
+    function email_exist_check($str)
     {
         $ret = $this->user_model->getUserByEmail($str);
         if (empty($ret)) {
@@ -640,7 +668,7 @@ class User extends CI_Controller
      *
      * @return bool
      */
-    public function login_exist_check($str)
+    function login_exist_check($str)
     {
         $ret = $this->user_model->getUser($str);
 
@@ -660,7 +688,7 @@ class User extends CI_Controller
      *
      * @return bool
      */
-    public function user_email_match_check($str)
+    function user_email_match_check($str)
     {
         $ret = $this->user_model->getUserByEmail($str);
 

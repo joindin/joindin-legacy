@@ -25,7 +25,7 @@ $this->load->library('timezone');
 
     	</p>
 		<div class="desc" style="padding-top:6px">
-		<?php if(!empty($event->is_cfp)): ?>
+		<?php if($event->is_cfp): ?>
 			Call for papers ends <b><?php echo date('M d, Y',$event->event_cfp_end); ?></b>
 			<?php if(time() <= $event->event_cfp_end && $event->event_cfp_end <= strtotime('+1 week')): ?>
 				&nbsp;&nbsp;&nbsp;<span class="ends_soon">ending soon!</span>

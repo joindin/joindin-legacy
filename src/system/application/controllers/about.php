@@ -31,7 +31,7 @@
  * @property  CI_Template $template
  * @property  User_model  $user_model
  */
-class About extends CI_Controller
+class About extends Controller
 {
 
     /**
@@ -40,9 +40,9 @@ class About extends CI_Controller
      *
      * @return void
      */
-    public function  __construct()
+    function About()
     {
-        parent::__construct();
+        parent::Controller();
 
         // check login status and fill the 'logged' parameter in the template
         $this->user_model->logStatus();
@@ -53,7 +53,7 @@ class About extends CI_Controller
      *
      * @return void
      */
-    public function index()
+    function index()
     {
         $this->load->helper('form');
 
@@ -67,7 +67,7 @@ class About extends CI_Controller
      *
      * @return void
      */
-    public function evt_admin()
+    function evt_admin()
     {
         $this->template->write_view('content', 'about/evt_admin');
         $this->template->render();
@@ -78,7 +78,7 @@ class About extends CI_Controller
      *
      * @return void
      */
-    public function contact()
+    function contact()
     {
         $this->load->helper('form');
         $this->load->library('akismet');
@@ -146,7 +146,7 @@ class About extends CI_Controller
      *
      * @return void
      */
-    public function iphone_support()
+    function iphone_support()
     {
         $this->template->write_view('content', 'about/iphone_support');
         $this->template->render();
@@ -157,7 +157,7 @@ class About extends CI_Controller
      *
      * @return void
      */
-    public function widget()
+    function widget()
     {
         $this->template->write_view('content', 'about/widget');
         $this->template->render();
@@ -168,7 +168,7 @@ class About extends CI_Controller
      *
      * @return void
      */
-    public function who()
+    function who()
     {
         $dir = $this->config->item('gravatar_cache_dir');
 
@@ -197,7 +197,7 @@ class About extends CI_Controller
      *
      * @return void
      */
-    public function services()
+    function services()
     {
         $this->template->write_view('content', 'about/services', array());
         $this->template->render();
@@ -208,10 +208,12 @@ class About extends CI_Controller
      *
      * @return void
      */
-    public function import()
+    function import()
     {
         $this->template->write_view('content', 'about/import');
         $this->template->render();
     }
 
 }
+
+?>

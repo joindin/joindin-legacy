@@ -1,6 +1,10 @@
 <?php
 
-class Talk_cat_model extends CI_Model {
+class Talk_cat_model extends Model {
 
-
+	function Talk_cat_model(){
+		parent::Model();
+	}
+	
 }
+?>

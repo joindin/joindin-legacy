@@ -34,7 +34,7 @@
  * @property  CI_Input    $input
  * @property  User_model  $user_model
  */
-class Event extends CI_Controller
+class Event extends Controller
 {
 
     /**
@@ -45,9 +45,9 @@ class Event extends CI_Controller
      *
      * @return void
      */
-    public function __construct()
+    function Event()
     {
-        parent::__construct();
+        parent::Controller();
 
         // check login status and fill the 'logged' parameter in the template
         $this->user_model->logStatus();
@@ -76,7 +76,7 @@ class Event extends CI_Controller
      *
      * @return void
      */
-    public function cust($in)
+    function cust($in)
     {
         $this->load->helper('url');
         $this->load->model('event_model');
@@ -102,7 +102,7 @@ class Event extends CI_Controller
      *
      * @return void
      */
-    public function _runList($type, $pending = false, $per_page = null, $current_page = null)
+    function _runList($type, $pending = false, $per_page = null, $current_page = null)
     {
         //$prefs = array(
         //    'show_next_prev' => TRUE, 'next_prev_url' => '/event'
@@ -180,7 +180,7 @@ class Event extends CI_Controller
      *
      * @return bool
      */
-    public function index($pending = false)
+    function index($pending = false)
     {
         $type = ($pending) ? 'pending' : 'hot';
         $this->_runList($type, $pending);
@@ -194,7 +194,7 @@ class Event extends CI_Controller
      *
      * @return void
      */
-    public function all($pending = false)
+    function all($pending = false)
     {
         $this->_runList('index', $pending);
     }
@@ -207,7 +207,7 @@ class Event extends CI_Controller
      *
      * @return void
      */
-    public function hot($pending = false)
+    function hot($pending = false)
     {
         $this->_runList('hot', $pending);
     }
@@ -220,7 +220,7 @@ class Event extends CI_Controller
      *
      * @return void
      */
-    public function upcoming($pending = false)
+    function upcoming($pending = false)
     {
         $this->_runList('upcoming', $pending);
     }
@@ -230,7 +230,7 @@ class Event extends CI_Controller
      *
      * @return void
      */
-    public function past($current_page = null)
+    function past($current_page = null)
     {
         $this->_runList('past', $pending, 10, $current_page);
     }
@@ -240,7 +240,7 @@ class Event extends CI_Controller
      *
      * @return void
      */
-    public function pending()
+    function pending()
     {
         if (!$this->user_model->isSiteAdmin()) {
             redirect();
@@ -258,7 +258,7 @@ class Event extends CI_Controller
      *
      * @return void
      */
-    public function add($id = null)
+    function add($id = null)
     {
         //check for admin
         if ($id) {
@@ -539,7 +539,7 @@ class Event extends CI_Controller
      *
      * @return void
      */
-    public function edit($id)
+    function edit($id)
     {
         if (!$this->user_model->isAdminEvent($id)) {
             redirect();
@@ -557,7 +557,7 @@ class Event extends CI_Controller
      *
      * @return bool
      */
-    public function view($id, $opt = null, $opt_id = null)
+    function view($id, $opt = null, $opt_id = null)
     {
         $this->load->helper('form');
         $this->load->helper('reqkey');
@@ -864,7 +864,7 @@ class Event extends CI_Controller
      *
      * @return void
      */
-    public function attendees($id)
+    function attendees($id)
     {
         $this->load->model('user_attend_model');
 
@@ -887,7 +887,7 @@ class Event extends CI_Controller
      *
      * @return void
      */
-    public function delete($id)
+    function delete($id)
     {
         if ($this->user_model->isSiteAdmin()
             || $this->user_model->isAdminEvent($id)
@@ -924,7 +924,7 @@ class Event extends CI_Controller
      *
      * @return void
      */
-    public function codes($id)
+    function codes($id)
     {
         $this->load->helper('form');
         $this->load->library('validation');
@@ -1016,7 +1016,7 @@ class Event extends CI_Controller
      *
      * @return void
      */
-    public function submit()
+    function submit()
     {
         $arr = array();
         $this->load->library('validation');
@@ -1248,7 +1248,7 @@ class Event extends CI_Controller
      *
      * @return void
      */
-    public function export($id)
+    function export($id)
     {
         $this->load->model('event_model');
         $talks = $this->event_model->getEventFeedback($id);
@@ -1278,7 +1278,7 @@ class Event extends CI_Controller
      *
      * @return void
      */
-    public function approve($id)
+    function approve($id)
     {
         if (!$this->user_model->isSiteAdmin()) {
             redirect();
@@ -1318,7 +1318,7 @@ class Event extends CI_Controller
      *
      * @return void
      */
-    public function claim($id)
+    function claim($id)
     {
         if (!$this->user_model->isSiteAdmin()
             && !$this->user_model->isAdminEvent($id)
@@ -1391,7 +1391,7 @@ class Event extends CI_Controller
      *
      * @return void
      */
-    public function claims()
+    function claims()
     {
         if (!$this->user_model->isSiteAdmin()) {
             redirect('event');
@@ -1441,7 +1441,7 @@ class Event extends CI_Controller
      *
      * @return void
      */
-    public function import($id)
+    function import($id)
     {
         // Be sure they're supposed to be here...
         if (!$this->user_model->isSiteAdmin()
@@ -1510,7 +1510,7 @@ class Event extends CI_Controller
      *
      * @return void
      */
-    public function invite($id, $resp = null)
+    function invite($id, $resp = null)
     {
         $this->load->model('invite_list_model', 'ilm');
         $this->load->library('sendemail');
@@ -1644,7 +1644,7 @@ class Event extends CI_Controller
      *
      * @return void
      */
-    public function contact($id)
+    function contact($id)
     {
         // They need to be logged in...
         $is_auth = $this->user_model->isAuth();
@@ -1708,7 +1708,7 @@ class Event extends CI_Controller
      *
      * @return void
      */
-    public function tracks($id)
+    function tracks($id)
     {
         if (!$this->user_model->isSiteAdmin()
             && !$this->user_model->isAdminEvent($id)
@@ -1741,7 +1741,7 @@ class Event extends CI_Controller
      *
      * @return bool
      */
-    public function event_title_check($str)
+    function event_title_check($str)
     {
         $this->load->model('event_model');
         $ret = $this->event_model->getEventIdByTitle($str);
@@ -1761,7 +1761,7 @@ class Event extends CI_Controller
      *
      * @return bool
      */
-    public function start_mo_check()
+    function start_mo_check()
     {
         //be sure it's before the end date
         $t = mktime(
@@ -1793,7 +1793,7 @@ class Event extends CI_Controller
      *
      * @return bool
      */
-    public function end_mo_check()
+    function end_mo_check()
     {
         $st = mktime(
             0, 0, 0,
@@ -1825,7 +1825,7 @@ class Event extends CI_Controller
      *
      * @return bool
      */
-    public function cfp_start_mo_check()
+    function cfp_start_mo_check()
     {
         $cfp_st = mktime(
             0, 0, 0,
@@ -1872,7 +1872,7 @@ class Event extends CI_Controller
      *
      * @return bool
      */
-    public function cfp_end_mo_check()
+    function cfp_end_mo_check()
     {
         $cfp_end = mktime(
             0, 0, 0,
@@ -1907,7 +1907,7 @@ class Event extends CI_Controller
      *
      * @return bool
      */
-    public function chk_email_check($str)
+    function chk_email_check($str)
     {
         $chk_str = str_replace('_', '_chk_', $this->validation->_current_field);
         $val     = $this->input->post($chk_str);
@@ -1930,7 +1930,7 @@ class Event extends CI_Controller
      *
      * @return bool
      */
-    public function cinput_check($str)
+    function cinput_check($str)
     {
         if (($this->input->post('cinput') != $this->session->userdata('cinput'))) {
             $this->validation->_error_messages['cinput_check']
@@ -1947,11 +1947,11 @@ class Event extends CI_Controller
      *
      * @param string $str A stub
      *
-     * @todo expand docblock description, currently the public function is unclear
+     * @todo expand docblock description, currently the function is unclear
      *
      * @return bool
      */
-    public function stub_check($str)
+    function stub_check($str)
     {
         if (!empty($str)) {
             $this->load->model('event_model');
@@ -1983,3 +1983,5 @@ class Event extends CI_Controller
         $this->template->render();
 	}
 }
+
+?>

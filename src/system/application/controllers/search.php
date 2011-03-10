@@ -32,7 +32,7 @@
  * @property  CI_Input    $input
  * @property  User_model  $user_model
  */
-class Search extends CI_Controller
+class Search extends Controller
 {
 
     /**
@@ -41,9 +41,9 @@ class Search extends CI_Controller
      *
      * @return void
      */
-    public function __construct()
+    function Main()
     {
-        parent::__construct();
+        parent::Controller();
 
         // check login status and fill the 'logged' parameter in the template
         $this->user_model->logStatus();
@@ -54,7 +54,7 @@ class Search extends CI_Controller
      *
      * @return void
      */
-    public function index()
+    function index()
     {
         $this->load->helper('form');
         $this->load->library('validation');

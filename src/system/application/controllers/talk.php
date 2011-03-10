@@ -32,9 +32,9 @@
  * @property  CI_Input    $input
  * @property  User_model  $user_model
  */
-class Talk extends CI_Controller
+class Talk extends Controller
 {
-    public $auth = false;
+    var $auth = false;
 
     /**
      * Constructor, checks whether the user is logged in and passes this to
@@ -42,10 +42,9 @@ class Talk extends CI_Controller
      *
      * @return void
      */
-    public function  __construct()
+    function Talk()
     {
-        parent::__construct();
-
+        parent::Controller();
         $this->auth = ($this->user_model->isAuth()) ? true : false;
 
         // check login status and fill the 'logged' parameter in the template
@@ -57,7 +56,7 @@ class Talk extends CI_Controller
      *
      * @return void
      */
-    public function index()
+    function index()
     {
         $this->load->helper('form');
         $this->load->library('validation');
@@ -84,7 +83,7 @@ class Talk extends CI_Controller
      *
      * @return void
      */
-    public function add($id = null, $opt = null)
+    function add($id = null, $opt = null)
     {
         $pass   = true;
         $tracks = array();
@@ -423,7 +422,7 @@ class Talk extends CI_Controller
      *
      * @return void
      */
-    public function edit($id)
+    function edit($id)
     {
         $this->add($id);
     }
@@ -435,7 +434,7 @@ class Talk extends CI_Controller
      *
      * @return void
      */
-    public function delete($id)
+    function delete($id)
     {
         $this->load->model('talks_model');
         $this->load->model('user_model');
@@ -485,7 +484,7 @@ class Talk extends CI_Controller
      *
      * @return void
      */
-    public function view($id, $add_act = null, $code = null)
+    function view($id, $add_act = null, $code = null)
     {
         $this->load->model('talks_model');
         $this->load->model('event_model');
@@ -788,7 +787,7 @@ class Talk extends CI_Controller
      *
      * @return void
      */
-    public function claim($talkId,$claimId=null)
+    function claim($talkId,$claimId=null)
     {
 		$this->load->model('talk_speaker_model','talkSpeaker');
 		
@@ -862,7 +861,7 @@ class Talk extends CI_Controller
      *
      * @return bool
      */
-    public function given_mo_check($str)
+    function given_mo_check($str)
     {
         $t = mktime(
             $this->input->post('given_hour'),
@@ -908,7 +907,7 @@ class Talk extends CI_Controller
      *
      * @return bool
      */
-    public function cinput_check($str)
+    function cinput_check($str)
     {
         if ($this->input->post('cinput') != $this->session->userdata('cinput')) {
             $this->validation->_error_messages['cinput_check']
@@ -919,3 +918,5 @@ class Talk extends CI_Controller
         return true;
     }
 }
+
+?>

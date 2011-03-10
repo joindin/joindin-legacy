@@ -2,11 +2,11 @@
 /**
  * CodeIgniter
  *
- * An open source application development framework for PHP 5.1.6 or newer
+ * An open source application development framework for PHP 4.3.2 or newer
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008 - 2009, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -36,42 +36,46 @@
  *
  * @access	public
  * @param	string	path to source
- * @param	int		depth of directories to traverse (0 = fully recursive, 1 = current dir, etc)
+ * @param	bool	whether to limit the result to the top level only
  * @return	array
- */
+ */	
 if ( ! function_exists('directory_map'))
 {
-	function directory_map($source_dir, $directory_depth = 0, $hidden = FALSE)
-	{
+	function directory_map($source_dir, $top_level_only = FALSE, $hidden = FALSE)
+	{	
 		if ($fp = @opendir($source_dir))
 		{
-			$filedata	= array();
-			$new_depth	= $directory_depth - 1;
-			$source_dir	= rtrim($source_dir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
-
+			$source_dir = rtrim($source_dir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;		
+			$filedata = array();
+			
 			while (FALSE !== ($file = readdir($fp)))
 			{
-				// Remove '.', '..', and hidden files [optional]
-				if ( ! trim($file, '.') OR ($hidden == FALSE && $file[0] == '.'))
+				if (($hidden == FALSE && strncmp($file, '.', 1) == 0) OR ($file == '.' OR $file == '..'))
 				{
 					continue;
 				}
-
-				if (($directory_depth < 1 OR $new_depth > 0) && @is_dir($source_dir.$file))
+				
+				if ($top_level_only == FALSE && @is_dir($source_dir.$file))
 				{
-					$filedata[$file] = directory_map($source_dir.$file.DIRECTORY_SEPARATOR, $new_depth, $hidden);
+					$temp_array = array();
+				
+					$temp_array = directory_map($source_dir.$file.DIRECTORY_SEPARATOR, $top_level_only, $hidden);
+				
+					$filedata[$file] = $temp_array;
 				}
 				else
 				{
 					$filedata[] = $file;
 				}
 			}
-
+			
 			closedir($fp);
 			return $filedata;
 		}
-
-		return FALSE;
+		else
+		{
+			return FALSE;
+		}
 	}
 }
 

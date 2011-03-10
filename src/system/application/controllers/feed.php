@@ -32,7 +32,7 @@
  * @property  CI_Input    $input
  * @property  User_model  $user_model
  */
-class Feed extends CI_Controller
+class Feed extends Controller
 {
 
     /**
@@ -41,9 +41,9 @@ class Feed extends CI_Controller
      *
      * @return void
      */
-    public function __construct()
+    function Feed()
     {
-        parent::__construct();
+        parent::Controller();
 
         // check login status and fill the 'logged' parameter in the template
         $this->user_model->logStatus();
@@ -54,7 +54,7 @@ class Feed extends CI_Controller
      *
      * @return void
      */
-    public function index()
+    function index()
     {
         redirect();
     }
@@ -66,7 +66,7 @@ class Feed extends CI_Controller
      *
      * @return void
      */
-    public function talk($tid)
+    function talk($tid)
     {
         $this->load->helper('form');
         $this->load->model('talks_model');
@@ -97,7 +97,7 @@ class Feed extends CI_Controller
      *
      * @return void
      */
-    public function blog()
+    function blog()
     {
         $this->load->model('blog_posts_model', 'bpm');
         $items = array();
@@ -127,7 +127,7 @@ class Feed extends CI_Controller
      *
      * @return void
      */
-    public function event($eid)
+    function event($eid)
     {
         $this->load->model('event_model');
         $this->load->model('event_comments_model', 'ecm');
@@ -163,7 +163,7 @@ class Feed extends CI_Controller
      *
      * @return void
      */
-    public function user($in)
+    function user($in)
     {
         $this->load->model('talks_model');
         $this->load->model('talk_comments_model', 'tcm');
@@ -229,3 +229,5 @@ class Feed extends CI_Controller
         $this->load->view('feed/user', $data);
     }
 }
+
+?>

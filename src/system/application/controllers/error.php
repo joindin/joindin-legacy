@@ -32,7 +32,7 @@
  * @property  CI_Input    $input
  * @property  User_model  $user_model
  */
-class Error extends CI_Controller
+class Error extends Controller
 {
 
     /**
@@ -40,7 +40,7 @@ class Error extends CI_Controller
      *
      * @return void
      */
-    public function error_404()
+    function error_404()
     {
         $arr = array(
             'msg' => "404 - File not found"
@@ -50,3 +50,5 @@ class Error extends CI_Controller
         $this->template->render();
     }
 }
+
+?>

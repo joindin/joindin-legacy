@@ -1,6 +1,10 @@
 <?php
 
-class User_attend_model extends CI_Model {
+class User_attend_model extends Model {
+
+	function User_attend_model(){
+		parent::Model();
+	}
 	//--------------
 	
 	/**

@@ -1,8 +1,12 @@
 <?php
 
-class Blog_posts_model extends CI_Model {
+class Blog_posts_model extends Model {
+
+	function Blog_posts_model(){
+		parent::Model();
+	}
 	//-------------------
-	public function getPostDetail($id=null){
+	function getPostDetail($id=null){
 		$w=($id) ? 'where ID='.$this->db->escape($id) : '';
 		$sql=sprintf('
 			select
@@ -22,11 +26,11 @@ class Blog_posts_model extends CI_Model {
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
-	public function updatePostViews($id){
+	function updatePostViews($id){
 		$sql='update blog_posts set views=views+1';
 		$this->db->query($sql);
 	}
-	public function getLatestPost(){
+	function getLatestPost(){
 		$this->db->from('blog_posts');
 		$this->db->order_by('date_posted','desc');
 		$this->db->limit(1);
@@ -34,3 +38,5 @@ class Blog_posts_model extends CI_Model {
 		return $q->result();
 	}
 }
+
+?>

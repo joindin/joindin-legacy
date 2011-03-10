@@ -2,11 +2,11 @@
 /**
  * CodeIgniter
  *
- * An open source application development framework for PHP 5.1.6 or newer
+ * An open source application development framework for PHP 4.3.2 or newer
  *
  * @package		CodeIgniter
  * @author		ExpressionEngine Dev Team
- * @copyright	Copyright (c) 2008 - 2011, EllisLab, Inc.
+ * @copyright	Copyright (c) 2008 - 2009, EllisLab, Inc.
  * @license		http://codeigniter.com/user_guide/license.html
  * @link		http://codeigniter.com
  * @since		Version 1.0
@@ -34,31 +34,13 @@
  * @param	string
  * @param	bool	whether or not the content is an image file
  * @return	string
- */
+ */	
 if ( ! function_exists('xss_clean'))
 {
 	function xss_clean($str, $is_image = FALSE)
 	{
 		$CI =& get_instance();
-		return $CI->security->xss_clean($str, $is_image);
-	}
-}
-
-// ------------------------------------------------------------------------
-
-/**
- * Sanitize Filename
- *
- * @access	public
- * @param	string
- * @return	string
- */
-if ( ! function_exists('sanitize_filename'))
-{
-	function sanitize_filename($filename)
-	{
-		$CI =& get_instance();
-		return $CI->security->sanitize_filename($filename);
+		return $CI->input->xss_clean($str, $is_image);
 	}
 }
 
@@ -67,36 +49,20 @@ if ( ! function_exists('sanitize_filename'))
 /**
  * Hash encode a string
  *
- * This is simply an alias for do_hash()
- * dohash() is now deprecated
- */
+ * @access	public
+ * @param	string
+ * @return	string
+ */	
 if ( ! function_exists('dohash'))
-{
+{	
 	function dohash($str, $type = 'sha1')
-	{
-		return do_hash($str, $type);
-	}
-}
-
-// --------------------------------------------------------------------
-
-/**
- * Hash encode a string
- *
- * @access	public
- * @param	string
- * @return	string
- */
-if ( ! function_exists('do_hash'))
-{
-	function do_hash($str, $type = 'sha1')
 	{
 		if ($type == 'sha1')
 		{
 			if ( ! function_exists('sha1'))
 			{
 				if ( ! function_exists('mhash'))
-				{
+				{	
 					require_once(BASEPATH.'libraries/Sha1'.EXT);
 					$SH = new CI_SHA;
 					return $SH->generate($str);
@@ -109,7 +75,7 @@ if ( ! function_exists('do_hash'))
 			else
 			{
 				return sha1($str);
-			}
+			}	
 		}
 		else
 		{
@@ -117,7 +83,7 @@ if ( ! function_exists('do_hash'))
 		}
 	}
 }
-
+	
 // ------------------------------------------------------------------------
 
 /**
@@ -126,18 +92,18 @@ if ( ! function_exists('do_hash'))
  * @access	public
  * @param	string
  * @return	string
- */
+ */	
 if ( ! function_exists('strip_image_tags'))
 {
 	function strip_image_tags($str)
 	{
 		$str = preg_replace("#<img\s+.*?src\s*=\s*[\"'](.+?)[\"'].*?\>#", "\\1", $str);
 		$str = preg_replace("#<img\s+.*?src\s*=\s*(.+?).*?\>#", "\\1", $str);
-
+			
 		return $str;
 	}
 }
-
+	
 // ------------------------------------------------------------------------
 
 /**
@@ -146,7 +112,7 @@ if ( ! function_exists('strip_image_tags'))
  * @access	public
  * @param	string
  * @return	string
- */
+ */	
 if ( ! function_exists('encode_php_tags'))
 {
 	function encode_php_tags($str)

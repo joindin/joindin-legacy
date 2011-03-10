@@ -1,15 +1,19 @@
 <?php
 
-class Blog_post_cat_model extends CI_Model {
+class Blog_post_cat_model extends Model {
+
+	function Blog_post_cat_model(){
+		parent::Model();
+	}
 	//-------------------
-	public function getPostCats($pid){
+	function getPostCats($pid){
 		$this->db->select('cat_id,name')
 			->from('blog_post_cat')
 			->join('blog_cats','blog_post_cat.cat_id=blog_cats.ID');
 		$q=$this->db->get();
 		return $q->result();
 	}
-	public function setPostCat($pid,$cid){
+	function setPostCat($pid,$cid){
 		//remove any associations we have so far
 		$this->db->delete('blog_post_cat',array('post_id'=>$pid));
 		
@@ -18,3 +22,5 @@ class Blog_post_cat_model extends CI_Model {
 		$this->db->insert('blog_post_cat',$arr);
 	}
 }
+
+?>

@@ -32,7 +32,7 @@
  * @property  CI_Input    $input
  * @property  User_model  $user_model
  */
-class Theme extends CI_Controller
+class Theme extends Controller
 {
     var $auth = false;
 
@@ -42,10 +42,9 @@ class Theme extends CI_Controller
      *
      * @return void
      */
-    public function __construct()
+    public function Theme()
     {
-        parent::__construct();
-
+        parent::Controller();
         $this->auth = ($this->user_model->isAuth()) ? true : false;
 
         // check login status and fill the 'logged' parameter in the template

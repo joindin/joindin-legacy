@@ -1,11 +1,15 @@
 <?php
 
-class Invite_list_model extends CI_Model {
+class Invite_list_model extends Model {
+	
+	function Invite_list_model(){
+		parent::Model();
+	}
 	//------------------
 	/**
 	* Get the current invites for an event and their status
 	*/
-	public function getEventInvites($eid){
+	function getEventInvites($eid){
 		$sql=sprintf("
 			select
 				u.username,
@@ -25,18 +29,18 @@ class Invite_list_model extends CI_Model {
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
-	public function isInvited($eid,$uid,$only_accept=true){
+	function isInvited($eid,$uid,$only_accept=true){
 		$arr=array('eid'=>$eid,'uid'=>$uid);
 		if($only_accept){ $arr['accepted']='Y'; }
 		$q=$this->db->get_where('invite_list',$arr);
 		$ret=$q->result();
 		return (isset($ret[0])) ? true : false;
 	}
-	public function getInvite($eid,$uid){
+	function getInvite($eid,$uid){
 		$q=$this->db->get_where('invite_list',array('eid'=>$eid,'uid'=>$uid));
 		return $q->result();
 	}
-	public function addInvite($eid,$uid,$status=null){
+	function addInvite($eid,$uid,$status=null){
 		// Be sure there's not another one first...
 		if($this->getInvite($eid,$uid)){ return false; }
 		$arr=array(
@@ -47,16 +51,16 @@ class Invite_list_model extends CI_Model {
 		);
 		$this->db->insert('invite_list',$arr);
 	}
-	public function removeInvite($eid,$uid){
+	function removeInvite($eid,$uid){
 		$this->db->delete('invite_list',array('eid'=>$eid,'uid'=>$uid));
 	}
-	public function updateInviteStatus($eid,$uid,$stat){
+	function updateInviteStatus($eid,$uid,$stat){
 		$arr=array('accepted'=>$stat);
 		$this->db->where('eid',$eid);
 		$this->db->where('uid',$uid);
 		$this->db->update('invite_list',$arr);
 	}
-	public function acceptInvite($eid,$uid){
+	function acceptInvite($eid,$uid){
 		$this->updateInviteStatus($eid,$uid,'Y');
 	}
 }

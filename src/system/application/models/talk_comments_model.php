@@ -1,6 +1,10 @@
 <?php
 
-class Talk_comments_model extends CI_Model {
+class Talk_comments_model extends Model {
+
+	function Talk_comments_model(){
+		parent::Model();
+	}
 	//-------------------
 	/**
 	 * Check to see if a talk with the given data already exists
@@ -79,3 +83,4 @@ class Talk_comments_model extends CI_Model {
 		return $q->result();
 	}
 }
+?>

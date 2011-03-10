@@ -32,14 +32,25 @@
  * @property  CI_Input    $input
  * @property  User_model  $user_model
  */
-class Help extends CI_Controller
+class Help extends Controller
 {
+
+    /**
+     * Constructor, responsible for initializing the parent constructor.
+     *
+     * @return void
+     */
+    function Help()
+    {
+        parent::Controller();
+    }
+
     /**
      * Displays the help contents page.
      *
      * @return void
      */
-    public function index()
+    function index()
     {
         $this->writeContentPage('help/main');
     }
@@ -49,7 +60,7 @@ class Help extends CI_Controller
      *
      * @return void
      */
-    public function user_guide_events()
+    function user_guide_events()
     {
         $this->writeContentPage('help/user_guide_events');
     }
@@ -59,7 +70,7 @@ class Help extends CI_Controller
      *
      * @return void
      */
-    public function user_guide_talks()
+    function user_guide_talks()
     {
         $this->writeContentPage('help/user_guide_talks');
     }
@@ -69,7 +80,7 @@ class Help extends CI_Controller
      *
      * @return void
      */
-    public function event_admin()
+    function event_admin()
     {
         $this->writeContentPage('help/event_admin');
     }
@@ -79,7 +90,7 @@ class Help extends CI_Controller
      *
      * @return void
      */
-    public function talk_admin()
+    function talk_admin()
     {
         $this->writeContentPage('help/talk_admin');
     }
@@ -89,7 +100,7 @@ class Help extends CI_Controller
      *
      * @return void
      */
-    public function manage_user_acct()
+    function manage_user_acct()
     {
         $this->writeContentPage('help/manage_user_acct');
     }
@@ -102,10 +113,12 @@ class Help extends CI_Controller
      *
      * @return void
      */
-    public function writeContentPage($view)
+    function writeContentPage($view)
     {
         $this->template->write_view('content', $view);
         $this->template->render();
     }
 
 }
+
+?>

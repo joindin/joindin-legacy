@@ -2,14 +2,20 @@
 /**
  * Interface for the talk_track database table
  */
-class Talk_track_model extends CI_Model {
+class Talk_track_model extends Model {
+
+	/** constructor */
+	function Talk_track_model(){
+		parent::Model();
+	}
+	
 	/**
 	 * Fetch the track information for a given talk
 	 * 
 	 * @param integer $sid Talk ID
 	 * @return array Track Info
 	 */
-	public function getSessionTrackInfo($sid){
+	function getSessionTrackInfo($sid){
 		$sql=sprintf('
 			select
 				et.track_name,
@@ -34,7 +40,7 @@ class Talk_track_model extends CI_Model {
 	 * @param integer $tid Track ID
 	 * @return void
 	 */
-	public function setSessionTrack($sid,$tid){
+	function setSessionTrack($sid,$tid){
 		$arr=array(
 			'talk_id'	=> $sid,
 			'track_id'	=> $tid
@@ -50,7 +56,7 @@ class Talk_track_model extends CI_Model {
 	 * @param integer $tid Track ID
 	 * @return void
 	 */
-	public function updateSessionTrack($sid,$curr_tid,$tid){
+	function updateSessionTrack($sid,$curr_tid,$tid){
 		// first be sure we have one to begin with
 		$st=$this->getSessionTrackInfo($sid);
 		if(empty($st) || $curr_tid==null){ 
@@ -70,7 +76,7 @@ class Talk_track_model extends CI_Model {
 	 * @param integer $tid[optional] Track ID
 	 * @return void
 	 */
-	public function deleteSessionTrack($sid,$tid=null){
+	function deleteSessionTrack($sid,$tid=null){
 		$arr=array(
 			'talk_id'	=> $sid
 		);
@@ -78,3 +84,5 @@ class Talk_track_model extends CI_Model {
 		$this->db->delete('talk_track',$arr);
 	}
 }
+
+?>

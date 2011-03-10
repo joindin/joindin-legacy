@@ -1,6 +1,11 @@
 <?php
 
-class Event_themes_model extends CI_Model {
+class Event_themes_model extends Model {
+
+	public function Event_themes_model(){
+		parent::Model();
+	}
+
 	/**
 	 * Check to see if the given user has access to a certain theme/event
 	 * @param integer $uid User ID
