@@ -839,9 +839,8 @@ class Event extends Controller
                     'eid'         => $id,
                     'is_private'  => $events[0]->private,
                     'evt_admin'   => $this->event_model->getEventAdmins($id),
-                    'claim_count' => count(
-                        $this->uadm->getPendingClaim_TalkSpeaker($id)
-                    )
+                    'talk_claim_count' => count($this->uadm->getPendingClaim_TalkSpeaker($id)),
+                    'admin_claim_count' => count($this->uadm->getPendingClaims_Events($id)),
                 )
             );
         }
