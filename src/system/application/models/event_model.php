@@ -158,7 +158,7 @@ SQL
 	function getEventTalks($id,$includeEventRelated = true, $includePrivate = false) {
 		$this->load->helper("events");
 		$this->load->helper("talk");
-		$private=($includePrivate) ? '' : ' and private!=1';
+		$private=($includePrivate) ? '' : ' and ifnull(private,0)!=1';
 		$sql='
 			select
 				talks.talk_title,
