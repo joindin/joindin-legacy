@@ -77,6 +77,20 @@ class User_admin_model extends Model {
 		$ret=$q->result(); //print_r($ret);
 		return (empty($ret)) ? false : true;
 	}
+
+	/**
+	 * Check to see if given permission ID is of rtype/rid type.
+	 *
+	 * @param integer $id User ID
+	 * @param integer $rid Resource ID (ex. talk ID)
+	 * @param string $rtype Resource type (ex. "talk")
+	 * @return boolean If they have permission or not
+	 */
+	public function checkPerm($id, $rid, $rtype){
+		$q=$this->db->get_where('user_admin',array('ID'=>$id,'rid'=>$rid,'rtype'=>$rtype));
+        $ret=$q->result();
+        return (empty($ret)) ? false : true;
+	}
 	
 	/**
 	 * Get detail for a given user - their talks and events
