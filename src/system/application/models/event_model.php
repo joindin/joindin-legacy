@@ -216,7 +216,7 @@ SQL
 		$order_by = NULL;
 
 		if($type == "hot") {
-			$order_by = "((num_attend * 0.5) - score) desc";
+			$order_by = "(((num_attend + num_comments) * 0.5) - EXP(GREATEST(1,score)/10)) desc";
 		}
 
 		if($type == "upcoming") {
