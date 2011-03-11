@@ -60,7 +60,4 @@ $this->load->view('event/modules/_event_tabs',$data);
 	});
 })(jQuery);
 
-$(document).ready(function(){
-	JI_event.init();
-})
 </script>
