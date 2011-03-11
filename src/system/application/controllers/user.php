@@ -378,7 +378,7 @@ class User extends Controller
 		$arr['pending_events'] = $this->event_model->getEventDetail(
             null, null, null, true
         );
-        $arr['talk_claims'] = $this->userAdmin->getPendingClaims('talk', null);
+        //$arr['talk_claims'] = $this->userAdmin->getPendingClaims('talk', null);
         $arr['event_claims'] = $this->userAdmin->getPendingClaims('event', null);
 
 

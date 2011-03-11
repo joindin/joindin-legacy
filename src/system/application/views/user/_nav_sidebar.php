@@ -9,10 +9,9 @@ if(user_is_admin()){
     <ul>
 	<li><a href="/user/admin">User Admin</a>
 	<li><a href="/event/pending">Pending Events</a> (%s)
-	<li><a href="/talk/claims">Talk Claims</a> (%s)
 	<li><a href="/event/claims">Event Claims</a> (%s)
     </ul>
-    ',count($pending_events),count($talk_claims),count($event_claims));
+    ',count($pending_events),count($event_claims));
 }
 $nav=sprintf('
 <ul>
