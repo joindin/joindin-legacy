@@ -41,7 +41,7 @@ class Addcomment extends BaseWsRequest {
 			$this->CI->load->model('event_model');
 			$event_detail=$this->CI->event_model->getEventDetail($in['event_id']);
 			
-			$adv_mo=strtotime('+3 months',$event_detail->event_start);
+			$adv_mo=strtotime('+3 months',$event_detail[0]->event_start);
 			if(time()>$adv_mo){
 				return $this->throwError('Comments not allowed for this talk!');
 			}
