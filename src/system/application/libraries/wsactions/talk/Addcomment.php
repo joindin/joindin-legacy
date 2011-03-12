@@ -65,7 +65,8 @@ class Addcomment extends BaseWsRequest {
 				'comment'	=> $in['comment'],
 				'date_made'	=> time(),
 				'private'	=> $in['private'],
-				'active'	=> 1
+				'active'	=> 1,
+                'source'	=> isset($in['source']) ? $in['source'] : 'api'
 			);
 
 			$this->CI->db->insert('talk_comments',$arr);

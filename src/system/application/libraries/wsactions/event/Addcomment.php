@@ -49,6 +49,7 @@ class Addcomment extends BaseWsRequest {
 			$arr=array(
 				'event_id'	=> $in['event_id'],
 				'comment'	=> $in['comment'],
+                'source'	=> isset($in['source']) ? $in['source'] : 'api',
 				'date_made'	=> time(),
 				'active'	=> 1
 			);

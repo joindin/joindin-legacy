@@ -117,14 +117,15 @@ insert into event_comments (
 	active,
 	cname,
 	comment_type,
-	ID
+	ID,
+	source
 ) values (
 	@evtid,
 	'This is a sample comment on the Test Event #2',
 	unix_timestamp(),
 	@fuserid,
 	1,
-	'',NULL,NULL
+	'John Doe',NULL,NULL,'api'
 );
 /* ----------------------------------*/
 
