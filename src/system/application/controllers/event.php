@@ -311,7 +311,7 @@ class Event extends Controller
             'end_mo'         => 'End Month',
             'end_day'        => 'End Day',
             'end_yr'         => 'End Year',
-            'event_loc'      => 'Event Location',
+            'event_loc'      => 'Event Venue Name',
             'event_lat'      => 'Latitude',
             'event_long'     => 'Longitude',
             'event_desc'     => 'Event Description',
