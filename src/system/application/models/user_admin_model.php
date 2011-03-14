@@ -78,9 +78,12 @@ class User_admin_model extends Model {
 		return (empty($ret)) ? false : true;
 	}
 
-    public function getPerm($uid,$rid,$rtype){
+    public function getPendingPerm($uid,$rid,$rtype){
+		error_log($uid.' - '.$rid.' - '.$rtype);
         $q=$this->db->get_where('user_admin',array('uid'=>$uid,'rid'=>$rid,'rtype'=>$rtype,'rcode'=>'pending'));
-        return $q->result();
+        $result = $q->result();
+		error_log('result: '.print_r($result,true));
+		return $result;
     }
 	
 	/**
