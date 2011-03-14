@@ -78,8 +78,9 @@ class Addadmin extends BaseWsRequest {
 			}
 		}
 		
-		// Check to see if they're already an admin 
-		if(!$this->CI->uam->hasPerm($udata[0]->ID,$eid,$type)){
+		// Check to see if they're already an admin
+        $perm = $this->CI->uam->getPerm($udata[0]->ID,$eid,$type);
+		if($perm == null){
 			$this->CI->uam->addPerm($udata[0]->ID,$eid,$type);
 			$evt=$this->CI->em->getEventDetail($eid);
 			
@@ -87,7 +88,10 @@ class Addadmin extends BaseWsRequest {
 			$this->CI->sendemail->sendAdminAdd($udata,$evt,$this->xml->auth->user);
 			
 			return array('output'=>'json','data'=>array('items'=>array('msg'=>'Success')));
-		}else{
+        } elseif($perm[0]->rcode == "pending"){
+            $this->CI->uam->updatePerm($perm[0]->ID, array('rcode'=>''));
+            return array('output'=>'json','data'=>array('items'=>array('msg'=>'Success')));
+        } else {
 			return array('output'=>'json','data'=>array('items'=>array('msg'=>'Duplicate request!')));
 		}
 	}

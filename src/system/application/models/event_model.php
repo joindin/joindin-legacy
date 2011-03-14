@@ -304,11 +304,10 @@ SQL
 	    ",$this->db->escape($eid));
 
 	    if(!$all_results){
-		$sql.=" and rcode!='pending'";
+			$sql.=" and (rcode!='pending' or IFNULL(rcode,0)!='pending' or rcode=NULL)";
 	    }
-
-	    $q=$this->db->query($sql);
-	    return $q->result();
+	
+		return $this->db->query($sql)->result();
 	}
 
 	function getLatestComment($eid){
@@ -468,12 +467,11 @@ SQL
 	 */
 	public function getCurrentCfp()
 	{
-		$this->db->select('*');
-		$this->db->from('events');
-		$this->db->where('event_cfp_start <=',time());
-		$this->db->where('event_cfp_end >=',time());
-		$query = $this->db->get();
-		return $query->result();
+        $where = 'event_cfp_start <= ' . mktime(0,0,0, date('m'), date('d'), date('Y')) . ' AND '
+            . 'event_cfp_end >= ' . mktime(0,0,0, date('m'), date('d'), date('Y'));
+        $order_by = "events.event_cfp_end desc";
+		$result = $this->getEvents($where, $order_by, $limit);
+        return $result;
 	}
 
 	//----------------------
