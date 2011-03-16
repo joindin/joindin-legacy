@@ -489,8 +489,8 @@ SQL
 		if($start>0){ $this->db->where('event_start >=', $start); }
 		if($end>0){ $this->db->where('event_start <=', $end); }
 
-		$this->db->like('event_name',$term);
-		$this->db->or_like('event_desc',$term);
+        $term = '%'.$term.'%';
+        $this->db->where(sprintf('(event_name LIKE %1$s OR event_desc LIKE %1$s)', $this->db->escape($term)));
 		$this->db->limit(10);
 		$this->db->group_by('events.ID');
 

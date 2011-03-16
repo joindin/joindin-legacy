@@ -480,9 +480,9 @@ class Talks_model extends Model {
 		if($start>0){ $this->db->where('date_given >=', $start); }
 		if($end>0){ $this->db->where('date_given <=', $end); }
 		
-		$this->db->like('talk_title',$term);
-		$this->db->or_like('talk_desc',$term);
-		$this->db->or_like('speaker',$term);
+        $term = '%'.$term.'%';
+        $this->db->where(sprintf('(talk_title LIKE %1$s OR talk_desc LIKE %1$s OR speaker LIKE %1$s)', $this->db->escape($term)));
+
 		$this->db->limit(10);
 		$this->db->group_by('talks.ID');
 		$query = $this->db->get();
