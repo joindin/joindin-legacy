@@ -1,4 +1,8 @@
 <?php
+// predefine some vars
+
+$msg = '';
+
 //$tz_list=array('Select Continent');
 //foreach($tz as $k=>$v){ $tz_list[(string)$v->offset]=floor((string)$v->offset/3600); }
 
@@ -109,7 +113,7 @@ echo '<h2>'.$title.'</h2>';
 	</div>
     <div class="clear"></div>
     <div class="row">
-    	<label for="event_location">Venue name:</label>
+    	<label for="event_loc">Venue name:</label>
 	<?php echo form_input('event_loc',$this->validation->event_loc); ?>
     </div>
     <div class="clear"></div>
@@ -134,6 +138,9 @@ echo '<h2>'.$title.'</h2>';
 			<input type="hidden" name="map_latitude" id="map_latitude" value="<?php echo $lat; ?>"/>
 			<input type="hidden" name="map_longitude" id="map_longitude" value="<?php echo $long; ?>"/>
 			<input type="hidden" name="map_zoom" id="map_zoom" value="<?php echo $zoom; ?>"/>
+			
+			<input type="hidden" name="event_lat" id="event_lat" value="<?php echo $lat; ?>"/>
+			<input type="hidden" name="event_long" id="event_long" value="<?php echo $long; ?>"/>
 			
 			<table cellpadding="0" cellspacing="0" border="0">
 			<tr>
