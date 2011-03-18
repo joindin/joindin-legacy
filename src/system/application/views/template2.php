@@ -1,5 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr">
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
 
 <head>
 <?php 
@@ -17,17 +17,17 @@ $title[] = $this->config->item('site_name');
 	<?php } ?>
 	
 	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" /> 
-	<script type="text/javascript" src="/inc/js/jquery.js"></script>
-	<script type="text/javascript" src="/inc/js/jquery.pause.js"></script>
-	<script type="text/javascript" src="/inc/js/jquery-ui.js"></script>
-	<script type="text/javascript" src="/inc/js/site.js"></script>
+	<script src="/inc/js/jquery.js"></script>
+	<script src="/inc/js/jquery.pause.js"></script>
+	<script src="/inc/js/jquery-ui.js"></script>
+	<script src="/inc/js/site.js"></script>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 	<?php
 	if(!empty($feedurl)){
 		echo '<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="'.$feedurl.'" />';
 	}
-	if(isset($reqkey)){ echo "\n\t" . '<script type="text/javascript">var reqk="'.$reqkey.'";</script>'; }
-	if(isset($seckey)){ echo "\n\t" . '<script type="text/javascript">var seck="'.$seckey.'";</script>'; }
+	if(isset($reqkey)){ echo "\n\t" . '<script>var reqk="'.$reqkey.'";</script>'; }
+	if(isset($seckey)){ echo "\n\t" . '<script>var seck="'.$seckey.'";</script>'; }
 	?>
 </head>
 <body id="page-<?php echo menu_get_current_area(); ?>">
@@ -186,11 +186,11 @@ $title[] = $this->config->item('site_name');
 	</div>
 </div>
 
-<script type="text/javascript">
+<script>
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
 document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
 </script>
-<script type="text/javascript">
+<script>
 var pageTracker = _gat._getTracker("UA-246789-3");
 pageTracker._trackPageview();
 </script>
