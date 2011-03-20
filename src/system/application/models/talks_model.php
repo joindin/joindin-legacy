@@ -232,7 +232,8 @@ class Talks_model extends Model {
 				tc.user_id,
 				u.username uname,
 				u.twitter_username twitter_username,
-				tc.comment_type
+				tc.comment_type,
+				tc.source
 			from
 				talk_comments tc
 			left join
