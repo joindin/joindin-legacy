@@ -1,0 +1,17 @@
+<phpunit bootstrap="./bootstrap/CITestBase.php" colors="true">
+    <!-- Version: $Id:$ -->
+    <testsuite name="Joind.in Test Suite">
+        <directory>./</directory>
+    </testsuite>
+
+    <filter>
+        <whitelist>
+            <directory suffix=".php">../../src/system/application/libraries/</directory>
+            <directory suffix=".php">../../src/system/application/models/</directory>
+            <directory suffix=".php">../../src/system/application/helpers/</directory>
+        </whitelist>
+    </filter>
+
+</phpunit>
+
+
