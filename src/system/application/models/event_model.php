@@ -470,7 +470,7 @@ SQL
         $where = 'event_cfp_start <= ' . mktime(0,0,0, date('m'), date('d'), date('Y')) . ' AND '
             . 'event_cfp_end >= ' . mktime(0,0,0, date('m'), date('d'), date('Y'));
         $order_by = "events.event_cfp_end desc";
-		$result = $this->getEvents($where, $order_by, $limit);
+		$result = $this->getEvents($where, $order_by, null);
         return $result;
 	}
 
@@ -489,8 +489,8 @@ SQL
 		if($start>0){ $this->db->where('event_start >=', $start); }
 		if($end>0){ $this->db->where('event_start <=', $end); }
 
-		$this->db->like('event_name',$term);
-		$this->db->or_like('event_desc',$term);
+        $term = '%'.$term.'%';
+        $this->db->where(sprintf('(event_name LIKE %1$s OR event_desc LIKE %1$s)', $this->db->escape($term)));
 		$this->db->limit(10);
 		$this->db->group_by('events.ID');
 

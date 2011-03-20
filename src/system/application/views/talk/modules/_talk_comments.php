@@ -51,6 +51,7 @@ if (empty($comments)) {
 	<div class="text">
     	<p class="info">
     		<strong><?php echo date('M j, Y, H:i',$v->date_made); ?></strong> by <strong><?php echo $uname; ?></strong>
+            <?php echo !empty($v->source)?"via ".escape($v->source) : "" ?>
     	<?php if ($v->private == 1): ?>
     		<span class="private">Private</span>
     	<?php endif; ?>

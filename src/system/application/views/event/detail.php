@@ -56,11 +56,7 @@ $this->load->view('event/modules/_event_tabs',$data);
 		}
 		<?php endif; ?>
 		$('#event-tabs').joindIn_tabs();
-		event.init();
+		JI_event.init();
 	});
 })(jQuery);
-
-$(document).ready(function(){
-	JI_event.init();
-})
 </script>
