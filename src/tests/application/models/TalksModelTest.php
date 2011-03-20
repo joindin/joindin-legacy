@@ -2,7 +2,7 @@
 
 require_once dirname(__FILE__) . '/../../bootstrap/CITestBase.php';
 
-class EventModelTest extends PHPUnit_Framework_TestCase
+class TalksModelTest extends PHPUnit_Framework_TestCase
 {
 
 	protected function setUp()
