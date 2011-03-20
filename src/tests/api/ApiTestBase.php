@@ -9,7 +9,7 @@
 
 		protected function makeApiRequest( $type, $action, $params, $format=null, $creds=null, $useCache=true ) {
 			// TODO pull this from config
-			$url = "http://lorna.rivendell.local/api/".urlencode($type);
+			$url = "http://joind.in/api/".urlencode($type);
 
 			$useCache = false;
 
