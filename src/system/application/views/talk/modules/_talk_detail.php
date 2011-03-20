@@ -4,11 +4,12 @@
 
 	<p class="info">
 		<strong>
-			<?php 
+			<?php
 			$speaker_names = array();
 			foreach($speakers as $speaker): ?>
 			<?php 
 			if(!empty($speaker->speaker_id) && $speaker->status!='pending'){
+				if(empty($speaker->full_name)){ $speaker->full_name = 'N/A'; }
 				$speaker_names[] = '<a href="/user/view/'.$speaker->speaker_id.'">'.$speaker->full_name.'</a>';
 			}else{
 				$speaker_names[] = $speaker->speaker_name;

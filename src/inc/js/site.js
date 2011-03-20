@@ -193,7 +193,7 @@ function toggleCfpDates(){
 	
 	var sel_fields = new Array(
 		'cfp_start_mo','cfp_start_day','cfp_start_yr',
-		'cfp_end_mo','cfp_end_day','cfp_end_yr'
+		'cfp_end_mo','cfp_end_day','cfp_end_yr','cfp_url'
 	);
 	
 	// Get the current status of the first one...
