@@ -25,7 +25,9 @@ if (!empty($msg)):
 	<div id="comment-<?php echo $comment->ID ?>" class="row row-event-comment">
     	<div class="text">
         	<p class="info">
-        		<strong><?php echo date('M j, Y, H:i',$comment->date_made); ?></strong> by <strong><?php echo $uname; ?></strong> (<?php echo escape($type); ?>)
+        		<strong><?php echo date('M j, Y, H:i',$comment->date_made); ?></strong> by <strong><?php echo $uname; ?></strong>
+                <?php echo !empty($comment->source)?"via ".escape($comment->source) : "" ?>
+                (<?php echo escape($type); ?>)
         	</p>
         	<div class="desc">
         		<?php echo auto_p(escape($comment->comment)); ?>
