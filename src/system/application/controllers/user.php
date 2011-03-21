@@ -86,10 +86,15 @@ class User extends Controller
         $this->validation->set_rules($rules);
         $this->validation->set_fields($fields);
 
+
         if ($this->validation->run() == false) {
-            //$ref = (isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER']
-            //    : $this->session->userdata('ref_url');
-            //$this->session->set_userdata('ref_url',$ref);
+            // add a for-one-request-only session field
+            if($this->session->flashdata('url_after_login')) {
+                // the form submission failed, set the flashdata again so it's there for the resubmit
+                $this->session->set_flashdata('url_after_login', $this->session->flashdata('url_after_login'));
+            } else {
+                $this->session->set_flashdata('url_after_login', $this->input->server('HTTP_REFERER'));
+            }
 
             $this->template->write_view('content', 'user/login');
             $this->template->render();
@@ -106,8 +111,9 @@ class User extends Controller
                 )
             );
 
-            // send them back to where they came from
-            $to = $this->input->server('HTTP_REFERER');
+            // send them back to where they came from, either the referer if they have one, or the flashdata
+            $referer = $this->input->server('HTTP_REFERER');
+            $to = $this->session->flashdata('url_after_login') ? $this->session->flashdata('url_after_login') : $referer;
             if (!strstr($to, 'user/login')) {
                 redirect($to);
             } else {
@@ -630,6 +636,72 @@ class User extends Controller
             return false;
         }
 
+        return true;
+    }
+
+    /**
+     * Validates whether the given mail address is not already in use.
+     *
+     * @param string $str The mail address to validate
+     *
+     * @return bool
+     */
+    function email_exist_check($str)
+    {
+        $ret = $this->user_model->getUserByEmail($str);
+        if (empty($ret)) {
+            $this->validation->_error_messages['email_exist_check']
+                = 'Login for that email address does not exist!';
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Validates the username.
+     *
+     * @param string $str The username to validate
+     *
+     * @return bool
+     */
+    function login_exist_check($str)
+    {
+        $ret = $this->user_model->getUser($str);
+
+        if (empty($ret)) {
+            $this->validation->_error_messages['login_exist_check']
+                = 'Invalid username!';
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Validates if there is a user with the given e-mail address.
+     *
+     * @param string $str E-mail address to check
+     *
+     * @return bool
+     */
+    function user_email_match_check($str)
+    {
+        $ret = $this->user_model->getUserByEmail($str);
+
+        // no email like that on file - error!
+        if (empty($ret)) {
+            $this->validation->_error_messages['user_email_match_check']
+                = 'Invalid user information!';
+            return false;
+        }
+
+        // see if the username and email we've been given match up
+        if ($this->input->post('user') != $ret[0]->username) {
+            $this->validation->_error_messages['user_email_match_check']
+                = 'Invalid user information!';
+            return false;
+        }
         return true;
     }
 
