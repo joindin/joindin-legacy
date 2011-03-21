@@ -146,8 +146,7 @@ class User extends Controller
         );
         $rules = array(
             'user'  => 'required|trim|xss_clean',
-            'email' => 'required|trim|xss_clean|valid_email|' .
-                'callback_user_email_match_check'
+            'email' => 'required|trim|xss_clean|valid_email'
         );
         $this->validation->set_rules($rules);
         $this->validation->set_fields($fields);
@@ -191,16 +190,8 @@ class User extends Controller
             $email = $this->input->post('email');
             $login = $this->input->post('user');
 
-            $ret = null;
-            if (!empty($email)) {
-                $ret = $this->user_model->getUserByEmail($email);
-            } elseif (!empty($login)) {
-                $ret = $this->user_model->getUser($login);
-            }
-
-            if (empty($ret)) {
-                $arr['msg'] = 'You must specify a username and email address!';
-            } else {
+            $ret = $this->user_model->getUserByEmail($email);
+            if (! empty($ret) && $ret[0]->username == $login) {
                 $uid = $ret[0]->ID;
 
                 // Generate request code and add to db
@@ -212,10 +203,10 @@ class User extends Controller
 
                 // Send the activation email...
                 $this->sendemail->sendPasswordResetRequest($ret, $request_code);
-
-                $arr['msg'] = 'Instructions on how to reset your password has been sent to your email - ' .
-                    'open it and follow the details to reset your password';
             }
+
+            $arr['msg'] = 'If the entered details are correct, instructions on how to reset your password will ' .
+                'be sent to your email - open it and follow the details to reset your password';
         }
 
         $this->template->write_view('content', 'user/forgot', $arr);
@@ -642,71 +633,6 @@ class User extends Controller
         return true;
     }
 
-    /**
-     * Validates whether the given mail address is not already in use.
-     *
-     * @param string $str The mail address to validate
-     *
-     * @return bool
-     */
-    function email_exist_check($str)
-    {
-        $ret = $this->user_model->getUserByEmail($str);
-        if (empty($ret)) {
-            $this->validation->_error_messages['email_exist_check']
-                = 'Login for that email address does not exist!';
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Validates the username.
-     *
-     * @param string $str The username to validate
-     *
-     * @return bool
-     */
-    function login_exist_check($str)
-    {
-        $ret = $this->user_model->getUser($str);
-
-        if (empty($ret)) {
-            $this->validation->_error_messages['login_exist_check']
-                = 'Invalid username!';
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Validates if there is a user with the given e-mail address.
-     *
-     * @param string $str E-mail address to check
-     *
-     * @return bool
-     */
-    function user_email_match_check($str)
-    {
-        $ret = $this->user_model->getUserByEmail($str);
-
-        // no email like that on file - error!
-        if (empty($ret)) {
-            $this->validation->_error_messages['user_email_match_check']
-                = 'Invalid user information!';
-            return false;
-        }
-
-        // see if the username and email we've been given match up
-        if ($this->input->post('user') != $ret[0]->username) {
-            $this->validation->_error_messages['user_email_match_check']
-                = 'Invalid user information!';
-            return false;
-        }
-        return true;
-    }
 }
 
 ?>
