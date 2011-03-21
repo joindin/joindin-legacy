@@ -86,10 +86,15 @@ class User extends Controller
         $this->validation->set_rules($rules);
         $this->validation->set_fields($fields);
 
+
         if ($this->validation->run() == false) {
-            //$ref = (isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER']
-            //    : $this->session->userdata('ref_url');
-            //$this->session->set_userdata('ref_url',$ref);
+            // add a for-one-request-only session field
+            if($this->session->flashdata('url_after_login')) {
+                // the form submission failed, set the flashdata again so it's there for the resubmit
+                $this->session->set_flashdata('url_after_login', $this->session->flashdata('url_after_login'));
+            } else {
+                $this->session->set_flashdata('url_after_login', $this->input->server('HTTP_REFERER'));
+            }
 
             $this->template->write_view('content', 'user/login');
             $this->template->render();
@@ -106,8 +111,9 @@ class User extends Controller
                 )
             );
 
-            // send them back to where they came from
-            $to = $this->input->server('HTTP_REFERER');
+            // send them back to where they came from, either the referer if they have one, or the flashdata
+            $referer = $this->input->server('HTTP_REFERER');
+            $to = $this->session->flashdata('url_after_login') ? $this->session->flashdata('url_after_login') : $referer;
             if (!strstr($to, 'user/login')) {
                 redirect($to);
             } else {
@@ -677,6 +683,7 @@ class User extends Controller
         }
         return true;
     }
+
 }
 
 ?>
