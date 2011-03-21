@@ -50,6 +50,7 @@ class OauthController {
     }
 
     public function tokenHandler() {
+        // TODO actually check!
         return OAUTH_OK;
     }
 }
