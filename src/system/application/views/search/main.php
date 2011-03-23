@@ -42,10 +42,12 @@ if (!empty($results)) {
     		echo form_dropdown('start_mo',$start_mo,$this->validation->start_mo);
     		echo form_dropdown('start_day',$start_day,$this->validation->start_day);
     		echo form_dropdown('start_yr',$start_yr,$this->validation->start_yr);
+            echo form_datepicker('start_day', 'start_mo', 'start_yr');
     		echo ' - ';
     		echo form_dropdown('end_mo',$start_mo,$this->validation->end_mo);
     		echo form_dropdown('end_day',$start_day,$this->validation->end_day);
     		echo form_dropdown('end_yr',$start_yr,$this->validation->end_yr);
+            echo form_datepicker('end_day', 'end_mo', 'end_yr');
     		?>
         <div class="clear"></div>
     </div>

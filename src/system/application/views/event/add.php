@@ -68,6 +68,7 @@ echo '<h2>'.$title.'</h2>';
 	echo form_dropdown('start_mo',$start_mo,$this->validation->start_mo);
 	echo form_dropdown('start_day',$start_day,$this->validation->start_day);
 	echo form_dropdown('start_yr',$start_yr,$this->validation->start_yr);
+    echo form_datepicker('start_day', 'start_mo', 'start_yr');
 	?>
 	&nbsp;&nbsp;
 	</td>
@@ -82,6 +83,7 @@ echo '<h2>'.$title.'</h2>';
 	echo form_dropdown('end_mo',$end_mo,$this->validation->end_mo);
 	echo form_dropdown('end_day',$end_day,$this->validation->end_day);
 	echo form_dropdown('end_yr',$end_yr,$this->validation->end_yr);
+    echo form_datepicker('end_day', 'end_mo', 'end_yr');
 	?>
 	</td></tr>
 	</table>
@@ -242,6 +244,7 @@ echo '<h2>'.$title.'</h2>';
 		echo form_dropdown('cfp_start_mo',$cfp_start_mo,date('m',$this->validation->event_cfp_start),'id="cfp_start_mo" '.$js);
 		echo form_dropdown('cfp_start_day',$cfp_start_day,date('d',$this->validation->event_cfp_start),'id="cfp_start_day" '.$js);
 		echo form_dropdown('cfp_start_yr',$cfp_start_yr,date('Y',$this->validation->event_cfp_start),'id="cfp_start_yr" '.$js);
+        echo form_datepicker('cfp_start_day', 'cfp_start_mo', 'cfp_start_yr');
 		?>
 	 <div class="clear"></div>
     </div>
@@ -259,6 +262,7 @@ echo '<h2>'.$title.'</h2>';
 		echo form_dropdown('cfp_end_mo',$cfp_end_mo,date('m',$this->validation->event_cfp_end),'id="cfp_end_mo" '.$js);
 		echo form_dropdown('cfp_end_day',$cfp_end_day,date('d',$this->validation->event_cfp_end),'id="cfp_end_day" '.$js);
 		echo form_dropdown('cfp_end_yr',$cfp_end_yr,date('Y',$this->validation->event_cfp_end),'id="cfp_end_yr" '.$js);
+        echo form_datepicker('cfp_end_day', 'cfp_end_mo', 'cfp_end_yr');
 		?>
 	 <div class="clear"></div>
     </div>

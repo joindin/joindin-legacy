@@ -195,17 +195,21 @@ function toggleCfpDates(){
 		'cfp_start_mo','cfp_start_day','cfp_start_yr',
 		'cfp_end_mo','cfp_end_day','cfp_end_yr','cfp_url'
 	);
-	
+
 	// Get the current status of the first one...
 	stat=$('#cfp_start_mo').attr("disabled");
 	if(stat){
 		$.each(sel_fields,function(){
 			$('#'+this).removeAttr("disabled");
 		});
+        datePickerController.enable('cfp_start_yr');
+        datePickerController.enable('cfp_end_yr');
 	}else{
 		$.each(sel_fields,function(){
 			$('#'+this).attr("disabled","disabled");
 		});
+        datePickerController.disable('cfp_start_yr');
+        datePickerController.disable('cfp_end_yr');
 	}
 }
 function loadUserData(){
