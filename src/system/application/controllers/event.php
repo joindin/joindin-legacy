@@ -1328,8 +1328,11 @@ class Event extends Controller
 
         $this->load->model('user_admin_model', 'userAdmin');
 		$this->load->model('event_model','eventModel');
+		$this->load->model('pending_talk_claims_model','pendingClaimsModel');
         $this->load->helper('events_helper');
         $this->load->library('sendemail');
+
+		$newClaims = $this->pendingClaimsModel->getEventTalkClaims($id);
 
         $claim = $this->input->post('claim');
         $sub   = $this->input->post('sub');
@@ -1340,6 +1343,7 @@ class Event extends Controller
 			if(!isset($claim_data->ua_id)){ continue; }
             $claims[$claim_data->ua_id] = $claim_data;
         }
+
         $approved = 0;
         $denied   = 0;
 
@@ -1375,6 +1379,7 @@ class Event extends Controller
         // Data to pass out to the view
         $arr = array(
             'claims' => $this->userAdmin->getPendingClaims('talk', $id),
+			'newClaims' => $newClaims,
             'eid'    => $id,
             'msg'    => $msg,
 			'event_detail' => $this->eventModel->getEventDetail($id)

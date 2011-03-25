@@ -791,6 +791,12 @@ class Talk extends Controller
     {
 		$this->load->model('talk_speaker_model','talkSpeaker');
 		
+		$this->load->model('pending_talk_claims_model','pendingClaims');
+		
+		$this->pendingClaims->addClaim($talkId,$claimId);
+		
+		return false;
+		
         if (!$this->user_model->isAuth()) {
             redirect('talk/view/'.$talkId);
         }
