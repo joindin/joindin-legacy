@@ -688,11 +688,6 @@ class Talk extends Controller
                 foreach ($arr as $ak => $av) {
                     $msg .= '[' . $ak . '] => ' . $av . "\n";
                 }
-                @mail(
-                    $this->config->item('email_admin'),
-                    'Comment on talk ' . $id, $msg,
-                    'From: ' . $this->config->item('email_comments')
-                );
 
                 //if its claimed, be sure to send an email to the person to tell them
                 if ($cl) {

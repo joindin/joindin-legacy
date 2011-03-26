@@ -10,7 +10,7 @@
 		$icon_file=$gravatar_cache_dir.'/user'.$attendee->ID.'.jpg';
 		if(is_file($icon_file)){
 			$has_icons=true;
-			echo '<a href="/user/view/'.$attendee->ID.'"><img src="'.$gravatar_cache_relative_url.'/user'.$attendee->ID.'.jpg" height="20" style="margin:2px"i alt="'.$attendee->full_name.'" title="'.$attendee->full_name.'"/></a>';
+			echo '<a href="/user/view/'.$attendee->ID.'"><img src="'.$gravatar_cache_relative_url.'/user'.$attendee->ID.'.jpg" height="20" width="20" style="margin:2px"i alt="'.$attendee->full_name.'" title="'.$attendee->full_name.'"/></a>';
 		}
 	}
 	if(!$has_icons && count($attend_list)>0){
