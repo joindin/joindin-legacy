@@ -1337,6 +1337,21 @@ class Event extends Controller
         $claim = $this->input->post('claim');
         $sub   = $this->input->post('sub');
 
+		// look at each claim submitted and approve/deny them
+		if($claim){
+			var_dump($claim);
+			foreach($claim as $claimId => $claimStatus){
+				var_dump($claimId.' - '.$claimStatus);
+				if($claimStatus=='approve'){
+					$this->pendingClaimsModel->approveClaim($claimId);
+				}elseif($claimStatus=='deny'){
+					// delete the claim row
+					$this->pendingClaimsModel->deleteClaim($claimId);
+				}
+			}
+			return false;
+		}
+
         $msg = array();
         $claims = array();
         foreach ($this->userAdmin->getPendingClaims('talk', $id) as $claim_data) {
