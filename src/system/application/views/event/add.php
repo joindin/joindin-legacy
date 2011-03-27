@@ -65,9 +65,9 @@ echo '<h2>'.$title.'</h2>';
 	    $start_mo[$v]=$m; }
 	foreach(range(1,32) as $v){ $start_day[$v]=$v; }
 	foreach(range($min_start_yr,date('Y')+5) as $v){ $start_yr[$v]=$v; }
-	echo form_dropdown('start_mo',$start_mo,$this->validation->start_mo);
-	echo form_dropdown('start_day',$start_day,$this->validation->start_day);
-	echo form_dropdown('start_yr',$start_yr,$this->validation->start_yr);
+	echo form_dropdown('start_mo',  $start_mo,  $this->validation->start_mo,    'id="start_mo"');
+	echo form_dropdown('start_day', $start_day, $this->validation->start_day,   'id="start_day"');
+	echo form_dropdown('start_yr',  $start_yr,  $this->validation->start_yr,    'id="start_yr"');
     echo form_datepicker('start_day', 'start_mo', 'start_yr');
 	?>
 	&nbsp;&nbsp;
@@ -116,7 +116,10 @@ echo '<h2>'.$title.'</h2>';
     <div class="clear"></div>
     <div class="row">
     	<label for="event_loc">Venue name:</label>
-	<?php echo form_input('event_loc',$this->validation->event_loc); ?>
+	<?php echo form_input(
+        array('name'=>'event_loc',
+            'id'=>'event_loc'
+            ),$this->validation->event_loc); ?>
     </div>
     <div class="clear"></div>
 

@@ -271,35 +271,6 @@ if (! function_exists('form_multiselect'))
 }
 
 // --------------------------------------------------------------------
-/**
- * Datepicker helper
- *
- * @access	public
- * @param	day
- * @param	month
- * @param	year
- * @return	string
- */
-if (! function_exists('form_datepicker'))
-{
-    function form_datepicker($day, $month, $year)
-    {
-        $javascript = <<< JSCRIPT
-    <script type="text/javascript">
-    // <![CDATA[
-      var opts = {
-              formElements:{"${year}":"Y","${day}":"j", "${month}":"n"},
-              showWeeks:true,
-              statusFormat:"d-sl-m-sl-Y"
-              };
-      datePickerController.createDatePicker(opts);
-    // ]]>
-    </script>
-JSCRIPT;
-        return $javascript;
-    }
-}
-// --------------------------------------------------------------------
 
 /**
  * Drop-down Menu
@@ -334,7 +305,7 @@ if ( ! function_exists('form_dropdown'))
 
 		$multiple = (count($selected) > 1 && strpos($extra, 'multiple') === FALSE) ? ' multiple="multiple"' : '';
 
-		$form = '<select id="'.$name.'" name="'.$name.'"'.$extra.$multiple.">\n";
+		$form = '<select name="'.$name.'"'.$extra.$multiple.">\n";
 
 		foreach ($options as $key => $val)
 		{

@@ -525,3 +525,12 @@ function setStars(rate){
 /*# AVOID COLLISIONS #*/
 
 
+function padstring (itemToPad,length,padWith)
+{
+   if (padWith === undefined || padWith.length == 0) {
+       padWith = '0';
+   }
+   padWith = padWith.toString();
+   return (itemToPad.toString().length>length)?itemToPad:(Array(length).join(padWith)+itemToPad).slice(-length);
+
+}
