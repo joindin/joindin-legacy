@@ -708,13 +708,17 @@ class User extends Controller
     /**
      * Allow users to grant or deny access for an oauth app
      *
+     * Users will land here directly from oauth consuming sites/apps/whatever
+     *
      * @return void
      */
     function oauth_allow()
     {
-        if (!$this->auth) {
+        if (!$this->user_model->isAuth()) {
             redirect('user/login', 'refresh');
         }
+
+        $this->load->model('user_admin_model');
         $this->load->helper('form');
         $this->load->helper('url');
         $this->load->library('validation');
@@ -731,17 +735,42 @@ class User extends Controller
         $this->validation->set_rules($rules);
         $this->validation->set_fields($fields);
  
- 
+        $view_data['status'] = NULL;
         if ($this->validation->run() == false) {
-            $this->template->write_view('content', 'user/oauth_allow');
-            $this->template->render();
-        } else {
-            if($this->input->post('access') == 'allow') {
-                die('awesome');
+            $request_token = filter_var($this->input->get('request_token'), FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^[0-9a-z]*$/')));
+            // check for a valid request token 
+            if($this->user_admin_model->oauthRequestTokenVerify($request_token)) {
+                $this->session->set_flashdata('request_token', $request_token);
             } else {
-                die('never mind');
+                $view_data['status'] = "invalid";
+            }
+        } else {
+            $request_token = $this->session->flashdata('request_token');
+
+            if($this->input->post('access') == 'allow') {
+                $view_data['status'] = "allow";
+                $oauth_info = $this->user_admin_model->oauthAllow($request_token, $this->session->userdata('ID'));
+                if($oauth_info->callback == "oob") {
+                    // special case, we can't forward the user on so just display verification code
+                    $view_data['verification'] = $oauth_info->verification;
+                } else {
+                    // add our parameter onto the URL
+                    if(strpos($oauth_info->callback, '?' !== false)) {
+                        $url = $oauth_info->callback . '&';
+                    } else {
+                        $url = $oauth_info->callback . '?';
+                    }
+                    $url .= 'oauth_token=' . $oauth_info->verification;
+                    redirect($url);
+                    exit; // we shouldn't be here 
+                }
+            } else {
+                $view_data['status'] = "deny";
+                $this->user_admin_model->oauthDeny($request_token);
             }
         }
+        $this->template->write_view('content', 'user/oauth_allow', $view_data);
+        $this->template->render();
     }
 }
 
