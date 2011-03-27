@@ -253,6 +253,7 @@ Below are the request types that you can make to the API including input and out
 	<ul>
 		<li>event_id: integer, id of the event to add the comment to
 		<li>comment: string, comments to submit
+        <li>source: string, optional source application of comment (defaults to: api)
 	</ul>
 <b class="req_title">Output:</b>
 	<ul>
@@ -430,6 +431,7 @@ results are returned in date order with newest first.<br/>
 		<li>rating: integer, rating to give the talk (range of 1-5)
 		<li>comment: string, comments to submit
 		<li>private: integer, whether to make the comment private or not
+        <li>source: string, optional source application of comment (defaults to: api)
 	</ul>
 <b class="req_title">Output:</b>
 	<ul>

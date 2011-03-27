@@ -77,6 +77,14 @@ class User_admin_model extends Model {
 		$ret=$q->result(); //print_r($ret);
 		return (empty($ret)) ? false : true;
 	}
+
+    public function getPendingPerm($uid,$rid,$rtype){
+		error_log($uid.' - '.$rid.' - '.$rtype);
+        $q=$this->db->get_where('user_admin',array('uid'=>$uid,'rid'=>$rid,'rtype'=>$rtype,'rcode'=>'pending'));
+        $result = $q->result();
+		error_log('result: '.print_r($result,true));
+		return $result;
+    }
 	
 	/**
 	 * Get detail for a given user - their talks and events

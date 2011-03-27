@@ -688,11 +688,6 @@ class Talk extends Controller
                 foreach ($arr as $ak => $av) {
                     $msg .= '[' . $ak . '] => ' . $av . "\n";
                 }
-                @mail(
-                    $this->config->item('email_admin'),
-                    'Comment on talk ' . $id, $msg,
-                    'From: ' . $this->config->item('email_comments')
-                );
 
                 //if its claimed, be sure to send an email to the person to tell them
                 if ($cl) {
@@ -747,7 +742,7 @@ class Talk extends Controller
             'auth'           => $this->auth,
             'claimed'        => $this->talks_model->talkClaimDetail($id),
             'claim_status'   => $claim_status, 'claim_msg' => $claim_msg,
-			'is_claimed'	 => $this->talkSpeakers->isTalkClaimed($id),
+			'is_claimed'	 => $this->talkSpeakers->isTalkClaimed($id,true),
             'speakers'       => $this->talkSpeakers->getSpeakerByTalkId($id),
             'reqkey'         => $reqkey, 'seckey' => buildSecFile($reqkey),
             'user_attending' => ($this->user_attend_model->chkAttend(
@@ -789,6 +784,8 @@ class Talk extends Controller
      */
     function claim($talkId,$claimId=null)
     {
+		$this->load->model('talk_speaker_model','talkSpeaker');
+		
         if (!$this->user_model->isAuth()) {
             redirect('talk/view/'.$talkId);
         }
@@ -799,6 +796,18 @@ class Talk extends Controller
 		// Ie we have no $claimId, look in post for it
 		if($claimId == null){
 			$claimId = $this->input->post('claim_name_select');
+		}
+		
+		if($this->talkSpeaker->isTalkClaimed($talkId)){
+			$errorData = array(
+				'msg' => sprintf('
+					This talk has already been claimed! If you believe
+					this is in error, please contact the please <a style="color:#FFFFFF" href="/event/contact/">contact 
+					this event\'s admins</a>.
+				')
+			);
+			$this->template->write_view('content', 'msg_error', $errorData);
+	        $this->template->render();
 		}
 
 		// look at the claimId (talk_speaker.id) and talkId for a speaker

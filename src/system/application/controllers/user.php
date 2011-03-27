@@ -139,7 +139,7 @@ class User extends Controller
      *
      * @return void
      */
-    function forgot()
+    function forgot($id = null, $request_code = null)
     {
         $this->load->helper('form');
         $this->load->library('validation');
@@ -152,48 +152,67 @@ class User extends Controller
         );
         $rules = array(
             'user'  => 'required|trim|xss_clean',
-            'email' => 'required|trim|xss_clean|valid_email|' .
-                'callback_user_email_match_check'
+            'email' => 'required|trim|xss_clean|valid_email'
         );
         $this->validation->set_rules($rules);
         $this->validation->set_fields($fields);
+
+        // ID and Request code are given?
+        if ($id != null and $request_code != null) {
+            $ret = $this->user_model->getUser($id);
+            if (empty($ret) || strcasecmp($ret[0]->request_code, $request_code)) {
+                // Could not find the user. Maybe already used, maybe a false code
+                $arr['msg'] = "The request code is already used or is invalid.";
+            } else {
+                // Code is ok. Reset this user's password
+
+                //generate the new password...
+                $sel = array_merge(range('a', 'z'), range('A', 'Z'), range(0, 9));
+                shuffle($sel);
+                $pass_len = 10;
+                $pass = '';
+                 $uid = $ret[0]->ID;
+                for ($i = 0; $i < $pass_len; $i++) {
+                    $r = mt_rand(0, count($sel) - 1);
+                    $pass .= $sel[$r];
+                }
+                 $arr = array(
+                    'password' => md5($pass),
+                    'request_code' => null
+
+                 );
+                 $this->user_model->updateUserInfo($uid, $arr);
+
+                // Send the email...
+                $this->sendemail->sendPasswordReset($ret, $pass);
+
+                $arr['msg'] = 'A new password has been sent to your email - ' .
+                    'open it and click on the login link to use the new password';
+            }
+        }
 
         if ($this->validation->run() != false) {
             //reset their password and send it out to the account
             $email = $this->input->post('email');
             $login = $this->input->post('user');
 
-            $ret = null;
-            if (!empty($email)) {
-                $ret = $this->user_model->getUserByEmail($email);
-            } elseif (!empty($login)) {
-                $ret = $this->user_model->getUser($login);
-            }
-
-            if (empty($ret)) {
-                $arr['msg'] = 'You must specify a username and email address!';
-            } else {
-                //generate the new password...
-                $sel = array_merge(range('a', 'z'), range('A', 'Z'), range(0, 9));
-                shuffle($sel);
-                $pass_len = 10;
-                $pass = '';
+            $ret = $this->user_model->getUserByEmail($email);
+            if (! empty($ret) && $ret[0]->username == $login) {
                 $uid = $ret[0]->ID;
-                for ($i = 0; $i < $pass_len; $i++) {
-                    $r = mt_rand(0, count($sel) - 1);
-                    $pass .= $sel[$r];
-                }
+
+                // Generate request code and add to db
+                $request_code = substr(md5(uniqid(true)), 0, 8);
                 $arr = array(
-                    'password' => md5($pass)
+                    'request_code' => $request_code
                 );
                 $this->user_model->updateUserInfo($uid, $arr);
 
-                // Send the email...
-                $this->sendemail->sendPassordReset($ret, $pass);
-
-                $arr['msg'] = 'A new password has been sent to your email - ' .
-                    'open it and click on the login link to use the new password';
+                // Send the activation email...
+                $this->sendemail->sendPasswordResetRequest($ret, $request_code);
             }
+
+            $arr['msg'] = 'If the entered details are correct, instructions on how to reset your password will ' .
+                'be sent to your email - open it and follow the details to reset your password';
         }
 
         $this->template->write_view('content', 'user/forgot', $arr);
@@ -446,7 +465,9 @@ class User extends Controller
             'has_talks' => (count($arr['talks']) == 0) ? false : true
         );
 
-        $this->template->write_view('sidebar2', 'user/_other-speakers', $block);
+        if(!empty($block['content'])){
+			$this->template->write_view('sidebar2', 'user/_other-speakers', $block);
+		}
         $this->template->write_view('content', 'user/view', $arr);
         $this->template->render();
     }

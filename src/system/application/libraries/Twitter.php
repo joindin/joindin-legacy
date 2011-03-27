@@ -4,8 +4,8 @@ class Twitter {
 	
 	var $CI			= null;
 	var $api_url	= 'http://search.twitter.com/search.json?q=';
-	var $blogin		= 'enygmadae';
-	var $bkey		= 'R_2c00b3a60109aba55b7628405fffb570';
+	var $blogin		= 'login';
+	var $bkey		= 'key';
 	
 	function Twitter(){
 		$this->CI=&get_instance();
