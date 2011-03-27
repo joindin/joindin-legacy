@@ -684,6 +684,44 @@ class User extends Controller
         return true;
     }
 
+    /**
+     * Allow users to grant or deny access for an oauth app
+     *
+     * @return void
+     */
+    function oauth_allow()
+    {
+        if (!$this->auth) {
+            redirect('user/login', 'refresh');
+        }
+        $this->load->helper('form');
+        $this->load->helper('url');
+        $this->load->library('validation');
+        $this->load->library('SSL');
+ 
+        $this->ssl->sslRoute();
+ 
+        $fields = array(
+            'access' => 'Permit access?'
+        );
+        $rules = array(
+            'access' => 'required'
+        );
+        $this->validation->set_rules($rules);
+        $this->validation->set_fields($fields);
+ 
+ 
+        if ($this->validation->run() == false) {
+            $this->template->write_view('content', 'user/oauth_allow');
+            $this->template->render();
+        } else {
+            if($this->input->post('access') == 'allow') {
+                die('awesome');
+            } else {
+                die('never mind');
+            }
+        }
+    }
 }
 
 ?>
