@@ -1173,6 +1173,11 @@ class Event extends Controller
             );
             $is_spam  = (string) $def->spam;
 
+			$bypassSpamFilter = $this->input->post('bypass_spam_filter');
+			if($bypassSpamFilter == 1){
+				$is_spam = false;
+			}
+
             if ($is_spam != 'true') {
                 //send the information via email...
                 $subj = 'Event submission from ' .
@@ -1229,7 +1234,8 @@ class Event extends Controller
         } else {
             $this->validation->is_admin = 0;
         }
-        $arr['is_auth'] = $this->user_model->isAuth();
+        $arr['is_auth'] 		= $this->user_model->isAuth();
+		$arr['is_site_admin'] 	= $this->user_model->isSiteAdmin();
 
         $this->template->write_view('content', 'event/submit', $arr);
         $this->template->write_view('sidebar2', 'event/_submit-sidebar', array());
