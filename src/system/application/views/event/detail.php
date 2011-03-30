@@ -48,15 +48,14 @@ $this->load->view('event/modules/_event_tabs',$data);
 <script type="text/javascript">
 (function($) {
 	$(document).ready(function(){
+        $('#event-tabs').joindIn_tabs();
 		<?php if (count($talks) == 0): ?>
-			window.location.hash = '#comments';
-		<?php else: ?>
+			$('a[rel=comments]').click();
+            <?php endif; ?>
 		if (window.location.hash == '#comment-form') {
-			window.location.hash = '#comments';
+			window.location.hash = '#';
+            $('a[rel=comments]').click();
 		}
-		<?php endif; ?>
-		$('#event-tabs').joindIn_tabs();
-		JI_event.init();
 	});
 })(jQuery);
 </script>

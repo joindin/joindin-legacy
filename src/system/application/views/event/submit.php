@@ -12,10 +12,18 @@ menu_pagetitle('Submit an event');
     
     <?php if (!empty($this->validation->error_string)): ?>
             <?php $this->load->view('msg_error', array('msg' => $this->validation->error_string)); ?>
-    <?php endif; ?>
-    
+    <?php endif; ?>    
 
 	<h2>General</h2>
+	
+	<?php if($is_site_admin): ?>
+	<div class="row">
+		<label for="spam_byass">Bypass Spam Filter</label>
+		<?php echo form_checkbox('bypass_spam_filter',1); ?> Check to bypass spam filtering
+		<div class="clear"></div>
+	</div>
+	<?php endif; ?>
+	
     <div class="row">
     	<label for="event_title">Event Title</label>
     	<?php echo form_input(array('name' => 'event_title', 'id' => 'event_title'), $this->validation->event_title); ?>
