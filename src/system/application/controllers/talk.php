@@ -784,13 +784,22 @@ class Talk extends Controller
      */
     function claim($talkId,$claimId=null)
     {
+		if($claimId == null){
+			$claimId = $this->input->post('claim_name_select');
+		}
+	
 		$this->load->model('talk_speaker_model','talkSpeaker');
 		
 		$this->load->model('pending_talk_claims_model','pendingClaims');
 		
 		$this->pendingClaims->addClaim($talkId,$claimId);
 		
+		$this->session->set_flashdata('msg', 'Thanks for claiming this talk! You will be emailed when the claim is approved!');
+		redirect('talk/view/'.$talkId);
+		
 		return false;
+		
+		// OLD CODE IS BELOW......
 		
         if (!$this->user_model->isAuth()) {
             redirect('talk/view/'.$talkId);
