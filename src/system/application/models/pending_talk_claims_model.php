@@ -31,6 +31,7 @@ class Pending_talk_claims_model extends Model
 	public function deleteClaim($claimId)
 	{
 		$this->db->delete('pending_talk_claims',array('ID'=>$claimId));
+		return ($this->db->affected_rows()>0) ? true : false;
 	}
 	
 	/**
@@ -46,7 +47,10 @@ class Pending_talk_claims_model extends Model
 	
 	public function approveClaim($claimId)
 	{
-		$claimDetail 		= $this->getClaimDetail($claimId);		
+		$claimDetail 		= $this->getClaimDetail($claimId);
+		if(!isset($claimDetail[0])){
+			return false;
+		}
 		$talkSpeakerData 	= array(
 			'speaker_id' => $claimDetail[0]->speaker_id
 		);
@@ -56,6 +60,7 @@ class Pending_talk_claims_model extends Model
 		
 		// remove the claim row
 		$this->db->delete('pending_talk_claims',array('ID'=>$claimId));
+		return true;
 	}
 	
 	/**
@@ -70,6 +75,9 @@ class Pending_talk_claims_model extends Model
 		$CI->load->model('event_model','eventModel');
 		
 		$eventTalks = $CI->eventModel->getEventTalks($eventId);
+		if(empty($eventTalks)){
+			return array();
+		}
 		
 		$talkIds = array();
 		foreach($eventTalks as $talk){ $talkIds[] = $talk->ID; }
