@@ -34,7 +34,7 @@ class OAuthModel {
      */
     public function newRequestToken(PDO $db, OAuthProvider $provider, $callback) {
         // bin 2 hex because the binary isn't friendly
-        $request_token = bin2hex($provider->generateToken(3));
+        $request_token = bin2hex($provider->generateToken(4));
         $request_token_secret = bin2hex($provider->generateToken(12));
 
         $sql = 'insert into oauth_request_tokens set '
@@ -44,16 +44,108 @@ class OAuthModel {
             . 'callback = :callback';
         try{
             $stmt = $db->prepare($sql);
-            $stmt->execute(array(
+            $result = $stmt->execute(array(
                 "consumer_key" => $provider->consumer_key,
                 "request_token" => $request_token,
                 "request_token_secret" => $request_token_secret,
                 "callback" => $callback));
-            return array('request_token' => $request_token,
-                'request_token_secret' => $request_token_secret);
+            if($result) {
+                return array('request_token' => $request_token,
+                    'request_token_secret' => $request_token_secret);
+            } else {
+                $error = $stmt->errorInfo();
+                error_log('Error saving request token: ' . $error[2]);
+                return false;
+            }
         } catch(PDOException $e) {
             error_log('Could not insert request token ' . $e->getMessage());
             return false;
         }
     }
+
+    /**
+     * Generate, store and return a new access token to the user
+     * 
+     * @param PDO $db connection to the joind.in db
+     * @param OAuthProvider $provider OAuth provider object
+     * @param string $request_token supplied by the consumer
+     * @param string $verifier supplied by the consumer
+     * @return array containing the access token and secret 
+     */
+    public function newAccessToken(PDO $db, OAuthProvider $provider, $request_token, $verifier) {
+        // bin 2 hex because the binary isn't friendly
+        $access_token = bin2hex($provider->generateToken(8));
+        $access_token_secret = bin2hex($provider->generateToken(16));
+
+        // get request data
+        $request_sql = 'select authorised_user_id as user_id
+            from oauth_request_tokens
+            where request_token = :request_token
+            and verification = :verifier';
+        try {
+            $request_stmt = $db->prepare($request_sql);
+            $request_response = $request_stmt->execute(array(
+                "request_token" => $request_token,
+                "verifier" => $verifier
+                ));
+            $request_data = $request_stmt->fetch();
+            if($request_data) {
+                // now delete this token, we don't need it
+                $delete_sql = 'delete from oauth_request_tokens
+                    where request_token = :request_token';
+                $delete_stmt = $db->prepare($delete_sql);
+                $delete_stmt->execute(array('request_token' => $request_token));
+            } else {
+                error_log('request token not found');
+                return false;
+            }
+        } catch (PDOException $e) {
+            error_log('Could not retrieve/delete request token data ' . $e->getMessage());
+            return false;
+        }
+
+        // store new token
+        $sql = 'insert into oauth_access_tokens set '
+            . 'access_token = :access_token,' 
+            . 'access_token_secret = :access_token_secret,'
+            . 'consumer_key = :consumer_key, '
+            . 'user_id = :user_id';
+        try{
+            $stmt = $db->prepare($sql);
+            $stmt->execute(array(
+                "consumer_key" => $provider->consumer_key,
+                "access_token" => $access_token,
+                "access_token_secret" => $access_token_secret,
+                "user_id" => $request_data['user_id']));
+            return array('oauth_token' => $access_token,
+                'oauth_token_secret' => $access_token_secret);
+        } catch(PDOException $e) {
+            error_log('Could not insert access token ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Fetch the request token secret for this token
+     * 
+     * @param PDO $db the joind.in DB
+     * @param string $token request token supplied by consumer
+     * @return string the token secret
+     */
+    public function getRequestTokenSecretByToken(PDO $db, $token) {
+        $sql = 'select request_token_secret from oauth_request_tokens '
+            . 'where request_token = :token';
+        $stmt = $db->prepare($sql);
+        $response = $stmt->execute(array(
+            ':token' => $token
+            ));
+        if($response) {
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            // just one row needed
+            return $results[0];
+        }
+        return false;
+
+    }
+
 }

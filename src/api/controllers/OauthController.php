@@ -25,13 +25,27 @@ class OauthController {
 
     public function handle($request, $db) {
         $this->setUpOAuthAndDb($db);
-        $tokens = OAuthModel::newRequestToken($db, $this->provider, $request->parameters['oauth_callback']);
-        $retval = array(
-            'request_token' => $tokens['request_token'],
-            'request_token_secret' => $tokens['request_token_secret'],
-            'auth_url' => urlencode('http://' . $request->host . '/v2/oauth/login?request_token=' . $tokens['request_token'])
-        );
-        return $retval;
+        switch($request->url_elements[3]) {
+            case 'request_token':
+                $tokens = OAuthModel::newRequestToken($db, $this->provider, $request->parameters['oauth_callback']);
+                if($tokens) {
+                    // bypass the view handling
+                    echo 'login_url=http://lorna.rivendell.local/user/oauth_allow?' .
+                                         'request_token='.$tokens['request_token'].
+                                         '&request_token_secret='.$tokens['request_token_secret'].
+                                         '&oauth_callback_confirmed=true';
+                }
+                break;
+            case 'access_token':
+                $tokens = OAuthModel::newAccessToken($db, $this->provider, 
+                    $request->parameters['oauth_token'],
+                    $request->parameters['oauth_verifier']);
+                if($tokens) {
+                    echo "oauth_token=" . $tokens['oauth_token'] . '&oauth_token_secret=' . $tokens['oauth_token_secret'];
+                }
+                break;
+        }
+        exit;
     }
 
     /*
@@ -49,8 +63,10 @@ class OauthController {
         return OAUTH_OK;
     }
 
-    public function tokenHandler() {
-        // TODO actually check!
+    public function tokenHandler($provider) {
+        $token = OAuthModel::getRequestTokenSecretByToken($this->db, $provider->token);
+        $provider->token_secret = $token['request_token_secret'];
+
         return OAUTH_OK;
     }
 }
