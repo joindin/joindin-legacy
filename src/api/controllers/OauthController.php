@@ -7,27 +7,12 @@
 
 class OauthController {
 
-    public function setUpOAuthAndDb($db) {
-        $this->db = $db;
-        try {
-            $this->provider = new OAuthProvider();
-            $this->provider->consumerHandler(array($this,'lookupConsumer'));    
-            $this->provider->timestampNonceHandler(array($this,'timestampNonceChecker'));
-            $this->provider->tokenHandler(array($this,'tokenHandler'));
-            $this->provider->setRequestTokenPath('/v2/oauth/request_token');  // No token needed for this end point
-            $this->provider->checkOAuthRequest();
-        } catch (OAuthException $E) {
-            error_log(OAuthProvider::reportProblem($E));
-            return false;
-        }
-        return true;
-    }
-
     public function handle($request, $db) {
-        $this->setUpOAuthAndDb($db);
+        $oauth_model = new OAuthModel();
+        $oauth_model->setUpOAuthAndDb($db);
         switch($request->url_elements[3]) {
             case 'request_token':
-                $tokens = OAuthModel::newRequestToken($db, $this->provider, $request->parameters['oauth_callback']);
+                $tokens = $oauth_model->newRequestToken($db, $request->parameters['oauth_callback']);
                 if($tokens) {
                     // bypass the view handling
                     echo 'login_url=http://lorna.rivendell.local/user/oauth_allow?' .
@@ -37,7 +22,7 @@ class OauthController {
                 }
                 break;
             case 'access_token':
-                $tokens = OAuthModel::newAccessToken($db, $this->provider, 
+                $tokens = $oauth_model->newAccessToken($db, 
                     $request->parameters['oauth_token'],
                     $request->parameters['oauth_verifier']);
                 if($tokens) {
@@ -48,25 +33,4 @@ class OauthController {
         exit;
     }
 
-    /*
-     * need to set $provider->consumer_secret to the stored version, this then gets checked
-     */
-    public function lookupConsumer($provider) {
-        $consumer = OAuthModel::getConsumerSecretByKey($this->db, $provider->consumer_key);
-        $provider->consumer_secret = $consumer['consumer_secret'];
-
-        return OAUTH_OK;
-    }
-   
-    public function timestampNonceChecker() {
-        // TODO actually add some checking
-        return OAUTH_OK;
-    }
-
-    public function tokenHandler($provider) {
-        $token = OAuthModel::getRequestTokenSecretByToken($this->db, $provider->token);
-        $provider->token_secret = $token['request_token_secret'];
-
-        return OAUTH_OK;
-    }
 }

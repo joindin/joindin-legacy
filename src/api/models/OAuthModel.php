@@ -21,21 +21,19 @@ class OAuthModel {
             return $results[0];
         }
         return false;
-
     }
 
     /**
      * generates request token and secret, saves to the database with consumer key, then returns them
      * 
      * @param PDO $db connection to the joind.in database
-     * @param OAuthProvider $provider provider created in the controller
      * @param string $callback where to forward the user to, or "oob" for devices
      * @return array the request_token and request_token secret that were generated and saved
      */
-    public function newRequestToken(PDO $db, OAuthProvider $provider, $callback) {
+    public function newRequestToken(PDO $db, $callback) {
         // bin 2 hex because the binary isn't friendly
-        $request_token = bin2hex($provider->generateToken(4));
-        $request_token_secret = bin2hex($provider->generateToken(12));
+        $request_token = bin2hex($this->provider->generateToken(4));
+        $request_token_secret = bin2hex($this->provider->generateToken(12));
 
         $sql = 'insert into oauth_request_tokens set '
             . 'consumer_key = :consumer_key, '
@@ -45,7 +43,7 @@ class OAuthModel {
         try{
             $stmt = $db->prepare($sql);
             $result = $stmt->execute(array(
-                "consumer_key" => $provider->consumer_key,
+                "consumer_key" => $this->provider->consumer_key,
                 "request_token" => $request_token,
                 "request_token_secret" => $request_token_secret,
                 "callback" => $callback));
@@ -67,15 +65,14 @@ class OAuthModel {
      * Generate, store and return a new access token to the user
      * 
      * @param PDO $db connection to the joind.in db
-     * @param OAuthProvider $provider OAuth provider object
      * @param string $request_token supplied by the consumer
      * @param string $verifier supplied by the consumer
      * @return array containing the access token and secret 
      */
-    public function newAccessToken(PDO $db, OAuthProvider $provider, $request_token, $verifier) {
+    public function newAccessToken(PDO $db, $request_token, $verifier) {
         // bin 2 hex because the binary isn't friendly
-        $access_token = bin2hex($provider->generateToken(8));
-        $access_token_secret = bin2hex($provider->generateToken(16));
+        $access_token = bin2hex($this->provider->generateToken(8));
+        $access_token_secret = bin2hex($this->provider->generateToken(16));
 
         // get request data
         $request_sql = 'select authorised_user_id as user_id
@@ -94,7 +91,7 @@ class OAuthModel {
                 $delete_sql = 'delete from oauth_request_tokens
                     where request_token = :request_token';
                 $delete_stmt = $db->prepare($delete_sql);
-                $delete_stmt->execute(array('request_token' => $request_token));
+                // $delete_stmt->execute(array('request_token' => $request_token));
             } else {
                 error_log('request token not found');
                 return false;
@@ -113,7 +110,7 @@ class OAuthModel {
         try{
             $stmt = $db->prepare($sql);
             $stmt->execute(array(
-                "consumer_key" => $provider->consumer_key,
+                "consumer_key" => $this->provider->consumer_key,
                 "access_token" => $access_token,
                 "access_token_secret" => $access_token_secret,
                 "user_id" => $request_data['user_id']));
@@ -148,4 +145,37 @@ class OAuthModel {
 
     }
 
+    public function setUpOAuthAndDb($db) {
+        $this->db = $db;
+        try {
+            $this->provider = new OAuthProvider();
+            $this->provider->consumerHandler(array($this,'lookupConsumer'));    
+            $this->provider->timestampNonceHandler(array($this,'timestampNonceChecker'));
+            $this->provider->tokenHandler(array($this,'tokenHandler'));
+            $this->provider->setRequestTokenPath('/v2/oauth/request_token');  // No token needed for this end point
+            $this->provider->checkOAuthRequest();
+        } catch (OAuthException $E) {
+            error_log(OAuthProvider::reportProblem($E));
+            return false;
+        }
+        return true;
+    }
+
+    public function lookupConsumer($provider) {
+        $consumer = $this->getConsumerSecretByKey($this->db, $provider->consumer_key);
+        $provider->consumer_secret = $consumer['consumer_secret'];
+
+        return OAUTH_OK;
+    }
+   
+    public function timestampNonceChecker() {
+        // TODO actually add some checking
+        return OAUTH_OK;
+    }
+
+    public function tokenHandler($provider) {
+        $token = $this->getRequestTokenSecretByToken($this->db, $provider->token);
+        $provider->token_secret = $token['request_token_secret'];
+        return OAUTH_OK;
+    }
 }
