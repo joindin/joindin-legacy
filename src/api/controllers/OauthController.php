@@ -17,6 +17,7 @@ class OauthController {
                     // bypass the view handling
                     echo 'login_url=http://lorna.rivendell.local/user/oauth_allow?' .
                                          'request_token='.$tokens['request_token'].
+                                         '&request_token='.$tokens['request_token'].
                                          '&request_token_secret='.$tokens['request_token_secret'].
                                          '&oauth_callback_confirmed=true';
                 }

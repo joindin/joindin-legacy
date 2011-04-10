@@ -79,7 +79,6 @@ if(!isset($request->view)) {
             break;
     }
 }
-// TODO Authenticate: if this is a valid user, add $request->user_id 
 
 if(isset($request->url_elements[1])) {
     // check API version
@@ -91,6 +90,15 @@ if(isset($request->url_elements[1])) {
                     throw new Exception('API version must be specified', 404);
                     break;
     }
+
+    // TODO Authenticate: if this is a valid user, add $request->user_id 
+    if(isset($parameters['oauth_version']) && ($request->url_elements[2] != 'oauth')) {
+        $oauth_model = new OAuthModel();
+        $oauth_model->in_flight = true;
+        $oauth_model->setUpOAuthAndDb($ji_db);
+        $request->user_id = $oauth_model->user_id;
+    }
+
     // Route: call the handle() method of the class with the first URL element
     if(isset($request->url_elements[2])) {
         $class = ucfirst($request->url_elements[2]) . 'Controller';

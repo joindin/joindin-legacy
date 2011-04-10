@@ -91,7 +91,7 @@ class OAuthModel {
                 $delete_sql = 'delete from oauth_request_tokens
                     where request_token = :request_token';
                 $delete_stmt = $db->prepare($delete_sql);
-                // $delete_stmt->execute(array('request_token' => $request_token));
+                $delete_stmt->execute(array('request_token' => $request_token));
             } else {
                 error_log('request token not found');
                 return false;
@@ -145,6 +145,29 @@ class OAuthModel {
 
     }
 
+    /**
+     * Fetch the access token secret for this token
+     * 
+     * @param PDO $db the joind.in DB
+     * @param string $token access token supplied by consumer
+     * @return string the token secret
+     */
+    public function getAccessTokenSecretByToken(PDO $db, $token) {
+        $sql = 'select access_token_secret, user_id from oauth_access_tokens '
+            . 'where access_token = :token';
+        $stmt = $db->prepare($sql);
+        $response = $stmt->execute(array(
+            ':token' => $token
+            ));
+        if($response) {
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            // just one row needed
+            return $results[0];
+        }
+        return false;
+
+    }
+
     public function setUpOAuthAndDb($db) {
         $this->db = $db;
         try {
@@ -174,8 +197,15 @@ class OAuthModel {
     }
 
     public function tokenHandler($provider) {
-        $token = $this->getRequestTokenSecretByToken($this->db, $provider->token);
-        $provider->token_secret = $token['request_token_secret'];
+        if(isset($this->in_flight) && $this->in_flight) {
+            $token = $this->getAccessTokenSecretByToken($this->db, $provider->token);
+            // set the user_id on the object, index.php uses it
+            $this->user_id = $token['user_id'];
+            $provider->token_secret = $token['access_token_secret'];
+        } else {
+            $token = $this->getRequestTokenSecretByToken($this->db, $provider->token);
+            $provider->token_secret = $token['request_token_secret'];
+        }
         return OAUTH_OK;
     }
 }
