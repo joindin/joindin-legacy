@@ -161,7 +161,8 @@ class Event extends Controller
             'reqkey' 		=> $reqkey,
             'seckey' 		=> buildSecFile($reqkey),
 			'total_count' 	=> $total_count,
-			'current_page' 	=> $current_page
+			'current_page' 	=> $current_page,
+			'view_type'		=> $type
             //'admin'	 =>($this->user_model->isAdminEvent($id)) ? true : false
         );
         $this->template->write_view('content', 'event/main', $arr, true);
