@@ -1,7 +1,27 @@
 <?php
 
 class EventController extends ApiController {
-	public function handle($request, $db) {
+    public function handle($request, $db) {
+        // split by verb
+        switch($request->verb) {
+            case 'POST':
+                return $this->postAction($request, $db);
+                break;
+            case 'PUT':
+                return $this->putAction($request, $db);
+                break;
+            default:
+                // use the least destructive working option
+                return $this->getAction($request, $db);
+                break;
+        }
+        // should not end up here
+        return false;
+    }
+
+	public function getAction($request, $db) {
+        $event_id = $this->getItemId($request);
+
         // verbosity
         if(isset($request->parameters['verbose'])
                 && $request->parameters['verbose'] == 'yes') {
@@ -10,10 +30,6 @@ class EventController extends ApiController {
             $verbose = false;
         }
 
-        // event ID
-		if(!empty($request->url_elements[3]) && is_numeric($request->url_elements[3])) {
-            $event_id = (int)$request->url_elements[3];
-		}
         // pagination settings
         $page = $request->parameters['page'];
         $resultsperpage = $request->parameters['resultsperpage'];
@@ -31,7 +47,7 @@ class EventController extends ApiController {
                             break;
             }
         } else {
-            if(isset($event_id)) {
+            if($event_id) {
                 $list = EventModel::getEventById($db, $event_id, $verbose);
             } else {
                 $list = EventModel::getEventList($db, $resultsperpage, $page, $verbose);
