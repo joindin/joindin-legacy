@@ -103,7 +103,6 @@ JI_event = function (){
 		init: function(){
 			$(document).ready(function(){
 				_deleteEventComment();
-				_markAttending();
 				_toggleAttendees();
 				_claimEvent();
 				_toggleEventFieldsets();
