@@ -4,12 +4,12 @@ class EventModel extends ApiModel {
     public static function getDefaultFields() {
         $fields = array(
             'event_id' => 'ID',
-            'event_name' => 'event_name',
-            'event_start' => 'event_start',
-            'event_end' => 'event_end',
-            'event_description' => 'event_desc',
-            'event_href' => 'event_href',
-            'event_icon' => 'event_icon'
+            'name' => 'event_name',
+            'start_date' => 'event_start',
+            'end_date' => 'event_end',
+            'description' => 'event_desc',
+            'href' => 'event_href',
+            'icon' => 'event_icon'
             );
         return $fields;
     }
@@ -17,19 +17,19 @@ class EventModel extends ApiModel {
     public static function getVerboseFields() {
         $fields = array(
             'event_id' => 'ID',
-            'event_name' => 'event_name',
-            'event_start' => 'event_start',
-            'event_end' => 'event_end',
-            'event_description' => 'event_desc',
-            'event_href' => 'event_href',
-            'event_lat' => 'event_lat',
-            'event_long' => 'event_long',
-            'event_tz_cont' => 'event_tz_cont',
-            'event_tz_place' => 'event_tz_place',
-            'event_icon' => 'event_icon',
-            'event_loc' => 'event_location',
-            'event_cfp_start' => 'event_cfp_start',
-            'event_cfp_end' => 'event_cfp_end'
+            'name' => 'event_name',
+            'start_date' => 'event_start',
+            'end_date' => 'event_end',
+            'description' => 'event_desc',
+            'href' => 'event_href',
+            'icon' => 'event_icon',
+            'latitude' => 'event_lat',
+            'longitude' => 'event_long',
+            'tz_continent' => 'event_tz_cont',
+            'tz_place' => 'event_tz_place',
+            'location' => 'event_loc',
+            'cfp_start_date' => 'event_cfp_start',
+            'cfp_end_date' => 'event_cfp_end'
             );
         return $fields;
     }
@@ -37,7 +37,7 @@ class EventModel extends ApiModel {
     public static function getEventById($db, $event_id, $verbose = false) {
         $sql = 'select * from events '
             . 'where active = 1 and '
-            . 'pending = "0" and '
+            . '(pending = 0 or pending is NULL) and '
             . 'ID = :event_id';
         $stmt = $db->prepare($sql);
         $response = $stmt->execute(array(
@@ -52,11 +52,13 @@ class EventModel extends ApiModel {
 
     }
 
-    public static function getEventList($db, $verbose = false) {
+    public static function getEventList($db, $resultsperpage, $page, $verbose = false) {
         $sql = 'select * from events '
             . 'where active = 1 and '
             . 'pending = "0" '
             . 'order by event_start desc';
+        $sql .= static::buildLimit($resultsperpage, $page);
+
         $stmt = $db->prepare($sql);
         $response = $stmt->execute();
         if($response) {
@@ -67,4 +69,12 @@ class EventModel extends ApiModel {
         return false;
     }
 
+    public static function addHyperMedia($list, $host) {
+        // loop again and add links specific to this item
+        foreach($list as $key => $row) {
+            $list[$key]['comments_link'] = 'http://' . $host . '/v2/event/' . $row['event_id'] . '/comment';
+            $list[$key]['talks_link'] = 'http://' . $host . '/v2/event/' . $row['event_id'] . '/talk';
+        }
+        return $list;
+    }
 }

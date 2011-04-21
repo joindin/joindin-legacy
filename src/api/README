@@ -3,10 +3,21 @@ This is the second generation API for joind.in.
 To configure:
  - point a new virtual host at the public directory, one level below this file.
  - symlink database.php in /src/api/ to the database.php in your joind.in installation.
+ - mbstring extension is required.
 
  Examples:
- GET /events
- GET /events/23
- GET /events/23?verbose=yes
- GET /events/15/comments
- GET /events/15/talks
+ GET /v2/event
+ GET /v2/event/23
+ GET /v2/event/23
+ GET /v2/event/15/comment
+ GET /v2/event/15/talk
+
+ Supported URL parameters:
+ verbose=yes (gives more fields in the response)
+ page (a number, used for pagination. Defaults to 1, the first page)
+ resultsperpage (a number, used for pagination. Defaults to 20, if 0 is passed, all results are returned)
+
+To add credentials for a new consumer:
+ - run scripts/generateNewKeys.php (taken entirely from http://toys.lerdorf.com/archives/55-Writing-an-OAuth-Provider-Service.html)
+ - run the resulting SQL against the database
+ - give consumer key and secret to new consumer, and ask them not to check the secret into source control

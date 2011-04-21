@@ -1,7 +1,27 @@
 <?php
 
 class EventController extends ApiController {
-	public function handle($request, $db) {
+    public function handle($request, $db) {
+        // split by verb
+        switch($request->verb) {
+            case 'POST':
+                return $this->postAction($request, $db);
+                break;
+            case 'PUT':
+                return $this->putAction($request, $db);
+                break;
+            default:
+                // use the least destructive working option
+                return $this->getAction($request, $db);
+                break;
+        }
+        // should not end up here
+        return false;
+    }
+
+	public function getAction($request, $db) {
+        $event_id = $this->getItemId($request);
+
         // verbosity
         if(isset($request->parameters['verbose'])
                 && $request->parameters['verbose'] == 'yes') {
@@ -10,28 +30,30 @@ class EventController extends ApiController {
             $verbose = false;
         }
 
-		if(!empty($request->url_elements[2]) && is_numeric($request->url_elements[2])) {
-            $event_id = (int)$request->url_elements[2];
-		}
+        // pagination settings
+        $page = $request->parameters['page'];
+        $resultsperpage = $request->parameters['resultsperpage'];
 
-        if(isset($request->url_elements[3])) {
-            switch($request->url_elements[3]) {
-                case 'talks':
-                            $list = TalkModel::getTalksByEventId($db, $event_id, $verbose);
+        if(isset($request->url_elements[4])) {
+            switch($request->url_elements[4]) {
+                case 'talk':
+                            $list = TalkModel::getTalksByEventId($db, $event_id, $resultsperpage, $page, $verbose);
                             break;
-                case 'comments':
-                            $list = CommentModel::getCommentsByEventId($db, $event_id, $verbose);
+                case 'comment':
+                            $list = EventCommentModel::getEventCommentsByEventId($db, $event_id, $resultsperpage, $page, $verbose);
                             break;
                 default:
                             throw new InvalidArgumentException('Unknown Subrequest', 404);
                             break;
             }
         } else {
-            if(isset($event_id)) {
-                $list = EventModel::getEventById($db, (int)$request->url_elements[2], $verbose);
+            if($event_id) {
+                $list = EventModel::getEventById($db, $event_id, $verbose);
             } else {
-                $list = EventModel::getEventList($db, $verbose);
+                $list = EventModel::getEventList($db, $resultsperpage, $page, $verbose);
             }
+            // add links
+            $list = EventModel::addHypermedia($list, $request->host);
         }
 
         // TODO pagination will be required
