@@ -26,11 +26,6 @@ JI_event = function (){
 		});
 	}
 	
-	var _markAttending = function(){
-		$('#mark-attending').click(function(){
-		})
-	}
-	
 	var _toggleAttendees = function(){
 		var el = this;
 		$('#toggle-attendees').click(function(){
@@ -73,13 +68,50 @@ JI_event = function (){
 		});
 	}
 	
+	var _toggleEventFieldsets = function(){
+		$('a.fieldset-toggle').click(function(){
+			var fieldsetName 	= $(this).attr('id').replace(/-toggle-link/,'');
+			var currentLinkTxt 	= $(this).html();
+			
+			// see what the current visiblity of the fieldset is...
+			fieldObj = $('#'+fieldsetName);
+			
+			if(fieldObj.css('display')=='none'){
+				fieldObj.css('display','block');
+				$(this).html('hide');
+			}else{
+				fieldObj.css('display','none');
+				$(this).html('show');
+			}
+			return false;
+		});
+	}
+	
+	var _hideFieldsets = function(fieldsToHide){
+		$.each($("fieldset[id$='fields']"),function(){
+			$(this).css('display','none');
+		});
+	}
+	
+	var _updateStub = function(){
+		$('#event_stub').bind('keyup',function(){
+			$('#stub_display').html('http://joind.in/event/'+$(this).val());
+		});
+	}
+	
 	return {
 		init: function(){
 			$(document).ready(function(){
 				_deleteEventComment();
-				_markAttending();
 				_toggleAttendees();
 				_claimEvent();
+				_toggleEventFieldsets();
+				_updateStub();
+			});
+		},
+		hideFieldsets: function(fieldsToHide){
+			$(document).ready(function(){
+				_hideFieldsets(fieldsToHide);
 			});
 		}
 	}

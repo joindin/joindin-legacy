@@ -14,13 +14,20 @@ class SendEmail {
 	/**
 	* Generic function for sending emails
 	*/
-	private function _sendEmail($to,$msg,$subj,$from=null){
+	private function _sendEmail($to,$msg,$subj,$from=null,$extra_headers=null){
 		if(!is_array($to)){ $to=array($to); }
 		$from	= ($from) ? $from : $this->_config->item('email_feedback');
 		$to 	= ($this->_config->item('debug_email')) ? array($this->_config->item('debug_email')) : $to;
 
+		$headers = array();
+		if(!empty($extra_headers)){
+			foreach($extra_headers as $header){
+				$headers[]=$header;
+			}
+		}
+
 		foreach($to as $email){
-			mail($email,$subj,$msg,'From: '.$from);
+			mail($email,$subj,$msg,implode("\r\n",$headers));
 		}
 	}
 	//-----------------------
@@ -98,21 +105,36 @@ You can reply directly to them by replying to this email.
 	* Send password reset email to the given user 
 	* (user's email address is looked up by username)
 	*/
-	public function sendPassordReset($user,$pass){
+	public function sendPasswordReset($user,$pass){
 		$to		= $user[0]->email;
-		$subj	= $this->_config->item('site_name') . ' - Password Reset Request';
+		$subj	= $this->_config->item('site_name') . ' - Password Reset';
 		$msg	= sprintf('
 %s,
 
-Someone has requested a password reset for your account on %s.
+Your password has been reset for your account on %s.
 Your new password is below:
 
 %s
 
-Please log in in at %suser/login and reset your password as soon as possible.
+Please log in in at %suser/login and change your password as soon as possible.
 		', $user[0]->username, $this->_config->item('site_name'), $pass, $this->_config->site_url());
 		$this->_sendEmail($to,$msg,$subj);
 	}
+
+    public function sendPasswordResetRequest($user, $request_code) {
+        $to = $user[0]->email;
+        $subj = $this->_config->item('site_name') . ' - Password Reset Requested';
+        $msg = sprintf("
+%s,
+
+Someone has requested a password reset for your account on %s. If this wasn't you, don't worry. Nothing
+has changed. In order to reset your password click on the link below or copy it into your browser:
+
+%suser/forgot/%s/%s
+        ", $user[0]->username, $this->_config->item('site_name'),
+        $this->_config->site_url(), $user[0]->ID, $request_code);
+        $this->_sendEmail($to, $msg, $subj);
+    }
 	
 	/**
 	* Send an email when a user is added to the admin list for an event
@@ -159,27 +181,6 @@ Click here to view it: %stalk/view/%s
 		
 		$to=array($to);
  		$this->_sendEmail($to,$msg,$subj, $this->_config->item('email_comments'));
-	}
-	
-	/**
-	* Sends an email when an event is approved
-	* @param integer $eid Event ID
-	* @param array $evt_detail Details for the event (to save another fetch)
-	* @param array $admin_list Contains the list of admins and their emails
-	*/
-	public function sendEventApproved($eid,$evt_detail,$admin_list){
-		$subj	= 'Submitted Event "'.$evt_detail[0]->event_name.'" Approved!';
-		$from	= 'From:' . $this->_config->item('email_feedback');
-		
-		foreach($admin_list as $k=>$user){
-			$msg = 'The event you submitted "'.$evt_detail[0]->event_name.'" has been approved!'."\n";
-			$msg.='You can now manage the event here: ' . $this->_config->site_url() . 'event/view/'.$eid."\n\n";
-			$msg.='If you need some help getting started with managing your event, try our '."\n";
-			$msg.='helpful Event Admin Cheat Sheet! ' . $this->_config->site_url() . 'about/evt_admin';
-			
-			$to=array($user->email);
-			$this->_sendEmail($to,$msg,$subj);
-		}
 	}
 	
 	/**
@@ -265,6 +266,37 @@ be logged in to get to the \"Claims\" page for the event!
 		error_log('inside: '.$message);
 	
 		$this->_sendEmail($to,$message,$subject);
+	}
+	
+	public function sendEventApproved($event_detail,$admin_list){
+		$subject 	= 'The event "'.$event_detail->event_name.'" has been approved!';
+		$event_url 	= $this->_config->site_url().'event/view/'.$event_detail->ID;
+		
+		$msg 		= sprintf('
+			<img src="%s/inc/img/logo.gif" width="150"/>
+			<br/>
+			<b>%s</b> has been submitted to Joind.in and has been approved! You can see the event listing here: <a href="%s">%s</a>.
+			<br/><br/>
+			If you\'re not the one that submitted the event, it was probably a fan of the event who wanted it to be listed. Either way, thanks for having the event and we\'re glad to have it on Joind.in!
+			<br/><br/>
+			If you are the contact for the event and would like to be added as an event administrator, please visit the event listing and click the "Claim Event" button.
+			<br/><br/>
+			Please let us know if you have any questions about Joind.in, please don\'t hesitate to let us know!
+			<br/></br>
+			The Joind.in Team<br/>
+			info@joind.in
+		',$this->_config->site_url(),$event_detail->event_name,$event_url,$event_url);
+		
+		$headers = array(
+			'Content-Type: text/html; charset=ISO-8859-1',
+			'From: '.$this->_config->item('email_feedback')
+		);
+
+		// Send to each event admin...
+		foreach($admin_list as $k=>$user){
+			$this->_sendEmail(array($user->email),$msg,$subject,null,$headers);
+		}
+
 	}
 }
 ?>

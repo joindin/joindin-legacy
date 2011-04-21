@@ -161,11 +161,15 @@ class Event extends Controller
             'reqkey' 		=> $reqkey,
             'seckey' 		=> buildSecFile($reqkey),
 			'total_count' 	=> $total_count,
-			'current_page' 	=> $current_page
+			'current_page' 	=> $current_page,
+			'view_type'		=> $type
             //'admin'	 =>($this->user_model->isAdminEvent($id)) ? true : false
         );
-
         $this->template->write_view('content', 'event/main', $arr, true);
+
+		$events 	= $this->event_model->getCurrentCfp();
+		$this->template->parse_view('sidebar2','event/_event-cfp-sidebar',array('events'=>$events));
+
         $this->template->render();
     }
 
@@ -294,7 +298,9 @@ class Event extends Controller
             'event_tz_place' => 'required',
             'start_mo'       => 'callback_start_mo_check',
             'end_mo'         => 'callback_end_mo_check',
-            'event_stub'     => 'callback_stub_check'
+            'event_stub'     => 'callback_stub_check',
+			'cfp_end_mo'	 => 'callback_cfp_end_mo_check',
+			'cfp_start_mo'	 => 'callback_cfp_start_mo_check'
         );
         $this->validation->set_rules($rules);
 
@@ -306,7 +312,7 @@ class Event extends Controller
             'end_mo'         => 'End Month',
             'end_day'        => 'End Day',
             'end_yr'         => 'End Year',
-            'event_loc'      => 'Event Location',
+            'event_loc'      => 'Event Venue Name',
             'event_lat'      => 'Latitude',
             'event_long'     => 'Longitude',
             'event_desc'     => 'Event Description',
@@ -315,7 +321,13 @@ class Event extends Controller
             'event_href'     => 'Event Link(s)',
             'event_hashtag'  => 'Event Hashtag',
             'event_private'  => 'Private Event',
-            'event_stub'     => 'Event Stub'
+            'event_stub'     => 'Event Stub',
+			'cfp_start_mo'	 => 'Event Call for Papers Start Date',
+			'cfp_start_day'	 => 'Event Call for Papers Start Date',
+			'cfp_start_yr'	 => 'Event Call for Papers Start Date',
+			'cfp_end_mo'	 => 'Event Call for Papers End Date',
+			'cfp_end_day'	 => 'Event Call for Papers End Date',
+			'cfp_end_yr'	 => 'Event Call for Papers End Date',
         );
         $this->validation->set_fields($fields);
 
@@ -333,6 +345,9 @@ class Event extends Controller
                 if (date('Y', $event_detail[0]->event_end) < $min_end_yr) {
                     $min_end_yr = date('Y', $event_detail[0]->event_end);
                 }
+
+				$this->validation->event_cfp_start 	= $event_detail[0]->event_cfp_start;
+				$this->validation->event_cfp_end 	= $event_detail[0]->event_cfp_end;
 
                 foreach ($event_detail[0] as $k => $v) {
                     if ($k == 'event_start') {
@@ -384,7 +399,35 @@ class Event extends Controller
                     }
                 }
                 $this->validation->event_private = $event_detail[0]->private;
+				$this->validation->cfp_checked = ($event_detail[0]->event_cfp_start!=null && $event_detail[0]->event_cfp_end!=null) ? true : false;
+				
+				if($this->input->post('is_cfp')==null && $id == null){
+					$this->validation->event_cfp_start 	= time();
+					$this->validation->event_cfp_end 	= time();
+					
+				}elseif($this->input->post('is_cfp')=='1'){
+					$this->validation->cfp_checked 		= true;
+					$this->validation->event_cfp_end 	= mktime(
+						0,0,0,
+						$this->input->post('cfp_end_mo'),
+						$this->input->post('cfp_end_day'),
+						$this->input->post('cfp_end_yr')
+					);
+					$this->validation->event_cfp_start 	= mktime(
+						0,0,0,
+						$this->input->post('cfp_start_mo'),
+						$this->input->post('cfp_start_day'),
+						$this->input->post('cfp_start_yr')
+					);
+				}
             }
+
+			// be sure that the image for the event actually exists
+			$eventIconPath = $_SERVER['DOCUMENT_ROOT'] . '/inc/img/event_icons/'.$event_detail[0]->event_icon;
+			if(!is_file($eventIconPath)){
+				$event_detail[0]->event_icon = 'none.gif';
+			}
+
 
             $arr = array(
                 'detail'       => $event_detail,
@@ -426,7 +469,32 @@ class Event extends Controller
                 'event_stub'     => $this->input->post('event_stub'),
                 'event_contact_name'  => $this->input->post('event_contact_name'),
                 'event_contact_email' => $this->input->post('event_contact_email'),
+				'event_cfp_url'	 => $this->input->post('cfp_url')
             );
+		
+			$is_cfp = $this->input->post('is_cfp');
+			if($is_cfp){
+				$arr['event_cfp_start']	= mktime(
+					0,0,0,
+					$this->input->post('cfp_start_mo'),
+					$this->input->post('cfp_start_day'),
+					$this->input->post('cfp_start_yr')
+				);
+				$arr['event_cfp_end']	= mktime(
+					0,0,0,
+					$this->input->post('cfp_end_mo'),
+					$this->input->post('cfp_end_day'),
+					$this->input->post('cfp_end_yr')
+				);
+				$this->validation->cfp_checked		= true;
+				$this->validation->event_cfp_end 	= $arr['event_cfp_end'];
+				$this->validation->event_cfp_start 	= $arr['event_cfp_start'];
+			}else{
+				// it's empty, remove any values
+				$arr['event_cfp_start'] = null;
+				$arr['event_cfp_end']	= null;
+				$arr['event_cfp_url']	= null;
+			}
 
             if ($this->upload->do_upload('event_icon')) {
                 $updata            = $this->upload->data();
@@ -443,6 +511,11 @@ class Event extends Controller
                 $id = $this->db->insert_id();
             }
 
+			if(!$is_cfp){
+				$this->validation->event_cfp_start 	= time();
+				$this->validation->event_cfp_end 	= time();
+			}
+			
             $arr = array(
                 'msg'          => 'Data saved! <a href="/event/view/' . $id .
                     '">View event</a>',
@@ -490,6 +563,7 @@ class Event extends Controller
         $this->load->helper('form');
         $this->load->helper('reqkey');
         $this->load->helper('events');
+        $this->load->helper('tabs');
         $this->load->library('validation');
         $this->load->library('defensio');
         $this->load->library('spam');
@@ -503,6 +577,7 @@ class Event extends Controller
         $this->load->model('talk_comments_model', 'tcm');
         $this->load->model('user_admin_model', 'uadm');
         $this->load->model('talks_model');
+		$this->load->model('Pending_talk_claims_model','pendingTalkClaims');
 
         // validate user input (id)
         if (!ctype_digit((string)$id)) {
@@ -634,10 +709,12 @@ class Event extends Controller
             'latest_comment' => $this->event_model->getLatestComment($id),
             'admins'         => $evt_admins,
             'tracks'         => $this->etm->getEventTracks($id),
-            'talk_stats'     => $talk_stats
+            'talk_stats'     => $talk_stats,
+			'tab'			 => ''
             //'started'=>$this->tz->hasEvtStarted($id),
         );
 
+        $tabList = array('talks','comments','statistics', 'evt_related', 'slides', 'tracks');
         if ($opt == 'track') {
             $arr['track_filter'] = $opt_id;
             $arr['track_data']   = null;
@@ -646,7 +723,9 @@ class Event extends Controller
                     $arr['track_data'] = $tr;
                 }
             }
-        }
+        } elseif (in_array(strtolower($opt), $tabList)) {
+			$arr['tab'] = strtolower($opt);
+		}
 
         //our event comment form
         $rules = array(
@@ -763,7 +842,8 @@ class Event extends Controller
                     'is_private'  => $events[0]->private,
                     'evt_admin'   => $this->event_model->getEventAdmins($id),
                     'claim_count' => count(
-                        $this->uadm->getPendingClaim_TalkSpeaker($id)
+						$this->pendingTalkClaims->getEventTalkClaims($id)
+                        //$this->uadm->getPendingClaim_TalkSpeaker($id)
                     )
                 )
             );
@@ -1096,6 +1176,11 @@ class Event extends Controller
             );
             $is_spam  = (string) $def->spam;
 
+			$bypassSpamFilter = $this->input->post('bypass_spam_filter');
+			if($bypassSpamFilter == 1){
+				$is_spam = false;
+			}
+
             if ($is_spam != 'true') {
                 //send the information via email...
                 $subj = 'Event submission from ' .
@@ -1152,7 +1237,8 @@ class Event extends Controller
         } else {
             $this->validation->is_admin = 0;
         }
-        $arr['is_auth'] = $this->user_model->isAuth();
+        $arr['is_auth'] 		= $this->user_model->isAuth();
+		$arr['is_site_admin'] 	= $this->user_model->isSiteAdmin();
 
         $this->template->write_view('content', 'event/submit', $arr);
         $this->template->write_view('sidebar2', 'event/_submit-sidebar', array());
@@ -1224,7 +1310,7 @@ class Event extends Controller
 				);
 			}
 
-            $this->sendemail->sendEventApproved($id, $evt_detail, $admin_list);
+            $this->sendemail->sendEventApproved($evt_detail[0], $admin_list);
         }
 
         // Finally, redirect back to the event!
@@ -1251,54 +1337,47 @@ class Event extends Controller
 
         $this->load->model('user_admin_model', 'userAdmin');
 		$this->load->model('event_model','eventModel');
+		$this->load->model('pending_talk_claims_model','pendingClaimsModel');
         $this->load->helper('events_helper');
         $this->load->library('sendemail');
 
+		$newClaims = $this->pendingClaimsModel->getEventTalkClaims($id);
+
         $claim = $this->input->post('claim');
         $sub   = $this->input->post('sub');
+		$msg   = array();
 
-        $msg = array();
-        $claims = array();
-        foreach ($this->userAdmin->getPendingClaims('talk', $id) as $claim_data) {
-            $claims[$claim_data->ua_id] = $claim_data;
-        }
-        $approved = 0;
-        $denied   = 0;
+		// look at each claim submitted and approve/deny them
+		if($claim){
+			$approved 	= 0;
+			$denied		= 0;
 
-        // If we have claims to process...
-        if ($claim && count($claim) > 0 && isset($sub)) {
-            foreach ($claim as $talkSpeakerId => $status) {
-				switch(strtolower($status)){
-					case 'approve':
-						// update it from "pending"
-						$this->db->where('ID',$talkSpeakerId);
-						$this->db->update('talk_speaker',array('status'=>null));
-						$approved++;
-						break;
-					case 'deny':
-						// update it to remove claim and set back to null
-						$this->db->where('ID',$talkSpeakerId);
-						$this->db->update('talk_speaker',array('speaker_id'=>null,'status'=>null));
-						$denied++;
-						break;
-					default:
-						// do nothing, leave the claim alone
+			foreach($claim as $claimId => $claimStatus){
+				if($claimStatus=='approve'){
+					$approveCheck = $this->pendingClaimsModel->approveClaim($claimId);
+					if($approveCheck){ $approved++; }
+				}elseif($claimStatus=='deny'){
+					// delete the claim row
+					$denyCheck = $this->pendingClaimsModel->deleteClaim($claimId);
+					if($denyCheck){ $denied++; }
 				}
-            }
-        }
-        if ($approved > 0) {
-            $msg[] = $approved . 'claim approved';
-        }
-        if ($denied > 0) {
-            $msg[] = $denied . '  claim denied';
-        }
-        $msg = implode(',', $msg);
+			}
+			if($approved>0){ $msg[] = $approved.' claim(s) approved'; }
+			if($denied>0){ $msg[] = $denied.' claims(s) denied'; }
+		}
+
+		if(count($msg)>0){
+			$msg = implode(',', $msg);
+			// refresh the list
+			$newClaims = $this->pendingClaimsModel->getEventTalkClaims($id);
+		}
 
         // Data to pass out to the view
         $arr = array(
-            'claims' => $this->userAdmin->getPendingClaims('talk', $id),
-            'eid'    => $id,
-            'msg'    => $msg,
+            'claims' 	=> $this->userAdmin->getPendingClaims('talk', $id),
+			'newClaims' => $newClaims,
+            'eventId'   => $id,
+            'msg'    	=> $msg,
 			'event_detail' => $this->eventModel->getEventDetail($id)
         );
 
@@ -1331,14 +1410,12 @@ class Event extends Controller
                 switch (strtolower($claim)) {
                 case 'approve':
                     // approve the claim
-                    echo 'approve';
                     $this->uam->updatePerm(
                         $uam_key, array('rcode' => '')
                     );
                     break;
                 case 'deny':
                     // deny the claim - delete it!
-                    echo 'deny';
                     $this->uam->removePerm($uam_key);
                     break;
                 }
@@ -1893,6 +1970,17 @@ class Event extends Controller
 
         return true;
     }
+
+	public function callforpapers($eventId)
+	{	
+		$this->load->model('event_model','eventModel');
+		
+		$arr = array();
+		$arr['current_cfp'] = $this->eventModel->getCurrentCfp();
+		
+		$this->template->write_view('content', 'event/callforpapers', $arr);
+        $this->template->render();
+	}
 }
 
 ?>
