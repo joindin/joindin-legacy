@@ -1971,7 +1971,7 @@ class Event extends Controller
         return true;
     }
 
-	public function callforpapers($eventId)
+	public function callforpapers($eventId=null)
 	{	
 		$this->load->model('event_model','eventModel');
 		
