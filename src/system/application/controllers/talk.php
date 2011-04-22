@@ -686,7 +686,7 @@ class Talk extends Controller
 
                 //send an email when a comment's made
                 $msg = '';
-                $arr['spam'] = ($ret == 'false') ? 'spam' : 'not spam';
+                $arr['spam'] = ($is_spam == 'false') ? 'spam' : 'not spam';
                 foreach ($arr as $ak => $av) {
                     $msg .= '[' . $ak . '] => ' . $av . "\n";
                 }
