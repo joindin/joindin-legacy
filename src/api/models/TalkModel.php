@@ -10,7 +10,7 @@ class TalkModel extends ApiModel {
         return $fields;
     }
 
-    public static function getTalksByEventId($db, $event_id, $verbose = false) {
+    public static function getTalksByEventId($db, $event_id, $resultsperpage, $page, $verbose = false) {
         $sql = 'select * from talks '
             . 'where active = 1 and '
             . 'event_id = :event_id';
@@ -26,4 +26,12 @@ class TalkModel extends ApiModel {
         return false;
     }
 
+    public static function addHyperMedia($list, $host) {
+        // loop again and add links specific to this item
+        foreach($list as $key => $row) {
+            $list[$key]['uri'] = 'http://' . $host . '/v2/talks/' . $row['talk_id'];
+            $list[$key]['comments_link'] = 'http://' . $host . '/v2/talks/' . $row['talk_id'] . '/comments';
+        }
+        return $list;
+    }
 }

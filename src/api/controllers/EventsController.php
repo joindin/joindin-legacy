@@ -1,6 +1,6 @@
 <?php
 
-class EventController extends ApiController {
+class EventsController extends ApiController {
     public function handle($request, $db) {
         // split by verb
         switch($request->verb) {
@@ -36,10 +36,11 @@ class EventController extends ApiController {
 
         if(isset($request->url_elements[4])) {
             switch($request->url_elements[4]) {
-                case 'talk':
+                case 'talks':
                             $list = TalkModel::getTalksByEventId($db, $event_id, $resultsperpage, $page, $verbose);
+                            $list = TalkModel::addHypermedia($list, $request->host);
                             break;
-                case 'comment':
+                case 'comments':
                             $list = EventCommentModel::getEventCommentsByEventId($db, $event_id, $resultsperpage, $page, $verbose);
                             break;
                 default:
