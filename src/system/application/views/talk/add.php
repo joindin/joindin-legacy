@@ -123,10 +123,10 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
 		$stype=null;
 		if(isset($this->validation->session_type)){
 			foreach($cat_list as $categoryId => $categoryName){
-				if($categoryName==$this->validation->session_type){ $stype=$categoryId; }
+				if($categoryId==$this->validation->session_type){ $sessionType=$categoryId; }
 			}
-		}else{ $stype=$this->validation->session_type; }
-		echo form_dropdown('session_type',$cat_list,$stype); 
+		}else{ $sessionType=$this->validation->session_type; }
+		echo form_dropdown('session_type',$cat_list,$sessionType); 
 	?>
 	<div class="clear"></div>
     </div>
