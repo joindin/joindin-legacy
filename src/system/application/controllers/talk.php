@@ -224,7 +224,7 @@ class Talk extends Controller
                 $this->validation->given_mo . '-' .
                 $this->validation->given_day;
 
-            $this->validation->session_lang = $thisTalk->lang_name;
+            $this->validation->session_lang = $thisTalk->lang_id;
             $this->validation->session_type = $thisTalk->tcid;
         } else {
             $events         = $this->event_model->getEventDetail($eid);
