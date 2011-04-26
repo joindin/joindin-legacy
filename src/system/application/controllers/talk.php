@@ -393,9 +393,7 @@ class Talk extends Controller
 					redirect('talk/view/' . $tc_id);
 				}
             }
-        }else{ 
-			echo 'here';
-		}
+        }
 
         $det = $this->talks_model->setDisplayFields($det);
         $out = array(
