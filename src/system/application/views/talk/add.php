@@ -120,7 +120,8 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
     <div class="row">
 	<label for="session_type">Session Type</label>
 	<?php
-		$stype=null;
+		$stype			= null;
+		$sessionType 	= null;
 		if(isset($this->validation->session_type)){
 			foreach($cat_list as $categoryId => $categoryName){
 				if($categoryId==$this->validation->session_type){ $sessionType=$categoryId; }
