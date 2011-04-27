@@ -179,6 +179,16 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
 	?>
 	<div class="clear"></div>
     </div>
+
+	<div class="row">
+		<label for="tagged_with">Tagged with</label>
+		<?php echo form_input('tagged_with',$this->validation->tagged_with); ?>
+		<span style="color:#3567AC;font-size:11px">
+			Tags should be in a <b>comma seperated</b> list
+		</span>
+		<div class="clear"></div>
+	</div>
+
     <div class="row">
 	<label for="slides_link">Slides Link</label>
 	<td><?php echo form_input('slides_link',$this->validation->slides_link); ?></td>

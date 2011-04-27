@@ -155,7 +155,8 @@ class Talk extends Controller
             'talk_desc'    => 'Talk Description',
             'session_type' => 'Session Type',
             'session_lang' => 'Session Language',
-			'session_track' => 'Session Track'
+			'session_track' => 'Session Track',
+			'tagged_with'  => 'Tagged With'
         );
         $this->validation->set_rules($rules);
         $this->validation->set_fields($fields);
