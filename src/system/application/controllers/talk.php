@@ -224,7 +224,7 @@ class Talk extends Controller
                 $this->validation->given_mo . '-' .
                 $this->validation->given_day;
 
-            $this->validation->session_lang = $thisTalk->lang_name;
+            $this->validation->session_lang = $thisTalk->lang_id;
             $this->validation->session_type = $thisTalk->tcid;
         } else {
             $events         = $this->event_model->getEventDetail($eid);
@@ -686,7 +686,7 @@ class Talk extends Controller
 
                 //send an email when a comment's made
                 $msg = '';
-                $arr['spam'] = ($ret == 'false') ? 'spam' : 'not spam';
+                $arr['spam'] = ($is_spam == 'false') ? 'spam' : 'not spam';
                 foreach ($arr as $ak => $av) {
                     $msg .= '[' . $ak . '] => ' . $av . "\n";
                 }
