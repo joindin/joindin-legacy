@@ -18,7 +18,6 @@ class Pending_talk_claims_model extends Model
 			'speaker_id' 	=> $this->session->userdata('ID'),
 			'date_added' 	=> time()
 		);
-		var_dump($data);
 		$this->db->insert('pending_talk_claims',$data);
 	}
 	
