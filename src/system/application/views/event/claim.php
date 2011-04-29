@@ -18,9 +18,9 @@ claim the session. You can then accept/deny based on any match between them.
 	$this->load->view('msg_info', array('msg' => $msg));
 } ?>
 
-<?php echo form_open('event/claim/'.$eid); ?>
+<?php echo form_open('event/claim/'.$eventId); ?>
 <div class="box">
-	<a href="/event/view/<?php echo $eid; ?>">Back to event</a>
+	<a href="/event/view/<?php echo $eventId; ?>">Back to event</a>
 	<div class="row">
 	<table cellpadding="0" cellspacing="0" border="0" id="claims_table">
 	<tr>
@@ -30,27 +30,31 @@ claim the session. You can then accept/deny based on any match between them.
 		<td><b>Speaker</b></td>
 		<td><b>Claiming User</b></td>
 	</tr>
-	<?php
-		foreach($claims as $k=>$claim): ?>
+	<?php foreach($newClaims as $k=>$claim): ?>
 		<tr>
-			<td align="center"><?php echo form_radio('claim['.$claim->ID.']','approve'); ?></td>
-			<td align="center"><?php echo form_radio('claim['.$claim->ID.']','deny'); ?></td>
+			<td align="center"><?php echo form_radio(array(
+				'name' 	=> 'claim['.$claim->pending_claim_id.']',
+				'value' => 'approve',
+				'id'	=> 'talkid-'.$claim->talk_id.'-'.$claim->ID.'-approve'
+			)); ?></td>
+			<td align="center"><?php echo form_radio(array(
+				'name' 	=> 'claim['.$claim->pending_claim_id.']',
+				'value' => 'deny',
+				'id'	=> 'talkid-'.$claim->talk_id.'-'.$claim->ID.'-deny'
+			)); ?></td>
 			<td>
-				<?php echo '<a href="/talk/view/'.$claim->talk_id.'">'.$claim->talk_title.'</a>'; ?><br/>
-				<span style="font-size:9px">@<?php echo $claim->event_name; ?></span>
+				<a href="/talk/view/<?php echo $claim->talk_id; ?>"><?php echo $claim->talk_title; ?></a>
 			</td>
-			<td><?php 
+			<td>
+				<?php
 				$speakers = array();
-				foreach($claim->speakers as $speaker){ 
-					if($speaker->ID==$claim->ID){
-						$speakers[]='<b>'.$speaker->speaker_name.'</b>';
-					}else{
-						$speakers[]=$speaker->speaker_name;
-					}
+				foreach($claim->claim_detail as $detail){
+					$speakers[] = $detail->speaker_name;
 				}
-				echo implode(', ',$speakers); 
-			?></td>
-			<td><?php echo '<a href="/user/view/'.$claim->user_id.'">'.$claim->claiming_name.'</a>'; ?></td>
+				echo implode(', ',$speakers);
+				?>
+			</td>
+			<td><?php echo '<a href="/user/view/'.$claim->speaker_id.'">'.$claim->full_name.'</a>'; ?></td>
 		</tr>
 		<?php endforeach; ?>
 	</table>
@@ -60,3 +64,26 @@ claim the session. You can then accept/deny based on any match between them.
 	</div>
 </div>
 <?php echo form_close(); ?>
+
+<script type="text/javascript">
+
+$("input[name^='claim']").click(function(){
+	console.log('test: '+this.id+' '+this.value);
+	
+	var idParts 		= this.id.split('-');
+	var clickedRadio 	= this;
+	var clickedValue	= this.value;
+	var matchId 		= idParts[0]+'-'+idParts[1];
+
+	(clickedValue=='approve') ? alt = 'deny' : alt = 'approve';
+	$("input[id^='"+matchId+"'][id$='"+alt+"']").each(function(){
+		// see if the current selection is the opposite of the clickedRadio
+		if(this.id != matchId+'-'+idParts[2]+'-'+alt){
+			$(this).attr('checked',true);
+		}
+	});
+	return true;
+
+});
+
+</script>

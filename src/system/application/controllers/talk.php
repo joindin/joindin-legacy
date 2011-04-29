@@ -224,7 +224,7 @@ class Talk extends Controller
                 $this->validation->given_mo . '-' .
                 $this->validation->given_day;
 
-            $this->validation->session_lang = $thisTalk->lang_name;
+            $this->validation->session_lang = $thisTalk->lang_id;
             $this->validation->session_type = $thisTalk->tcid;
         } else {
             $events         = $this->event_model->getEventDetail($eid);
@@ -393,7 +393,7 @@ class Talk extends Controller
 					redirect('talk/view/' . $tc_id);
 				}
             }
-        }
+        } 
 
         $det = $this->talks_model->setDisplayFields($det);
         $out = array(
@@ -684,7 +684,7 @@ class Talk extends Controller
 
                 //send an email when a comment's made
                 $msg = '';
-                $arr['spam'] = ($ret == 'false') ? 'spam' : 'not spam';
+                $arr['spam'] = ($is_spam == 'false') ? 'spam' : 'not spam';
                 foreach ($arr as $ak => $av) {
                     $msg .= '[' . $ak . '] => ' . $av . "\n";
                 }
@@ -784,7 +784,22 @@ class Talk extends Controller
      */
     function claim($talkId,$claimId=null)
     {
+		if($claimId == null){
+			$claimId = $this->input->post('claim_name_select');
+		}
+	
 		$this->load->model('talk_speaker_model','talkSpeaker');
+		
+		$this->load->model('pending_talk_claims_model','pendingClaims');
+		
+		$this->pendingClaims->addClaim($talkId,$claimId);
+		
+		$this->session->set_flashdata('msg', 'Thanks for claiming this talk! You will be emailed when the claim is approved!');
+		redirect('talk/view/'.$talkId);
+		
+		return false;
+		
+		// OLD CODE IS BELOW......
 		
         if (!$this->user_model->isAuth()) {
             redirect('talk/view/'.$talkId);

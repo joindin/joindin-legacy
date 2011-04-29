@@ -161,7 +161,8 @@ class Event extends Controller
             'reqkey' 		=> $reqkey,
             'seckey' 		=> buildSecFile($reqkey),
 			'total_count' 	=> $total_count,
-			'current_page' 	=> $current_page
+			'current_page' 	=> $current_page,
+			'view_type'		=> $type
             //'admin'	 =>($this->user_model->isAdminEvent($id)) ? true : false
         );
         $this->template->write_view('content', 'event/main', $arr, true);
@@ -576,6 +577,7 @@ class Event extends Controller
         $this->load->model('talk_comments_model', 'tcm');
         $this->load->model('user_admin_model', 'uadm');
         $this->load->model('talks_model');
+		$this->load->model('Pending_talk_claims_model','pendingTalkClaims');
 
         // validate user input (id)
         if (!ctype_digit((string)$id)) {
@@ -840,7 +842,8 @@ class Event extends Controller
                     'is_private'  => $events[0]->private,
                     'evt_admin'   => $this->event_model->getEventAdmins($id),
                     'claim_count' => count(
-                        $this->uadm->getPendingClaim_TalkSpeaker($id)
+						$this->pendingTalkClaims->getEventTalkClaims($id)
+                        //$this->uadm->getPendingClaim_TalkSpeaker($id)
                     )
                 )
             );
@@ -1334,55 +1337,47 @@ class Event extends Controller
 
         $this->load->model('user_admin_model', 'userAdmin');
 		$this->load->model('event_model','eventModel');
+		$this->load->model('pending_talk_claims_model','pendingClaimsModel');
         $this->load->helper('events_helper');
         $this->load->library('sendemail');
 
+		$newClaims = $this->pendingClaimsModel->getEventTalkClaims($id);
+
         $claim = $this->input->post('claim');
         $sub   = $this->input->post('sub');
+		$msg   = array();
 
-        $msg = array();
-        $claims = array();
-        foreach ($this->userAdmin->getPendingClaims('talk', $id) as $claim_data) {
-			if(!isset($claim_data->ua_id)){ continue; }
-            $claims[$claim_data->ua_id] = $claim_data;
-        }
-        $approved = 0;
-        $denied   = 0;
+		// look at each claim submitted and approve/deny them
+		if($claim){
+			$approved 	= 0;
+			$denied		= 0;
 
-        // If we have claims to process...
-        if ($claim && count($claim) > 0 && isset($sub)) {
-            foreach ($claim as $talkSpeakerId => $status) {
-				switch(strtolower($status)){
-					case 'approve':
-						// update it from "pending"
-						$this->db->where('ID',$talkSpeakerId);
-						$this->db->update('talk_speaker',array('status'=>null));
-						$approved++;
-						break;
-					case 'deny':
-						// update it to remove claim and set back to null
-						$this->db->where('ID',$talkSpeakerId);
-						$this->db->update('talk_speaker',array('speaker_id'=>null,'status'=>null));
-						$denied++;
-						break;
-					default:
-						// do nothing, leave the claim alone
+			foreach($claim as $claimId => $claimStatus){
+				if($claimStatus=='approve'){
+					$approveCheck = $this->pendingClaimsModel->approveClaim($claimId);
+					if($approveCheck){ $approved++; }
+				}elseif($claimStatus=='deny'){
+					// delete the claim row
+					$denyCheck = $this->pendingClaimsModel->deleteClaim($claimId);
+					if($denyCheck){ $denied++; }
 				}
-            }
-        }
-        if ($approved > 0) {
-            $msg[] = $approved . ' claim approved';
-        }
-        if ($denied > 0) {
-            $msg[] = $denied . '  claim denied';
-        }
-        $msg = implode(',', $msg);
+			}
+			if($approved>0){ $msg[] = $approved.' claim(s) approved'; }
+			if($denied>0){ $msg[] = $denied.' claims(s) denied'; }
+		}
+
+		if(count($msg)>0){
+			$msg = implode(',', $msg);
+			// refresh the list
+			$newClaims = $this->pendingClaimsModel->getEventTalkClaims($id);
+		}
 
         // Data to pass out to the view
         $arr = array(
-            'claims' => $this->userAdmin->getPendingClaims('talk', $id),
-            'eid'    => $id,
-            'msg'    => $msg,
+            'claims' 	=> $this->userAdmin->getPendingClaims('talk', $id),
+			'newClaims' => $newClaims,
+            'eventId'   => $id,
+            'msg'    	=> $msg,
 			'event_detail' => $this->eventModel->getEventDetail($id)
         );
 
@@ -1976,7 +1971,7 @@ class Event extends Controller
         return true;
     }
 
-	public function callforpapers($eventId)
+	public function callforpapers($eventId=null)
 	{	
 		$this->load->model('event_model','eventModel');
 		
