@@ -28,6 +28,9 @@ class EventModelTest extends PHPUnit_Framework_TestCase
 	{
 		$eventId 	= 100;
 		$detail 	= $this->ci->event_model->getEventDetail($eventId);
+		if (!is_array($detail) || count($detail) == 0) {
+			$this->markTestSkipped("Suitable event not in DB");
+		}
 		$this->assertEquals($eventId,$detail[0]->ID);
 	}
 	
@@ -43,6 +46,9 @@ class EventModelTest extends PHPUnit_Framework_TestCase
 			->having('count(id)>1');
 		
 		$result 	= $this->ci->db->get()->result();
+		if (!is_array($result) || count($result) == 0) {
+			$this->markTestSkipped("Suitable event not in DB");
+		}
 		$eventId 	= $result[0]->event_id;
 		
 		$talkDetail = $this->ci->event_model->getEventTalks($eventId);
@@ -61,6 +67,9 @@ class EventModelTest extends PHPUnit_Framework_TestCase
 			->join('talk_cat','talks.id=talk_cat.talk_id')
 			->where('cat_id',$eventRelatedCat);
 		$result = $this->ci->db->get()->result();
+		if (!is_array($result) || count($result) == 0) {
+			$this->markTestSkipped("Suitable event not in DB");
+		}
 		$eventId = $result[0]->event_id;
 
 		// look through the results and see if there's one that matches, if so - fail
