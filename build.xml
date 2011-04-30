@@ -91,4 +91,9 @@
  </target>
 
  <target name="build" depends="clean,parallelTasks,phpunit,phpcb"/>
+
+ <target name="launch">
+  <exec executable="src/scripts/jenkinslaunch.sh" />
+ </target>
+
 </project>
