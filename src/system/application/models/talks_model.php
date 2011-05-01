@@ -137,6 +137,7 @@ class Talks_model extends Model {
 					events.private,
 					lang.lang_name,
 					lang.lang_abbr,
+					lang.id as lang_id,
 					count(talk_comments.ID) as ccount,
 					%s
 					(select 

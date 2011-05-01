@@ -1,4 +1,4 @@
-<?php 
+<?php
 $this->load->helper('text');
 $this->load->library('timezone');
 ?>
@@ -32,6 +32,10 @@ $this->load->library('timezone');
 			<?php endif; ?>
 		<?php endif ?>
 		</div>
+		<?php if(isset($view_type) && $view_type=='pending'): ?>
+		<a style="color:#00C934;text-decoration:none;font-weight:bold;font-size:11px" href="/event/approve/<?php echo $event->ID ?>">APPROVE</a> -
+		<a style="color:#D6000E;text-decoration:none;font-weight:bold;font-size:11px" href="/event/delete/<?php echo $event->ID ?>">DENY</a>
+		<?php endif; ?>
 	</div>
 	<div class="clear"></div>
 </div>

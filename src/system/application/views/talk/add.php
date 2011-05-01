@@ -120,13 +120,14 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
     <div class="row">
 	<label for="session_type">Session Type</label>
 	<?php
-		$stype=null;
+		$stype			= null;
+		$sessionType 	= null;
 		if(isset($this->validation->session_type)){
 			foreach($cat_list as $categoryId => $categoryName){
-				if($categoryName==$this->validation->session_type){ $stype=$categoryId; }
+				if($categoryId==$this->validation->session_type){ $sessionType=$categoryId; }
 			}
-		}else{ $stype=$this->validation->session_type; }
-		echo form_dropdown('session_type',$cat_list,$stype); 
+		}else{ $sessionType=$this->validation->session_type; }
+		echo form_dropdown('session_type',$cat_list,$sessionType); 
 	?>
 	<div class="clear"></div>
     </div>
@@ -146,12 +147,21 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
     <div class="row">
 	<label for="session_lang">Session Language</label>
 	<?php
-		$slang=null;
+		$slang 		= null;
+		$useDefault = (empty($this->validation->session_lang)) ? 'English - US' : null;
+		
 		if(isset($this->validation->session_lang)){
 			foreach($lang_list as $langId => $langText){
-				if($langId==$this->validation->session_lang){ $slang=$langId; }
+				if($langId == $this->validation->session_lang){ 
+					$slang = $langId; 
+				}else{
+					//see if we should use our default & if this is it
+					if($useDefault != null && $langText == $useDefault){
+						$slang = $langId;
+					}
+				}
 			}
-		}else{ $slang=$this->validation->session_lang; }
+		}else{ $slang = $this->validation->session_lang; }
 		echo form_dropdown('session_lang',$lang_list,$slang); 
 	?>
 	<div class="clear"></div>
