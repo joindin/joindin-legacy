@@ -247,7 +247,7 @@ class Talks_model extends Model {
 		$q=$this->db->query($sql);
 		$comments=$q->result();
 		foreach($comments as $k=>$comment){
-			$comments[$k]->gravatar=$this->gravatar->displayUserImage($comment->user_id,true);
+			$comments[$k]->gravatar=$this->gravatar->displayUserImage($comment->user_id, null, 45);
 		}
 		return $comments;
 	}

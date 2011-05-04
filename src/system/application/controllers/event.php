@@ -587,13 +587,6 @@ class Event extends Controller
         $events     = $this->event_model->getEventDetail($id);
         $evt_admins = $this->event_model->getEventAdmins($id);
 
-        // see if the admins have gravatars
-        foreach ($evt_admins as $k => $admin) {
-            if ($img = $this->gravatar->displayUserImage($admin->ID, true)) {
-                $evt_admins[$k]->gravatar = $img;
-            }
-        }
-
         if ($events[0]->private == 'Y') {
             $this->load->model('invite_list_model', 'ilm');
 
@@ -823,13 +816,13 @@ class Event extends Controller
 
         $this->template->write('feedurl', '/feed/event/' . $id);
 
+		$this->gravatar->decorateUsers($attend, 20); // Add 20px gravatar info to $attend
+
         if (count($attend) > 0) {
             $this->template->write_view(
                 'sidebar3',
                 'event/_event_attend_gravatar', array(
                     'attend_list'        => $attend,
-                    'gravatar_cache_dir' => $this->config->item('gravatar_cache_dir'),
-					'gravatar_cache_relative_url' => $this->config->item('gravatar_cache_relative_url')
                 )
             );
         }

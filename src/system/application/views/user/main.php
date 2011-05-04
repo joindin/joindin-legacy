@@ -28,12 +28,11 @@ if (!empty($msg)):
 <?php endif; ?>
 
 <?php if($gravatar): ?>
-	<?php echo str_replace('/>',' style="margin-bottom:5px"/>',$gravatar).'<br/>'; ?>
-	<a href="/user/refresh_gravatar" class="btn-small">refresh image</a><br/><br/>
+	<img src="<?php echo $gravatar; ?>" style="margin-bottom:5px" height="80" width="80" /><br/>
 <?php endif; ?>
 
 <div class="box">
-    <h2>MyTalks</h2>
+    <h2>My Talks</h2>
 <?php if (count($talks) == 0): ?>
 	<p>No talks so far</p>
 <?php else: ?>
