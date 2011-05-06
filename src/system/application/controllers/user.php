@@ -401,7 +401,7 @@ class User extends Controller
             redirect();
         }
 
-		$imgStr = $this->gravatar->displayUserImage($uid, $details['email'], 80);
+		$imgStr = $this->gravatar->displayUserImage($uid, $details[0]->email, 80);
 
         if (empty($details[0])) {
             redirect();
