@@ -233,7 +233,7 @@ class Event extends Controller
      */
     function past($current_page = null)
     {
-        $this->_runList('past', $pending, 10, $current_page);
+        $this->_runList('past', false, 10, $current_page);
     }
 
     /**
