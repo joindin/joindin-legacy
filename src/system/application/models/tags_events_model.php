@@ -18,12 +18,21 @@ class Tags_events_model extends Model
 	 */
 	public function addTag($eventId,$tagValue)
 	{
-		// see if it's already in use
-		$tagDetail = $this->isTagInUse($tagValue);
+		// check to see if the tag exists first...
+		if($tagRecordId = $this->isTagInUse($tagValue)){
+			// if it exists, just use the tag ID to link
+			$tagId = $tagRecordId->id;
+		}else{
+			// if not we need to add it to the "Tags" table too
+			$CI = &get_instance();
+			$CI->load->model('tags_model','tagsModel');
+			
+			$tagId = $ci->tagsModel->addTag($tagValue);
+		}
 		
-			
-		$this->db->insert('tags_events',array(
-			
+		$this->db->insert('tags_talks',array(
+			'event_id' 	=> $talkId,
+			'tag_id'	=> $tagId
 		));
 		return $this->db->insert_id();
 	}
@@ -39,7 +48,11 @@ class Tags_events_model extends Model
 	 */
 	public function removeTag($eventId,$tagId=null)
 	{
-		
+		$where = array('event_id' => $eventId);
+		if($tagId != null){
+			$where['ID'] = $tagId;
+		}
+		$this->db->delete('tags_events',$where);
 	}
 	
 	/**
