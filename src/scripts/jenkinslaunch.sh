@@ -11,8 +11,7 @@ mkdir -p $TARGET \
 && mv $TARGET/src/inc/img/event_icons $TARGET/src/inc/img/event_icons.removed \
 && ln -s $TARGETBASE/tmp/event_icons $TARGET/src/inc/img/event_icons \
 && ln -s $TARGET $TARGETBASE/www.new \
-&& $TARGET/src/scripts/patchdb.sh \
+&& $TARGET/src/scripts/patchdb.sh joindin \
 && mv -Tf $TARGETBASE/www.new $TARGETBASE/www
 "
-
 
