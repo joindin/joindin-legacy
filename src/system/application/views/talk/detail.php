@@ -1,5 +1,4 @@
 <?php
-error_reporting(E_ALL);
 
 menu_pagetitle('Talk: ' . escape($detail->talk_title));
 
