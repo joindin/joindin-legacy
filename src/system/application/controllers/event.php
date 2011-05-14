@@ -233,7 +233,9 @@ class Event extends Controller
      */
     function past($current_page = null)
     {
-        $this->_runList('past', false, 10, $current_page);
+        // Don't display pending "past" events
+        $pending = false;
+        $this->_runList('past', $pending, 10, $current_page);
     }
 
     /**
@@ -420,14 +422,13 @@ class Event extends Controller
 						$this->input->post('cfp_start_yr')
 					);
 				}
+
+				// be sure that the image for the event actually exists
+				$eventIconPath = $_SERVER['DOCUMENT_ROOT'] . '/inc/img/event_icons/'.$event_detail[0]->event_icon;
+				if(!is_file($eventIconPath)){
+					$event_detail[0]->event_icon = 'none.gif';
+				}
             }
-
-			// be sure that the image for the event actually exists
-			$eventIconPath = $_SERVER['DOCUMENT_ROOT'] . '/inc/img/event_icons/'.$event_detail[0]->event_icon;
-			if(!is_file($eventIconPath)){
-				$event_detail[0]->event_icon = 'none.gif';
-			}
-
 
             $arr = array(
                 'detail'       => $event_detail,
