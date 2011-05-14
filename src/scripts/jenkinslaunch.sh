@@ -1,7 +1,7 @@
 #!/bin/bash
 TARGETBASE=/var/www/joind.in
 TARGET=${TARGETBASE}/${BUILD_NUMBER}
-LAUNCHREF=remotes/magicmonkey/ci-tools
+LAUNCHREF=remotes/origin/master
 
 sg web -c "
 mkdir -p $TARGET \
