@@ -10,6 +10,10 @@ $title[] = $this->config->item('site_name');
 
 	<link media="all" rel="stylesheet" type="text/css" href="/inc/css/jquery-ui/theme/ui.all.css"/>
 	<link media="all" rel="stylesheet" type="text/css" href="/inc/css/site.css"/>
+
+    <script type="text/javascript" src="/inc/js/datepicker.js"></script>
+    <link href="/inc/css/datepicker.css" rel="stylesheet" type="text/css" />
+
 	
 	
 	<?php if($css){ ?>
