@@ -8,8 +8,8 @@ $title[] = $this->config->item('site_name');
 ?>
 	<title><?php echo implode(' - ', $title); ?></title>
 	<link media="all" rel="stylesheet" type="text/css" href="/inc/css/site.css"/>
-	<link media="all" rel="stylesheet" type="text/css" href="/inc/css/jquery-ui/theme/ui.all.css"/>
 	<link media="all" rel="stylesheet" type="text/css" href="/inc/css/jquery-ui/jquery-ui-1.7.3.custom.css"/>
+	<link media="all" rel="stylesheet" type="text/css" href="/inc/css/jquery-ui/theme/ui.all.css"/>
 
 	
 	
