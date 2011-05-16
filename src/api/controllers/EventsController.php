@@ -2,20 +2,10 @@
 
 class EventsController extends ApiController {
     public function handle($request, $db) {
-        // split by verb
-        switch($request->verb) {
-            case 'POST':
-                return $this->postAction($request, $db);
-                break;
-            case 'PUT':
-                return $this->putAction($request, $db);
-                break;
-            default:
-                // use the least destructive working option
-                return $this->getAction($request, $db);
-                break;
+        // only GET is implemented so far
+        if($request->verb == 'GET') {
+            return $this->getAction($request, $db);
         }
-        // should not end up here
         return false;
     }
 

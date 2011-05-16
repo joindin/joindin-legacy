@@ -11,4 +11,24 @@ abstract class ApiController {
 		}
         return false;
     }
+
+    public function getVerbosity($request) {
+        // verbosity
+        if(isset($request->parameters['verbose'])
+                && $request->parameters['verbose'] == 'yes') {
+            $verbose = true;
+        } else {
+            $verbose = false;
+        }
+        return $verbose;
+    }
+
+    public function getPageNumber($request) {
+        return (int)$request->parameters['page'];
+         
+    }
+    
+    public function getResultsPerPage($request) {
+        return (int)$request->parameters['resultsperpage'];
+    }
 }
