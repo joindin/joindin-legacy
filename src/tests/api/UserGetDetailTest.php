@@ -1,5 +1,7 @@
 <?php
 
+require_once 'ApiTestBase.php';
+
 class UserGetDetail extends ApiTestBase {
 		public function assertExpectedFields($res) {
 			$this->assertEquals(1, count($res), 'Only one matching user should be returned');

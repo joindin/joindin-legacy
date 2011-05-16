@@ -137,6 +137,7 @@ class Talks_model extends Model {
 					events.private,
 					lang.lang_name,
 					lang.lang_abbr,
+					lang.id as lang_id,
 					count(talk_comments.ID) as ccount,
 					%s
 					(select 
@@ -246,7 +247,7 @@ class Talks_model extends Model {
 		$q=$this->db->query($sql);
 		$comments=$q->result();
 		foreach($comments as $k=>$comment){
-			$comments[$k]->gravatar=$this->gravatar->displayUserImage($comment->user_id,true);
+			$comments[$k]->gravatar=$this->gravatar->displayUserImage($comment->user_id, null, 45);
 		}
 		return $comments;
 	}
