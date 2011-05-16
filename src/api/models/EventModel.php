@@ -52,12 +52,13 @@ class EventModel extends ApiModel {
 
     }
 
-    public static function getEventList($db, $resultsperpage, $page, $verbose = false) {
+    public static function getEventList($db, $resultsperpage, $start, $verbose = false) {
         $sql = 'select * from events '
             . 'where active = 1 and '
-            . 'pending = "0" '
+            . 'pending = "0" and '
+            . 'private <> "y" '
             . 'order by event_start desc';
-        $sql .= static::buildLimit($resultsperpage, $page);
+        $sql .= static::buildLimit($resultsperpage, $start);
 
         $stmt = $db->prepare($sql);
         $response = $stmt->execute();
@@ -71,9 +72,13 @@ class EventModel extends ApiModel {
 
     public static function addHyperMedia($list, $host) {
         // loop again and add links specific to this item
-        foreach($list as $key => $row) {
-            $list[$key]['comments_link'] = 'http://' . $host . '/v2/event/' . $row['event_id'] . '/comment';
-            $list[$key]['talks_link'] = 'http://' . $host . '/v2/event/' . $row['event_id'] . '/talk';
+        if(is_array($list) && count($list)) {
+            foreach($list as $key => $row) {
+                $list[$key]['uri'] = 'http://' . $host . '/v2/events/' . $row['event_id'];
+                $list[$key]['verbose_uri'] = 'http://' . $host . '/v2/events/' . $row['event_id'] . '?verbose=yes';
+                $list[$key]['comments_link'] = 'http://' . $host . '/v2/events/' . $row['event_id'] . '/comments';
+                $list[$key]['talks_link'] = 'http://' . $host . '/v2/events/' . $row['event_id'] . '/talks';
+            }
         }
         return $list;
     }

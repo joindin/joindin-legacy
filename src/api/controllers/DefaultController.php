@@ -5,8 +5,7 @@ class DefaultController {
         $retval = array();
 
         // just add the available methods, with links
-        $retval['events'] = 'http://' . $request->host . '/v2/event';
-        $retval['talks'] = 'http://' . $request->host . '/v2/talk';
+        $retval['events'] = 'http://' . $request->host . '/v2/events';
 
         return $retval;
 	}

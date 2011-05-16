@@ -19,10 +19,6 @@ class ApiModel {
                 // special handling for dates
                 if(substr($key, -5) == '_date' && !empty($row[$value])) {
                     $entry[$key] = date('c', $row[$value]);
-                    /*
-                } elseif($value == 'talk_title') {
-                    var_dump($row[$value]);
-                    */
                 } else {
                     $entry[$key] = mb_convert_encoding($row[$value], 'UTF-8');
                 }
@@ -32,13 +28,13 @@ class ApiModel {
         return $retval;
     }
 
-    protected static function buildLimit($resultsperpage, $page) {
+    protected static function buildLimit($resultsperpage, $start) {
         if($resultsperpage == 0) {
             // special case, no limits
             $limit = '';
         } else {
             $limit = ' LIMIT '
-                . $resultsperpage * ($page - 1) . ','
+                . $start . ','
                 . $resultsperpage;
         }
         return $limit;

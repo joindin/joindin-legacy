@@ -6,15 +6,15 @@ To configure:
  - mbstring extension is required.
 
  Examples:
- GET /v2/event
- GET /v2/event/23
- GET /v2/event/23
- GET /v2/event/15/comment
- GET /v2/event/15/talk
+ GET /v2/events
+ GET /v2/events/23
+ GET /v2/events/23
+ GET /v2/events/15/comment
+ GET /v2/events/15/talk
 
  Supported URL parameters:
  verbose=yes (gives more fields in the response)
- page (a number, used for pagination. Defaults to 1, the first page)
+ start (a number, used for pagination.  Resultset will start this many records into the set, defaults to 0)
  resultsperpage (a number, used for pagination. Defaults to 20, if 0 is passed, all results are returned)
 
 To add credentials for a new consumer:
