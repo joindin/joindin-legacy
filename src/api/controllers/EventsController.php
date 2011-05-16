@@ -13,25 +13,20 @@ class EventsController extends ApiController {
         $event_id = $this->getItemId($request);
 
         // verbosity
-        if(isset($request->parameters['verbose'])
-                && $request->parameters['verbose'] == 'yes') {
-            $verbose = true;
-        } else {
-            $verbose = false;
-        }
+        $verbose = $this->getVerbosity($request);
 
         // pagination settings
-        $page = $request->parameters['page'];
-        $resultsperpage = $request->parameters['resultsperpage'];
+        $start = $this->getStart($request);
+        $resultsperpage = $this->getResultsPerPage($request);
 
         if(isset($request->url_elements[4])) {
             switch($request->url_elements[4]) {
                 case 'talks':
-                            $list = TalkModel::getTalksByEventId($db, $event_id, $resultsperpage, $page, $verbose);
+                            $list = TalkModel::getTalksByEventId($db, $event_id, $resultsperpage, $start, $verbose);
                             $list = TalkModel::addHypermedia($list, $request->host);
                             break;
                 case 'comments':
-                            $list = EventCommentModel::getEventCommentsByEventId($db, $event_id, $resultsperpage, $page, $verbose);
+                            $list = EventCommentModel::getEventCommentsByEventId($db, $event_id, $resultsperpage, $start, $verbose);
                             break;
                 default:
                             throw new InvalidArgumentException('Unknown Subrequest', 404);
@@ -41,7 +36,7 @@ class EventsController extends ApiController {
             if($event_id) {
                 $list = EventModel::getEventById($db, $event_id, $verbose);
             } else {
-                $list = EventModel::getEventList($db, $resultsperpage, $page, $verbose);
+                $list = EventModel::getEventList($db, $resultsperpage, $start, $verbose);
             }
             // add links
             $list = EventModel::addHypermedia($list, $request->host);

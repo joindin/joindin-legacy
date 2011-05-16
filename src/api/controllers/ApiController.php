@@ -23,8 +23,8 @@ abstract class ApiController {
         return $verbose;
     }
 
-    public function getPageNumber($request) {
-        return (int)$request->parameters['page'];
+    public function getStart($request) {
+        return (int)$request->parameters['start'];
          
     }
     

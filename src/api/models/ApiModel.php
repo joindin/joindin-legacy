@@ -28,13 +28,13 @@ class ApiModel {
         return $retval;
     }
 
-    protected static function buildLimit($resultsperpage, $page) {
+    protected static function buildLimit($resultsperpage, $start) {
         if($resultsperpage == 0) {
             // special case, no limits
             $limit = '';
         } else {
             $limit = ' LIMIT '
-                . $resultsperpage * ($page - 1) . ','
+                . $start . ','
                 . $resultsperpage;
         }
         return $limit;

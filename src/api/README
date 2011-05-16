@@ -14,7 +14,7 @@ To configure:
 
  Supported URL parameters:
  verbose=yes (gives more fields in the response)
- page (a number, used for pagination. Defaults to 1, the first page)
+ start (a number, used for pagination.  Resultset will start this many records into the set, defaults to 0)
  resultsperpage (a number, used for pagination. Defaults to 20, if 0 is passed, all results are returned)
 
 To add credentials for a new consumer:

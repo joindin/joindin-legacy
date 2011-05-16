@@ -16,9 +16,11 @@ class TalksController extends ApiController {
         // verbosity
         $verbose = $this->getVerbosity($request);
 
+        /*
         // pagination settings
-        $page = $this->getPageNumber($request);
+        $start = $this->getStart($request);
         $resultsperpage = $this->getResultsPerPage($request);
+        */
 
         if(isset($request->url_elements[4])) {
             // sub elements

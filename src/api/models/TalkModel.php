@@ -24,7 +24,7 @@ class TalkModel extends ApiModel {
             );
         return $fields;
     }
-    public static function getTalksByEventId($db, $event_id, $resultsperpage, $page, $verbose = false) {
+    public static function getTalksByEventId($db, $event_id, $resultsperpage, $start, $verbose = false) {
         $sql = 'select t.* from talks t '
             . 'inner join events e on e.ID = t.event_id '
             . 'where t.active = 1 and '
@@ -32,7 +32,7 @@ class TalkModel extends ApiModel {
             . 'e.active = 1 and '
             . 'e.pending = 0 and '
             . 'e.private <> "y"';
-        $sql .= static::buildLimit($resultsperpage, $page);
+        $sql .= static::buildLimit($resultsperpage, $start);
 
         $stmt = $db->prepare($sql);
         $response = $stmt->execute(array(
