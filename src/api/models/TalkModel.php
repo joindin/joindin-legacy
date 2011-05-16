@@ -7,7 +7,8 @@ class TalkModel extends ApiModel {
             'event_id' => 'event_id',
             'talk_title' => 'talk_title',
             'talk_description' => 'talk_desc',
-            'start_date' => 'date_given'
+            'start_date' => 'date_given',
+            'speaker_name' => 'speaker_name'
             );
         return $fields;
     }
@@ -19,19 +20,15 @@ class TalkModel extends ApiModel {
             'talk_title' => 'talk_title',
             'talk_description' => 'talk_desc',
             'slides_link' => 'slides_link',
-            'language' => 'lang',
-            'start_date' => 'date_given'
+            'language' => 'lang_name',
+            'start_date' => 'date_given',
+            'speaker_name' => 'speaker_name'
             );
         return $fields;
     }
     public static function getTalksByEventId($db, $event_id, $resultsperpage, $start, $verbose = false) {
-        $sql = 'select t.* from talks t '
-            . 'inner join events e on e.ID = t.event_id '
-            . 'where t.active = 1 and '
-            . 't.event_id = :event_id and '
-            . 'e.active = 1 and '
-            . 'e.pending = 0 and '
-            . 'e.private <> "y"';
+        $sql = static::getBasicSQL();
+        $sql .= ' and t.event_id = :event_id';
         $sql .= static::buildLimit($resultsperpage, $start);
 
         $stmt = $db->prepare($sql);
@@ -48,7 +45,7 @@ class TalkModel extends ApiModel {
 
     public static function addHyperMedia($list, $host) {
         // loop again and add links specific to this item
-        if(count($list)) {
+        if(is_array($list) && count($list)) {
             foreach($list as $key => $row) {
                 $list[$key]['uri'] = 'http://' . $host . '/v2/talks/' . $row['talk_id'];
                 $list[$key]['verbose_uri'] = 'http://' . $host . '/v2/talks/' . $row['talk_id'] . '?verbose=yes';
@@ -61,10 +58,8 @@ class TalkModel extends ApiModel {
     }
 
     public static function getTalkById($db, $talk_id, $verbose = false) {
-        $sql = 'select * from talks t '
-            . 'where t.active = 1 and '
-            . 'ID = :talk_id';
-
+        $sql = static::getBasicSQL();
+        $sql .= ' and t.ID = :talk_id';
         $stmt = $db->prepare($sql);
         $response = $stmt->execute(array("talk_id" => $talk_id));
         if($response) {
@@ -73,5 +68,18 @@ class TalkModel extends ApiModel {
             return $retval;
         }
         return false;
+    }
+
+    public function getBasicSQL() {
+        $sql = 'select t.*, l.lang_name, ts.speaker_name from talks t '
+            . 'inner join events e on e.ID = t.event_id '
+            . 'inner join lang l on l.ID = t.lang '
+            . 'left join talk_speaker ts on ts.talk_id = t.ID '
+            . 'where t.active = 1 and '
+            . 'e.active = 1 and '
+            . 'e.pending = 0 and '
+            . 'e.private <> "y"';
+        return $sql;
+
     }
 }

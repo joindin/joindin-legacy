@@ -72,7 +72,7 @@ class EventModel extends ApiModel {
 
     public static function addHyperMedia($list, $host) {
         // loop again and add links specific to this item
-        if(count($list)) {
+        if(is_array($list) && count($list)) {
             foreach($list as $key => $row) {
                 $list[$key]['uri'] = 'http://' . $host . '/v2/events/' . $row['event_id'];
                 $list[$key]['verbose_uri'] = 'http://' . $host . '/v2/events/' . $row['event_id'] . '?verbose=yes';
