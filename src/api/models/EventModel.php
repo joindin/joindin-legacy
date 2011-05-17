@@ -55,7 +55,7 @@ class EventModel extends ApiModel {
     public static function getEventList($db, $resultsperpage, $start, $verbose = false) {
         $sql = 'select * from events '
             . 'where active = 1 and '
-            . 'pending = "0" and '
+            . '(pending = 0 or pending is NULL) and '
             . 'private <> "y" '
             . 'order by event_start desc';
         $sql .= static::buildLimit($resultsperpage, $start);
