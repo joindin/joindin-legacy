@@ -6,3 +6,6 @@ access_token_secret varchar(32) NOT NULL,
 user_id int,
 created_date timestamp DEFAULT CURRENT_TIMESTAMP,
 last_used_date datetime);
+
+INSERT INTO patch_history SET patch_number = 25;
+
