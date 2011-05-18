@@ -148,7 +148,7 @@ $title[] = $this->config->item('site_name');
             		</div>
             	</div>
 				<div class="box" align="center">
-					a href="http://www.combell.com/en"><img src="/inc/img/LOGO-COMBELL.png" border="0" style="padding-bottom:5px"></a><br/>
+					<a href="http://www.combell.com/en"><img src="/inc/img/LOGO-COMBELL.png" border="0" style="padding-bottom:5px"></a><br/>
 					<a href="http://www.combell.com/en/servers/cloud-server">Cloud server</a> <a href="http://www.combell.com/en">hosting</a> by Combell
 				</div>
             	<?php endif; ?>
