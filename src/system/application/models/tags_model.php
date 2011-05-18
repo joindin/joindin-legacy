@@ -16,12 +16,11 @@ class Tags_model extends Model
 	 */
 	public function tagExists($tagValue)
 	{
-		$result = $this->db->select('tags',array(
+		$result = $this->db->get_where('tags',array(
 			'tag_value' => $tagValue
 		))->result();
 		
-		var_dump($result);
-		return false;
+		return (empty($result)) ? false : true;
 	}
 	
 	/**
@@ -42,6 +41,11 @@ class Tags_model extends Model
 			));
 			return $this->db->insert_id();
 		}
+	}
+	
+	public function removeTag()
+	{
+		
 	}
 }
 

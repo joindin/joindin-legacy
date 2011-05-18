@@ -101,6 +101,13 @@ echo '<h2>'.$title.'</h2>';
     </div>
     <div class="clear"></div>
 	<div class="row">
+	<label for="event_icon">Tagged with:</label>
+	<?php
+		echo form_input('tagged',$this->validation->tagged);
+	?>
+	</div>
+    <div class="clear"></div>
+	<div class="row">
 	<label for="event_icon">Is the event private?</label>
 	<?php
 		$ev_y=($this->validation->event_private=='Y') ? true : false;

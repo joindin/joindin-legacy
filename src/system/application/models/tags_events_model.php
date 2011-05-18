@@ -18,6 +18,17 @@ class Tags_events_model extends Model
 	 */
 	public function addTag($eventId,$tagValue)
 	{
+		// normalize
+		$tagValue = trim(strtolower($tagValue));
+		
+		// see if we already have the tag for this event
+		$hasTag = (bool)$this->db->get_where('tags_events',array(
+			'event_id' => $eventId,
+			'tag'
+		))->result();
+		var_dump($hasTag);
+		die();
+		
 		// check to see if the tag exists first...
 		if($tagRecordId = $this->isTagInUse($tagValue)){
 			// if it exists, just use the tag ID to link
@@ -27,11 +38,11 @@ class Tags_events_model extends Model
 			$CI = &get_instance();
 			$CI->load->model('tags_model','tagsModel');
 			
-			$tagId = $ci->tagsModel->addTag($tagValue);
+			$tagId = $CI->tagsModel->addTag(trim($tagValue));
 		}
 		
-		$this->db->insert('tags_talks',array(
-			'event_id' 	=> $talkId,
+		$this->db->insert('tags_events',array(
+			'event_id' 	=> $eventId,
 			'tag_id'	=> $tagId
 		));
 		return $this->db->insert_id();

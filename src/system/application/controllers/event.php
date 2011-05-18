@@ -281,6 +281,7 @@ class Event extends Controller
         $this->load->library('validation');
         $this->load->library('timezone');
         $this->load->model('event_model');
+		$this->load->model('tags_events_model','tagsEvents');
 
         $config = array(
           'upload_path'   => $_SERVER['DOCUMENT_ROOT'] . '/inc/img/event_icons',
@@ -328,6 +329,7 @@ class Event extends Controller
 			'cfp_end_mo'	 => 'Event Call for Papers End Date',
 			'cfp_end_day'	 => 'Event Call for Papers End Date',
 			'cfp_end_yr'	 => 'Event Call for Papers End Date',
+			'tagged'		 => 'Tagged With'
         );
         $this->validation->set_fields($fields);
 
@@ -500,6 +502,13 @@ class Event extends Controller
                 $updata            = $this->upload->data();
                 $arr['event_icon'] = $updata['file_name'];
             }
+
+			// see if we have tags
+			$tags = $this->input->post('tagged');
+			var_dump($tags);
+			foreach(explode(',',$tags) as $tag){
+				$this->tagsEvents->addTag($id,$tag);
+			}
 
             // edit
             if ($id) {
