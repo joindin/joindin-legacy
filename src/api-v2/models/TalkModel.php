@@ -77,7 +77,7 @@ class TalkModel extends ApiModel {
             . 'left join talk_speaker ts on ts.talk_id = t.ID '
             . 'where t.active = 1 and '
             . 'e.active = 1 and '
-            . 'e.pending = 0 and '
+            . '(e.pending = 0 or e.pending is NULL) and '
             . 'e.private <> "y"';
         return $sql;
 

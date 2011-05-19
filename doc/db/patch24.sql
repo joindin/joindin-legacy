@@ -7,3 +7,6 @@ callback varchar(400),
 verification varchar(20), 
 authorised_user_id int,
 created_date timestamp DEFAULT CURRENT_TIMESTAMP);
+
+
+INSERT INTO patch_history SET patch_number = 24;
