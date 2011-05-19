@@ -93,7 +93,7 @@
  <target name="build" depends="clean,parallelTasks,phpunit,phpcb"/>
 
  <target name="launch">
-  <exec executable="src/scripts/jenkinslaunch.sh" />
+  <exec executable="src/scripts/jenkinslaunch.sh" failonerror="true" />
  </target>
 
 </project>
