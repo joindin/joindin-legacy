@@ -22,7 +22,10 @@ $is_cfp_open = ($event_detail->event_cfp_end>=time() && $event_detail->event_cfp
 				<?php endif; ?>
             
             	<p class="info">
-					<strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event_detail->event_start, $event_detail->event_tz_cont.'/'.$event_detail->event_tz_place, 'M j, Y'); ?></strong> - <strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event_detail->event_end, $event_detail->event_tz_cont.'/'.$event_detail->event_tz_place, 'M j, Y'); ?></strong>
+					<strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event_detail->event_start, $event_detail->event_tz_cont.'/'.$event_detail->event_tz_place, 'M j, Y'); ?></strong>
+                    <?php if ($event_detail->event_start+86399 != $event_detail->event_end) { ?>
+                        - <strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event_detail->event_end, $event_detail->event_tz_cont.'/'.$event_detail->event_tz_place, 'M j, Y'); ?></strong>
+                    <?php } ?>
             		<br/> 
             		<strong><?php echo escape($event_detail->event_loc); ?></strong>
 					<?php if($event_detail->private==1): ?>
