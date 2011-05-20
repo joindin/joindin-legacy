@@ -466,8 +466,6 @@ class Event extends Controller
                 'event_href'     => $this->input->post('event_href'),
                 'event_hashtag'  => $this->input->post('event_hashtag'),
                 'private'        => $this->input->post('event_private'),
-                'event_tz_cont'  => $this->input->post('event_tz_cont'),
-                'event_tz_place' => $this->input->post('event_tz_place'),
                 'event_stub'     => $this->input->post('event_stub'),
                 'event_contact_name'  => $this->input->post('event_contact_name'),
                 'event_contact_email' => $this->input->post('event_contact_email'),
