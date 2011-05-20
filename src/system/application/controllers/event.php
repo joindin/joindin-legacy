@@ -302,7 +302,8 @@ class Event extends Controller
             'end_mo'         => 'callback_end_mo_check',
             'event_stub'     => 'callback_stub_check',
 			'cfp_end_mo'	 => 'callback_cfp_end_mo_check',
-			'cfp_start_mo'	 => 'callback_cfp_start_mo_check'
+			'cfp_start_mo'	 => 'callback_cfp_start_mo_check',
+            'cfp_url'        => 'callback_cfp_url_check'
         );
         $this->validation->set_rules($rules);
 
@@ -330,6 +331,7 @@ class Event extends Controller
 			'cfp_end_mo'	 => 'Event Call for Papers End Date',
 			'cfp_end_day'	 => 'Event Call for Papers End Date',
 			'cfp_end_yr'	 => 'Event Call for Papers End Date',
+            'cfp_url'        => 'Event Call for Papers URL',
         );
         $this->validation->set_fields($fields);
 
@@ -1908,6 +1910,26 @@ class Event extends Controller
         if (($val == 1) && !$this->validation->valid_email($str)) {
             $this->validation->set_message(
                 'chk_email_check', 'Email address invalid!'
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+
+
+    /**
+     * Ensure that the cfp URL given is an URL
+     *
+     * @return bool
+     */
+    function cfp_url_check()
+    {
+        if (! preg_match("|^https?://|", $this->validation->cfp_url)) {
+            $this->validation->set_message(
+                'cfp_url_check',
+                'Call for Papers URL must start with http:// or https://!'
             );
 
             return false;
