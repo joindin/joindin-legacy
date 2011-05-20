@@ -324,6 +324,7 @@ class Event extends Controller
             'event_hashtag'  => 'Event Hashtag',
             'event_private'  => 'Private Event',
             'event_stub'     => 'Event Stub',
+            'addr'           => 'Google address',
 			'cfp_start_mo'	 => 'Event Call for Papers Start Date',
 			'cfp_start_day'	 => 'Event Call for Papers Start Date',
 			'cfp_start_yr'	 => 'Event Call for Papers Start Date',
