@@ -204,7 +204,7 @@ if (! function_exists('form_datepicker'))
                 var vals = dateText.split('-');
                 yr.val(vals[2]);
                 mo.get(0).selectedIndex = (vals[0]-1);
-                da.val(vals[1]);
+                da.val(vals[1].replace(/^0/, ""));
             };
             $('#{$day}_{$month}_{$year}').datepicker({
                 showOn: "button",
