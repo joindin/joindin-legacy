@@ -164,35 +164,6 @@ class About extends Controller
     }
 
     /**
-     * Shows a gravatar collage of 9x7 random users (Who's on Joind in?).
-     *
-     * @return void
-     */
-    function who()
-    {
-        $dir = $this->config->item('gravatar_cache_dir');
-
-        // get a list of gravatars which match the default size
-        $default_size = 1323;
-        $users = array();
-        foreach (new DirectoryIterator($dir) as $file) {
-            $file_size = filesize($dir . '/' . $file->getFilename());
-            if (!$file->isDot() && ($file_size != $default_size)) {
-                if (preg_match('/user([0-9]+)\.jpg/', $file->getFilename(), $m)) {
-                    $users[] = $m[1];
-                }
-            }
-        }
-
-        // send the list of users to the template
-        $arr = array(
-            'users' => $users
-        );
-        $this->template->write_view('content', 'about/who', $arr);
-        $this->template->render();
-    }
-
-    /**
      * Displays the about page for the services.
      *
      * @return void

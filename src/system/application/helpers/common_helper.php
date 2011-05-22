@@ -173,3 +173,52 @@ function escape_allowing_presentation_tags($str)
 
     return $str;
 }
+
+
+/**
+ * Datepicker helper
+ *
+ * @access	public
+ * @param	day
+ * @param	month
+ * @param	year
+ * @return	string
+ */
+if (! function_exists('form_datepicker'))
+{
+    function form_datepicker($day, $month, $year)
+    {
+        $javascript = <<< JSCRIPT
+        <input type='hidden' id='{$day}_{$month}_{$year}' />
+    <script type="text/javascript">
+    // <![CDATA[
+        $(function(){
+            var yr=$('select[name={$year}]');
+            var mo=$('select[name={$month}]');
+            var da=$('select[name={$day}]');
+            var b4show = function(input, dpicker) {
+                var dte = '' + padstring(mo.val(),2)+'-'+padstring(da.val(),2)+'-'+yr.val();
+                $(input).val(dte);
+            };
+            var selectdte = function(dateText, inst) {
+                var vals = dateText.split('-');
+                yr.val(vals[2]);
+                mo.get(0).selectedIndex = (vals[0]-1);
+                da.val(vals[1].replace(/^0/, ""));
+            };
+            $('#{$day}_{$month}_{$year}').datepicker({
+                showOn: "button",
+                buttonImage: "/inc/img/datepicker.gif",
+                buttonImageOnly: true,
+                beforeShow: b4show,
+                dateFormat: 'mm-dd-yy',
+                onSelect: selectdte
+            });
+        });
+    // ]]>
+    </script>
+JSCRIPT;
+        return $javascript;
+    }
+}
+// --------------------------------------------------------------------

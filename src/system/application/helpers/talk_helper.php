@@ -157,12 +157,7 @@ function buildSpeakerImg($speakers){
 	
 	foreach($speakers as $speaker){
 		if(!empty($speaker->speaker_id) && $speaker->status!='pending'){
-			if($img_data=$ci->gravatar->displayUserImage($speaker->speaker_id,true)){
-				$user_images[$speaker->speaker_id]=$img_data;
-			}else{
-				$ci->gravatar->getUserImage($speaker->speaker_id,$speaker->email);
-				$user_images[$speaker->speaker_id]=$ci->gravatar->displayUserImage($speaker->speaker_id,true);
-			}
+			$user_images[$speaker->speaker_id]=$ci->gravatar->displayUserImage($speaker->speaker_id, null, 50);
 		}
 	}
 	return $user_images;

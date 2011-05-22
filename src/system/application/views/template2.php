@@ -7,9 +7,10 @@ $title = menu_pagetitle();
 $title[] = $this->config->item('site_name');
 ?>
 	<title><?php echo implode(' - ', $title); ?></title>
-
-	<link media="all" rel="stylesheet" type="text/css" href="/inc/css/jquery-ui/theme/ui.all.css"/>
 	<link media="all" rel="stylesheet" type="text/css" href="/inc/css/site.css"/>
+	<link media="all" rel="stylesheet" type="text/css" href="/inc/css/jquery-ui/jquery-ui-1.7.3.custom.css"/>
+	<link media="all" rel="stylesheet" type="text/css" href="/inc/css/jquery-ui/theme/ui.all.css"/>
+
 	
 	
 	<?php if($css){ ?>
@@ -146,6 +147,10 @@ $title[] = $this->config->item('site_name');
 						</p>
             		</div>
             	</div>
+				<div class="box" align="center">
+					<a href="http://www.combell.com/en"><img src="/inc/img/LOGO-COMBELL.png" border="0" style="padding-bottom:5px"></a><br/>
+					<a href="http://www.combell.com/en/servers/cloud-server">Cloud server</a> <a href="http://www.combell.com/en">hosting</a> by Combell
+				</div>
             	<?php endif; ?>
             	<div class="box">
                 	<h4>Submit your event</h4>
@@ -180,7 +185,9 @@ $title[] = $this->config->item('site_name');
         	<a href="/about/contact">Contact</a>
     	</div>
     	<div class="grid_6 rgt">
-    		&copy; <?php echo $this->config->item('site_name'); ?> <?php echo date('Y')?>
+    		<a href="http://www.combell.com/en/servers/cloud-server">Cloud server</a> <a href="http://www.combell.com/en">hosting</a> by Combell <a href="http://www.combell.com/en"><img src="/inc/img/LOGO-COMBELL_small.gif" border="0" style="vertical-align:text-bottom;"/></a> 
+		&nbsp;&nbsp;&nbsp;&nbsp;
+&copy; <?php echo $this->config->item('site_name'); ?> <?php echo date('Y')?>
     	</div>
     	<div class="clear"></div>
 	</div>

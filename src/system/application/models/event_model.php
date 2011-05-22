@@ -235,6 +235,7 @@ SQL
 
 	public function getEvents($where=NULL, $order_by = NULL, $limit = NULL) {
 		$sql = 'SELECT * ,
+		    (select if(event_cfp_start IS NOT NULL AND event_cfp_start > 0 AND '.mktime(0,0,0).' BETWEEN event_cfp_start AND event_cfp_end, 1, 0)) as is_cfp,
 			(select count(*) from user_attend where user_attend.eid = events.ID) as num_attend,
 			(select count(*) from event_comments where event_comments.event_id = events.ID) as num_comments, abs(0) as user_attending, '
 		  			.' abs(datediff(from_unixtime(events.event_start), from_unixtime('.mktime(0,0,0).'))) as score,
@@ -242,7 +243,7 @@ SQL
                 WHEN (((events.event_start - 86400) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
                 END as allow_comments
-			FROM events
+			FROM `events`
 			WHERE active = 1 AND (pending = 0 OR pending IS NULL)';
 
 		if($where) {
@@ -469,7 +470,7 @@ SQL
 	{
         $where = 'event_cfp_start <= ' . mktime(0,0,0, date('m'), date('d'), date('Y')) . ' AND '
             . 'event_cfp_end >= ' . mktime(0,0,0, date('m'), date('d'), date('Y'));
-        $order_by = "events.event_cfp_end desc";
+        $order_by = "events.event_cfp_end asc";
 		$result = $this->getEvents($where, $order_by, null);
         return $result;
 	}

@@ -110,6 +110,7 @@ class Theme extends Controller
 
         // get the events the user is an admin for
         $uid = $this->session->userdata('ID');
+        $this->user_events = array();
         foreach ($this->userAdmin->getUserEventAdmin($uid) as $event) {
             $this->user_events[$event->event_id] = $event->event_name;
         }
