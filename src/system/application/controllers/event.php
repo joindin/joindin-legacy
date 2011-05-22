@@ -352,6 +352,7 @@ class Event extends Controller
 
 				$this->validation->event_cfp_start 	= $event_detail[0]->event_cfp_start;
 				$this->validation->event_cfp_end 	= $event_detail[0]->event_cfp_end;
+				$this->validation->event_cfp_url 	= $event_detail[0]->event_cfp_url;
 
                 foreach ($event_detail[0] as $k => $v) {
                     if ($k == 'event_start') {
@@ -492,6 +493,7 @@ class Event extends Controller
 				$this->validation->cfp_checked		= true;
 				$this->validation->event_cfp_end 	= $arr['event_cfp_end'];
 				$this->validation->event_cfp_start 	= $arr['event_cfp_start'];
+				$this->validation->event_cfp_url 	= $this->input->post('cfp_url');
 			}else{
 				// it's empty, remove any values
 				$arr['event_cfp_start'] = null;
