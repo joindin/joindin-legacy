@@ -19,8 +19,9 @@ if($is_admin){
 <?php 
 foreach($pending_evt as $e){
 	$det=$e->detail[0];
-	echo '<b style="font-size:14px">'.$det->event_name.'</b><br/>'.date('m.d.Y',$det->event_start).' - ';
-	echo date('m.d.Y',$det->event_end).'<br/>';
+	echo '<b style="font-size:14px">'.$det->event_name.'</b><br/>'.date('m.d.Y',$det->event_start);
+    if ($det->event_start+86399 != $det->event_end) echo '- '.date('m.d.Y',$det->event_end);
+    echo '<br/>';
 }
 ?>
 <br/>
