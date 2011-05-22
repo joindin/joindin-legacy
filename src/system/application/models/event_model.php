@@ -470,7 +470,7 @@ SQL
 	{
         $where = 'event_cfp_start <= ' . mktime(0,0,0, date('m'), date('d'), date('Y')) . ' AND '
             . 'event_cfp_end >= ' . mktime(0,0,0, date('m'), date('d'), date('Y'));
-        $order_by = "events.event_cfp_end desc";
+        $order_by = "events.event_cfp_end asc";
 		$result = $this->getEvents($where, $order_by, null);
         return $result;
 	}
