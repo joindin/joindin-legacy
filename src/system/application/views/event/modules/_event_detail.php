@@ -24,9 +24,6 @@ if ($event_detail->event_cfp_start>=time()) {
         	<div class="head">
 				<input type="hidden" name="eid" id="eid" value="<?php echo $event_detail->ID; ?>"/>
             	<h1><?php echo escape($event_detail->event_name)?> <?php echo (($event_detail->pending==1) ? '(Pending)':'')?></h1>
-				<?php if($cfp_status == "open"): ?>
-					<div align="right" style="width:400px">Call for Papers<br/>Open!</div>
-				<?php endif; ?>
             	<p class="info">
 					<strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event_detail->event_start, $event_detail->event_tz_cont.'/'.$event_detail->event_tz_place, 'M j, Y'); ?></strong>
                     <?php if ($event_detail->event_start+86399 != $event_detail->event_end) { ?>
