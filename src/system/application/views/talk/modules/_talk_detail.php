@@ -21,8 +21,15 @@
 		<?php echo escape($detail->tcid); ?> at <strong><a href="/event/view/<?php echo $detail->event_id; ?>"><?php echo escape($detail->event_name); ?></a></strong> (<?php echo escape($detail->lang_name);?>)
 	</p>
 
-	<p class="rating">
-		<?php echo $rstr; ?>
+<?php
+            $q1 = round(($detail->q1 / 5.0) * 100);
+            $q3 = round(($detail->q3 / 5.0) * 100) - $q1;
+?>
+    <p class="rating" style="background-image: url(/inc/img/bg.png);
+        background-repeat: no-repeat;
+        background-position: <?php echo $q1; ?>px;
+        background-size:     <?php echo $q3; ?>px 100%">
+    <?php echo $rstr; ?>
 	</p>
 
 	<div class="desc">
