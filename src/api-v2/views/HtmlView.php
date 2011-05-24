@@ -2,7 +2,7 @@
 
 class HtmlView extends ApiView {
     public function render($content) {
-        header('Content-Type: text/html');
+        header('Content-Type: text/html; charset=utf8');
         $content = $this->addCount($content);
         $this->print_array($content);
         return true;
