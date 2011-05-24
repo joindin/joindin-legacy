@@ -81,10 +81,13 @@ class EventModel extends ApiModel {
                 $list[$key]['comments_link'] = 'http://' . $host . '/v2/events/' . $row['event_id'] . '/comments';
                 $list[$key]['talks_link'] = 'http://' . $host . '/v2/events/' . $row['event_id'] . '/talks';
             }
+
+            if(count($list) > 1) {
+                $list = static::addPaginationLinks($list, $request);
+            }
         }
 
         // add pagination and global links
-        $list = static::addPaginationLinks($list, $request);
         return $list;
     }
 

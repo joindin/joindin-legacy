@@ -53,9 +53,11 @@ class TalkModel extends ApiModel {
                 $list[$key]['comments_link'] = 'http://' . $host . '/v2/talks/' . $row['talk_id'] . '/comments';
                 $list[$key]['event_link'] = 'http://' . $host . '/v2/events/' . $row['event_id'];
             }
-        }
 
-        $list = static::addPaginationLinks($list, $request);
+            if(count($list) > 1) {
+                $list = static::addPaginationLinks($list, $request);
+            }
+        }
 
         return $list;
     }
