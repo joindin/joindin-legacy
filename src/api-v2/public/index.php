@@ -50,8 +50,8 @@ $request->parameters = $parameters;
 // set some default parameters
 $request->parameters['resultsperpage'] = isset($request->parameters['resultsperpage']) 
     ? $request->parameters['resultsperpage'] : 20;
-$request->parameters['page'] = isset($request->parameters['page']) 
-    ? $request->parameters['page'] : 1;
+$request->parameters['start'] = isset($request->parameters['start']) 
+    ? $request->parameters['start'] : 0;
 
 // Input Handling: parameter takes precedence
 if(isset($request->parameters['format'])) {
