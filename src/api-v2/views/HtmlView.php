@@ -12,8 +12,13 @@ class HtmlView extends ApiView {
         foreach($content as $field => $value) {
             if(is_array($value)) {
                 // recurse and print a primitive break
+                echo "<strong>" . $field . ": </strong>";
+                echo "<br />\n";
+
                 $this->print_array($value);
-                echo "<br /><br />";
+                // newline
+                echo "<br />\n";
+                echo "<br />\n";
             } else {
                 // field name
                 echo "<strong>" . $field . ": </strong>";

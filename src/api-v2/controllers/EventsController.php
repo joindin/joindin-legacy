@@ -39,7 +39,7 @@ class EventsController extends ApiController {
                 $list = EventModel::getEventList($db, $resultsperpage, $start, $verbose);
             }
             // add links
-            $list = EventModel::addHypermedia($list, $request->host);
+            $list = EventModel::addHypermedia($list, $request);
         }
 
         // TODO pagination will be required

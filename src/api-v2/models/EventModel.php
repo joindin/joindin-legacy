@@ -70,8 +70,10 @@ class EventModel extends ApiModel {
         return false;
     }
 
-    public static function addHyperMedia($list, $host) {
-        // loop again and add links specific to this item
+    public static function addHyperMedia($list, $request) {
+        $host = $request->host;
+
+        // add per-item links 
         if(is_array($list) && count($list)) {
             foreach($list as $key => $row) {
                 $list[$key]['uri'] = 'http://' . $host . '/v2/events/' . $row['event_id'];
@@ -79,6 +81,22 @@ class EventModel extends ApiModel {
                 $list[$key]['comments_link'] = 'http://' . $host . '/v2/events/' . $row['event_id'] . '/comments';
                 $list[$key]['talks_link'] = 'http://' . $host . '/v2/events/' . $row['event_id'] . '/talks';
             }
+        }
+
+        // add pagination and global links
+        $list = static::addPaginationLinks($list, $request);
+        return $list;
+    }
+
+    protected function addPaginationLinks($list, $request) {
+        $list['links']['this_page'] = 'http://' . $request->host . $request->path_info .'?' . http_build_query($request->parameters);
+        $next_params = $prev_params = $request->parameters;
+
+        $next_params['start'] = $next_params['start'] + $next_params['resultsperpage'];
+        $list['links']['next_page'] = 'http://' . $request->host . $request->path_info . '?' . http_build_query($next_params);
+        if($prev_params['start'] >= $prev_params['resultsperpage']) {
+            $prev_params['start'] = $prev_params['start'] - $prev_params['resultsperpage'];
+            $list['links']['prev_page'] = 'http://' . $request->host . $request->path_info . '?' . http_build_query($prev_params);
         }
         return $list;
     }
