@@ -32,7 +32,7 @@ class TalksController extends ApiController {
                 return false;
             }
             // add links
-            $list = TalkModel::addHypermedia($list, $request->host);
+            $list = TalkModel::addHypermedia($list, $request);
         }
 
         return $list;
