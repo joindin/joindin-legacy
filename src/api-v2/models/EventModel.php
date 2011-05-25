@@ -29,7 +29,8 @@ class EventModel extends ApiModel {
             'tz_place' => 'event_tz_place',
             'location' => 'event_loc',
             'cfp_start_date' => 'event_cfp_start',
-            'cfp_end_date' => 'event_cfp_end'
+            'cfp_end_date' => 'event_cfp_end',
+            'cfp_url' => 'event_cfp_url'
             );
         return $fields;
     }
