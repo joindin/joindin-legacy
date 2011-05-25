@@ -302,7 +302,8 @@ class Event extends Controller
             'end_mo'         => 'callback_end_mo_check',
             'event_stub'     => 'callback_stub_check',
 			'cfp_end_mo'	 => 'callback_cfp_end_mo_check',
-			'cfp_start_mo'	 => 'callback_cfp_start_mo_check'
+			'cfp_start_mo'	 => 'callback_cfp_start_mo_check',
+            'cfp_url'        => 'callback_cfp_url_check'
         );
         $this->validation->set_rules($rules);
 
@@ -324,12 +325,14 @@ class Event extends Controller
             'event_hashtag'  => 'Event Hashtag',
             'event_private'  => 'Private Event',
             'event_stub'     => 'Event Stub',
+            'addr'           => 'Google address',
 			'cfp_start_mo'	 => 'Event Call for Papers Start Date',
 			'cfp_start_day'	 => 'Event Call for Papers Start Date',
 			'cfp_start_yr'	 => 'Event Call for Papers Start Date',
 			'cfp_end_mo'	 => 'Event Call for Papers End Date',
 			'cfp_end_day'	 => 'Event Call for Papers End Date',
 			'cfp_end_yr'	 => 'Event Call for Papers End Date',
+            'cfp_url'        => 'Event Call for Papers URL',
         );
         $this->validation->set_fields($fields);
 
@@ -350,6 +353,7 @@ class Event extends Controller
 
 				$this->validation->event_cfp_start 	= $event_detail[0]->event_cfp_start;
 				$this->validation->event_cfp_end 	= $event_detail[0]->event_cfp_end;
+				$this->validation->event_cfp_url 	= $event_detail[0]->event_cfp_url;
 
                 foreach ($event_detail[0] as $k => $v) {
                     if ($k == 'event_start') {
@@ -465,8 +469,6 @@ class Event extends Controller
                 'event_href'     => $this->input->post('event_href'),
                 'event_hashtag'  => $this->input->post('event_hashtag'),
                 'private'        => $this->input->post('event_private'),
-                'event_tz_cont'  => $this->input->post('event_tz_cont'),
-                'event_tz_place' => $this->input->post('event_tz_place'),
                 'event_stub'     => $this->input->post('event_stub'),
                 'event_contact_name'  => $this->input->post('event_contact_name'),
                 'event_contact_email' => $this->input->post('event_contact_email'),
@@ -490,6 +492,7 @@ class Event extends Controller
 				$this->validation->cfp_checked		= true;
 				$this->validation->event_cfp_end 	= $arr['event_cfp_end'];
 				$this->validation->event_cfp_start 	= $arr['event_cfp_start'];
+				$this->validation->event_cfp_url 	= $this->input->post('cfp_url');
 			}else{
 				// it's empty, remove any values
 				$arr['event_cfp_start'] = null;
@@ -1908,6 +1911,26 @@ class Event extends Controller
         if (($val == 1) && !$this->validation->valid_email($str)) {
             $this->validation->set_message(
                 'chk_email_check', 'Email address invalid!'
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+
+
+    /**
+     * Ensure that the cfp URL given is an URL
+     *
+     * @return bool
+     */
+    function cfp_url_check()
+    {
+        if (! preg_match("|^https?://|", $this->validation->cfp_url)) {
+            $this->validation->set_message(
+                'cfp_url_check',
+                'Call for Papers URL must start with http:// or https://!'
             );
 
             return false;

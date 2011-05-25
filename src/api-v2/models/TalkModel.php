@@ -43,7 +43,8 @@ class TalkModel extends ApiModel {
         return false;
     }
 
-    public static function addHyperMedia($list, $host) {
+    public static function addHyperMedia($list, $request) {
+        $host = $request->host;
         // loop again and add links specific to this item
         if(is_array($list) && count($list)) {
             foreach($list as $key => $row) {
@@ -51,6 +52,10 @@ class TalkModel extends ApiModel {
                 $list[$key]['verbose_uri'] = 'http://' . $host . '/v2/talks/' . $row['talk_id'] . '?verbose=yes';
                 $list[$key]['comments_link'] = 'http://' . $host . '/v2/talks/' . $row['talk_id'] . '/comments';
                 $list[$key]['event_link'] = 'http://' . $host . '/v2/events/' . $row['event_id'];
+            }
+
+            if(count($list) > 1) {
+                $list = static::addPaginationLinks($list, $request);
             }
         }
 

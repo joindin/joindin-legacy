@@ -70,8 +70,10 @@ class EventModel extends ApiModel {
         return false;
     }
 
-    public static function addHyperMedia($list, $host) {
-        // loop again and add links specific to this item
+    public static function addHyperMedia($list, $request) {
+        $host = $request->host;
+
+        // add per-item links 
         if(is_array($list) && count($list)) {
             foreach($list as $key => $row) {
                 $list[$key]['uri'] = 'http://' . $host . '/v2/events/' . $row['event_id'];
@@ -79,7 +81,14 @@ class EventModel extends ApiModel {
                 $list[$key]['comments_link'] = 'http://' . $host . '/v2/events/' . $row['event_id'] . '/comments';
                 $list[$key]['talks_link'] = 'http://' . $host . '/v2/events/' . $row['event_id'] . '/talks';
             }
+
+            if(count($list) > 1) {
+                $list = static::addPaginationLinks($list, $request);
+            }
         }
+
+        // add pagination and global links
         return $list;
     }
+
 }

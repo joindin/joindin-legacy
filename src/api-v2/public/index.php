@@ -41,6 +41,7 @@ $request = new Stdclass();
 $request->verb = $_SERVER['REQUEST_METHOD'];
 if(isset($_SERVER['PATH_INFO'])) {
     $request->url_elements = explode('/',$_SERVER['PATH_INFO']);
+    $request->path_info = $_SERVER['PATH_INFO'];
 }
 parse_str($_SERVER['QUERY_STRING'], &$parameters);
 $request->accept = explode(',', $_SERVER['HTTP_ACCEPT']);
@@ -50,8 +51,8 @@ $request->parameters = $parameters;
 // set some default parameters
 $request->parameters['resultsperpage'] = isset($request->parameters['resultsperpage']) 
     ? $request->parameters['resultsperpage'] : 20;
-$request->parameters['page'] = isset($request->parameters['page']) 
-    ? $request->parameters['page'] : 1;
+$request->parameters['start'] = isset($request->parameters['start']) 
+    ? $request->parameters['start'] : 0;
 
 // Input Handling: parameter takes precedence
 if(isset($request->parameters['format'])) {
