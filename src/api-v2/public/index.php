@@ -43,7 +43,7 @@ if(isset($_SERVER['PATH_INFO'])) {
     $request->url_elements = explode('/',$_SERVER['PATH_INFO']);
     $request->path_info = $_SERVER['PATH_INFO'];
 }
-parse_str($_SERVER['QUERY_STRING'], &$parameters);
+parse_str($_SERVER['QUERY_STRING'], $parameters);
 $request->accept = explode(',', $_SERVER['HTTP_ACCEPT']);
 $request->host = $_SERVER['HTTP_HOST'];
 $request->parameters = $parameters;

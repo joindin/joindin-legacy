@@ -75,7 +75,7 @@ class TalkModel extends ApiModel {
         return false;
     }
 
-    public function getBasicSQL() {
+    public static function getBasicSQL() {
         $sql = 'select t.*, l.lang_name, ts.speaker_name from talks t '
             . 'inner join events e on e.ID = t.event_id '
             . 'inner join lang l on l.ID = t.lang '

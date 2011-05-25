@@ -24,7 +24,7 @@ This document gives information about the functionality of the API and how to us
 <p>The service currenty supports <b>JSON</b> and <b>HTML</b> only, although these can very easily be expanded upon in future.  The service will guess from your accept header which format you wanted.  In the event that this is not working correctly then simply add the <b>format</b> parameter to specify which format should be returned.</p>
 
 
-<h2>Serice Detail</h2>
+<h2>Service Detail</h2>
 
 <p>Examples shown in HTML format.  The JSON response holds identical data, passed through json_encode rather than pretty-printed</p>
 
