@@ -82,7 +82,7 @@ Each result looks something like this:</p>
 
 
 
-<h3>Request: GET /event/[id]/talks</h3>
+<h3>Request: GET /events/[id]/talks</h3>
 <h3>Request: GET /talks/[id]</h3>
 
 <p><a href="http://api.joind.in/v2/events/110/talks">try it</a></p>
