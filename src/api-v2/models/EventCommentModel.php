@@ -17,7 +17,7 @@ class EventCommentModel extends ApiModel {
             'event_id' => 'event_id',
             'user_id' => 'user_id',
             'comment' => 'comment',
-            'date_made' => 'created'
+            'created_date' => 'date_made'
             );
         return $fields;
     }
