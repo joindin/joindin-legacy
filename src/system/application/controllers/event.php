@@ -1991,9 +1991,18 @@ class Event extends Controller
 	public function callforpapers($eventId=null)
 	{	
 		$this->load->model('event_model','eventModel');
+        $this->load->model('user_attend_model');
 		
 		$arr = array();
 		$arr['current_cfp'] = $this->eventModel->getCurrentCfp();
+
+        // now add the attendance data
+        $uid = $this->user_model->getID();
+        foreach ($arr['current_cfp'] as $e) {
+            $e->user_attending = ($uid)
+                ? $this->user_attend_model->chkAttend($uid, $e->ID)
+                : false;
+        }
 		
 		$this->template->write_view('content', 'event/callforpapers', $arr);
         $this->template->render();
