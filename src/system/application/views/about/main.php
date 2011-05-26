@@ -17,7 +17,7 @@ menu_pagetitle('About');
 <h3 style="color:#5181C1">For Developers</h3>
 <p><?php echo $this->config->item('site_name'); ?> is an open source project, written in PHP, and we welcome new contributors, commenters and observers.  You can make contact with the project in many ways:<ul>
 <li>The code and a wiki with developer documentation is on github <a href="http://github.com/joindin/joind.in">http://github.com/joindin/joind.in</a></li>
-<li>The issue tracker is also on github <a href="https://github.com/joindin/joind.in/issues">https://github.com/joindin/joind.in/issues</a> - if you see a problem on the site, feel free to report it here</li>
+<li>The issue tracker is <b>now on JIRA <a href="http://joindin.jira.com">http://joindin.jira.com</a></b> - if you see a problem on the site, feel free to report it here</li>
 <li>We have mailing lists - one for <a href="http://groups.google.com/group/joindin-announce">announcements only</a>, one for discussion of <a href="http://groups.google.com/group/joindin-features">features</a> and one for <a href="http://groups.google.com/group/joindin-developers">development discussion</a>.  They are public and we welcome new additions</li>
 <li>There is an IRC channel on irc.freenode.net that you are welcome to join as well #joind.in</li>
 </ul>

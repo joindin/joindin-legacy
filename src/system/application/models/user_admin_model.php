@@ -77,6 +77,14 @@ class User_admin_model extends Model {
 		$ret=$q->result(); //print_r($ret);
 		return (empty($ret)) ? false : true;
 	}
+
+    public function getPendingPerm($uid,$rid,$rtype){
+		error_log($uid.' - '.$rid.' - '.$rtype);
+        $q=$this->db->get_where('user_admin',array('uid'=>$uid,'rid'=>$rid,'rtype'=>$rtype,'rcode'=>'pending'));
+        $result = $q->result();
+		error_log('result: '.print_r($result,true));
+		return $result;
+    }
 	
 	/**
 	 * Get detail for a given user - their talks and events
@@ -300,6 +308,85 @@ class User_admin_model extends Model {
 	    $q=$this->db->query($sql);
 	    return $q->result();
 	}
+
+    /**
+     * Check that the request token actually exists and is valid
+     * 
+     * @param string $token the request token supplied by the API
+     * @access public
+     * @return boolean true if the token is OK, false otherwise
+     */
+    public function oauthRequestTokenVerify($token)
+    {
+	    $sql = 'SELECT request_token FROM oauth_request_tokens
+            WHERE request_token = ' . $this->db->escape($token) . '
+            AND authorised_user_id IS NULL';
+        $query = $this->db->query($sql);
+
+        $result = $query->result();
+        if(count($result) > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Deny access for this request token
+     * 
+     * @param string $token The request token given to the user
+     * @access public
+     * @return boolean true
+     */
+    public function oauthDeny($token)
+    {
+        $sql = 'DELETE from oauth_request_tokens 
+            WHERE request_token = ' . $this->db->escape($token);
+        $query = $this->db->query($sql);
+
+        return true;
+    }
+
+    /**
+     * This user granted access for this application using this request 
+     * token, record this and give a verification token
+     * 
+     * @param string $token The request token the user is authorising
+     * @param int $user_id The user's database ID (comes from the session 
+     * when called from the webcontroller)
+     * @access public
+     * @return array containing verification code and callback url, or false if something went wrong
+     */
+    public function oauthAllow($token, $user_id)
+    {
+        $verification_code = $this->oauthGenerateVerificationCode();
+        $sql = 'UPDATE oauth_request_tokens SET authorised_user_id = '
+            . $this->db->escape($user_id) . ',
+            verification = "' . $verification_code . '"
+            WHERE request_token = ' . $this->db->escape($token);
+        $query = $this->db->query($sql);
+
+        if ($this->db->affected_rows() == 1) {
+            $fetch_sql = 'SELECT callback, verification FROM oauth_request_tokens
+                WHERE request_token = ' . $this->db->escape($token);
+            $fetch_query = $this->db->query($fetch_sql);
+
+            $result = $fetch_query->result();
+            return $result[0];
+        }
+        return false;
+    }
+
+    /**
+     * Generate a verification code to send back to the oauth consumer with the user
+     * 
+     * @access public
+     * @return string the verification code
+     */
+    public function oauthGenerateVerificationCode()
+    {
+        return substr(md5(rand()), 0, 6);
+    }
+
 }
 
 ?>

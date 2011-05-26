@@ -137,6 +137,7 @@ class Talks_model extends Model {
 					events.private,
 					lang.lang_name,
 					lang.lang_abbr,
+					lang.id as lang_id,
 					count(talk_comments.ID) as ccount,
 					%s
 					(select 
@@ -232,7 +233,8 @@ class Talks_model extends Model {
 				tc.user_id,
 				u.username uname,
 				u.twitter_username twitter_username,
-				tc.comment_type
+				tc.comment_type,
+				tc.source
 			from
 				talk_comments tc
 			left join
@@ -245,7 +247,7 @@ class Talks_model extends Model {
 		$q=$this->db->query($sql);
 		$comments=$q->result();
 		foreach($comments as $k=>$comment){
-			$comments[$k]->gravatar=$this->gravatar->displayUserImage($comment->user_id,true);
+			$comments[$k]->gravatar=$this->gravatar->displayUserImage($comment->user_id, null, 45);
 		}
 		return $comments;
 	}
@@ -480,9 +482,9 @@ class Talks_model extends Model {
 		if($start>0){ $this->db->where('date_given >=', $start); }
 		if($end>0){ $this->db->where('date_given <=', $end); }
 		
-		$this->db->like('talk_title',$term);
-		$this->db->or_like('talk_desc',$term);
-		$this->db->or_like('speaker',$term);
+        $term = '%'.$term.'%';
+        $this->db->where(sprintf('(talk_title LIKE %1$s OR talk_desc LIKE %1$s OR speaker LIKE %1$s)', $this->db->escape($term)));
+
 		$this->db->limit(10);
 		$this->db->group_by('talks.ID');
 		$query = $this->db->get();

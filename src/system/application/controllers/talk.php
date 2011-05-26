@@ -101,7 +101,7 @@ class Talk extends Controller
 
         // check to see if they're supposed to be here
         if (!$this->auth) {
-            redirect();
+            redirect('user/login', 'refresh');
         }
 
         $currentUserId = $this->session->userdata('ID');
@@ -224,7 +224,7 @@ class Talk extends Controller
                 $this->validation->given_mo . '-' .
                 $this->validation->given_day;
 
-            $this->validation->session_lang = $thisTalk->lang_name;
+            $this->validation->session_lang = $thisTalk->lang_id;
             $this->validation->session_type = $thisTalk->tcid;
         } else {
             $events         = $this->event_model->getEventDetail($eid);
@@ -393,7 +393,7 @@ class Talk extends Controller
 					redirect('talk/view/' . $tc_id);
 				}
             }
-        }
+        } 
 
         $det = $this->talks_model->setDisplayFields($det);
         $out = array(
@@ -684,15 +684,10 @@ class Talk extends Controller
 
                 //send an email when a comment's made
                 $msg = '';
-                $arr['spam'] = ($ret == 'false') ? 'spam' : 'not spam';
+                $arr['spam'] = ($is_spam == 'false') ? 'spam' : 'not spam';
                 foreach ($arr as $ak => $av) {
                     $msg .= '[' . $ak . '] => ' . $av . "\n";
                 }
-                @mail(
-                    $this->config->item('email_admin'),
-                    'Comment on talk ' . $id, $msg,
-                    'From: ' . $this->config->item('email_comments')
-                );
 
                 //if its claimed, be sure to send an email to the person to tell them
                 if ($cl) {
@@ -747,7 +742,7 @@ class Talk extends Controller
             'auth'           => $this->auth,
             'claimed'        => $this->talks_model->talkClaimDetail($id),
             'claim_status'   => $claim_status, 'claim_msg' => $claim_msg,
-			'is_claimed'	 => $this->talkSpeakers->isTalkClaimed($id),
+			'is_claimed'	 => $this->talkSpeakers->isTalkClaimed($id,true),
             'speakers'       => $this->talkSpeakers->getSpeakerByTalkId($id),
             'reqkey'         => $reqkey, 'seckey' => buildSecFile($reqkey),
             'user_attending' => ($this->user_attend_model->chkAttend(
@@ -789,6 +784,23 @@ class Talk extends Controller
      */
     function claim($talkId,$claimId=null)
     {
+		if($claimId == null){
+			$claimId = $this->input->post('claim_name_select');
+		}
+	
+		$this->load->model('talk_speaker_model','talkSpeaker');
+		
+		$this->load->model('pending_talk_claims_model','pendingClaims');
+		
+		$this->pendingClaims->addClaim($talkId,$claimId);
+		
+		$this->session->set_flashdata('msg', 'Thanks for claiming this talk! You will be emailed when the claim is approved!');
+		redirect('talk/view/'.$talkId);
+		
+		return false;
+		
+		// OLD CODE IS BELOW......
+		
         if (!$this->user_model->isAuth()) {
             redirect('talk/view/'.$talkId);
         }
@@ -799,6 +811,18 @@ class Talk extends Controller
 		// Ie we have no $claimId, look in post for it
 		if($claimId == null){
 			$claimId = $this->input->post('claim_name_select');
+		}
+		
+		if($this->talkSpeaker->isTalkClaimed($talkId)){
+			$errorData = array(
+				'msg' => sprintf('
+					This talk has already been claimed! If you believe
+					this is in error, please contact the please <a style="color:#FFFFFF" href="/event/contact/">contact 
+					this event\'s admins</a>.
+				')
+			);
+			$this->template->write_view('content', 'msg_error', $errorData);
+	        $this->template->render();
 		}
 
 		// look at the claimId (talk_speaker.id) and talkId for a speaker
@@ -826,7 +850,14 @@ class Talk extends Controller
 			
 		}else{
 			$errorData = array(
-				'msg'=>'There was an error in your attempt to claim the talk ID #'.$talkId
+				'msg'=>sprintf('
+					There was an error in your attempt to claim the talk ID #%s
+					<br/>
+					There might already be a pending claim for this session.
+					<br/><br/>
+					If you would like more information on this error, please <a style="color:#FFFFFF" href="/event/contact/">contact 
+					this event\'s admins</a>.'
+				,$talkId)
 			);
 			$this->template->write_view('content', 'msg_error', $errorData);
 	        $this->template->render();

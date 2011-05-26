@@ -6,7 +6,7 @@
 	# It is commented to allow Virtual Hosts to determine this variable.
     SetEnv JOINDIN_DEBUG on
 
-	RewriteCond %{HTTP_HOST} ^www.(.*) [NC]
+	RewriteCond %{HTTP_HOST} ^www\.(.*) [NC]
     RewriteRule ^(.*)$ http://%1/$1 [R=301,L]
 
     #Removes access to the system folder by users.

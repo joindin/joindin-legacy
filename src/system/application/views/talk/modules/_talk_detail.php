@@ -4,11 +4,12 @@
 
 	<p class="info">
 		<strong>
-			<?php 
+			<?php
 			$speaker_names = array();
 			foreach($speakers as $speaker): ?>
 			<?php 
 			if(!empty($speaker->speaker_id) && $speaker->status!='pending'){
+				if(empty($speaker->full_name)){ $speaker->full_name = 'N/A'; }
 				$speaker_names[] = '<a href="/user/view/'.$speaker->speaker_id.'">'.$speaker->full_name.'</a>';
 			}else{
 				$speaker_names[] = $speaker->speaker_name;
@@ -28,7 +29,7 @@
 		<span align="left"><?php
 		if(!empty($speaker_img)){
 			foreach($speaker_img as $uid => $img){
-				echo '<a href="/user/view/'.$uid.'">'.str_replace('>','align="left" border="0" style="margin-right:10px;height:50px">',$img).'</a>'; 
+				echo '<a href="/user/view/'.$uid.'"><img src="'.$img.'" align="left" border="0" style="margin-right:10px;" height="50" width="50"></a>'; 
 			}
 		}
 		?></span>
