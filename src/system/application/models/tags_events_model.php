@@ -22,12 +22,18 @@ class Tags_events_model extends Model
 		$tagValue = trim(strtolower($tagValue));
 		
 		// see if we already have the tag for this event
-		$hasTag = (bool)$this->db->get_where('tags_events',array(
-			'event_id' => $eventId,
-			'tag'
-		))->result();
-		var_dump($hasTag);
-		die();
+		$this->db->select('tags.id')
+			->from('tags_events')
+			->join('tags','tags_events.tag_id = tags.id')
+			->where(array(
+				'event_id' 	=> $eventId,
+				'tag_value' => $tagValue
+			));
+		$hasTag = (bool)$this->db->get()->result();
+		if($hasTag){
+			// we already have it - don't add!
+			return true;
+		}
 		
 		// check to see if the tag exists first...
 		if($tagRecordId = $this->isTagInUse($tagValue)){
@@ -67,6 +73,24 @@ class Tags_events_model extends Model
 	}
 	
 	/**
+	 * Remove tags other than the ones specified
+	 *
+	 * @param int $eventId Event ID #
+	 * @param array $tagsInUse Tags list currently in use
+	 * @return null
+	 */
+	public function removeUnusedTags($eventId,$tagsInUse)
+	{
+		$currentTags = $this->getTags($eventId);
+		foreach($currentTags as $currentTag){
+			if(!in_array($currentTag,$tagsInUse)){
+				// TODO
+				//$this->removeTag($eventId)
+			}
+		}
+	}
+	
+	/**
 	 * Checks event tag list to see if it's in use by an event
 	 *
 	 * @param string $tagValue Tag value
@@ -84,6 +108,21 @@ class Tags_events_model extends Model
 			return false;
 		}
 	}
+	
+	/**
+	 * Get the event's current tags
+	 *
+	 * @param int $eventId Event ID #
+	 * @return array Tag information
+	 */
+	public function getTags($eventId)
+	{
+		$this->db->select('*')
+			->from('tags_events')
+			->join('tags','tags_events.tag_id = tags.id');
+		return $this->db->get()->result();
+	}
+	
 }
 
 ?>

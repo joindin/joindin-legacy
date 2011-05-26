@@ -430,6 +430,17 @@ class Event extends Controller
 				$event_detail[0]->event_icon = 'none.gif';
 			}
 
+			// get our event's tags
+			$tags = $this->tagsEvents->getTags($id);
+			$this->validation->tagged = null;
+			if (!empty($tags)) {
+				$tagList = '';
+				foreach($tags as $tag){
+					$tagList .= $tag->tag_value.', ';
+				}
+				$this->validation->tagged = substr($tagList,0,strlen($tagList)-2);
+			}
+			
 
             $arr = array(
                 'detail'       => $event_detail,
@@ -504,11 +515,13 @@ class Event extends Controller
             }
 
 			// see if we have tags
-			$tags = $this->input->post('tagged');
-			var_dump($tags);
+			$tags 		= $this->input->post('tagged');
+			$tagList 	= '';
 			foreach(explode(',',$tags) as $tag){
 				$this->tagsEvents->addTag($id,$tag);
+				$tagList .= $tag.', ';
 			}
+			$this->validation->tagged = substr($tagList,0,strlen($tagList)-1);
 
             // edit
             if ($id) {
