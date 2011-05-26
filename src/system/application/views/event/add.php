@@ -272,7 +272,7 @@ echo '<h2>'.$title.'</h2>';
 
 	<div class="row">
 		<label for="cfp-url-location">Call for Papers URL Location</label>
-		<?php echo form_input('cfp_url',$this->validation->cfp_url,'id="cfp_url"'); ?>
+		<?php echo form_input('cfp_url',$this->validation->event_cfp_url,'id="cfp_url"'); ?>
 		<div class="clear"></div>
 	</div>
 	</fieldset>

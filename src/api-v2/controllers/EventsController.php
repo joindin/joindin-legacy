@@ -23,7 +23,7 @@ class EventsController extends ApiController {
             switch($request->url_elements[4]) {
                 case 'talks':
                             $list = TalkModel::getTalksByEventId($db, $event_id, $resultsperpage, $start, $verbose);
-                            $list = TalkModel::addHypermedia($list, $request->host);
+                            $list = TalkModel::addHypermedia($list, $request);
                             break;
                 case 'comments':
                             $list = EventCommentModel::getEventCommentsByEventId($db, $event_id, $resultsperpage, $start, $verbose);
@@ -39,10 +39,9 @@ class EventsController extends ApiController {
                 $list = EventModel::getEventList($db, $resultsperpage, $start, $verbose);
             }
             // add links
-            $list = EventModel::addHypermedia($list, $request->host);
+            $list = EventModel::addHypermedia($list, $request);
         }
 
-        // TODO pagination will be required
         return $list;
 	}
 }
