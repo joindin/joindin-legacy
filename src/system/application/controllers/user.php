@@ -114,11 +114,22 @@ class User extends Controller
             // send them back to where they came from, either the referer if they have one, or the flashdata
             $referer = $this->input->server('HTTP_REFERER');
             $to = $this->session->flashdata('url_after_login') ? $this->session->flashdata('url_after_login') : $referer;
-            if (!strstr($to, 'user/login')) {
-                redirect($to);
-            } else {
-                redirect('user/main');
-            }
+            
+			// List different routes we don't want to reroute to
+			$bad_routes = array(
+				'user/login'
+				,'user/forgot'
+			);
+			foreach($bad_routes as $route)
+			{
+				if(strstr($to, $route))
+				{
+					redirect('user/main');
+				}
+			}
+			
+			// our $to is good, so redirect
+			redirect($to);
         }
     }
 
