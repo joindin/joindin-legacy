@@ -87,7 +87,7 @@ class User_attend_model extends Model {
 					talks t
 				where
 					t.ID = ts.talk_id and
-					ts.status != \'pending\' and
+					IFNULL(ts.status, 0) != \'pending\' and
 					ts.speaker_id = usr.ID and
 					t.event_id = %s
 				) is_speaker
