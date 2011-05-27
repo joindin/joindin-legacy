@@ -1993,8 +1993,14 @@ class Event extends Controller
 		$this->load->model('event_model','eventModel');
         $this->load->model('user_attend_model');
 		
-		$arr = array();
-		$arr['current_cfp'] = $this->eventModel->getCurrentCfp();
+		$this->load->helper('reqkey');
+		
+		$reqkey = buildReqKey();
+    $arr = array(
+				'current_cfp' => $this->eventModel->getCurrentCfp(),
+        'reqkey' => $reqkey,
+        'seckey' => buildSecFile($reqkey)
+    );
 
         // now add the attendance data
         $uid = $this->user_model->getID();
