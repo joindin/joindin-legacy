@@ -17,7 +17,7 @@
     ?>
     	<tr>
     		<th colspan="4">
-    			<h4 id="talks"><?php echo strtoupper(date('d.M.Y', $talk_section_date)); ?></h4>
+    			<h4 id="talks"><?php echo date('d.M.Y', $talk_section_date); ?></h4>
     		</th>
     	</tr>
     	<?php foreach($talk_section_talks as $ik=>$talk): 

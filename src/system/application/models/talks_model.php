@@ -564,14 +564,14 @@ class Talks_model extends Model {
 
 			// set a datetime string, ignoring talks at midnight and assuming they are without times
 			if($talk_datetime->format('H') != '0') { 
-				$date_string = 'd.M.Y \@ H:i'; 
+				$date_string = 'd.M.Y \a\t H:i'; 
 			} else { 
 				$date_string = 'd.M.Y'; 
 			}
 
 			// set date, time, and datetime display variables
-			$talk->display_date = strtoupper($talk_datetime->format('d.m.Y'));
-			$talk->display_datetime = strtoupper($talk_datetime->format($date_string));
+			$talk->display_date = $talk_datetime->format('d.m.Y');
+			$talk->display_datetime = $talk_datetime->format($date_string);
 			$talk->display_time = $talk_datetime->format('H:i');
 
 			$retval[] = $talk;
