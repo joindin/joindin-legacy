@@ -3,7 +3,20 @@
 	<h1><?php echo $detail->talk_title?></h1>
 
 	<p class="info">
-		<strong><?php echo $speaker_txt; ?></strong> (<?php echo $detail->display_datetime; ?>)
+		<strong>
+			<?php
+			$speaker_names = array();
+			foreach($speakers as $speaker): ?>
+			<?php 
+			if(!empty($speaker->speaker_id) && $speaker->status!='pending'){
+				if(empty($speaker->full_name)){ $speaker->full_name = 'N/A'; }
+				$speaker_names[] = '<a href="/user/view/'.$speaker->speaker_id.'">'.$speaker->full_name.'</a>';
+			}else{
+				$speaker_names[] = $speaker->speaker_name;
+			}
+			?>
+			<?php endforeach; echo implode(', ',$speaker_names); ?>
+		</strong> (<?php echo $detail->display_datetime; ?>)
 		<br/> 
 		<?php echo escape($detail->tcid); ?> at <strong><a href="/event/view/<?php echo $detail->event_id; ?>"><?php echo escape($detail->event_name); ?></a></strong> (<?php echo escape($detail->lang_name);?>)
 	</p>
@@ -15,8 +28,8 @@
 	<div class="desc">
 		<span align="left"><?php
 		if(!empty($speaker_img)){
-			foreach($speaker_img as $uid => $img){ 
-				echo '<a href="/user/view/'.$uid.'">'.str_replace('>','align="left" border="0" style="margin-right:10px;height:50px">',$img).'</a>'; 
+			foreach($speaker_img as $uid => $img){
+				echo '<a href="/user/view/'.$uid.'"><img src="'.$img.'" align="left" border="0" style="margin-right:10px;" height="50" width="50"></a>'; 
 			}
 		}
 		?></span>

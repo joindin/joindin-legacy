@@ -2,67 +2,47 @@
 
 class Gravatar {
 	
-	private $_apiKey 		= null;
-	private $_servicePath 	= 'http://www.gravatar.com/avatar';
-	private $_cacheDir		= null;
-	private $_imgTimeout	= 86400;
-	private $CI				= null;
+	private $_servicePath    = 'http://www.gravatar.com/avatar';
+	private $_servicePathSSL = 'https://secure.gravatar.com/avatar';
+	private $CI              = null;
 
 	public function __construct(){
-		$this->CI=$ci=&get_instance();
-		$this->_cacheDir=$this->CI->config->item('gravatar_cache_dir');
+		$this->CI=&get_instance();
 	}
 	
 	/**
-	 * Gets the user's image from the Gravatar site
-	 *
-	 * @param integer $userId User ID
-	 * @param string $userEmail[optional] User email address
+	 * Return Gravatar path for user
+	 * 
+	 * @param integer $userId User ID to get email from (if email not given)
+	 * @param string  $userEmail Email address to use for Gravatar
 	 */
-	public function getUserImage($userId,$userEmail=null){
+	public function displayUserImage($userId, $userEmail=null, $size=null){
 		if ($userId === false) {
 			return false;
 		}
-		
-		$hash=$this->buildEmailHash($userEmail);
-		$path=$this->_servicePath.'/'.$hash.'?d=mm';
-		
-		if(!$userEmail){
-			$this->CI->load->model('user_model');
+
+		// Get the user's email address
+		$this->CI->load->model('user_model');
+		if ($userEmail === null) {
 			$userDetail = $this->CI->user_model->getUser($userId);
 			if (empty($userDetail)) {
 				return false;
 			}
-			
 			$userEmail=$userDetail[0]->email;
 		}
-		
-		$imgData=file_get_contents($path);
-		$put=$this->_cacheDir.'/user'.$userId.'.jpg';
-		file_put_contents($put,$imgData);
-	}
-	
-	/**
-	 * Check for the user's image and return/display
-	 * 
-	 * @param integer $userId User ID
-	 * @param boolean $return Return as string or echo
-	 */
-	public function displayUserImage($userId,$return=false){
-		if ($userId === false) {
-			return false;
-		}
 
-		if(is_file($this->_cacheDir.'/user'.$userId.'.jpg')){
-			// Check the time on the file....
-			if(filectime($this->_cacheDir.'/user'.$userId.'.jpg')+$this->_imgTimeout<time()){
-				$this->getUserImage($userId);
-			}
-			$imgStr='<img src="/inc/img/user_gravatar/user'.$userId.'.jpg"/>';
-			if($return){ return $imgStr; }else{ echo $imgStr; }
-		}else{ 	
-			return false;
+		// Build the Gravatar URL
+		$hash=$this->buildEmailHash($userEmail);
+		if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+			$path=$this->_servicePathSSL.'/'.$hash.'?d=mm';
+		} else {
+			$path=$this->_servicePath.'/'.$hash.'?d=mm';
 		}
+		if ($size !== null && is_int($size)) {
+			$path.='&s=' . urlencode($size);
+		}
+		
+		return $path;
 	}
 	
 	/**
@@ -70,9 +50,20 @@ class Gravatar {
 	 *
 	 * @param string $userEmail User email address
 	 */
-	private function buildEmailHash($userEmail){
+	protected function buildEmailHash($userEmail){
 		$userEmail=strtolower(trim($userEmail));
 		return md5($userEmail);
+	}
+
+	public function decorateUsers(&$users, $size=null) {
+		foreach ($users as $id=>$user) {
+			if (isset($user->ID)) {
+				$users[$id]->gravatar = $this->displayUserImage($user->ID, (isset($user->email)?$user->email:null), $size);
+			} else if (isset($user->id)) {
+				$users[$id]->gravatar = $this->displayUserImage($user->id, (isset($user->email)?$user->email:null), $size);
+			}
+		}
+		return true; // Modifies array in-place, therefore no real return
 	}
 }
 

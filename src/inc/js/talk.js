@@ -20,7 +20,24 @@ talk = function (){
 	// Requires API
 	var _claimTalk = function(){
 		$('#claim_btn').click(function(){
-			var obj={ "talk_id": $('#talk_id').val() };
+			// see if they're logged in...
+			if($('#user_id').val().length<=0){
+				window.location.href = '/user/login';
+				return false;
+			}
+			
+			if($('#claim_btn').attr('name')=='single'){
+				return true;
+			}
+			
+			var obj={ 
+				"talk_id": $('#talk_id').val(),
+				"talk_speaker_id": $('#claim_name_select').val()
+			};
+			$('#claim_select_div').css('display','block');
+			$('#claim_btn').css('display','none');
+			return false;
+			
 			$('#claim_btn').html('Sending Claim >>');
 
 			apiRequest('talk','claim',obj, function(obj) {
@@ -28,10 +45,19 @@ talk = function (){
 				$('#claim_btn').css('display','none');
 				if(obj.msg=='Success'){
 					alert("Thanks for claiming this talk! You will be emailed when the claim is approved!");
+					$('#claim_select_div').css('display','none');
 				}else{
 					alert(obj.msg);
 				}
 				return false;
+			});
+			return false;
+		});
+		$('#claim-cancel-btn').click(function(){
+			$('#claim_select_div').css('display','none');
+			$('#claim_btn').css({
+				'display'	: 'inline',
+				'width'		: '90px'
 			});
 			return false;
 		});
@@ -73,6 +99,27 @@ talk = function (){
 			}
 		});
 	}
+	
+	/* remove old method from above for claim_btn */
+	var _claimButton = function(){
+		$('#claim-btn').click(function(){
+			var obj=new Object();
+			//obj.cid		= cid;
+			//obj.rtype	= rtype;
+			obj.talk_id = $('#talk_id').val();
+			obj.talk_speaker_id = $('#claim_name_select').val();
+			apiRequest('talk','claim',obj, function(obj) {
+				if(obj.msg=='Success'){
+					alert("Thanks for claiming this talk! You will be emailed when the claim is approved!");
+				}else{
+					alert(obj.msg);
+				}
+				return false;
+				return false;
+			});
+			return false;
+		});
+	}
 
 	return {
 		init: function(){
@@ -81,6 +128,7 @@ talk = function (){
 				_claimTalk();
 				_editTalkComment();
                 _changeAnonymous();
+				_claimButton();
 			});
 		}
 	}

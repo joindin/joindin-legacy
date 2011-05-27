@@ -17,7 +17,10 @@ here's what we need
             	<h1><?php echo escape($event_detail->event_name)?> <?php echo (($event_detail->pending==1) ? '(Pending)':'')?></h1>
             
             	<p class="info">
-					<strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event_detail->event_start, $event_detail->event_tz_cont.'/'.$event_detail->event_tz_place, 'M j, Y'); ?></strong> - <strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event_detail->event_end, $event_detail->event_tz_cont.'/'.$event_detail->event_tz_place, 'M j, Y'); ?></strong>
+					<strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event_detail->event_start, $event_detail->event_tz_cont.'/'.$event_detail->event_tz_place, 'M j, Y'); ?></strong>
+                    <?php if ($event_detail->event_start+86399 != $event_detail->event_end) { ?>
+                        - <strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event_detail->event_end, $event_detail->event_tz_cont.'/'.$event_detail->event_tz_place, 'M j, Y'); ?></strong>
+                    <?php } ?>
             		<br/> 
             		<strong><?php echo escape($event_detail->event_loc); ?></strong>
 					<?php if($event_detail->private==1): ?>
@@ -48,9 +51,6 @@ here's what we need
             		<a class="btn<?php echo $attend ? ' btn-success' : ''; ?>" id="mark-attending" href="javascript:void(0);" onclick="return markAttending(this,<?php echo $event_detail->ID?>,<?php echo $event_detail->event_end<time() ? 'true' : 'false'; ?>);"><?php echo $link_txt?></a>
             		<span class="attending"><strong><span class="event-attend-count-<?php echo $event_detail->ID; ?>"><?php echo (int)$attend_ct; ?></span> people</strong> <?php echo (time()<=$event_detail->event_end) ? ' attending so far':' said they attended'; ?>. <a href="javascript:void(0);" id="toggle-attendees" class="show">Show &raquo;</a></span>
             	</p>
-            </div>
-            <div class="func">
-            	<a class="icon-ical" href="/event/ical/<?php echo $event_detail->ID; ?>">Add to calendar</a>
             </div>
         	<div class="clear"></div>
 

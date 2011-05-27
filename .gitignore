@@ -5,3 +5,4 @@
 build/
 nbproject/
 *.kpf
+.idea

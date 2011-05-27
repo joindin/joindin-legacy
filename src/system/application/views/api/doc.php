@@ -1,3 +1,5 @@
+<?php menu_pagetitle('API Documentation'); ?>
+
 <style>
 b.req_title { color: #767676; }
 b.req_name { font-size: 12px; }
@@ -5,8 +7,11 @@ b.req_name { font-size: 12px; }
 
 <h1 style="margin-top:0px;margin-bottom:2px;color:#B86F09"><?php echo $this->config->item('site_name'); ?> API</h1>
 
+<p><b>There is a new API under development.  <a href="/api/v2docs">click here</a> to find out more about the replacement RESTful API.  Both APIs are currently supported</b></p>
+
+
 <p>
-The <?php echo $this->config->item('site_name'); ?> API is XML based and allows for the fetching and updating of information in the service's database. Here's an example structure each request should follow:
+The <?php echo $this->config->item('site_name'); ?> API allows for the fetching and updating of information in the service's database. You can use both XML and JSON messaging to communicate with it. Here's an XML-based example structure each request should follow:
 </p>
 
 <h3>Sample Request</h3>
@@ -44,6 +49,9 @@ or, if you reprefer JSON:
 <p>
 In our above examples, you can see the <b>"auth"</b> section where you would replace $username and $password with your login information - the auth section only needs to be included where authentication is required for that action. The password in the auth section should be md5. Below that there's the <b>"action"</b> section which indicates which operation the system should perform. In this example we're making a "getdetail" call to grab the information for the given event ID.
 </p>
+<p>
+<?php $msg='<b>Please note:</b> be sure to send a "Content-Type" header along with your request to ensure the service parses the message correctly. By default, it will assume the message is XML formatted.</p>';
+$this->load->view('msg_info', array('msg' => $msg)); ?>
 <br/><br/>
 <h3>Types</h3>
 <p>
@@ -248,6 +256,7 @@ Below are the request types that you can make to the API including input and out
 	<ul>
 		<li>event_id: integer, id of the event to add the comment to
 		<li>comment: string, comments to submit
+        <li>source: string, optional source application of comment (defaults to: api)
 	</ul>
 <b class="req_title">Output:</b>
 	<ul>
@@ -425,6 +434,7 @@ results are returned in date order with newest first.<br/>
 		<li>rating: integer, rating to give the talk (range of 1-5)
 		<li>comment: string, comments to submit
 		<li>private: integer, whether to make the comment private or not
+        <li>source: string, optional source application of comment (defaults to: api)
 	</ul>
 <b class="req_title">Output:</b>
 	<ul>

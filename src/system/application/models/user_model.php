@@ -87,7 +87,11 @@ class User_model extends Model {
 			}else{ return false; }
 		}else{ return false; }
 		
-		$q=$this->db->get_where('user_admin',array('uid'=>$uid,'rid'=>$eid,'rtype'=>'event'));
+		$this->db->select('*');
+		$this->db->from('user_admin');
+		$this->db->where(array('uid'=>$uid,'rid'=>$eid,'rtype'=>'event','IFNULL(rcode,0) !='=>'pending'));
+		$q = $this->db->get();
+		
 		$ret=$q->result();
 		return (isset($ret[0]->ID) || $this->isSiteAdmin()) ? true : false;
 	}
@@ -101,33 +105,21 @@ class User_model extends Model {
 	 */
 	function isAdminTalk($tid){
 		if($this->isAuth()){
-			$ad=false;
-			$uid=$this->session->userdata('ID');
-			$q=$this->db->get_where('user_admin',array('uid'=>$uid,'rid'=>$tid,'rtype'=>'talk'));
-			$ret=$q->result();
-			//return (isset($ret[0]->ID)) ? true : false;
-			if(isset($ret[0]->ID)){ $ad=true; }
+			$ad		= false;
+			$uid	= $this->session->userdata('ID');
+			
+			$this->db->select('*');
+			$this->db->from('talk_speaker');
+			$this->db->where(array('speaker_id'=>$uid,'talk_id'=>$tid,'IFNULL(status,0) !='=>'pending'));
+			$query = $this->db->get();
+			$talk	= $query->result();
+			if(isset($talk[0]->ID)){ $ad=true; }
 			
 			//also check to see if the user is an admin of the talk's event
-			$ret=$this->talks_model->getTalks($tid); //print_r($ret);
-			if(isset($ret[0]->event_id) && $this->isAdminEvent($ret[0]->event_id)){ $ad=true; }
+			$talkDetail = $this->talks_model->getTalks($tid); //print_r($ret);
+			if(isset($talkDetail[0]->event_id) && $this->isAdminEvent($talkDetail[0]->event_id)){ $ad=true; }
 			return $ad;
 		}else{ return false; }
-	}
-	
-	/**
-	 * Check to see if the currently logged in user can view the private
-	 * comments on the given event/talk combo
-	 *
-	 * @param $eid integer Event ID
-	 * @param $tid integer Talk ID
-	 */
-	public function canViewPrivateComments($eid,$tid){
-		if(
-			$this->isAdminEvent($eid) ||
-			$this->isSiteAdmin() || 
-			$this->isAdminTalk($tid)
-		){ return true; }else{ return false; }
 	}
 	
 	/**
@@ -233,11 +225,15 @@ class User_model extends Model {
 	/**
 	 * Find other users of the system that were speakers at events the given user was a speaker at too
 	 *
-	 * @param $uid integer User ID
-	 * @param $limit[optional] integer Limit the number of results returned
-	 * @return array Return array of user's information (user_id, event_id, username, full_name)
+	 * @param integer $uid   User ID
+	 * @param integer $limit [optional] integer Limit the number of results returned
+	 * @return array         Return array of user's information (user_id, event_id, username, full_name)
 	 */
 	function getOtherUserAtEvt($uid,$limit=15){
+		if (!ctype_digit((string)$limit)) {
+			throw new Exception('Expected $limit to be a number but received '.$limit);
+		}
+
 		//find speakers (users attending too?) that have spoken at conferences this speaker did too
 		$other_speakers=array();
 		$sql=sprintf("
@@ -248,28 +244,29 @@ class User_model extends Model {
 				u.full_name
 			from
 				user u,
-				user_admin ua,
-				talks t
+				talks t,
+				talk_speaker ts
 			where
-				ua.uid=u.ID and ua.rtype='talk' and ua.rid=t.ID and
+				u.ID <> %s and
+				u.ID = ts.speaker_id and
+				t.ID = ts.talk_id and
 				t.event_id in (
-					select 
-						distinct it.event_id 
+					select
+						distinct t.event_id
 					from
-						user_admin iua,
-						talks it
+						talk_speaker ts,
+						talks t
 					where
-						iua.uid=%s and
-						iua.rtype='talk' and
-						iua.rid=it.ID
-				) and
-				u.ID!=%s
+						ts.speaker_id = %s and
+						t.ID = ts.talk_id
+				)
 			order by rand()
-			limit %s
+			limit %s	
 		",$uid,$uid,$limit);
-		$q=$this->db->query($sql);
-		$ret=$q->result();
-		foreach($ret as $k=>$v){ $other_speakers[$v->user_id]=$v; }
+		$query 		= $this->db->query($sql);
+		$speakers	= $query->result();
+		
+		foreach($speakers as $speaker){ $other_speakers[$speaker->user_id]=$speaker; }
 		return $other_speakers;
 	}
 	
@@ -281,6 +278,11 @@ class User_model extends Model {
 	 * @param $end[optional] Ending point for search (not currently used)
 	 */
 	function search($term,$start=null,$end=null){
+		$ci = &get_instance();
+		$ci->load->model('talks_model','talksModel');
+		$ci->load->model('user_attend_model','userAttend');
+		
+		$term = mysql_real_escape_string(strtolower($term));
 		$sql=sprintf("
 			select
 				u.username,
@@ -289,17 +291,20 @@ class User_model extends Model {
 				u.admin,
 				u.active,
 				u.last_login,
-				u.email,
-				(select count(ID) from user_admin where rtype='talk' and uid=u.ID) talk_count,
-				(select count(ID) from user_attend where uid=u.ID) event_count
+				u.email
 			from
 				user u
 			where
 				lower(username) like '%%%s%%' or
 				lower(full_name) like '%%%s%%'
-		",strtolower($term),strtolower($term));
-		$q=$this->db->query($sql);
-		return $q->result();
+		",$term,$term);
+		$query	= $this->db->query($sql);
+		$results = $query->result();
+		foreach($results as $key => $user){
+			$results[$key]->talk_count 	= count($ci->talksModel->getSpeakerTalks($user->ID));
+			$results[$key]->event_count	= count($ci->userAttend->getUserAttending($user->ID));
+		}
+		return $results;
 	}
 }
 ?>

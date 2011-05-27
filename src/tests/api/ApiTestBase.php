@@ -1,7 +1,5 @@
 <?php
-	require_once 'PHPUnit/Framework.php';
-	 
-	class ApiTestBase extends PHPUnit_Framework_TestCase {
+	class ApiTestBase /*extends PHPUnit_Framework_TestCase*/ {
 		
 		public function testTest() {
 			$this->assertTrue(true);
@@ -62,7 +60,7 @@
 			}
 
 			$request = new HttpRequest($url, HttpRequest::METH_POST);
-			$request->addRawPostData($payload);
+			$request->setBody($payload);
 			if($format == 'xml') {
 				$request->setHeaders(array('Content-Type'=>'text/xml'));
 			} else {

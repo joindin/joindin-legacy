@@ -28,7 +28,7 @@ class Talk_track_model extends Model {
 			where
 				tt.talk_id=%s and
 				tt.track_id=et.ID
-		',$sid);
+		', $this->db->escape($sid));
 		$q=$this->db->query($sql);
 		return $q->result();
 	}

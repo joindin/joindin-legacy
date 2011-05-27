@@ -16,17 +16,6 @@ foreach($hot_events as $k=>$v){
 </div>
 <?php endif; ?>
 
-<?php if (count($upcoming_events) > 0): ?>
-<div class="box">
-<h2 class="h1 icon-event">Upcoming Events <a class="more" href="/event/upcoming">More &raquo;</a></h2>
-<?php
-foreach($upcoming_events as $k=>$v){
-    $this->load->view('event/_event-row', array('event'=>$v));
-}
-?>
-</div>
-<?php endif; ?>
-
 <?php if (count($talks) > 0): ?>
 <div class="box">
 <h2 class="h1 icon-talk">Popular Talks</h2>
@@ -38,9 +27,4 @@ foreach($talks as $k=>$v){
 </div>
 <?php endif; ?>
 
-<script type="text/javascript"><!--
-google_ad_client = "pub-2135094760032194";
-/* 468x60, created 11/5/08 */
-google_ad_slot = "4582459016"; google_ad_width = 468; google_ad_height = 60; //-->
-</script>
-<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
+<?php $this->load->view('main/ads'); ?>

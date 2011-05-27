@@ -5,7 +5,7 @@ the table structure, this seed data cannot be added.
 */
 	
 /* Add in some sample users */
-/* John Doe is a normal site user, is password is "password" */
+/* John Doe is a normal site user, his password is "password" */
 insert into user (
 	username,password,
 	email,last_login,
@@ -39,7 +39,7 @@ insert into user (
 SELECT @suserid:=LAST_INSERT_ID();
 /* ----------------------------------*/
 
-/* Insert sample event data */
+/* Insert sample past event data */
 insert into events (
 	event_name,
 	event_start,event_end,
@@ -53,6 +53,48 @@ insert into events (
 	ID
 ) values (
 	'Test Event #1',
+	(select unix_timestamp()-345600),
+	(select unix_timestamp()-259200),
+	'','','New York, NY',
+	'This is a sample event from the seed load script',
+	'seedload',
+	'','seedload_hash',
+	'http://sampledomain.com',
+	'','',0,
+	0,0,1,NULL
+);
+SELECT @pevtid:=LAST_INSERT_ID();
+/* ----------------------------------*/
+
+/* Insert past event attendees */
+insert into user_attend (
+    uid, eid, ID
+) values (
+    @fuserid,
+    @pevtid,
+    NULL
+),
+(
+    @suserid,
+    @pevtid,
+    NULL
+);  
+/* ----------------------------------*/
+
+/* Insert sample event data */
+insert into events (
+	event_name,
+	event_start,event_end,
+	event_lat,event_long,
+	event_loc,event_desc,
+	event_stub,
+	event_icon,event_hashtag,
+	event_href,event_cfp_start,event_cfp_end,
+	event_voting,private,
+	pending,active,
+	ID
+) values (
+	'Test Event #2',
 	unix_timestamp(),
 	(select unix_timestamp()+86400),
 	'','','Dallas, Tx',
@@ -75,14 +117,15 @@ insert into event_comments (
 	active,
 	cname,
 	comment_type,
-	ID
+	ID,
+	source
 ) values (
 	@evtid,
-	'This is a sample comment on the Test Event #1',
+	'This is a sample comment on the Test Event #2',
 	unix_timestamp(),
 	@fuserid,
 	1,
-	'',NULL,NULL
+	'John Doe',NULL,NULL,'api'
 );
 /* ----------------------------------*/
 
@@ -101,7 +144,7 @@ insert into talks (
 	'This is sample talk #1 from the seed load. This description is here to provide an example.',
 	1,
 	NULL,
-	'en',
+	1,
 	NULL
 );
 SELECT @ftalkid:=LAST_INSERT_ID();
@@ -110,11 +153,24 @@ SELECT @ftalkid:=LAST_INSERT_ID();
 insert into talk_speaker (
 	talk_id,
 	speaker_name,
+	speaker_id,
+	status,
 	ID
 )values(
 	@ftalkid,
 	'John Doe',
+	@fuserid,
+	NULL,
 	NULL
+);
+
+/* Insert talk category info for the talk */
+insert into talk_cat (
+    talk_id, cat_id, ID
+) values (
+    @ftalkid,
+    1,
+    NULL
 );
 
 insert into talks (
@@ -131,7 +187,7 @@ insert into talks (
 	'This is sample talk #2 from the seed load. This description is here to provide an example.',
 	1,
 	NULL,
-	'en',
+	1,
 	NULL
 );
 SELECT @stalkid:=LAST_INSERT_ID();
@@ -145,6 +201,15 @@ insert into talk_speaker (
 	@stalkid,
 	'Jane Doe',
 	NULL
+);
+
+/* Insert talk category info for the talk */
+insert into talk_cat (
+    talk_id, cat_id, ID
+) values (
+    @stalkid,
+    1,
+    NULL
 );
 
 /* ----------------------------------*/

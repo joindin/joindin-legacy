@@ -21,7 +21,8 @@ status and ALL should be run for a new install:
 	-> doc/db/patch*.sql
 		Numbered patch files to run in order after running init_db.  All database changes to be
 		managed using these, init_db does NOT get updated.  For more information on this approach,
-		see http://www.lornajane.net/posts/2010/Simple-Database-Patching-Strategy
+		see http://www.lornajane.net/posts/2010/Simple-Database-Patching-Strategy. If patch 17
+		fails it can be skipped.
 		
 	-> doc/db/seed_countries.sql
 		Some seed data for the countries table (needed for timezone selection)
@@ -39,8 +40,8 @@ Finally, there's some other scripts that come with the source to make things eas
 	- Release of CodeIgniter
 	- Sample cron jobs (in /src/scripts)
 	
-You can find more on github: http://github.com/enygma/joind.in
-Issues should be filed at: http://github.com/enygma/joind.in/issues
+You can find more on github: http://github.com/joindin/joind.in
+Issues should be filed at: http://joindin.jira.com/
 
 See LICENSE file for license information for this software
 (located in /doc/LICENSE)
@@ -57,6 +58,9 @@ The following are the steps you'll need to correctly install the software:
 
 - In the /src/system/cache directory, create a web server-writeable 
 	directory called "ctokens"
+
+- In the /src/inc/img directory, create a web server writable directory
+    called "user_gravatar"
 	
 - In your src/system/application/config directory:
 	> Make a database.php file using the database.php.dist as a guide
@@ -70,15 +74,33 @@ If you'd like some seed data, you can use the seed.sql to load in a few events,
 users and talks. You'll also need to load in the seed_countries.sql file to
 get the complete list of countries for the event details.
 
+The default password for users is "password"
+
+
 Extensions
 ###################
-Make sure you have the following extensions installed and configured
+In order to run tests make sure you have the following extensions installed and
+configured. This library can be ignored if you are not planning on running
+tests.
 - pecl_http
   $ pecl install pecl_http
   
   in php.ini add:
   > linux: extension=http.so
   > windows: extension=http.dll
+
+Debugging
+#############
+By default the application is in production mode. This primarily means that
+error messages and notices are suppressed.
+
+To allow errors and notices to be shown on the site you have to change the
+environment variable JOINDIN_DEBUG to the value 'on'. It is discouraged to
+do this on production environments as this will allow visitors to see any
+errors produced by the site.
+
+The JOINDIN_DEBUG environment variable is controlled from the accompanying
+.htaccess file.
 
 Tests
 #############
@@ -89,4 +111,3 @@ root directory simply run "phing phpunit" to run the tests.
 
 Note: The API tests actually call the service externally and rely on pecl_http
 being installed to run.
-

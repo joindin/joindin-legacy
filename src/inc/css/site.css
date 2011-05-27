@@ -775,6 +775,7 @@ a {
 }
 
 /*#ctn .main */form input[type=text],
+/*#ctn .main */form input[type=button],
 /*#ctn .main */form input[type=password] {
 	display: block;
 	width: 98%;
@@ -982,6 +983,17 @@ a {
 .calendar .calendar-day-selected a {
 	font-weight: bold;
 	color: #fff;
+}
+
+span.ends_soon {
+	color: #F40C00;
+	font-size: 10px;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+.fieldset-toggle {
+	font-size: 11px;
 }
 
 /***/

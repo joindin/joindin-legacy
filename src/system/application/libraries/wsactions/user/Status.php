@@ -17,7 +17,7 @@ class Status {
 		}else{ return false; }
 	}
 	//-----------------------
-	public function function run(){
+	public function run(){
 		$this->CI->load->model('user_model','um');
 		$uid=$this->xml->action->uid;
 		
