@@ -53,7 +53,7 @@ class Addcomment extends BaseWsRequest {
 				return $this->throwError('Invalid talk ID!');
 			}
 			// Ensure that they can comment on it (time-based)
-			if(!isset($talk_detail[0]->allow_comments) || !$talk_detail[0]->allow_comments){
+			if(empty($talk_detail[0]->allow_comments)){
 				return $this->throwError('Comments not allowed for this talk!');
 			}
 			// Ensure that speakers cannot rate their own talks
