@@ -16,6 +16,12 @@ function __autoload($classname) {
 	} elseif(preg_match('/[a-zA-Z]+View$/',$classname)) {
 		include('../views/' . $classname . '.php');
 		return true;
+	} else {
+        $class_list = array('Request');
+        if(in_array($classname, $class_list)) {
+            include('../inc/' . $classname . '.php');
+            return true;
+        }
 	}
 }
 
@@ -37,26 +43,15 @@ $ji_db = new PDO('mysql:host=' . $db['default']['hostname'] .
     $db['default']['password']);
 
 // collect URL and headers
-$request = new Stdclass();
-$request->verb = $_SERVER['REQUEST_METHOD'];
-if(isset($_SERVER['PATH_INFO'])) {
-    $request->url_elements = explode('/',$_SERVER['PATH_INFO']);
-    $request->path_info = $_SERVER['PATH_INFO'];
-}
-parse_str($_SERVER['QUERY_STRING'], $parameters);
-$request->accept = explode(',', $_SERVER['HTTP_ACCEPT']);
-$request->host = $_SERVER['HTTP_HOST'];
-$request->parameters = $parameters;
+$request = new Request();
 
 // set some default parameters
-$request->parameters['resultsperpage'] = isset($request->parameters['resultsperpage']) 
-    ? $request->parameters['resultsperpage'] : 20;
-$request->parameters['start'] = isset($request->parameters['start']) 
-    ? $request->parameters['start'] : 0;
+$request->parameters['resultsperpage'] = $request->getParameter('resultsperpage', 20);
+$request->parameters['start'] = $request->getParameter('start', 0);
 
-// Input Handling: parameter takes precedence
-if(isset($request->parameters['format'])) {
-    switch($request->parameters['format']) {
+// Input Handling: parameter takes precedence, then check the accept headers 
+// with final fall back to json 
+switch ($request->getParameter('format')) {
         case 'html':
             $request->view = new HtmlView();
             break;
@@ -65,34 +60,45 @@ if(isset($request->parameters['format'])) {
             break;
         default:
             // use the accept headers instead
+            if ($request->accepts('text/html')) {
+                $request->view = new HtmlView();
+            } elseif ($request->accepts('application/json')) {
+                $request->view = new JsonView();
+            } else {
+                $request->view = new JsonView();
+            }
             break;
-    }
-}
-// Input Handling: then check the accept headers, fall back to json 
-if(!isset($request->view)) {
-    // TODO handle other items in the accept header
-    switch($request->accept[0]) {
-        case 'text/html':
-            $request->view = new HtmlView();
-            break;
-        default:
-            $request->view = new JsonView();
-            break;
-    }
+    
 }
 
-if(isset($request->url_elements[1])) {
-    // check API version
-    switch($request->url_elements[1]) {
-        case 'v2':
-                    // default routing
-                    break;
-        default:
-                    throw new Exception('API version must be specified', 404);
-                    break;
-    }
+$version = $request->getUrlElement(1);
+switch ($version) {
+    case 'v2':
+        // default routing
+        $return_data = routeV2($request, $ji_db);
+        break;
+    
+    case '':
+        // paramerter not specified
+        $defaultController = new DefaultController();
+        $return_data = $defaultController->handle($request, $ji_db);
+        break;
+    
+    default:
+        // unexpected version
+        throw new Exception('API version must be specified', 404);
+        break;
+}
 
-    if(isset($parameters['oauth_version']) && ($request->url_elements[2] != 'oauth')) {
+// Handle output
+// TODO sort out headers, caching, etc
+$request->view->render($return_data);
+exit;
+
+function routeV2($request, $ji_db)
+{
+    $return_data = false;
+    if(isset($request->parameters['oauth_version']) && ($request->url_elements[2] != 'oauth')) {
         $oauth_model = new OAuthModel();
         $oauth_model->in_flight = true;
         $oauth_model->setUpOAuthAndDb($ji_db);
@@ -111,12 +117,8 @@ if(isset($request->url_elements[1])) {
     } else {
         throw new Exception('Request not understood', 404);
     }
-} else {
-    $defaultController = new DefaultController();
-    $return_data = $defaultController->handle($request, $ji_db);
+    
+    return $return_data;
 }
 
-// Handle output
-// TODO sort out headers, caching, etc
-$request->view->render($return_data);
 
