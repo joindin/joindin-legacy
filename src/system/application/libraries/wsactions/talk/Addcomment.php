@@ -56,7 +56,11 @@ class Addcomment extends BaseWsRequest {
 			if(!isset($talk_detail[0]->allow_comments) || !$talk_detail[0]->allow_comments){
 				return $this->throwError('Comments not allowed for this talk!');
 			}
-			
+			// Ensure that speakers cannot rate their own talks
+			if(isset($talk_detail[0]->uid) && ($user[0]->id === $talk_detail[0]->uid) && !empty($in['rating'])){
+				return $this->throwError('Speakers are not allowed to rate their own talks!');
+			}
+
 
 			$arr=array(
 				'talk_id'	=> $in['talk_id'],
