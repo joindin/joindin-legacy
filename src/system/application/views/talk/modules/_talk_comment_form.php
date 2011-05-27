@@ -52,13 +52,34 @@
 </div>
 <?php if (isset($claimed[0]->userid) && $claimed[0]->userid != 0 && user_get_id() == $claimed[0]->userid): ?>
 <?php else: ?>
-<div class="row">
-	<label for="rating">Rating</label>
-	<div class="rating">
-	    <?php echo rating_form('rating', $this->validation->rating); ?>
-	</div>
-	<div class="clear"></div>
-</div>
+
+   <?php if ($alreadyRated) : ?>
+            <div class="row">
+                <label for="rating">Rating</label>
+                <div class="rating" id="ratingbar-norating">
+                  You already rated this talk.
+                </div>
+                <div class="rating" id ="ratingbar" style='display:none'>
+                    <?php echo rating_form('rating', $this->validation->rating); ?>
+                </div>
+                <div class="clear"></div>
+            </div>
+
+
+   <?php else: ?>
+            <div class="row">
+                <label for="rating">Rating</label>
+                <div class="rating" style='display:none' id ="ratingbar-norating">
+                  You already rated this talk.
+                </div>
+                <div class="rating" id ="ratingbar">
+                    <?php echo rating_form('rating', $this->validation->rating); ?>
+                </div>
+                <div class="clear"></div>
+            </div>
+
+   <?php endif; ?>
+   </div>
 <?php endif; ?>
 <div class="row row-buttons">
 	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Submit Comment'); ?>
