@@ -44,13 +44,14 @@ if (empty($comments)) {
 		<a href="http://twitter.com/<?php echo $v->twitter_username; ?>"><img src="/inc/img/twitter_share_icon.gif" style="margin-top:10px" width="20"/></a>
 		<?php endif; ?>
 		<?php if(!empty($v->gravatar)){ 
-			echo '<a href="/user/view/'.$v->user_id.'">'.str_replace('/>','height="45" align="right" style="margin:10px"/>',$v->gravatar).'</a>'; } 
+		echo '<a href="/user/view/'.$v->user_id.'"><img src="'.$v->gravatar.'" height="45" align="right" style="margin:10px"/></a>'; } 
 		?>
 	<?php endif; ?>
 	</div>
 	<div class="text">
     	<p class="info">
     		<strong><?php echo date('M j, Y, H:i',$v->date_made); ?></strong> by <strong><?php echo $uname; ?></strong>
+            <?php echo !empty($v->source)?"via ".escape($v->source) : "" ?>
     	<?php if ($v->private == 1): ?>
     		<span class="private">Private</span>
     	<?php endif; ?>

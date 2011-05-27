@@ -158,7 +158,7 @@ SQL
 	function getEventTalks($id,$includeEventRelated = true, $includePrivate = false) {
 		$this->load->helper("events");
 		$this->load->helper("talk");
-		$private=($includePrivate) ? '' : ' and private!=1';
+		$private=($includePrivate) ? '' : ' and ifnull(private,0)!=1';
 		$sql='
 			select
 				talks.talk_title,
@@ -235,6 +235,7 @@ SQL
 
 	public function getEvents($where=NULL, $order_by = NULL, $limit = NULL) {
 		$sql = 'SELECT * ,
+		    (select if(event_cfp_start IS NOT NULL AND event_cfp_start > 0 AND '.mktime(0,0,0).' BETWEEN event_cfp_start AND event_cfp_end, 1, 0)) as is_cfp,
 			(select count(*) from user_attend where user_attend.eid = events.ID) as num_attend,
 			(select count(*) from event_comments where event_comments.event_id = events.ID) as num_comments, abs(0) as user_attending, '
 		  			.' abs(datediff(from_unixtime(events.event_start), from_unixtime('.mktime(0,0,0).'))) as score,
@@ -242,7 +243,7 @@ SQL
                 WHEN (((events.event_start - 86400) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
                 END as allow_comments
-			FROM events
+			FROM `events`
 			WHERE active = 1 AND (pending = 0 OR pending IS NULL)';
 
 		if($where) {
@@ -469,8 +470,8 @@ SQL
 	{
         $where = 'event_cfp_start <= ' . mktime(0,0,0, date('m'), date('d'), date('Y')) . ' AND '
             . 'event_cfp_end >= ' . mktime(0,0,0, date('m'), date('d'), date('Y'));
-        $order_by = "events.event_cfp_end desc";
-		$result = $this->getEvents($where, $order_by);
+        $order_by = "events.event_cfp_end asc";
+		$result = $this->getEvents($where, $order_by, null);
         return $result;
 	}
 
@@ -481,7 +482,7 @@ SQL
 		//if we have the dates, limit by them
 		$attend = '(SELECT COUNT(*) FROM user_attend WHERE eid = events.ID AND uid = ' . $this->db->escape((int)$this->session->userdata('ID')) . ')as user_attending';
 
-		$this->db->select('events.*, COUNT(user_attend.ID) AS num_attend, COUNT(event_comments.ID) AS num_comments, ' . $attend);
+		$this->db->select('events.*, COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments, ' . $attend);
 		$this->db->from('events');
 		$this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
 		$this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');
@@ -489,10 +490,11 @@ SQL
 		if($start>0){ $this->db->where('event_start >=', $start); }
 		if($end>0){ $this->db->where('event_start <=', $end); }
 
-		$this->db->like('event_name',$term);
-		$this->db->or_like('event_desc',$term);
+        $term = '%'.$term.'%';
+        $this->db->where(sprintf('(event_name LIKE %1$s OR event_desc LIKE %1$s)', $this->db->escape($term)));
 		$this->db->limit(10);
 		$this->db->group_by('events.ID');
+        $this->db->order_by('event_start DESC');
 
 		$q=$this->db->get();
 		return $q->result();

@@ -1,4 +1,9 @@
 <?php
+// predefine some vars
+
+$msg = '';
+$showFields = array();
+
 //$tz_list=array('Select Continent');
 //foreach($tz as $k=>$v){ $tz_list[(string)$v->offset]=floor((string)$v->offset/3600); }
 
@@ -61,9 +66,10 @@ echo '<h2>'.$title.'</h2>';
 	    $start_mo[$v]=$m; }
 	foreach(range(1,32) as $v){ $start_day[$v]=$v; }
 	foreach(range($min_start_yr,date('Y')+5) as $v){ $start_yr[$v]=$v; }
-	echo form_dropdown('start_mo',$start_mo,$this->validation->start_mo);
-	echo form_dropdown('start_day',$start_day,$this->validation->start_day);
-	echo form_dropdown('start_yr',$start_yr,$this->validation->start_yr);
+	echo form_dropdown('start_mo',  $start_mo,  $this->validation->start_mo,    'id="start_mo"');
+	echo form_dropdown('start_day', $start_day, $this->validation->start_day,   'id="start_day"');
+	echo form_dropdown('start_yr',  $start_yr,  $this->validation->start_yr,    'id="start_yr"');
+    echo form_datepicker('start_day', 'start_mo', 'start_yr');
 	?>
 	&nbsp;&nbsp;
 	</td>
@@ -78,6 +84,7 @@ echo '<h2>'.$title.'</h2>';
 	echo form_dropdown('end_mo',$end_mo,$this->validation->end_mo);
 	echo form_dropdown('end_day',$end_day,$this->validation->end_day);
 	echo form_dropdown('end_yr',$end_yr,$this->validation->end_yr);
+    echo form_datepicker('end_day', 'end_mo', 'end_yr');
 	?>
 	</td></tr>
 	</table>
@@ -109,8 +116,11 @@ echo '<h2>'.$title.'</h2>';
 	</div>
     <div class="clear"></div>
     <div class="row">
-    	<label for="event_location">Venue name:</label>
-	<?php echo form_input('event_loc',$this->validation->event_loc); ?>
+    	<label for="event_loc">Venue name:</label>
+	<?php echo form_input(
+        array('name'=>'event_loc',
+            'id'=>'event_loc'
+            ),$this->validation->event_loc); ?>
     </div>
     <div class="clear"></div>
 
@@ -214,7 +224,12 @@ echo '<h2>'.$title.'</h2>';
 	<span style="color:#3567AC;font-size:11px">Seperate tags with commas</span>
     </div>
     <div class="clear"></div>
-
+    
+    <?php
+    	if($this->validation->cfp_checked)
+    		$showFields[] = 'cfp-fields-toggle-link';
+    ?>
+    
 	<h4>Call for Papers <a id="cfp-fields-toggle-link" class="fieldset-toggle" href="#">show</a></h4>
 	<fieldset id="cfp-fields">
 	<div class="row">
@@ -238,6 +253,7 @@ echo '<h2>'.$title.'</h2>';
 		echo form_dropdown('cfp_start_mo',$cfp_start_mo,date('m',$this->validation->event_cfp_start),'id="cfp_start_mo" '.$js);
 		echo form_dropdown('cfp_start_day',$cfp_start_day,date('d',$this->validation->event_cfp_start),'id="cfp_start_day" '.$js);
 		echo form_dropdown('cfp_start_yr',$cfp_start_yr,date('Y',$this->validation->event_cfp_start),'id="cfp_start_yr" '.$js);
+        echo form_datepicker('cfp_start_day', 'cfp_start_mo', 'cfp_start_yr');
 		?>
 	 <div class="clear"></div>
     </div>
@@ -255,13 +271,14 @@ echo '<h2>'.$title.'</h2>';
 		echo form_dropdown('cfp_end_mo',$cfp_end_mo,date('m',$this->validation->event_cfp_end),'id="cfp_end_mo" '.$js);
 		echo form_dropdown('cfp_end_day',$cfp_end_day,date('d',$this->validation->event_cfp_end),'id="cfp_end_day" '.$js);
 		echo form_dropdown('cfp_end_yr',$cfp_end_yr,date('Y',$this->validation->event_cfp_end),'id="cfp_end_yr" '.$js);
+        echo form_datepicker('cfp_end_day', 'cfp_end_mo', 'cfp_end_yr');
 		?>
 	 <div class="clear"></div>
     </div>
 
 	<div class="row">
 		<label for="cfp-url-location">Call for Papers URL Location</label>
-		<?php echo form_input('cfp_url',$this->validation->cfp_url,'id="cfp_url"'); ?>
+		<?php echo form_input('cfp_url',$this->validation->event_cfp_url,'id="cfp_url"'); ?>
 		<div class="clear"></div>
 	</div>
 	</fieldset>
@@ -277,5 +294,10 @@ $(document).ready(function(){
 	JI_event.init(); 
 	var fields = null;
 	JI_event.hideFieldsets(fields); 
+	
+	var showFields = <?php echo json_encode($showFields); ?>;
+	
+	for(var x = 0; x < showFields.length; x++)
+		$('#' + showFields[x]).click();
 })
 </script>

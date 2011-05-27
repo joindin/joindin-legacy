@@ -26,11 +26,6 @@ JI_event = function (){
 		});
 	}
 	
-	var _markAttending = function(){
-		$('#mark-attending').click(function(){
-		})
-	}
-	
 	var _toggleAttendees = function(){
 		var el = this;
 		$('#toggle-attendees').click(function(){
@@ -100,7 +95,6 @@ JI_event = function (){
 	
 	var _updateStub = function(){
 		$('#event_stub').bind('keyup',function(){
-			console.log($(this).val());
 			$('#stub_display').html('http://joind.in/event/'+$(this).val());
 		});
 	}
@@ -109,7 +103,6 @@ JI_event = function (){
 		init: function(){
 			$(document).ready(function(){
 				_deleteEventComment();
-				_markAttending();
 				_toggleAttendees();
 				_claimEvent();
 				_toggleEventFieldsets();

@@ -286,6 +286,11 @@ if ( ! function_exists('form_dropdown'))
 {
 	function form_dropdown($name = '', $options = array(), $selected = array(), $extra = '')
 	{
+        if ( ! is_array($options))
+        {
+            $options = array();
+        }
+
 		if ( ! is_array($selected))
 		{
 			$selected = array($selected);

@@ -50,6 +50,19 @@ $db['default']['cachedir'] = "";
 $db['default']['char_set'] = "utf8";
 $db['default']['dbcollat'] = "utf8_general_ci";
 
+$db['test']['hostname'] = "localhost";
+$db['test']['username'] = "joindin_test";
+$db['test']['password'] = "pleasechangemetoo";
+$db['test']['database'] = "joindin_test";
+$db['test']['dbdriver'] = "mysql";
+$db['test']['dbprefix'] = "";
+$db['test']['pconnect'] = TRUE;
+$db['test']['db_debug'] = TRUE;
+$db['test']['cache_on'] = FALSE;
+$db['test']['cachedir'] = "";
+$db['test']['char_set'] = "utf8";
+$db['test']['dbcollat'] = "utf8_general_ci";
+
 
 /* End of file database.php */
 /* Location: ./system/application/config/database.php */

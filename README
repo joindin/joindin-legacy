@@ -1,6 +1,6 @@
 
 Joind.in (http://joind.in)
-##########################
+#####################
 
 This is the source code for the Joind.in website - a resource set up to allow
 events to get real-time feedback from those attending. It also gives speakers a 
@@ -21,7 +21,8 @@ status and ALL should be run for a new install:
 	-> doc/db/patch*.sql
 		Numbered patch files to run in order after running init_db.  All database changes to be
 		managed using these, init_db does NOT get updated.  For more information on this approach,
-		see http://www.lornajane.net/posts/2010/Simple-Database-Patching-Strategy
+		see http://www.lornajane.net/posts/2010/Simple-Database-Patching-Strategy. If patch 17
+		fails it can be skipped.
 		
 	-> doc/db/seed_countries.sql
 		Some seed data for the countries table (needed for timezone selection)
@@ -40,15 +41,14 @@ Finally, there's some other scripts that come with the source to make things eas
 	- Sample cron jobs (in /src/scripts)
 	
 You can find more on github: http://github.com/joindin/joind.in
-Issues should be filed at: http://joindin.jira.com
+Issues should be filed at: http://joindin.jira.com/
 
 See LICENSE file for license information for this software
 (located in /doc/LICENSE)
 
 
 Installation
-############
-
+#####################
 The following are the steps you'll need to correctly install the software:
 
 - Download/clone the current repository and drop it into a 
@@ -65,9 +65,6 @@ The following are the steps you'll need to correctly install the software:
 - In your src/system/application/config directory:
 	> Make a database.php file using the database.php.dist as a guide
 	> Make a config.php file using the config.php.dist as a guide
-
-	  * If you're using lighttpd, please make sure to set the uri_protocol to
-	    REQUEST_URI.
 	
 - Push the doc/db/init_db.sql file into your database
 
@@ -77,9 +74,14 @@ If you'd like some seed data, you can use the seed.sql to load in a few events,
 users and talks. You'll also need to load in the seed_countries.sql file to
 get the complete list of countries for the event details.
 
+The default password for users is "password"
+
+
 Extensions
 ###################
-Make sure you have the following extensions installed and configured
+In order to run tests make sure you have the following extensions installed and
+configured. This library can be ignored if you are not planning on running
+tests.
 - pecl_http
   $ pecl install pecl_http
   
@@ -88,8 +90,7 @@ Make sure you have the following extensions installed and configured
   > windows: extension=http.dll
 
 Debugging
-#########
-
+#############
 By default the application is in production mode. This primarily means that
 error messages and notices are suppressed.
 
@@ -101,20 +102,18 @@ errors produced by the site.
 The JOINDIN_DEBUG environment variable is controlled from the accompanying
 .htaccess file.
 
-With lighttpd you can add this to your simple-vhost config:
-
-        setenv.add-environment = (
-                "JOINDIN_DEBUG" => "on"
-        )
-
-
 Tests
-#####
+#############
 
 There are some tests set up, which use PHPUnit; these can be found in the
-src/tests directory.  There is a phing task configured to run them - from the
-root directory simply run "phing phpunit" to run the tests.
+src/tests directory.  There is an ant task configured to run them - from the
+root directory simply run "ant phpunit" to run the tests.
 
-Note: The API tests actually call the service externally and rely on pecl_http
+Note 1: The API tests actually call the service externally and rely on pecl_http
 being installed to run.
+
+Issues
+#############
+
+The issue tracker can be found here: http://joindin.jira.com/
 

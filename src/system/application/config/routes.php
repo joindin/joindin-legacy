@@ -81,7 +81,5 @@ $route['(:num)']								= 'talk/view/$1';
 
 $route['search/(:any)']							= 'search/index/$1';
 
-$route['external/twitter_process_feedback']		= 'external/twitter_process_feedback';
-
 /* End of file routes.php */
 /* Location: ./system/application/config/routes.php */
