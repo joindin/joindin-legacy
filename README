@@ -111,3 +111,9 @@ root directory simply run "phing phpunit" to run the tests.
 
 Note: The API tests actually call the service externally and rely on pecl_http
 being installed to run.
+
+Issues
+#############
+
+The issue tracker can be found here: http://joindin.jira.com/
+
