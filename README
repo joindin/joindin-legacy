@@ -106,10 +106,10 @@ Tests
 #############
 
 There are some tests set up, which use PHPUnit; these can be found in the
-src/tests directory.  There is a phing task configured to run them - from the
-root directory simply run "phing phpunit" to run the tests.
+src/tests directory.  There is an ant task configured to run them - from the
+root directory simply run "ant phpunit" to run the tests.
 
-Note: The API tests actually call the service externally and rely on pecl_http
+Note 1: The API tests actually call the service externally and rely on pecl_http
 being installed to run.
 
 Issues
