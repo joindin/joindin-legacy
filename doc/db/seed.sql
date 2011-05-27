@@ -99,7 +99,7 @@ insert into events (
 	(select unix_timestamp()+86400),
 	'','','Dallas, Tx',
 	'This is a sample event from the seed load script',
-	'seedload',
+	'seedload2',
 	'','seedload_hash',
 	'http://sampledomain.com',
 	'','',0,
