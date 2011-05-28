@@ -35,15 +35,18 @@ class SendEmail {
 	/**
 	* Send a message to user who claimed the talk when its accepted
 	*/
-	public function claimSuccess($to,$talk_title,$evt_name){
+	public function claimSuccess($to,$talk_title,$talk_id,$evt_name){
 		$subj= $this->_config->item('site_name') . ': Claim on talk "'.$talk_title.'"';
 		$msg=sprintf("
 You recently laid claim to a talk at the \"%s\" event on %s - \"%s\"
 Your claim has been approved. This talk will now be listed under your account.
 
+%s/talk/view/%s
+
 Thanks,
 The %s Crew
-		", $evt_name, $this->_config->item('site_name'), $talk_title, $this->_config->item('site_name'));
+		", $evt_name, $this->_config->item('site_name'), $talk_title, 
+		$this->_config->site_url(),$talk_id,$this->_config->item('site_name'));
 		$this->_sendEmail($to,$msg,$subj);
 	}
 
