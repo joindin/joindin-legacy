@@ -32,7 +32,7 @@
 		$class 	= 'multi';
 	}
 	?>
-	<a class="btn-small <?php echo $is_claimed ? 'disabled' : '' ?>" href="<?php echo !$is_claimed ? $link : 'javascript:;' ?>" id="claim_btn" name="<?php echo $class; ?>">Claim This Talk</a>	
+	<a class="btn-small <?php echo $is_claimed ? 'disabled' : '' ?>" href="<?php echo !$is_claimed ? $link : 'javascript:;' ?>" id="claim_btn" name="<?php echo $class; ?>">Claim talk</a>	
 </p>
 <script type="text/javascript">
 $('#claim_select_div').css('display','none');
