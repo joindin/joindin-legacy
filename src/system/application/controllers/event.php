@@ -1885,7 +1885,7 @@ class Event extends Controller
 
         if ($cfp_end >= $evt_st) {
             $this->validation->set_message(
-                'cfp_start_mo_check',
+                'cfp_end_mo_check',
                 'Invalid Call for Papers end date! CfP must end before '
                 .'event start!'
             );

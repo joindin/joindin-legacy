@@ -2,6 +2,7 @@
 // predefine some vars
 
 $msg = '';
+$showFields = array();
 
 //$tz_list=array('Select Continent');
 //foreach($tz as $k=>$v){ $tz_list[(string)$v->offset]=floor((string)$v->offset/3600); }
@@ -223,7 +224,12 @@ echo '<h2>'.$title.'</h2>';
 	<span style="color:#3567AC;font-size:11px">Seperate tags with commas</span>
     </div>
     <div class="clear"></div>
-
+    
+    <?php
+    	if($this->validation->cfp_checked)
+    		$showFields[] = 'cfp-fields-toggle-link';
+    ?>
+    
 	<h4>Call for Papers <a id="cfp-fields-toggle-link" class="fieldset-toggle" href="#">show</a></h4>
 	<fieldset id="cfp-fields">
 	<div class="row">
@@ -288,5 +294,10 @@ $(document).ready(function(){
 	JI_event.init(); 
 	var fields = null;
 	JI_event.hideFieldsets(fields); 
+	
+	var showFields = <?php echo json_encode($showFields); ?>;
+	
+	for(var x = 0; x < showFields.length; x++)
+		$('#' + showFields[x]).click();
 })
 </script>
