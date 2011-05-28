@@ -742,7 +742,7 @@ class Talk extends Controller
             'auth'           => $this->auth,
             'claimed'        => $this->talks_model->talkClaimDetail($id),
             'claim_status'   => $claim_status, 'claim_msg' => $claim_msg,
-			'is_claimed'	 => $this->talkSpeakers->isTalkClaimed($id,true),
+			'is_claimed'	 => $this->talks_model->hasUserClaimed($id),
             'speakers'       => $this->talkSpeakers->getSpeakerByTalkId($id),
             'reqkey'         => $reqkey, 'seckey' => buildSecFile($reqkey),
             'user_attending' => ($this->user_attend_model->chkAttend(

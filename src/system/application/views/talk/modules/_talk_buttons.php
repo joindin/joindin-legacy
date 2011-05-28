@@ -19,7 +19,7 @@
 	<a class="btn-small" href="/talk/delete/<?php echo $detail->tid; ?>">Delete talk</a>	
 	<a class="btn-small" href="/talk/edit/<?php echo $detail->tid; ?>">Edit talk</a>
 <?php endif; ?>
-<?php if(count($speaker)>$is_claimed):
+<?php
 	if(!isset($user_id)){
 		$link 	= '/user/login';
 		$class 	= '';
@@ -32,8 +32,7 @@
 		$class 	= 'multi';
 	}
 	?>
-	<a class="btn-small" href="<?php echo $link ?>" id="claim_btn" name="<?php echo $class; ?>">Claim This Talk</a>	
-<?php endif; ?>
+	<a class="btn-small <?php echo $is_claimed ? 'disabled' : '' ?>" href="<?php echo !$is_claimed ? $link : 'javascript:;' ?>" id="claim_btn" name="<?php echo $class; ?>">Claim This Talk</a>	
 </p>
 <script type="text/javascript">
 $('#claim_select_div').css('display','none');
