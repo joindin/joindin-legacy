@@ -1056,8 +1056,8 @@ class Event extends Controller
 			'event_lat'			  => 'Event Latitude',
 			'event_long'		  => 'Event Longitude',
             'event_stub'          => 'Event Stub',
-			'addr'				  => 'Event Address'
-            //	'cinput'				=> 'Captcha'
+			'addr'				  => 'Event Address',
+            'cinput'				=> 'Captcha'
         );
         $rules = array(
             'event_title'         => 'required|callback_event_title_check',
@@ -1072,7 +1072,7 @@ class Event extends Controller
             'cfp_end_mo'          => 'callback_cfp_end_mo_check',
             'event_stub'          => 'callback_stub_check',
             'event_desc'          => 'required',
-            //	'cinput'				=> 'required|callback_cinput_check'
+            'cinput'              => 'required|callback_cinput_check'
         );
         $this->validation->set_rules($rules);
         $this->validation->set_fields($fields);
@@ -1236,6 +1236,9 @@ class Event extends Controller
         }
         $arr['is_auth'] 		= $this->user_model->isAuth();
 		$arr['is_site_admin'] 	= $this->user_model->isSiteAdmin();
+
+        $arr['captcha']=create_captcha();
+        $this->session->set_userdata(array('cinput'=>$arr['captcha']['value']));
 
         $this->template->write_view('content', 'event/submit', $arr);
         $this->template->write_view('sidebar2', 'event/_submit-sidebar', array());
@@ -1950,12 +1953,12 @@ class Event extends Controller
     {
         if (($this->input->post('cinput') != $this->session->userdata('cinput'))) {
             $this->validation->_error_messages['cinput_check']
-                = 'Incorrect Captcha characters.';
+                = 'Incorrect captcha.';
 
             return false;
         }
 
-        return false;
+        return true;
     }
 
     /**

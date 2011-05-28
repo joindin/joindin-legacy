@@ -279,14 +279,7 @@ class User extends Controller
         $this->load->helper('form');
         $this->load->library('validation');
         $this->load->model('user_model');
-
-        /*$this->load->plugin('captcha');
-              $cap_arr=array(
-                  'img_path'		=>$_SERVER['DOCUMENT_ROOT'].'/inc/img/captcha/',
-                  'img_url'		=>'/inc/img/captcha/',
-                  'img_width'		=>'130',
-                  'img_height'	=>'30'
-              );*/
+        $this->load->plugin('captcha');
 
         $fields = array(
             'user'             => 'Username',
@@ -294,15 +287,15 @@ class User extends Controller
             'passc'            => 'Confirm Password',
             'email'            => 'Email',
             'full_name'        => 'Full Name',
-            'twitter_username' => 'Twitter Username'
-            //	'cinput'	=> 'Captcha'
+            'twitter_username' => 'Twitter Username',
+            'cinput'           => 'Captcha'
         );
         $rules = array(
             'user'  => 'required|trim|callback_usern_check|xss_clean',
             'pass'  => 'required|trim|matches[passc]|md5',
             'passc' => 'required|trim',
             'email' => 'required|trim|valid_email',
-            //	'cinput'	=> 'required|callback_cinput_check'
+            'cinput'=> 'required|callback_cinput_check'
         );
         $this->validation->set_rules($rules);
         $this->validation->set_fields($fields);
@@ -329,12 +322,10 @@ class User extends Controller
             redirect('user/main');
         }
 
-        //$cap=create_captcha($cap_arr);
-        //$this->session->set_userdata(array('cinput'=>$cap['word']));
-        //$carr=array('captcha'=>$cap);
+        $captcha=create_captcha();
+        $this->session->set_userdata(array('cinput'=>$captcha['value']));
 
-        $carr = array();
-        $this->template->write_view('content', 'user/register', $carr);
+        $this->template->write_view('content', 'user/register', array('captcha' => $captcha));
         $this->template->render();
     }
 
@@ -589,7 +580,7 @@ class User extends Controller
     {
         if ($this->input->post('cinput') != $this->session->userdata('cinput')) {
             $this->validation->_error_messages['cinput_check']
-                = 'Incorrect Captcha characters.';
+                = 'Incorrect captcha.';
             return false;
         } else {
             return true;
