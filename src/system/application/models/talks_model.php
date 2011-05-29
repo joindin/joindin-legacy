@@ -581,5 +581,20 @@ class Talks_model extends Model {
 		}
 		return $retval;
 	}
+	
+	public function hasUserClaimed($talk_id, $user_id = null)
+	{
+		if ( $user_id == null ) {
+			$user_id = $this->session->userdata('ID');
+		}
+		
+		$query = $this->db
+			->get_where('pending_talk_claims',array(
+				'talk_id'=>$talk_id,
+				'speaker_id'=>$user_id
+			));
+		$claims = $query->result();
+		return count($claims) > 0 ? true : false;
+	}
 }
 ?>
