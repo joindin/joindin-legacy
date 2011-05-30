@@ -1,4 +1,5 @@
 <?php
+include '../inc/Request.php';
 
 // autoloader
 function __autoload($classname) {
@@ -16,12 +17,6 @@ function __autoload($classname) {
 	} elseif(preg_match('/[a-zA-Z]+View$/',$classname)) {
 		include('../views/' . $classname . '.php');
 		return true;
-	} else {
-        $class_list = array('Request');
-        if(in_array($classname, $class_list)) {
-            include('../inc/' . $classname . '.php');
-            return true;
-        }
 	}
 }
 
@@ -49,26 +44,24 @@ $request = new Request();
 $request->parameters['resultsperpage'] = $request->getParameter('resultsperpage', 20);
 $request->parameters['start'] = $request->getParameter('start', 0);
 
-// Input Handling: parameter takes precedence, then check the accept headers 
+
+// Which content type to return? Parameter takes precedence over accept headers 
 // with final fall back to json 
-switch ($request->getParameter('format')) {
+$format_choices = array('application/json', 'text/html');
+$header_format = $request->preferredContentTypeOutOf($format_choices);
+$format = $request->getParameter('format', $header_format);
+
+switch ($format) {
+        case 'text/html':
         case 'html':
             $request->view = new HtmlView();
             break;
+        
+        case 'application/json':
         case 'json':
+        default:
             $request->view = new JsonView();
             break;
-        default:
-            // use the accept headers instead
-            if ($request->accepts('text/html')) {
-                $request->view = new HtmlView();
-            } elseif ($request->accepts('application/json')) {
-                $request->view = new JsonView();
-            } else {
-                $request->view = new JsonView();
-            }
-            break;
-    
 }
 
 $version = $request->getUrlElement(1);
@@ -95,6 +88,12 @@ switch ($version) {
 $request->view->render($return_data);
 exit;
 
+/**
+ *
+ * @param Request $request
+ * @param PDO $ji_db
+ * @return array
+ */
 function routeV2($request, $ji_db)
 {
     $return_data = false;

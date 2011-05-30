@@ -51,19 +51,31 @@ class Request
         return $element;
     }
     
-    public function accepts($header, $strict = false)
+    public function accepts($header)
     {
         $result = false;
         foreach ($this->accept as $accept) {
-            if ($strict) {
-                if ($accept == $header) {
-                    return true;
-                }
-            } else {
-                if (strstr($accept, $header) !== false) {
-                    return true;
-                }
+            if (strstr($accept, $header) !== false) {
+                return true;
             }
         }
     }
+    
+    /**
+     * Determine if one of the accept headers matches one of the desired
+     * formats
+     * 
+     * @param array $formats
+     * @return string
+     */
+    public function preferredContentTypeOutOf($formats)
+    {
+        foreach($formats as $format) {
+            if ($this->accepts($format)) {
+                return $format;
+            }
+        }
+        
+        return 'json';
+    } 
 }
