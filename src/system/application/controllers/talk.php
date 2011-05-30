@@ -600,10 +600,10 @@ class Talk extends Controller
         }
 
         // this is for the CAPTACHA - it was disabled for authenticated users
-        //if(!$this->user_model->isAuth()){
-        //	$rules['cinput']	= 'required|callback_cinput_check';
-        //	$fields['cinput']	= 'Captcha';
-        //}
+        if(!$this->user_model->isAuth()){
+        	$rules['cinput']	= 'required|callback_cinput_check';
+        	$fields['cinput']	= 'Captcha';
+        }
 
         $this->validation->set_rules($rules);
         $this->validation->set_fields($fields);
@@ -703,8 +703,8 @@ class Talk extends Controller
             );
         }
 
-        //$cap = create_captcha($cap_arr);
-        //$this->session->set_userdata(array('cinput'=>$cap['word']));
+        $captcha=create_captcha();
+        $this->session->set_userdata(array('cinput'=>$captcha['value']));
 
         $reqkey      = buildReqKey();
         $talk_detail = $this->talks_model->setDisplayFields($talk_detail);
@@ -751,7 +751,8 @@ class Talk extends Controller
             'msg'            => $msg,
             'track_info'     => $this->talkTracks->getSessionTrackInfo($id),
             'user_id'        => ($this->user_model->isAuth())
-                ? $this->session->userdata('ID') : null
+                ? $this->session->userdata('ID') : null,
+            'captcha'        => $captcha
         );
 
         $this->template->write('feedurl', '/feed/talk/' . $id);
@@ -921,7 +922,7 @@ class Talk extends Controller
     {
         if ($this->input->post('cinput') != $this->session->userdata('cinput')) {
             $this->validation->_error_messages['cinput_check']
-                = 'Incorrect Captcha characters.';
+                = 'Incorrect captcha.';
             return false;
         }
 

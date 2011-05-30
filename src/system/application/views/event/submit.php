@@ -290,6 +290,17 @@ menu_pagetitle('Submit an event');
 	    ?>
         <div class="clear"></div>
     </div>
+
+
+    <div class="row">
+        <label for="cinput">Spambot check</label>
+        <span>
+          <?php echo form_input(array('name' => 'cinput', 'id' => 'cinput'), ""); ?>
+          = <b><?php echo $captcha['text']; ?></b>
+        </span>
+        <div class="clear"></div>
+    </div>
+
 	<div class="row row-buttons">
     	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Submit event'); ?>
     </div>
