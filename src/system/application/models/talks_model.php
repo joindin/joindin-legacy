@@ -40,7 +40,7 @@ class Talks_model extends Model {
 		',$this->db->escape($tid));
 		
 		if(!$show_all){
-			$sql.=" and ts.status != 'pending'";
+			$sql.=" and (ts.status != 'pending' OR ts.status IS NULL)";
 		}
 		
 		$query	= $this->db->query($sql);
