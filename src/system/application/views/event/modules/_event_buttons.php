@@ -5,6 +5,8 @@
 		echo '<a class="btn-small" href="/event/approve/'.$event_detail->ID.'">Approve Event</a>';
 	} ?>
 <?php else: ?>
-	<a class="btn-small" href="#" id="claim-event-btn">Claim event</a>
+    <?php if (user_is_auth()) { ?>
+	    <a class="btn-small" href="#" id="claim-event-btn">Claim event</a>
+    <?php } ?>
 <?php endif; ?>
 </p>
