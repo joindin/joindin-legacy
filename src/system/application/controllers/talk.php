@@ -737,12 +737,20 @@ class Talk extends Controller
             ? $this->session->userdata('ID') : null;
 				$speakers = $this->talkSpeakers->getSpeakerByTalkId($id);
 				// check if current user is one of the approved speakers
-				$is_claim_approved = false;
+				$my_claim_approved = false;
+				$num_claims_approved = 0;
 				foreach ( $speakers as $speaker ) {
-					if ( $speaker->speaker_id && $speaker->speaker_id == $user_id ) {
-						$is_claim_approved = true;
+					if ( $speaker->speaker_id ) {
+						if ( $speaker->status != 'pending' ) {
+							$num_claims_approved++;
+						}
+					}
+					if ( $speaker->speaker_id == $user_id ) {
+						$my_claim_approved = true;
 					}
 				}
+				
+				$is_fully_claimed = $num_claims_approved == count($speakers);
 				
         $arr = array(
             'detail'         => $talk_detail[0],
@@ -753,7 +761,8 @@ class Talk extends Controller
             'auth'           => $this->auth,
             'claimed'        => $this->talks_model->talkClaimDetail($id),
             'claim_status'   => $claim_status, 'claim_msg' => $claim_msg,
-            'is_claimed'	   => $this->talks_model->hasUserClaimed($id) || $is_claim_approved,
+            'is_claimed'	   => $this->talks_model->hasUserClaimed($id) || $my_claim_approved,
+						'is_fully_claimed' => $is_fully_claimed,
             'speakers'       => $speakers,
             'reqkey'         => $reqkey, 'seckey' => buildSecFile($reqkey),
             'user_attending' => ($this->user_attend_model->chkAttend(
