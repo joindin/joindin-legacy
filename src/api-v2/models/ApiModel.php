@@ -39,4 +39,19 @@ class ApiModel {
         }
         return $limit;
     }
+
+    protected static function addPaginationLinks($list, $request) {
+        $list['meta']['count'] = count($list);
+        $list['meta']['this_page'] = 'http://' . $request->host . $request->path_info .'?' . http_build_query($request->parameters);
+        $next_params = $prev_params = $request->parameters;
+
+        $next_params['start'] = $next_params['start'] + $next_params['resultsperpage'];
+        $list['meta']['next_page'] = 'http://' . $request->host . $request->path_info . '?' . http_build_query($next_params);
+        if($prev_params['start'] >= $prev_params['resultsperpage']) {
+            $prev_params['start'] = $prev_params['start'] - $prev_params['resultsperpage'];
+            $list['meta']['prev_page'] = 'http://' . $request->host . $request->path_info . '?' . http_build_query($prev_params);
+        }
+        return $list;
+    }
+
 }

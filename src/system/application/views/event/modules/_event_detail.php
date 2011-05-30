@@ -131,6 +131,9 @@ if ($event_detail->event_cfp_start>=time()) {
                 case "open" :
                     echo '<span style="color:#00BE02">Open!</span>';
                     echo '<br/>(ends '.date('m.d.Y',$event_detail->event_cfp_end).')';
+					if (!empty($event_detail->event_cfp_url)) {
+						echo '<br/>More information: <a href="'.$event_detail->event_cfp_url.'">'.$event_detail->event_cfp_url.'</a>';
+					}
                     break;
                 case "pending" :
                     echo '<span style="color:#BEBE02">Not open yet</span>';

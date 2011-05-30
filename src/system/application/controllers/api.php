@@ -190,6 +190,16 @@ class Api extends Controller
         $out = $this->tz_model->getOffsetInfo();
         echo json_encode($out);
     }
+
+    /**
+     * Documentation for the v2 API
+     * 
+     * @return void
+     */
+    public function v2docs() {
+        $this->template->write_view('content', 'api/v2docs');
+        $this->template->render();
+    }
 }
 
 ?>

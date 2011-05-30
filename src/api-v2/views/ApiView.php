@@ -3,9 +3,9 @@
 class ApiView {
     protected function addCount($data) {
         if(is_array($data)) {
-            $data['count'] = count($data);
+            // do nothing, this is added earlier
         } else {
-            $data['count'] = 0;
+            $data['meta']['count'] = 0;
         }
         return $data;
     }
