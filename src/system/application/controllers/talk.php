@@ -733,6 +733,25 @@ class Talk extends Controller
             );
         }
 
+				$user_id = ($this->user_model->isAuth())
+            ? $this->session->userdata('ID') : null;
+				$speakers = $this->talkSpeakers->getSpeakerByTalkId($id);
+				// check if current user is one of the approved speakers
+				$my_claim_approved = false;
+				$num_claims_approved = 0;
+				foreach ( $speakers as $speaker ) {
+					if ( $speaker->speaker_id ) {
+						if ( $speaker->status != 'pending' ) {
+							$num_claims_approved++;
+						}
+					}
+					if ( $speaker->speaker_id == $user_id ) {
+						$my_claim_approved = true;
+					}
+				}
+				
+				$is_fully_claimed = $num_claims_approved == count($speakers);
+				
         $arr = array(
             'detail'         => $talk_detail[0],
             'comments'       => (isset($talk_comments['comment']))
@@ -742,16 +761,16 @@ class Talk extends Controller
             'auth'           => $this->auth,
             'claimed'        => $this->talks_model->talkClaimDetail($id),
             'claim_status'   => $claim_status, 'claim_msg' => $claim_msg,
-			'is_claimed'	 => $this->talkSpeakers->isTalkClaimed($id,true),
-            'speakers'       => $this->talkSpeakers->getSpeakerByTalkId($id),
+            'is_claimed'	   => $this->talks_model->hasUserClaimed($id) || $my_claim_approved,
+						'is_fully_claimed' => $is_fully_claimed,
+            'speakers'       => $speakers,
             'reqkey'         => $reqkey, 'seckey' => buildSecFile($reqkey),
             'user_attending' => ($this->user_attend_model->chkAttend(
                 $currentUserId, $talk_detail[0]->event_id
             )) ? true : false,
             'msg'            => $msg,
             'track_info'     => $this->talkTracks->getSessionTrackInfo($id),
-            'user_id'        => ($this->user_model->isAuth())
-                ? $this->session->userdata('ID') : null
+            'user_id'        => $user_id
         );
 
         $this->template->write('feedurl', '/feed/talk/' . $id);
