@@ -72,7 +72,11 @@ class Talk_speaker_model extends Model {
 	 */
 	public function getTalkSpeakers($talk_id,$showAll=false)
 	{		
-		$query = $this->db->get_where('talk_speaker',array('talk_id'=>$talk_id));
+        $this->db->select('talk_speaker.*, user.email')
+			->from('talk_speaker')
+			->join('user','talk_speaker.speaker_id=user.ID', 'LEFT')
+            ->where(array('talk_id'=>$talk_id));
+		$query=$this->db->get();
 		$speakers = $query->result();
 		
 		if($showAll == true){
