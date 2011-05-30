@@ -67,12 +67,12 @@ switch ($format) {
 $version = $request->getUrlElement(1);
 switch ($version) {
     case 'v2':
-        // default routing
+        // default routing for version 2
         $return_data = routeV2($request, $ji_db);
         break;
     
     case '':
-        // paramerter not specified
+        // version parameter not specified routes to default controller
         $defaultController = new DefaultController();
         $return_data = $defaultController->handle($request, $ji_db);
         break;
