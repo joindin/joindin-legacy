@@ -785,6 +785,11 @@ class Talk extends Controller
 				);
 		}
 		
+		if($is_talk_admin)
+		{
+			$this->template->write_view('sidebar3', 'talk/modules/_talk_howto', $arr);
+		}
+		
         $this->template->write_view('content', 'talk/detail', $arr, true);
         $this->template->render();
     }
