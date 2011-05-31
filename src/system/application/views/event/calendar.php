@@ -11,9 +11,9 @@ table.calendar td.calendar-day { height: 35px; }
 <?php
 foreach($events as $event){
 	echo '<a style="font-size:14px;font-weight:bold" href="/event/view/'.$event->ID.'">'.$event->event_name.'</a><br/>';
-    echo date('m.d.Y',$event->event_start);
+    echo date('d.M.Y',$event->event_start);
     if ($event->event_start+86399 != $event->event_end) {
-        echo ' - '.date('m.d.Y',$event->event_end);
+        echo ' - '.date('d.M.Y',$event->event_end);
     }
     echo ' <br/>';
 	$split_by_space=explode(' ',$event->event_desc);
