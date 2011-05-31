@@ -133,7 +133,26 @@ class User extends Controller
         $this->session->sess_destroy();
         redirect();
     }
-
+    
+    /**
+     * Check if either the email or username is set
+     * 
+     * @param string $str
+     * @return bool
+     */
+    function check_forgot_user($str = '')
+    {
+        if (!($this->input->post('user')) || !($this->input->post('user')))
+        {
+            $this->validation->_error_messages['check_forgot_user']
+                = 'Please enter either a username or email address';
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
     /**
      * Sends an e-mail to the user when they have forgotten their password.
      *
@@ -151,8 +170,8 @@ class User extends Controller
             'email' => 'Email Address'
         );
         $rules = array(
-            'user'  => 'required|trim|xss_clean',
-            'email' => 'required|trim|xss_clean|valid_email'
+            'user'  => 'trim|xss_clean|callback_check_forgot_user   ',
+            'email' => 'trim|xss_clean|valid_email'
         );
         $this->validation->set_rules($rules);
         $this->validation->set_fields($fields);
@@ -195,9 +214,11 @@ class User extends Controller
             //reset their password and send it out to the account
             $email = $this->input->post('email');
             $login = $this->input->post('user');
-
-            $ret = $this->user_model->getUserByEmail($email);
-            if (! empty($ret) && $ret[0]->username == $login) {
+            if ($email)            
+                $ret = $this->user_model->getUserByEmail($email);
+            elseif ($login)
+                $ret = $this->user_model->getUserByUsername($login);
+            if (! empty($ret)) {
                 $uid = $ret[0]->ID;
 
                 // Generate request code and add to db
