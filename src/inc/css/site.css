@@ -1001,6 +1001,10 @@ span.ends_soon {
 	font-size: 11px;
 }
 
+/** Speaker F.A.Q. Bar **/
+.toggle-faq .answer { display: none; padding:5px 0; }
+.toggle-faq li { padding:2px 0; }
+
 /***/
 
 /* jQuery.Rating Plugin CSS - http://www.fyneworks.com/jquery/star-rating/ */
