@@ -5,13 +5,13 @@ menu_pagetitle('Add Blog Post');
 
 $chk=array('post_mo'=>'m','post_day'=>'d','post_yr'=>'Y','post_hr'=>'H','post_mi'=>'i');
 foreach($chk as $k=>$v){
-	if(empty($this->validation->$k)){
-		$this->validation->$k=date($v);
+	if(empty($this->input->post($k))){
+		$_POST[$k]=date($v);
 	}
 }
 $sub='Submit New Post';
 
-echo isset($this->validation->error_string)?$this->validation->error_string:'';
+echo isset($this->form_validation->error_string)?$this->form_validation->error_string:'';
 if(isset($msg)){ echo '<div class="notice">'.$msg.'</div>'; }
 ?>
 

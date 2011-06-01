@@ -16,8 +16,8 @@ if (!empty($msg)):
     
     <?php echo form_open('user/register', array('class' => 'form-register')); ?>
     
-    <?php if (!empty($this->validation->error_string)): ?>
-            <?php $this->load->view('msg_error', array('msg' => $this->validation->error_string)); ?>
+    <?php if (!empty($this->form_validation->error_string)): ?>
+            <?php $this->load->view('msg_error', array('msg' => $this->form_validation->error_string)); ?>
     <?php endif; ?>
 
 	<div class="row">

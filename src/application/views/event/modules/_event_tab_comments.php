@@ -47,8 +47,8 @@ if(time()<$adv_mo): ?>
 	<h3 id="comment-form">Write a comment</h3>
 	<?php echo form_open('event/view/'.$event_detail->ID.'#comment-form', array('class' => 'form-event')); ?>
 
-    <?php if (!empty($this->validation->error_string)): ?>
-        <?php $this->load->view('msg_error', array('msg' => $this->validation->error_string)); ?>
+    <?php if (!empty($this->form_validation->error_string)): ?>
+        <?php $this->load->view('msg_error', array('msg' => $this->form_validation->error_string)); ?>
     <?php endif; ?>
 
     <?php

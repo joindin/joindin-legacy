@@ -1,7 +1,7 @@
 <?php 
 $v=$details[0];
 $bid=$v->ID;
-if(isset($full_name)){ $this->validation->name=escape($full_name); }
+if(isset($full_name)){ $this->input->post('name')=escape($full_name); }
  
 menu_pagetitle('Blog: ' . escape($v->title));
 ?>

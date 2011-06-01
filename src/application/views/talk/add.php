@@ -11,8 +11,8 @@ $ev=$events[0];
 foreach($cats as $k=>$v){ $cat_list[$v->ID]=$v->cat_title; }
 foreach($langs as $k=>$v){ $lang_list[$v->ID]=$v->lang_name; }
 
-if(!empty($this->validation->error_string)){
-    $this->load->view('msg_info', array('msg' => $this->validation->error_string));
+if(!empty($this->form_validation->error_string)){
+    $this->load->view('msg_info', array('msg' => $this->form_validation->error_string));
 }
 
 if(isset($this->edit_id)){
@@ -109,7 +109,7 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
         $listData[$eventStart->format('Y-m-d')] = $eventStart->format('jS M Y');
         $eventStart->modify('+1 day');
     }
-	$talkDate = (!isset($this->validation->talkDate)) ? $eventSelected : $this->validation->talkDate;
+	$talkDate = (!isset($this->input->post('talkDate'))) ? $eventSelected : $this->input->post('talkDate');
 
     echo form_dropdown('talkDate', $listData, $talkDate), ' at ';
 	foreach(range(0,23) as $v){ $given_hour[$v]=str_pad($v,2,'0',STR_PAD_LEFT); }
@@ -124,7 +124,7 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
 	<?php
 		$stype			= null;
 		$sessionType 	= null;
-		if(isset($this->validation->session_type)){
+		if(isset($this->input->post('session_type'))){
 			foreach($cat_list as $categoryId => $categoryName){
 				if($categoryId==$this->input->post('session_type')){ $sessionType=$categoryId; }
 			}

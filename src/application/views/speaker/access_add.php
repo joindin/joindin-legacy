@@ -43,7 +43,7 @@ echo form_open($path,array('id'=>'frm_access_add'));
 <div id="box">
 	<div class="row">
 		<label for="token_name">Token Name</label>
-		<?php echo form_input('token_name',$this->validation->token_name); ?>
+		<?php echo form_input('token_name',$this->input->post('token_name')); ?>
 		<span style="color:#3567AC;font-size:11px">
 		<b>What's a token?</b> Think of a token as a shortcut to get to this access profile. You
 		can name your tokens just about anything you want - something easy to remember usually works best.
@@ -54,7 +54,7 @@ echo form_open($path,array('id'=>'frm_access_add'));
 	</div>
 	<div class="row">
 		<label for="token_desc">Token Description</label>
-		<?php echo form_input('token_desc',$this->validation->token_desc); ?>
+		<?php echo form_input('token_desc',$this->input->post('token_desc')); ?>
 		<div class="clear"></div>
 	</div>
 	<div class="row">
@@ -76,7 +76,7 @@ echo form_open($path,array('id'=>'frm_access_add'));
 	</div>
 	<div class="row">
 		<label for="token_desc">Make Public</label>
-		<?php echo form_checkbox('is_public',1, $this->validation->is_public)." Check to make this access profile public.\n"; ?><br/>
+		<?php echo form_checkbox('is_public',1, $this->input->post('is_public'))." Check to make this access profile public.\n"; ?><br/>
 		<span style="color:#3567AC;font-size:11px">
 		<b>Make Public</b>: Marking this profile as public makes it viewable on your user profile page to any viewer.
 		</span>

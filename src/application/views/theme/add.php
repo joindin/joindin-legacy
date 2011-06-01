@@ -1,7 +1,7 @@
 
 <?php
-if(!empty($this->validation->error_string)){
-    $this->load->view('msg_info', array('msg' => $this->validation->error_string));
+if(!empty($this->form_validation->error_string)){
+    $this->load->view('msg_info', array('msg' => $this->form_validation->error_string));
 }
 ?>
 

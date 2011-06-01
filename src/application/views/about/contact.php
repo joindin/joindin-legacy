@@ -14,20 +14,20 @@ menu_pagetitle('Contact');
     
     <?php echo form_open('about/contact', array('class' => 'form-contact')); ?>
     
-    <?php if (!empty($this->validation->error_string)): ?>
-            <?php $this->load->view('msg_error', array('msg' => $this->validation->error_string)); ?>
+    <?php if (!empty($this->form_validation->error_string)): ?>
+            <?php $this->load->view('msg_error', array('msg' => $this->form_validation->error_string)); ?>
     <?php endif; ?>
     
     <div class="row">
     	<label for="your_name">Your Name <span style="color:#FF1800">*</span></label>
-    	<?php echo form_input(array('name' => 'your_name', 'id' => 'your_name'), $this->validation->your_name); ?>
+    	<?php echo form_input(array('name' => 'your_name', 'id' => 'your_name'), $this->input->post('your_name')); ?>
     
         <div class="clear"></div>
     </div>
     
     <div class="row">
     	<label for="your_email">Your Email <span style="color:#FF1800">*</span></label>
-    	<?php echo form_input(array('name' => 'your_email', 'id' => 'your_email'), $this->validation->your_email); ?>
+    	<?php echo form_input(array('name' => 'your_email', 'id' => 'your_email'), $this->input->post('your_email')); ?>
     
         <div class="clear"></div>
     </div>
@@ -40,7 +40,7 @@ menu_pagetitle('Contact');
 			'id'	=> 'your_com',
 			'cols'	=> 40,
 			'rows'	=> 5,
-			'value'	=> $this->validation->your_com
+			'value'	=> $this->input->post('your_com')
 		);
 		echo form_textarea($attr); 
 	    ?>

@@ -25,9 +25,9 @@ echo '<h2>'.$title.'</h2>';
 ?>
 <script type="text/javascript" src="/inc/js/event.js"></script>
 
-<?php if (!empty($msg) || !empty($this->validation->error_string)): ?>
+<?php if (!empty($msg) || !empty($this->form_validation->error_string)): ?>
 <?php 
-	if(!empty($this->validation->error_string)){ $msg.=$this->validation->error_string; }
+	if(!empty($this->form_validation->error_string)){ $msg.=$this->form_validation->error_string; }
 	$this->load->view('msg_info', array('msg' => $msg)); 
 ?>
 <?php endif; ?>
@@ -206,7 +206,7 @@ echo '<h2>'.$title.'</h2>';
 			</td>
     		<td style="vertical-align:middle">
 				<span style="color:#3567AC;font-size:11px" id="stub_display">
-				<?php if(!empty($this->validation->event_stub)){ 
+				<?php if(!empty($this->input->post('event_stub'))){ 
 					echo '<a href="http://joind.in/event/'.$this->input->post('event_stub').'">http://joind.in/event/'.$this->input->post('event_stub').'</a>'; } ?>
 				</span><br/>
 		</tr></table>
@@ -268,9 +268,9 @@ echo '<h2>'.$title.'</h2>';
     	foreach(range(1,31) as $v){ $cfp_end_day[$v]=sprintf('%02d', $v); }
     	foreach(range(date('Y'),date('Y')+5) as $v){ $cfp_end_yr[$v]=$v; }
 
-		echo form_dropdown('cfp_end_mo',$cfp_end_mo,date('m',$this->validation->event_cfp_end),'id="cfp_end_mo" '.$js);
-		echo form_dropdown('cfp_end_day',$cfp_end_day,date('d',$this->validation->event_cfp_end),'id="cfp_end_day" '.$js);
-		echo form_dropdown('cfp_end_yr',$cfp_end_yr,date('Y',$this->validation->event_cfp_end),'id="cfp_end_yr" '.$js);
+		echo form_dropdown('cfp_end_mo',$cfp_end_mo,date('m',$this->input->post('event_cfp_end')),'id="cfp_end_mo" '.$js);
+		echo form_dropdown('cfp_end_day',$cfp_end_day,date('d',$this->input->post('event_cfp_end')),'id="cfp_end_day" '.$js);
+		echo form_dropdown('cfp_end_yr',$cfp_end_yr,date('Y',$this->input->post('event_cfp_end')),'id="cfp_end_yr" '.$js);
         echo form_datepicker('cfp_end_day', 'cfp_end_mo', 'cfp_end_yr');
 		?>
 	 <div class="clear"></div>
@@ -278,7 +278,7 @@ echo '<h2>'.$title.'</h2>';
 
 	<div class="row">
 		<label for="cfp-url-location">Call for Papers URL Location</label>
-		<?php echo form_input('cfp_url',$this->validation->event_cfp_url,'id="cfp_url"'); ?>
+		<?php echo form_input('cfp_url',$this->input->post('event_cfp_url'),'id="cfp_url"'); ?>
 		<div class="clear"></div>
 	</div>
 	</fieldset>

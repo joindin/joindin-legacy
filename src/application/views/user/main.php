@@ -3,8 +3,8 @@ $this->load->view('user/_nav_sidebar',array('pending_events'=>$pending_events));
 
 ob_start();
 ?>
-<?php if (!empty($this->validation->error_string)): ?>
-	<?php $this->load->view('msg_error', array('msg' => $this->validation->error_string)); ?>
+<?php if (!empty($this->form_validation->error_string)): ?>
+	<?php $this->load->view('msg_error', array('msg' => $this->form_validation->error_string)); ?>
 <?php endif; ?>
 <div class="menu">
 	<ul>

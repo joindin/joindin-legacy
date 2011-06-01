@@ -29,8 +29,8 @@ tr.claimed { background-color: #DEDEDE; }
 To claim their talks, speakers will need the codes below. To send the codes, put the speaker's email address in the field and check the box to signify you want to send to them. If there are multiple speakers for a talk, seperate the addresses with a comma and an email will be sent to both.
 </p>
 <?php
-if(!empty($this->validation->error_string)){
-	echo '<div class="err">'.$this->validation->error_string.'</div>';
+if(!empty($this->form_validation->error_string)){
+	echo '<div class="err">'.$this->form_validation->error_string.'</div>';
 }
 
 echo form_open('event/codes/'.$details[0]->ID);
@@ -42,7 +42,7 @@ foreach($full_talks as $k=>$v){
 	$chk_post	= $this->input->post($email_chk);
 	
 	if(array_key_exists((string)$v->code,$cl)){
-		$this->validation->$email_id=$cl[$v->code];
+		$this->input->post($email_id)=$cl[$v->code];
 		$rs='class="claimed"';
 	}else{ $rs=''; }
 	
@@ -60,7 +60,7 @@ foreach($full_talks as $k=>$v){
 		</tr>
 	',$rs,$v->ID,escape($v->talk_title),escape($v->speaker),
 		$v->ID,escape($codes[$k]),escape($codes[$k]),
-		form_checkbox($chk),form_input($email_id,$this->validation->$email_id));
+		form_checkbox($chk),form_input($email_id,$this->input->post($email_id)));
 }
 
 echo '<tr><td></td><td></td><td colspan="3">'.form_submit('sub','Send Emails').'</td></tr>';

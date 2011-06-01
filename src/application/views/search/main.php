@@ -1,6 +1,6 @@
 <?php 
 if (!empty($results)) {
-   menu_pagetitle('Search for: ' . escape($this->validation->search_term)); 
+   menu_pagetitle('Search for: ' . escape($this->input->post('search_term'))); 
 } else {
     menu_pagetitle('Search');
 }
@@ -10,8 +10,8 @@ if (!empty($results)) {
 <div class="box">
     <?php echo form_open('/search'); ?>
     
-    <?php if (!empty($this->validation->error_string)): ?>
-        <?php $this->load->view('msg_error', array('msg' => $this->validation->error_string)); ?>
+    <?php if (!empty($this->form_validation->error_string)): ?>
+        <?php $this->load->view('msg_error', array('msg' => $this->form_validation->error_string)); ?>
     <?php endif; ?>
     
     <div class="row">
