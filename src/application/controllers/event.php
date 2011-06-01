@@ -1053,8 +1053,8 @@ class Event extends MY_Controller
 			'event_lat'			  => 'Event Latitude',
 			'event_long'		  => 'Event Longitude',
             'event_stub'          => 'Event Stub',
-			'addr'				  => 'Event Address'
-            //	'cinput'				=> 'Captcha'
+			'addr'				  => 'Event Address',
+            'cinput'				=> 'Captcha'
         );
         $rules = array(
             'event_title', 'Event Title','required|callback_event_title_check',
@@ -1069,7 +1069,7 @@ class Event extends MY_Controller
             'cfp_end_mo'          => 'callback_cfp_end_mo_check',
             'event_stub'          => 'callback_stub_check',
             'event_desc'          => 'required',
-            //	'cinput'				=> 'required|callback_cinput_check'
+            'cinput'              => 'required|callback_cinput_check'
         );
         $this->form_validation->set_rules($rules);
 //        $this->form_validation->set_fields($fields);
@@ -1233,6 +1233,9 @@ class Event extends MY_Controller
         }
         $arr['is_auth'] 		= $this->user_model->isAuth();
 		$arr['is_site_admin'] 	= $this->user_model->isSiteAdmin();
+
+        $arr['captcha']=create_captcha();
+        $this->session->set_userdata(array('cinput'=>$arr['captcha']['value']));
 
         $this->template->write_view('content', 'event/submit', $arr);
         $this->template->write_view('sidebar2', 'event/_submit-sidebar', array());
@@ -1982,12 +1985,12 @@ class Event extends MY_Controller
     {
         if (($this->input->post('cinput') != $this->session->userdata('cinput'))) {
             $this->form_validation->_error_messages['cinput_check']
-                = 'Incorrect Captcha characters.';
+                = 'Incorrect Captcha.';
 
             return false;
         }
 
-        return false;
+        return true;
     }
 
     /**
@@ -2025,8 +2028,14 @@ class Event extends MY_Controller
 		$this->load->model('event_model','eventModel');
         $this->load->model('user_attend_model');
 		
-		$arr = array();
-		$arr['current_cfp'] = $this->eventModel->getCurrentCfp();
+		$this->load->helper('reqkey');
+		
+		$reqkey = buildReqKey();
+    $arr = array(
+				'current_cfp' => $this->eventModel->getCurrentCfp(),
+        'reqkey' => $reqkey,
+        'seckey' => buildSecFile($reqkey)
+    );
 
         // now add the attendance data
         $uid = $this->user_model->getID();

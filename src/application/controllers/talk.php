@@ -585,10 +585,10 @@ class Talk extends MY_Controller
         }
 
         // this is for the CAPTACHA - it was disabled for authenticated users
-        //if(!$this->user_model->isAuth()){
-        //	$rules['cinput']	= 'required|callback_cinput_check';
-        //	$fields['cinput']	= 'Captcha';
-        //}
+        if(!$this->user_model->isAuth()){
+        	$rules['cinput']	= 'required|callback_cinput_check';
+        	$fields['cinput']	= 'Captcha';
+        }
 
         $this->form_validation->set_rules($rules);
 
@@ -687,8 +687,8 @@ class Talk extends MY_Controller
             );
         }
 
-        //$cap = create_captcha($cap_arr);
-        //$this->session->set_userdata(array('cinput'=>$cap['word']));
+        $captcha=create_captcha();
+        $this->session->set_userdata(array('cinput'=>$captcha['value']));
 
         $reqkey      = buildReqKey();
         $talk_detail = $this->talks_model->setDisplayFields($talk_detail);
@@ -735,7 +735,8 @@ class Talk extends MY_Controller
             'msg'            => $msg,
             'track_info'     => $this->talkTracks->getSessionTrackInfo($id),
             'user_id'        => ($this->user_model->isAuth())
-                ? $this->session->userdata('ID') : null
+                ? $this->session->userdata('ID') : null,
+            'captcha'        => $captcha
         );
 
         $this->template->write('feedurl', '/feed/talk/' . $id);
@@ -755,6 +756,11 @@ class Talk extends MY_Controller
 					are posted to 	it.</p>'
 					)
 				);
+		}
+		
+		if($is_talk_admin)
+		{
+			$this->template->write_view('sidebar3', 'talk/modules/_talk_howto', $arr);
 		}
 		
         $this->template->write_view('content', 'talk/detail', $arr, true);

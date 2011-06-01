@@ -87,4 +87,4 @@ class MY_Router extends CI_Router {
 }
  
 /* End of file MY_Router.php */
-/* Location: .//application/libraries/MY_Router.php */
+/* Location: ./application/libraries/MY_Router.php */

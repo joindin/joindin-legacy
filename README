@@ -117,3 +117,9 @@ Issues
 
 The issue tracker can be found here: http://joindin.jira.com/
 
+RewriteEngine
+###################
+
+It is advisable to enable the RewriteEngine (sudo a2enmod rewrite).
+.htaccess in /src takes care of all the rewrite rules.
+

@@ -274,15 +274,12 @@ class Talks_model extends MY_Model {
 			ON e.ID=t.event_id
 			where
 				t.active=1
-				AND t.date_given >= %s
 			group by
 				t.ID
 			order by
 				ccount desc
-			limit %u',
-			strtotime('-3 months'),
-			$len
-		);
+			limit '.$len.'
+		');
 		$query = $this->db->query($sql);
 		$talks = $query->result();
 		

@@ -34,7 +34,18 @@
  */
 class User extends MY_Controller
 {
-
+	/**
+	 * Contains an array with urls we don't want to forward to after login.
+	 * If a part of the url is in one of these items, it will forward them to
+	 * their main account page.
+	 * 
+	 * @var Array
+	 */
+	private $non_forward_urls = array(
+		'user/login'
+		,'user/forgot'
+	);
+	
     /**
      * Constructor, checks whether the user is logged in and passes this to
      * the template.
@@ -109,11 +120,20 @@ class User extends MY_Controller
             // send them back to where they came from, either the referer if they have one, or the flashdata
             $referer = $this->input->server('HTTP_REFERER');
             $to = $this->session->flashdata('url_after_login') ? $this->session->flashdata('url_after_login') : $referer;
-            if (!strstr($to, 'user/login')) {
-                redirect($to);
-            } else {
-                redirect('user/main');
-            }
+            
+			// List different routes we don't want to reroute to
+			$bad_routes = $this->non_forward_urls;
+			
+			foreach($bad_routes as $route)
+			{
+				if(strstr($to, $route))
+				{
+					redirect('user/main');
+				}
+			}
+			
+			// our $to is good, so redirect
+			redirect($to);
         }
     }
 
@@ -269,14 +289,7 @@ class User extends MY_Controller
         $this->load->helper('form');
         $this->load->library('form_validation');
         $this->load->model('user_model');
-
-        /*$this->load->plugin('captcha');
-              $cap_arr=array(
-                  'img_path'		=>$_SERVER['DOCUMENT_ROOT'].'/inc/img/captcha/',
-                  'img_url'		=>'/inc/img/captcha/',
-                  'img_width'		=>'130',
-                  'img_height'	=>'30'
-              );*/
+        $this->load->plugin('captcha');
 
         $rules = array(
             'user','Username','required|trim|callback_usern_check|xss_clean',
@@ -310,12 +323,10 @@ class User extends MY_Controller
             redirect('user/main');
         }
 
-        //$cap=create_captcha($cap_arr);
-        //$this->session->set_userdata(array('cinput'=>$cap['word']));
-        //$carr=array('captcha'=>$cap);
+        $captcha=create_captcha();
+        $this->session->set_userdata(array('cinput'=>$captcha['value']));
 
-        $carr = array();
-        $this->template->write_view('content', 'user/register', $carr);
+        $this->template->write_view('content', 'user/register', array('captcha' => $captcha));
         $this->template->render();
     }
 
@@ -565,7 +576,7 @@ class User extends MY_Controller
     {
         if ($this->input->post('cinput') != $this->session->userdata('cinput')) {
             $this->form_validation->_error_messages['cinput_check']
-                = 'Incorrect Captcha characters.';
+                = 'Incorrect captcha.';
             return false;
         } else {
             return true;
