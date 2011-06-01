@@ -26,9 +26,14 @@ LAUNCHREF=remotes/origin/$BRANCH
 sg web -c "
 mkdir -p $TARGET \
  ; git archive $LAUNCHREF | tar xC $TARGET \
+<<<<<<< HEAD
+&& ln -s $TARGETBASE/config.php $TARGET/src/application/config/config.php \
+&& ln -s $TARGETBASE/database.php $TARGET/src/application/config/database.php \
+=======
 && (echo $TARGET ; echo $LAUNCHREF) > $TARGET/src/release.txt \
 && ln -s $TARGETBASE/config.php $TARGET/src/system/application/config/config.php \
 && ln -s $TARGETBASE/database.php $TARGET/src/system/application/config/database.php \
+>>>>>>> 4edf8be2e6431e4735971ca0f379319029a051d6
 && ln -s $TARGETBASE/database.php $TARGET/src/api-v2/database.php \
 && mv $TARGET/src/inc/img/event_icons $TARGET/src/inc/img/event_icons.removed \
 && ln -s $TARGETBASE/tmp/event_icons $TARGET/src/inc/img/event_icons \

@@ -1,0 +1,14 @@
+<?php
+/* 
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+?>
+Change of validation to form_validation and moving of the set_rules and set_fields to comply with new form_validation
+Updating all models to extend MY_Model
+Updating all models to use the proper __constructor
+Updating all controllers to extend MY_Controller
+Updating all controllers to use the proper __constructor
+
+Event change to properly pull back talk id when approving a talk

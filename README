@@ -62,7 +62,7 @@ The following are the steps you'll need to correctly install the software:
 - In the /src/inc/img directory, create a web server writable directory
     called "user_gravatar"
 	
-- In your src/system/application/config directory:
+- In your src/application/config directory:
 	> Make a database.php file using the database.php.dist as a guide
 	> Make a config.php file using the config.php.dist as a guide
 	

@@ -1,1 +1,1 @@
-phpcs --standard=PEAR . ../system/application/controllers ../system/application/models ../system/application/libraries ../system/application/helpers ../tests
+phpcs --standard=PEAR . ../application/controllers ../application/models ../application/libraries ../application/helpers ../tests

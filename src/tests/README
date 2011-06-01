@@ -18,7 +18,7 @@ on how to do this, go and check out http://www.phpunit.de.
 
 2. Setting up a test database
 -----------------------------
-In the file src/system/application/config/database.php you need to provide
+In the file src/application/config/database.php you need to provide
 a secondary database configuration for testing purposes.
 
 You can copy the following lines and modify them for your own settings:
