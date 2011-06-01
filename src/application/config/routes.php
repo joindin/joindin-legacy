@@ -81,4 +81,4 @@ $route['(:num)']								= 'talk/view/$1';
 $route['search/(:any)']							= 'search/index/$1';
 
 /* End of file routes.php */
-/* Location: ./system/application/config/routes.php */
+/* Location: ./application/config/routes.php */

@@ -698,4 +698,4 @@ class CI_Template {
 // END Template Class
 
 /* End of file Template.php */
-/* Location: ./system/application/libraries/Template.php */
+/* Location: ./application/libraries/Template.php */

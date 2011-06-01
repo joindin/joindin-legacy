@@ -6,8 +6,8 @@ LAUNCHREF=remotes/origin/master
 sg web -c "
 mkdir -p $TARGET \
  ; git archive $LAUNCHREF | tar xC $TARGET \
-&& ln -s $TARGETBASE/config.php $TARGET/src/system/application/config/config.php \
-&& ln -s $TARGETBASE/database.php $TARGET/src/system/application/config/database.php \
+&& ln -s $TARGETBASE/config.php $TARGET/src/application/config/config.php \
+&& ln -s $TARGETBASE/database.php $TARGET/src/application/config/database.php \
 && ln -s $TARGETBASE/database.php $TARGET/src/api-v2/database.php \
 && mv $TARGET/src/inc/img/event_icons $TARGET/src/inc/img/event_icons.removed \
 && ln -s $TARGETBASE/tmp/event_icons $TARGET/src/inc/img/event_icons \

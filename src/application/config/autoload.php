@@ -34,7 +34,7 @@ $autoload['packages'] = array(APPPATH.'third_party');
 |  Auto-load Libraries
 | -------------------------------------------------------------------
 | These are the classes located in the system/libraries folder
-| or in your system/application/libraries folder.
+| or in your application/libraries folder.
 |
 | Prototype:
 |
@@ -126,4 +126,4 @@ $autoload['model'] = array('user_model');
 
 
 /* End of file autoload.php */
-/* Location: ./system/application/config/autoload.php */
+/* Location: ./application/config/autoload.php */

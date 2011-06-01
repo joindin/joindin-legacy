@@ -370,4 +370,4 @@ $config['gravatar_cache_relative_url']   = '/inc/img/user_gravatar';
 // $config['debug_email']		= '';
 
 /* End of file config.php */
-/* Location: ./system/application/config/config.php */
+/* Location: ./application/config/config.php */

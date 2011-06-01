@@ -81,4 +81,4 @@ $template['default']['parser_method'] = 'parse';
 $template['default']['parse_template'] = FALSE;
 
 /* End of file template.php */
-/* Location: ./system/application/config/template.php */
+/* Location: ./application/config/template.php */

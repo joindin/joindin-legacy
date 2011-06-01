@@ -47,7 +47,7 @@ class Service {
 		 */
 		
 		ini_set('include_path',ini_get('include_path').PATH_SEPARATOR.BASEPATH.'application/libraries/wsactions');
-		$ws_root=$_SERVER['DOCUMENT_ROOT'].'/system/application/libraries/wsactions';
+		$ws_root=$_SERVER['DOCUMENT_ROOT'].'/application/libraries/wsactions';
 
 		// Be sure we have at least an action and a type
 		if(empty($rtype)){ return array('output'=>'msg','data'=>array('msg'=>'Invalid request type!')); }
