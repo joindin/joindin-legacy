@@ -1056,8 +1056,8 @@ class Event extends Controller
 			'event_lat'			  => 'Event Latitude',
 			'event_long'		  => 'Event Longitude',
             'event_stub'          => 'Event Stub',
-			'addr'				  => 'Event Address'
-            //	'cinput'				=> 'Captcha'
+			'addr'				  => 'Event Address',
+            'cinput'				=> 'Captcha'
         );
         $rules = array(
             'event_title'         => 'required|callback_event_title_check',
@@ -1072,7 +1072,7 @@ class Event extends Controller
             'cfp_end_mo'          => 'callback_cfp_end_mo_check',
             'event_stub'          => 'callback_stub_check',
             'event_desc'          => 'required',
-            //	'cinput'				=> 'required|callback_cinput_check'
+            'cinput'              => 'required|callback_cinput_check'
         );
         $this->validation->set_rules($rules);
         $this->validation->set_fields($fields);
@@ -1237,6 +1237,9 @@ class Event extends Controller
         $arr['is_auth'] 		= $this->user_model->isAuth();
 		$arr['is_site_admin'] 	= $this->user_model->isSiteAdmin();
 
+        $arr['captcha']=create_captcha();
+        $this->session->set_userdata(array('cinput'=>$arr['captcha']['value']));
+
         $this->template->write_view('content', 'event/submit', $arr);
         $this->template->write_view('sidebar2', 'event/_submit-sidebar', array());
         $this->template->render();
@@ -1345,20 +1348,27 @@ class Event extends Controller
 		$msg   = array();
 
 		// look at each claim submitted and approve/deny them
-		if($claim){
-			$approved 	= 0;
-			$denied		= 0;
+        if($claim){
+            $approved = 0;
+            $denied   = 0;
 
-			foreach($claim as $claimId => $claimStatus){
-				if($claimStatus=='approve'){
-					$approveCheck = $this->pendingClaimsModel->approveClaim($claimId);
-					if($approveCheck){ $approved++; }
-				}elseif($claimStatus=='deny'){
-					// delete the claim row
-					$denyCheck = $this->pendingClaimsModel->deleteClaim($claimId);
-					if($denyCheck){ $denied++; }
-				}
-			}
+            foreach($claim as $claimId => $claimStatus){
+                // Retreive the pending claim before approving or denying as
+                // it will be removed by approveClaim() or deleteClaim().
+                $pendingClaim = $this->pendingClaimsModel->getClaimDetail($claimId);
+
+                if($claimStatus=='approve'){
+                    $approveCheck = $this->pendingClaimsModel->approveClaim($claimId);
+                    if($approveCheck){
+                        $approved++;
+                        $this->_sendClaimSuccessEmail($pendingClaim);
+                    }
+                }elseif($claimStatus=='deny'){
+                    // delete the claim row
+                    $denyCheck = $this->pendingClaimsModel->deleteClaim($claimId);
+                    if($denyCheck){ $denied++; }
+                }
+            }
 			if($approved>0){ $msg[] = $approved.' claim(s) approved'; }
 			if($denied>0){ $msg[] = $denied.' claims(s) denied'; }
 		}
@@ -1380,6 +1390,44 @@ class Event extends Controller
 
         $this->template->write_view('content', 'event/claim', $arr);
         $this->template->render();
+    }
+
+    /**
+     * Send an "your claim has been approved" email to the speaker
+     * 
+     * @param pending_talk_claims_model $claim
+     * @return boolean result
+     */
+    protected function _sendClaimSuccessEmail($claim)
+    {
+        $result = false;
+        if (is_array($claim)) {
+            $claim = $claim[0];
+        }
+
+        $talk_id = $claim->talk_id;
+        $this->load->model('talks_model','talkModel');
+        $talk = $this->talkModel->getTalks($talk_id);
+        if ($talk) {
+            $talk = $talk[0];
+            $speakers = $talk->speaker;
+            foreach ($speakers as $speaker) {
+                if ($speaker->speaker_id == $claim->speaker_id) {
+                    // found this speaker
+
+                    if ($speaker->email) {
+                        $email = $speaker->email;
+                        $talk_title = $talk->talk_title;
+                        $evt_name = $talk->event_name;
+						$talk_id = $talk->id;
+                        $this->sendemail->claimSuccess($email,$talk_title,$talk_id,$evt_name);
+                        $result = true;
+                    }
+                }
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -1950,12 +1998,12 @@ class Event extends Controller
     {
         if (($this->input->post('cinput') != $this->session->userdata('cinput'))) {
             $this->validation->_error_messages['cinput_check']
-                = 'Incorrect Captcha characters.';
+                = 'Incorrect captcha.';
 
             return false;
         }
 
-        return false;
+        return true;
     }
 
     /**
@@ -1993,8 +2041,14 @@ class Event extends Controller
 		$this->load->model('event_model','eventModel');
         $this->load->model('user_attend_model');
 		
-		$arr = array();
-		$arr['current_cfp'] = $this->eventModel->getCurrentCfp();
+		$this->load->helper('reqkey');
+		
+		$reqkey = buildReqKey();
+    $arr = array(
+				'current_cfp' => $this->eventModel->getCurrentCfp(),
+        'reqkey' => $reqkey,
+        'seckey' => buildSecFile($reqkey)
+    );
 
         // now add the attendance data
         $uid = $this->user_model->getID();

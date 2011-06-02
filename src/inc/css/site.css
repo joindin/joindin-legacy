@@ -839,6 +839,11 @@ a {
 	width: 350px;
 }
 
+#ctn .main form #cinput {
+    width: 100px;
+    display: inline;
+}
+
 #ctn .main form .row-buttons {
 	text-align: right;
 	border: 0;
@@ -995,6 +1000,10 @@ span.ends_soon {
 .fieldset-toggle {
 	font-size: 11px;
 }
+
+/** Speaker F.A.Q. Bar **/
+.toggle-faq .answer { display: none; padding:5px 0; }
+.toggle-faq li { padding:2px 0; }
 
 /***/
 

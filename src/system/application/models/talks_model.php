@@ -40,7 +40,7 @@ class Talks_model extends Model {
 		',$this->db->escape($tid));
 		
 		if(!$show_all){
-			$sql.=" and ts.status != 'pending'";
+			$sql.=" and (ts.status != 'pending' OR ts.status IS NULL)";
 		}
 		
 		$query	= $this->db->query($sql);
@@ -150,7 +150,7 @@ class Talks_model extends Model {
 					(select max(date_made) from talk_comments where talk_id=talks.ID) last_comment_date
 				from
 					talks
-				left join talk_comments on (talk_comments.talk_id = talks.ID)
+				left join talk_comments on (talk_comments.talk_id = talks.ID AND talk_comments.private = 0)
 				inner join events on (events.ID = talks.event_id)
 				inner join lang on (lang.ID = talks.lang)
 				where
@@ -268,20 +268,17 @@ class Talks_model extends Model {
 			from
 				talks t
 			JOIN talk_comments tc
-			ON tc.talk_id=t.ID
+			ON tc.talk_id=t.ID AND tc.private = 0
 			JOIN events e
 			ON e.ID=t.event_id
 			where
 				t.active=1
-				AND t.date_given >= %s
 			group by
 				t.ID
 			order by
 				ccount desc
-			limit %u',
-			strtotime('-3 months'),
-			$len
-		);
+			limit '.$len.'
+		');
 		$query = $this->db->query($sql);
 		$talks = $query->result();
 		
@@ -314,7 +311,7 @@ class Talks_model extends Model {
 			  JOIN events e
 			    ON e.ID=t.event_id
 			  JOIN talk_comments tc
-			    ON tc.talk_id=t.ID
+			    ON tc.talk_id=t.ID AND tc.private = 0
 			  INNER JOIN talk_speaker ts
 			    ON t.ID = ts.talk_id
 			WHERE
