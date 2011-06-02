@@ -16,7 +16,7 @@
         $ct = 0;
     ?>
     	<tr>
-    		<th colspan="4">
+    		<th colspan="5">
     			<h4 id="talks"><?php echo date('M d, Y', $talk_section_date); ?></h4>
     		</th>
     	</tr>
@@ -66,6 +66,13 @@
 				echo implode(', ',$speaker_list);
 				?>
     		</td>
+            <td>
+                <?php if (! empty($talk->slides_link)) : ?>
+                <a class="slides" target="new" href="<?php echo $talk->slides_link ?>">
+                    <img style='vertical-align:text-top;' alt="Slides available" src="/inc/img/icon-slides.gif">
+                </a>
+                <?php endif; ?>
+            </td>
     		<td>
 				<a class="comment-count" href="/talk/view/<?php echo $talk->ID; ?>/#comments"><?php echo $talk->comment_count; ?></a>
 			</td>
