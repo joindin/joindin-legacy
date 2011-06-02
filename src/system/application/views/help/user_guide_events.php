@@ -83,3 +83,8 @@ system and can immediately start maintaining the event.
 <b>All events have to be approved</b> and you'll recieve an email (to the admin address) once it's been approved. This
 helps us keep things nice and tidy around here and make <?php echo $this->config->item('site_name'); ?> an even more useful resource.
 </p>
+
+<h3>Claiming an event</h3>
+<p>As soon as an event is approved, a "claim" button will appear on the event page. This way, organizers can "claim" the
+event and ask either the Joind.in administrators or already existing event administrators for administrator rights. Normal
+attendees don't need to use this button.</p>

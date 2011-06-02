@@ -55,12 +55,12 @@ insert into events (
 	'Test Event #1',
 	(select unix_timestamp()-345600),
 	(select unix_timestamp()-259200),
-	'','','New York, NY',
+	null,null,'New York, NY',
 	'This is a sample event from the seed load script',
 	'seedload',
 	'','seedload_hash',
 	'http://sampledomain.com',
-	'','',0,
+	null,null,0,
 	0,0,1,NULL
 );
 SELECT @pevtid:=LAST_INSERT_ID();
@@ -97,12 +97,12 @@ insert into events (
 	'Test Event #2',
 	unix_timestamp(),
 	(select unix_timestamp()+86400),
-	'','','Dallas, Tx',
+	null,null,'Dallas, Tx',
 	'This is a sample event from the seed load script',
-	'seedload',
+	'seedload2',
 	'','seedload_hash',
 	'http://sampledomain.com',
-	'','',0,
+	null,null,0,
 	0,0,1,NULL
 );
 SELECT @evtid:=LAST_INSERT_ID();
