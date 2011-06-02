@@ -8,6 +8,7 @@ $lang_list	= array();
 //echo '<pre>'; print_r($tracks); echo '</pre>';
 
 $ev=$events[0];
+
 foreach($cats as $k=>$v){ $cat_list[$v->ID]=$v->cat_title; }
 foreach($langs as $k=>$v){ $lang_list[$v->ID]=$v->lang_name; }
 
@@ -41,9 +42,18 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
 	<label for="event"></label>
 	<?php
 	echo form_hidden('event_id',$ev->ID);
-	echo '<b><a href="/event/view/'.$ev->ID.'">'.escape($ev->event_name).'</a> ('.date('M d.Y',$ev->event_start);
-    if ($ev->event_start+86399 != $ev->event_end) echo '- '.date('m.d.Y',$ev->event_end);
-    echo ')'.$priv.'</b>';
+	
+	// @fix: joindin-67
+	$eventStart = $this->timezone->getDatetimeFromUnixtime($thisTalksEvent->event_start, $thisTalksEvent->timezoneString);
+	$eventEnd = $this->timezone->getDatetimeFromUnixtime($thisTalksEvent->event_end, $thisTalksEvent->timezoneString);
+	$eventStartPlusOneDay = $this->timezone->getDatetimeFromUnixtime($thisTalksEvent->event_end, $thisTalksEvent->timezoneString);
+	
+	echo '<b><a href="/event/view/'.$ev->ID.'">'.escape($ev->event_name).'</a>';
+	echo ' (' . $eventStart->format('m.d.Y');
+    if ($eventStartPlusOneDay->add(new DateInterval('PT24H'))->format('U') != $eventEnd->format('U')) {
+        echo ' - ' . $eventEnd->format('m.d.Y');
+    }
+    echo ')' . $priv . '</b>';
 	?>
 	<div class="clear"></div>
     </div>
@@ -100,15 +110,22 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
 	echo form_dropdown('given_mo',$given_mo,$this->validation->given_mo);
 	echo form_dropdown('given_day',$given_day,$this->validation->given_day);
 	echo form_dropdown('given_yr',$given_yr,$this->validation->given_yr);*/
-	$eventStart = $this->timezone->getDatetimeFromUnixtime($thisTalksEvent->event_start, $thisTalksEvent->timezoneString);
-	$eventEnd = $this->timezone->getDatetimeFromUnixtime($thisTalksEvent->event_end, $thisTalksEvent->timezoneString);
+//	$eventStart = $this->timezone->getDatetimeFromUnixtime($thisTalksEvent->event_start, $thisTalksEvent->timezoneString);
+//	$eventEnd = $this->timezone->getDatetimeFromUnixtime($thisTalksEvent->event_end, $thisTalksEvent->timezoneString);
     $listData = array();
-	
+    
+//    @fix: joindin-67
 	$eventSelected = $eventStart->format('U'); // modify for existing date
-    while ($eventStart->format('U') <= $eventEnd->format('U')) {
-        $listData[$eventStart->format('Y-m-d')] = $eventStart->format('jS M Y');
-        $eventStart->modify('+1 day');
-    }
+	$eventDiff = $eventStart->diff($eventEnd);
+	$days = $eventDiff->format('%a');
+	$eventDateObj = clone $eventStart;
+	for ($i = 0; $i < $days + 1; $i++) {
+	    $eventDateObj->add(new DateInterval('P' . $i . 'D'));
+	    $listData[$eventDateObj->format('Y-m-d')] = $eventDateObj->format('jS M Y');
+	    unset ($eventDateObj); // housekeeping cleaning up some messy interval update
+	    $eventDateObj = clone $eventStart;
+	}
+	
 	$talkDate = (!isset($this->validation->talkDate)) ? $eventSelected : $this->validation->talkDate;
 
     echo form_dropdown('talkDate', $listData, $talkDate), ' at ';
