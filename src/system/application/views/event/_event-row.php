@@ -6,9 +6,9 @@ $this->load->library('timezone');
 	<?php $this->load->view('event/_event-icon',array('event'=>$event, 'showlink' => true)); ?>
 	<div class="text">
     	<h3><a href="/event/view/<?php echo $event->ID; ?>"><?php echo escape($event->event_name); ?></a></h3>
-		<p class="info"><strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event->event_start, $event->event_tz_cont.'/'.$event->event_tz_place, 'M j, Y'); ?></strong>
+		<p class="info"><strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event->event_start, $event->event_tz_cont.'/'.$event->event_tz_place, 'd.M.Y'); ?></strong>
         <?php if ($event->event_start+86399 != $event->event_end) { ?>
-        - <strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event->event_end, $event->event_tz_cont.'/'.$event->event_tz_place, 'M j, Y'); ?></strong> at <strong><?php echo escape($event->event_loc); ?></strong>
+        - <strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event->event_end, $event->event_tz_cont.'/'.$event->event_tz_place, 'd.M.Y'); ?></strong> at <strong><?php echo escape($event->event_loc); ?></strong>
         <?php } ?>
         </p>
     	<div class="desc">
@@ -30,7 +30,7 @@ $this->load->library('timezone');
     	</p>
 		<div class="desc" style="padding-top:6px">
 		<?php if(isset($event->is_cfp) && $event->is_cfp): ?>
-			Call for papers ends <b><?php echo date('M d, Y',$event->event_cfp_end); ?></b>
+			Call for papers ends <b><?php echo date('d.M.Y',$event->event_cfp_end); ?></b>
 			<?php if(time() <= $event->event_cfp_end && $event->event_cfp_end <= strtotime('+1 week')): ?>
 				&nbsp;&nbsp;&nbsp;<span class="ends_soon">ending soon!</span>
 			<?php endif; ?>
