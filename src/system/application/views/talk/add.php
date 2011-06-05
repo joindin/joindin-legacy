@@ -41,8 +41,8 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
 	<label for="event"></label>
 	<?php
 	echo form_hidden('event_id',$ev->ID);
-	echo '<b><a href="/event/view/'.$ev->ID.'">'.escape($ev->event_name).'</a> ('.date('M d.Y',$ev->event_start);
-    if ($ev->event_start+86399 != $ev->event_end) echo '- '.date('m.d.Y',$ev->event_end);
+	echo '<b><a href="/event/view/'.$ev->ID.'">'.escape($ev->event_name).'</a> ('.date('d.M.Y',$ev->event_start);
+    if ($ev->event_start+86399 != $ev->event_end) echo '- '.date('d.M.Y',$ev->event_end);
     echo ')'.$priv.'</b>';
 	?>
 	<div class="clear"></div>
@@ -126,7 +126,7 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
 		$sessionType 	= null;
 		if(isset($this->validation->session_type)){
 			foreach($cat_list as $categoryId => $categoryName){
-				if($categoryId==$this->validation->session_type){ $sessionType=$categoryId; }
+				if($categoryName==$this->validation->session_type){ $sessionType=$categoryId; }
 			}
 		}else{ $sessionType=$this->validation->session_type; }
 		echo form_dropdown('session_type',$cat_list,$sessionType); 

@@ -34,7 +34,18 @@
  */
 class User extends Controller
 {
-
+	/**
+	 * Contains an array with urls we don't want to forward to after login.
+	 * If a part of the url is in one of these items, it will forward them to
+	 * their main account page.
+	 * 
+	 * @var Array
+	 */
+	private $non_forward_urls = array(
+		'user/login'
+		,'user/forgot'
+	);
+	
     /**
      * Constructor, checks whether the user is logged in and passes this to
      * the template.
@@ -114,11 +125,20 @@ class User extends Controller
             // send them back to where they came from, either the referer if they have one, or the flashdata
             $referer = $this->input->server('HTTP_REFERER');
             $to = $this->session->flashdata('url_after_login') ? $this->session->flashdata('url_after_login') : $referer;
-            if (!strstr($to, 'user/login')) {
-                redirect($to);
-            } else {
-                redirect('user/main');
-            }
+            
+			// List different routes we don't want to reroute to
+			$bad_routes = $this->non_forward_urls;
+			
+			foreach($bad_routes as $route)
+			{
+				if(strstr($to, $route))
+				{
+					redirect('user/main');
+				}
+			}
+			
+			// our $to is good, so redirect
+			redirect($to);
         }
     }
 
@@ -358,6 +378,9 @@ class User extends Controller
 		$arr['pending_events'] = $this->event_model->getEventDetail(
             null, null, null, true
         );
+
+        $this->load->model('user_admin_model', 'uam');
+        $arr['event_claims'] = $this->uam->getPendingClaims('event');
 
         $this->template->write_view('content', 'user/main', $arr);
         $this->template->render();
