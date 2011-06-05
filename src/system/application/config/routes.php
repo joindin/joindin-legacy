@@ -68,6 +68,7 @@ $route['event/import/(:num)']					= 'event/import/$1';
 $route['event/claim/(:num)']					= 'event/claim/$1';
 $route['event/claim']							= 'event/claim';
 $route['event/claims']							= 'event/claims';
+$route['event/claims/(:num)']					= 'event/claims/$1';
 $route['event/tracks/(:num)']					= 'event/tracks/$1';
 $route['event/contact/(:num)']					= 'event/contact/$1';
 $route['event/invite/([0-9]+)/?(.*)']			= 'event/invite/$1/$2';

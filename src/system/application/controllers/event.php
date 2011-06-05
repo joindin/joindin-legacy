@@ -1437,10 +1437,12 @@ class Event extends Controller
      *
      * @return void
      */
-    function claims()
+    function claims($id = null)
     {
-        if (!$this->user_model->isSiteAdmin()) {
-            redirect('event');
+        if (!$this->user_model->isSiteAdmin()
+            && !$this->user_model->isAdminEvent($id)
+        ) {
+            redirect('event/view/' . $id);
         }
 
         $this->load->model('user_admin_model', 'uam');
@@ -1450,26 +1452,28 @@ class Event extends Controller
         $sub           = $this->input->post('sub');
 
         if (isset($sub) && !empty($posted_claims)) {
-            echo 'sub!';
             foreach ($posted_claims as $uam_key => $claim) {
-                switch (strtolower($claim)) {
-                case 'approve':
-                    // approve the claim
-                    $this->uam->updatePerm(
-                        $uam_key, array('rcode' => '')
-                    );
-                    break;
-                case 'deny':
-                    // deny the claim - delete it!
-                    $this->uam->removePerm($uam_key);
-                    break;
+                if ($this->user_model->isSiteAdmin() || $this->uam->checkPerm($uam_key, $id, 'event')) {
+                    switch (strtolower($claim)) {
+                    case 'approve':
+                        // approve the claim
+                        $this->uam->updatePerm(
+                         $uam_key, array('rcode' => '')
+                        );
+                        break;
+                    case 'deny':
+                        // deny the claim - delete it!
+                        $this->uam->removePerm($uam_key);
+                        break;
+                    }
                 }
             }
         }
 
-        $claims = $this->uam->getPendingClaims('event');
+        $claims = $this->uam->getPendingClaims('event', $id);
         $arr = array(
-            'claims' => $claims
+            'claims' => $claims,
+            'id' => $id
         );
 
         $this->template->write_view('content', 'event/claims', $arr);
