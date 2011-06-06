@@ -379,6 +379,9 @@ class User extends Controller
             null, null, null, true
         );
 
+        $this->load->model('user_admin_model', 'uam');
+        $arr['event_claims'] = $this->uam->getPendingClaims('event');
+
         $this->template->write_view('content', 'user/main', $arr);
         $this->template->render();
     }

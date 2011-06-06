@@ -25,9 +25,9 @@ if ($event_detail->event_cfp_start>=time()) {
 				<input type="hidden" name="eid" id="eid" value="<?php echo $event_detail->ID; ?>"/>
             	<h1><?php echo escape($event_detail->event_name)?> <?php echo (($event_detail->pending==1) ? '(Pending)':'')?></h1>
             	<p class="info">
-					<strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event_detail->event_start, $event_detail->event_tz_cont.'/'.$event_detail->event_tz_place, 'M j, Y'); ?></strong>
+					<strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event_detail->event_start, $event_detail->event_tz_cont.'/'.$event_detail->event_tz_place, 'd.M.Y'); ?></strong>
                     <?php if ($event_detail->event_start+86399 != $event_detail->event_end) { ?>
-                        - <strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event_detail->event_end, $event_detail->event_tz_cont.'/'.$event_detail->event_tz_place, 'M j, Y'); ?></strong>
+                        - <strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event_detail->event_end, $event_detail->event_tz_cont.'/'.$event_detail->event_tz_place, 'd.M.Y'); ?></strong>
                     <?php } ?>
             		<br/> 
             		<strong><?php echo escape($event_detail->event_loc); ?></strong>
@@ -130,7 +130,7 @@ if ($event_detail->event_cfp_start>=time()) {
 			switch ($cfp_status) {
                 case "open" :
                     echo '<span style="color:#00BE02">Open!</span>';
-                    echo '<br/>(ends '.date('m.d.Y',$event_detail->event_cfp_end).')';
+                    echo '<br/>(ends '.date('d.M.Y',$event_detail->event_cfp_end).')';
 					if (!empty($event_detail->event_cfp_url)) {
 						echo '<br/>More information: <a href="'.$event_detail->event_cfp_url.'">'.$event_detail->event_cfp_url.'</a>';
 					}
