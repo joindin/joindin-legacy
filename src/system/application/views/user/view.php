@@ -2,7 +2,7 @@
 menu_pagetitle('User: ' . escape($details[0]->full_name));
 if($gravatar){ echo '<img src="'.$gravatar.'" height="80" width="80" alt="" /><br/><br/>'; } ?>
 <h1><?php 
-	echo (!empty($details[0]->full_name)) ? $details[0]->full_name.' ('.$details[0]->username.')': $details[0]->username;
+	echo (!empty($details[0]->full_name)) ? $details[0]->full_name : $details[0]->username;
 ?></h1>
 <?php 
 if($is_admin){
@@ -88,7 +88,6 @@ switch ($sort_type) {
 	<p>No talks so far</p>
 <?php else: ?>
     <?php
-		//echo '<pre>'; print_r($talks); echo '</pre>';
 		if($sort_type=='byname'){
 			foreach($talks_by_name as $talk_title => $talks){
 				echo '<h3>'.$talk_title.'</h3><br/>';
