@@ -1,37 +1,95 @@
 <?php
 
-class HtmlView extends ApiView {
-    public function render($content) {
-        header('Content-Type: text/html; charset=utf8');
+/**
+ * HTML View class: renders HTML 5
+ *
+ * @category View
+ * @package  API
+ * @author   Lorna Mitchel <lorna.mitchell@gmail.com>
+ * @author   Rob Allen <rob@akrabat.com>
+ * @license  BSD see doc/LICENSE
+ */
+class HtmlView extends ApiView
+{
+    /**
+     * Render the view
+     *
+     * @param array $content data to be rendered
+     *
+     * @return bool
+     */
+    public function render($content)
+    {
         $content = $this->addCount($content);
-        $this->print_array($content);
+
+        header('Content-Type: text/html; charset=utf8');
+        $this->layoutStart();
+        $this->printArray($content);
+        $this->layoutStop();
         return true;
     }
 
-    protected function print_array($content) {
-        foreach($content as $field => $value) {
-            if(is_array($value)) {
-                // recurse and print a primitive break
-                echo "<strong>" . $field . ": </strong>";
-                echo "<br />\n";
+    /**
+     * Recursively render an array to an HTML list
+     *
+     * @param array $content data to be rendered
+     *
+     * @return null
+     */
+    protected function printArray($content)
+    {
+        echo "<ul>\n";
 
+        // field name
+        foreach ($content as $field => $value) {
+            echo "<li><strong>" . $field . ":</strong> ";
+            if (is_array($value)) {
+                // recurse
                 $this->print_array($value);
-                // newline
-                echo "<br />\n";
-                echo "<br />\n";
             } else {
-                // field name
-                echo "<strong>" . $field . ": </strong>";
                 // value, with hyperlinked hyperlinks
-                if(strpos($value, 'http://') === 0) {
+                $value = htmlentities($value, ENT_COMPAT, 'UTF-8');
+                if (strpos($value, 'http://') === 0) {
                     echo "<a href=\"" . $value . "\">" . $value . "</a>";
                 } else {
                     echo $value;
                 }
-                    
-                // newline
-                echo "<br />\n";
             }
+            echo "</li>\n";
         }
+        echo "</ul>\n";
+    }
+
+    /**
+     * Render start of HTML page
+     *
+     * @return null
+     */
+    protected function layoutStart()
+    {
+        echo <<<EOT
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API v2</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+
+EOT;
+    }
+
+    /**
+     * Render end of HTML page
+     *
+     * @return null
+     */
+    protected function layoutStop()
+    {
+        echo <<<EOT
+</body>
+</html>
+
+EOT;
     }
 }
