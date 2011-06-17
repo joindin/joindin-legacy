@@ -45,7 +45,7 @@ class HtmlView extends ApiView
             echo "<li><strong>" . $field . ":</strong> ";
             if (is_array($value)) {
                 // recurse
-                $this->print_array($value);
+                $this->printArray($value);
             } else {
                 // value, with hyperlinked hyperlinks
                 $value = htmlentities($value, ENT_COMPAT, 'UTF-8');
