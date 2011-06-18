@@ -1,0 +1,11 @@
+PHP CodeSniffer standard for joind.in
+
+Usage:
+From the src/ directory, run:
+    phpcs --standard=../doc/codesniffer/JoindIn path/to/file/or/directory
+
+e.g. to check the api-v2/views directory:
+    phpcs --standard=../doc/codesniffer/JoindIn api-v2/views
+
+
+
