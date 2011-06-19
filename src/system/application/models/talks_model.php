@@ -18,6 +18,7 @@ class Talks_model extends Model {
 	 * @return array $talks Talk claim data
 	 */
 	public function talkClaimDetail($tid,$show_all=false){
+		$this->load->helper("events");
 		
 		$sql=sprintf('
 			select
