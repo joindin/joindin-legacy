@@ -14,7 +14,7 @@ if (empty($comments)) {
 	
     foreach ($comments as $k => $v) {
         if (isset($v->user_id) && $v->user_id != 0){ 
-    		$uname = '<a href="/user/view/'.$v->user_id.'">'.escape($v->uname).'</a> ';
+    		$uname = '<a href="/user/view/'.$v->user_id.'">'.escape($v->full_name).'</a> ';
     	}else{ 
     		$uname = '<span class="anonymous">Anonymous</span>'; 
     	}
@@ -50,7 +50,7 @@ if (empty($comments)) {
 	</div>
 	<div class="text">
     	<p class="info">
-    		<strong><?php echo date('M j, Y, H:i',$v->date_made); ?></strong> by <strong><?php echo $uname; ?></strong>
+    		<strong><?php echo date('d.M.Y \a\t H:i',$v->date_made); ?></strong> by <strong><?php echo $uname; ?></strong>
             <?php echo !empty($v->source)?"via ".escape($v->source) : "" ?>
     	<?php if ($v->private == 1): ?>
     		<span class="private">Private</span>

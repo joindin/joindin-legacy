@@ -24,7 +24,7 @@ menu_pagetitle('Blog');
     </div>
     <p class="opts">
     	<a href="/blog/view/<?php echo $v->ID; ?>#comments"><?php echo $v->comment_count; ?> comment<?php echo $v->comment_count == 1 ? '' : 's'?></a> |
-    	 Written <strong><?php echo date('M j, Y',$v->date_posted); ?></strong> at <strong><?php echo date('H:i',$v->date_posted); ?></strong> (<?php echo $v->author_id; ?>)
+    	 Written <strong><?php echo date('d.M.Y',$v->date_posted); ?></strong> at <strong><?php echo date('H:i',$v->date_posted); ?></strong> (<?php echo $v->author_id; ?>)
     </p>
 	
 	<?php if(user_is_admin()): ?>
