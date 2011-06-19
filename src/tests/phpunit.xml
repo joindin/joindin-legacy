@@ -7,7 +7,7 @@
          colors="true"
          verbose="true">
   <testsuite name="Joind.in Test Suite">
-    <directory>./</directory>
+    <directory>./application/</directory>
   </testsuite>
   <logging>
     <log type="coverage-html" target="../../build/coverage" title="joindin"
