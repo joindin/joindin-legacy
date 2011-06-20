@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# This script will reset a database to a clean installation of init_db.sql with
+# all patches applied and seed data installed. 
+#
+# NOTE: It drops all tables currently in the database.
+#
+# Author: Rob Allen <rob@akrabat.com>
+# License: BSD see doc/LICENSE
+
 DBDIR=$1
 DBNAME=$2
 DBUSER=$3
