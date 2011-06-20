@@ -285,6 +285,32 @@ SQL
 		return $result;
 	}
 
+    /**
+     * Find events tagged with the given data
+     * Singular tags for now, maybe multiple later?
+     *
+     * @param mixed $tagData Tag(s) to search on
+     * @return array Event results
+     */
+    public function getEventsByTag($tagData)
+    {
+        $sql = 'SELECT * ,
+			(select count(*) from user_attend where user_attend.eid = events.ID) as num_attend,
+			(select count(*) from event_comments where event_comments.event_id = events.ID) as num_comments, abs(0) as user_attending, '
+		  			.' abs(datediff(from_unixtime(events.event_start), from_unixtime('.mktime(0,0,0).'))) as score,
+              CASE
+                WHEN (((events.event_start - 86400) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
+                ELSE 0
+                END as allow_comments
+			FROM events, tags_events, tags
+			WHERE active = 1 AND (pending = 0 OR pending IS NULL) AND
+			tags_events.event_id = events.ID AND tags_events.tag_id = tags.ID AND
+			tags.tag_value = "'.$tagData.'"';
+
+        $query = $this->db->query($sql);
+        return $query->result();
+    }
+
 	function getEventAdmins($eid,$all_results=false){
 	    $sql=sprintf("
 		select

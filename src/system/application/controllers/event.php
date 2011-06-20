@@ -2023,6 +2023,21 @@ class Event extends Controller
 		$this->template->write_view('content', 'event/callforpapers', $arr);
         $this->template->render();
 	}
+
+    public function tag($tagData=null)
+    {
+        if($tagData == null){ redirect('/event'); }
+        $this->load->model('event_model','eventModel');
+
+        // get events that are tagged with data from url - single value for now
+        $viewData = array(
+            'eventDetail'   => $this->eventModel->getEventsByTag($tagData),
+            'tagString'     => $tagData
+        );
+
+        $this->template->write_view('content', 'event/tag', $viewData);
+        $this->template->render();
+    }
 }
 
 ?>
