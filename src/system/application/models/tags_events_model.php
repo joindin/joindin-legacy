@@ -38,7 +38,7 @@ class Tags_events_model extends Model
 		// check to see if the tag exists first...
 		if($tagRecordId = $this->isTagInUse($tagValue)){
 			// if it exists, just use the tag ID to link
-			$tagId = $tagRecordId->id;
+			$tagId = $tagRecordId[0]->ID;
 		}else{
 			// if not we need to add it to the "Tags" table too
 			$CI = &get_instance();
@@ -76,18 +76,19 @@ class Tags_events_model extends Model
 	 * Remove tags other than the ones specified
 	 *
 	 * @param int $eventId Event ID #
-	 * @param array $tagsInUse Tags list currently in use
+	 * @param array $tagsToRemove List of tags to remove
 	 * @return null
 	 */
-	public function removeUnusedTags($eventId,$tagsInUse)
+	public function removeUnusedTags($eventId,$tagsToRemove)
 	{
-		$currentTags = $this->getTags($eventId);
-		foreach($currentTags as $currentTag){
-			if(!in_array($currentTag,$tagsInUse)){
-				// TODO
-				//$this->removeTag($eventId)
-			}
-		}
+        $CI = &get_instance();
+		$CI->load->model('tags_model','tagsModel');
+
+		foreach($tagsToRemove as $tag => $detail){
+            if($tagData = $CI->tagsModel->tagExists($tag)){
+                $CI->tagsModel->removeTag($eventId,$tagData->ID);
+            }
+        }
 	}
 	
 	/**
@@ -119,7 +120,8 @@ class Tags_events_model extends Model
 	{
 		$this->db->select('*')
 			->from('tags_events')
-			->join('tags','tags_events.tag_id = tags.id');
+			->join('tags','tags_events.tag_id = tags.id')
+            ->where('tags_events.event_id = '.$eventId);
 		return $this->db->get()->result();
 	}
 	

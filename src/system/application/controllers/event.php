@@ -515,13 +515,33 @@ class Event extends Controller
             }
 
 			// see if we have tags
+            //------------------------
 			$tags 		= $this->input->post('tagged');
 			$tagList 	= '';
+            $currentTags= $this->tagsEvents->getTags($id);
+
+            // parse them into an array
+            $ctags = array();
+            foreach($currentTags as $ctag){
+                $ctags[$ctag->tag_value] = $ctag;
+            }
+            
 			foreach(explode(',',$tags) as $tag){
-				$this->tagsEvents->addTag($id,$tag);
+                $tag = trim($tag);
+
+                // if it already exists, remove it from our array
+                if(array_key_exists($tag,$ctags)){
+                    unset($ctags[$tag]);
+                }
+
+                $this->tagsEvents->addTag($id,$tag);
 				$tagList .= $tag.', ';
 			}
+            // see if we have any left overs
+            $this->tagsEvents->removeUnusedTags($id,$ctags);
+
 			$this->validation->tagged = substr($tagList,0,strlen($tagList)-1);
+            //------------------------
 
             // edit
             if ($id) {

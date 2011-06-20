@@ -20,7 +20,7 @@ class Tags_model extends Model
 			'tag_value' => $tagValue
 		))->result();
 		
-		return (empty($result)) ? false : true;
+		return (empty($result)) ? false : $result;
 	}
 	
 	/**
