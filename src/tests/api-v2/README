@@ -36,7 +36,8 @@ and writing to this database.
 3. Setup database
 -----------------
 You must have set up your test database with a clean database including the
-seed data. The script tests/api-v2/reset_apiv2test_db.php will do this for you:
+seed data. The script tests/api-v2/scripts/reset_apiv2test_db.php will do this 
+for you:
 
 $ php reset_apiv2test_db.php
 
