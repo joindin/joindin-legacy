@@ -14,7 +14,7 @@
 // Register the api-v2 autoloader
 require __DIR__ . '/bootstrap/bootstrap.php';
 
-setupDatabase();
+resetDatabase();
 
 /**
  * wrapper function abour reset_db.sh that picks up the database information
@@ -24,7 +24,7 @@ setupDatabase();
  * 
  * @return void 
  */
-function setupDatabase()
+function resetDatabase()
 {
     global $db;
     include_once BASEPATH . '/database.php';
