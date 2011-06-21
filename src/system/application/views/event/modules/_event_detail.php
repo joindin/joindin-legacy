@@ -134,7 +134,7 @@ $is_cfp_open = ($event_detail->event_cfp_end>=time() && $event_detail->event_cfp
                 <?php
                 $tagList = array();
                 foreach($tags as $tag){
-                    $tagList[] = '<a href="'.$tag->tag_value.'">'.$tag->tag_value.'</a>';
+                    $tagList[] = '<a href="/event/tag/'.$tag->tag_value.'">'.$tag->tag_value.'</a>';
                 }
                 echo 'tagged: '.implode(',',$tagList);
                 ?>
