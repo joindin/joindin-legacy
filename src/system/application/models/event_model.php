@@ -257,8 +257,16 @@ SQL
 			$sql .= ' LIMIT ' . $limit;
 		}
 
-	    $query = $this->db->query($sql);
-	    return $query->result();
+	    $query  = $this->db->query($sql);
+	    $result = $query->result();
+
+        $CI=&get_instance();
+        $CI->load->model('tags_events_model','eventTags');
+        foreach($result as $index => $event){
+            $result[$index]->eventTags = $CI->eventTags->getTags($event->ID);
+        }
+
+        return $result;
 	}
 
     function getHotEvents($limit = null){
@@ -294,7 +302,10 @@ SQL
      */
     public function getEventsByTag($tagData)
     {
-        $sql = 'SELECT * ,
+        $CI=&get_instance();
+        $CI->load->model('tags_events_model','eventTags');
+        
+        $sql = 'SELECT events.* ,
 			(select count(*) from user_attend where user_attend.eid = events.ID) as num_attend,
 			(select count(*) from event_comments where event_comments.event_id = events.ID) as num_comments, abs(0) as user_attending, '
 		  			.' abs(datediff(from_unixtime(events.event_start), from_unixtime('.mktime(0,0,0).'))) as score,
@@ -307,8 +318,12 @@ SQL
 			tags_events.event_id = events.ID AND tags_events.tag_id = tags.ID AND
 			tags.tag_value = "'.$tagData.'"';
 
-        $query = $this->db->query($sql);
-        return $query->result();
+        $query  = $this->db->query($sql);
+        $result = $query->result();
+        foreach($result as $index => $event){
+            $result[$index]->eventTags = $CI->eventTags->getTags($event->ID);
+        }
+        return $result;
     }
 
 	function getEventAdmins($eid,$all_results=false){

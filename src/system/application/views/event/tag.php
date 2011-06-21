@@ -1,4 +1,4 @@
-<h2>Tagged with "<?php echo $tagString; ?>"</h2>
+<h2>Tagged with "<?php echo escape($tagString); ?>"</h2>
 <?php
 
 foreach($eventDetail as $event){
