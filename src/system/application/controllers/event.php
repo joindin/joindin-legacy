@@ -618,6 +618,7 @@ class Event extends Controller
         $this->load->model('event_track_model', 'etm');
         $this->load->model('talk_comments_model', 'tcm');
         $this->load->model('user_admin_model', 'uadm');
+        $this->load->model('tags_events_model','eventTags');
         $this->load->model('talks_model');
 		$this->load->model('Pending_talk_claims_model','pendingTalkClaims');
 
@@ -752,7 +753,8 @@ class Event extends Controller
             'admins'         => $evt_admins,
             'tracks'         => $this->etm->getEventTracks($id),
             'talk_stats'     => $talk_stats,
-			'tab'			 => ''
+			'tab'			 => '',
+            'tags'           => $this->eventTags->getTags($id)
             //'started'=>$this->tz->hasEvtStarted($id),
         );
 
