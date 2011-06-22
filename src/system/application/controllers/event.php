@@ -301,7 +301,8 @@ class Event extends Controller
             'end_mo'         => 'callback_end_mo_check',
             'event_stub'     => 'callback_stub_check',
 			'cfp_end_mo'	 => 'callback_cfp_end_mo_check',
-			'cfp_start_mo'	 => 'callback_cfp_start_mo_check'
+			'cfp_start_mo'	 => 'callback_cfp_start_mo_check',
+            'tagged'         => 'callback_tagged_check'
         );
         $this->validation->set_rules($rules);
 
@@ -526,7 +527,7 @@ class Event extends Controller
                 $ctags[$ctag->tag_value] = $ctag;
             }
             
-			foreach(explode(',',$tags) as $tag){
+			foreach(array_slice(explode(',',$tags),0,5) as $tag){
                 $tag = trim($tag);
 
                 // if it already exists, remove it from our array
@@ -2015,6 +2016,32 @@ class Event extends Controller
         return true;
     }
 
+    /**
+     * Callback check for tag values in form
+     * Only alpha-numeric tags allowed
+     * 
+     * @param string $tagList Listing of tags, comma separated
+     * @return bool
+     */
+    public function tagged_check($tagList)
+    {
+        foreach(explode(',',$tagList) as $tag){
+            if(!preg_match('/^[a-zA-Z0-9]+$/',trim($tag))){
+                // escape the "%" since it goes to a sprintf()
+                $msg = 'Tag <b>"'.str_replace('%','%%',trim($tag)).'"</b> not valid!';
+                $this->validation->set_message('tagged_check',$msg);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Call for Papers method
+     *
+     * @param null $eventId[optional] Event ID
+     * @return void
+     */
 	public function callforpapers($eventId=null)
 	{	
 		$this->load->model('event_model','eventModel');
@@ -2026,7 +2053,14 @@ class Event extends Controller
         $this->template->render();
 	}
 
-    public function tag($tagData=null)
+    /**
+     * Tag action method
+     * Displays events tagged with $tagData value
+     *
+     * @param null $tagData[optional] Tag to pull events for
+     * @return void
+     */
+    public function tag($tagData)
     {
         if($tagData == null){ redirect('/event'); }
         $this->load->model('event_model','eventModel');

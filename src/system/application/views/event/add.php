@@ -105,6 +105,9 @@ echo '<h2>'.$title.'</h2>';
 	<?php
 		echo form_input('tagged',$this->validation->tagged);
 	?>
+        <span style="color:#3567AC;font-size:11px">
+            Seperate tags with commas, limit <b>5 tags</b>, alpha-numeric only
+        </span>
 	</div>
     <div class="clear"></div>
 	<div class="row">

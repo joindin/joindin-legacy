@@ -86,7 +86,7 @@ class Tags_events_model extends Model
 
 		foreach($tagsToRemove as $tag => $detail){
             if($tagData = $CI->tagsModel->tagExists($tag)){
-                $CI->tagsModel->removeTag($eventId,$tagData->ID);
+                $CI->tagsModel->removeTag($eventId,$tagData[0]->ID);
             }
         }
 	}
@@ -121,7 +121,8 @@ class Tags_events_model extends Model
 		$this->db->select('*')
 			->from('tags_events')
 			->join('tags','tags_events.tag_id = tags.id')
-            ->where('tags_events.event_id = '.$eventId);
+            ->where('tags_events.event_id = '.$eventId)
+            ->order_by('tags.tag_value','asc');
 		return $this->db->get()->result();
 	}
 	
