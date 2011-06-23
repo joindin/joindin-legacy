@@ -283,6 +283,7 @@ class Event extends Controller
         $this->load->library('validation');
         $this->load->library('timezone');
         $this->load->model('event_model');
+		$this->load->model('tags_events_model','tagsEvents');
 
         $config = array(
           'upload_path'   => $_SERVER['DOCUMENT_ROOT'] . '/inc/img/event_icons',
@@ -303,7 +304,8 @@ class Event extends Controller
             'event_stub'     => 'callback_stub_check',
 			'cfp_end_mo'	 => 'callback_cfp_end_mo_check',
 			'cfp_start_mo'	 => 'callback_cfp_start_mo_check',
-            'cfp_url'        => 'callback_cfp_url_check'
+            		'cfp_url'        => 'callback_cfp_url_check',
+            		'tagged'         => 'callback_tagged_check'
         );
         $this->validation->set_rules($rules);
 
@@ -332,7 +334,8 @@ class Event extends Controller
 			'cfp_end_mo'	 => 'Event Call for Papers End Date',
 			'cfp_end_day'	 => 'Event Call for Papers End Date',
 			'cfp_end_yr'	 => 'Event Call for Papers End Date',
-            'cfp_url'        => 'Event Call for Papers URL',
+            		'cfp_url'        => 'Event Call for Papers URL',
+			'tagged'	 => 'Tagged With'
         );
         $this->validation->set_fields($fields);
 
@@ -426,13 +429,25 @@ class Event extends Controller
 						$this->input->post('cfp_start_yr')
 					);
 				}
+	    }
 
-				// be sure that the image for the event actually exists
-				$eventIconPath = $_SERVER['DOCUMENT_ROOT'] . '/inc/img/event_icons/'.$event_detail[0]->event_icon;
-				if(!is_file($eventIconPath)){
-					$event_detail[0]->event_icon = 'none.gif';
+			// be sure that the image for the event actually exists
+			$eventIconPath = $_SERVER['DOCUMENT_ROOT'] . '/inc/img/event_icons/'.$event_detail[0]->event_icon;
+			if(!is_file($eventIconPath)){
+				$event_detail[0]->event_icon = 'none.gif';
+			}
+
+			// get our event's tags
+			$tags = $this->tagsEvents->getTags($id);
+			$this->validation->tagged = null;
+			if (!empty($tags)) {
+				$tagList = '';
+				foreach($tags as $tag){
+					$tagList .= $tag->tag_value.', ';
 				}
-            }
+				$this->validation->tagged = substr($tagList,0,strlen($tagList)-2);
+			}
+			
 
             $arr = array(
                 'detail'       => $event_detail,
@@ -504,6 +519,35 @@ class Event extends Controller
                 $updata            = $this->upload->data();
                 $arr['event_icon'] = $updata['file_name'];
             }
+
+			// see if we have tags
+            //------------------------
+			$tags 		= $this->input->post('tagged');
+			$tagList 	= '';
+            $currentTags= $this->tagsEvents->getTags($id);
+
+            // parse them into an array
+            $ctags = array();
+            foreach($currentTags as $ctag){
+                $ctags[$ctag->tag_value] = $ctag;
+            }
+            
+			foreach(array_slice(explode(',',$tags),0,5) as $tag){
+                $tag = trim($tag);
+
+                // if it already exists, remove it from our array
+                if(array_key_exists($tag,$ctags)){
+                    unset($ctags[$tag]);
+                }
+
+                $this->tagsEvents->addTag($id,$tag);
+				$tagList .= $tag.', ';
+			}
+            // see if we have any left overs
+            $this->tagsEvents->removeUnusedTags($id,$ctags);
+
+			$this->validation->tagged = substr($tagList,0,strlen($tagList)-1);
+            //------------------------
 
             // edit
             if ($id) {
@@ -580,6 +624,7 @@ class Event extends Controller
         $this->load->model('event_track_model', 'etm');
         $this->load->model('talk_comments_model', 'tcm');
         $this->load->model('user_admin_model', 'uadm');
+        $this->load->model('tags_events_model','eventTags');
         $this->load->model('talks_model');
 		$this->load->model('Pending_talk_claims_model','pendingTalkClaims');
 
@@ -707,7 +752,8 @@ class Event extends Controller
             'admins'         => $evt_admins,
             'tracks'         => $this->etm->getEventTracks($id),
             'talk_stats'     => $talk_stats,
-			'tab'			 => ''
+			'tab'			 => '',
+            'tags'           => $this->eventTags->getTags($id)
             //'started'=>$this->tz->hasEvtStarted($id),
         );
 
@@ -2040,6 +2086,32 @@ class Event extends Controller
         return true;
     }
 
+    /**
+     * Callback check for tag values in form
+     * Only alpha-numeric tags allowed
+     * 
+     * @param string $tagList Listing of tags, comma separated
+     * @return bool
+     */
+    public function tagged_check($tagList)
+    {
+        foreach(explode(',',$tagList) as $tag){
+            if(!preg_match('/^[a-zA-Z0-9]+$/',trim($tag))){
+                // escape the "%" since it goes to a sprintf()
+                $msg = 'Tag <b>"'.str_replace('%','%%',trim($tag)).'"</b> not valid!';
+                $this->validation->set_message('tagged_check',$msg);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Call for Papers method
+     *
+     * @param null $eventId[optional] Event ID
+     * @return void
+     */
 	public function callforpapers($eventId=null)
 	{	
 		$this->load->model('event_model','eventModel');
@@ -2065,6 +2137,28 @@ class Event extends Controller
 		$this->template->write_view('content', 'event/callforpapers', $arr);
         $this->template->render();
 	}
+
+    /**
+     * Tag action method
+     * Displays events tagged with $tagData value
+     *
+     * @param null $tagData[optional] Tag to pull events for
+     * @return void
+     */
+    public function tag($tagData)
+    {
+        if($tagData == null){ redirect('/event'); }
+        $this->load->model('event_model','eventModel');
+
+        // get events that are tagged with data from url - single value for now
+        $viewData = array(
+            'eventDetail'   => $this->eventModel->getEventsByTag($tagData),
+            'tagString'     => $tagData
+        );
+
+        $this->template->write_view('content', 'event/tag', $viewData);
+        $this->template->render();
+    }
 }
 
 ?>

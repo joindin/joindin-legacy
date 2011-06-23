@@ -13,6 +13,16 @@ $this->load->library('timezone');
         </p>
     	<div class="desc">
         <?php echo auto_p(escape(word_limiter($event->event_desc, 20))); ?>
+        <?php
+        if(isset($event->eventTags) && !empty($event->eventTags)){
+            $tags = array();
+            foreach($event->eventTags as $tag){
+                $tag = escape($tag->tag_value);
+                $tags[] = '<a href="/event/tag/'.$tag.'">'.$tag.'</a>';
+            }
+            echo '<b>tagged</b> '.implode(', ',$tags);
+        }
+        ?>
     	</div>
     	<p class="opts">
     		<a href="/event/view/<?php echo $event->ID; ?>#comments"><?php echo $event->num_comments; ?> comment<?php echo $event->num_comments == 1 ? '' : 's'?></a> |
