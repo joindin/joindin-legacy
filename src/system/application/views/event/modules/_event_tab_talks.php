@@ -16,7 +16,7 @@
         $ct = 0;
     ?>
     	<tr>
-    		<th colspan="4">
+    		<th colspan="5">
     			<h4 id="talks"><?php echo date('d.M.Y', $talk_section_date); ?></h4>
     		</th>
     	</tr>
