@@ -443,7 +443,7 @@ class Talk extends Controller
 
         // check to see if they're supposed to be here
         if (!$this->auth) {
-            redirect();
+            redirect('/user/login', 'refresh');
         }
 
         $talk_detail = $this->talks_model->getTalks($id);
