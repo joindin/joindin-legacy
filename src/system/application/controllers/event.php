@@ -245,6 +245,10 @@ class Event extends Controller
      */
     function pending()
     {
+
+        if (!$this->user_model->isAuth()) {
+            redirect('/user/login', 'refresh');
+        }
         if (!$this->user_model->isSiteAdmin()) {
             redirect();
         }
@@ -263,6 +267,10 @@ class Event extends Controller
      */
     function add($id = null)
     {
+        // user needs to log in at least
+        if (!$this->user_model->isAuth()) {
+            redirect('/user/login', 'refresh');
+        }
         //check for admin
         if ($id) {
             if (!$this->user_model->isAdminEvent($id)) {
@@ -590,6 +598,10 @@ class Event extends Controller
      */
     function edit($id)
     {
+        // user needs to log in at least
+        if (!$this->user_model->isAuth()) {
+            redirect('/user/login', 'refresh');
+        }
         if (!$this->user_model->isAdminEvent($id)) {
             redirect();
         }
@@ -1537,6 +1549,10 @@ class Event extends Controller
      */
     function import($id)
     {
+        // user needs to log in at least
+        if (!$this->user_model->isAuth()) {
+            redirect('/user/login', 'refresh');
+        }
         // Be sure they're supposed to be here...
         if (!$this->user_model->isSiteAdmin()
             && !$this->user_model->isAdminEvent($id)
@@ -1741,9 +1757,8 @@ class Event extends Controller
     function contact($id)
     {
         // They need to be logged in...
-        $is_auth = $this->user_model->isAuth();
-        if (!$is_auth) {
-            redirect('event/view/' . $id);
+        if (!$this->user_model->isAuth()) {
+            redirect('/user/login', 'refresh');
         }
 
         $this->load->model('event_model');
@@ -1804,6 +1819,10 @@ class Event extends Controller
      */
     function tracks($id)
     {
+        // user needs to log in at least
+        if (!$this->user_model->isAuth()) {
+            redirect('/user/login', 'refresh');
+        }
         if (!$this->user_model->isSiteAdmin()
             && !$this->user_model->isAdminEvent($id)
         ) {
