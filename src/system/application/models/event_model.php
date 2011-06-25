@@ -234,7 +234,7 @@ SQL
 	}
 
 	public function getEvents($where=NULL, $order_by = NULL, $limit = NULL) {
-		$sql = 'SELECT * ,
+		$sql = 'SELECT events.* ,
 		    (select if(event_cfp_start IS NOT NULL AND event_cfp_start > 0 AND '.mktime(0,0,0).' BETWEEN event_cfp_start AND event_cfp_end, 1, 0)) as is_cfp,
 			(select count(*) from user_attend where user_attend.eid = events.ID) as num_attend,
 			(select count(*) from event_comments where event_comments.event_id = events.ID) as num_comments, abs(0) as user_attending, '
@@ -243,8 +243,16 @@ SQL
                 WHEN (((events.event_start - 86400) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
                 END as allow_comments
-			FROM `events`
-			WHERE active = 1 AND (pending = 0 OR pending IS NULL)';
+			FROM
+			    `events`,
+			    `tags_events`,
+			    `tags`
+			WHERE
+			    active = 1 AND
+			    (pending = 0 OR pending IS NULL) AND
+			    tags_events.tag_id = tags.id AND
+			    tags_events.event_id = events.id
+			';
 
 		if($where) {
 			$sql .= ' AND (' . $where . ')';
@@ -261,20 +269,66 @@ SQL
 	    $query  = $this->db->query($sql);
 	    $result = $query->result();
 
-        $CI=&get_instance();
-        $CI->load->model('tags_events_model','eventTags');
-        foreach($result as $index => $event){
-            $result[$index]->eventTags = $CI->eventTags->getTags($event->ID);
+        $eventIds = array();
+        foreach($result as $event){
+            $eventIds[] = $event->ID;
         }
 
+        $result = $this->getEventTags($eventIds,$result);
         return $result;
 	}
 
+    /**
+     * If we're just given the event ID list, return the tags
+     * If we're given the events data too, apply the tags to it and return
+     *
+     * @param mixed $eventIds Either an array or a string with event IDs
+     * @param array $events[optional] Event data
+     * @return array $events|$tags Event or tag data, depending on input
+     */
+    public function getEventTags($eventIds,$events=null)
+    {
+        if(!is_array($eventIds)){
+            $eventIDs = array($eventIds);
+        }
+        $CI=&get_instance();
+        $CI->load->model('tags_events_model','eventTags');
+        $tags = $CI->eventTags->getTags($eventIds);
+
+        if($events != null){
+            $tagByEventId = array();
+            foreach($tags as $tag){
+                $tagByEventId[$tag->event_id][] = $tag;
+            }
+            // we have event data, attach the tags
+            foreach($events as $key => $event)
+            {
+                $events[$key]->eventTags = $tagByEventId[$event->ID];
+            }
+            return $events;
+        }else{
+            return $tags;
+        }
+    }
+
+    /**
+     * Get the "Hot" events
+     *
+     * @param null $limit Number of results to limit
+     * @return array
+     */
     function getHotEvents($limit = null){
 		$result = $this->getEventsOfType("hot", $limit);
 		return $result;
 	}
 
+    /**
+     * Get "Upcoming" events
+     *
+     * @param null $limit Number of results to limit
+     * @param bool $inc_curr Not handled
+     * @return array
+     */
 	function getUpcomingEvents($limit = null, $inc_curr = false){
 		// inc_curr not handled
 
@@ -303,28 +357,8 @@ SQL
      */
     public function getEventsByTag($tagData)
     {
-        $CI=&get_instance();
-        $CI->load->model('tags_events_model','eventTags');
-        
-        $sql = 'SELECT events.* ,
-			(select count(*) from user_attend where user_attend.eid = events.ID) as num_attend,
-			(select count(*) from event_comments where event_comments.event_id = events.ID) as num_comments, abs(0) as user_attending, '
-		  			.' abs(datediff(from_unixtime(events.event_start), from_unixtime('.mktime(0,0,0).'))) as score,
-              CASE
-                WHEN (((events.event_start - 86400) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
-                ELSE 0
-                END as allow_comments
-			FROM events, tags_events, tags
-			WHERE active = 1 AND (pending = 0 OR pending IS NULL) AND
-			tags_events.event_id = events.ID AND tags_events.tag_id = tags.ID AND
-			tags.tag_value = "'.$tagData.'"';
-
-        $query  = $this->db->query($sql);
-        $result = $query->result();
-        foreach($result as $index => $event){
-            $result[$index]->eventTags = $CI->eventTags->getTags($event->ID);
-        }
-        return $result;
+        $where = "tags.tag_value = '".$tagData."'";
+        return $this->getEvents($where);
     }
 
 	function getEventAdmins($eid,$all_results=false){
