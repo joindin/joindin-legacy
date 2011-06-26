@@ -56,6 +56,7 @@ class JoindIn_Sniffs_Commenting_FileCommentSniff
     public function process(PHP_CodeSniffer_File $phpcsFile, $stackPtr)
     {
         // Changes for joind.in
+        $this->tags['author']['required'] = false;
         $this->tags['link']['required'] = false;
         $this->tags['version']['required'] = false;
         
