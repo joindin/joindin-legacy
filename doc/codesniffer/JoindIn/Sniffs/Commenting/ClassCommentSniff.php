@@ -3,11 +3,9 @@
  * Parses and verifies the doc comments for classes. Overrides the PEAR standards 
  * imeplementation to remove the requirement for @link in a class comment.
  *
- * @category  Doc
- * @package   JoindIn_CodeSniffer
- * @author    Rob Allen <rob@akrabat.com>
- * @copyright 2011 Rob Allen
- * @license   BSD see doc/LICENSE
+ * @category Doc
+ * @package  JoindIn_CodeSniffer
+ * @license  BSD see doc/LICENSE
  */
 
 if (class_exists('PEAR_Sniffs_Commenting_ClassCommentSniff', true) === false) {

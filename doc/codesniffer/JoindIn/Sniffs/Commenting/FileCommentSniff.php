@@ -5,11 +5,9 @@
  *     1. Remove the requirement for @link in a file level comment
  *     2. Remove the requirement to specificy PHP version 4 or 5
  *
- * @category  Doc
- * @package   JoindIn_CodeSniffer
- * @author    Rob Allen <rob@akrabat.com>
- * @copyright 2011 Rob Allen
- * @license   BSD see doc/LICENSE
+ * @category Doc
+ * @package  JoindIn_CodeSniffer
+ * @license  BSD see doc/LICENSE
  */
 
 if (class_exists('PEAR_Sniffs_Commenting_FileCommentSniff', true) === false) {
