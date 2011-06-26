@@ -17,9 +17,9 @@ if (class_exists('PEAR_Sniffs_Commenting_FileCommentSniff', true) === false) {
 /**
  * Parses and verifies the doc comments for files.
  *
- * @category  Doc
- * @package   JoindIn_CodeSniffer
- * @license   BSD see doc/LICENSE
+ * @category Doc
+ * @package  JoindIn_CodeSniffer
+ * @license  BSD see doc/LICENSE
  */
 
 class JoindIn_Sniffs_Commenting_FileCommentSniff 
