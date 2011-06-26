@@ -45,3 +45,5 @@ class JoindIn_Sniffs_Commenting_ClassCommentSniff
     }
 
 }
+
+?>
