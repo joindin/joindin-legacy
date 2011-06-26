@@ -19,8 +19,6 @@ if (class_exists('PEAR_Sniffs_Commenting_FileCommentSniff', true) === false) {
  *
  * @category  Doc
  * @package   JoindIn_CodeSniffer
- * @author    Rob Allen <rob@akrabat.com>
- * @copyright 2011 Rob Allen
  * @license   BSD see doc/LICENSE
  */
 
