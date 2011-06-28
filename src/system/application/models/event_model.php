@@ -244,14 +244,10 @@ SQL
                 ELSE 0
                 END as allow_comments
 			FROM
-			    `events`,
-			    `tags_events`,
-			    `tags`
+			    `events`
 			WHERE
 			    active = 1 AND
-			    (pending = 0 OR pending IS NULL) AND
-			    tags_events.tag_id = tags.id AND
-			    tags_events.event_id = events.id
+			    (pending = 0 OR pending IS NULL)
 			';
 
 		if($where) {
@@ -269,45 +265,29 @@ SQL
 	    $query  = $this->db->query($sql);
 	    $result = $query->result();
 
+        $this->_applyEventTags($result);
+        return $result;
+    }
+
+    /**
+     * Fetch and apply the tags for event(s)
+     * 
+     * @param array $results Event results
+     * @return void
+     */
+    private function _applyEventTags(&$results)
+    {
         $eventIds = array();
-        foreach($result as $event){
+        foreach($results as $event){
             $eventIds[] = $event->ID;
         }
 
-        $result = $this->getEventTags($eventIds,$result);
-        return $result;
-	}
-
-    /**
-     * If we're just given the event ID list, return the tags
-     * If we're given the events data too, apply the tags to it and return
-     *
-     * @param mixed $eventIds Either an array or a string with event IDs
-     * @param array $events[optional] Event data
-     * @return array $events|$tags Event or tag data, depending on input
-     */
-    public function getEventTags($eventIds,$events=null)
-    {
-        if(!is_array($eventIds)){
-            $eventIDs = array($eventIds);
-        }
         $CI=&get_instance();
         $CI->load->model('tags_events_model','eventTags');
-        $tags = $CI->eventTags->getTags($eventIds);
+        $tags = $CI->eventTags->getTags($eventIds,true);
 
-        if($events != null){
-            $tagByEventId = array();
-            foreach($tags as $tag){
-                $tagByEventId[$tag->event_id][] = $tag;
-            }
-            // we have event data, attach the tags
-            foreach($events as $key => $event)
-            {
-                $events[$key]->eventTags = $tagByEventId[$event->ID];
-            }
-            return $events;
-        }else{
-            return $tags;
+        foreach($results as $eventKey => $eventDetail){
+            $results[$eventKey]->eventTags = $tags[$eventDetail->ID];
         }
     }
 

@@ -114,9 +114,10 @@ class Tags_events_model extends Model
 	 * Get the event's current tags
 	 *
 	 * @param int $eventId Event ID #
+     * @param bool $byEventId Flag to sort results by event ID
 	 * @return array Tag information
 	 */
-	public function getTags($eventId)
+	public function getTags($eventId,$byEventId = false)
 	{
 		$this->db->select('*')
 			->from('tags_events')
@@ -129,7 +130,16 @@ class Tags_events_model extends Model
             $this->db->where('tags_events.event_id = '.$eventId);
         }
 
-		return $this->db->get()->result();
+		$result = $this->db->get()->result();
+        if($byEventId === true){
+            $byEvent = array();
+            foreach($result as $tag){
+                $byEvent[$tag->event_id][] = $tag;
+            }
+            $result = $byEvent;
+        }
+
+        return $result;
 	}
 	
 }
