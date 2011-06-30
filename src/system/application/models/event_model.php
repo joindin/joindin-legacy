@@ -234,7 +234,7 @@ SQL
 	}
 
 	public function getEvents($where=NULL, $order_by = NULL, $limit = NULL) {
-		$sql = 'SELECT * ,
+		$sql = 'SELECT events.* , count(tags.id) as tag_count,
 		    (select if(event_cfp_start IS NOT NULL AND event_cfp_start > 0 AND '.mktime(0,0,0).' BETWEEN event_cfp_start AND event_cfp_end, 1, 0)) as is_cfp,
 			(select count(*) from user_attend where user_attend.eid = events.ID) as num_attend,
 			(select count(*) from event_comments where event_comments.event_id = events.ID) as num_comments, abs(0) as user_attending, '
@@ -243,12 +243,21 @@ SQL
                 WHEN (((events.event_start - 86400) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
                 END as allow_comments
-			FROM `events`
-			WHERE active = 1 AND (pending = 0 OR pending IS NULL)';
+			FROM
+			    `events`
+			LEFT JOIN `tags_events` ON tags_events.event_id = events.id
+            LEFT JOIN `tags` ON tags.id = tags_events.tag_id
+			WHERE
+			    events.active = 1 AND
+			    (events.pending = 0 OR events.pending IS NULL)
+			';
 
 		if($where) {
 			$sql .= ' AND (' . $where . ')';
 		}
+
+        // we will get multiple rows for events with multiple tags so roll up
+        $sql .= ' GROUP BY events.id';
 
 		if($order_by) {
 			$sql .= ' ORDER BY ' . $order_by;
@@ -264,17 +273,32 @@ SQL
         $CI=&get_instance();
         $CI->load->model('tags_events_model','eventTags');
         foreach($result as $index => $event){
-            $result[$index]->eventTags = $CI->eventTags->getTags($event->ID);
+            if($event->tag_count > 0) {
+                $result[$index]->eventTags = $CI->eventTags->getTags($event->ID);
+            }
         }
 
         return $result;
 	}
 
+    /**
+     * Get the "Hot" events
+     *
+     * @param null $limit Number of results to limit
+     * @return array
+     */
     function getHotEvents($limit = null){
 		$result = $this->getEventsOfType("hot", $limit);
 		return $result;
 	}
 
+    /**
+     * Get "Upcoming" events
+     *
+     * @param null $limit Number of results to limit
+     * @param bool $inc_curr Not handled
+     * @return array
+     */
 	function getUpcomingEvents($limit = null, $inc_curr = false){
 		// inc_curr not handled
 
@@ -303,28 +327,8 @@ SQL
      */
     public function getEventsByTag($tagData)
     {
-        $CI=&get_instance();
-        $CI->load->model('tags_events_model','eventTags');
-        
-        $sql = 'SELECT events.* ,
-			(select count(*) from user_attend where user_attend.eid = events.ID) as num_attend,
-			(select count(*) from event_comments where event_comments.event_id = events.ID) as num_comments, abs(0) as user_attending, '
-		  			.' abs(datediff(from_unixtime(events.event_start), from_unixtime('.mktime(0,0,0).'))) as score,
-              CASE
-                WHEN (((events.event_start - 86400) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
-                ELSE 0
-                END as allow_comments
-			FROM events, tags_events, tags
-			WHERE active = 1 AND (pending = 0 OR pending IS NULL) AND
-			tags_events.event_id = events.ID AND tags_events.tag_id = tags.ID AND
-			tags.tag_value = "'.$tagData.'"';
-
-        $query  = $this->db->query($sql);
-        $result = $query->result();
-        foreach($result as $index => $event){
-            $result[$index]->eventTags = $CI->eventTags->getTags($event->ID);
-        }
-        return $result;
+        $where = "tags.tag_value = '".$tagData."'";
+        return $this->getEvents($where);
     }
 
 	function getEventAdmins($eid,$all_results=false){

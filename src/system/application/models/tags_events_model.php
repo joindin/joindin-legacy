@@ -121,8 +121,14 @@ class Tags_events_model extends Model
 		$this->db->select('*')
 			->from('tags_events')
 			->join('tags','tags_events.tag_id = tags.id')
-            ->where('tags_events.event_id = '.$eventId)
             ->order_by('tags.tag_value','asc');
+
+        if(is_array($eventId)){
+            $this->db->where('tags_events.event_id in ('.implode(',',$eventId).')');
+        }else{
+            $this->db->where('tags_events.event_id = '.$eventId);
+        }
+
 		return $this->db->get()->result();
 	}
 	
