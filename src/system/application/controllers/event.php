@@ -542,6 +542,7 @@ class Event extends Controller
             
 			foreach(array_slice(explode(',',$tags),0,5) as $tag){
                 $tag = trim($tag);
+                if(strlen($tag)==0){ continue; }
 
                 // if it already exists, remove it from our array
                 if(array_key_exists($tag,$ctags)){
