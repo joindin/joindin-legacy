@@ -370,6 +370,25 @@ SQL
 	    return $q->result();
 	}
 	
+	function hasUserCommentedEvent($eid, $user_id)
+	{
+		$sql=sprintf("
+		SELECT event_id
+		FROM event_comments
+		WHERE event_id = %s
+			AND user_id = %s
+	    ", $this->db->escape($eid), $this->db->escape($user_id));
+	    $q=$this->db->query($sql);
+	    $r = $q->result();
+		
+		if(count($r) > 0)
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
 	function getEventIdByName($name){
 		$q=$this->db->get_where('events',array('event_stub'=>$name));
 		return $q->result();
