@@ -765,8 +765,7 @@ class Event extends Controller
             'tracks'         => $this->etm->getEventTracks($id),
             'talk_stats'     => $talk_stats,
 			'tab'			 => '',
-            'tags'           => $this->eventTags->getTags($id),
-			'prompt_event_comment'	 => false
+            'tags'           => $this->eventTags->getTags($id)
             //'started'=>$this->tz->hasEvtStarted($id),
         );
 
@@ -904,37 +903,6 @@ class Event extends Controller
                 )
             );
         }
-		
-		// Get the start of the last day for prompting attending users
-		// for event level feedback
-		$last_day = strtotime(date('Y-m-d', $events[0]->event_end));
-		
-		// For single day events, we don't want to prompt for a comment
-		// until the event is over
-		if($events[0]->event_start + (60 * 60 * 25) >= $last_day)
-		{
-			$last_day = $events[0]->event_end;
-		}
-		
-		// Requirements for prompting for event comments
-		// - logged in
-		// - attending
-		// - last day
-		// - haven't lets feedback yet already
-		
-		if($is_auth && $chk_attend && time() > $last_day)
-		{
-			// Check to see if they have left feedback yet.
-			$has_commented_event = $this->event_model->hasUserCommentedEvent($id, $arr['user_id']);
-			if(!$has_commented_event)
-			{
-				$this->template->write_view(
-                'sidebar3', 'event/_event_prompt_comment_sidebar',
-					array()
-				);
-				$arr['prompt_event_comment'] = true;
-			}
-		}
 
         $this->template->write_view('content', 'event/detail', $arr, true);
 		// only show the contact button for logged in users
