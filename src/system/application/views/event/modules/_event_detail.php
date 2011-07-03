@@ -147,6 +147,20 @@ if ($event_detail->event_cfp_start>=time()) {
 				?> </b> 
 			</div>
 			<div class="clear"></div>
-			<?php } ?>
+			<?php }
+            if(!empty($tags)){
+                ?>
+                <div class="links">
+                <?php
+                $tagList = array();
+                foreach($tags as $tag){
+                    $tagList[] = '<a href="/event/tag/'.$tag->tag_value.'">'.$tag->tag_value.'</a>';
+                }
+                echo 'tagged: '.implode(',',$tagList);
+                ?>
+                </div>
+                <div class="clear"></div>
+            <?php }
+            ?>
 	</div>
 </div>

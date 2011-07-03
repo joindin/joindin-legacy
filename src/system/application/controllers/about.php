@@ -153,17 +153,6 @@ class About extends Controller
     }
 
     /**
-     * Displays the help page for the widgets.
-     *
-     * @return void
-     */
-    function widget()
-    {
-        $this->template->write_view('content', 'about/widget');
-        $this->template->render();
-    }
-
-    /**
      * Displays the about page for the services.
      *
      * @return void

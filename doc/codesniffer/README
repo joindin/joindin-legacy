@@ -1,0 +1,15 @@
+PHP CodeSniffer standard for joind.in
+
+This is an override of the PEAR code sniffer standard to change some minor docblock requirements
+that aren't required for joind.in's codebase:
+
+1. No need to specify PHP version 4 or 5 in the file level doc block.
+2. No need to specify a @link, @copyright or @author in file or class level doc blocks.
+
+
+Usage:
+From the src/ directory, run:
+    phpcs --standard=../doc/codesniffer/JoindIn path/to/file/or/directory
+
+e.g. to check the api-v2/views directory:
+    phpcs --standard=../doc/codesniffer/JoindIn api-v2/views
