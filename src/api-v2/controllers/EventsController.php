@@ -36,7 +36,25 @@ class EventsController extends ApiController {
             if($event_id) {
                 $list = EventModel::getEventById($db, $event_id, $verbose);
             } else {
-                $list = EventModel::getEventList($db, $resultsperpage, $start, $verbose);
+                // check if we're filtering
+                if(isset($request->parameters['filter'])) {
+                    switch($request->parameters['filter']) {
+                        case "hot":
+                            $list = EventModel::getHotEventList($db, $resultsperpage, $start, $verbose);
+                            break;
+                        case "upcoming":
+                            $list = EventModel::getUpcomingEventList($db, $resultsperpage, $start, $verbose);
+                            break;
+                        case "past":
+                            $list = EventModel::getPastEventList($db, $resultsperpage, $start, $verbose);
+                            break;
+                        default:
+                            throw new InvalidArgumentException('Unknown event filter', 404);
+                            break;
+                    }
+                } else {
+                    $list = EventModel::getEventList($db, $resultsperpage, $start, $verbose);
+                }
             }
             // add links
             $list = EventModel::addHypermedia($list, $request);

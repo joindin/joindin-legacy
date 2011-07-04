@@ -9,6 +9,7 @@ class EventModel extends ApiModel {
             'end_date' => 'event_end',
             'description' => 'event_desc',
             'href' => 'event_href',
+            'attendee_count' => 'attendee_count',
             'icon' => 'event_icon'
             );
         return $fields;
@@ -28,6 +29,8 @@ class EventModel extends ApiModel {
             'tz_continent' => 'event_tz_cont',
             'tz_place' => 'event_tz_place',
             'location' => 'event_loc',
+            'attendee_count' => 'attendee_count',
+            'event_comment_count' => 'event_comment_count',
             'cfp_start_date' => 'event_cfp_start',
             'cfp_end_date' => 'event_cfp_end',
             'cfp_url' => 'event_cfp_url'
@@ -53,18 +56,74 @@ class EventModel extends ApiModel {
 
     }
 
-    public static function getEventList($db, $resultsperpage, $start, $verbose = false) {
-        $sql = 'select * from events '
+    protected static function getEvents($db, $resultsperpage, $start, $where = null, $order = null) {
+        $sql = 'select events.*, '
+            . '(select count(*) from user_attend where user_attend.eid = events.ID) as attendee_count, '
+            . '(select count(*) from event_comments where event_comments.event_id = events.ID) as event_comment_count, '
+            . 'abs(datediff(from_unixtime(events.event_start), from_unixtime('.mktime(0,0,0).'))) as score '
+            . 'from events '
             . 'where active = 1 and '
             . '(pending = 0 or pending is NULL) and '
-            . 'private <> "y" '
-            . 'order by event_start desc';
+            . 'private <> "y" ';
+        
+        // where
+        if($where) {
+            $sql .= ' and ' . $where;
+        }
+
+        // order by
+        if($order) {
+            $sql .= ' order by ' . $order;
+        }
+
+        // limit clause
         $sql .= static::buildLimit($resultsperpage, $start);
 
         $stmt = $db->prepare($sql);
         $response = $stmt->execute();
         if($response) {
-            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+        return false;
+    }
+
+    public static function getEventList($db, $resultsperpage, $start, $verbose = false) {
+        $order = 'events.event_start desc';
+        $results = static::getEvents($db, $resultsperpage, $start, null, $order);
+        if($results) {
+            $retval = static::transformResults($results, $verbose);
+            return $retval;
+        }
+        return false;
+    }
+
+    public static function getHotEventList($db, $resultsperpage, $start, $verbose = false) {
+        $order = '(((attendee_count + event_comment_count) * 0.5) 
+                - EXP(GREATEST(1,score)/10)) desc';
+        $results = static::getEvents($db, $resultsperpage, $start, null, $order);
+        if($results) {
+            $retval = static::transformResults($results, $verbose);
+            return $retval;
+        }
+        return false;
+    }
+
+    public static function getUpcomingEventList($db, $resultsperpage, $start, $verbose = false) {
+        $where = '(events.event_start >=' . (mktime(0,0,0) - (3 * 86400)) . ')';
+        $order = 'events.event_start';
+        $results = static::getEvents($db, $resultsperpage, $start, $where, $order);
+        if($results) {
+            $retval = static::transformResults($results, $verbose);
+            return $retval;
+        }
+        return false;
+    }
+
+    public static function getPastEventList($db, $resultsperpage, $start, $verbose = false) {
+        $where = '(events.event_start <' . (mktime(0,0,0)) . ')';
+        $order = 'events.event_start desc';
+        $results = static::getEvents($db, $resultsperpage, $start, $where, $order);
+        if($results) {
             $retval = static::transformResults($results, $verbose);
             return $retval;
         }
@@ -88,8 +147,6 @@ class EventModel extends ApiModel {
             }
         }
 
-        // add pagination and global links
         return $list;
     }
-
 }
