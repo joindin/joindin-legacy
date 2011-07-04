@@ -130,6 +130,17 @@ class EventModel extends ApiModel {
         return false;
     }
 
+    public static function getOpenCfPEventList($db, $resultsperpage, $start, $verbose = false) {
+        $where = 'events.event_cfp_url IS NOT NULL AND events.event_cfp_end >= ' . mktime(0,0,0);
+        $order = 'events.event_start';
+        $results = static::getEvents($db, $resultsperpage, $start, $where, $order);
+        if($results) {
+            $retval = static::transformResults($results, $verbose);
+            return $retval;
+        }
+        return false;
+    }
+
     public static function addHyperMedia($list, $request) {
         $host = $request->host;
 

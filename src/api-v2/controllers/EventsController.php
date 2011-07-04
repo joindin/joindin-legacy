@@ -48,6 +48,9 @@ class EventsController extends ApiController {
                         case "past":
                             $list = EventModel::getPastEventList($db, $resultsperpage, $start, $verbose);
                             break;
+                        case "cfp":
+                            $list = EventModel::getOpenCfPEventList($db, $resultsperpage, $start, $verbose);
+                            break;
                         default:
                             throw new InvalidArgumentException('Unknown event filter', 404);
                             break;
