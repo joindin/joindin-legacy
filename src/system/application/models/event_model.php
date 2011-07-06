@@ -216,6 +216,7 @@ SQL
 		$order_by = NULL;
 
 		if($type == "hot") {
+            // if you change this, change the API too please
 			$order_by = "(((num_attend + num_comments) * 0.5) - EXP(GREATEST(1,score)/10)) desc";
 		}
 
