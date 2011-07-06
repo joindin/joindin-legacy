@@ -234,6 +234,14 @@ SQL
 		return $result;
 	}
 
+    /**
+     * Get a current list of events
+     *
+     * @param string $where[optional] Optional "where" clause
+     * @param string $order_by Order by field
+     * @param integer $limit Limit on results
+     * @return array Event details
+     */
 	public function getEvents($where=NULL, $order_by = NULL, $limit = NULL) {
 		$sql = 'SELECT * ,
 		    (select if(event_cfp_start IS NOT NULL AND event_cfp_start > 0 AND '.mktime(0,0,0).' BETWEEN event_cfp_start AND event_cfp_end, 1, 0)) as is_cfp,
@@ -250,6 +258,9 @@ SQL
 		if($where) {
 			$sql .= ' AND (' . $where . ')';
 		}
+
+        // by default, don't show private events
+        $sql.= " AND private!='Y'";
 
 		if($order_by) {
 			$sql .= ' ORDER BY ' . $order_by;
