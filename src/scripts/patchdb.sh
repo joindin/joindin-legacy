@@ -7,6 +7,7 @@
 #   -d = DBNAME (Database name)
 #   -u = DBUSER (Database username)
 #   -p = DBPASS (Database password)
+#   -i = INITDB (Initialise & Seed the database)
 #
 #   Parsing code adapted from http://www.linux.com/archive/feed/118031
 #
@@ -15,7 +16,7 @@ TARGET=
 DBNAME=
 DBUSER=
 DBPASS=
-while getopts 't:d:u:p:' OPTION
+while getopts 't:d:u:p:i' OPTION
 do
     case $OPTION in
         t)  TARGET="$OPTARG"
@@ -25,6 +26,8 @@ do
         u)  DBUSER="$OPTARG"
             ;;
         p)  DBPASS="$OPTARG"
+            ;;
+        i)  INITDB=1
             ;;
     esac
 done
@@ -83,11 +86,21 @@ fi
 
 ###
 #
-# Apply patches
+# Init DB, Apply patches & Seed as required.
 #
 ###
 PATCH_DIR=$TARGET/doc/db
 MAX_PATCH_LEVEL=$(ls $PATCH_DIR/patch*.sql | egrep -o 'patch[0-9]*.sql' | egrep -o '[0-9]+' | sort -n | tail -n 1)
+
+# Init
+if [ "$INITDB" ]
+then
+    echo -n "Initialising DB..."
+    $($DBCMD < $PATCH_DIR/init_db.sql)
+    $($DBCMD < $PATCH_DIR/init_data.sql)
+    echo " Ok"
+fi
+
 
 for ((i=$(($PATCH_LEVEL + 1)); i <= $(($MAX_PATCH_LEVEL)); i++));
 do
@@ -104,5 +117,14 @@ do
         echo Ok
 	fi
 done
+
+# Seed
+if [ "$INITDB" ]
+then
+    echo -n "Seeding DB..."
+    $($DBCMD < $PATCH_DIR/seed.sql)
+    $($DBCMD < $PATCH_DIR/seed_countries.sql)
+    echo " Ok"
+fi
 
 echo Success
