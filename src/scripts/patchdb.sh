@@ -12,10 +12,10 @@
 #   Parsing code adapted from http://www.linux.com/archive/feed/118031
 #
 ###
-TARGET=
-DBNAME=
-DBUSER=
-DBPASS=
+#TARGET=
+#DBNAME=
+#DBUSER=
+#DBPASS=
 while getopts 't:d:u:p:i' OPTION
 do
     case $OPTION in
