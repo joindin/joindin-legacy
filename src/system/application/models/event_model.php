@@ -216,6 +216,7 @@ SQL
 		$order_by = NULL;
 
 		if($type == "hot") {
+            // if you change this, change the API too please
 			$order_by = "(((num_attend + num_comments) * 0.5) - EXP(GREATEST(1,score)/10)) desc";
 		}
 
@@ -368,6 +369,25 @@ SQL
 	    ", $this->db->escape($eid));
 	    $q=$this->db->query($sql);
 	    return $q->result();
+	}
+	
+	function hasUserCommentedEvent($eid, $user_id)
+	{
+		$sql=sprintf("
+		SELECT event_id
+		FROM event_comments
+		WHERE event_id = %s
+			AND user_id = %s
+	    ", $this->db->escape($eid), $this->db->escape($user_id));
+	    $q=$this->db->query($sql);
+	    $r = $q->result();
+		
+		if(count($r) > 0)
+		{
+			return true;
+		}
+		
+		return false;
 	}
 	
 	function getEventIdByName($name){

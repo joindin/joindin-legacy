@@ -765,7 +765,8 @@ class Event extends Controller
             'tracks'         => $this->etm->getEventTracks($id),
             'talk_stats'     => $talk_stats,
 			'tab'			 => '',
-            'tags'           => $this->eventTags->getTags($id)
+            'tags'           => $this->eventTags->getTags($id),
+			'prompt_event_comment'	 => false
             //'started'=>$this->tz->hasEvtStarted($id),
         );
 
@@ -903,6 +904,37 @@ class Event extends Controller
                 )
             );
         }
+		
+		// Get the start of the last day for prompting attending users
+		// for event level feedback
+		$last_day = strtotime(date('Y-m-d', $events[0]->event_end));
+		
+		// For single day events, we don't want to prompt for a comment
+		// until the event is over
+		if($events[0]->event_start + (60 * 60 * 25) >= $last_day)
+		{
+			$last_day = $events[0]->event_end;
+		}
+		
+		// Requirements for prompting for event comments
+		// - logged in
+		// - attending
+		// - last day
+		// - haven't lets feedback yet already
+		
+		if($is_auth && $chk_attend && time() > $last_day)
+		{
+			// Check to see if they have left feedback yet.
+			$has_commented_event = $this->event_model->hasUserCommentedEvent($id, $arr['user_id']);
+			if(!$has_commented_event)
+			{
+				$this->template->write_view(
+                'sidebar3', 'event/_event_prompt_comment_sidebar',
+					array()
+				);
+				$arr['prompt_event_comment'] = true;
+			}
+		}
 
         $this->template->write_view('content', 'event/detail', $arr, true);
 		// only show the contact button for logged in users
@@ -1163,10 +1195,10 @@ class Event extends Controller
                     mail($user->email, $subj, $msg, $from);
                 }
                 $arr['msg'] = sprintf(
-                    '<span style="font-size:16px; font-weight:bold;">
+                    '<span style="font-size:15px; font-weight:bold;">
                         Event successfully submitted!
                     </span><br/>
-					<span style="font-size:14px;">
+					<span style="font-size:13px;">
 						Once your event is approved, you (or the contact person
 						for the event) will receive an email letting you know
 						it\'s been accepted.<br/>
@@ -1178,15 +1210,12 @@ class Event extends Controller
                 //put it into the database
                 $this->db->insert('events', $sub_arr);
 
-                // Check to see if we need to make them an admin of this event
-                if ($this->input->post('is_admin')
-                    && ($this->input->post('is_admin') == 1)
-                ) {
-                    $uid  = $this->session->userdata('ID');
-                    $rid  = $this->db->insert_id();
-                    $type = 'event';
-                    $this->user_admin_model->addPerm($uid, $rid, $type);
-                }
+                // They're logged in, so set them as an event admin
+                $this->user_admin_model->addPerm(
+                    $this->session->userdata('ID'),
+                    $this->db->insert_id(),
+                    'event'
+                );
             } else {
                 $arr['msg'] = 'There was an error submitting your event! ' .
                     'Please <a href="' .
@@ -1201,6 +1230,15 @@ class Event extends Controller
 
         $arr['captcha']=create_captcha();
         $this->session->set_userdata(array('cinput'=>$arr['captcha']['value']));
+
+        // user must be logged in to submit
+        if(!$this->user_model->isAuth()){
+            $arr['msg'] = sprintf('
+                <b>Note</b>: you must be logged in to submit an event!<br/><br/>
+                If you do not have an account, you can <a href=="/user/register">sign up here</a>.
+            ');
+        }
+
 
         $this->template->write_view('content', 'event/submit', $arr);
         $this->template->write_view('sidebar2', 'event/_submit-sidebar', array());
