@@ -172,7 +172,7 @@ class User_model extends Model {
                         $result = $q->result();
                         if (!$result)
                         {
-                            $q=$this->db->get_where('user',array('email'=>$in));
+                            $q=$this->db->get_where('user',array('email'=>(string)$in));
                             $result = $q->result();
                         }
                 }

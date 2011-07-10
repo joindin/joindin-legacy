@@ -177,8 +177,10 @@ function addEventAdmin(eid){
 	obj.username=uname;
 	apiRequest('event','addadmin',obj, function(obj) {
 		if(obj.msg=='Success'){
-			$('#evt_admin_list').append('<li><a href="/user/view/'+uname+'">'+uname+'</a>');
-		}else{ alert(obj.msg); }
+			$('#evt_admin_list').append('<li id="evt_admin_'+obj.user.ID+'"><a href="/user/view/'+obj.user.ID+'">'+obj.user.full_name+'</a> [<a onclick="removeEventAdmin('+eid+',\''+obj.user.username+'\','+obj.user.ID+')" href="#">X</a>]');
+		}else{ 
+            alert(obj.msg); 
+        }
 	});
 }
 function removeEventAdmin(eid,uname,uid){
