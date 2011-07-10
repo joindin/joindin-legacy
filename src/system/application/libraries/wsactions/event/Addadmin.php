@@ -88,10 +88,10 @@ class Addadmin extends BaseWsRequest {
 			// Send them an email to let them know they've been added as an admin
 			$this->CI->sendemail->sendAdminAdd($udata,$evt,$this->xml->auth->user);
 			
-			return array('output'=>'json','data'=>array('items'=>array('msg'=>'Success')));
+			return array('output'=>'json','data'=>array('items'=>array('msg'=>'Success', 'user'=>$udata[0])));
         } elseif(isset($perm[0]) && $perm[0]->rcode == "pending"){
             $this->CI->uam->updatePerm($perm[0]->ID, array('rcode'=>''));
-            return array('output'=>'json','data'=>array('items'=>array('msg'=>'Success')));
+            return array('output'=>'json','data'=>array('items'=>array('msg'=>'Success', 'user'=>$udata[0])));
         } else {
 			return array('output'=>'json','data'=>array('items'=>array('msg'=>'Duplicate request!')));
 		}
