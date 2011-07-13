@@ -27,26 +27,7 @@ talk = function (){
 			}
 			
 			if($('#claim_btn').attr('name')=='single'){
-				
-				$('#claim-dialog').dialog({
-					autoOpen: false,
-					resizable: false,
-					modal: true,
-					buttons: {
-						"Yes, Proceeed": function() {
-							window.location.href = $('#claim_btn').attr('href');
-						},
-						Cancel: function() {
-							$( this ).dialog( "close" );
-						}
-					}
-				});
-				
-				//Open confirmation dialog
-				$( "#claim-dialog" ).dialog('open');
-				
-				//Respond to dialog not link
-				return false;
+				return true;
 			}
 			
 			var obj={ 
