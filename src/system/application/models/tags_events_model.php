@@ -18,6 +18,10 @@ class Tags_events_model extends Model
 	 */
 	public function addTag($eventId,$tagValue)
 	{
+        // Invalid tag value, do not save tag
+        if (empty($tagValue) || !preg_match('/^[a-zA-Z0-9]+$/',trim($tagValue))) {
+            return false;
+        }
 		// normalize
 		$tagValue = trim(strtolower($tagValue));
 		
