@@ -40,13 +40,13 @@ done
 ###
 if [ -z $TARGET ]
 then
-	printf "Please specify TARGET in the environment or using the -t option, eg %s -t /var/www/joind.in" $(basename $0) >&2
+	printf "Please specify TARGET in the environment or using the -t option, eg %s -t /var/www/joind.in\n" $(basename $0) >&2
 	exit 1
 fi
 
 if [ -z $DBNAME ]
 then
-	printf "Please specify DBNAME in the environment or using the -d option, eg %s -d joindin" $(basename $0) >&2
+	printf "Please specify DBNAME in the environment or using the -d option, eg %s -d joindin\n" $(basename $0) >&2
 	exit 1
 fi
 
@@ -72,15 +72,20 @@ DBCMD="$DBCMD $DBNAME"
 
 ###
 #
-# Get the current patch level from the database
+# Get the current patch level from the database (if we are not initialising)
 #
 ###
-PATCH_LEVEL=$($DBCMD -e 'select max(patch_number) as num from patch_history' | grep -v num)
-
-if [ $? -gt 0 ]
+if [ "$INITDB" ]
 then
-	echo "WARNING! Patch level not found - defaulting to 0."
-	PATCH_LEVEL=0
+    PATCH_LEVEL=0
+else
+    PATCH_LEVEL=$($DBCMD -e 'select max(patch_number) as num from patch_history' | grep -v num)
+
+    if [ $? -gt 0 ]
+    then
+        echo Fail
+        exit 1
+    fi
 fi
 
 
@@ -121,10 +126,10 @@ done
 # Seed
 if [ "$INITDB" ]
 then
-    echo -n "Seeding DB..."
+    echo -n "Seeding DB... "
     $($DBCMD < $PATCH_DIR/seed.sql)
     $($DBCMD < $PATCH_DIR/seed_countries.sql)
-    echo " Ok"
+    echo "Ok"
 fi
 
 echo Success
