@@ -51,7 +51,8 @@ class Pending_talk_claims_model extends Model
 			return false;
 		}
 		$talkSpeakerData 	= array(
-			'speaker_id' => $claimDetail[0]->speaker_id
+			'speaker_id' => $claimDetail[0]->speaker_id,
+            'status'	=> null,
 		);
 		
 		$this->db->where('id',$claimDetail[0]->claim_id);
