@@ -65,7 +65,7 @@ function addr_search() {
 				map.fitBounds(results[0].geometry.viewport);
 				placeMarker(results[0].geometry.location);
 			} else {
-				alert("Geocode was not successful for the following reason: " + status);
+				notifications.alert("Geocode was not successful for the following reason: " + status);
 			}
 		});
 	}
