@@ -11,7 +11,7 @@ JI_event = function (){
 			obj.eid		= p[1];
 			apiRequest('event','deletecomment',obj, function(obj) {
 				$('#comment-'+p[0]).remove();
-				alert('Comment removed!'); return false;
+				notifications.alert('Comment removed!'); return false;
 			});
 		});
 		return false;
@@ -21,7 +21,7 @@ JI_event = function (){
 		$('#claim-event-btn').click(function(){
 			var obj={ "eid": $('#eid').val() };
 			apiRequest('event','claim',obj,function(obj){
-				alert(obj.msg);
+				notifications.alert(obj.msg);
 			});
 		});
 	}

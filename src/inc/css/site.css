@@ -1026,3 +1026,8 @@ div.star_readonly a,div.star_readonly a:hover{cursor:default !important}
 /* Partial Star CSS */
 div.star{background:transparent!important;overflow:hidden!important}
 /* END jQuery.Rating Plugin CSS */
+
+/** Site Alerts */
+#ui-dialog-title-jQueryUImessageBox {color: #F90;}
+#jQueryUImessageBox.ui-dialog-content { text-align: center; margin-top: 10px; }
+#ui-dialog-title-claim-dialog  {color: #F90;}
