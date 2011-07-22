@@ -27,13 +27,11 @@ class TalksController extends ApiController {
             }
         } else {
             if($talk_id) {
-                $list = TalkModel::getTalkById($db, $talk_id, $verbose);
+                $list = TalkModel::getTalkById($db, $talk_id, $request, $verbose);
             } else {
                 // listing makes no sense
                 return false;
             }
-            // add links
-            $list = TalkModel::addHypermedia($list, $request);
         }
 
         return $list;

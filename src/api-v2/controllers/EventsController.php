@@ -22,8 +22,7 @@ class EventsController extends ApiController {
         if(isset($request->url_elements[4])) {
             switch($request->url_elements[4]) {
                 case 'talks':
-                            $list = TalkModel::getTalksByEventId($db, $event_id, $resultsperpage, $start, $verbose);
-                            $list = TalkModel::addHypermedia($list, $request);
+                            $list = TalkModel::getTalksByEventId($db, $event_id, $resultsperpage, $start, $request, $verbose);
                             break;
                 case 'comments':
                             $list = EventCommentModel::getEventCommentsByEventId($db, $event_id, $resultsperpage, $start, $verbose);
