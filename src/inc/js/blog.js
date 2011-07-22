@@ -9,7 +9,7 @@ blog = function (){
 			var obj = { "cid": cid, "bid": 0 };
 			apiRequest('blog','deletecomment',obj, function(obj) {
 				$('#comment-'+cid).remove();
-				alert('Comment removed!'); return false;
+				notifications.alert('Comment removed!'); return false;
 			});
 			return false;
 		});
