@@ -4,7 +4,7 @@ require_once dirname(__FILE__) . '/../../bootstrap/CITestBase.php';
 
 class UserHelperTest extends PHPUnit_Framework_TestCase
 {
-	private $_username	= 'enygma';
+	private $_username	= 'johndoe';
 	
 	protected function setUp()
 	{

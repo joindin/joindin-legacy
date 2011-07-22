@@ -83,17 +83,20 @@ class About extends Controller
         $this->load->helper('form');
         $this->load->library('akismet');
         $this->load->library('validation');
+        $this->load->plugin('captcha');
 
         $fields = array(
             'your_name'  => 'Name',
             'your_email' => 'Email',
-            'your_com'   => 'Comments'
+            'your_com'   => 'Comments',
+            'cinput'     => 'Verification'
         );
 
         $rules = array(
             'your_name' => 'required',
             'your_com'  => 'required',
-			'your_email'=> 'required|valid_email'
+			'your_email'=> 'required|valid_email',
+            'cinput'    => 'required|callback_cinput_check'
         );
         
         $this->validation->set_rules($rules);
@@ -121,6 +124,7 @@ class About extends Controller
 
             // sent the mail to every site admin user
             $admin_emails = $this->user_model->getSiteAdminEmail();
+            
             foreach ($admin_emails as $user) {
                 $from = 'From: ' . $this->config->item('email_feedback');
                 mail($user->email, $subj, $cont, $from);
@@ -136,6 +140,9 @@ class About extends Controller
             $this->validation->your_email = '';
             $this->validation->your_com = '';
         }
+
+        $arr['captcha']=create_captcha();
+        $this->session->set_userdata(array('cinput'=>$arr['captcha']['value']));
 
         $this->template->write_view('content', 'about/contact', $arr);
         $this->template->render();
@@ -174,6 +181,24 @@ class About extends Controller
         $this->template->render();
     }
 
+    /**
+     * Validate captcha input.
+     *
+     * @param string $str The text of the captcha
+     *
+     * @return bool
+     */
+    function cinput_check($str)
+    {
+        if (($this->input->post('cinput') != $this->session->userdata('cinput'))) {
+            $this->validation->_error_messages['cinput_check']
+                = 'Incorrect captcha.';
+
+            return false;
+        }
+
+        return true;
+    }
 }
 
 ?>
