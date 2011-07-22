@@ -7,8 +7,7 @@ class TalkModel extends ApiModel {
             'talk_description' => 'talk_desc',
             'start_date' => 'date_given',
             'average_rating' => 'avg_rating',
-            'comment_count' => 'comment_count',
-            'speaker_name' => 'speaker_name'
+            'comment_count' => 'comment_count'
             );
         return $fields;
     }
@@ -21,13 +20,11 @@ class TalkModel extends ApiModel {
             'language' => 'lang_name',
             'start_date' => 'date_given',
             'average_rating' => 'avg_rating',
-            'comment_count' => 'comment_count',
-            'speaker_name' => 'speaker_name'
+            'comment_count' => 'comment_count'
             );
         return $fields;
     }
     public static function getTalksByEventId($db, $event_id, $resultsperpage, $start, $request, $verbose = false) {
-        var_dump($request);
         $sql = static::getBasicSQL();
         $sql .= ' and t.event_id = :event_id';
         $sql .= static::buildLimit($resultsperpage, $start);
@@ -38,18 +35,20 @@ class TalkModel extends ApiModel {
             ));
         if($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $retval = static::transformResults($results, $request, $verbose);
+            $retval = static::transformResults($db, $results, $request, $verbose);
             return $retval;
         }
         return false;
     }
 
-    public static function transformResults($results, $request, $verbose) {
-        $list = parent::transformResults($results, $request);
+    public static function transformResults($db, $results, $request, $verbose) {
+        $list = parent::transformResults($results, $verbose);
         $host = $request->host;
         // loop again and add links specific to this item
         if(is_array($list) && count($list)) {
             foreach($results as $key => $row) {
+                // add speakers
+                $list[$key]['speakers'] = static::getSpeakers($db, $row['ID'], $request);
                 $list[$key]['uri'] = 'http://' . $host . '/v2/talks/' . $row['ID'];
                 $list[$key]['verbose_uri'] = 'http://' . $host . '/v2/talks/' . $row['ID'] . '?verbose=yes';
                 $list[$key]['website_uri'] = 'http://joind.in/talk/view/' . $row['ID'];
@@ -72,25 +71,47 @@ class TalkModel extends ApiModel {
         $response = $stmt->execute(array("talk_id" => $talk_id));
         if($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $retval = static::transformResults($results, $request, $verbose);
+            $retval = static::transformResults($db, $results, $request, $verbose);
             return $retval;
         }
         return false;
     }
 
     public static function getBasicSQL() {
-        $sql = 'select t.*, l.lang_name, ts.speaker_name, '
+        $sql = 'select t.*, l.lang_name, '
             . '(select COUNT(ID) from talk_comments tc where tc.talk_id = t.ID) as comment_count, '
             . '(select ROUND(AVG(rating)) from talk_comments tc where tc.talk_id = t.ID) as avg_rating '
             . 'from talks t '
             . 'inner join events e on e.ID = t.event_id '
             . 'inner join lang l on l.ID = t.lang '
-            . 'left join talk_speaker ts on ts.talk_id = t.ID '
             . 'where t.active = 1 and '
             . 'e.active = 1 and '
             . '(e.pending = 0 or e.pending is NULL) and '
             . 'e.private <> "y"';
         return $sql;
 
+    }
+
+    public static function getSpeakers($db, $talk_id, $request) {
+        $host = $request->host;
+        $speaker_sql = 'select ts.*, user.full_name from talk_speaker ts '
+            . 'left join user on user.ID = ts.speaker_id '
+            . 'where ts.talk_id = :talk_id and ts.status IS NULL';
+        $speaker_stmt = $db->prepare($speaker_sql);
+        $speaker_stmt->execute(array("talk_id" => $talk_id));
+        $speakers = $speaker_stmt->fetchAll();
+        $retval = array();
+        if(is_array($speakers)) {
+           foreach($speakers as $person) {
+               if(!empty($person['full_name'])) {
+                   $entry['speaker_name'] = $person['full_name'];
+                   $entry['speaker_uri'] = 'http://' . $host . '/v2/users/' . $person['speaker_id'];
+               } else {
+                   $entry['speaker_name'] = $person['speaker_name'];
+               }
+               $retval[] = $entry;
+           }
+        }
+        return $retval;
     }
 }
