@@ -3,8 +3,6 @@
 class TalkModel extends ApiModel {
     public static function getDefaultFields() {
         $fields = array(
-            'talk_id' => 'ID',
-            'event_id' => 'event_id',
             'talk_title' => 'talk_title',
             'talk_description' => 'talk_desc',
             'start_date' => 'date_given',
@@ -17,8 +15,6 @@ class TalkModel extends ApiModel {
 
     public static function getVerboseFields() {
         $fields = array(
-            'talk_id' => 'ID',
-            'event_id' => 'event_id',
             'talk_title' => 'talk_title',
             'talk_description' => 'talk_desc',
             'slides_link' => 'slides_link',

@@ -278,6 +278,7 @@ class EventModel extends ApiModel
                     . $row['event_id'] . '/comments';
                 $list[$key]['talks_link'] = 'http://' . $host . '/v2/events/' 
                 . $row['event_id'] . '/talks';
+                $list[$key]['website_uri'] = 'http://joind.in/event/view/' . $row['ID'];
             }
 
             if (count($list) > 1) {
