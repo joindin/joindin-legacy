@@ -35,6 +35,7 @@ talk = function (){
 					buttons: {
 						"Yes, Proceeed": function() {
 							window.location.href = $('#claim_btn').attr('href');
+							$( this ).dialog( "close" );
 						},
 						Cancel: function() {
 							$( this ).dialog( "close" );
@@ -60,13 +61,13 @@ talk = function (){
 			$('#claim_btn').html('Sending Claim >>');
 
 			apiRequest('talk','claim',obj, function(obj) {
-				//alert(obj);
+				//notifications.alert(obj);
 				$('#claim_btn').css('display','none');
 				if(obj.msg=='Success'){
-					alert("Thanks for claiming this talk! You will be emailed when the claim is approved!");
+					notifications.alert("Thanks for claiming this talk! You will be emailed when the claim is approved!");
 					$('#claim_select_div').css('display','none');
 				}else{
-					alert(obj.msg);
+					notifications.alert(obj.msg);
 				}
 				return false;
 			});
@@ -129,9 +130,9 @@ talk = function (){
 			obj.talk_speaker_id = $('#claim_name_select').val();
 			apiRequest('talk','claim',obj, function(obj) {
 				if(obj.msg=='Success'){
-					alert("Thanks for claiming this talk! You will be emailed when the claim is approved!");
+					notifications.alert("Thanks for claiming this talk! You will be emailed when the claim is approved!");
 				}else{
-					alert(obj.msg);
+					notifications.alert(obj.msg);
 				}
 				return false;
 				return false;

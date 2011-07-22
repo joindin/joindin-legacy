@@ -27,7 +27,7 @@ var joindIn = (function ($, window, document, undefined) {
                         document.location.href = targetLocation;
                     } else {
                         //maybe add some callback method here 
-                        //alert('normal'); 
+                        //notifications.alert('normal'); 
                         if ($.isFunction(callback)) {
                             callback(obj);
                         }
