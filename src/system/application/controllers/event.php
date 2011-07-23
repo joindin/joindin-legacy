@@ -245,6 +245,10 @@ class Event extends Controller
      */
     function pending()
     {
+
+        if (!$this->user_model->isAuth()) {
+            redirect('/user/login', 'refresh');
+        }
         if (!$this->user_model->isSiteAdmin()) {
             redirect();
         }
@@ -263,6 +267,10 @@ class Event extends Controller
      */
     function add($id = null)
     {
+        // user needs to log in at least
+        if (!$this->user_model->isAuth()) {
+            redirect('/user/login', 'refresh');
+        }
         //check for admin
         if ($id) {
             if (!$this->user_model->isAdminEvent($id)) {
@@ -283,6 +291,7 @@ class Event extends Controller
         $this->load->library('validation');
         $this->load->library('timezone');
         $this->load->model('event_model');
+		$this->load->model('tags_events_model','tagsEvents');
 
         $config = array(
           'upload_path'   => $_SERVER['DOCUMENT_ROOT'] . '/inc/img/event_icons',
@@ -303,7 +312,8 @@ class Event extends Controller
             'event_stub'     => 'callback_stub_check',
 			'cfp_end_mo'	 => 'callback_cfp_end_mo_check',
 			'cfp_start_mo'	 => 'callback_cfp_start_mo_check',
-            'cfp_url'        => 'callback_cfp_url_check'
+            'cfp_url'        => 'callback_cfp_url_check',
+            'tagged'         => 'callback_tagged_check'
         );
         $this->validation->set_rules($rules);
 
@@ -333,6 +343,7 @@ class Event extends Controller
 			'cfp_end_day'	 => 'Event Call for Papers End Date',
 			'cfp_end_yr'	 => 'Event Call for Papers End Date',
             'cfp_url'        => 'Event Call for Papers URL',
+			'tagged'	 => 'Tagged With'
         );
         $this->validation->set_fields($fields);
 
@@ -426,13 +437,46 @@ class Event extends Controller
 						$this->input->post('cfp_start_yr')
 					);
 				}
+	    }
 
-				// be sure that the image for the event actually exists
-				$eventIconPath = $_SERVER['DOCUMENT_ROOT'] . '/inc/img/event_icons/'.$event_detail[0]->event_icon;
-				if(!is_file($eventIconPath)){
-					$event_detail[0]->event_icon = 'none.gif';
-				}
+			// be sure that the image for the event actually exists
+			$eventIconPath = $_SERVER['DOCUMENT_ROOT'] . '/inc/img/event_icons/'.$event_detail[0]->event_icon;
+			if(!is_file($eventIconPath)){
+				$event_detail[0]->event_icon = 'none.gif';
+			}
+
+			// Get Current Tags
+            $currentTags = $this->tagsEvents->getTags($id);
+            $ctags = array();
+            foreach($currentTags as $tag) {
+                $ctags[] = $tag->tag_value;
             }
+
+            // Get our submitted tags
+			$tags = $this->input->post('tagged') ? $this->input->post('tagged') : $ctags;
+
+            // If tags is a string format it to an array
+            if (is_string($tags)) {
+                if ($tags != '' && strpos($tags, ',') === false) {
+                    $tagList[] = trim($tags);
+                } else {
+                    $tagList = (strpos($tags, ',')) ? explode(',', $tags) : array();
+                }
+            } else {
+                $tagList = $tags;
+            }
+
+            // Remove any duplicate tags
+            if (count($tagList) > 1) {
+                function trim_tags(&$tag) {
+                    $tag = trim($tag);
+                }
+                array_walk($tagList,'trim_tags');
+                $tagList = array_unique($tagList);
+            }
+
+            // Convert array to string
+            $this->validation->tagged = (count($tagList) > 0) ? implode(', ', $tagList) : '';
 
             $arr = array(
                 'detail'       => $event_detail,
@@ -505,6 +549,35 @@ class Event extends Controller
                 $arr['event_icon'] = $updata['file_name'];
             }
 
+			// see if we have tags
+            //------------------------
+			$tags 		= explode(',', $this->input->post('tagged'));
+			$tagList 	= '';
+            $currentTags= $this->tagsEvents->getTags($id);
+
+            // parse them into an array
+            $ctags = array();
+            foreach($currentTags as $ctag){
+                $ctags[$ctag->tag_value] = $ctag;
+            }
+
+			foreach($tags as $tag){
+                $tag = trim($tag);
+
+                // if it already exists, remove it from our array
+                if(array_key_exists($tag,$ctags)){
+                    unset($ctags[$tag]);
+                }
+
+                $this->tagsEvents->addTag($id,$tag);
+				$tagList[] = $tag;
+			}
+            // see if we have any left overs
+            $this->tagsEvents->removeUnusedTags($id,$ctags);
+
+			$this->validation->tagged = implode(array_unique($tagList), ', ');
+            //------------------------
+
             // edit
             if ($id) {
                 $this->db->where('id', $this->edit_id);
@@ -546,6 +619,10 @@ class Event extends Controller
      */
     function edit($id)
     {
+        // user needs to log in at least
+        if (!$this->user_model->isAuth()) {
+            redirect('/user/login', 'refresh');
+        }
         if (!$this->user_model->isAdminEvent($id)) {
             redirect();
         }
@@ -580,6 +657,7 @@ class Event extends Controller
         $this->load->model('event_track_model', 'etm');
         $this->load->model('talk_comments_model', 'tcm');
         $this->load->model('user_admin_model', 'uadm');
+        $this->load->model('tags_events_model','eventTags');
         $this->load->model('talks_model');
 		$this->load->model('Pending_talk_claims_model','pendingTalkClaims');
 
@@ -707,7 +785,9 @@ class Event extends Controller
             'admins'         => $evt_admins,
             'tracks'         => $this->etm->getEventTracks($id),
             'talk_stats'     => $talk_stats,
-			'tab'			 => ''
+			'tab'			 => '',
+            'tags'           => $this->eventTags->getTags($id),
+			'prompt_event_comment'	 => false
             //'started'=>$this->tz->hasEvtStarted($id),
         );
 
@@ -845,6 +925,37 @@ class Event extends Controller
                 )
             );
         }
+		
+		// Get the start of the last day for prompting attending users
+		// for event level feedback
+		$last_day = strtotime(date('Y-m-d', $events[0]->event_end));
+		
+		// For single day events, we don't want to prompt for a comment
+		// until the event is over
+		if($events[0]->event_start + (60 * 60 * 25) >= $last_day)
+		{
+			$last_day = $events[0]->event_end;
+		}
+		
+		// Requirements for prompting for event comments
+		// - logged in
+		// - attending
+		// - last day
+		// - haven't lets feedback yet already
+		
+		if($is_auth && $chk_attend && time() > $last_day)
+		{
+			// Check to see if they have left feedback yet.
+			$has_commented_event = $this->event_model->hasUserCommentedEvent($id, $arr['user_id']);
+			if(!$has_commented_event)
+			{
+				$this->template->write_view(
+                'sidebar3', 'event/_event_prompt_comment_sidebar',
+					array()
+				);
+				$arr['prompt_event_comment'] = true;
+			}
+		}
 
         $this->template->write_view('content', 'event/detail', $arr, true);
 		// only show the contact button for logged in users
@@ -913,102 +1024,6 @@ class Event extends Controller
         } else {
             redirect();
         }
-    }
-
-    /**
-     * ?
-     *
-     * @param integer $id The id of the event
-     *
-     * @todo fill in description, I do not know it's function
-     *
-     * @return void
-     */
-    function codes($id)
-    {
-        $this->load->helper('form');
-        $this->load->library('validation');
-        $this->load->library('events');
-        $this->load->helper('url');
-        $this->load->helper('events');
-
-        if (!$this->user_model->isSiteAdmin()
-            && !$this->user_model->isAdminEvent($id)
-        ) {
-            redirect();
-        }
-
-        $rules      = array();
-        $fields     = array();
-        $codes      = array();
-        $full_talks = array();
-        $this->load->model('event_model');
-
-        //make our code list for the talks
-        $talks = $this->event_model->getEventTalks($id);
-        foreach ($talks as $k => $v) {
-            $sp = explode(',', $v->speaker);
-
-            foreach ($sp as $sk => $sv) {
-                //$str='ec'.str_pad(substr($v->ID,0,2),2,0,STR_PAD_LEFT) .
-                //  str_pad($v->event_id,2,0,STR_PAD_LEFT);
-                //$str.=substr(md5($v->talk_title.$sk),5,5);
-                $str = buildCode($v->ID, $v->event_id, $v->talk_title, trim($sv));
-
-                $codes[] = $str;
-
-                $obj          = clone $v;
-                $obj->code    = $str;
-                $obj->speaker = trim($sv);
-                $full_talks[] = $obj;
-
-                //$rules['email_'.$v->ID]='trim|valid_email';
-                $rules['email_' . $v->ID]  = 'callback_chk_email_check';
-                $fields['email_' . $v->ID] = 'speaker email';
-            }
-        }
-
-        $this->validation->set_rules($rules);
-        $this->validation->set_fields($fields);
-
-        $cl = $this->event_model->getClaimedTalks($id, $talks);
-        foreach ($cl as $k => $v) {
-            //$cstr='ec'.str_pad(substr($v->rid,0,2),2,0,STR_PAD_LEFT) .
-            //  str_pad($v->tdata['event_id'],2,0,STR_PAD_LEFT);
-            //$cstr.=substr(md5($v->tdata['talk_title'].$sk),5,5);
-            $sp = explode(',', $v->tdata['speaker']);
-            foreach ($sp as $spk => $spv) {
-                $code = buildCode(
-                    $v->rid, $v->tdata['event_id'], $v->tdata['talk_title'],
-                    trim($spv)
-                );
-                if ($code == $v->rcode) {
-                    $cl[$k]->code = $code;
-                }
-            }
-        }
-
-        $arr = array(
-            'talks'   => $talks, 'full_talks' => $full_talks, 'codes' => $codes,
-            'details' => $this->event_model->getEventDetail($id),
-            'claimed' => $cl
-        );
-
-        if ($this->validation->run() != false) {
-            foreach ($talks as $k => $v) {
-                $pv  = $this->input->post('email_' . $v->ID);
-                $chk = $this->input->post('email_chk_' . $v->ID);
-                if (!empty($pv) && $chk == 1) {
-                    //these are the ones we need to send the email to these
-                    $this->events->sendCodeEmail(
-                        $pv, $codes[$k], $arr['details'], $v->ID
-                    );
-                }
-            }
-        } else { /*echo 'fail';*/
-        }
-        $this->template->write_view('content', 'event/codes', $arr, true);
-        $this->template->render();
     }
 
     /**
@@ -1201,10 +1216,10 @@ class Event extends Controller
                     mail($user->email, $subj, $msg, $from);
                 }
                 $arr['msg'] = sprintf(
-                    '<span style="font-size:16px; font-weight:bold;">
+                    '<span style="font-size:15px; font-weight:bold;">
                         Event successfully submitted!
                     </span><br/>
-					<span style="font-size:14px;">
+					<span style="font-size:13px;">
 						Once your event is approved, you (or the contact person
 						for the event) will receive an email letting you know
 						it\'s been accepted.<br/>
@@ -1216,15 +1231,12 @@ class Event extends Controller
                 //put it into the database
                 $this->db->insert('events', $sub_arr);
 
-                // Check to see if we need to make them an admin of this event
-                if ($this->input->post('is_admin')
-                    && ($this->input->post('is_admin') == 1)
-                ) {
-                    $uid  = $this->session->userdata('ID');
-                    $rid  = $this->db->insert_id();
-                    $type = 'event';
-                    $this->user_admin_model->addPerm($uid, $rid, $type);
-                }
+                // They're logged in, so set them as an event admin
+                $this->user_admin_model->addPerm(
+                    $this->session->userdata('ID'),
+                    $this->db->insert_id(),
+                    'event'
+                );
             } else {
                 $arr['msg'] = 'There was an error submitting your event! ' .
                     'Please <a href="' .
@@ -1239,6 +1251,15 @@ class Event extends Controller
 
         $arr['captcha']=create_captcha();
         $this->session->set_userdata(array('cinput'=>$arr['captcha']['value']));
+
+        // user must be logged in to submit
+        if(!$this->user_model->isAuth()){
+            $arr['msg'] = sprintf('
+                <b>Note</b>: you must be logged in to submit an event!<br/><br/>
+                If you do not have an account, you can <a href=="/user/register">sign up here</a>.
+            ');
+        }
+
 
         $this->template->write_view('content', 'event/submit', $arr);
         $this->template->write_view('sidebar2', 'event/_submit-sidebar', array());
@@ -1491,6 +1512,10 @@ class Event extends Controller
      */
     function import($id)
     {
+        // user needs to log in at least
+        if (!$this->user_model->isAuth()) {
+            redirect('/user/login', 'refresh');
+        }
         // Be sure they're supposed to be here...
         if (!$this->user_model->isSiteAdmin()
             && !$this->user_model->isAdminEvent($id)
@@ -1695,9 +1720,8 @@ class Event extends Controller
     function contact($id)
     {
         // They need to be logged in...
-        $is_auth = $this->user_model->isAuth();
-        if (!$is_auth) {
-            redirect('event/view/' . $id);
+        if (!$this->user_model->isAuth()) {
+            redirect('/user/login', 'refresh');
         }
 
         $this->load->model('event_model');
@@ -1758,6 +1782,10 @@ class Event extends Controller
      */
     function tracks($id)
     {
+        // user needs to log in at least
+        if (!$this->user_model->isAuth()) {
+            redirect('/user/login', 'refresh');
+        }
         if (!$this->user_model->isSiteAdmin()
             && !$this->user_model->isAdminEvent($id)
         ) {
@@ -2040,6 +2068,32 @@ class Event extends Controller
         return true;
     }
 
+    /**
+     * Callback check for tag values in form
+     * Only alpha-numeric tags allowed
+     * 
+     * @param string $tagList Listing of tags, comma separated
+     * @return bool
+     */
+    public function tagged_check($tagList)
+    {
+        foreach(explode(',',$tagList) as $tag){
+            if(!preg_match('/^[a-zA-Z0-9]+$/',trim($tag))){
+                // escape the "%" since it goes to a sprintf()
+                $msg = 'Tag <b>"'.str_replace('%','%%',trim($tag)).'"</b> not valid!';
+                $this->validation->set_message('tagged_check',$msg);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Call for Papers method
+     *
+     * @param null $eventId[optional] Event ID
+     * @return void
+     */
 	public function callforpapers($eventId=null)
 	{	
 		$this->load->model('event_model','eventModel');
@@ -2065,6 +2119,28 @@ class Event extends Controller
 		$this->template->write_view('content', 'event/callforpapers', $arr);
         $this->template->render();
 	}
+
+    /**
+     * Tag action method
+     * Displays events tagged with $tagData value
+     *
+     * @param null $tagData[optional] Tag to pull events for
+     * @return void
+     */
+    public function tag($tagData)
+    {
+        if($tagData == null){ redirect('/event'); }
+        $this->load->model('event_model','eventModel');
+
+        // get events that are tagged with data from url - single value for now
+        $viewData = array(
+            'eventDetail'   => $this->eventModel->getEventsByTag($tagData),
+            'tagString'     => $tagData
+        );
+
+        $this->template->write_view('content', 'event/tag', $viewData);
+        $this->template->render();
+    }
 }
 
 ?>

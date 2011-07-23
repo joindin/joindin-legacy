@@ -1,24 +1,6 @@
 <?php
+include '../inc/Autoloader.php';
 include '../inc/Request.php';
-
-// autoloader
-function __autoload($classname) {
-	if(false !== strpos($classname, '.')) {
-		// this was a filename, don't bother
-		exit;
-	}
-
-	if(preg_match('/[a-zA-Z]+Controller$/',$classname)) {
-		include('../controllers/' . $classname . '.php');
-		return true;
-	} elseif(preg_match('/[a-zA-Z]+Model$/',$classname)) {
-		include('../models/' . $classname . '.php');
-		return true;
-	} elseif(preg_match('/[a-zA-Z]+View$/',$classname)) {
-		include('../views/' . $classname . '.php');
-		return true;
-	}
-}
 
 // Add exception handler
 function handle_exception($e) {

@@ -163,12 +163,23 @@ class User_model extends Model {
 	 * @return array User details
 	 */
 	function getUser($in){
+            
 		if(is_numeric($in)){
 			$q=$this->db->get_where('user',array('ID'=>$in));
+                        $result = $q->result();
 		}else{ 
 			$q=$this->db->get_where('user',array('username'=>(string)$in));
-		}
-		return $q->result();
+                        $result = $q->result();
+                        if (!$result)
+                        {
+                            $q=$this->db->get_where('user',array('email'=>(string)$in));
+                            $result = $q->result();
+                        }
+                }
+                if ($result)
+                    return $result;
+                else
+                    return false;
 	}
 	
 	/**
@@ -199,6 +210,13 @@ class User_model extends Model {
 		$q=$this->db->get_where('user',array('email'=>$email));
 		return $q->result();
 	}
+        
+        function getUserByUsername($username)
+        {
+            $query = $this->db->get_where('user', array('username' => $username));
+            $result = $query->result();
+            return $result;
+        }
 	
 	/**
 	 * Find email addresses for all users marked as site admins 

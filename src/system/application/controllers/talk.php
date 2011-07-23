@@ -155,7 +155,8 @@ class Talk extends Controller
             'talk_desc'    => 'Talk Description',
             'session_type' => 'Session Type',
             'session_lang' => 'Session Language',
-			'session_track' => 'Session Track'
+			'session_track' => 'Session Track',
+			'tagged_with'  => 'Tagged With'
         );
         $this->validation->set_rules($rules);
         $this->validation->set_fields($fields);
@@ -442,7 +443,7 @@ class Talk extends Controller
 
         // check to see if they're supposed to be here
         if (!$this->auth) {
-            redirect();
+            redirect('/user/login', 'refresh');
         }
 
         $talk_detail = $this->talks_model->getTalks($id);
@@ -733,6 +734,17 @@ class Talk extends Controller
             );
         }
 
+				$user_id = ($this->user_model->isAuth())
+            ? $this->session->userdata('ID') : null;
+				$speakers = $this->talkSpeakers->getSpeakerByTalkId($id);
+				// check if current user is one of the approved speakers
+				$is_claim_approved = false;
+				foreach ( $speakers as $speaker ) {
+					if ( $speaker->speaker_id && $speaker->speaker_id == $user_id ) {
+						$is_claim_approved = true;
+					}
+				}
+				
         $arr = array(
             'detail'         => $talk_detail[0],
             'comments'       => (isset($talk_comments['comment']))
@@ -742,8 +754,8 @@ class Talk extends Controller
             'auth'           => $this->auth,
             'claimed'        => $this->talks_model->talkClaimDetail($id),
             'claim_status'   => $claim_status, 'claim_msg' => $claim_msg,
-			'is_claimed'	 => $this->talkSpeakers->isTalkClaimed($id,true),
-            'speakers'       => $this->talkSpeakers->getSpeakerByTalkId($id),
+            'is_claimed'	   => $this->talks_model->hasUserClaimed($id) || $is_claim_approved,
+            'speakers'       => $speakers,
             'reqkey'         => $reqkey, 'seckey' => buildSecFile($reqkey),
             'user_attending' => ($this->user_attend_model->chkAttend(
                 $currentUserId, $talk_detail[0]->event_id

@@ -120,6 +120,11 @@ a {
 	-webkit-border-radius: 3px;
 }
 
+.btn-small.disabled {
+	background-image: url(/inc/img/bg-btn-disabled.gif);
+	border-color: #888;
+}
+
 .btn-big {
 	color: #fff !important;
 	font-weight: bold;

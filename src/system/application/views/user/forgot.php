@@ -13,7 +13,7 @@
 
 	<div class="row">
 		<p>
-			If you've forgotten your password, enter both the login name and email address associated with the 
+			If you've forgotten your password, enter the username or email address associated with the 
 			account below and hit "Request Password". Instructions on how to reset your password will be sent
             to the email address for that account if the information validates.
 		</p>

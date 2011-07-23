@@ -216,6 +216,7 @@ SQL
 		$order_by = NULL;
 
 		if($type == "hot") {
+            // if you change this, change the API too please
 			$order_by = "(((num_attend + num_comments) * 0.5) - EXP(GREATEST(1,score)/10)) desc";
 		}
 
@@ -233,6 +234,14 @@ SQL
 		return $result;
 	}
 
+    /**
+     * Get a current list of events
+     *
+     * @param string $where[optional] Optional "where" clause
+     * @param string $order_by Order by field
+     * @param integer $limit Limit on results
+     * @return array Event details
+     */
 	public function getEvents($where=NULL, $order_by = NULL, $limit = NULL) {
 		$sql = 'SELECT * ,
 		    (select if(event_cfp_start IS NOT NULL AND event_cfp_start > 0 AND '.mktime(0,0,0).' BETWEEN event_cfp_start AND event_cfp_end, 1, 0)) as is_cfp,
@@ -250,6 +259,9 @@ SQL
 			$sql .= ' AND (' . $where . ')';
 		}
 
+        // by default, don't show private events
+        $sql.= " AND private!='Y'";
+
 		if($order_by) {
 			$sql .= ' ORDER BY ' . $order_by;
 		}
@@ -258,8 +270,16 @@ SQL
 			$sql .= ' LIMIT ' . $limit;
 		}
 
-	    $query = $this->db->query($sql);
-	    return $query->result();
+	    $query  = $this->db->query($sql);
+	    $result = $query->result();
+
+        $CI=&get_instance();
+        $CI->load->model('tags_events_model','eventTags');
+        foreach($result as $index => $event){
+            $result[$index]->eventTags = $CI->eventTags->getTags($event->ID);
+        }
+
+        return $result;
 	}
 
     function getHotEvents($limit = null){
@@ -285,6 +305,39 @@ SQL
 		
 		return $result;
 	}
+
+    /**
+     * Find events tagged with the given data
+     * Singular tags for now, maybe multiple later?
+     *
+     * @param mixed $tagData Tag(s) to search on
+     * @return array Event results
+     */
+    public function getEventsByTag($tagData)
+    {
+        $CI=&get_instance();
+        $CI->load->model('tags_events_model','eventTags');
+        
+        $sql = 'SELECT events.* ,
+			(select count(*) from user_attend where user_attend.eid = events.ID) as num_attend,
+			(select count(*) from event_comments where event_comments.event_id = events.ID) as num_comments, abs(0) as user_attending, '
+		  			.' abs(datediff(from_unixtime(events.event_start), from_unixtime('.mktime(0,0,0).'))) as score,
+              CASE
+                WHEN (((events.event_start - 86400) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
+                ELSE 0
+                END as allow_comments
+			FROM events, tags_events, tags
+			WHERE active = 1 AND (pending = 0 OR pending IS NULL) AND
+			tags_events.event_id = events.ID AND tags_events.tag_id = tags.ID AND
+			tags.tag_value = "'.$tagData.'"';
+
+        $query  = $this->db->query($sql);
+        $result = $query->result();
+        foreach($result as $index => $event){
+            $result[$index]->eventTags = $CI->eventTags->getTags($event->ID);
+        }
+        return $result;
+    }
 
 	function getEventAdmins($eid,$all_results=false){
 	    $sql=sprintf("
@@ -327,6 +380,25 @@ SQL
 	    ", $this->db->escape($eid));
 	    $q=$this->db->query($sql);
 	    return $q->result();
+	}
+	
+	function hasUserCommentedEvent($eid, $user_id)
+	{
+		$sql=sprintf("
+		SELECT event_id
+		FROM event_comments
+		WHERE event_id = %s
+			AND user_id = %s
+	    ", $this->db->escape($eid), $this->db->escape($user_id));
+	    $q=$this->db->query($sql);
+	    $r = $q->result();
+		
+		if(count($r) > 0)
+		{
+			return true;
+		}
+		
+		return false;
 	}
 	
 	function getEventIdByName($name){
