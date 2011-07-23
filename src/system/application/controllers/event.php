@@ -312,8 +312,8 @@ class Event extends Controller
             'event_stub'     => 'callback_stub_check',
 			'cfp_end_mo'	 => 'callback_cfp_end_mo_check',
 			'cfp_start_mo'	 => 'callback_cfp_start_mo_check',
-            		'cfp_url'        => 'callback_cfp_url_check',
-            		'tagged'         => 'callback_tagged_check'
+            'cfp_url'        => 'callback_cfp_url_check',
+            'tagged'         => 'callback_tagged_check'
         );
         $this->validation->set_rules($rules);
 
@@ -342,7 +342,7 @@ class Event extends Controller
 			'cfp_end_mo'	 => 'Event Call for Papers End Date',
 			'cfp_end_day'	 => 'Event Call for Papers End Date',
 			'cfp_end_yr'	 => 'Event Call for Papers End Date',
-            		'cfp_url'        => 'Event Call for Papers URL',
+            'cfp_url'        => 'Event Call for Papers URL',
 			'tagged'	 => 'Tagged With'
         );
         $this->validation->set_fields($fields);
@@ -445,17 +445,38 @@ class Event extends Controller
 				$event_detail[0]->event_icon = 'none.gif';
 			}
 
-			// get our event's tags
-			$tags = $this->tagsEvents->getTags($id);
-			$this->validation->tagged = null;
-			if (!empty($tags)) {
-				$tagList = '';
-				foreach($tags as $tag){
-					$tagList .= $tag->tag_value.', ';
-				}
-				$this->validation->tagged = substr($tagList,0,strlen($tagList)-2);
-			}
-			
+			// Get Current Tags
+            $currentTags = $this->tagsEvents->getTags($id);
+            $ctags = array();
+            foreach($currentTags as $tag) {
+                $ctags[] = $tag->tag_value;
+            }
+
+            // Get our submitted tags
+			$tags = $this->input->post('tagged') ? $this->input->post('tagged') : $ctags;
+
+            // If tags is a string format it to an array
+            if (is_string($tags)) {
+                if ($tags != '' && strpos($tags, ',') === false) {
+                    $tagList[] = trim($tags);
+                } else {
+                    $tagList = (strpos($tags, ',')) ? explode(',', $tags) : array();
+                }
+            } else {
+                $tagList = $tags;
+            }
+
+            // Remove any duplicate tags
+            if (count($tagList) > 1) {
+                function trim_tags(&$tag) {
+                    $tag = trim($tag);
+                }
+                array_walk($tagList,'trim_tags');
+                $tagList = array_unique($tagList);
+            }
+
+            // Convert array to string
+            $this->validation->tagged = (count($tagList) > 0) ? implode(', ', $tagList) : '';
 
             $arr = array(
                 'detail'       => $event_detail,
@@ -530,7 +551,7 @@ class Event extends Controller
 
 			// see if we have tags
             //------------------------
-			$tags 		= $this->input->post('tagged');
+			$tags 		= explode(',', $this->input->post('tagged'));
 			$tagList 	= '';
             $currentTags= $this->tagsEvents->getTags($id);
 
@@ -539,8 +560,8 @@ class Event extends Controller
             foreach($currentTags as $ctag){
                 $ctags[$ctag->tag_value] = $ctag;
             }
-            
-			foreach(array_slice(explode(',',$tags),0,5) as $tag){
+
+			foreach($tags as $tag){
                 $tag = trim($tag);
 
                 // if it already exists, remove it from our array
@@ -549,12 +570,12 @@ class Event extends Controller
                 }
 
                 $this->tagsEvents->addTag($id,$tag);
-				$tagList .= $tag.', ';
+				$tagList[] = $tag;
 			}
             // see if we have any left overs
             $this->tagsEvents->removeUnusedTags($id,$ctags);
 
-			$this->validation->tagged = substr($tagList,0,strlen($tagList)-1);
+			$this->validation->tagged = implode(array_unique($tagList), ', ');
             //------------------------
 
             // edit
