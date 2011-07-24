@@ -15,16 +15,41 @@ echo form_open('user/admin');
 echo form_input('user_search',$this->validation->user_search);
 echo form_submit('sub','Search');
 //echo form_button('clear','Clear','onClick="document.location.href=\'/user/admin\';"');
-echo form_close(); 
+//echo form_close();
 ?>
 
 <b>Pages:</b>
+
+    pagination....
+
 <?php
-for($i=1;$i<=$page_ct;$i++){
-    $style=($i==$page) ? 'style="font-weight:bold"' : '';
-    echo '<a '.$style.' href="/user/admin/'.$i.'">'.$i.'</a> ';
+$links = array();
+// show first
+$links[] = '<a href="/user/admin/1">1</a>...';
+
+for($i=3;$i>0;$i--){
+    $p = $page-$i;
+    if($p>1){
+        $links[] = '<a href="/user/admin/'.$p.'">'.$p.'</a>';
+    }
 }
-?><br/><br/>
+
+// show current and three around it
+$links[] = '<a style="font-weight:bold;" href="/user/admin/'.$page.'">'.$page.'</a>';
+
+for($i=3;$i>0;$i--){
+    $p = $page+$i;
+    if($p<$page_ct){
+        $links[] = '<a href="/user/admin/'.$p.'">'.$p.'</a>';
+    }
+}
+
+// show last
+$links[] = '...<a href="/user/admin/'.$page_ct.'">'.$page_ct.'</a>';
+
+echo '['.implode(', ',$links).']<br/>';
+?>
+<br/>
 <?php
 if (empty($msg)) {
     $msg=$this->session->flashdata('msg');
@@ -37,7 +62,6 @@ else
 }
 ?>
 
-<?php echo form_open('user/admin'); ?>
 <table summary="" class="list" width="100%">
 <tr class="header">
 	<th></th>

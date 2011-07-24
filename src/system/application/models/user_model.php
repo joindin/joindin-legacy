@@ -181,6 +181,20 @@ class User_model extends Model {
                 else
                     return false;
 	}
+
+    /**
+     * Delete a user with the given ID
+     * 
+     * @param $userId
+     * @return void
+     */
+    public function deleteUser($userId)
+    {
+        // remove the user
+        $this->db->delete('user',array('ID' => $userId));
+
+        //set their comments to anonymous?
+    }
 	
 	/**
 	 * Search for publicly-available user information based on a user ID or username

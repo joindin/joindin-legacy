@@ -554,10 +554,9 @@ class User extends Controller
      */
     function admin($page = null)
     {
-        $this->load->helper('reqkey');
         $this->load->library('validation');
+        $this->load->model('user_model');
 
-        $reqkey      = buildReqKey();
         $page        = (!$page) ? 1 : $page;
         $rows_in_pg  = 10;
         $offset      = ($page == 1) ? 1 : $page * 10;
@@ -565,18 +564,19 @@ class User extends Controller
         $all_user_ct = count($all_users);
         $page_ct     = ceil($all_user_ct / $rows_in_pg);
         $users       = array_slice($all_users, $offset, $rows_in_pg);
+        $msg         = '';
 
-        $fields = array(
-            'user_search' => 'Search Term'
-        );
-        $rules = array(
-            'user_search' => 'required'
-        );
-        $this->validation->set_rules($rules);
-        $this->validation->set_fields($fields);
-
-        if ($this->validation->run() != false) {
+        if($this->input->post('submit')){
+            // search call
             $users = $this->user_model->search($this->input->post('user_search'));
+            
+        }elseif($this->input->post('um')){
+            // delete user call
+            $selectedUsers = $this->input->post('sel');
+            foreach($selectedUsers as $userId){
+                $this->user_model->deleteUser($userId);
+            }
+            $msg = count($selectedUsers).' users deleted';
         }
 
         $arr = array(
@@ -584,8 +584,7 @@ class User extends Controller
             'all_user_ct'   => $all_user_ct,
             'page_ct'       => $page_ct,
             'page'          => $page,
-            'reqkey'        => $reqkey,
-            'seckey'        => buildSecFile($reqkey),
+            'msg'           => $msg
         );
 
         $this->template->write_view('content', 'user/admin', $arr);
