@@ -557,10 +557,13 @@ class User extends Controller
         $this->load->library('validation');
         $this->load->model('user_model');
 
+        $showLimit = $this->input->post('showLimit');
+        $this->validation->showLimit = ($showLimit) ? $showLimit : 10;
+
         $page        = (!$page) ? 1 : $page;
-        $rows_in_pg  = 10;
+        $rows_in_pg  = $showLimit;
         $offset      = ($page == 1) ? 1 : $page * 10;
-        $all_users   = $this->user_model->getAllUsers();
+        $all_users   = $this->user_model->getAllUsers($showLimit);
         $all_user_ct = count($all_users);
         $page_ct     = ceil($all_user_ct / $rows_in_pg);
         $users       = array_slice($all_users, $offset, $rows_in_pg);

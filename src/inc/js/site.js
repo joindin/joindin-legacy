@@ -335,6 +335,11 @@ function setStars(rate){
 	$('.rating .star').eq(rate-1).click();
 }
 
+$(document).ready(function(){
+    $('#showLimit').change(function(){
+        $('#userAdminForm').submit();
+    });
+});
 //-------------------------
 
 /*# AVOID COLLISIONS #*/

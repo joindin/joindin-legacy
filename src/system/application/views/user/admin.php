@@ -11,7 +11,7 @@
 </div>
 
 <?php 
-echo form_open('user/admin');
+echo form_open('user/admin',array('id'=>'userAdminForm'));
 echo form_input('user_search',$this->validation->user_search);
 echo form_submit('sub','Search');
 //echo form_button('clear','Clear','onClick="document.location.href=\'/user/admin\';"');
@@ -19,9 +19,6 @@ echo form_submit('sub','Search');
 ?>
 
 <b>Pages:</b>
-
-    pagination....
-
 <?php
 $links = array();
 // show first
@@ -61,6 +58,12 @@ else
 <?php
 }
 ?>
+
+<?php echo 'show: '.form_dropdown('showLimit',array(
+    '10' => '10 records',
+    '20' => '20 records',
+    '40' => '40 records'
+),$this->validation->showLimit,'id="showLimit"'); ?>
 
 <table summary="" class="list" width="100%">
 <tr class="header">
