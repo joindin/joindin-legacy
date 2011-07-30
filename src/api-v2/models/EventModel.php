@@ -176,7 +176,7 @@ class EventModel extends ApiModel
     $verbose = false) 
     {
         $order = '(((attendee_count + event_comment_count) * 0.5) 
-                - EXP(GREATEST(1,score)/10)) desc';
+                - EXP(GREATEST(1,score)/20)) desc';
         $results = static::getEvents($db, $resultsperpage, $start, null, $order);
         if ($results) {
             $retval = static::transformResults($results, $verbose);

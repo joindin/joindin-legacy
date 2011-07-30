@@ -181,6 +181,20 @@ class User_model extends Model {
                 else
                     return false;
 	}
+
+    /**
+     * Delete a user with the given ID
+     * 
+     * @param $userId
+     * @return void
+     */
+    public function deleteUser($userId)
+    {
+        // remove the user
+        $this->db->delete('user',array('ID' => $userId));
+
+        //set their comments to anonymous?
+    }
 	
 	/**
 	 * Search for publicly-available user information based on a user ID or username
@@ -232,10 +246,14 @@ class User_model extends Model {
 	/**
 	 * Pull a complete list of all users of the system
 	 *
+     * @param int $limit Limit number of users returned
 	 * @return array User details
 	 */
-	function getAllUsers(){
+	function getAllUsers($limit=null){
 		$this->db->order_by('username','asc');
+        if($limit != null){
+            $this->db->limit($limit);
+        }
 		$q=$this->db->get('user');
 		return $q->result();
 	}

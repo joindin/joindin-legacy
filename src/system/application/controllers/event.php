@@ -650,6 +650,7 @@ class Event extends Controller
         $this->load->library('spam');
         $this->load->library('timezone');
         $this->load->library('gravatar');
+        $this->load->plugin('captcha');
         $this->load->model('event_model');
         $this->load->model('event_comments_model');
         $this->load->model('user_attend_model', 'uam');
@@ -806,10 +807,12 @@ class Event extends Controller
 
         //our event comment form
         $rules = array(
-            'event_comment' => 'required'
+            'event_comment' => 'required',
+            'cinput'        => 'required|callback_cinput_check'
         );
         $fields = array(
-            'event_comment' => 'Event Comment'
+            'event_comment' => 'Event Comment',
+            'cinput'        => 'Captcha'
         );
         $this->validation->set_fields($fields);
         $this->validation->set_rules($rules);
@@ -956,6 +959,9 @@ class Event extends Controller
 				$arr['prompt_event_comment'] = true;
 			}
 		}
+
+        $arr['captcha']=create_captcha();
+        $this->session->set_userdata(array('cinput'=>$arr['captcha']['value']));
 
         $this->template->write_view('content', 'event/detail', $arr, true);
 		// only show the contact button for logged in users
