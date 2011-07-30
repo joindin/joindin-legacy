@@ -1,43 +1,45 @@
 <?php
 
-class TalkCommentModel extends ApiModel {
-    public static function getDefaultFields() {
+class TalkCommentMapper extends ApiMapper {
+    public function getDefaultFields() {
+        $fields = array(
+            'rating' => 'rating',
+            'comment' => 'comment'
+            );
+        return $fields;
+    }
+
+    public function getVerboseFields() {
         $fields = array(
             'rating' => 'rating',
             'comment' => 'comment',
+            'source' => 'source',
             'created_date' => 'date_made'
             );
         return $fields;
     }
 
-    public static function getVerboseFields() {
-        $fields = array(
-            'rating' => 'rating',
-            'comment' => 'comment',
-            'created_date' => 'date_made'
-            );
-        return $fields;
-    }
-
-    public static function getCommentsByTalkId($db, $talk_id, $resultsperpage, $start, $request, $verbose = false) {
+    public function getCommentsByTalkId($talk_id, $resultsperpage, $start, $verbose = false) {
         $sql = 'select * from talk_comments '
-            . 'where talk_id = :talk_id';
-        $sql .= static::buildLimit($resultsperpage, $start);
-        $stmt = $db->prepare($sql);
+            . 'where talk_id = :talk_id '
+            . 'and active = 1 '
+            . 'and private <> 1';
+        $sql .= $this->buildLimit($resultsperpage, $start);
+        $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute(array(
             ':talk_id' => $talk_id
             ));
         if($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $retval = static::transformResults($results, $request, $verbose);
+            $retval = $this->transformResults($results, $verbose);
             return $retval;
         }
         return false;
     }
 
-    public static function transformResults($results, $request, $verbose) {
+    public function transformResults($results, $verbose) {
         $list = parent::transformResults($results, $verbose);
-        $host = $request->host;
+        $host = $this->_request->host;
 
         // add per-item links 
         if (is_array($list) && count($list)) {
@@ -46,18 +48,18 @@ class TalkCommentModel extends ApiModel {
                     . $row['talk_id'] . '/comments/' . $row['ID'];
                 $list[$key]['verbose_uri'] = 'http://' . $host . '/v2/talks/' 
                     . $row['talk_id'] . '/comments/' . $row['ID'] . '?verbose=yes';
-                $list[$key]['talk_link'] = 'http://' . $host . '/v2/talks/' 
+                $list[$key]['talk_uri'] = 'http://' . $host . '/v2/talks/' 
                     . $row['talk_id'];
-                $list[$key]['user_link'] = 'http://' . $host . '/v2/users/' 
-                    . $row['user_id'];
+                if($row['user_id']) {
+                    $list[$key]['user_uri'] = 'http://' . $host . '/v2/users/' 
+                        . $row['user_id'];
+                }
             }
 
             if (count($list) > 1) {
-                $list = static::addPaginationLinks($list, $request);
+                $list = $this->addPaginationLinks($list, $this->_request);
             }
         }
-
         return $list;
     }
-
 }

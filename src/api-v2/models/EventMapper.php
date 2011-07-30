@@ -6,19 +6,17 @@
  * @uses ApiModel
  * @package API
  */
-class EventModel extends ApiModel 
+class EventMapper extends ApiMapper 
 {
+
     /**
      * Default mapping for column names to API field names
      * 
-     * @static
-     * 
      * @return array with keys as API fields and values as db columns
      */
-    public static function getDefaultFields() 
+    public function getDefaultFields() 
     {
         $fields = array(
-            'event_id' => 'ID',
             'name' => 'event_name',
             'start_date' => 'event_start',
             'end_date' => 'event_end',
@@ -38,10 +36,9 @@ class EventModel extends ApiModel
      * 
      * @return array with keys as API fields and values as db columns
      */
-    public static function getVerboseFields() 
+    public function getVerboseFields() 
     {
         $fields = array(
-            'event_id' => 'ID',
             'name' => 'event_name',
             'start_date' => 'event_start',
             'end_date' => 'event_end',
@@ -66,13 +63,12 @@ class EventModel extends ApiModel
     /**
      * Fetch the details for a single event
      * 
-     * @param PDO $db database object
      * @param int $event_id events.ID value
      * @param boolean $verbose used to determine how many fields are needed
      * 
      * @return array the event detail
      */
-    public static function getEventById($db, $event_id, $verbose = false) 
+    public function getEventById($event_id, $verbose = false) 
     {
         $sql = 'select events.*, '
             . '(select count(*) from user_attend where user_attend.eid = events.ID) 
@@ -88,13 +84,13 @@ class EventModel extends ApiModel
             . 'where active = 1 and '
             . '(pending = 0 or pending is NULL) and '
             . 'ID = :event_id';
-        $stmt = $db->prepare($sql);
+        $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute(
             array(':event_id' => $event_id)
         );
         if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $retval = static::transformResults($results, $verbose);
+            $retval = $this->transformResults($results, $verbose);
             return $retval;
         }
         return false;
@@ -104,7 +100,6 @@ class EventModel extends ApiModel
     /**
      * Internal function called by other event-fetching code, with changeable SQL
      * 
-     * @param PDO $db database object
      * @param int $resultsperpage how many records to return
      * @param int $start offset to start returning records from
      * @param string $where one final thing to add to the where after an "AND"
@@ -112,8 +107,7 @@ class EventModel extends ApiModel
      *
      * @return array the raw database results
      */
-    protected static function getEvents($db, $resultsperpage, $start, 
-    $where = null, $order = null) 
+    protected function getEvents($resultsperpage, $start, $where = null, $order = null) 
     {
         $sql = 'select events.*, '
             . '(select count(*) from user_attend where user_attend.eid = events.ID) 
@@ -143,9 +137,9 @@ class EventModel extends ApiModel
         }
 
         // limit clause
-        $sql .= static::buildLimit($resultsperpage, $start);
+        $sql .= $this->buildLimit($resultsperpage, $start);
 
-        $stmt = $db->prepare($sql);
+        $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute();
         if ($response) {
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -156,20 +150,18 @@ class EventModel extends ApiModel
     /**
      * getEventList 
      * 
-     * @param PDO $db database object
      * @param int $resultsperpage how many records to return
      * @param int $start offset to start returning records from
      * @param boolean $verbose used to determine how many fields are needed
      * 
      * @return array the data, or false if something went wrong
      */
-    public static function getEventList($db, $resultsperpage, $start, 
-    $verbose = false) 
+    public function getEventList($resultsperpage, $start, $verbose = false) 
     {
         $order = 'events.event_start desc';
-        $results = static::getEvents($db, $resultsperpage, $start, null, $order);
+        $results = $this->getEvents($resultsperpage, $start, null, $order);
         if ($results) {
-            $retval = static::transformResults($results, $verbose);
+            $retval = $this->transformResults($results, $verbose);
             return $retval;
         }
         return false;
@@ -181,21 +173,19 @@ class EventModel extends ApiModel
      * formula taken from original joindin codebase, uses number of people
      * attending and how soon/recent something is to calculate it's "hotness"
      * 
-     * @param PDO $db database object
      * @param int $resultsperpage how many records to return
      * @param int $start offset to start returning records from
      * @param boolean $verbose used to determine how many fields are needed
      * 
      * @return array the data, or false if something went wrong
      */
-    public static function getHotEventList($db, $resultsperpage, $start, 
-    $verbose = false) 
+    public function getHotEventList($resultsperpage, $start, $verbose = false) 
     {
         $order = '(((attendee_count + event_comment_count) * 0.5) 
                 - EXP(GREATEST(1,score)/20)) desc';
-        $results = static::getEvents($db, $resultsperpage, $start, null, $order);
+        $results = $this->getEvents($resultsperpage, $start, null, $order);
         if ($results) {
-            $retval = static::transformResults($results, $verbose);
+            $retval = $this->transformResults($results, $verbose);
             return $retval;
         }
         return false;
@@ -204,21 +194,19 @@ class EventModel extends ApiModel
     /**
      * Future events, soonest first
      * 
-     * @param PDO $db database object
      * @param int $resultsperpage how many records to return
      * @param int $start offset to start returning records from
      * @param boolean $verbose used to determine how many fields are needed
      * 
      * @return array the data, or false if something went wrong
      */
-    public static function getUpcomingEventList($db, $resultsperpage, $start, 
-    $verbose = false) 
+    public function getUpcomingEventList($resultsperpage, $start, $verbose = false) 
     {
         $where = '(events.event_start >=' . (mktime(0, 0, 0) - (3 * 86400)) . ')';
         $order = 'events.event_start';
-        $results = static::getEvents($db, $resultsperpage, $start, $where, $order);
+        $results = $this->getEvents($resultsperpage, $start, $where, $order);
         if ($results) {
-            $retval = static::transformResults($results, $verbose);
+            $retval = $this->transformResults($results, $verbose);
             return $retval;
         }
         return false;
@@ -227,21 +215,19 @@ class EventModel extends ApiModel
     /**
      * Past events, most recent first
      * 
-     * @param PDO $db database object
      * @param int $resultsperpage how many records to return
      * @param int $start offset to start returning records from
      * @param boolean $verbose used to determine how many fields are needed
      * 
      * @return array the data, or false if something went wrong
      */
-    public static function getPastEventList($db, $resultsperpage, $start, 
-    $verbose = false) 
+    public function getPastEventList($resultsperpage, $start, $verbose = false) 
     {
         $where = '(events.event_start <' . (mktime(0, 0, 0)) . ')';
         $order = 'events.event_start desc';
-        $results = static::getEvents($db, $resultsperpage, $start, $where, $order);
+        $results = $this->getEvents($resultsperpage, $start, $where, $order);
         if ($results) {
-            $retval = static::transformResults($results, $verbose);
+            $retval = $this->transformResults($results, $verbose);
             return $retval;
         }
         return false;
@@ -250,55 +236,53 @@ class EventModel extends ApiModel
     /**
      * Events with CfPs that close in the future and a cfp_url
      * 
-     * @param PDO $db database object
      * @param int $resultsperpage how many records to return
      * @param int $start offset to start returning records from
      * @param boolean $verbose used to determine how many fields are needed
      * 
      * @return array the data, or false if something went wrong
      */
-    public static function getOpenCfPEventList($db, $resultsperpage, $start, 
-    $verbose = false) 
+    public function getOpenCfPEventList($resultsperpage, $start, $verbose = false) 
     {
         $where = 'events.event_cfp_url IS NOT NULL AND events.event_cfp_end >= ' . mktime(0, 0, 0);
         $order = 'events.event_start';
-        $results = static::getEvents($db, $resultsperpage, $start, $where, $order);
+        $results = $this->getEvents($resultsperpage, $start, $where, $order);
         if ($results) {
-            $retval = static::transformResults($results, $verbose);
+            $retval = $this->transformResults($results, $verbose);
             return $retval;
         }
         return false;
     }
 
     /**
-     * Add links to related stuff, including the talks/comments for this event
+     * Turn results into arrays with correct fields, add hypermedia
      * 
-     * @param array $list Current data set
-     * @param Request $request The Request object created at bootstrap
-     * 
+     * @param array $results Results of the database query
+     * @param boolean $verbose whether to return detailed information
      * @return array A dataset now with each record having its links,
      *     and pagination if appropriate
      */
-    public static function addHyperMedia($list, $request) 
+    public function transformResults($results, $verbose) 
     {
-        $host = $request->host;
+        $list = parent::transformResults($results, $verbose);
+        $host = $this->_request->host;
 
         // add per-item links 
         if (is_array($list) && count($list)) {
-            foreach ($list as $key => $row) {
+            foreach ($results as $key => $row) {
                 $list[$key]['uri'] = 'http://' . $host . '/v2/events/' 
-                    . $row['event_id'];
+                    . $row['ID'];
                 $list[$key]['verbose_uri'] = 'http://' . $host . '/v2/events/' 
-                    . $row['event_id'] . '?verbose=yes';
-                $list[$key]['comments_link'] = 'http://' . $host . '/v2/events/' 
-                    . $row['event_id'] . '/comments';
-                $list[$key]['talks_link'] = 'http://' . $host . '/v2/events/' 
-                . $row['event_id'] . '/talks';
-                $list[$key]['website_uri'] = 'http://joind.in/event/view/' . $row['event_id'];
+                    . $row['ID'] . '?verbose=yes';
+                $list[$key]['comments_uri'] = 'http://' . $host . '/v2/events/' 
+                    . $row['ID'] . '/comments';
+                $list[$key]['talks_uri'] = 'http://' . $host . '/v2/events/' 
+                . $row['ID'] . '/talks';
+                $list[$key]['website_uri'] = 'http://joind.in/event/view/' . $row['ID'];
             }
 
             if (count($list) > 1) {
-                $list = static::addPaginationLinks($list, $request);
+                $list = $this->addPaginationLinks($list, $request);
             }
         }
 

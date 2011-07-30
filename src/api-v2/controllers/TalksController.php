@@ -23,11 +23,13 @@ class TalksController extends ApiController {
         if(isset($request->url_elements[4])) {
             // sub elements
             if($request->url_elements[4] == "comments") {
-                $list = TalkCommentModel::getCommentsByTalkId($db, $talk_id, $resultsperpage, $start, $request, $verbose);
+                $comment_mapper = new TalkCommentMapper($db, $request);
+                $list = $comment_mapper->getCommentsByTalkId($talk_id, $resultsperpage, $start, $verbose);
             }
         } else {
             if($talk_id) {
-                $list = TalkModel::getTalkById($db, $talk_id, $request, $verbose);
+                $mapper = new TalkMapper($db, $request);
+                $list = $mapper->getTalkById($talk_id, $verbose);
             } else {
                 // listing makes no sense
                 return false;

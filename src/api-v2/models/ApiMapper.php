@@ -1,14 +1,28 @@
 <?php
 
-class ApiModel {
-    public static function getDefaultFields() {
+class ApiMapper {
+    /**
+     * Object constructor, sets up the db and some objects need request too
+     * 
+     * @param PDO     $db      The database connection handle
+     * @param Request $request The request object (optional not all objects need it)
+     */
+    public function __construct(PDO $db, Request $request = NULL) {
+        $this->_db = $db;
+        if(isset($request)) {
+            $this->_request = $request;
+        }
+        return true;
+    }
+
+    public function getDefaultFields() {
         return array();
     }
-    public static function getVerboseFields() {
+    public function getVerboseFields() {
         return array();
     }
 
-    public static function transformResults($results, $verbose) {
+    public function transformResults($results, $verbose) {
         $fields = $verbose ? static::getVerboseFields() : static::getDefaultFields();
         $retval = array();
 
@@ -28,7 +42,7 @@ class ApiModel {
         return $retval;
     }
 
-    protected static function buildLimit($resultsperpage, $start) {
+    protected function buildLimit($resultsperpage, $start) {
         if($resultsperpage == 0) {
             // special case, no limits
             $limit = '';
@@ -40,7 +54,7 @@ class ApiModel {
         return $limit;
     }
 
-    protected static function addPaginationLinks($list, $request) {
+    protected function addPaginationLinks($list, $request) {
         $list['meta']['count'] = count($list);
         $list['meta']['this_page'] = 'http://' . $request->host . $request->path_info .'?' . http_build_query($request->parameters);
         $next_params = $prev_params = $request->parameters;
