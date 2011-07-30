@@ -7,6 +7,7 @@ class TalkModel extends ApiModel {
             'talk_description' => 'talk_desc',
             'start_date' => 'date_given',
             'average_rating' => 'avg_rating',
+            'comments_enabled' => 'comments_enabled',
             'comment_count' => 'comment_count'
             );
         return $fields;
@@ -20,6 +21,7 @@ class TalkModel extends ApiModel {
             'language' => 'lang_name',
             'start_date' => 'date_given',
             'average_rating' => 'avg_rating',
+            'comments_enabled' => 'comments_enabled',
             'comment_count' => 'comment_count'
             );
         return $fields;
@@ -80,7 +82,11 @@ class TalkModel extends ApiModel {
     public static function getBasicSQL() {
         $sql = 'select t.*, l.lang_name, '
             . '(select COUNT(ID) from talk_comments tc where tc.talk_id = t.ID) as comment_count, '
-            . '(select ROUND(AVG(rating)) from talk_comments tc where tc.talk_id = t.ID) as avg_rating '
+            . '(select ROUND(AVG(rating)) from talk_comments tc where tc.talk_id = t.ID) as avg_rating, '
+            . 'CASE 
+                WHEN (((t.date_given - 3600*24) < '.mktime(0,0,0).') and (t.date_given + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
+                ELSE 0
+               END as comments_enabled '
             . 'from talks t '
             . 'inner join events e on e.ID = t.event_id '
             . 'inner join lang l on l.ID = t.lang '
