@@ -21,11 +21,12 @@ if [ -z $BRANCH ]
 then
 	BRANCH=master
 fi
-LAUNCHREF=remotes/origin/$BRANCH
+LAUNCHREF=remotes/deployremote/$BRANCH
 
 sg web -c "
 mkdir -p $TARGET \
- ; git archive $LAUNCHREF | tar xC $TARGET \
+ ; git remote set-url deployremote https://github.com/$GITHUB_USER/$GITHUB_REPO.git \
+&& git archive $LAUNCHREF | tar xC $TARGET \
 && (echo $TARGET ; echo $LAUNCHREF) > $TARGET/src/release.txt \
 && ln -s $TARGETBASE/config.php $TARGET/src/system/application/config/config.php \
 && ln -s $TARGETBASE/database.php $TARGET/src/system/application/config/database.php \
