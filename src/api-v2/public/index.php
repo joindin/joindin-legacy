@@ -42,7 +42,13 @@ switch ($format) {
         case 'application/json':
         case 'json':
         default:
-            $request->view = new JsonView();
+            // JSONP?
+            $callback = filter_var($request->getParameter('callback'), FILTER_SANITIZE_STRING);
+            if($callback) {
+                $request->view = new JsonPView($callback);
+            } else {
+                $request->view = new JsonView();
+            }
             break;
 }
 
