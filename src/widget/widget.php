@@ -2,12 +2,22 @@
 	header("Content-type: text/javascript");
 	header("Cache-control: public, max-age=10000");
 	header("Expires: " . date(DATE_RFC822,strtotime(" 2 day")));
+	define('BASEPATH', 'something');
+	$config_filename = dirname(__FILE__).'/../system/application/config/config.php';
+	if (is_readable($config_filename)) {
+		require($config_filename);
+		$siteBase = $config['base_url'];
+		$apiBase  = $config['api_base_url'];
+	} else {
+		$siteBase = '//joind.in';
+		$apiBase  = '//api.joind.in';
+	}
 ?>
 var joindin = function(){};
 
 // TODO: lookup this URL from the config
-joindin.urlBase_website = "//joind.in";
-joindin.urlBase_api     = "//api.joind.in";
+joindin.urlBase_website = "<?php echo $siteBase; ?>";
+joindin.urlBase_api     = "<?php echo $apiBase; ?>";
 
 joindin.embedStyle      = true;
 joindin.draw = function(talkId, node) {
