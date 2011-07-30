@@ -1,12 +1,17 @@
 <?php
 	header("Content-type: text/javascript");
+	header("Cache-control: public, max-age=10000");
+	header("Expires: " . date(DATE_RFC822,strtotime(" 2 day")));
 ?>
 var joindin = function(){};
-joindin.draw = function(talkId, node, postJquery/*=false*/) {
+joindin.embedStyle = true;
+joindin.draw = function(talkId, node) {
 	if (!node) {
 		document.write('<div id="joindin-content-placeholder"></div>');
 		node = document.getElementById("joindin-content-placeholder");
-	}
+	} else if (typeof node == "string") {
+		node = document.getElementById(node);
+    }
 	if (typeof jQuery == 'undefined') {
 		// TODO: Attempt to auto-load jQuery, then relaunch the widget when jQuery is available
 		if (typeof console.log != "undefined") {
@@ -15,27 +20,66 @@ joindin.draw = function(talkId, node, postJquery/*=false*/) {
 		}
 	}
 	// TODO: lookup this URL from the config
-	jQuery.getJSON('//kevin.valinor.local/v2/talks/3214?format=json&callback=?', {talk:talkId}, function(data){joindin.gotData(data, node);});
+	jQuery.getJSON('//api.joind.in/v2/talks/' + talkId + '?format=json&callback=?', {talk:talkId}, function(data){joindin.gotData(data, node);});
+	//jQuery.getJSON('//api.kevin.valinor.local/v2/talks/' + talkId + '?format=json&callback=?', {talk:talkId}, function(data){joindin.gotData(data, node);});
 }
 
 joindin.gotData = function(data, node) {
-data = data[0];
-data.state = "recent";
+	if (data.length < 1) {
+		// No content returned, do nothing
+		return;
+	}
+	data = data[0];
+	var content = "";
+	if (!joindin.gotData.embeddedStyles && joindin.embedStyle) {
+		joindin.gotData.embeddedStyles = true;
+		var headTag = document.getElementsByTagName('head')[0];
+		var styleTag = document.createElement("link");
+		styleTag.setAttribute("rel", "stylesheet");
+		styleTag.setAttribute("href", "//kevin.valinor.local/widget.css");
+		headTag.appendChild(styleTag);
+	}
+
+	content += "<div class='joindin-content-insert'>";
+
+	var timeNow  = Date.UTC();
+	var timeTalk = Date.parse(data.start_date);
+
+	if (timeNow > timeTalk) {
+		data.state = "future";
+	} else if (data.comments_enabled) {
+		data.state = "recent";
+	} else {
+		data.state = "past";
+	}
+
 	switch (data.state) {
 		case 'future':
-			joindin.writeContent('<div style="font-size:75%" class="joindin-content-insert joindin-content-insert-future"><a href="' + data.uri + '">View this talk on joind.in</a></div>', node);
+			content += '<div class="joindin-content-insert-future">';
+			content += '<a href="' + data.uri + '">View on joind.in</a>';
+			content += '</div>';
 			break;
 		case 'recent':
-			joindin.writeContent('<div style="font-size:75%" class="joindin-content-insert joindin-content-insert-recent"><img src="//joind.in/inc/img/rating-' + data.average_rating + '.gif" width="75" /> (' + data.comment_count + ')<br /><a href="' + data.uri + '">Comment on joind.in</a></div>', node);
+			content += '<div class="joindin-content-insert-recent">';
+			if (data.average_rating != "") {
+				content += '<p><img src="//joind.in/inc/img/rating-' + data.average_rating + '.gif" width="75" /> (' + data.comment_count + ')</p>';
+			}
+			content += '<a href="' + data.uri + '">Comment on joind.in</a>';
+			content += '</div>';
 			break;
 		case 'past':
-			joindin.writeContent('<div style="font-size:75%" class="joindin-content-insert joindin-content-insert-past"><img src="//joind.in/inc/img/rating-' + data.average_rating + '.gif" width="75" /> (' + data.comment_count + ')<br /><a href="' + data.uri + '">View on joind.in</a></div>', node);
+			content += '<div class="joindin-content-insert-past">';
+			if (data.average_rating != "") {
+				content += '<p><img src="//joind.in/inc/img/rating-' + data.average_rating + '.gif" width="75" /> (' + data.comment_count + ')</p>';
+			}
+			content += '<a href="' + data.uri + '">View on joind.in</a>';
+			content += '</div>';
 			break;
 		default:
-			// Unknown talk
-			alert("Unknown talk");
+			// Unknown talk, do nothing
 			break;
 	}
+	joindin.writeContent(content, node);
 }
 
 joindin.writeContent = function(content, node) {
