@@ -4,7 +4,12 @@
 	header("Expires: " . date(DATE_RFC822,strtotime(" 2 day")));
 ?>
 var joindin = function(){};
-joindin.embedStyle = true;
+
+// TODO: lookup this URL from the config
+joindin.urlBase_website = "//joind.in";
+joindin.urlBase_api     = "//api.joind.in";
+
+joindin.embedStyle      = true;
 joindin.draw = function(talkId, node) {
 	if (!node) {
 		document.write('<div id="joindin-content-placeholder"></div>');
@@ -19,9 +24,7 @@ joindin.draw = function(talkId, node) {
 			return;
 		}
 	}
-	// TODO: lookup this URL from the config
-	jQuery.getJSON('//api.joind.in/v2/talks/' + talkId + '?format=json&callback=?', {talk:talkId}, function(data){joindin.gotData(data, node);});
-	//jQuery.getJSON('//api.kevin.valinor.local/v2/talks/' + talkId + '?format=json&callback=?', {talk:talkId}, function(data){joindin.gotData(data, node);});
+	jQuery.getJSON(joindin.urlBase_api + '/v2/talks/' + talkId + '?format=json&callback=?', {talk:talkId}, function(data){joindin.gotData(data, node);});
 }
 
 joindin.gotData = function(data, node) {
@@ -36,7 +39,7 @@ joindin.gotData = function(data, node) {
 		var headTag = document.getElementsByTagName('head')[0];
 		var styleTag = document.createElement("link");
 		styleTag.setAttribute("rel", "stylesheet");
-		styleTag.setAttribute("href", "//kevin.valinor.local/widget.css");
+		styleTag.setAttribute("href", joindin.urlBase_website + "/widget/widget.css");
 		headTag.appendChild(styleTag);
 	}
 
