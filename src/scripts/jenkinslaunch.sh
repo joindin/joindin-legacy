@@ -17,6 +17,17 @@ fi
 TARGET=${TARGETBASE}/${BUILD_NUMBER}
 export TARGET
 
+
+if [ -z $GITHUB_REPO ]
+then
+	GITHUB_REPO=joind.in
+fi
+
+if [ -z $GITHUB_USER ]
+then
+	GITHUB_USER=joindin
+fi
+
 if [ -z $BRANCH ]
 then
 	BRANCH=master
