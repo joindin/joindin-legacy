@@ -60,7 +60,7 @@ class TalkMapper extends ApiMapper {
             }
 
             if(count($list) > 1) {
-                $list = $this->addPaginationLinks($list, $request);
+                $list = $this->addPaginationLinks($list);
             }
         }
 

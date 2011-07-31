@@ -50,7 +50,7 @@ class EventCommentMapper extends ApiMapper {
             }
 
             if (count($list) > 1) {
-                $list = $this->addPaginationLinks($list, $this->_request);
+                $list = $this->addPaginationLinks($list);
             }
         }
         return $list;

@@ -23,7 +23,7 @@ class ApiMapper {
     }
 
     public function transformResults($results, $verbose) {
-        $fields = $verbose ? static::getVerboseFields() : static::getDefaultFields();
+        $fields = $verbose ? $this->getVerboseFields() : $this->getDefaultFields();
         $retval = array();
 
         // format results to only include named fields
@@ -54,7 +54,8 @@ class ApiMapper {
         return $limit;
     }
 
-    protected function addPaginationLinks($list, $request) {
+    protected function addPaginationLinks($list) {
+        $request = $this->_request;
         $list['meta']['count'] = count($list);
         $list['meta']['this_page'] = 'http://' . $request->host . $request->path_info .'?' . http_build_query($request->parameters);
         $next_params = $prev_params = $request->parameters;
