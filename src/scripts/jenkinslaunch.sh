@@ -43,7 +43,7 @@ mkdir -p $TARGET \
 && ln -s $TARGETBASE/config.php $TARGET/src/system/application/config/config.php \
 && ln -s $TARGETBASE/database.php $TARGET/src/system/application/config/database.php \
 && ln -s $TARGETBASE/database.php $TARGET/src/api-v2/database.php \
-&& mkdir $TARGET/src/inc/tmp \
+&& ln -s $TARGETBASE/tmp/csv $TARGET/src/inc/tmp \
 && mv $TARGET/src/inc/img/event_icons $TARGET/src/inc/img/event_icons.removed \
 && ln -s $TARGETBASE/tmp/event_icons $TARGET/src/inc/img/event_icons \
 && ln -s $TARGET $TARGETBASE/www.new \
