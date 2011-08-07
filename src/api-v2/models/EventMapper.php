@@ -23,7 +23,6 @@ class EventMapper extends ApiMapper
             'description' => 'event_desc',
             'href' => 'event_href',
             'attendee_count' => 'attendee_count',
-            'comments_enabled' => 'comments_enabled',
             'icon' => 'event_icon'
             );
         return $fields;
