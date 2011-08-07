@@ -69,7 +69,7 @@ joindin.gotData = function(data, node) {
 	switch (data.state) {
 		case 'future':
 			content += '<div class="joindin-content-insert-future">';
-			content += '<a href="' + data.uri + '">View on joind.in</a>';
+			content += '<a href="' + data.website_uri + '">View on joind.in</a>';
 			content += '</div>';
 			break;
 		case 'recent':
@@ -77,7 +77,7 @@ joindin.gotData = function(data, node) {
 			if (data.average_rating != "") {
 				content += '<p><img src="//joind.in/inc/img/rating-' + data.average_rating + '.gif" width="75" /> (' + data.comment_count + ')</p>';
 			}
-			content += '<a href="' + data.uri + '">Comment on joind.in</a>';
+			content += '<a href="' + data.website_uri + '">Comment on joind.in</a>';
 			content += '</div>';
 			break;
 		case 'past':
@@ -85,7 +85,7 @@ joindin.gotData = function(data, node) {
 			if (data.average_rating != "") {
 				content += '<p><img src="//joind.in/inc/img/rating-' + data.average_rating + '.gif" width="75" /> (' + data.comment_count + ')</p>';
 			}
-			content += '<a href="' + data.uri + '">View on joind.in</a>';
+			content += '<a href="' + data.website_uri + '">View on joind.in</a>';
 			content += '</div>';
 			break;
 		default:
