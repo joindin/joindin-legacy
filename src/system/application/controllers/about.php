@@ -199,6 +199,18 @@ class About extends Controller
 
         return true;
     }
+
+    /**
+     * Displays the page about the widgets
+     *
+     * @return void
+     */
+    function widgets()
+    {
+        $this->template->write_view('content', 'about/widgets', array());
+        $this->template->render();
+    }
+
 }
 
 ?>
