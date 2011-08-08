@@ -14,7 +14,7 @@ menu_pagetitle('Widgets');
     We've started very simple, and the widgets display the current rating and
     number of comments for a talk.  Here's an example:
 
-<script src="//lorna.valinor.local/widget/widget.php"></script>
+<script src="//joind.in/widget/widget.php"></script>
 <script>
     joindin.draw(3214);
 </script><br clear="both"/>
