@@ -1446,7 +1446,7 @@ class Event extends Controller
                         $email = $speaker->email;
                         $talk_title = $talk->talk_title;
                         $evt_name = $talk->event_name;
-						$talk_id = $talk->id;
+						$talk_id = $talk->ID;
                         $this->sendemail->claimSuccess($email,$talk_title,$talk_id,$evt_name);
                         $result = true;
                     }
