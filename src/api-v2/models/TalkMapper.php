@@ -94,7 +94,7 @@ class TalkMapper extends ApiMapper {
             . 'where t.active = 1 and '
             . 'e.active = 1 and '
             . '(e.pending = 0 or e.pending is NULL) and '
-            . 'e.private <> "y"';
+            . '(e.private <> "y" or e.private is NULL)';
         return $sql;
 
     }
