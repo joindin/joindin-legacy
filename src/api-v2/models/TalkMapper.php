@@ -56,6 +56,7 @@ class TalkMapper extends ApiMapper {
                 $list[$key]['verbose_uri'] = 'http://' . $host . '/v2/talks/' . $row['ID'] . '?verbose=yes';
                 $list[$key]['website_uri'] = 'http://joind.in/talk/view/' . $row['ID'];
                 $list[$key]['comments_uri'] = 'http://' . $host . '/v2/talks/' . $row['ID'] . '/comments';
+                $list[$key]['verbose_comments_uri'] = 'http://' . $host . '/v2/talks/' . $row['ID'] . '/comments?verbose=yes';
                 $list[$key]['event_uri'] = 'http://' . $host . '/v2/events/' . $row['event_id'];
             }
 
