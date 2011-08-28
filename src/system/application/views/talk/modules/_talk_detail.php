@@ -38,6 +38,11 @@
 	
 	<p class="quicklink">
 		Quicklink: <strong><a href="<?php echo $this->config->site_url(); ?><?php echo $detail->tid; ?>"><?php echo $this->config->site_url(); ?><?php echo $detail->tid; ?></a></strong>
+    <?php
+        if($admin) {
+            echo "(<a href=\"http://chart.apis.google.com/chart?chs=400x400&cht=qr&chl=" . urlencode($this->config->site_url() . '/' . $detail->tid) . "\"/>get QR code to bring people straight here</a>)";
+        }
+    ?>
 	</p>
 	
 	<?php if(!empty($track_info)): ?>
@@ -54,10 +59,5 @@
 	</p>
 	<?php endif; ?>
 
-	<?php if(isset($claimed[0]) && $this->session->userdata('ID')==$claimed[0]->userid): ?>
-	<!--<p class="opts">
-		<a class="btn-small" href="/user/comemail/talk/<?php echo $detail->tid; ?>">Email me my comments</a>
-	</p>-->
-	<?php endif; ?>
 	<div class="clear"></div>
 </div>
