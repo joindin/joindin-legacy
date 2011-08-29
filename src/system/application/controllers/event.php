@@ -1213,6 +1213,8 @@ class Event extends Controller
                     $this->input->post('event_contact_name') . "\n\n";
                 $msg .= 'Event Contact Email: ' .
                     $this->input->post('event_contact_email') . "\n\n";
+                $msg .= 'View Pending Submissions: ' . $this->config->site_url()
+                    . '/event/pending' . "\n\n";
                 $msg .= 'Spam check: ' . ($is_spam == 'false')
                     ? 'not spam' : 'spam';
 
@@ -1230,7 +1232,7 @@ class Event extends Controller
 						for the event) will receive an email letting you know
 						it\'s been accepted.<br/>
 						<br/>
-						We\'ll get back with you soon!
+						We\'ll get back to you soon!
 					</span>'
                 );
 
