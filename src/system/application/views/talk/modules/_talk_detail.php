@@ -40,7 +40,7 @@
 		Quicklink: <strong><a href="<?php echo $this->config->site_url(); ?><?php echo $detail->tid; ?>"><?php echo $this->config->site_url(); ?><?php echo $detail->tid; ?></a></strong>
     <?php
         if($admin) {
-            echo "(<a href=\"http://chart.apis.google.com/chart?chs=400x400&cht=qr&chl=" . urlencode($this->config->site_url() . '/' . $detail->tid) . "\"/>get QR code to bring people straight here</a>)";
+            echo "(<a href=\"http://chart.apis.google.com/chart?chs=400x400&cht=qr&chl=" . urlencode($this->config->site_url() . '/' . $detail->tid) . "\"/> QR code </a>)";
         }
     ?>
 	</p>
