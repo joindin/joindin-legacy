@@ -61,6 +61,7 @@ class UserHelperTest extends PHPUnit_Framework_TestCase
 
 	public function testIsEventAdmin()
 	{
+		$this->markTestIncomplete('Half-written');
 		$this->ci->db->select('*');
 		$this->ci->db->from('user_admin');
 		$this->ci->db->where(array('rcode !=','pending'));
