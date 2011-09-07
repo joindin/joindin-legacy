@@ -34,7 +34,18 @@
  */
 class User extends Controller
 {
-
+	/**
+	 * Contains an array with urls we don't want to forward to after login.
+	 * If a part of the url is in one of these items, it will forward them to
+	 * their main account page.
+	 * 
+	 * @var Array
+	 */
+	private $non_forward_urls = array(
+		'user/login'
+		,'user/forgot'
+	);
+	
     /**
      * Constructor, checks whether the user is logged in and passes this to
      * the template.
@@ -86,10 +97,15 @@ class User extends Controller
         $this->validation->set_rules($rules);
         $this->validation->set_fields($fields);
 
+
         if ($this->validation->run() == false) {
-            //$ref = (isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER']
-            //    : $this->session->userdata('ref_url');
-            //$this->session->set_userdata('ref_url',$ref);
+            // add a for-one-request-only session field
+            if($this->session->flashdata('url_after_login')) {
+                // the form submission failed, set the flashdata again so it's there for the resubmit
+                $this->session->set_flashdata('url_after_login', $this->session->flashdata('url_after_login'));
+            } else {
+                $this->session->set_flashdata('url_after_login', $this->input->server('HTTP_REFERER'));
+            }
 
             $this->template->write_view('content', 'user/login');
             $this->template->render();
@@ -106,13 +122,23 @@ class User extends Controller
                 )
             );
 
-            // send them back to where they came from
-            $to = $this->input->server('HTTP_REFERER');
-            if (!strstr($to, 'user/login')) {
-                redirect($to);
-            } else {
-                redirect('user/main');
-            }
+            // send them back to where they came from, either the referer if they have one, or the flashdata
+            $referer = $this->input->server('HTTP_REFERER');
+            $to = $this->session->flashdata('url_after_login') ? $this->session->flashdata('url_after_login') : $referer;
+            
+			// List different routes we don't want to reroute to
+			$bad_routes = $this->non_forward_urls;
+			
+			foreach($bad_routes as $route)
+			{
+				if(strstr($to, $route))
+				{
+					redirect('user/main');
+				}
+			}
+			
+			// our $to is good, so redirect
+			redirect($to);
         }
     }
 
@@ -127,13 +153,32 @@ class User extends Controller
         $this->session->sess_destroy();
         redirect();
     }
-
+    
+    /**
+     * Check if either the email or username is set
+     * 
+     * @param string $str
+     * @return bool
+     */
+    function check_forgot_user($str = '')
+    {
+        if (!($this->input->post('user')) || !($this->input->post('user')))
+        {
+            $this->validation->_error_messages['check_forgot_user']
+                = 'Please enter either a username or email address';
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
     /**
      * Sends an e-mail to the user when they have forgotten their password.
      *
      * @return void
      */
-    function forgot()
+    function forgot($id = null, $request_code = null)
     {
         $this->load->helper('form');
         $this->load->library('validation');
@@ -145,49 +190,70 @@ class User extends Controller
             'email' => 'Email Address'
         );
         $rules = array(
-            'user'  => 'required|trim|xss_clean',
-            'email' => 'required|trim|xss_clean|valid_email|' .
-                'callback_user_email_match_check'
+            'user'  => 'trim|xss_clean|callback_check_forgot_user   ',
+            'email' => 'trim|xss_clean|valid_email'
         );
         $this->validation->set_rules($rules);
         $this->validation->set_fields($fields);
 
-        if ($this->validation->run() != false) {
-            //reset their password and send it out to the account
-            $email = $this->input->post('email');
-            $login = $this->input->post('user');
-
-            $ret = null;
-            if (!empty($email)) {
-                $ret = $this->user_model->getUserByEmail($email);
-            } elseif (!empty($login)) {
-                $ret = $this->user_model->getUser($login);
-            }
-
-            if (empty($ret)) {
-                $arr['msg'] = 'You must specify a username and email address!';
+        // ID and Request code are given?
+        if ($id != null and $request_code != null) {
+            $ret = $this->user_model->getUser($id);
+            if (empty($ret) || strcasecmp($ret[0]->request_code, $request_code)) {
+                // Could not find the user. Maybe already used, maybe a false code
+                $arr['msg'] = "The request code is already used or is invalid.";
             } else {
+                // Code is ok. Reset this user's password
+
                 //generate the new password...
                 $sel = array_merge(range('a', 'z'), range('A', 'Z'), range(0, 9));
                 shuffle($sel);
                 $pass_len = 10;
                 $pass = '';
-                $uid = $ret[0]->ID;
+                 $uid = $ret[0]->ID;
                 for ($i = 0; $i < $pass_len; $i++) {
                     $r = mt_rand(0, count($sel) - 1);
                     $pass .= $sel[$r];
                 }
-                $arr = array(
-                    'password' => md5($pass)
-                );
-                $this->user_model->updateUserInfo($uid, $arr);
+                 $arr = array(
+                    'password' => md5($pass),
+                    'request_code' => null
+
+                 );
+                 $this->user_model->updateUserInfo($uid, $arr);
 
                 // Send the email...
-                $this->sendemail->sendPassordReset($ret, $pass);
+                $this->sendemail->sendPasswordReset($ret, $pass);
 
                 $arr['msg'] = 'A new password has been sent to your email - ' .
                     'open it and click on the login link to use the new password';
             }
+        }
+
+        if ($this->validation->run() != false) {
+            //reset their password and send it out to the account
+            $email = $this->input->post('email');
+            $login = $this->input->post('user');
+            if ($email)            
+                $ret = $this->user_model->getUserByEmail($email);
+            elseif ($login)
+                $ret = $this->user_model->getUserByUsername($login);
+            if (! empty($ret)) {
+                $uid = $ret[0]->ID;
+
+                // Generate request code and add to db
+                $request_code = substr(md5(uniqid(true)), 0, 8);
+                $arr = array(
+                    'request_code' => $request_code
+                );
+                $this->user_model->updateUserInfo($uid, $arr);
+
+                // Send the activation email...
+                $this->sendemail->sendPasswordResetRequest($ret, $request_code);
+            }
+
+            $arr['msg'] = 'If the entered details are correct, instructions on how to reset your password will ' .
+                'be sent to your email - open it and follow the details to reset your password';
         }
 
         $this->template->write_view('content', 'user/forgot', $arr);
@@ -254,14 +320,7 @@ class User extends Controller
         $this->load->helper('form');
         $this->load->library('validation');
         $this->load->model('user_model');
-
-        /*$this->load->plugin('captcha');
-              $cap_arr=array(
-                  'img_path'		=>$_SERVER['DOCUMENT_ROOT'].'/inc/img/captcha/',
-                  'img_url'		=>'/inc/img/captcha/',
-                  'img_width'		=>'130',
-                  'img_height'	=>'30'
-              );*/
+        $this->load->plugin('captcha');
 
         $fields = array(
             'user'             => 'Username',
@@ -269,15 +328,15 @@ class User extends Controller
             'passc'            => 'Confirm Password',
             'email'            => 'Email',
             'full_name'        => 'Full Name',
-            'twitter_username' => 'Twitter Username'
-            //	'cinput'	=> 'Captcha'
+            'twitter_username' => 'Twitter Username',
+            'cinput'           => 'Captcha'
         );
         $rules = array(
             'user'  => 'required|trim|callback_usern_check|xss_clean',
             'pass'  => 'required|trim|matches[passc]|md5',
             'passc' => 'required|trim',
             'email' => 'required|trim|valid_email',
-            //	'cinput'	=> 'required|callback_cinput_check'
+            'cinput'=> 'required|callback_cinput_check'
         );
         $this->validation->set_rules($rules);
         $this->validation->set_fields($fields);
@@ -304,12 +363,10 @@ class User extends Controller
             redirect('user/main');
         }
 
-        //$cap=create_captcha($cap_arr);
-        //$this->session->set_userdata(array('cinput'=>$cap['word']));
-        //$carr=array('captcha'=>$cap);
+        $captcha=create_captcha();
+        $this->session->set_userdata(array('cinput'=>$captcha['value']));
 
-        $carr = array();
-        $this->template->write_view('content', 'user/register', $carr);
+        $this->template->write_view('content', 'user/register', array('captcha' => $captcha));
         $this->template->render();
     }
 
@@ -325,68 +382,29 @@ class User extends Controller
         $this->load->helper('form');
         $this->load->library('validation');
         $this->load->model('talks_model');
+		$this->load->model('event_model');
 
         $this->load->library('gravatar');
-        $this->gravatar->getUserImage(
-            $this->session->userData('ID'), $this->session->userData('email')
-        );
-        $imgStr = $this->gravatar->displayUserImage(
-            $this->session->userData('ID'), true
-        );
+        $imgStr = $this->gravatar->displayUserImage($this->session->userData('ID'), null, 80);
 
         if (!$this->user_model->isAuth()) {
             redirect('user/login');
         }
 
-        $fields = array(
-            'talk_code' => 'Talk Code'
-        );
-        $rules = array(
-            'talk_code' => 'required'
-        );
-        $this->validation->set_rules($rules);
-        $this->validation->set_fields($fields);
-
-        $arr = array();
-        if ($this->validation->run() != false) {
-            $code = $this->input->post('talk_code');
-            $ret  = $this->talks_model->getTalkByCode($code);
-
-            //link our user and talk
-            if (!empty($ret)) {
-                $uid = $this->session->userdata('ID');
-                $rid = $ret[0]->ID;
-
-                $this->talks_model->linkUserRes($uid, $rid, 'talk');
-
-                $arr['msg'] = 'Talk claimed successfully!';
-            }
-        }
-
-        $arr['talks']    = $this->talks_model
-            ->getUserTalks($this->session->userdata('ID'));
-        $arr['comments'] = $this->talks_model
-            ->getUserComments($this->session->userdata('ID'));
+        $arr['talks']    = $this->talks_model->getUserTalks($this->session->userdata('ID'));
+        $arr['comments'] = $this->talks_model->getUserComments($this->session->userdata('ID'));
         $arr['is_admin'] = $this->user_model->isSiteAdmin();
         $arr['gravatar'] = $imgStr;
 
+		$arr['pending_events'] = $this->event_model->getEventDetail(
+            null, null, null, true
+        );
+
+        $this->load->model('user_admin_model', 'uam');
+        $arr['event_claims'] = $this->uam->getPendingClaims('event');
+
         $this->template->write_view('content', 'user/main', $arr);
         $this->template->render();
-    }
-
-    /**
-     * Refreshes the current user's gravatar from the servers.
-     *
-     * @return void
-     */
-    function refresh_gravatar()
-    {
-        $this->load->library('gravatar');
-        $uid = $this->session->userData('ID');
-
-        $this->gravatar->getUserImage($uid);
-
-        redirect('/user/main');
     }
 
     /**
@@ -418,8 +436,7 @@ class User extends Controller
             redirect();
         }
 
-        $this->gravatar->getUserImage($uid, $details[0]->email);
-        $imgStr = $this->gravatar->displayUserImage($uid, true);
+		$imgStr = $this->gravatar->displayUserImage($uid, $details[0]->email, 80);
 
         if (empty($details[0])) {
             redirect();
@@ -460,7 +477,9 @@ class User extends Controller
             'has_talks' => (count($arr['talks']) == 0) ? false : true
         );
 
-        $this->template->write_view('sidebar2', 'user/_other-speakers', $block);
+        if(!empty($block['content'])){
+			$this->template->write_view('sidebar2', 'user/_other-speakers', $block);
+		}
         $this->template->write_view('content', 'user/view', $arr);
         $this->template->render();
     }
@@ -535,29 +554,32 @@ class User extends Controller
      */
     function admin($page = null)
     {
-        $this->load->helper('reqkey');
         $this->load->library('validation');
+        $this->load->model('user_model');
 
-        $reqkey      = buildReqKey();
+        $showLimit = $this->input->post('showLimit');
+        $this->validation->showLimit = ($showLimit) ? $showLimit : 10;
+
         $page        = (!$page) ? 1 : $page;
-        $rows_in_pg  = 10;
+        $rows_in_pg  = $showLimit;
         $offset      = ($page == 1) ? 1 : $page * 10;
-        $all_users   = $this->user_model->getAllUsers();
+        $all_users   = $this->user_model->getAllUsers($showLimit);
         $all_user_ct = count($all_users);
         $page_ct     = ceil($all_user_ct / $rows_in_pg);
         $users       = array_slice($all_users, $offset, $rows_in_pg);
+        $msg         = '';
 
-        $fields = array(
-            'user_search' => 'Search Term'
-        );
-        $rules = array(
-            'user_search' => 'required'
-        );
-        $this->validation->set_rules($rules);
-        $this->validation->set_fields($fields);
-
-        if ($this->validation->run() != false) {
+        if($this->input->post('submit')){
+            // search call
             $users = $this->user_model->search($this->input->post('user_search'));
+            
+        }elseif($this->input->post('um')){
+            // delete user call
+            $selectedUsers = $this->input->post('sel');
+            foreach($selectedUsers as $userId){
+                $this->user_model->deleteUser($userId);
+            }
+            $msg = count($selectedUsers).' users deleted';
         }
 
         $arr = array(
@@ -565,8 +587,7 @@ class User extends Controller
             'all_user_ct'   => $all_user_ct,
             'page_ct'       => $page_ct,
             'page'          => $page,
-            'reqkey'        => $reqkey,
-            'seckey'        => buildSecFile($reqkey),
+            'msg'           => $msg
         );
 
         $this->template->write_view('content', 'user/admin', $arr);
@@ -605,7 +626,7 @@ class User extends Controller
     {
         if ($this->input->post('cinput') != $this->session->userdata('cinput')) {
             $this->validation->_error_messages['cinput_check']
-                = 'Incorrect Captcha characters.';
+                = 'Incorrect captcha.';
             return false;
         } else {
             return true;
@@ -696,6 +717,74 @@ class User extends Controller
             return false;
         }
         return true;
+    }
+
+    /**
+     * Allow users to grant or deny access for an oauth app
+     *
+     * Users will land here directly from oauth consuming sites/apps/whatever
+     *
+     * @return void
+     */
+    function oauth_allow()
+    {
+        if (!$this->user_model->isAuth()) {
+            redirect('user/login', 'refresh');
+        }
+
+        $this->load->model('user_admin_model');
+        $this->load->helper('form');
+        $this->load->helper('url');
+        $this->load->library('validation');
+        $this->load->library('SSL');
+ 
+        $this->ssl->sslRoute();
+ 
+        $fields = array(
+            'access' => 'Permit access?'
+        );
+        $rules = array(
+            'access' => 'required'
+        );
+        $this->validation->set_rules($rules);
+        $this->validation->set_fields($fields);
+ 
+        $view_data['status'] = NULL;
+        if ($this->validation->run() == false) {
+            $request_token = filter_var($this->input->get('request_token'), FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^[0-9a-z]*$/')));
+            // check for a valid request token 
+            if($this->user_admin_model->oauthRequestTokenVerify($request_token)) {
+                $this->session->set_flashdata('request_token', $request_token);
+            } else {
+                $view_data['status'] = "invalid";
+            }
+        } else {
+            $request_token = $this->session->flashdata('request_token');
+
+            if($this->input->post('access') == 'allow') {
+                $view_data['status'] = "allow";
+                $oauth_info = $this->user_admin_model->oauthAllow($request_token, $this->session->userdata('ID'));
+                if($oauth_info->callback == "oob") {
+                    // special case, we can't forward the user on so just display verification code
+                    $view_data['verification'] = $oauth_info->verification;
+                } else {
+                    // add our parameter onto the URL
+                    if(strpos($oauth_info->callback, '?' !== false)) {
+                        $url = $oauth_info->callback . '&';
+                    } else {
+                        $url = $oauth_info->callback . '?';
+                    }
+                    $url .= 'oauth_token=' . $oauth_info->verification;
+                    redirect($url);
+                    exit; // we shouldn't be here 
+                }
+            } else {
+                $view_data['status'] = "deny";
+                $this->user_admin_model->oauthDeny($request_token);
+            }
+        }
+        $this->template->write_view('content', 'user/oauth_allow', $view_data);
+        $this->template->render();
     }
 }
 

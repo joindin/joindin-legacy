@@ -77,6 +77,28 @@ class User_admin_model extends Model {
 		$ret=$q->result(); //print_r($ret);
 		return (empty($ret)) ? false : true;
 	}
+
+    public function getPendingPerm($uid,$rid,$rtype){
+		error_log($uid.' - '.$rid.' - '.$rtype);
+        $q=$this->db->get_where('user_admin',array('uid'=>$uid,'rid'=>$rid,'rtype'=>$rtype,'rcode'=>'pending'));
+        $result = $q->result();
+		error_log('result: '.print_r($result,true));
+		return $result;
+    }
+
+    /**
+     * Check to see if given permission ID is of rtype/rid type.
+     * 
+     * @param  $id ID
+     * @param  $rid Resource ID (ex talk ID)
+     * @param  $rtype Resource type (ex. talk)
+     * @return boolean If they have permission or not
+     */
+    public function checkPerm($id, $rid, $rtype) {
+        $q = $this->db->get_where('user_admin', array('ID'=>$id,'rid'=>$rid,'rtype'=>$rtype));
+        $ret=$q->result();
+        return (empty($ret)) ? false : true;
+    }
 	
 	/**
 	 * Get detail for a given user - their talks and events
@@ -159,13 +181,13 @@ class User_admin_model extends Model {
 		$this->db->from('user_admin');
 		$this->db->join('user','user_admin.uid=user.ID');
 		$this->db->where('rid',$talk_id);
+        $this->db->where('rtype', 'talk');
 		if(!$pending){ 
 			$this->db->where(array('rcode !='=>'pending'));
 		}
 		
 		$q=$this->db->get();
 		$ret=$q->result();
-		
 		return $ret;
 	}
 	
@@ -190,9 +212,54 @@ class User_admin_model extends Model {
 	 */
 	public function getPendingClaims($type='talk',$rid=null){
 	    switch($type){
-               case 'talk':    return $this->getPendingClaims_Talks($rid); break;
-               case 'event':   return $this->getPendingClaims_Events($rid); break;
+			//case 'talk':    return $this->getPendingClaims_Talks($rid); break;
+			case 'talk':    return $this->getPendingClaim_TalkSpeaker($rid); break;
+			case 'event':   return $this->getPendingClaims_Events($rid); break;
 	    }
+	}
+	
+	/**
+	 * Get the pending talk clams for the event 
+	 * @param integer $eid[optional] Event Id
+	 */
+	public function getPendingClaim_TalkSpeaker($eid=null)
+	{
+		$CI=&get_instance();
+		$CI->load->model('talk_speaker_model','talkSpeaker');
+		
+		$sql = sprintf("
+			select
+				ts.talk_id,
+				ts.speaker_name,
+				u.username,
+				u.ID as user_id,
+				u.full_name as claiming_name,
+				ts.ID,
+				t.talk_title,
+				e.event_name,
+				t.ID as talk_id,
+				ts.status
+			from
+				talks t,
+				user u,
+				talk_speaker ts,
+				events e
+			where
+				ts.talk_id = t.ID and
+				u.ID = ts.speaker_id and
+				ts.status = 'pending' and
+				t.event_id = %s and
+				t.event_id = e.ID
+		",$eid);
+		
+		$query = $this->db->query($sql);
+		$results = $query->result();
+		
+		foreach($results as $talkKey => $talk){
+			$results[$talkKey]->speakers = $CI->talkSpeaker->getSpeakerByTalkId($talk->talk_id);
+		}
+		
+		return $results;
 	}
 
 	/**
@@ -255,6 +322,85 @@ class User_admin_model extends Model {
 	    $q=$this->db->query($sql);
 	    return $q->result();
 	}
+
+    /**
+     * Check that the request token actually exists and is valid
+     * 
+     * @param string $token the request token supplied by the API
+     * @access public
+     * @return boolean true if the token is OK, false otherwise
+     */
+    public function oauthRequestTokenVerify($token)
+    {
+	    $sql = 'SELECT request_token FROM oauth_request_tokens
+            WHERE request_token = ' . $this->db->escape($token) . '
+            AND authorised_user_id IS NULL';
+        $query = $this->db->query($sql);
+
+        $result = $query->result();
+        if(count($result) > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Deny access for this request token
+     * 
+     * @param string $token The request token given to the user
+     * @access public
+     * @return boolean true
+     */
+    public function oauthDeny($token)
+    {
+        $sql = 'DELETE from oauth_request_tokens 
+            WHERE request_token = ' . $this->db->escape($token);
+        $query = $this->db->query($sql);
+
+        return true;
+    }
+
+    /**
+     * This user granted access for this application using this request 
+     * token, record this and give a verification token
+     * 
+     * @param string $token The request token the user is authorising
+     * @param int $user_id The user's database ID (comes from the session 
+     * when called from the webcontroller)
+     * @access public
+     * @return array containing verification code and callback url, or false if something went wrong
+     */
+    public function oauthAllow($token, $user_id)
+    {
+        $verification_code = $this->oauthGenerateVerificationCode();
+        $sql = 'UPDATE oauth_request_tokens SET authorised_user_id = '
+            . $this->db->escape($user_id) . ',
+            verification = "' . $verification_code . '"
+            WHERE request_token = ' . $this->db->escape($token);
+        $query = $this->db->query($sql);
+
+        if ($this->db->affected_rows() == 1) {
+            $fetch_sql = 'SELECT callback, verification FROM oauth_request_tokens
+                WHERE request_token = ' . $this->db->escape($token);
+            $fetch_query = $this->db->query($fetch_sql);
+
+            $result = $fetch_query->result();
+            return $result[0];
+        }
+        return false;
+    }
+
+    /**
+     * Generate a verification code to send back to the oauth consumer with the user
+     * 
+     * @access public
+     * @return string the verification code
+     */
+    public function oauthGenerateVerificationCode()
+    {
+        return substr(md5(rand()), 0, 6);
+    }
+
 }
 
 ?>

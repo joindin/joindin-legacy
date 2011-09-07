@@ -3,27 +3,11 @@
 /**
  * External pages controller.
  *
- * PHP version 5
- *
- * @category  Joind.in
- * @package   Controllers
- * @author    Chris Cornutt <chris@joind.in>
- * @author    Mike van Riel <mike.vanriel@naenius.com>
- * @copyright 2009 - 2010 Joind.in
- * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
- * @link      http://github.com/joindin/joind.in
- */
-
-/**
- * External pages controller.
- *
  * Controller tasked with executing externally triggered scripts, automated
  * sending of twitter messages.
  *
  * @category  Joind.in
  * @package   Controllers
- * @author    Chris Cornutt <chris@joind.in>
- * @author    Mike van Riel <mike.vanriel@naenius.com>
  * @copyright 2009 - 2010 Joind.in
  * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
  * @link      http://github.com/joindin/joind.in
@@ -36,16 +20,6 @@
  */
 class External extends Controller
 {
-
-    /**
-     * Constructor, responsible for initializing the parent constructor.
-     *
-     * @return void
-     */
-    public function External()
-    {
-        parent::Controller();
-    }
 
     /**
      * Sends an update to twitter notifying the world how many events are coming
@@ -64,11 +38,12 @@ class External extends Controller
         $this->load->model('event_model');
 
         $events = $this->event_model->getUpcomingEvents(null);
-        $msg    = $this->config->item('site_name') . " Update: There's " .
+        $msg    = $this->config->item('site_name') . " Update: There are " .
             count($events) . " great events coming up soon! ";
         $msg   .= "Check them out! " . $this->config->site_url() .
             "event/upcoming";
 
+		// @todo: shorten this URL to help fit inside a Twitter message
         $this->twitter->sendMsg($msg);
     }
 
@@ -107,6 +82,20 @@ class External extends Controller
 
         $this->twitter->sendMsg($msg);
     }
+
+	/**
+	 * Grab the pending events and send an email to the event admins 
+	 * with a list of things that are: 1 day away, 1 week away, etc.
+	 *
+	 */
+	public function send_pending_event_email()
+	{
+		$this->load->library('sendemail');
+		$this->load->model('event_model');
+		
+		$events = $this->event_model->getEventDetail(null,null,null,true);
+		$this->sendemail->sendPendingEvents($events);
+	}
 }
 
 ?>

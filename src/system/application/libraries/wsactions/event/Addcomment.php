@@ -27,26 +27,29 @@ class Addcomment extends BaseWsRequest {
 		);
 		$ret=$this->CI->wsvalidate->validate($rules,$this->xml->action);
 		if($ret) {
-			return array('output'=>'json','data'=>array('items'=>array('msg'=>$ret)));
+			return $this->throwError($ret);
 		}
 		$unq=$this->CI->wsvalidate->validate_unique('event_comments',$this->xml->action);
 		if($unq){
 			$in=(array)$this->xml->action;			
 			$user=$this->CI->user_model->getUser($this->xml->auth->user);
 			if($user && !$this->isValidLogin($this->xml)) {
-				return array('output'=>'json','data'=>array('items'=>array('msg'=>'Invalid permissions')));
+				return $this->throwError('Invalid permissions');
 			}
 			
 			// Check to see if you can submit a comment to the event....
 			$this->CI->load->model('event_model');
 			$event_detail=$this->CI->event_model->getEventDetail($in['event_id']);
-			if($event_detail[0]->now!='now'){
-				return array('output'=>'json','data'=>array('items'=>array('msg'=>'Comments not allowed on the event/talk!')));
+			
+			$adv_mo=strtotime('+3 months',$event_detail[0]->event_start);
+			if(time()>$adv_mo){
+				return $this->throwError('Comments not allowed for this talk!');
 			}
 
 			$arr=array(
 				'event_id'	=> $in['event_id'],
 				'comment'	=> $in['comment'],
+                'source'	=> isset($in['source']) ? $in['source'] : 'api',
 				'date_made'	=> time(),
 				'active'	=> 1
 			);
@@ -55,10 +58,10 @@ class Addcomment extends BaseWsRequest {
 				$arr['cname'] = $user[0]->full_name;
 			}
 			$this->CI->db->insert('event_comments',$arr);
-			$ret=array('output'=>'json','data'=>array('items'=>array('msg'=>'Comment added!')));
+			return $this->throwError('Comments added');
 		}else{ 
 			if(!$unq){ $ret='Non-unique entry!'; }
-			$ret=array('output'=>'json','data'=>array('items'=>array('msg'=>$ret)));
+			return $this->throwError($ret);
 		}
 		return $ret;
 	}

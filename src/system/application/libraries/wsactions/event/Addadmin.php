@@ -78,16 +78,21 @@ class Addadmin extends BaseWsRequest {
 			}
 		}
 		
-		// Check to see if they're already an admin 
-		if(!$this->CI->uam->hasPerm($udata[0]->ID,$eid,$type)){
+		// Check to see if they're already an admin
+        $perm = $this->CI->uam->getPendingPerm($udata[0]->ID,$eid,$type);
+		if($perm == null && !$this->CI->uam->hasPerm($udata[0]->ID,$eid,$type)){ 
+			error_log('null');
 			$this->CI->uam->addPerm($udata[0]->ID,$eid,$type);
 			$evt=$this->CI->em->getEventDetail($eid);
 			
 			// Send them an email to let them know they've been added as an admin
 			$this->CI->sendemail->sendAdminAdd($udata,$evt,$this->xml->auth->user);
 			
-			return array('output'=>'json','data'=>array('items'=>array('msg'=>'Success')));
-		}else{
+			return array('output'=>'json','data'=>array('items'=>array('msg'=>'Success', 'user'=>$udata[0])));
+        } elseif(isset($perm[0]) && $perm[0]->rcode == "pending"){
+            $this->CI->uam->updatePerm($perm[0]->ID, array('rcode'=>''));
+            return array('output'=>'json','data'=>array('items'=>array('msg'=>'Success', 'user'=>$udata[0])));
+        } else {
 			return array('output'=>'json','data'=>array('items'=>array('msg'=>'Duplicate request!')));
 		}
 	}

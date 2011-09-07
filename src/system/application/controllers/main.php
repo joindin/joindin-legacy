@@ -69,7 +69,7 @@ class Main extends Controller
 
         $arr = array(
             'talks'           => $this->talks_model->getPopularTalks(),
-			'hot_events'      => $this->event_model->getHotEvents(7),
+            'hot_events'      => $this->event_model->getHotEvents(7),
             'logged'          => $this->user_model->isAuth(),
             'latest_blog'     => $this->bpm->getLatestPost(),
             'reqkey'          => $reqkey,
@@ -84,13 +84,9 @@ class Main extends Controller
                 : false;
         }
 
-        // now add the attendance data for the upcoming events
-        foreach ($arr['upcoming_events'] as $e) {
-            $e->user_attending = ($uid)
-                ? $this->user_attend_model->chkAttend($uid, $e->ID)
-                : false;
-        }
-
+		$events 	= $this->event_model->getCurrentCfp();
+		$this->template->parse_view('sidebar2','event/_event-cfp-sidebar',array('events'=>$events));
+		
         $this->template->write_view('content', 'main/index', $arr, true);
         $this->template->render();
     }

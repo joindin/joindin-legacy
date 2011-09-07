@@ -102,7 +102,7 @@ EOT;
 					placeSelect.options[placeSelect.options.length] = new Option("<-- Please choose a continent");
 					break;
 				default:
-					alert('Unknown continent');
+					notifications.alert('Unknown continent, please select a valid continent');
 					break;
 			}
 		}

@@ -158,7 +158,7 @@ SQL
 	function getEventTalks($id,$includeEventRelated = true, $includePrivate = false) {
 		$this->load->helper("events");
 		$this->load->helper("talk");
-		$private=($includePrivate) ? '' : ' and private!=1';
+		$private=($includePrivate) ? '' : ' and ifnull(private,0)!=1';
 		$sql='
 			select
 				talks.talk_title,
@@ -216,7 +216,8 @@ SQL
 		$order_by = NULL;
 
 		if($type == "hot") {
-			$order_by = "((num_attend * 0.5) - score) desc";
+            // if you change this, change the API too please
+			$order_by = "(((num_attend + num_comments) * 0.5) - EXP(GREATEST(1,score)/20)) desc";
 		}
 
 		if($type == "upcoming") {
@@ -233,8 +234,17 @@ SQL
 		return $result;
 	}
 
+    /**
+     * Get a current list of events
+     *
+     * @param string $where[optional] Optional "where" clause
+     * @param string $order_by Order by field
+     * @param integer $limit Limit on results
+     * @return array Event details
+     */
 	public function getEvents($where=NULL, $order_by = NULL, $limit = NULL) {
 		$sql = 'SELECT * ,
+		    (select if(event_cfp_start IS NOT NULL AND event_cfp_start > 0 AND '.mktime(0,0,0).' BETWEEN event_cfp_start AND event_cfp_end, 1, 0)) as is_cfp,
 			(select count(*) from user_attend where user_attend.eid = events.ID) as num_attend,
 			(select count(*) from event_comments where event_comments.event_id = events.ID) as num_comments, abs(0) as user_attending, '
 		  			.' abs(datediff(from_unixtime(events.event_start), from_unixtime('.mktime(0,0,0).'))) as score,
@@ -242,12 +252,15 @@ SQL
                 WHEN (((events.event_start - 86400) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
                 END as allow_comments
-			FROM events
+			FROM `events`
 			WHERE active = 1 AND (pending = 0 OR pending IS NULL)';
 
 		if($where) {
 			$sql .= ' AND (' . $where . ')';
 		}
+
+        // by default, don't show private events
+        $sql.= " AND private!='Y'";
 
 		if($order_by) {
 			$sql .= ' ORDER BY ' . $order_by;
@@ -257,8 +270,16 @@ SQL
 			$sql .= ' LIMIT ' . $limit;
 		}
 
-	    $query = $this->db->query($sql);
-	    return $query->result();
+	    $query  = $this->db->query($sql);
+	    $result = $query->result();
+
+        $CI=&get_instance();
+        $CI->load->model('tags_events_model','eventTags');
+        foreach($result as $index => $event){
+            $result[$index]->eventTags = $CI->eventTags->getTags($event->ID);
+        }
+
+        return $result;
 	}
 
     function getHotEvents($limit = null){
@@ -285,7 +306,40 @@ SQL
 		return $result;
 	}
 
-	function getEventAdmins($eid){
+    /**
+     * Find events tagged with the given data
+     * Singular tags for now, maybe multiple later?
+     *
+     * @param mixed $tagData Tag(s) to search on
+     * @return array Event results
+     */
+    public function getEventsByTag($tagData)
+    {
+        $CI=&get_instance();
+        $CI->load->model('tags_events_model','eventTags');
+        
+        $sql = 'SELECT events.* ,
+			(select count(*) from user_attend where user_attend.eid = events.ID) as num_attend,
+			(select count(*) from event_comments where event_comments.event_id = events.ID) as num_comments, abs(0) as user_attending, '
+		  			.' abs(datediff(from_unixtime(events.event_start), from_unixtime('.mktime(0,0,0).'))) as score,
+              CASE
+                WHEN (((events.event_start - 86400) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
+                ELSE 0
+                END as allow_comments
+			FROM events, tags_events, tags
+			WHERE active = 1 AND (pending = 0 OR pending IS NULL) AND
+			tags_events.event_id = events.ID AND tags_events.tag_id = tags.ID AND
+			tags.tag_value = "'.$tagData.'"';
+
+        $query  = $this->db->query($sql);
+        $result = $query->result();
+        foreach($result as $index => $event){
+            $result[$index]->eventTags = $CI->eventTags->getTags($event->ID);
+        }
+        return $result;
+    }
+
+	function getEventAdmins($eid,$all_results=false){
 	    $sql=sprintf("
 		select
 		    u.username,
@@ -302,8 +356,12 @@ SQL
 		    ua.rid=e.ID and
 		    u.ID=ua.uid
 	    ",$this->db->escape($eid));
-	    $q=$this->db->query($sql);
-	    return $q->result();
+
+	    if(!$all_results){
+			$sql.=" and (rcode!='pending' or IFNULL(rcode,0)!='pending' or rcode=NULL)";
+	    }
+	
+		return $this->db->query($sql)->result();
 	}
 
 	function getLatestComment($eid){
@@ -322,6 +380,25 @@ SQL
 	    ", $this->db->escape($eid));
 	    $q=$this->db->query($sql);
 	    return $q->result();
+	}
+	
+	function hasUserCommentedEvent($eid, $user_id)
+	{
+		$sql=sprintf("
+		SELECT event_id
+		FROM event_comments
+		WHERE event_id = %s
+			AND user_id = %s
+	    ", $this->db->escape($eid), $this->db->escape($user_id));
+	    $q=$this->db->query($sql);
+	    $r = $q->result();
+		
+		if(count($r) > 0)
+		{
+			return true;
+		}
+		
+		return false;
 	}
 	
 	function getEventIdByName($name){
@@ -354,6 +431,7 @@ SQL
 				ua.rid=t.id and
 				e.id=t.event_id and
 				u.id=ua.uid and
+                ua.rtype = \'talk\' and
 				e.id = %s
 		',$this->db->escape($event_id));
 		$q=$this->db->query($sql);
@@ -364,68 +442,34 @@ SQL
 	
 	function getClaimedTalks($eid, $talks = null){
 		$this->load->helper('events');
-		$ids	= array();
-		$tdata	= array();
-
-		// Find all of the talks for the event...
-		if ($talks === null) {
-			$ret = $this->getEventTalks($eid); //echo '<pre>'; print_r($ret); echo '</pre>';
-		} else {
-			$ret = $talks;
-		}
-		foreach($ret as $k=>$v){
-			$codes=array();
-			/*
-			$p=explode(',',$v->speaker);
-			$codes=array();
-			foreach($p as $ik=>$iv){
-				$codes[]=buildCode($v->ID,$v->event_id,$v->talk_title,trim($iv));
-			}
-			*/
-			
-			$tdata[$v->ID]=array(
-				'talk_title'=> $v->talk_title,
-				'event_id'	=> $v->event_id,
-				'speaker'	=> $v->speaker,
-				'codes'		=> $codes
-			);
-			$ids[]=$v->ID; 
-		}
-
-		// escape all uids
-		foreach ($ids as &$uid) {
-			$uid = $this->db->escape($uid);
-		}
-
-		// Now find the users that are in the user_admin take
-		// and try to match them up...
-		$uids=implode(',',$ids);
-		if(empty($uids)){ return array(); }
-
-		$sql=sprintf('
+		
+		$sql=sprintf("
 			select
-				ua.uid,
-				ua.rid,
-				ua.rtype,
-				ua.ID,
-				ua.rcode,
-				u.email
+				ts.speaker_id,
+				u.username,
+				u.full_name,
+				t.ID talk_id,
+				ts.speaker_name
 			from
-				user_admin ua,
-				user u
+				talks t,
+				user u,
+				talk_speaker ts
 			where
-				ua.uid=u.ID and 
-				ua.rid in (%s)
-		',$uids);
-		$q=$this->db->query($sql);
-		$ret=$q->result();
-		foreach($ret as $k=>$v){ 
-			$ret[$k]->tdata=$tdata[$v->rid];
+				ts.talk_id = t.ID and
+				t.event_id = %s and
+				u.ID = ts.speaker_id
+		",$eid);
+		$query		= $this->db->query($sql);
+		$claims 	= $query->result();
+		
+		$claimedTalks = array();
+		foreach($claims as $claim){
+			$claimedTalks[$claim->talk_id][$claim->speaker_id]=$claim;
 		}
-
+		
 		// This gives us a return array of all of the claimed talks
 		// for the this event
-		return $ret;
+		return $claimedTalks;
 	}
 	function getEventFeedback($eid, $order_by = NULL){
 		// handle the ordering
@@ -490,13 +534,27 @@ SQL
 		$q=$this->db->query($sql);
 		return $q->result();
 	}
+	
+	/**
+	 * Find the currently open calls for papers on events
+	 */
+	public function getCurrentCfp()
+	{
+        $where = 'event_cfp_start <= ' . mktime(0,0,0, date('m'), date('d'), date('Y')) . ' AND '
+            . 'event_cfp_end >= ' . mktime(0,0,0, date('m'), date('d'), date('Y'));
+        $order_by = "events.event_cfp_end asc";
+		$result = $this->getEvents($where, $order_by, null);
+        return $result;
+	}
 
 	//----------------------
 	function search($term,$start,$end){
+		$term = mysql_real_escape_string($term);
+		
 		//if we have the dates, limit by them
 		$attend = '(SELECT COUNT(*) FROM user_attend WHERE eid = events.ID AND uid = ' . $this->db->escape((int)$this->session->userdata('ID')) . ')as user_attending';
 
-		$this->db->select('events.*, COUNT(user_attend.ID) AS num_attend, COUNT(event_comments.ID) AS num_comments, ' . $attend);
+		$this->db->select('events.*, COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments, ' . $attend);
 		$this->db->from('events');
 		$this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
 		$this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');
@@ -504,10 +562,11 @@ SQL
 		if($start>0){ $this->db->where('event_start >=', $start); }
 		if($end>0){ $this->db->where('event_start <=', $end); }
 
-		$this->db->like('event_name',$term);
-		$this->db->or_like('event_desc',$term);
+        $term = '%'.$term.'%';
+        $this->db->where(sprintf('(event_name LIKE %1$s OR event_desc LIKE %1$s)', $this->db->escape($term)));
 		$this->db->limit(10);
 		$this->db->group_by('events.ID');
+        $this->db->order_by('event_start DESC');
 
 		$q=$this->db->get();
 		return $q->result();

@@ -16,8 +16,8 @@
         $ct = 0;
     ?>
     	<tr>
-    		<th colspan="4">
-    			<h4 id="talks"><?php echo date('M d, Y', $talk_section_date); ?></h4>
+    		<th colspan="5">
+    			<h4 id="talks"><?php echo date('d.M.Y', $talk_section_date); ?></h4>
     		</th>
     	</tr>
     	<?php foreach($talk_section_talks as $ik=>$talk): 
@@ -53,25 +53,26 @@
     		</td>
     		<td>
     			<?php
-				$speaker_list=array();
-				foreach($talk->speaker as $sp){
-					if(isset($claims[$sp->talk_id])){
-						foreach($claims[$sp->talk_id] as $c=>$claim){
-							//If it matches exactly or if there's only one claim
-							if(
-								$c==$sp->speaker_name || 
-								(count($claims[$sp->talk_id])==1 && count($talk->speaker)==1) && 
-								$claim['rcode']!='pending'
-							){
-								$speaker_list[]='<a href="/user/view/'.$claim['uid'].'">'.$sp->speaker_name.'</a>';
-							}elseif(count($talk->speaker)>1){ $speaker_list[]=$sp->speaker_name; }
-						}
-					}else{ $speaker_list[]=$sp->speaker_name; }
+				$speaker_list = array();
+				foreach($talk->speaker as $speaker){
+					if(isset($claimed[$talk->ID][$speaker->speaker_id])){
+						$claim_data = $claimed[$talk->ID][$speaker->speaker_id];
+						$speaker_list[]='<a href="/user/view/'.$claim_data->speaker_id.'">'.$claim_data->full_name.'</a>';
+					}else{
+						$speaker_list[]=$speaker->speaker_name; 
+					}
+					
 				}
-				if(empty($speaker_list)){ $speaker_list[]='None'; }
 				echo implode(', ',$speaker_list);
 				?>
     		</td>
+            <td>
+                <?php if (! empty($talk->slides_link)) : ?>
+                <a class="slides" target="new" href="<?php echo $talk->slides_link ?>">
+                    <img style='vertical-align:text-top;' alt="Slides available" src="/inc/img/icon-slides.gif">
+                </a>
+                <?php endif; ?>
+            </td>
     		<td>
 				<a class="comment-count" href="/talk/view/<?php echo $talk->ID; ?>/#comments"><?php echo $talk->comment_count; ?></a>
 			</td>

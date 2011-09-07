@@ -41,7 +41,9 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
 	<label for="event"></label>
 	<?php
 	echo form_hidden('event_id',$ev->ID);
-	echo '<b><a href="/event/view/'.$ev->ID.'">'.escape($ev->event_name).'</a> ('.date('M d.Y',$ev->event_start).' - '.date('M d.Y',$ev->event_end).$priv.')</b>';
+	echo '<b><a href="/event/view/'.$ev->ID.'">'.escape($ev->event_name).'</a> ('.date('d.M.Y',$ev->event_start);
+    if ($ev->event_start+86399 != $ev->event_end) echo '- '.date('d.M.Y',$ev->event_end);
+    echo ')'.$priv.'</b>';
 	?>
 	<div class="clear"></div>
     </div>
@@ -120,13 +122,14 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
     <div class="row">
 	<label for="session_type">Session Type</label>
 	<?php
-		$stype=null;
+		$stype			= null;
+		$sessionType 	= null;
 		if(isset($this->validation->session_type)){
 			foreach($cat_list as $categoryId => $categoryName){
-				if($categoryName==$this->validation->session_type){ $stype=$categoryId; }
+				if($categoryName==$this->validation->session_type){ $sessionType=$categoryId; }
 			}
-		}else{ $stype=$this->validation->session_type; }
-		echo form_dropdown('session_type',$cat_list,$stype); 
+		}else{ $sessionType=$this->validation->session_type; }
+		echo form_dropdown('session_type',$cat_list,$sessionType); 
 	?>
 	<div class="clear"></div>
     </div>
@@ -146,12 +149,21 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
     <div class="row">
 	<label for="session_lang">Session Language</label>
 	<?php
-		$slang=null;
+		$slang 		= null;
+		$useDefault = (empty($this->validation->session_lang)) ? 'English - US' : null;
+		
 		if(isset($this->validation->session_lang)){
 			foreach($lang_list as $langId => $langText){
-				if(trim($langText)==trim($this->validation->session_lang)){ $slang=$langId; }
+				if($langId == $this->validation->session_lang){ 
+					$slang = $langId; 
+				}else{
+					//see if we should use our default & if this is it
+					if($useDefault != null && $langText == $useDefault){
+						$slang = $langId;
+					}
+				}
 			}
-		}else{ $slang=$this->validation->session_lang; }
+		}else{ $slang = $this->validation->session_lang; }
 		echo form_dropdown('session_lang',$lang_list,$slang); 
 	?>
 	<div class="clear"></div>
@@ -169,6 +181,16 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
 	?>
 	<div class="clear"></div>
     </div>
+
+	<div class="row">
+		<label for="tagged_with">Tagged with</label>
+		<?php echo form_input('tagged_with',$this->validation->tagged_with); ?>
+		<span style="color:#3567AC;font-size:11px">
+			Tags should be in a <b>comma seperated</b> list
+		</span>
+		<div class="clear"></div>
+	</div>
+
     <div class="row">
 	<label for="slides_link">Slides Link</label>
 	<td><?php echo form_input('slides_link',$this->validation->slides_link); ?></td>

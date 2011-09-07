@@ -14,8 +14,8 @@ function apiRequest(rtype,raction,data,callback){
 		processData: false,
 		dataType: 'json',
 		success: function(rdata){
-			//alert(rdata);
-			//obj=eval('('+rdata+')'); //alert(obj.msg);
+			//notifications.alert(rdata);
+			//obj=eval('('+rdata+')'); //notifications.alert(obj.msg);
 			/* rdata should be json now ... parsed properly by the browser */
 			var obj = rdata;
 			
@@ -25,7 +25,7 @@ function apiRequest(rtype,raction,data,callback){
 				document.location.href=targetLocation;
 			}else{
 				//maybe add some callback method here 
-				//alert('normal'); 
+				//notifications.alert('normal'); 
 				if ($.isFunction(callback))
 					callback(obj);
 			}
@@ -43,7 +43,7 @@ function deleteComment(cid,rtype){
 	var obj=new Object();
 	obj.cid=cid;
 	apiRequest(rtype,'deletecomment',obj, function(obj) {
-		alert('Comment removed!'); return false;
+		notifications.alert('Comment removed!'); return false;
 	});
 	return false;
 }
@@ -52,7 +52,7 @@ function commentIsSpam(cid,rtype){
 	obj.cid		= cid;
 	obj.rtype	= rtype;
 	apiRequest('comment','isspam',obj, function(obj) {
-		alert('Thanks for letting us know!'); return false;
+		notifications.alert('Thanks for letting us know!'); return false;
 	});
 	return false;
 }
@@ -168,7 +168,7 @@ function addRole(uid){
 		//we dont need to worry about the talk, just the event
 		apiRequest('user','role',obj, function(obj) { });
 	}
-	alert('Role added!');
+	notifications.alert('Role added!');
 }
 function addEventAdmin(eid){
 	var uname	= $('#add_admin_user').val();
@@ -177,8 +177,10 @@ function addEventAdmin(eid){
 	obj.username=uname;
 	apiRequest('event','addadmin',obj, function(obj) {
 		if(obj.msg=='Success'){
-			$('#evt_admin_list').append('<li><a href="/user/view/'+uname+'">'+uname+'</a>');
-		}else{ alert(obj.msg); }
+			$('#evt_admin_list').append('<li id="evt_admin_'+obj.user.ID+'"><a href="/user/view/'+obj.user.ID+'">'+obj.user.full_name+'</a> [<a onclick="removeEventAdmin('+eid+',\''+obj.user.username+'\','+obj.user.ID+')" href="#">X</a>]');
+		}else{ 
+            notifications.alert(obj.msg); 
+        }
 	});
 }
 function removeEventAdmin(eid,uname,uid){
@@ -193,19 +195,23 @@ function toggleCfpDates(){
 	
 	var sel_fields = new Array(
 		'cfp_start_mo','cfp_start_day','cfp_start_yr',
-		'cfp_end_mo','cfp_end_day','cfp_end_yr'
+		'cfp_end_mo','cfp_end_day','cfp_end_yr','cfp_url'
 	);
-	
+
 	// Get the current status of the first one...
 	stat=$('#cfp_start_mo').attr("disabled");
 	if(stat){
 		$.each(sel_fields,function(){
 			$('#'+this).removeAttr("disabled");
 		});
+        datePickerController.enable('cfp_start_yr');
+        datePickerController.enable('cfp_end_yr');
 	}else{
 		$.each(sel_fields,function(){
 			$('#'+this).attr("disabled","disabled");
 		});
+        datePickerController.disable('cfp_start_yr');
+        datePickerController.disable('cfp_end_yr');
 	}
 }
 function loadUserData(){
@@ -256,7 +262,7 @@ function saveTrackAdd(rid){
 	obj.track_desc	= $("#track_tbl_body textarea[id='desc_"+rid+"']").val();
 	
 	apiRequest('event','addtrack',obj, function(obj) {
-		alert(obj.msg);
+		notifications.alert(obj.msg);
 		if(obj.msg=='Success'){
 			//Switch back to display
 			switchTrackDisplay(rid);
@@ -275,7 +281,7 @@ function saveTrackUpdate(rid){
 	obj.track_color	= $("#track_tbl_body input[id='track_color_"+rid+"']").val();
 	
 	apiRequest('event','updatetrack',obj, function(obj) {
-		alert(obj.msg);
+		notifications.alert(obj.msg);
 		if(obj.msg=='Success'){
 			//Switch back to display
 			switchTrackDisplay(rid);
@@ -291,7 +297,7 @@ function deleteTrack(rid,tid){
 	obj.track_id	= tid;
 	
 	apiRequest('event','deletetrack',obj, function(obj) {
-		alert(obj.msg);
+		notifications.alert(obj.msg);
 		if(obj.msg=='Success'){ $("#track_tbl_body tr[id='rid_"+rid+"']").remove(); }
 	});
 }
@@ -329,6 +335,11 @@ function setStars(rate){
 	$('.rating .star').eq(rate-1).click();
 }
 
+$(document).ready(function(){
+    $('#showLimit').change(function(){
+        $('#userAdminForm').submit();
+    });
+});
 //-------------------------
 
 /*# AVOID COLLISIONS #*/
@@ -521,3 +532,12 @@ function setStars(rate){
 /*# AVOID COLLISIONS #*/
 
 
+function padstring (itemToPad,length,padWith)
+{
+   if (padWith === undefined || padWith.length == 0) {
+       padWith = '0';
+   }
+   padWith = padWith.toString();
+   return (itemToPad.toString().length>length)?itemToPad:(Array(length).join(padWith)+itemToPad).slice(-length);
+
+}

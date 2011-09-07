@@ -120,6 +120,11 @@ a {
 	-webkit-border-radius: 3px;
 }
 
+.btn-small.disabled {
+	background-image: url(/inc/img/bg-btn-disabled.gif);
+	border-color: #888;
+}
+
 .btn-big {
 	color: #fff !important;
 	font-weight: bold;
@@ -775,6 +780,7 @@ a {
 }
 
 /*#ctn .main */form input[type=text],
+/*#ctn .main */form input[type=button],
 /*#ctn .main */form input[type=password] {
 	display: block;
 	width: 98%;
@@ -836,6 +842,11 @@ a {
 #ctn .main form input[type=text],
 #ctn .main form input[type=password] {
 	width: 350px;
+}
+
+#ctn .main form #cinput {
+    width: 100px;
+    display: inline;
 }
 
 #ctn .main form .row-buttons {
@@ -984,6 +995,21 @@ a {
 	color: #fff;
 }
 
+span.ends_soon {
+	color: #F40C00;
+	font-size: 10px;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+.fieldset-toggle {
+	font-size: 11px;
+}
+
+/** Speaker F.A.Q. Bar **/
+.toggle-faq .answer { display: none; padding:5px 0; }
+.toggle-faq li { padding:2px 0; }
+
 /***/
 
 /* jQuery.Rating Plugin CSS - http://www.fyneworks.com/jquery/star-rating/ */
@@ -1000,3 +1026,8 @@ div.star_readonly a,div.star_readonly a:hover{cursor:default !important}
 /* Partial Star CSS */
 div.star{background:transparent!important;overflow:hidden!important}
 /* END jQuery.Rating Plugin CSS */
+
+/** Site Alerts */
+#ui-dialog-title-jQueryUImessageBox {color: #F90;}
+#jQueryUImessageBox.ui-dialog-content { text-align: center; margin-top: 10px; }
+#ui-dialog-title-claim-dialog  {color: #F90;}

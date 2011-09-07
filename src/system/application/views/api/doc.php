@@ -7,6 +7,9 @@ b.req_name { font-size: 12px; }
 
 <h1 style="margin-top:0px;margin-bottom:2px;color:#B86F09"><?php echo $this->config->item('site_name'); ?> API</h1>
 
+<p><b>There is a new API under development.  <a href="/api/v2docs">click here</a> to find out more about the replacement RESTful API.  Both APIs are currently supported</b></p>
+
+
 <p>
 The <?php echo $this->config->item('site_name'); ?> API allows for the fetching and updating of information in the service's database. You can use both XML and JSON messaging to communicate with it. Here's an XML-based example structure each request should follow:
 </p>
@@ -253,6 +256,7 @@ Below are the request types that you can make to the API including input and out
 	<ul>
 		<li>event_id: integer, id of the event to add the comment to
 		<li>comment: string, comments to submit
+        <li>source: string, optional source application of comment (defaults to: api)
 	</ul>
 <b class="req_title">Output:</b>
 	<ul>
@@ -430,6 +434,7 @@ results are returned in date order with newest first.<br/>
 		<li>rating: integer, rating to give the talk (range of 1-5)
 		<li>comment: string, comments to submit
 		<li>private: integer, whether to make the comment private or not
+        <li>source: string, optional source application of comment (defaults to: api)
 	</ul>
 <b class="req_title">Output:</b>
 	<ul>

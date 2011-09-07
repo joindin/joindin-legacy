@@ -1,5 +1,4 @@
-
-<?php echo form_open('event/claims'); ?>
+<?php echo form_open('event/claims'.(isset($id) ? "/$id" : "")); ?>
 <div class="box">
 	<div class="row">
 	<table cellpadding="0" cellspacing="0" border="0" id="claims_table" width="100%">

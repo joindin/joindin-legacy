@@ -7,9 +7,10 @@ $title = menu_pagetitle();
 $title[] = $this->config->item('site_name');
 ?>
 	<title><?php echo implode(' - ', $title); ?></title>
-
-	<link media="all" rel="stylesheet" type="text/css" href="/inc/css/jquery-ui/theme/ui.all.css"/>
 	<link media="all" rel="stylesheet" type="text/css" href="/inc/css/site.css"/>
+	<link media="all" rel="stylesheet" type="text/css" href="/inc/css/jquery-ui/jquery-ui-1.7.3.custom.css"/>
+	<link media="all" rel="stylesheet" type="text/css" href="/inc/css/jquery-ui/theme/ui.all.css"/>
+
 	
 	
 	<?php if($css){ ?>
@@ -21,6 +22,7 @@ $title[] = $this->config->item('site_name');
 	<script type="text/javascript" src="/inc/js/jquery.pause.js"></script>
 	<script type="text/javascript" src="/inc/js/jquery-ui.js"></script>
 	<script type="text/javascript" src="/inc/js/site.js"></script>
+    <script type="text/javascript" src="/inc/js/notifications.js"></script>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 	<?php
 	if(!empty($feedurl)){
@@ -146,6 +148,10 @@ $title[] = $this->config->item('site_name');
 						</p>
             		</div>
             	</div>
+				<div class="box" align="center">
+					<a href="http://www.combell.com/en" title="Cloud hosting Combell"><img src="/inc/img/LOGO-COMBELL.png" border="0" style="padding-bottom:5px" alt="Combell"></a><br/>
+					<a href="http://www.combell.com/en/servers/cloud-server" title="Cloud servers & cloud hosting">Cloud server</a> <a href="http://www.combell.com/en" title="Hosting & webhosting">hosting</a> by Combell
+				</div>
             	<?php endif; ?>
             	<div class="box">
                 	<h4>Submit your event</h4>
@@ -180,12 +186,17 @@ $title[] = $this->config->item('site_name');
         	<a href="/about/contact">Contact</a>
     	</div>
     	<div class="grid_6 rgt">
-    		&copy; <?php echo $this->config->item('site_name'); ?> <?php echo date('Y')?>
+    		<a href="http://www.combell.com/en/servers/cloud-server" title="Cloud servers & cloud hosting">Cloud server</a> <a href="http://www.combell.com/en" title="Hosting & webhosting">hosting</a> by Combell <a href="http://www.combell.com/en" title="Cloud hosting Combell"><img src="/inc/img/LOGO-COMBELL_small.gif" border="0" style="vertical-align:text-bottom;" alt="Combell"/></a> 
+		&nbsp;&nbsp;&nbsp;&nbsp;
+&copy; <?php echo $this->config->item('site_name'); ?> <?php echo date('Y')?>
     	</div>
     	<div class="clear"></div>
 	</div>
 </div>
 
+<div id="jQueryUImessageBox" style="display:none">
+</div>
+    
 <script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
 document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));

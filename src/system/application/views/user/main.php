@@ -1,26 +1,12 @@
 <?php
-$this->load->view('user/_nav_sidebar');
+$this->load->view('user/_nav_sidebar',array('pending_events'=>$pending_events,
+                                            'event_claims'=>$event_claims));
 
 ob_start();
 ?>
 <?php if (!empty($this->validation->error_string)): ?>
 	<?php $this->load->view('msg_error', array('msg' => $this->validation->error_string)); ?>
 <?php endif; ?>
-<?php
-		
-		echo form_open('user/main');
-		echo form_input(array('name' => 'talk_code', 'style' => 'width:95%'));
-		echo form_submit(array('name' => 'sub', 'class' => 'btn'), 'Submit');
-		echo form_close();
-		?>
-		<p>
-		Enter your talk code above to claim your talk and have access to private comments from visitors. <a href="/about/contact">Contact Us</a> to have the code for your talk sent via email.
-		</p>
-
-<?php
-menu_sidebar('Claim a talk', ob_get_clean());
-
-?>
 <div class="menu">
 	<ul>
 		<li class="active"><a href="/user/main">Dashboard</a>
@@ -43,12 +29,11 @@ if (!empty($msg)):
 <?php endif; ?>
 
 <?php if($gravatar): ?>
-	<?php echo str_replace('/>',' style="margin-bottom:5px"/>',$gravatar).'<br/>'; ?>
-	<a href="/user/refresh_gravatar" class="btn-small">refresh image</a><br/><br/>
+	<img src="<?php echo $gravatar; ?>" style="margin-bottom:5px" height="80" width="80" /><br/>
 <?php endif; ?>
 
 <div class="box">
-    <h2>MyTalks</h2>
+    <h2>My Talks</h2>
 <?php if (count($talks) == 0): ?>
 	<p>No talks so far</p>
 <?php else: ?>

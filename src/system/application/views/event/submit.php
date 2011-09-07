@@ -12,10 +12,18 @@ menu_pagetitle('Submit an event');
     
     <?php if (!empty($this->validation->error_string)): ?>
             <?php $this->load->view('msg_error', array('msg' => $this->validation->error_string)); ?>
-    <?php endif; ?>
-    
+    <?php endif; ?>    
 
 	<h2>General</h2>
+	
+	<?php if($is_site_admin): ?>
+	<div class="row">
+		<label for="spam_byass">Bypass Spam Filter</label>
+		<?php echo form_checkbox('bypass_spam_filter',1); ?> Check to bypass spam filtering
+		<div class="clear"></div>
+	</div>
+	<?php endif; ?>
+	
     <div class="row">
     	<label for="event_title">Event Title</label>
     	<?php echo form_input(array('name' => 'event_title', 'id' => 'event_title'), $this->validation->event_title); ?>
@@ -41,7 +49,7 @@ menu_pagetitle('Submit an event');
 					<input type="text" name="addr" id="addr" value="<?php echo $this->validation->addr; ?>" />
 				</td>
 				<td>
-					<button type="button" onclick="addr_search();">Search</button>
+					<input type="button" onclick="addr_search();" value="Search" />
 				</td>
 			</tr>
 		</table>
@@ -124,7 +132,7 @@ menu_pagetitle('Submit an event');
 							map.fitBounds(results[0].geometry.viewport);
 							placeMarker(results[0].geometry.location);
 						} else {
-							alert("Geocode was not successful for the following reason: " + status);
+							notifications.alert("Geocode was not successful for the following reason: " + status);
 						}
 					});
 				}
@@ -182,6 +190,7 @@ menu_pagetitle('Submit an event');
 		echo form_dropdown('start_mo',$start_mo,$this->validation->start_mo);
 		echo form_dropdown('start_day',$start_day,$this->validation->start_day);
 		echo form_dropdown('start_yr',$start_yr,$this->validation->start_yr);
+        echo form_datepicker('start_day', 'start_mo', 'start_yr');
 		?>
  	<div class="clear"></div>
     </div>
@@ -199,6 +208,7 @@ menu_pagetitle('Submit an event');
 		echo form_dropdown('end_mo',$start_mo,$this->validation->end_mo);
 		echo form_dropdown('end_day',$start_day,$this->validation->end_day);
 		echo form_dropdown('end_yr',$start_yr,$this->validation->end_yr);
+        echo form_datepicker('end_day', 'end_mo', 'end_yr');
 		?>
 	 <div class="clear"></div>
     </div>
@@ -240,6 +250,7 @@ menu_pagetitle('Submit an event');
 		echo form_dropdown('cfp_start_mo',$cfp_start_mo,$this->validation->cfp_start_mo,'id="cfp_start_mo" '.$js);
 		echo form_dropdown('cfp_start_day',$cfp_start_day,$this->validation->cfp_start_day,'id="cfp_start_day" '.$js);
 		echo form_dropdown('cfp_start_yr',$cfp_start_yr,$this->validation->cfp_start_yr,'id="cfp_start_yr" '.$js);
+        echo form_datepicker('cfp_start_day', 'cfp_start_mo', 'cfp_start_yr');
 		?>
 	 <div class="clear"></div>
     </div>
@@ -257,6 +268,7 @@ menu_pagetitle('Submit an event');
 		echo form_dropdown('cfp_end_mo',$cfp_end_mo,$this->validation->cfp_end_mo,'id="cfp_end_mo" '.$js);
 		echo form_dropdown('cfp_end_day',$cfp_end_day,$this->validation->cfp_end_day,'id="cfp_end_day" '.$js);
 		echo form_dropdown('cfp_end_yr',$cfp_end_yr,$this->validation->cfp_end_yr,'id="cfp_end_yr" '.$js);
+        echo form_datepicker('cfp_end_day', 'cfp_end_mo', 'cfp_end_yr');
 		?>
 	 <div class="clear"></div>
     </div>
@@ -278,6 +290,17 @@ menu_pagetitle('Submit an event');
 	    ?>
         <div class="clear"></div>
     </div>
+
+
+    <div class="row">
+        <label for="cinput">Spambot check</label>
+        <span>
+          <?php echo form_input(array('name' => 'cinput', 'id' => 'cinput'), ""); ?>
+          = <b><?php echo $captcha['text']; ?></b>
+        </span>
+        <div class="clear"></div>
+    </div>
+
 	<div class="row row-buttons">
     	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Submit event'); ?>
     </div>
