@@ -243,20 +243,24 @@ class User_model extends Model {
 		return $q->result();
 	}
 	
-	/**
-	 * Pull a complete list of all users of the system
-	 *
-     * @param int $limit Limit number of users returned
-	 * @return array User details
-	 */
-	function getAllUsers($limit=null){
-		$this->db->order_by('username','asc');
-        if($limit != null){
-            $this->db->limit($limit);
+        /**
+         * Pull a complete list of all users of the system
+         *
+         * @param int $limit Limit number of users returned
+         * @return array User details
+         */
+        function getAllUsers($limit = null)
+        {
+            $this->db->order_by('username', 'asc');
+
+            if ($limit != null) {
+                $this->db->limit($limit);
+            }
+
+            $q = $this->db->get('user');
+
+            return $q->result();
         }
-		$q=$this->db->get('user');
-		return $q->result();
-	}
 	
 	/**
 	 * Find other users of the system that were speakers at events the given user was a speaker at too

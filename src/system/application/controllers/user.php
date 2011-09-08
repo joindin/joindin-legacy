@@ -552,41 +552,48 @@ class User extends Controller
      *
      * @return void
      */
-    function admin($page = null)
+    function admin($page = 1)
     {
         $this->load->library('validation');
+        $this->load->library('pagination');
         $this->load->model('user_model');
 
         $showLimit = $this->input->post('showLimit');
-        $this->validation->showLimit = ($showLimit) ? $showLimit : 10;
+        $showLimit = ($showLimit) ? $showLimit : 10;
+        
+        $this->validation->showLimit = $showLimit;
 
-        $page        = (!$page) ? 1 : $page;
         $rows_in_pg  = $showLimit;
         $offset      = ($page == 1) ? 1 : $page * 10;
-        $all_users   = $this->user_model->getAllUsers($showLimit);
+        $all_users   = $this->user_model->getAllUsers();
         $all_user_ct = count($all_users);
         $page_ct     = ceil($all_user_ct / $rows_in_pg);
         $users       = array_slice($all_users, $offset, $rows_in_pg);
         $msg         = '';
 
-        if($this->input->post('submit')){
+        if ($this->input->post('submit')) {
             // search call
             $users = $this->user_model->search($this->input->post('user_search'));
-            
-        }elseif($this->input->post('um')){
+        } elseif ($this->input->post('um')) {
             // delete user call
             $selectedUsers = $this->input->post('sel');
-            foreach($selectedUsers as $userId){
+            foreach($selectedUsers as $userId) {
                 $this->user_model->deleteUser($userId);
             }
+
             $msg = count($selectedUsers).' users deleted';
         }
+
+        $this->pagination->initialize(array(
+            'base_url' => $config['base_url'] . '/user/admin/',
+            'total_rows' => $page_ct,
+            'per_page' => $showLimit,
+        )); 
 
         $arr = array(
             'users'         => $users,
             'all_user_ct'   => $all_user_ct,
-            'page_ct'       => $page_ct,
-            'page'          => $page,
+            'paging'        => $this->pagination->create_links(),
             'msg'           => $msg
         );
 
