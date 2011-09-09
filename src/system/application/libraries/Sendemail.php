@@ -28,7 +28,7 @@ class SendEmail {
 		}
 
 		foreach($to as $email){
-			mail($email,$subj,$msg,implode("\r\n",$headers));
+			mail($email,$subj,$msg,implode("\r\n",$headers), '-f'.$from);
 		}
 	}
 	//-----------------------
