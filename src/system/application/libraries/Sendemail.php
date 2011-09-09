@@ -20,6 +20,7 @@ class SendEmail {
 		$to 	= ($this->_config->item('debug_email')) ? array($this->_config->item('debug_email')) : $to;
 
 		$headers = array();
+        $headers[] = 'From: ' . $from;
 		if(!empty($extra_headers)){
 			foreach($extra_headers as $header){
 				$headers[]=$header;
