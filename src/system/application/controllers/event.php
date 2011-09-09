@@ -1267,7 +1267,7 @@ class Event extends Controller
         if(!$this->user_model->isAuth()){
             $arr['msg'] = sprintf('
                 <b>Note</b>: you must be logged in to submit an event!<br/><br/>
-                If you do not have an account, you can <a href=="/user/register">sign up here</a>.
+                If you do not have an account, you can <a href="/user/register">sign up here</a>.
             ');
         }
 
