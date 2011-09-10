@@ -101,6 +101,7 @@ class Talks_model extends Model {
 	
 	//---------------
 	public function getTalks($tid=null,$latest=false){
+		$this->load->library("statistic", array("tid" => $tid));
 		$this->load->helper("events");
 		$this->load->helper("talk");
 		if($tid){
@@ -201,11 +202,15 @@ class Talks_model extends Model {
 			$q=$this->db->query($sql);
 		}
 		$res = $q->result();
-		
 		$CI=&get_instance();
 		$CI->load->model('talk_speaker_model','tsm');
+
 		foreach($res as $k=>$talk){
 			$res[$k]->speaker=$CI->tsm->getTalkSpeakers($talk->ID);
+			if ($tid) {
+				$res[$k]->q3 = $this->statistic->quantile(0.75);
+				$res[$k]->q1 = $this->statistic->quantile(0.25);
+			}
 		}
 
 		return $res;
