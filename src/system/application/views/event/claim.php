@@ -64,26 +64,3 @@ claim the session. You can then accept/deny based on any match between them.
 	</div>
 </div>
 <?php echo form_close(); ?>
-
-<script type="text/javascript">
-
-$("input[name^='claim']").click(function(){
-	console.log('test: '+this.id+' '+this.value);
-	
-	var idParts 		= this.id.split('-');
-	var clickedRadio 	= this;
-	var clickedValue	= this.value;
-	var matchId 		= idParts[0]+'-'+idParts[1];
-
-	(clickedValue=='approve') ? alt = 'deny' : alt = 'approve';
-	$("input[id^='"+matchId+"'][id$='"+alt+"']").each(function(){
-		// see if the current selection is the opposite of the clickedRadio
-		if(this.id != matchId+'-'+idParts[2]+'-'+alt){
-			$(this).attr('checked',true);
-		}
-	});
-	return true;
-
-});
-
-</script>
