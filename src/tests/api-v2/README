@@ -1,0 +1,51 @@
+joind.in API v2 unit testing instructions
+=========================================
+
+1. PHPUnit
+----------
+Install PHPUnit as per tests/README
+
+2. Setting up a test database
+-----------------------------
+In the file src/system/application/config/database.php you need to provide
+a database configuration specifically for testing api-v2 so we don't conflict
+with anything.
+
+It is important the the key in $db is 'apiv2test'
+
+This is a good template:
+
+$db['apiv2test']['hostname'] = "localhost";
+$db['apiv2test']['username'] = "joindin_apiv2test";
+$db['apiv2test']['password'] = "secret-test-password";
+$db['apiv2test']['database'] = "joindin_apiv2test";
+$db['apiv2test']['dbdriver'] = "mysql";
+$db['apiv2test']['dbprefix'] = "";
+$db['apiv2test']['pconnect'] = true;
+$db['apiv2test']['db_debug'] = true;
+$db['apiv2test']['cache_on'] = false;
+$db['apiv2test']['cachedir'] = "";
+$db['apiv2test']['char_set'] = "utf8";
+$db['apiv2test']['dbcollat'] = "utf8_general_ci";
+
+
+Make sure your mysql server has a joindin_apiv2test database and that the user 
+joindin_apiv2test has the correct privileges for creating, dropping, reading 
+and writing to this database.
+
+3. Setup database
+-----------------
+You must have set up your test database with a clean database including the
+seed data. The script tests/api-v2/scripts/reset_apiv2test_db.php will do this 
+for you:
+
+$ php reset_apiv2test_db.php
+
+4. Running the tests
+--------------------
+Go to the directory /src/tests/api-v2 and issue the following command:
+
+$ phpunit
+
+This should run api-v2 unit tests cases and if all goes well, no errors or
+failures will be shown.
