@@ -90,6 +90,7 @@ class Main extends Controller
         $this->template->write_view('content', 'main/index', $arr, true);
         $this->template->render();
     }
+
 }
 
 ?>
