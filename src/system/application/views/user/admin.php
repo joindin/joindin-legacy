@@ -18,34 +18,9 @@ echo form_submit('sub','Search');
 //echo form_close();
 ?>
 
-<b>Pages:</b>
-<?php
-$links = array();
-// show first
-$links[] = '<a href="/user/admin/1">1</a>...';
+<b>Paging:</b>
+<?php echo $paging; ?>
 
-for($i=3;$i>0;$i--){
-    $p = $page-$i;
-    if($p>1){
-        $links[] = '<a href="/user/admin/'.$p.'">'.$p.'</a>';
-    }
-}
-
-// show current and three around it
-$links[] = '<a style="font-weight:bold;" href="/user/admin/'.$page.'">'.$page.'</a>';
-
-for($i=3;$i>0;$i--){
-    $p = $page+$i;
-    if($p<$page_ct){
-        $links[] = '<a href="/user/admin/'.$p.'">'.$p.'</a>';
-    }
-}
-
-// show last
-$links[] = '...<a href="/user/admin/'.$page_ct.'">'.$page_ct.'</a>';
-
-echo '['.implode(', ',$links).']<br/>';
-?>
 <br/>
 <?php
 if (empty($msg)) {
