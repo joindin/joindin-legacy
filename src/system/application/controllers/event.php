@@ -291,7 +291,7 @@ class Event extends Controller
         $this->load->library('validation');
         $this->load->library('timezone');
         $this->load->model('event_model');
-		$this->load->model('tags_events_model','tagsEvents');
+        $this->load->model('tags_events_model','tagsEvents');
 
         $config = array(
           'upload_path'   => $_SERVER['DOCUMENT_ROOT'] . '/inc/img/event_icons',
@@ -311,8 +311,8 @@ class Event extends Controller
             'start_mo'       => 'callback_start_mo_check',
             'end_mo'         => 'callback_end_mo_check',
             'event_stub'     => 'callback_stub_check',
-			'cfp_end_mo'	 => 'callback_cfp_end_mo_check',
-			'cfp_start_mo'	 => 'callback_cfp_start_mo_check',
+            'cfp_end_mo'	 => 'callback_cfp_end_mo_check',
+            'cfp_start_mo'	 => 'callback_cfp_start_mo_check',
             'cfp_url'        => 'callback_cfp_url_check',
             'tagged'         => 'callback_tagged_check'
         );
@@ -337,20 +337,20 @@ class Event extends Controller
             'event_private'  => 'Private Event',
             'event_stub'     => 'Event Stub',
             'addr'           => 'Google address',
-			'cfp_start_mo'	 => 'Event Call for Papers Start Date',
-			'cfp_start_day'	 => 'Event Call for Papers Start Date',
-			'cfp_start_yr'	 => 'Event Call for Papers Start Date',
-			'cfp_end_mo'	 => 'Event Call for Papers End Date',
-			'cfp_end_day'	 => 'Event Call for Papers End Date',
-			'cfp_end_yr'	 => 'Event Call for Papers End Date',
+            'cfp_start_mo'   => 'Event Call for Papers Start Date',
+            'cfp_start_day'  => 'Event Call for Papers Start Date',
+            'cfp_start_yr'   => 'Event Call for Papers Start Date',
+            'cfp_end_mo'     => 'Event Call for Papers End Date',
+            'cfp_end_day'    => 'Event Call for Papers End Date',
+            'cfp_end_yr'     => 'Event Call for Papers End Date',
             'cfp_url'        => 'Event Call for Papers URL',
-			'tagged'	 => 'Tagged With'
+            'tagged'         => 'Tagged With'
         );
         $this->validation->set_fields($fields);
 
         $event_detail = array();
-        $min_start_yr = date('Y');
-        $min_end_yr   = date('Y');
+        $min_start_yr = '2008';
+        $min_end_yr   = '2008';
 
         if ($this->validation->run() == false) {
             if ($id) {
@@ -363,9 +363,9 @@ class Event extends Controller
                     $min_end_yr = date('Y', $event_detail[0]->event_end);
                 }
 
-				$this->validation->event_cfp_start 	= $event_detail[0]->event_cfp_start;
-				$this->validation->event_cfp_end 	= $event_detail[0]->event_cfp_end;
-				$this->validation->event_cfp_url 	= $event_detail[0]->event_cfp_url;
+                $this->validation->event_cfp_start = $event_detail[0]->event_cfp_start;
+                $this->validation->event_cfp_end   = $event_detail[0]->event_cfp_end;
+                $this->validation->event_cfp_url   = $event_detail[0]->event_cfp_url;
 
                 foreach ($event_detail[0] as $k => $v) {
                     if ($k == 'event_start') {
@@ -417,34 +417,40 @@ class Event extends Controller
                     }
                 }
                 $this->validation->event_private = $event_detail[0]->private;
-				$this->validation->cfp_checked = ($event_detail[0]->event_cfp_start!=null && $event_detail[0]->event_cfp_end!=null) ? true : false;
-				
-				if($this->input->post('is_cfp')==null && $id == null){
-					$this->validation->event_cfp_start 	= time();
-					$this->validation->event_cfp_end 	= time();
-					
-				}elseif($this->input->post('is_cfp')=='1'){
-					$this->validation->cfp_checked 		= true;
-					$this->validation->event_cfp_end 	= mktime(
-						0,0,0,
-						$this->input->post('cfp_end_mo'),
-						$this->input->post('cfp_end_day'),
-						$this->input->post('cfp_end_yr')
-					);
-					$this->validation->event_cfp_start 	= mktime(
-						0,0,0,
-						$this->input->post('cfp_start_mo'),
-						$this->input->post('cfp_start_day'),
-						$this->input->post('cfp_start_yr')
-					);
-				}
-	    }
+                $this->validation->cfp_checked =
+                        ($event_detail[0]->event_cfp_start != null
+                            && $event_detail[0]->event_cfp_end != null) ? true : false;
+
+                if ($this->input->post('is_cfp') == null && $id == null) {
+
+                    $this->validation->event_cfp_start = time();
+                    $this->validation->event_cfp_end   = time();
+
+                } elseif ($this->input->post('is_cfp') == '1') {
+
+                    $this->validation->cfp_checked   = true;
+                    $this->validation->event_cfp_end = mktime(
+                            0,0,0,
+                            $this->input->post('cfp_end_mo'),
+                            $this->input->post('cfp_end_day'),
+                            $this->input->post('cfp_end_yr')
+                    );
+                    $this->validation->event_cfp_start = mktime(
+                            0,0,0,
+                            $this->input->post('cfp_start_mo'),
+                            $this->input->post('cfp_start_day'),
+                            $this->input->post('cfp_start_yr')
+                    );
+
+                }
+            }
 
             // this section only needed for edit, not add
             if($id) {
                 // be sure that the image for the event actually exists
                 $eventIconPath = $_SERVER['DOCUMENT_ROOT'] . '/inc/img/event_icons/'.$event_detail[0]->event_icon;
-                if(!is_file($eventIconPath)){
+
+                if (!is_file($eventIconPath)) {
                     $event_detail[0]->event_icon = 'none.gif';
                 }
 
@@ -520,36 +526,37 @@ class Event extends Controller
                 'event_stub'     => $this->input->post('event_stub'),
                 'event_contact_name'  => $this->input->post('event_contact_name'),
                 'event_contact_email' => $this->input->post('event_contact_email'),
-				'event_cfp_url'	 => $this->input->post('cfp_url')
+                'event_cfp_url'	      => $this->input->post('cfp_url')
             );
-		
-			$is_cfp = $this->input->post('is_cfp');
-			if($is_cfp){
-				$arr['event_cfp_start']	= mktime(
-					0,0,0,
-					$this->input->post('cfp_start_mo'),
-					$this->input->post('cfp_start_day'),
-					$this->input->post('cfp_start_yr')
-				);
-				$arr['event_cfp_end']	= mktime(
-					0,0,0,
-					$this->input->post('cfp_end_mo'),
-					$this->input->post('cfp_end_day'),
-					$this->input->post('cfp_end_yr')
-				);
-				$this->validation->cfp_checked		= true;
-				$this->validation->event_cfp_end 	= $arr['event_cfp_end'];
-				$this->validation->event_cfp_start 	= $arr['event_cfp_start'];
-				$this->validation->event_cfp_url 	= $this->input->post('cfp_url');
-			}else{
-				// it's empty, remove any values
-				$arr['event_cfp_start'] = null;
-				$arr['event_cfp_end']	= null;
-				$arr['event_cfp_url']	= null;
-			}
+
+            $is_cfp = $this->input->post('is_cfp');
+            if ($is_cfp) {
+
+                $arr['event_cfp_start'] = mktime(
+                        0,0,0,
+                        $this->input->post('cfp_start_mo'),
+                        $this->input->post('cfp_start_day'),
+                        $this->input->post('cfp_start_yr')
+                );
+                $arr['event_cfp_end'] = mktime(
+                        0,0,0,
+                        $this->input->post('cfp_end_mo'),
+                        $this->input->post('cfp_end_day'),
+                        $this->input->post('cfp_end_yr')
+                );
+                $this->validation->cfp_checked     = true;
+                $this->validation->event_cfp_end   = $arr['event_cfp_end'];
+                $this->validation->event_cfp_start = $arr['event_cfp_start'];
+                $this->validation->event_cfp_url   = $this->input->post('cfp_url');
+            } else {
+                // it's empty, remove any values
+                $arr['event_cfp_start'] = null;
+                $arr['event_cfp_end']	= null;
+                $arr['event_cfp_url']	= null;
+            }
 
             if ($this->upload->do_upload('event_icon')) {
-                $updata            = $this->upload->data();
+                $updata = $this->upload->data();
                 $arr['event_icon'] = $updata['file_name'];
             }
 
@@ -563,43 +570,43 @@ class Event extends Controller
                 $id = $this->db->insert_id();
             }
 
-			// see if we have tags
+            // see if we have tags
             //------------------------
-			$tags 		= explode(',', $this->input->post('tagged'));
-			$tagList 	= '';
+            $tags    = explode(',', $this->input->post('tagged'));
+            $tagList = '';
             $currentTags = $this->tagsEvents->getTags($id);
 
             // parse them into an array
             $ctags = array();
-            foreach($currentTags as $ctag){
+            foreach ($currentTags as $ctag) {
                 $ctags[$ctag->tag_value] = $ctag;
             }
 
-			foreach($tags as $tag){
+            foreach ($tags as $tag) {
                 $tag = trim($tag);
 
                 // if it already exists, remove it from our array
-                if(array_key_exists($tag,$ctags)){
+                if (array_key_exists($tag,$ctags)) {
                     unset($ctags[$tag]);
                 }
 
                 $this->tagsEvents->addTag($id,$tag);
-				$tagList[] = $tag;
-			}
+                $tagList[] = $tag;
+            }
+
             // see if we have any left overs
             $this->tagsEvents->removeUnusedTags($id,$ctags);
 
-			$this->validation->tagged = implode(array_unique($tagList), ', ');
+            $this->validation->tagged = implode(array_unique($tagList), ', ');
             //------------------------
 
-			if(!$is_cfp){
-				$this->validation->event_cfp_start 	= time();
-				$this->validation->event_cfp_end 	= time();
-			}
-			
+            if (!$is_cfp) {
+                    $this->validation->event_cfp_start 	= time();
+                    $this->validation->event_cfp_end 	= time();
+            }
+
             $arr = array(
-                'msg'          => 'Data saved! <a href="/event/view/' . $id .
-                    '">View event</a>',
+                'msg' => 'Data saved! <a href="/event/view/' . $id . '">View event</a>',
                 'min_start_yr' => $min_start_yr,
                 'min_end_yr'   => $min_end_yr,
                 'detail'       => $event_detail
