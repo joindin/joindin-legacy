@@ -946,10 +946,12 @@ class Event extends Controller
 		// Requirements for prompting for event comments
 		// - logged in
 		// - attending
-		// - last day
-		// - haven't lets feedback yet already
+		// - either last day of event, or no later than 3 months from last day
+		// - haven't left feedback yet already
 		
-		if($is_auth && $chk_attend && time() > $last_day)
+                $feedback_deadline = strtotime('+3 month', $last_day);
+                
+		if($is_auth && $chk_attend && ( time() > $last_day && time() < $feedback_deadline))
 		{
 			// Check to see if they have left feedback yet.
 			$has_commented_event = $this->event_model->hasUserCommentedEvent($id, $arr['user_id']);

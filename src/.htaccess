@@ -4,7 +4,7 @@
 
 	# Environment variable to enable or disable the display of errors.
 	# It is commented to allow Virtual Hosts to determine this variable.
-    # SetEnv JOINDIN_DEBUG off
+     SetEnv JOINDIN_DEBUG on
 
 	RewriteCond %{HTTP_HOST} ^www\.(.*) [NC]
     RewriteRule ^(.*)$ http://%1/$1 [R=301,L]
