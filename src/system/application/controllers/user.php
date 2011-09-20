@@ -557,8 +557,8 @@ class User extends Controller
         $this->load->library('validation');
         $this->load->model('user_model');
 
-        $showLimit = $this->input->post('showLimit');
-        $this->validation->showLimit = ($showLimit) ? $showLimit : 10;
+        $showLimit = $this->input->post('showLimit') ?: 10;
+        $this->validation->showLimit = $showLimit;
 
         $page        = (!$page) ? 1 : $page;
         $rows_in_pg  = $showLimit;
@@ -569,7 +569,10 @@ class User extends Controller
         $users       = array_slice($all_users, $offset, $rows_in_pg);
         $msg         = '';
 
-        if($this->input->post('submit')){
+        $fields = array('user_search' => 'Search Term');
+        $this->validation->set_fields($fields);
+
+        if($this->input->post('sub')){
             // search call
             $users = $this->user_model->search($this->input->post('user_search'));
             

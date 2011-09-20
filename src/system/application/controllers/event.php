@@ -298,7 +298,8 @@ class Event extends Controller
           'allowed_types' => 'gif|jpg|png',
           'max_size'      => '100',
           'max_width'     => '90',
-          'max_heigth'    => '90'
+          'max_height'    => '90',
+          'max_filename'  => '23'
         );
         $this->load->library('upload', $config);
 
