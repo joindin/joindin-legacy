@@ -2078,7 +2078,7 @@ class Event extends Controller
                 return false;
             }
 
-            if (!preg_match('/^[A-Z0-9-_]$/i', $str)) {
+            if (!preg_match('/^[A-Z0-9-_]*$/i', $str)) {
                 $this->validation->set_message(
                     'stub_check',
                     'Event stubs may only contain letters, numbers, dashes and underscores.'
