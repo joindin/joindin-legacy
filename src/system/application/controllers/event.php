@@ -298,7 +298,8 @@ class Event extends Controller
           'allowed_types' => 'gif|jpg|png',
           'max_size'      => '100',
           'max_width'     => '90',
-          'max_heigth'    => '90'
+          'max_height'    => '90',
+          'max_filename'  => '23'
         );
         $this->load->library('upload', $config);
 
@@ -439,44 +440,47 @@ class Event extends Controller
 				}
 	    }
 
-			// be sure that the image for the event actually exists
-			$eventIconPath = $_SERVER['DOCUMENT_ROOT'] . '/inc/img/event_icons/'.$event_detail[0]->event_icon;
-			if(!is_file($eventIconPath)){
-				$event_detail[0]->event_icon = 'none.gif';
-			}
+            // this section only needed for edit, not add
+            if($id) {
+                // be sure that the image for the event actually exists
+                $eventIconPath = $_SERVER['DOCUMENT_ROOT'] . '/inc/img/event_icons/'.$event_detail[0]->event_icon;
+                if(!is_file($eventIconPath)){
+                    $event_detail[0]->event_icon = 'none.gif';
+                }
 
-			// Get Current Tags
-            $currentTags = $this->tagsEvents->getTags($id);
-            $ctags = array();
-            foreach($currentTags as $tag) {
-                $ctags[] = $tag->tag_value;
-            }
+                // Get Current Tags
+                $currentTags = $this->tagsEvents->getTags($id);
+                $ctags = array();
+                foreach($currentTags as $tag) {
+                    $ctags[] = $tag->tag_value;
+                }
 
-            // Get our submitted tags
-			$tags = $this->input->post('tagged') ? $this->input->post('tagged') : $ctags;
+                // Get our submitted tags
+                $tags = $this->input->post('tagged') ? $this->input->post('tagged') : $ctags;
 
-            // If tags is a string format it to an array
-            if (is_string($tags)) {
-                if ($tags != '' && strpos($tags, ',') === false) {
-                    $tagList[] = trim($tags);
+                // If tags is a string format it to an array
+                if (is_string($tags)) {
+                    if ($tags != '' && strpos($tags, ',') === false) {
+                        $tagList[] = trim($tags);
+                    } else {
+                        $tagList = (strpos($tags, ',')) ? explode(',', $tags) : array();
+                    }
                 } else {
-                    $tagList = (strpos($tags, ',')) ? explode(',', $tags) : array();
+                    $tagList = $tags;
                 }
-            } else {
-                $tagList = $tags;
-            }
 
-            // Remove any duplicate tags
-            if (count($tagList) > 1) {
-                function trim_tags(&$tag) {
-                    $tag = trim($tag);
+                // Remove any duplicate tags
+                if (count($tagList) > 1) {
+                    function trim_tags(&$tag) {
+                        $tag = trim($tag);
+                    }
+                    array_walk($tagList,'trim_tags');
+                    $tagList = array_unique($tagList);
                 }
-                array_walk($tagList,'trim_tags');
-                $tagList = array_unique($tagList);
-            }
 
-            // Convert array to string
-            $this->validation->tagged = (count($tagList) > 0) ? implode(', ', $tagList) : '';
+                // Convert array to string
+                $this->validation->tagged = (count($tagList) > 0) ? implode(', ', $tagList) : '';
+            }
 
             $arr = array(
                 'detail'       => $event_detail,
@@ -549,11 +553,21 @@ class Event extends Controller
                 $arr['event_icon'] = $updata['file_name'];
             }
 
+            // edit
+            if ($id) {
+                $this->db->where('id', $this->edit_id);
+                $this->db->update('events', $arr);
+                $event_detail = $this->event_model->getEventDetail($id);
+            } else {
+                $this->db->insert('events', $arr);
+                $id = $this->db->insert_id();
+            }
+
 			// see if we have tags
             //------------------------
 			$tags 		= explode(',', $this->input->post('tagged'));
 			$tagList 	= '';
-            $currentTags= $this->tagsEvents->getTags($id);
+            $currentTags = $this->tagsEvents->getTags($id);
 
             // parse them into an array
             $ctags = array();
@@ -577,16 +591,6 @@ class Event extends Controller
 
 			$this->validation->tagged = implode(array_unique($tagList), ', ');
             //------------------------
-
-            // edit
-            if ($id) {
-                $this->db->where('id', $this->edit_id);
-                $this->db->update('events', $arr);
-                $event_detail = $this->event_model->getEventDetail($id);
-            } else {
-                $this->db->insert('events', $arr);
-                $id = $this->db->insert_id();
-            }
 
 			if(!$is_cfp){
 				$this->validation->event_cfp_start 	= time();
@@ -1213,6 +1217,8 @@ class Event extends Controller
                     $this->input->post('event_contact_name') . "\n\n";
                 $msg .= 'Event Contact Email: ' .
                     $this->input->post('event_contact_email') . "\n\n";
+                $msg .= 'View Pending Submissions: ' . $this->config->site_url()
+                    . 'event/pending' . "\n\n";
                 $msg .= 'Spam check: ' . ($is_spam == 'false')
                     ? 'not spam' : 'spam';
 
@@ -1230,7 +1236,7 @@ class Event extends Controller
 						for the event) will receive an email letting you know
 						it\'s been accepted.<br/>
 						<br/>
-						We\'ll get back with you soon!
+						We\'ll get back to you soon!
 					</span>'
                 );
 
@@ -1262,7 +1268,7 @@ class Event extends Controller
         if(!$this->user_model->isAuth()){
             $arr['msg'] = sprintf('
                 <b>Note</b>: you must be logged in to submit an event!<br/><br/>
-                If you do not have an account, you can <a href=="/user/register">sign up here</a>.
+                If you do not have an account, you can <a href="/user/register">sign up here</a>.
             ');
         }
 
