@@ -52,6 +52,7 @@ class TalkMapper extends ApiMapper {
             foreach($results as $key => $row) {
                 // add speakers
                 $list[$key]['speakers'] = $this->getSpeakers($row['ID']);
+                $list[$key]['tracks'] = $this->getTracks($row['ID']);
                 $list[$key]['uri'] = 'http://' . $host . '/v2/talks/' . $row['ID'];
                 $list[$key]['verbose_uri'] = 'http://' . $host . '/v2/talks/' . $row['ID'] . '?verbose=yes';
                 $list[$key]['website_uri'] = 'http://joind.in/talk/view/' . $row['ID'];
@@ -100,7 +101,7 @@ class TalkMapper extends ApiMapper {
 
     }
 
-    public function getSpeakers($talk_id) {
+    protected function getSpeakers($talk_id) {
         $host = $this->_request->host;
         $speaker_sql = 'select ts.*, user.full_name from talk_speaker ts '
             . 'left join user on user.ID = ts.speaker_id '
@@ -119,6 +120,24 @@ class TalkMapper extends ApiMapper {
                    $entry['speaker_name'] = $person['speaker_name'];
                }
                $retval[] = $entry;
+           }
+        }
+        return $retval;
+    }
+
+    protected function getTracks($talk_id) {
+        $host = $this->_request->host;
+        $track_sql = 'select et.track_name '
+            . 'from talk_track tt '
+            . 'inner join event_track et on et.ID = tt.track_id '
+            . 'where tt.talk_id = :talk_id';
+        $track_stmt = $this->_db->prepare($track_sql);
+        $track_stmt->execute(array("talk_id" => $talk_id));
+        $tracks = $track_stmt->fetchAll(PDO::FETCH_ASSOC);
+        $retval = array();
+        if(is_array($tracks)) {
+           foreach($tracks as $track) {
+               $retval[] = $track['track_name'];
            }
         }
         return $retval;
