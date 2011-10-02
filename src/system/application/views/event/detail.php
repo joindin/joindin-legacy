@@ -36,10 +36,13 @@ $data=array(
 	'tab'			=> $tab
 );
 
+
 if($prompt_event_comment)
 {
+		
 	$this->load->view('event/_event_prompt_comment', array());
 }
+
 
 $this->load->view('event/modules/_event_tabs',$data);
 ?>
