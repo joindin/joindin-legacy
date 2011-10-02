@@ -137,7 +137,7 @@ class TalkMapper extends ApiMapper {
         $retval = array();
         if(is_array($tracks)) {
            foreach($tracks as $track) {
-               $retval[] = $track['track_name'];
+               $retval[] = $track;
            }
         }
         return $retval;
