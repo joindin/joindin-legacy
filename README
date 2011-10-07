@@ -1,11 +1,32 @@
 
 Joind.in (http://joind.in)
-#####################
+##########################
 
 This is the source code for the Joind.in website - a resource set up to allow
 events to get real-time feedback from those attending. It also gives speakers a 
 way to claim and track their presentations over time.
 
+
+Quickstart
+##########
+1. Create a vhost entry for the site.
+   The docroot should be /src.
+2. Create, initialise, patch, and populate the database.
+   > ./rebuild-db.php
+3. Create directories for user-added content.
+   > mkdir src/system/cache/ctokens && chown apache:apache src/system/cache/ctokens
+   > mkdir src/inc/img/user_gravatar && chown apache:apache src/inc/img/user_gravatar
+4. Create database and config entries (based on the .dist templates):
+   > cp src/system/application/config/database.php.dist src/system/application/config/database.php
+   > cp src/system/application/config/config.php.dist   src/system/application/config/config.php
+   Edit these files as appropriate!
+5. Enjoy the site!
+   The default password for users is "password".
+
+
+Detailed instructions
+#####################
+   
 There's a few SQL files that are included with the source to help you get things 
 up and running. The first four will bring your database to the most current, up-to-date
 status and ALL should be run for a new install:
@@ -89,6 +110,7 @@ tests.
   > linux: extension=http.so
   > windows: extension=http.dll
 
+
 Debugging
 #############
 By default the application is in production mode. This primarily means that
@@ -102,6 +124,7 @@ errors produced by the site.
 The JOINDIN_DEBUG environment variable is controlled from the accompanying
 .htaccess file.
 
+
 Tests
 #############
 
@@ -112,10 +135,12 @@ root directory simply run "ant phpunit" to run the tests.
 Note 1: The API tests actually call the service externally and rely on pecl_http
 being installed to run.
 
+
 Issues
 #############
 
 The issue tracker can be found here: http://joindin.jira.com/
+
 
 RewriteEngine
 ###################
