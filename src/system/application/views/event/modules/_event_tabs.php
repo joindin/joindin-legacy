@@ -42,7 +42,7 @@ $tabs->addTab($commentsTab);
 if(isset($evt_sessions) && count($evt_sessions)>0):
     $relatedTab = new joindIn_Tab(
         'evt_related',
-        'Event Related '.count($evt_sessions).')',
+        'Event related ('.count($evt_sessions).')',
         $this->load->view('event/modules/_event_tab_evtrelated', array(), true)
     );
     $tabs->addTab($relatedTab);
