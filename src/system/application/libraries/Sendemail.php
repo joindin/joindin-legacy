@@ -42,7 +42,7 @@ class SendEmail {
 You recently laid claim to a talk at the \"%s\" event on %s - \"%s\"
 Your claim has been approved. This talk will now be listed under your account.
 
-%s/talk/view/%s
+%stalk/view/%s
 
 Thanks,
 The %s Crew
