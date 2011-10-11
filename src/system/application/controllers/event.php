@@ -298,7 +298,8 @@ class Event extends Controller
           'allowed_types' => 'gif|jpg|png',
           'max_size'      => '100',
           'max_width'     => '90',
-          'max_heigth'    => '90'
+          'max_height'    => '90',
+          'max_filename'  => '23'
         );
         $this->load->library('upload', $config);
 
@@ -312,8 +313,8 @@ class Event extends Controller
             'event_stub'     => 'callback_stub_check',
 			'cfp_end_mo'	 => 'callback_cfp_end_mo_check',
 			'cfp_start_mo'	 => 'callback_cfp_start_mo_check',
-            		'cfp_url'        => 'callback_cfp_url_check',
-            		'tagged'         => 'callback_tagged_check'
+            'cfp_url'        => 'callback_cfp_url_check',
+            'tagged'         => 'callback_tagged_check'
         );
         $this->validation->set_rules($rules);
 
@@ -342,7 +343,7 @@ class Event extends Controller
 			'cfp_end_mo'	 => 'Event Call for Papers End Date',
 			'cfp_end_day'	 => 'Event Call for Papers End Date',
 			'cfp_end_yr'	 => 'Event Call for Papers End Date',
-            		'cfp_url'        => 'Event Call for Papers URL',
+            'cfp_url'        => 'Event Call for Papers URL',
 			'tagged'	 => 'Tagged With'
         );
         $this->validation->set_fields($fields);
@@ -439,23 +440,47 @@ class Event extends Controller
 				}
 	    }
 
-			// be sure that the image for the event actually exists
-			$eventIconPath = $_SERVER['DOCUMENT_ROOT'] . '/inc/img/event_icons/'.$event_detail[0]->event_icon;
-			if(!is_file($eventIconPath)){
-				$event_detail[0]->event_icon = 'none.gif';
-			}
+            // this section only needed for edit, not add
+            if($id) {
+                // be sure that the image for the event actually exists
+                $eventIconPath = $_SERVER['DOCUMENT_ROOT'] . '/inc/img/event_icons/'.$event_detail[0]->event_icon;
+                if(!is_file($eventIconPath)){
+                    $event_detail[0]->event_icon = 'none.gif';
+                }
 
-			// get our event's tags
-			$tags = $this->tagsEvents->getTags($id);
-			$this->validation->tagged = null;
-			if (!empty($tags)) {
-				$tagList = '';
-				foreach($tags as $tag){
-					$tagList .= $tag->tag_value.', ';
-				}
-				$this->validation->tagged = substr($tagList,0,strlen($tagList)-2);
-			}
-			
+                // Get Current Tags
+                $currentTags = $this->tagsEvents->getTags($id);
+                $ctags = array();
+                foreach($currentTags as $tag) {
+                    $ctags[] = $tag->tag_value;
+                }
+
+                // Get our submitted tags
+                $tags = $this->input->post('tagged') ? $this->input->post('tagged') : $ctags;
+
+                // If tags is a string format it to an array
+                if (is_string($tags)) {
+                    if ($tags != '' && strpos($tags, ',') === false) {
+                        $tagList[] = trim($tags);
+                    } else {
+                        $tagList = (strpos($tags, ',')) ? explode(',', $tags) : array();
+                    }
+                } else {
+                    $tagList = $tags;
+                }
+
+                // Remove any duplicate tags
+                if (count($tagList) > 1) {
+                    function trim_tags(&$tag) {
+                        $tag = trim($tag);
+                    }
+                    array_walk($tagList,'trim_tags');
+                    $tagList = array_unique($tagList);
+                }
+
+                // Convert array to string
+                $this->validation->tagged = (count($tagList) > 0) ? implode(', ', $tagList) : '';
+            }
 
             $arr = array(
                 'detail'       => $event_detail,
@@ -528,35 +553,6 @@ class Event extends Controller
                 $arr['event_icon'] = $updata['file_name'];
             }
 
-			// see if we have tags
-            //------------------------
-			$tags 		= $this->input->post('tagged');
-			$tagList 	= '';
-            $currentTags= $this->tagsEvents->getTags($id);
-
-            // parse them into an array
-            $ctags = array();
-            foreach($currentTags as $ctag){
-                $ctags[$ctag->tag_value] = $ctag;
-            }
-            
-			foreach(array_slice(explode(',',$tags),0,5) as $tag){
-                $tag = trim($tag);
-
-                // if it already exists, remove it from our array
-                if(array_key_exists($tag,$ctags)){
-                    unset($ctags[$tag]);
-                }
-
-                $this->tagsEvents->addTag($id,$tag);
-				$tagList .= $tag.', ';
-			}
-            // see if we have any left overs
-            $this->tagsEvents->removeUnusedTags($id,$ctags);
-
-			$this->validation->tagged = substr($tagList,0,strlen($tagList)-1);
-            //------------------------
-
             // edit
             if ($id) {
                 $this->db->where('id', $this->edit_id);
@@ -566,6 +562,35 @@ class Event extends Controller
                 $this->db->insert('events', $arr);
                 $id = $this->db->insert_id();
             }
+
+			// see if we have tags
+            //------------------------
+			$tags 		= explode(',', $this->input->post('tagged'));
+			$tagList 	= '';
+            $currentTags = $this->tagsEvents->getTags($id);
+
+            // parse them into an array
+            $ctags = array();
+            foreach($currentTags as $ctag){
+                $ctags[$ctag->tag_value] = $ctag;
+            }
+
+			foreach($tags as $tag){
+                $tag = trim($tag);
+
+                // if it already exists, remove it from our array
+                if(array_key_exists($tag,$ctags)){
+                    unset($ctags[$tag]);
+                }
+
+                $this->tagsEvents->addTag($id,$tag);
+				$tagList[] = $tag;
+			}
+            // see if we have any left overs
+            $this->tagsEvents->removeUnusedTags($id,$ctags);
+
+			$this->validation->tagged = implode(array_unique($tagList), ', ');
+            //------------------------
 
 			if(!$is_cfp){
 				$this->validation->event_cfp_start 	= time();
@@ -629,6 +654,7 @@ class Event extends Controller
         $this->load->library('spam');
         $this->load->library('timezone');
         $this->load->library('gravatar');
+        $this->load->plugin('captcha');
         $this->load->model('event_model');
         $this->load->model('event_comments_model');
         $this->load->model('user_attend_model', 'uam');
@@ -765,7 +791,8 @@ class Event extends Controller
             'tracks'         => $this->etm->getEventTracks($id),
             'talk_stats'     => $talk_stats,
 			'tab'			 => '',
-            'tags'           => $this->eventTags->getTags($id)
+            'tags'           => $this->eventTags->getTags($id),
+			'prompt_event_comment'	 => false
             //'started'=>$this->tz->hasEvtStarted($id),
         );
 
@@ -784,10 +811,12 @@ class Event extends Controller
 
         //our event comment form
         $rules = array(
-            'event_comment' => 'required'
+            'event_comment' => 'required',
+            'cinput'        => 'required|callback_cinput_check'
         );
         $fields = array(
-            'event_comment' => 'Event Comment'
+            'event_comment' => 'Event Comment',
+            'cinput'        => 'Captcha'
         );
         $this->validation->set_fields($fields);
         $this->validation->set_rules($rules);
@@ -903,6 +932,42 @@ class Event extends Controller
                 )
             );
         }
+		
+		// Get the start of the last day for prompting attending users
+		// for event level feedback
+		$last_day = strtotime(date('Y-m-d', $events[0]->event_end));
+		
+		// For single day events, we don't want to prompt for a comment
+		// until the event is over
+		if($events[0]->event_start + (60 * 60 * 25) >= $last_day)
+		{
+			$last_day = $events[0]->event_end;
+		}
+		
+		// Requirements for prompting for event comments
+		// - logged in
+		// - attending
+		// - either last day of event, or no later than 3 months from last day
+		// - haven't left feedback yet already
+		
+                $feedback_deadline = strtotime('+3 month', $last_day);
+                
+		if($is_auth && $chk_attend && ( time() > $last_day && time() < $feedback_deadline))
+		{
+			// Check to see if they have left feedback yet.
+			$has_commented_event = $this->event_model->hasUserCommentedEvent($id, $arr['user_id']);
+			if(!$has_commented_event)
+			{
+				$this->template->write_view(
+                'sidebar3', 'event/_event_prompt_comment_sidebar',
+					array()
+				);
+				$arr['prompt_event_comment'] = true;
+			}
+		}
+
+        $arr['captcha']=create_captcha();
+        $this->session->set_userdata(array('cinput'=>$arr['captcha']['value']));
 
         $this->template->write_view('content', 'event/detail', $arr, true);
 		// only show the contact button for logged in users
@@ -1157,6 +1222,8 @@ class Event extends Controller
                     $this->input->post('event_contact_name') . "\n\n";
                 $msg .= 'Event Contact Email: ' .
                     $this->input->post('event_contact_email') . "\n\n";
+                $msg .= 'View Pending Submissions: ' . $this->config->site_url()
+                    . 'event/pending' . "\n\n";
                 $msg .= 'Spam check: ' . ($is_spam == 'false')
                     ? 'not spam' : 'spam';
 
@@ -1166,30 +1233,27 @@ class Event extends Controller
                     mail($user->email, $subj, $msg, $from);
                 }
                 $arr['msg'] = sprintf(
-                    '<span style="font-size:16px; font-weight:bold;">
+                    '<span style="font-size:15px; font-weight:bold;">
                         Event successfully submitted!
                     </span><br/>
-					<span style="font-size:14px;">
+					<span style="font-size:13px;">
 						Once your event is approved, you (or the contact person
 						for the event) will receive an email letting you know
 						it\'s been accepted.<br/>
 						<br/>
-						We\'ll get back with you soon!
+						We\'ll get back to you soon!
 					</span>'
                 );
 
                 //put it into the database
                 $this->db->insert('events', $sub_arr);
 
-                // Check to see if we need to make them an admin of this event
-                if ($this->input->post('is_admin')
-                    && ($this->input->post('is_admin') == 1)
-                ) {
-                    $uid  = $this->session->userdata('ID');
-                    $rid  = $this->db->insert_id();
-                    $type = 'event';
-                    $this->user_admin_model->addPerm($uid, $rid, $type);
-                }
+                // They're logged in, so set them as an event admin
+                $this->user_admin_model->addPerm(
+                    $this->session->userdata('ID'),
+                    $this->db->insert_id(),
+                    'event'
+                );
             } else {
                 $arr['msg'] = 'There was an error submitting your event! ' .
                     'Please <a href="' .
@@ -1204,6 +1268,15 @@ class Event extends Controller
 
         $arr['captcha']=create_captcha();
         $this->session->set_userdata(array('cinput'=>$arr['captcha']['value']));
+
+        // user must be logged in to submit
+        if(!$this->user_model->isAuth()){
+            $arr['msg'] = sprintf('
+                <b>Note</b>: you must be logged in to submit an event!<br/><br/>
+                If you do not have an account, you can <a href="/user/register">sign up here</a>.
+            ');
+        }
+
 
         $this->template->write_view('content', 'event/submit', $arr);
         $this->template->write_view('sidebar2', 'event/_submit-sidebar', array());
@@ -1384,7 +1457,7 @@ class Event extends Controller
                         $email = $speaker->email;
                         $talk_title = $talk->talk_title;
                         $evt_name = $talk->event_name;
-						$talk_id = $talk->id;
+						$talk_id = $talk->ID;
                         $this->sendemail->claimSuccess($email,$talk_title,$talk_id,$evt_name);
                         $result = true;
                     }
@@ -2004,6 +2077,15 @@ class Event extends Controller
                 $this->validation->set_message(
                     'stub_check',
                     'Please choose another stub - this one\'s already in use!'
+                );
+
+                return false;
+            }
+
+            if (!preg_match('/^[A-Z0-9-_]*$/i', $str)) {
+                $this->validation->set_message(
+                    'stub_check',
+                    'Event stubs may only contain letters, numbers, dashes and underscores.'
                 );
 
                 return false;

@@ -14,8 +14,8 @@
 	must be in CSV format, which can be exported from Microsoft Excel.  The first row of the file may include the following
 	columns, bold type indicates a required field:<ul>
 		<li><b>Title</b></li>
-		<li><b>Description</b><li>
-		<li><b>Speaker</b> (separate multiple speakers with commas)<li>
+		<li><b>Description</b></li>
+		<li><b>Speaker</b> (separate multiple speakers with commas)</li>
 		<li><b>Date</b> (in the format YYYY-MM-DD, your spreadsheet program should have an option for formatting dates this way)</li>
 		<li><b>Time</b> (in the format HH:MM)</li>
         <li>Language (Two-character language code.  Currently supported: fr, us, de, it, sp, ge, uk, porb.  Default is uk)</li>

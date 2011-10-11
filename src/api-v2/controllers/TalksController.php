@@ -16,23 +16,24 @@ class TalksController extends ApiController {
         // verbosity
         $verbose = $this->getVerbosity($request);
 
-        /*
         // pagination settings
         $start = $this->getStart($request);
         $resultsperpage = $this->getResultsPerPage($request);
-        */
 
         if(isset($request->url_elements[4])) {
             // sub elements
+            if($request->url_elements[4] == "comments") {
+                $comment_mapper = new TalkCommentMapper($db, $request);
+                $list = $comment_mapper->getCommentsByTalkId($talk_id, $resultsperpage, $start, $verbose);
+            }
         } else {
             if($talk_id) {
-                $list = TalkModel::getTalkById($db, $talk_id, $verbose);
+                $mapper = new TalkMapper($db, $request);
+                $list = $mapper->getTalkById($talk_id, $verbose);
             } else {
                 // listing makes no sense
                 return false;
             }
-            // add links
-            $list = TalkModel::addHypermedia($list, $request);
         }
 
         return $list;

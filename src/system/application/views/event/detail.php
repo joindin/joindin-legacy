@@ -35,6 +35,15 @@ $data=array(
 	'event_url'		=> '/event/view/'. $event_detail->ID.'/',
 	'tab'			=> $tab
 );
+
+
+if($prompt_event_comment)
+{
+		
+	$this->load->view('event/_event_prompt_comment', array());
+}
+
+
 $this->load->view('event/modules/_event_tabs',$data);
 ?>
 
@@ -45,12 +54,17 @@ $this->load->view('event/modules/_event_tabs',$data);
 		<?php if (count($talks) == 0): ?>
 			$('a[rel=comments]').click();
             <?php endif; ?>
-		if (window.location.hash == '#comment-form') {
+		if (window.location.hash == '#comment-form' || window.location.hash == '#comments') {
 			window.location.hash = '#';
             $('a[rel=comments]').click();
 		}
 	});
 })(jQuery);
+
+function eventOpenTab(_rel)
+{
+	$('#event-tabs a[rel=' + _rel + ']').click();
+}
 
 JI_event.init();
 </script>

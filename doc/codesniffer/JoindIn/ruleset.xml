@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<ruleset name="JoindIn">
+ <description>The Joind.in coding standard (similar to PEAR).</description>
+
+ <!--
+    Include all sniffs in the PEAR standard except these which we override
+    to turn off certain requirements
+ -->
+ <rule ref="PEAR">
+   <exclude name="PEAR.Commenting.FileComment"/>
+   <exclude name="PEAR.Commenting.ClassComment"/>
+ </rule> 
+
+</ruleset>

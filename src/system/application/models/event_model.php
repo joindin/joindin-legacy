@@ -216,7 +216,8 @@ SQL
 		$order_by = NULL;
 
 		if($type == "hot") {
-			$order_by = "(((num_attend + num_comments) * 0.5) - EXP(GREATEST(1,score)/10)) desc";
+            // if you change this, change the API too please
+			$order_by = "(((num_attend + num_comments) * 0.5) - EXP(GREATEST(1,score)/20)) desc";
 		}
 
 		if($type == "upcoming") {
@@ -233,6 +234,14 @@ SQL
 		return $result;
 	}
 
+    /**
+     * Get a current list of events
+     *
+     * @param string $where[optional] Optional "where" clause
+     * @param string $order_by Order by field
+     * @param integer $limit Limit on results
+     * @return array Event details
+     */
 	public function getEvents($where=NULL, $order_by = NULL, $limit = NULL) {
 		$sql = 'SELECT * ,
 		    (select if(event_cfp_start IS NOT NULL AND event_cfp_start > 0 AND '.mktime(0,0,0).' BETWEEN event_cfp_start AND event_cfp_end, 1, 0)) as is_cfp,
@@ -249,6 +258,9 @@ SQL
 		if($where) {
 			$sql .= ' AND (' . $where . ')';
 		}
+
+        // by default, don't show private events
+        $sql.= " AND private!='Y'";
 
 		if($order_by) {
 			$sql .= ' ORDER BY ' . $order_by;
@@ -368,6 +380,25 @@ SQL
 	    ", $this->db->escape($eid));
 	    $q=$this->db->query($sql);
 	    return $q->result();
+	}
+	
+	function hasUserCommentedEvent($eid, $user_id)
+	{
+		$sql=sprintf("
+		SELECT event_id
+		FROM event_comments
+		WHERE event_id = %s
+			AND user_id = %s
+	    ", $this->db->escape($eid), $this->db->escape($user_id));
+	    $q=$this->db->query($sql);
+	    $r = $q->result();
+		
+		if(count($r) > 0)
+		{
+			return true;
+		}
+		
+		return false;
 	}
 	
 	function getEventIdByName($name){

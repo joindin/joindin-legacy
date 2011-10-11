@@ -22,6 +22,8 @@ menu_pagetitle('About');
 <li>There is an IRC channel on irc.freenode.net that you are welcome to join as well #joind.in</li>
 </ul>
 
+<p>For those wishing to integrate with Joind.in, we have both an <a href="/api">API</a>, and some ready-made <a href="/about/widgets">JavaScript widgets</a> that you can simply drop into place on your site - more information can be found on those pages.</p>
+
 <h3 style="color:#5181C1">Get In Touch</h3>
 <p>If you have any comments, questions, feedback or anything else you'd like us to know, then do please <a href="/about/contact">get in touch</a> - we'd be delighted to hear from you!</p>
 
