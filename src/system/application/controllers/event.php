@@ -2024,7 +2024,6 @@ class Event extends Controller
      */
     function cfp_url_check()
     {
-        if ($this->validation-)
         if (! preg_match("|^https?://|", $this->validation->cfp_url)) {
             $this->validation->set_message(
                 'cfp_url_check',
