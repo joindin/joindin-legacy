@@ -58,23 +58,23 @@ $template['active_template'] = 'default';
 
 $default_template='template2';
 if(function_exists('getenv') && $key=strtolower(getenv('USE_KEY'))){
-	$path=APPPATH.'views/custom_templates/'.$key.'/_template_'.$key.'.php';
-	if(is_file($path)){
-		$default_template='custom_templates/'.$key.'/_template_'.$key.'.php';
-	}
+    $path=APPPATH.'views/custom_templates/'.$key.'/_template_'.$key.'.php';
+    if(is_file($path)){
+        $default_template='custom_templates/'.$key.'/_template_'.$key.'.php';
+    }
 }
 
 $template['default']['template'] = $default_template;
 $template['default']['regions'] = array(
-	'header',
-	'css',
-	'content',
-	'footer',
-	'logged',
-	'feedurl',
-	'sidebar2',
-	'sidebar3',
-	'info_block'
+    'header',
+    'css',
+    'content',
+    'footer',
+    'logged',
+    'feedurl',
+    'sidebar2',
+    'sidebar3',
+    'info_block'
 );
 $template['default']['parser'] = 'parser';
 $template['default']['parser_method'] = 'parse';

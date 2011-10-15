@@ -6,7 +6,6 @@
  *
  * @category  Joind.in
  * @package   Helpers
- * @author    Kathryn Reeve <kat@BinaryKitten.me.uk>
  * @copyright 2009 - 2010 Joind.in
  * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
  * @link      http://github.com/joindin/joind.in

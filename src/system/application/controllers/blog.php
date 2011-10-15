@@ -6,8 +6,6 @@
  *
  * @category  Joind.in
  * @package   Controllers
- * @author    Chris Cornutt <chris@joind.in>
- * @author    Mike van Riel <mike.vanriel@naenius.com>
  * @copyright 2009 - 2010 Joind.in
  * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
  * @link      http://github.com/joindin/joind.in
@@ -21,8 +19,6 @@
  *
  * @category  Joind.in
  * @package   Controllers
- * @author    Chris Cornutt <chris@joind.in>
- * @author    Mike van Riel <mike.vanriel@naenius.com>
  * @copyright 2009 - 2010 Joind.in
  * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
  * @link      http://github.com/joindin/joind.in
@@ -199,7 +195,7 @@ class Blog extends Controller
         $this->load->library('spam');
         $this->load->helper('reqkey');
         $this->load->model('blog_posts_model', 'blogPostsModel');
-	$this->load->model('blog_comments_model','blogCommentsModel');
+    $this->load->model('blog_comments_model','blogCommentsModel');
 
         $this->blogPostsModel->updatePostViews($id);
         $reqkey = buildReqKey();
@@ -208,7 +204,7 @@ class Blog extends Controller
             'details'  => $this->blogPostsModel->getPostDetail($id),
             'is_admin' => $this->user_model->isSiteAdmin(),
             'reqkey'   => $reqkey, 'seckey' => buildSecFile($reqkey),
-	    'comments' => $this->blogCommentsModel->getCommentsByPostId($id)
+        'comments' => $this->blogCommentsModel->getCommentsByPostId($id)
         );
         $other_data = array(
             'title' => 'Popular Blog Posts',

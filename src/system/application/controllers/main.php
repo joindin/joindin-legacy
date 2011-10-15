@@ -6,8 +6,6 @@
  *
  * @category  Joind.in
  * @package   Controllers
- * @author    Chris Cornutt <chris@joind.in>
- * @author    Mike van Riel <mike.vanriel@naenius.com>
  * @copyright 2009 - 2010 Joind.in
  * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
  * @link      http://github.com/joindin/joind.in
@@ -21,8 +19,6 @@
  *
  * @category  Joind.in
  * @package   Controllers
- * @author    Chris Cornutt <chris@joind.in>
- * @author    Mike van Riel <mike.vanriel@naenius.com>
  * @copyright 2009 - 2010 Joind.in
  * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
  * @link      http://github.com/joindin/joind.in
@@ -84,9 +80,9 @@ class Main extends Controller
                 : false;
         }
 
-		$events 	= $this->event_model->getCurrentCfp();
-		$this->template->parse_view('sidebar2','event/_event-cfp-sidebar',array('events'=>$events));
-		
+        $events 	= $this->event_model->getCurrentCfp();
+        $this->template->parse_view('sidebar2','event/_event-cfp-sidebar',array('events'=>$events));
+        
         $this->template->write_view('content', 'main/index', $arr, true);
         $this->template->render();
     }
