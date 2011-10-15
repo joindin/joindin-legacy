@@ -1074,6 +1074,7 @@ class Event extends Controller
             'cfp_end_day'         => 'CfP End Day',
             'cfp_end_mo'          => 'CfP End Month',
             'cfp_end_yr'          => 'CfP End Year',
+            'cfp_url'             => 'CfP URL',
             'end_mo'              => 'Event End Month',
             'end_day'             => 'Event End Day',
             'end_yr'              => 'Event End Year',
@@ -1098,6 +1099,7 @@ class Event extends Controller
             'cfp_start_mo'        => 'callback_cfp_start_mo_check',
             'cfp_end_mo'          => 'callback_cfp_end_mo_check',
             'event_stub'          => 'callback_stub_check',
+            'cfp_url'             => 'callback_cfp_url_check',
             'event_desc'          => 'required',
             'cinput'              => 'required|callback_cinput_check'
         );
@@ -1190,6 +1192,7 @@ class Event extends Controller
                         $this->input->post('cfp_end_mo'),
                         $this->input->post('cfp_end_day'), 23, 59, 59
                     );
+                $sub_arr['event_cfp_url'] = $this->input->post('cfp_url');
             }
 
             $is_auth  = $this->user_model->isAuth();
