@@ -32,7 +32,12 @@ class ApiMapper {
             foreach($fields as $key => $value) {
                 // special handling for dates
                 if(substr($key, -5) == '_date' && !empty($row[$value])) {
-                    $entry[$key] = date('c', $row[$value]);
+                    if ($row['event_tz_place'] != '' && $row['event_tz_cont'] != '') {
+                        $tz = $row['event_tz_cont'] . '/' . $row['event_tz_place'];
+                    } else {
+                        $tz = 'UTC';
+                    }
+                    $entry[$key] = Timezone::formattedEventDatetimeFromUnixtime($row[$value], $tz, 'c');
                 } else {
                     $entry[$key] = mb_convert_encoding($row[$value], 'UTF-8');
                 }
