@@ -45,7 +45,7 @@ class Error extends Controller
         $arr = array(
             'msg' => "404 - File not found"
         );
-		header('HTTP/1.1 404 Not Found', true, 404);
+        header('HTTP/1.1 404 Not Found', true, 404);
         $this->template->write_view('content', 'error/404', $arr);
         $this->template->render();
     }

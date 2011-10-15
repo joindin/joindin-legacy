@@ -199,7 +199,7 @@ class Blog extends Controller
         $this->load->library('spam');
         $this->load->helper('reqkey');
         $this->load->model('blog_posts_model', 'blogPostsModel');
-	$this->load->model('blog_comments_model','blogCommentsModel');
+    $this->load->model('blog_comments_model','blogCommentsModel');
 
         $this->blogPostsModel->updatePostViews($id);
         $reqkey = buildReqKey();
@@ -208,7 +208,7 @@ class Blog extends Controller
             'details'  => $this->blogPostsModel->getPostDetail($id),
             'is_admin' => $this->user_model->isSiteAdmin(),
             'reqkey'   => $reqkey, 'seckey' => buildSecFile($reqkey),
-	    'comments' => $this->blogCommentsModel->getCommentsByPostId($id)
+        'comments' => $this->blogCommentsModel->getCommentsByPostId($id)
         );
         $other_data = array(
             'title' => 'Popular Blog Posts',

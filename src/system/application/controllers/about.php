@@ -95,7 +95,7 @@ class About extends Controller
         $rules = array(
             'your_name' => 'required',
             'your_com'  => 'required',
-			'your_email'=> 'required|valid_email',
+            'your_email'=> 'required|valid_email',
             'cinput'    => 'required|callback_cinput_check'
         );
         

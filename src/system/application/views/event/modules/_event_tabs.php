@@ -4,15 +4,15 @@ $cl=array();
 // work through the talks list and split into days
 $by_day=array();
 foreach($talks as $t){
-	$day = strtotime($t->display_date);
-	$by_day[$day][]=$t;
+    $day = strtotime($t->display_date);
+    $by_day[$day][]=$t;
 }
 ksort($by_day);
 $ct=0;
 $tabs = new joindIn_TabContainer();
 $tabs
-	->setBaseUrl($event_url)
-	->setContainerName('event');
+    ->setBaseUrl($event_url)
+    ->setContainerName('event');
 
 $talksTab = new joindIn_Tab('talks', 'Talks ('. count($talks). ')');
 $talksTab

@@ -34,18 +34,18 @@
  */
 class User extends Controller
 {
-	/**
-	 * Contains an array with urls we don't want to forward to after login.
-	 * If a part of the url is in one of these items, it will forward them to
-	 * their main account page.
-	 * 
-	 * @var Array
-	 */
-	private $non_forward_urls = array(
-		'user/login'
-		,'user/forgot'
-	);
-	
+    /**
+     * Contains an array with urls we don't want to forward to after login.
+     * If a part of the url is in one of these items, it will forward them to
+     * their main account page.
+     * 
+     * @var Array
+     */
+    private $non_forward_urls = array(
+        'user/login'
+        ,'user/forgot'
+    );
+    
     /**
      * Constructor, checks whether the user is logged in and passes this to
      * the template.
@@ -126,19 +126,19 @@ class User extends Controller
             $referer = $this->input->server('HTTP_REFERER');
             $to = $this->session->flashdata('url_after_login') ? $this->session->flashdata('url_after_login') : $referer;
             
-			// List different routes we don't want to reroute to
-			$bad_routes = $this->non_forward_urls;
-			
-			foreach($bad_routes as $route)
-			{
-				if(strstr($to, $route))
-				{
-					redirect('user/main');
-				}
-			}
-			
-			// our $to is good, so redirect
-			redirect($to);
+            // List different routes we don't want to reroute to
+            $bad_routes = $this->non_forward_urls;
+            
+            foreach($bad_routes as $route)
+            {
+                if(strstr($to, $route))
+                {
+                    redirect('user/main');
+                }
+            }
+            
+            // our $to is good, so redirect
+            redirect($to);
         }
     }
 
@@ -382,7 +382,7 @@ class User extends Controller
         $this->load->helper('form');
         $this->load->library('validation');
         $this->load->model('talks_model');
-		$this->load->model('event_model');
+        $this->load->model('event_model');
 
         $this->load->library('gravatar');
         $imgStr = $this->gravatar->displayUserImage($this->session->userData('ID'), null, 80);
@@ -396,7 +396,7 @@ class User extends Controller
         $arr['is_admin'] = $this->user_model->isSiteAdmin();
         $arr['gravatar'] = $imgStr;
 
-		$arr['pending_events'] = $this->event_model->getEventDetail(
+        $arr['pending_events'] = $this->event_model->getEventDetail(
             null, null, null, true
         );
 
@@ -436,7 +436,7 @@ class User extends Controller
             redirect();
         }
 
-		$imgStr = $this->gravatar->displayUserImage($uid, $details[0]->email, 80);
+        $imgStr = $this->gravatar->displayUserImage($uid, $details[0]->email, 80);
 
         if (empty($details[0])) {
             redirect();
@@ -478,8 +478,8 @@ class User extends Controller
         );
 
         if(!empty($block['content'])){
-			$this->template->write_view('sidebar2', 'user/_other-speakers', $block);
-		}
+            $this->template->write_view('sidebar2', 'user/_other-speakers', $block);
+        }
         $this->template->write_view('content', 'user/view', $arr);
         $this->template->render();
     }

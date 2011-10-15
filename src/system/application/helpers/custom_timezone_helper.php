@@ -71,15 +71,15 @@ function custom_timezone_menu($name, $valueCont = null, $valuePlace = null)
     $str .= '</select>';
 
     $str .= <<<EOT
-	<script type="text/javascript">
-		 $(document).ready(function() {
-			change_cont_$hname();
-		});
-		function change_cont_$hname() {
-			var cont = document.getElementById("${hname}_cont");
-			var placeSelect = document.getElementById("${hname}_place");
-			placeSelect.options.length = 0;
-			switch(cont.value) {
+    <script type="text/javascript">
+         $(document).ready(function() {
+            change_cont_$hname();
+        });
+        function change_cont_$hname() {
+            var cont = document.getElementById("${hname}_cont");
+            var placeSelect = document.getElementById("${hname}_place");
+            placeSelect.options.length = 0;
+            switch(cont.value) {
 
 EOT;
     foreach ($conts as $cont) {
@@ -98,15 +98,15 @@ EOT;
         $str .= 'break;' . "\n";
     }
     $str .= <<<EOT
-				case "":
-					placeSelect.options[placeSelect.options.length] = new Option("<-- Please choose a continent");
-					break;
-				default:
-					notifications.alert('Unknown continent, please select a valid continent');
-					break;
-			}
-		}
-	</script>
+                case "":
+                    placeSelect.options[placeSelect.options.length] = new Option("<-- Please choose a continent");
+                    break;
+                default:
+                    notifications.alert('Unknown continent, please select a valid continent');
+                    break;
+            }
+        }
+    </script>
 
 EOT;
     $str .= '<br />';
