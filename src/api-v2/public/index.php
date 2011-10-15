@@ -1,6 +1,7 @@
 <?php
 include '../inc/Autoloader.php';
 include '../inc/Request.php';
+include '../inc/Timezone.php';
 
 // Add exception handler
 function handle_exception($e) {
