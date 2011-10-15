@@ -273,6 +273,13 @@ menu_pagetitle('Submit an event');
 	 <div class="clear"></div>
     </div>
 
+    <div class="row">
+        <label for="cfp-url-location">Call for Papers URL Location</label>
+        <?php echo form_input('cfp_url',$this->validation->cfp_url,'id="cfp_url" '.$js); ?>
+        <div class="clear"></div>
+    </div>
+
+
 
 
 

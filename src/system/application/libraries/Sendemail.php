@@ -20,6 +20,7 @@ class SendEmail {
 		$to 	= ($this->_config->item('debug_email')) ? array($this->_config->item('debug_email')) : $to;
 
 		$headers = array();
+        $headers[] = 'From: ' . $from;
 		if(!empty($extra_headers)){
 			foreach($extra_headers as $header){
 				$headers[]=$header;
@@ -27,7 +28,7 @@ class SendEmail {
 		}
 
 		foreach($to as $email){
-			mail($email,$subj,$msg,implode("\r\n",$headers));
+			mail($email,$subj,$msg,implode("\r\n",$headers), '-f'.$from);
 		}
 	}
 	//-----------------------
@@ -41,7 +42,7 @@ class SendEmail {
 You recently laid claim to a talk at the \"%s\" event on %s - \"%s\"
 Your claim has been approved. This talk will now be listed under your account.
 
-%s/talk/view/%s
+%stalk/view/%s
 
 Thanks,
 The %s Crew

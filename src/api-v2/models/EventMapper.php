@@ -278,6 +278,10 @@ class EventMapper extends ApiMapper
                 $list[$key]['talks_uri'] = 'http://' . $host . '/v2/events/' 
                 . $row['ID'] . '/talks';
                 $list[$key]['website_uri'] = 'http://joind.in/event/view/' . $row['ID'];
+                if($verbose) {
+                    $list[$key]['all_talk_comments_uri'] = 'http://' . $host . '/v2/events/' 
+                        . $row['ID'] . '/talk_comments';
+                }
             }
 
             if (count($list) > 1) {

@@ -31,4 +31,14 @@ abstract class ApiController {
     public function getResultsPerPage($request) {
         return (int)$request->parameters['resultsperpage'];
     }
+
+    public function getSort($request) {
+        // unfiltered, you probably want to switch case this
+        if(isset($request->parameters['sort'])) {
+            return $request->parameters['sort'];
+        } else {
+            return false;
+        }
+    }
+    
 }
