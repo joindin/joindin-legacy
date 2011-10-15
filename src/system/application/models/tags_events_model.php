@@ -4,7 +4,6 @@
  * Model for handling the tagging for events
  *
  * @package Joind.in
- * @author Chris Cornutt <ccornutt@phpdeveloper.org>
  */
 class Tags_events_model extends Model
 {

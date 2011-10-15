@@ -4,7 +4,6 @@
  * Model for handling the "tags" table for tagging events and talks
  *
  * @package Joind.in
- * @author Chris Cornutt <ccornutt@phpdeveloper.org>
  */
 class Tags_model extends Model
 {
