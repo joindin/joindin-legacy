@@ -173,7 +173,7 @@ SQL
                 events.event_start,
                 events.event_end,
                 (select l.lang_abbr from lang l where talks.lang=l.ID) lang,
-                (select round(avg(rating)) from talk_comments where talk_id=talks.ID) rank,
+                get_talk_rating(talks.ID) as rank,
                 (select count(rating) from talk_comments where talk_id=talks.ID '.$private.') comment_count,
                 ifnull(categories.cat_title, \'Talk\') tcid
             from
@@ -515,7 +515,7 @@ SQL
                 events.event_tz_cont,
                 events.event_tz_place,
                 (select l.lang_abbr from lang l where talks.lang=l.ID) lang,
-                (select round(avg(rating)) from talk_comments where talk_id=talks.ID) rank,
+                get_talk_rating(talks.ID) rank,
                 (select count(rating) from talk_comments where talk_id=talks.ID) comment_count,
                 ifnull(categories.cat_title, \'Talk\') tcid
             from
