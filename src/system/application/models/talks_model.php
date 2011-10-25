@@ -110,17 +110,6 @@ class Talks_model extends Model {
                 return array();
             }
             
-            // See if we have any comments to exclude
-            $uids=$this->_findExcludeComments($tid);
-            $addl=(!empty($uids)) ? 'and user_id not in ('.implode(',',$uids).')': '';
-            $tc_sql=sprintf('
-                (select
-                round(avg(tc.rating))
-                from
-                talk_comments tc
-                where
-                tc.talk_id=talks.ID %s) as tavg,
-            ',$addl);
             $sql=sprintf('
                 select
                     talks.*,
@@ -140,7 +129,7 @@ class Talks_model extends Model {
                     lang.lang_abbr,
                     lang.id as lang_id,
                     count(talk_comments.ID) as ccount,
-                    %s
+                    get_talk_rating(talks.ID) as tavg,
                     (select 
                         cat.cat_title
                     from 
@@ -159,7 +148,7 @@ class Talks_model extends Model {
                     talks.active=1
                 group by
                     talks.ID
-            ', $tc_sql, $this->db->escape($tid));
+            ', $this->db->escape($tid));
             $q=$this->db->query($sql);
         }else{
             if($latest){ 
@@ -180,11 +169,7 @@ class Talks_model extends Model {
                     lang.lang_name,
                     lang.lang_abbr,
                     count(talk_comments.ID) as ccount,
-                    (select 
-                        round(avg(rating)) 
-                    from 
-                        talk_comments 
-                    where talk_id=talks.ID) as tavg,
+                    get_talk_rating(talks.ID) as tavg,
                     (select max(date_made) from talk_comments where talk_id=talks.ID) last_comment_date
                 from
                     talks
@@ -264,7 +249,7 @@ class Talks_model extends Model {
                 t.talk_title,
                 t.ID,
                 count(tc.ID) as ccount,
-                round(avg(tc.rating)) as tavg,
+                get_talk_rating(t.ID) as tavg,
                 e.ID eid,
                 e.event_name
             from
@@ -304,7 +289,7 @@ class Talks_model extends Model {
               t.talk_title,
               t.date_given,
               count(tc.ID) as ccount,
-              round(avg(tc.rating)) as tavg,
+              get_talk_rating(t.ID) as tavg,
               e.ID eid,
               e.event_name,
               e.event_start
@@ -475,7 +460,7 @@ class Talks_model extends Model {
         $ci->load->model('talk_speaker_model','talkSpeaker');
         $term = mysql_real_escape_string($term);
         
-        $this->db->select('talks.*, count(talk_comments.ID) as ccount, (select round(avg(rating)) from talk_comments where talk_id=talks.ID) as tavg, events.ID eid, events.event_name');
+        $this->db->select('talks.*, count(talk_comments.ID) as ccount, get_talk_rating(talks.ID) as tavg, events.ID eid, events.event_name');
         $this->db->from('talks');
         
         $this->db->join('talk_comments', 'talk_comments.talk_id=talks.ID', 'left');
@@ -500,27 +485,6 @@ class Talks_model extends Model {
     }
     //---------------
     
-    /**
-     * Find the user IDs that have claims on a talk. This lets us know which 
-     * user IDs to exclude from the talk rating averages
-     *
-     * @param integer $tid Talk ID
-     * @return array User IDs
-     */
-    public function _findExcludeComments($tid){
-        $uid	= array();	
-        $query	= $this->db->get_where('talk_speaker',array('talk_id'=>$tid));
-        $speaker_rows = $query->result();
-        
-        if(count($speaker_rows)){
-            foreach($speaker_rows as $speaker){
-                if(!empty($speaker->speaker_id)){
-                    $uid[] = $speaker->speaker_id;
-                }
-            }
-        }
-        return $uid;
-    }
 
 
     /**
