@@ -1,4 +1,6 @@
 <?php
+    $speaker = (isset($claimed[0]->userid) && $claimed[0]->userid != 0 && user_get_id() == $claimed[0]->userid);
+
     if($detail->allow_comments) {
     if (!$auth) {
 ?>
@@ -38,6 +40,7 @@
         'rows'	=> 10
     ));
     ?>
+<?php if (! $speaker) : ?>
     <label class="checkbox">
         <?php echo form_checkbox('private','1'); ?>
         Mark as private?
@@ -49,9 +52,9 @@
     </label>
 <?php } ?>
     <div class="clear"></div>
+<?php endif; ?>
 </div>
-<?php if (isset($claimed[0]->userid) && $claimed[0]->userid != 0 && user_get_id() == $claimed[0]->userid): ?>
-<?php else: ?>
+<?php if (! $speaker): ?>
 <div class="row">
     <label for="rating">Rating</label>
     <div class="rating">
