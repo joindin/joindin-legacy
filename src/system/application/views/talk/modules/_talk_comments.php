@@ -60,10 +60,10 @@ if (empty($comments)) {
             <?php echo auto_p(escape($v->comment)); ?>
         </div>
         <p class="admin">
-            <?php if (user_is_admin() || $v->user_id==$user_id): ?>
+            <?php if ($detail->allow_comments && (user_is_admin() || $v->user_id==$user_id)): ?>
                 <a class="btn-small edit-talk-comment-btn" href="#" id="<?php echo $v->ID; ?>">Edit</a>
             <?php endif; ?>
-            <?php if (user_is_admin()): ?>
+            <?php if (user_is_admin() || user_is_admin_event($detail->eid)): ?>
                 <a class="btn-small" href="#" onClick="delTalkComment(<?php echo $v->ID?>);return false;">Delete</a>
             <?php endif; ?>
             <?php if (
