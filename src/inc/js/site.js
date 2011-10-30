@@ -47,10 +47,11 @@ function deleteComment(cid,rtype){
 	});
 	return false;
 }
-function commentIsSpam(cid,rtype){
+function commentIsSpam(cid,tid,rtype){
 	var obj=new Object();
 	obj.cid		= cid;
 	obj.rtype	= rtype;
+    obj.tid     = tid;
 	apiRequest('comment','isspam',obj, function(obj) {
 		notifications.alert('Thanks for letting us know!'); return false;
 	});
