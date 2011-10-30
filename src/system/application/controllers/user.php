@@ -550,6 +550,11 @@ class User extends Controller
      */
     function admin($page = null)
     {
+        // Only admins are allowed
+        if (!$this->user_model->isSiteAdmin()) {
+            redirect();
+        }
+
         $this->load->library('validation');
         $this->load->model('user_model');
 
