@@ -323,24 +323,25 @@ class Generator {
         echo "INSERT INTO user_attend (uid, eid) VALUES \n";
 
         // Fetch the number of events
-        $events = $this->_cacheFetchTag('users');
+        $events = $this->_cacheFetchTag('events');
         $event_count = count($events);
 
-        $users = $this->_cacheFetchTag('users');
-        $user_count = count($users);
-
-        $j=0;
+        $first = true;
         foreach ($this->_cacheFetchTag('users') as $user) {
-            $attended_events = rand(0, $event_count / 2);
+            // The first user ALWAYS has an event. Otherwise we might end up with a empty
+            // query. This is here to make sure that never can happen.
+            $attended_events = rand($first ? 1 : 0, $event_count / 2);
+
             for ($i=0; $i!=$attended_events; $i++) {
                 $event = $this->_cacheFetchRandom('events');
 
-                // @TODO: make sure we don't have the same UID at an EID
-                printf ("(%d, %d)", $user->id, $event->id);
-                if ($i != $attended_events-1 || $j != $user_count-1) echo ",\n";
-            }
+                if (! $first) echo ",\n";
 
-            $j++;
+                // @TODO: make sure we don't have the same UIDs at an EID
+                printf ("(%d, %d)", $user->id, $event->id);
+
+                $first = false;
+            }
         }
 
         echo ";";
@@ -557,7 +558,7 @@ class Generator {
         for ($i=0, $ret="", $r=rand(1, $max); $i!=$r; $i++) {
             $ret .= $lorum[array_rand($lorum)];
         }
-        return $ret;
+        return trim($ret);
     }
 
 } // End class
