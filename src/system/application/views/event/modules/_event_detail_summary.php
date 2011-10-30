@@ -103,7 +103,7 @@ here's what we need
             <?php 
             // If there's a Call for Papers open for the event, let them know
             if(!empty($event_detail->event_cfp_start) || !empty($event_detail->event_cfp_end)){ 
-            $cfp_status=($event_detail->event_cfp_end>=time() && $event_detail->event_cfp_start<=time()) ? 'Open!' : 'Closed';
+            $cfp_status=($event_detail->event_cfp_end>=time() && $event_detail->event_cfp_start<=mktime(0,0,0)) ? 'Open!' : 'Closed';
             ?>
             <div class="links">
                 <b>Call for Papers Status: <?php echo $cfp_status; ?> </b> 
