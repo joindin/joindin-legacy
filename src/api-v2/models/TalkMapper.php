@@ -85,7 +85,7 @@ class TalkMapper extends ApiMapper {
     public function getBasicSQL() {
         $sql = 'select t.*, l.lang_name, '
             . '(select COUNT(ID) from talk_comments tc where tc.talk_id = t.ID) as comment_count, '
-            . '(select ROUND(AVG(rating)) from talk_comments tc where tc.talk_id = t.ID) as avg_rating, '
+            . '(select get_talk_rating(t.ID)) as avg_rating, '
             . 'CASE 
                 WHEN (((t.date_given - 3600*24) < '.mktime(0,0,0).') and (t.date_given + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
