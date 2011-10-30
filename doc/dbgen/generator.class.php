@@ -45,7 +45,8 @@ class Generator {
         $this->_generateTalks(COUNT_TALKS);
         $this->_generateTalkComments(COUNT_TALK_COMMENTS);        // random comment on random talk
 
-        // Let users attend the events
+        // Connect users to events
+        $this->_attachAdminUsersToEvents();                       // Iterates all events and randomly add admins
         $this->_attendUsersToEvents();                            // Iterates all events and randomly add users
     }
 
@@ -348,6 +349,43 @@ class Generator {
         echo "\n\n";
     }
 
+
+    // Randomly attach user to events as admins
+    protected function _attachAdminUsersToEvents() {
+        echo "TRUNCATE user_admin;\n";
+        echo "INSERT INTO user_admin (rid, uid, rtype, rcode) VALUES \n";
+
+        $first = true;
+        foreach ($this->_cacheFetchTag('events') as $event) {
+            // A single or multi-user event
+            if ($this->_chance(EVENT_ADMIN_SINGLE_USER)) {
+                $admin_count = 1;
+            } else {
+                $admin_count = rand(1, 5);    // Maximum of five. It's hardcoded.
+            }
+
+            $userids = array();
+            for ($i=0; $i!=$admin_count; $i++) {
+                // Make sure we don't add the same user twice
+                do {
+                    $user = $this->_cacheFetchRandom('users');
+                } while (in_array($user->id, $userids));
+                $userids[] = $user->id;
+
+                // Are we a pending event admin or not?
+                $rcode = $this->_chance(EVENT_ADMIN_PENDING) ? "pending" : "";
+
+                if (! $first) echo ",\n";
+                $first = false;
+
+                printf("(%d, %d, 'event', '%s')", $event->id, $user->id, $rcode);
+            }
+        }
+
+        echo ";";
+        echo "\n\n";
+    }
+
     // Generate $count events
     protected function _generateEvents($count) {
         echo "TRUNCATE events;\n";
@@ -563,4 +601,4 @@ class Generator {
 
 } // End class
 
-?>
+ ?>

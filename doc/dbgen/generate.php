@@ -44,6 +44,12 @@
     // Comma separated: 1 day event, 2 day event, 3 day event, 5 day event.
     define("EVENT_DURATION", "50,75,90,100");
 
+    // Percentage the even has a single user
+    define("EVENT_ADMIN_SINGLE_USER", "75");
+
+    // Percentage of the event-admins that are still being claimed
+    define("EVENT_ADMIN_PENDING", 5);
+
     // Does the event have a CFP?
     define("EVENT_HAS_CFP", 50);
 
