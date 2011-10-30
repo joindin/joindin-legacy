@@ -80,7 +80,7 @@ class User_model extends Model {
     function isAdminEvent($eid, $uid=null) {
         if ($this->isAuth()) {
             $uid=$this->session->userdata('ID');
-        }elseif (!$this->isAuth() && $uid) {
+        } elseif (!$this->isAuth() && $uid) {
             $udata=$this->getUser($uid);
             if ($udata) {
                 $uid=$udata[0]->ID;

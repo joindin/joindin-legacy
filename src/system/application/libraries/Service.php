@@ -32,7 +32,7 @@ class Service {
             $xml=$this->parseReqXML($data);
             if (!$xml) { return array('output'=>'msg','data'=>array('msg'=>'Invalid request!')); }
             $rtype	= (string)$xml->action['type'];
-        }elseif (in_array($hdrs['CONTENT-TYPE'], array('text/x-json','text/json','application/json'))) {
+        } elseif (in_array($hdrs['CONTENT-TYPE'], array('text/x-json','text/json','application/json'))) {
             // We're working with json now...
             $xml	= $this->parseReqJson($data);
             if (!$xml) { return array('output'=>'msg','data'=>array('msg'=>'Invalid request!')); }

@@ -232,7 +232,7 @@ You can view the event here: %sevent/view/%s
         foreach($pending_events as $event) {
             if ($event->event_start>time() && $event->event_start<=$one_week) {
                 $event_list['One_Week'][]=$event;
-            }elseif ($event->event_start<=time()) {
+            } elseif ($event->event_start<=time()) {
                 $event_list['Past'][]=$event;
             } else {
                 $event_list['Other'][]=$event;

@@ -1404,7 +1404,7 @@ class Event extends Controller
                         $approved++;
                         $this->_sendClaimSuccessEmail($pendingClaim);
                     }
-                }elseif ($claimStatus=='deny') {
+                } elseif ($claimStatus=='deny') {
                     // delete the claim row
                     $denyCheck = $this->pendingClaimsModel->deleteClaim($claimId);
                     if ($denyCheck) { $denied++; }

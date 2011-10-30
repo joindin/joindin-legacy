@@ -29,7 +29,7 @@ class Getdetail extends BaseWsRequest {
         if ($this->xml->action->rtype=='talk') {
             $this->CI->load->model('talk_comments_model');
             $ret=$this->CI->talk_comments_model->getCommentDetail($id);
-        }elseif ($this->xml->action->rtype=='event') {
+        } elseif ($this->xml->action->rtype=='event') {
             $this->CI->load->model('event_comments_model');
             $ret=$this->CI->event_comments_model->getCommentDetail($id);
         }

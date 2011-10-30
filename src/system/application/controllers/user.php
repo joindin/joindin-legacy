@@ -577,7 +577,7 @@ class User extends Controller
             // search call
             $users = $this->user_model->search($this->input->post('user_search'));
             
-        }elseif ($this->input->post('um')) {
+        } elseif ($this->input->post('um')) {
             // delete user call
             $selectedUsers = $this->input->post('sel');
             foreach($selectedUsers as $userId) {

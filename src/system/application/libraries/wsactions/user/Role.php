@@ -34,11 +34,11 @@ class Role extends BaseWsRequest {
         if ($type=='remove') {
             $aid=$this->xml->action->aid;
             $this->CI->uam->removePerm($aid);
-        }elseif ($type=='addevent') {
+        } elseif ($type=='addevent') {
             $uid=$this->xml->action->uid;
             $rid=$this->xml->action->rid;
             $this->CI->uam->addPerm($uid, $rid,'event');
-        }elseif ($type=='addtalk') {
+        } elseif ($type=='addtalk') {
             $uid=$this->xml->action->uid;
             $rid=$this->xml->action->rid;
             $this->CI->uam->addPerm($uid, $rid,'talk');

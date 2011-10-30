@@ -23,7 +23,7 @@
     if (!isset($user_id)) {
         $link 	= '/user/login';
         $class 	= '';
-    }elseif (count($speakers)==1) {
+    } elseif (count($speakers)==1) {
         $link 	= '/talk/claim/'.$detail->tid.'/'.$speaker->ID;
         $class 	= 'single';
     } else {
