@@ -7,7 +7,7 @@ here's what we need
 
 if ($event_detail->event_cfp_start>=time()) {
     $cfp_status = "pending";
-} elseif ($event_detail->event_cfp_start <= time() && time() <= $event_detail->event_cfp_end) {
+} elseif ($event_detail->event_cfp_start <= time() && mktime(0, 0, 0) <= $event_detail->event_cfp_end) {
     $cfp_status = "open";
 } else {
     $cfp_status = "closed";
