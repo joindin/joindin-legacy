@@ -68,7 +68,7 @@ if (empty($comments)) {
             <?php endif; ?>
             <?php if (
                 (isset($claimed[0]->userid) && $claimed[0]->userid != 0 && isset($currentUserId) && $currentUserId == $claimed[0]->userid) || $admin): ?>
-                <a class="btn-small" href="#" onClick="commentIsSpam(<?php echo $v->ID?>,'talk');return false;">Is Spam</a>
+                <a class="btn-small" href="#" onClick="commentIsSpam(<?php echo $v->ID?>,<?php echo $v->talk_id?>,'talk');return false;">Is Spam</a>
             <?php endif; ?>
         </p>
         <?php if (user_is_admin()): ?>
