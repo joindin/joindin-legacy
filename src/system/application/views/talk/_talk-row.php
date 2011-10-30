@@ -13,7 +13,7 @@
         <?php
         $speaker_list = array();
         if (isset($talk->speaker) && !empty($talk->speaker)) {
-            foreach($talk->speaker as $speaker) {
+            foreach ($talk->speaker as $speaker) {
                 if (isset($speaker->speaker_id)) {
                     // see if we have an override
                     if (isset($override) && array_key_exists($speaker->speaker_id, $override)) {

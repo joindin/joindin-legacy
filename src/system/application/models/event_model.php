@@ -54,7 +54,7 @@ class Event_model extends Model {
      */
     function deleteTalkComments($eid) {
         $talks=$this->getEventTalks($eid);
-        foreach($talks as $k=>$v) {
+        foreach ($talks as $k=>$v) {
             $this->db->where('talk_id', $v->ID);
             $this->db->update('talk_comments', array('active'=>0));
         }
@@ -142,7 +142,7 @@ SQL
 
         // Decorate results with "event is on now" flag
         if (is_array($res)) {
-            foreach($res as &$event) {
+            foreach ($res as &$event) {
                 if (!is_object($event)) {
                     continue;
                 }
@@ -204,7 +204,7 @@ SQL
         
         $CI=&get_instance();
         $CI->load->model('talk_speaker_model','tsm');
-        foreach($res as $k=>$talk) {
+        foreach ($res as $k=>$talk) {
             $res[$k]->speaker=$CI->tsm->getTalkSpeakers($talk->ID);
         }
 
@@ -275,7 +275,7 @@ SQL
 
         $CI=&get_instance();
         $CI->load->model('tags_events_model','eventTags');
-        foreach($result as $index => $event) {
+        foreach ($result as $index => $event) {
             $result[$index]->eventTags = $CI->eventTags->getTags($event->ID);
         }
 
@@ -333,7 +333,7 @@ SQL
 
         $query  = $this->db->query($sql);
         $result = $query->result();
-        foreach($result as $index => $event) {
+        foreach ($result as $index => $event) {
             $result[$index]->eventTags = $CI->eventTags->getTags($event->ID);
         }
         return $result;
@@ -463,7 +463,7 @@ SQL
         $claims 	= $query->result();
         
         $claimedTalks = array();
-        foreach($claims as $claim) {
+        foreach ($claims as $claim) {
             $claimedTalks[$claim->talk_id][$claim->speaker_id]=$claim;
         }
         

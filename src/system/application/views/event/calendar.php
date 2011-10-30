@@ -9,7 +9,7 @@ table.calendar td.calendar-day { height: 35px; }
 <?php echo mycal_get_calendar($year, $month, $day); ?>
 <br/>
 <?php
-foreach($events as $event) {
+foreach ($events as $event) {
     echo '<a style="font-size:14px;font-weight:bold" href="/event/view/'.$event->ID.'">'.$event->event_name.'</a><br/>';
     echo date('d.M.Y', $event->event_start);
     if ($event->event_start+86399 != $event->event_end) {

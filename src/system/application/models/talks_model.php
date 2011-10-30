@@ -48,9 +48,9 @@ class Talks_model extends Model {
         $talks	= $query->result();
 
         //echo '<pre>'; print_r($ret); echo '</pre>';
-        foreach($talks as $k => $talk) {
+        foreach ($talks as $k => $talk) {
             $codes=array(); $speakers=array();
-            foreach(explode(',', $talk->speaker) as $ik=>$iv) {
+            foreach (explode(',', $talk->speaker) as $ik=>$iv) {
                 $codes[]=buildCode($talk->rid, $talk->event_id, $talk->talk_title, trim($iv));
                 $speakers[]=trim($iv);
             }
@@ -75,12 +75,12 @@ class Talks_model extends Model {
             
             // We have a match, lets see if the speakers match too
             // For each of the speakers we're given, see if they're in the talk data
-            foreach($ret as $talk) {
+            foreach ($ret as $talk) {
                 $tid		= $talk->ID;
                 $tspeakers	= $CI->talkSpeaker->getSpeakerByTalkId($tid);
                 
-                foreach($tspeakers as $tsp) { $talk_speakers[]=$tsp->speaker_name; }
-                foreach($speakers as $sp) {
+                foreach ($tspeakers as $tsp) { $talk_speakers[]=$tsp->speaker_name; }
+                foreach ($speakers as $sp) {
                     if (in_array($sp, $talk_speakers)) { return false; }
                 }
             }
@@ -204,7 +204,7 @@ class Talks_model extends Model {
         
         $CI=&get_instance();
         $CI->load->model('talk_speaker_model','tsm');
-        foreach($res as $k=>$talk) {
+        foreach ($res as $k=>$talk) {
             $res[$k]->speaker=$CI->tsm->getTalkSpeakers($talk->ID);
         }
 
@@ -248,7 +248,7 @@ class Talks_model extends Model {
         ', $this->db->escape($tid), $c_addl, $priv);
         $q=$this->db->query($sql);
         $comments=$q->result();
-        foreach($comments as $k=>$comment) {
+        foreach ($comments as $k=>$comment) {
             $comments[$k]->gravatar=$this->gravatar->displayUserImage($comment->user_id, null, 45);
         }
         return $comments;
@@ -286,7 +286,7 @@ class Talks_model extends Model {
         
         $CI=&get_instance();
         $CI->load->model('talk_speaker_model','tsm');
-        foreach($talks as $k=>$talk) {
+        foreach ($talks as $k=>$talk) {
             $talks[$k]->speaker=$CI->tsm->getTalkSpeakers($talk->ID);
         }
         return $talks;
@@ -340,7 +340,7 @@ class Talks_model extends Model {
         $talks	 = array();
         $claimed = $this->getSpeakerTalks($uid);
         
-        foreach($claimed as $index => $claim) {
+        foreach ($claimed as $index => $claim) {
             // remove if pending
             if ($claim->status != null && $showAll === false) {
                 continue;
@@ -374,7 +374,7 @@ class Talks_model extends Model {
         $talks 	= $query->result();
         
         // the RID isn't set like the other talk info - lets set it!
-        foreach($talks as $index => $talk) {
+        foreach ($talks as $index => $talk) {
             $talks[$index]->rid = $talk->talk_id;
         }
         
@@ -420,7 +420,7 @@ class Talks_model extends Model {
         $talk_detail= $this->getTalks($tid);
         
         $speakers=array();
-        foreach($talk_detail[0]->speaker as $speaker) {
+        foreach ($talk_detail[0]->speaker as $speaker) {
             $speakers[]=strtolower($speaker->speaker_name);
         }
         
@@ -492,7 +492,7 @@ class Talks_model extends Model {
         $query = $this->db->get();
         $results = $query->result();
         
-        foreach($results as $key => $talk) {
+        foreach ($results as $key => $talk) {
             $results[$key]->speaker = $ci->talkSpeaker->getSpeakerByTalkId($talk->ID);
         }
         
@@ -513,7 +513,7 @@ class Talks_model extends Model {
         $speaker_rows = $query->result();
         
         if (count($speaker_rows)) {
-            foreach($speaker_rows as $speaker) {
+            foreach ($speaker_rows as $speaker) {
                 if (!empty($speaker->speaker_id)) {
                     $uid[] = $speaker->speaker_id;
                 }
@@ -537,7 +537,7 @@ class Talks_model extends Model {
     public function setDisplayFields($det) {
         $retval = array();
 
-        foreach($det as $talk) {
+        foreach ($det as $talk) {
             // create datetime object
             $talk_datetime = new DateTime("@{$talk->date_given}");
 

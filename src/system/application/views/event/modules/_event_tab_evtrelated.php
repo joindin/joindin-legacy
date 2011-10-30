@@ -1,7 +1,7 @@
 <div id="evt_related">
     <?php $ct=0; ?>
     <table summary="" cellpadding="0" cellspacing="0" border="0" width="100%" class="list">
-    <?php foreach($evt_sessions as $ik=>$iv): ?>
+    <?php foreach ($evt_sessions as $ik=>$iv): ?>
         <tr class="<?php echo ($ct%2==0) ? 'row1' : 'row2'; ?>">
         <td>
         <?php $type = !empty($iv->tcid) ? $iv->tcid : 'Talk'; $type='Social Event'; ?>

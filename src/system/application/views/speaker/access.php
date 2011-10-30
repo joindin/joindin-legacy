@@ -31,7 +31,7 @@ $this->load->view('user/_nav_sidebar');
     <td><b>Viewable</b></td>
     <td colspan="2">&nbsp;</td>
 </tr>
-<?php foreach($access_data as $access): ?>
+<?php foreach ($access_data as $access): ?>
 <tr>
     <td><?php echo $access->access_token; ?></td>
     <td><?php echo $access->description; ?></td>

@@ -38,7 +38,7 @@ if (!empty($msg)):
     <p>No talks so far</p>
 <?php else: ?>
     <?php
-        foreach($talks as $k=>$v) {
+        foreach ($talks as $k=>$v) {
             $this->load->view('talk/_talk-row', array('talk'=>$v));
         }
     ?>
@@ -52,7 +52,7 @@ if (!empty($msg)):
 <?php if (count($comments) == 0): ?>
     <p>No comments so far</p>
 <?php else: ?>
-    <?php foreach($comments as $k=>$v): ?>
+    <?php foreach ($comments as $k=>$v): ?>
     <div class="row">
         <strong><a href="/talk/view/<?php echo $v->talk_id; ?>#comment-<?php echo $v->ID; ?>"><?php echo escape($v->talk_title); ?></a></strong>
         <div class="clear"></div>

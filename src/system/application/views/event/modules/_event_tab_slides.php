@@ -1,6 +1,6 @@
 <div id="slides">
     <table summary="" cellpadding="0" cellspacing="0" border="0" width="100%" class="list">
-    <?php foreach($slides_list as $sk=>$sv): ?>
+    <?php foreach ($slides_list as $sk=>$sv): ?>
         <tr class="<?php echo ($ct%2==0) ? 'row1' : 'row2'; ?>">
         <td>
         <a href="/talk/view/<?php echo $sk; ?>"><?php echo $sv['title']; ?></a>

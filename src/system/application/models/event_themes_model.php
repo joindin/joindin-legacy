@@ -13,7 +13,7 @@ class Event_themes_model extends Model {
      * @return boolean Allowed/not allowed
      */
     public function isAuthTheme($uid, $theme_id) {
-        foreach($this->getUserThemes($uid) as $theme) {
+        foreach ($this->getUserThemes($uid) as $theme) {
             if ($theme->ID==$theme_id) { return true; }
         }
         return false;
@@ -34,7 +34,7 @@ class Event_themes_model extends Model {
         }
         // get the events the user is an admin for
         $q=$this->db->get_where('user_admin', array('uid'=>$uid,'rtype'=>'event'));
-        foreach($q->result() as $event) { $event_ids[]=$event->rid; }
+        foreach ($q->result() as $event) { $event_ids[]=$event->rid; }
 
         if (empty($event_ids)) {
             return array();

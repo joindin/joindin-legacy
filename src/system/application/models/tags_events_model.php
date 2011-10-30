@@ -87,7 +87,7 @@ class Tags_events_model extends Model
         $CI = &get_instance();
         $CI->load->model('tags_model','tagsModel');
 
-        foreach($tagsToRemove as $tag => $detail) {
+        foreach ($tagsToRemove as $tag => $detail) {
             if ($tagData = $CI->tagsModel->tagExists($tag)) {
                 $CI->tagsModel->removeTag($eventId, $tagData[0]->ID);
             }

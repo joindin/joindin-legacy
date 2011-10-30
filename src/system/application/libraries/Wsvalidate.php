@@ -16,10 +16,10 @@ class Wsvalidate {
         $fail=array();
         
         //print_r($rules); print_r($obj);
-        foreach($rules as $k=>$v) {
+        foreach ($rules as $k=>$v) {
             $m=explode('|', $v); //print_r($m);
             //echo $v.' '.$k.' '.$obj->$k."\n";
-            foreach($m as $mk=>$mv) {
+            foreach ($m as $mk=>$mv) {
                 //$str=(string)$obj->$k;
                 //chek to see if we're anything more complex
                 if (preg_match('/\[(.*?)\]/', $mv, $matches)) {

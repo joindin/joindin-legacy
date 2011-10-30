@@ -121,7 +121,7 @@ function buildClaimedLinks($speakers, $claim_detail) {
     $speaker_links	= array();
     
     // find ones that have a speaker ID
-    foreach($speakers as $speakerKey => $speaker) {
+    foreach ($speakers as $speakerKey => $speaker) {
         if (isset($speaker->speaker_id)) {
             // we know this one is right
             $speaker_links[]='<a href="/user/view/'.$speaker->speaker_id.'">'.$speaker->speaker_name.'</a>';
@@ -129,11 +129,11 @@ function buildClaimedLinks($speakers, $claim_detail) {
         }
     }
     
-    foreach($claim_detail as $claim) {
+    foreach ($claim_detail as $claim) {
         $speaker_data[$claim->full_name]=$claim->uid;
     }
     
-    foreach($speakers as $speaker) {
+    foreach ($speakers as $speaker) {
         $name=$speaker->speaker_name;
         if (array_key_exists($name, $speaker_data)) {
             $speaker_links[]='<a href="/user/view/'.$speaker_data[$name].'">'.$name.'</a>';
@@ -154,7 +154,7 @@ function buildSpeakerImg($speakers) {
     $ci->load->library('gravatar');	
     $user_images=array();
     
-    foreach($speakers as $speaker) {
+    foreach ($speakers as $speaker) {
         if (!empty($speaker->speaker_id) && $speaker->status!='pending') {
             $user_images[$speaker->speaker_id]=$ci->gravatar->displayUserImage($speaker->speaker_id, null, 50);
         }
@@ -233,7 +233,7 @@ function talk_listDecorateNowNext($talks)
 function isTalkClaimFull($claim_data)
 {
     $isFull = true;
-    foreach($claim_data as $claim) {
+    foreach ($claim_data as $claim) {
         if ($claim->speaker_id==null || empty($claim->speaker_id)) {
             $isFull = false;
         }

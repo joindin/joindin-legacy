@@ -29,7 +29,7 @@ class Defensio {
             $arr['referrer']=$_SERVER['HTTP_REFERER'];
         }
         $msg='';
-        foreach($arr as $k=>$v) {
+        foreach ($arr as $k=>$v) {
             $msg.=$k.'='.urlencode($v).'&';
         }
         $str= "POST ".$loc." HTTP/1.0\r\n";

@@ -35,7 +35,7 @@ class BaseWsRequest {
         //if it is public, check our "key" they sent along to prevent abuse
         $get_vars = explode('&', $_SERVER['QUERY_STRING']);
         if ($get_vars) {
-            foreach($get_vars as $k=>$v) { 
+            foreach ($get_vars as $k=>$v) { 
                 $x=explode('=', $v); 
                 if (count($x) > 1) {
                     $_GET[$x[0]]=$x[1]; 

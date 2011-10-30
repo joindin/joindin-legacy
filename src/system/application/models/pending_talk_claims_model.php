@@ -80,7 +80,7 @@ class Pending_talk_claims_model extends Model
         }
         
         $talkIds = array();
-        foreach($eventTalks as $talk) { $talkIds[] = $talk->ID; }
+        foreach ($eventTalks as $talk) { $talkIds[] = $talk->ID; }
         
         $results = $this->db->select('*, pending_talk_claims.id as pending_claim_id')
             ->from('pending_talk_claims')
@@ -90,7 +90,7 @@ class Pending_talk_claims_model extends Model
             ->get()->result();
             
         
-        foreach($results as &$result) {
+        foreach ($results as &$result) {
             $result->claim_detail 	= $this->db->get_where('talk_speaker', array('ID'=>$result->claim_id))->result();
         }
         

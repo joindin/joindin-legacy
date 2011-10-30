@@ -16,7 +16,7 @@ menu_pagetitle('Blog');
 </h1>
 
 <?php if (isset($posts) && count($posts)>0): ?>
-    <?php foreach($posts as $k=>$v): ?>
+    <?php foreach ($posts as $k=>$v): ?>
 <div class="row row-blog">
     <h2 class="h3"><a href="/blog/view/<?php echo $v->ID; ?>"><?php echo $v->title; ?></a></h2>
     <div class="desc">

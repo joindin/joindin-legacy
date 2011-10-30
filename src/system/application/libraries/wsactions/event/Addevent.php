@@ -57,7 +57,7 @@ class Addevent extends BaseWsRequest {
             return array('output'=>'msg','data'=>array('msg'=>'Event added successfully!'));
         } else {
             if (!$unique) { $ret='Non-unique entry!'; }
-            if (is_array($ret)) { $msg=''; foreach($ret as $k=>$v) { $msg.=$v."\n"; } $ret=$msg; }
+            if (is_array($ret)) { $msg=''; foreach ($ret as $k=>$v) { $msg.=$v."\n"; } $ret=$msg; }
             return array('output'=>'msg','data'=>array('msg'=>$ret)); 
         }
     }

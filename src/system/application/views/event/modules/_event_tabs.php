@@ -3,7 +3,7 @@ $cl=array();
 
 // work through the talks list and split into days
 $by_day=array();
-foreach($talks as $t) {
+foreach ($talks as $t) {
     $day = strtotime($t->display_date);
     $by_day[$day][]=$t;
 }

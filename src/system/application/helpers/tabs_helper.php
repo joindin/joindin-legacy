@@ -146,7 +146,7 @@ class joindIn_TabContainer implements countable {
         <div id="<?php echo $this->_containerName; ?>-tabs" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
         <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
             <?php
-            foreach($this->_tabs as $tab):
+            foreach ($this->_tabs as $tab):
                 if ($tab->getId() == $this->_selectedTab) {
                     $tab->setSelected();
                 }
@@ -158,7 +158,7 @@ class joindIn_TabContainer implements countable {
             endforeach;
             ?>
         </ul>
-        <?php foreach($contentList as $hash=>$tabContent):
+        <?php foreach ($contentList as $hash=>$tabContent):
             echo $tabContent;
         endforeach; ?>
         </div>

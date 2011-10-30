@@ -52,7 +52,7 @@ if (!empty($year) && !empty($month)) {
 </p>
 
 <?php
-foreach($events as $k=>$v) {
+foreach ($events as $k=>$v) {
     $this->load->view('event/_event-row', array('event'=>$v));
 }
 

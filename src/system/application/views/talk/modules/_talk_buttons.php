@@ -3,7 +3,7 @@
     <form action="<?php echo '/talk/claim/'.$detail->tid ?>" method="POST">
     <?php
     $speaker_list = array();
-    foreach($speakers as $speaker) {
+    foreach ($speakers as $speaker) {
         if (empty($speaker->speaker_id)) {
             $speaker_list[$speaker->ID]=$speaker->speaker_name;
         }

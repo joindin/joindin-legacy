@@ -74,7 +74,7 @@ if ($event_detail->event_cfp_start>=time()) {
     <table cellpadding="5" cellspacing="0" border="0">
     <tr>
     <?php
-    foreach($admins as $admin_user) {
+    foreach ($admins as $admin_user) {
         echo '<td style="padding-right:5px;font-size:11px">';
         echo '<a href="/user/view/'.$admin_user->ID.'">'.$admin_user->full_name.'</a></td>';
     }
@@ -153,7 +153,7 @@ if ($event_detail->event_cfp_start>=time()) {
                 <div class="links">
                 <?php
                 $tagList = array();
-                foreach($tags as $tag) {
+                foreach ($tags as $tag) {
                     $tagList[] = '<a href="/event/tag/'.$tag->tag_value.'">'.$tag->tag_value.'</a>';
                 }
                 echo 'tagged: '.implode(',', $tagList);

@@ -302,7 +302,7 @@ class User_model extends Model {
         $query 		= $this->db->query($sql);
         $speakers	= $query->result();
         
-        foreach($speakers as $speaker) { $other_speakers[$speaker->user_id]=$speaker; }
+        foreach ($speakers as $speaker) { $other_speakers[$speaker->user_id]=$speaker; }
         return $other_speakers;
     }
     
@@ -336,7 +336,7 @@ class User_model extends Model {
         ", $term, $term);
         $query	= $this->db->query($sql);
         $results = $query->result();
-        foreach($results as $key => $user) {
+        foreach ($results as $key => $user) {
             $results[$key]->talk_count 	= count($ci->talksModel->getSpeakerTalks($user->ID));
             $results[$key]->event_count	= count($ci->userAttend->getUserAttending($user->ID));
         }

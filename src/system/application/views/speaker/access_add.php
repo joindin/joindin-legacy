@@ -10,7 +10,7 @@ $this->load->view('user/_nav_sidebar');
 
 $edit_select=array();
 if ($curr_access) {
-    foreach($curr_access as $curr) { $edit_select[]=(is_object($curr)) ? $curr->field_name : $curr; }
+    foreach ($curr_access as $curr) { $edit_select[]=(is_object($curr)) ? $curr->field_name : $curr; }
 }
 ?>
 
@@ -62,7 +62,7 @@ echo form_open($path, array('id'=>'frm_access_add'));
         <?php
         $i=0;
         echo '<table cellpadding="0" cellspacing="0" border="0" width="100%"><tr>';
-        foreach($fields as $k=>$v) {
+        foreach ($fields as $k=>$v) {
             $i++;
             echo '<td style="padding:3px">';
             //echo '<input type="checkbox" value="'.$k.'" name="fields[]"> '.$v.'</td>';

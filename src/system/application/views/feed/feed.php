@@ -12,7 +12,7 @@
         <pubDate><?php echo date('r')?></pubDate>
     </channel>
     <?php
-    foreach($items as $k=>$v) {
+    foreach ($items as $k=>$v) {
         echo sprintf('
             <item>
                 <title>%s</title>

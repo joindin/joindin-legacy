@@ -33,7 +33,7 @@ class Csvimport {
 
         // check required fields and work out which columns are where
         $title_row = fgetcsv($fp);
-        foreach($title_row as $index => $column) {
+        foreach ($title_row as $index => $column) {
             switch(strtolower($column)) {
                 case 'title':
                     $this->_title_index = $index;
@@ -85,7 +85,7 @@ class Csvimport {
         $categories_query = $this->CI->db->get('categories');
         $categories_result = $categories_query->result();
         if (is_array($categories_result)) {
-            foreach($categories_result as $cat) {
+            foreach ($categories_result as $cat) {
                 $this->_categories[$cat->cat_title] = $cat;
             }
         }
@@ -94,7 +94,7 @@ class Csvimport {
         $languages_query = $this->CI->db->get('lang');
         $languages_result = $languages_query->result();
         if (is_array($languages_result)) {
-            foreach($languages_result as $lang) {
+            foreach ($languages_result as $lang) {
                 $this->_languages[$lang->lang_abbr] = $lang;
             }
         }
@@ -104,7 +104,7 @@ class Csvimport {
         $tracks_query = $this->CI->db->get_where('event_track', $tracks_where);
         $tracks_result = $tracks_query->result();
         if (is_array($tracks_result)) {
-            foreach($tracks_result as $track) {
+            foreach ($tracks_result as $track) {
                 $this->_tracks[$track->track_name] = $track;
             }
         } else {
@@ -174,14 +174,14 @@ class Csvimport {
             throw new Exception("Speaker is a required field (Talk: " . $row[$this->_title_index] . ')');
         }
         $speakers = explode(',', $row[$this->_speaker_index]);
-        foreach($speakers as $speaker) {
+        foreach ($speakers as $speaker) {
             $this->CI->db->insert('talk_speaker', array("talk_id" => $talk_id, "speaker_name" => $speaker));
         }
 
         // handle the track - figure out which it is, then save it
         if (isset($this->_track_index) && !empty($row[$this->_track_index])) {
             $tracks = explode(',', $row[$this->_track_index]);
-            foreach($tracks as $track) {
+            foreach ($tracks as $track) {
                 if (isset($this->_tracks[$track])) {
                     $track_id = $this->_tracks[$track]->ID;
                     $this->CI->db->insert('talk_track', array("talk_id" => $talk_id, "track_id" => $track_id));

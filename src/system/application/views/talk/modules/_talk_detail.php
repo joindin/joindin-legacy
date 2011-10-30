@@ -6,7 +6,7 @@
         <strong>
             <?php
             $speaker_names = array();
-            foreach($speakers as $speaker): ?>
+            foreach ($speakers as $speaker): ?>
             <?php 
             if (!empty($speaker->speaker_id) && $speaker->status!='pending') {
                 if (empty($speaker->full_name)) { $speaker->full_name = 'N/A'; }
@@ -28,7 +28,7 @@
     <div class="desc">
         <span align="left"><?php
         if (!empty($speaker_img)) {
-            foreach($speaker_img as $uid => $img) {
+            foreach ($speaker_img as $uid => $img) {
                 echo '<a href="/user/view/'.$uid.'"><img src="'.$img.'" align="left" border="0" style="margin-right:10px;" height="50" width="50"></a>'; 
             }
         }
@@ -48,7 +48,7 @@
     <?php if (!empty($track_info)): ?>
     <p class="quicklink">
     <?php
-    echo '<b>Track(s):</b> '; foreach($track_info as $t) { echo $t->track_name; }
+    echo '<b>Track(s):</b> '; foreach ($track_info as $t) { echo $t->track_name; }
     ?>
     </p>
     <?php endif; ?>

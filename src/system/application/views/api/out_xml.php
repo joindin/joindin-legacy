@@ -1,6 +1,6 @@
 <?php
 function addArrayToXML($xml, $data) {
-    foreach($data as $key => $item) {
+    foreach ($data as $key => $item) {
         if (is_numeric($key)) {
             $key = "item";
         }

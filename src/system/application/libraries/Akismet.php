@@ -19,7 +19,7 @@ class Akismet {
         $data['key']	= $this->key;
         $data['blog']	= $this->CI->config->item('akismet_blog');
         $data['user_ip']= $_SERVER['REMOTE_ADDR'];
-        foreach($data as $k=>$v) { $req_str.=$k.'='.$v.'&'; }
+        foreach ($data as $k=>$v) { $req_str.=$k.'='.$v.'&'; }
         
         $http ="POST ".$path." HTTP/1.0\r\n";
         $http.="Host: ".$host."\r\n";

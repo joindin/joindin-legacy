@@ -33,11 +33,11 @@ class Gettalks extends BaseWsRequest {
             $ret=$this->CI->event_model->getEventTalks($eid, false);
 
             // add the track and format the speaker information for each talk
-            foreach($ret as $talk) {
+            foreach ($ret as $talk) {
                 $talk->tracks = $this->CI->talk_track_model->getSessionTrackInfo($talk->ID);
                 $speaker = '';
                 if (count($talk->speaker)) {
-                    foreach($talk->speaker as $speaker_obj) {
+                    foreach ($talk->speaker as $speaker_obj) {
                         $speaker .= $speaker_obj->speaker_name . ', ';
                     }
                     $speaker = substr($speaker, 0, -2);

@@ -44,7 +44,7 @@ class Getlist extends BaseWsRequest {
             }
 
             // Filter out a few things first
-            foreach($events as $k=>$evt) {
+            foreach ($events as $k=>$evt) {
                 unset($events[$k]->score);
                 
                 if ($uid) {

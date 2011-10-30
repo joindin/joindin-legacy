@@ -10,7 +10,7 @@ class Event_track_model extends Model {
     function getEventTracks($eid) {
         $q=$this->db->get_where('event_track', array('event_id'=>$eid));
         $ret=$q->result();
-        foreach($ret as $k=>$tr) {
+        foreach ($ret as $k=>$tr) {
             $q=$this->db->query('select count(ID) ct from talk_track where track_id='.$this->db->escape($tr->ID));
             $u=$q->result();
             $ret[$k]->used=$u[0]->ct;

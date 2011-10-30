@@ -16,7 +16,7 @@ $this->load->library('timezone');
         <?php
         if (isset($event->eventTags) && !empty($event->eventTags)) {
             $tags = array();
-            foreach($event->eventTags as $tag) {
+            foreach ($event->eventTags as $tag) {
                 $tag = escape($tag->tag_value);
                 $tags[] = '<a href="/event/tag/'.$tag.'">'.$tag.'</a>';
             }

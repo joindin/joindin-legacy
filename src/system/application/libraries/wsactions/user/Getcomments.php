@@ -41,7 +41,7 @@ class Getcomments extends BaseWsRequest {
             if (!$restrict || $restrict=='talk') {
                 // First, the talk comments...
                 $uc_talk=$this->CI->talk_comments_model->getUserComments($udata[0]->ID);
-                foreach($uc_talk as $k=>$v) {
+                foreach ($uc_talk as $k=>$v) {
                     // We're just going to remove private comments for now
                     if ($v->private==1) { continue; }
                     $v->type='talk'; $comments[]=$v;
@@ -50,7 +50,7 @@ class Getcomments extends BaseWsRequest {
             if (!$restrict || $restrict=='event') {
                 // Now the event comments
                 $uc_event= $this->CI->event_comments_model->getUserComments($udata[0]->ID);
-                foreach($uc_event as $k=>$v) {
+                foreach ($uc_event as $k=>$v) {
                     $v->type='event'; $comments[]=$v;
                 }
             }

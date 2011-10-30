@@ -20,7 +20,7 @@
                 <h4 id="talks"><?php echo date('d.M.Y', $talk_section_date); ?></h4>
             </th>
         </tr>
-        <?php foreach($talk_section_talks as $ik=>$talk): 
+        <?php foreach ($talk_section_talks as $ik=>$talk): 
 //print_r($talk); echo '<br/><br/>';
 
         $session_rate+=$talk->rank;
@@ -33,7 +33,7 @@
             } else {
                 // There are tracks on the session, let's see if any match...
                 $filter_pass=false;
-                foreach($talk->tracks as $talk_track) {
+                foreach ($talk->tracks as $talk_track) {
                     if ($talk_track->ID==$track_filter) { $filter_pass=true; }
                 }
                 if (!$filter_pass) { continue; }
@@ -54,7 +54,7 @@
             <td>
                 <?php
                 $speaker_list = array();
-                foreach($talk->speaker as $speaker) {
+                foreach ($talk->speaker as $speaker) {
                     if (isset($claimed[$talk->ID][$speaker->speaker_id])) {
                         $claim_data = $claimed[$talk->ID][$speaker->speaker_id];
                         $speaker_list[]='<a href="/user/view/'.$claim_data->speaker_id.'">'.$claim_data->full_name.'</a>';

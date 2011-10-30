@@ -132,7 +132,7 @@ class User_admin_model extends Model {
         $q=$this->db->query($sql);
         $ret=$q->result();
         
-        foreach($ret as $k=>$v) {
+        foreach ($ret as $k=>$v) {
             switch($v->rtype) {
                 case 'talk': 
                     $ret[$k]->detail=$CI->talks_model->getTalks($v->rid);
@@ -255,7 +255,7 @@ class User_admin_model extends Model {
         $query = $this->db->query($sql);
         $results = $query->result();
         
-        foreach($results as $talkKey => $talk) {
+        foreach ($results as $talkKey => $talk) {
             $results[$talkKey]->speakers = $CI->talkSpeaker->getSpeakerByTalkId($talk->talk_id);
         }
         

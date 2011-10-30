@@ -24,7 +24,7 @@ class Isspam extends BaseWsRequest {
         $msg='Spam comment on : ' . $this->CI->config->site_url() . $rtype . '/view/' . $tid . "#comment-" . $cid;
 
         $admin_emails=$this->CI->user_model->getSiteAdminEmail();
-        foreach($admin_emails as $user) {
+        foreach ($admin_emails as $user) {
             mail($user->email,'Suggested spam comment!', $msg,'From: ' . $this->CI->config->item('email_info'));
         }
         

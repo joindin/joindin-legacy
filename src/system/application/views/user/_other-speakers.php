@@ -19,7 +19,7 @@ $name=(!empty($udata[0]->full_name)) ? $udata[0]->full_name : $udata[0]->usernam
                 echo 'This user has never given a talk!';
             }
             if (count($content)>0) {
-                foreach($content as $k=>$v) {
+                foreach ($content as $k=>$v) {
                     if ($ct>$limit) { break; }
                     $name=(!empty($v->full_name)) ? $v->full_name : $v->username;
                     echo '<li><a href="/user/view/'.$v->user_id.'">'.$name.'</a>';

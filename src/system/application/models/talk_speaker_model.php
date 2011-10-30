@@ -35,7 +35,7 @@ class Talk_speaker_model extends Model {
         if (!is_array($speaker_data)) { $speaker_data=array($speaker_data); }
         $speaker_names=array();
         
-        foreach($speaker_data as $speaker) {
+        foreach ($speaker_data as $speaker) {
             
             $data=array(
                 'talk_id'		=> $talk_id,
@@ -83,7 +83,7 @@ class Talk_speaker_model extends Model {
             return $speakers;
         } else {		
             // if the status isn't null, remove the speaker_id
-            foreach($speakers as $speakerIndex => $speaker) {
+            foreach ($speakers as $speakerIndex => $speaker) {
                 if ($speaker->status != null) {
                     $speakers[$speakerIndex]->speaker_id = null;
                 }
@@ -150,7 +150,7 @@ class Talk_speaker_model extends Model {
         $totalCount   = count($result);
         $totalClaimed = 0;
         
-        foreach($result as $speaker) {
+        foreach ($result as $speaker) {
             if ($speaker->speaker_id!=null && $speaker->status!='pending') {
                 $totalClaimed++;
             }

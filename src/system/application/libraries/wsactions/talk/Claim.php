@@ -78,7 +78,7 @@ class Claim extends BaseWsRequest {
                     
                     // get our admin emails
                     if (count($eventAdmins)>0) {
-                        foreach($eventAdmins as $admin) { 
+                        foreach ($eventAdmins as $admin) { 
                             error_log($admin->email);
                             $to[]=$admin->email; 
                         }

@@ -6,7 +6,7 @@
     </detail>
     <talks>
         <?php
-        foreach($talks as $k=>$v) {
+        foreach ($talks as $k=>$v) {
         echo sprintf('
             <talk>
                 <title>%s</title>
@@ -21,7 +21,7 @@
     </talks>
     <comments>
         <?php
-        foreach($comments as $k=>$v) {
+        foreach ($comments as $k=>$v) {
         //talk/event
         echo sprintf('
             <content>%s</content>

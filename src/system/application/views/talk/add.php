@@ -8,8 +8,8 @@ $lang_list	= array();
 //echo '<pre>'; print_r($tracks); echo '</pre>';
 
 $ev=$events[0];
-foreach($cats as $k=>$v) { $cat_list[$v->ID]=$v->cat_title; }
-foreach($langs as $k=>$v) { $lang_list[$v->ID]=$v->lang_name; }
+foreach ($cats as $k=>$v) { $cat_list[$v->ID]=$v->cat_title; }
+foreach ($langs as $k=>$v) { $lang_list[$v->ID]=$v->lang_name; }
 
 if (!empty($this->validation->error_string)) {
     $this->load->view('msg_info', array('msg' => $this->validation->error_string));
@@ -63,7 +63,7 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
     
     // if editing and already have speakers...
     if (isset($this->validation->speaker) && count($this->validation->speaker) != 0) {
-        foreach($this->validation->speaker as $speakerId => $speaker) {
+        foreach ($this->validation->speaker as $speakerId => $speaker) {
             echo form_input('speaker_row['.$speakerId.']', $speaker->speaker_name);
         }
     } else {
@@ -92,11 +92,11 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
     <div class="row">
     <label for="session_date">Date and Time of Session</label>
     <?php
-    /*foreach(range(1,12) as $v) {
+    /*foreach (range(1,12) as $v) {
         $m=date('M', mktime(0,0,0, $v,1, date('Y')));
         $given_mo[$v]=$m; }
-    foreach(range(1,32) as $v) { $given_day[$v]=$v; }
-    foreach(range(2007, date('Y')+5) as $v) { $given_yr[$v]=$v; }
+    foreach (range(1,32) as $v) { $given_day[$v]=$v; }
+    foreach (range(2007, date('Y')+5) as $v) { $given_yr[$v]=$v; }
     echo form_dropdown('given_mo', $given_mo, $this->validation->given_mo);
     echo form_dropdown('given_day', $given_day, $this->validation->given_day);
     echo form_dropdown('given_yr', $given_yr, $this->validation->given_yr);*/
@@ -112,8 +112,8 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
     $talkDate = (!isset($this->validation->talkDate)) ? $eventSelected : $this->validation->talkDate;
 
     echo form_dropdown('talkDate', $listData, $talkDate), ' at ';
-    foreach(range(0,23) as $v) { $given_hour[$v]=str_pad($v,2,'0', STR_PAD_LEFT); }
-    foreach(range(0,55, 5) as $v) { $given_min[$v]=str_pad($v,2,'0', STR_PAD_LEFT); }
+    foreach (range(0,23) as $v) { $given_hour[$v]=str_pad($v,2,'0', STR_PAD_LEFT); }
+    foreach (range(0,55, 5) as $v) { $given_min[$v]=str_pad($v,2,'0', STR_PAD_LEFT); }
     echo form_dropdown('given_hour', $given_hour, $this->validation->given_hour);
     echo form_dropdown('given_min', $given_min, $this->validation->given_min);
     ?>
@@ -125,7 +125,7 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
         $stype			= null;
         $sessionType 	= null;
         if (isset($this->validation->session_type)) {
-            foreach($cat_list as $categoryId => $categoryName) {
+            foreach ($cat_list as $categoryId => $categoryName) {
                 if ($categoryName==$this->validation->session_type) { $sessionType=$categoryId; }
             }
         } else { $sessionType=$this->validation->session_type; }
@@ -139,7 +139,7 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
     <label for="session_track">Session Track</label>
     <?php
     $tarr=array('none'=>'No track');
-    foreach($tracks as $track) { $tarr[$track->ID]=$track->track_name; }
+    foreach ($tracks as $track) { $tarr[$track->ID]=$track->track_name; }
     echo form_dropdown('session_track', $tarr, $this->validation->session_track); 
     ?>
     <div class="clear"></div>
@@ -153,7 +153,7 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
         $useDefault = (empty($this->validation->session_lang)) ? 'English - US' : null;
         
         if (isset($this->validation->session_lang)) {
-            foreach($lang_list as $langId => $langText) {
+            foreach ($lang_list as $langId => $langText) {
                 if ($langId == $this->validation->session_lang) { 
                     $slang = $langId; 
                 } else {

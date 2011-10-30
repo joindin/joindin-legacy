@@ -115,7 +115,7 @@ class Service {
         } else { $alt_out=''; }
         
         $xml.='<action type="'.htmlspecialchars($js->request->action->type).'" '.$alt_out.'>';
-        foreach($js->request->action->data as $k=>$v) {
+        foreach ($js->request->action->data as $k=>$v) {
             $xml.='<'.htmlspecialchars($k).'>'.htmlspecialchars($v).'</'.htmlspecialchars($k).'>';
         }
         $xml.='</action></request>';
@@ -130,7 +130,7 @@ class Service {
         if (array_key_exists($find, $this->public_actions)) {
             $pass	= true;
             $rules	= $this->public_actions[$find]; //print_r($rules);
-            foreach($rules as $k=>$v) {
+            foreach ($rules as $k=>$v) {
                 $ret=$this->{'rule_'.$v}();
                 if (!$ret) { $pass=false; }
             }

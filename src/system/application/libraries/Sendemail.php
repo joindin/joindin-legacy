@@ -22,12 +22,12 @@ class SendEmail {
         $headers = array();
         $headers[] = 'From: ' . $from;
         if (!empty($extra_headers)) {
-            foreach($extra_headers as $header) {
+            foreach ($extra_headers as $header) {
                 $headers[]=$header;
             }
         }
 
-        foreach($to as $email) {
+        foreach ($to as $email) {
             mail($email, $subj, $msg, implode("\r\n", $headers), '-f'.$from);
         }
     }
@@ -81,7 +81,7 @@ approve or reject the invite.
         
         //$to=array($user[0]->email);
         $to=array();
-        foreach($admins as $k=>$v) { $to[]=$v->email; }
+        foreach ($admins as $k=>$v) { $to[]=$v->email; }
         $this->_sendEmail($to, $msg, $subj);
     }
     
@@ -101,7 +101,7 @@ You can reply directly to them by replying to this email.
         ", $user[0]->full_name, $user[0]->username, $evt_name, $msg);
         
         $to=array();
-        foreach($admins as $k=>$v) { $to[]=$v->email; }
+        foreach ($admins as $k=>$v) { $to[]=$v->email; }
         $this->_sendEmail($to, $msg, $subj, $user[0]->email);
     }
     
@@ -208,7 +208,7 @@ You can view the event here: %sevent/view/%s
         ", $evt_detail[0]->event_name, $this->_config->site_url(), $eid);
         
         $to=array();
-        foreach($admins as $k=>$v) { $to[]=$v->email; }
+        foreach ($admins as $k=>$v) { $to[]=$v->email; }
         $this->_sendEmail($to, $msg, $subj, $this->_config->item('email_comments'));
     }
     
@@ -223,13 +223,13 @@ You can view the event here: %sevent/view/%s
         $subj	= 'Pending Events on '.$this->_config->item('site_name');
         $from	= 'From:' . $this->_config->item('email_feedback');
         $admin 	= $this->CI->user_model->getSiteAdminEmail();
-        foreach($admin as $k=>$v) { $to[]=$v->email; }
+        foreach ($admin as $k=>$v) { $to[]=$v->email; }
 
         $msg		= "This is a list of pending events and their start dates. Don't miss one!\n\n";
         $event_list = array();
         $one_week 	= strtotime('+1 week');
         
-        foreach($pending_events as $event) {
+        foreach ($pending_events as $event) {
             if ($event->event_start>time() && $event->event_start<=$one_week) {
                 $event_list['One_Week'][]=$event;
             } elseif ($event->event_start<=time()) {
@@ -238,9 +238,9 @@ You can view the event here: %sevent/view/%s
                 $event_list['Other'][]=$event;
             }
         }
-        foreach($event_list as $list_category => $list_item) {
+        foreach ($event_list as $list_category => $list_item) {
             $msg.=str_replace('_',' ', $list_category)."\n";
-            foreach($list_item as $list_item_detail) {
+            foreach ($list_item as $list_item_detail) {
                 $msg.="\t".date('m.d.Y', $list_item_detail->event_start).': '.$list_item_detail->event_name."\n";
             }
         }
@@ -297,7 +297,7 @@ be logged in to get to the \"Claims\" page for the event!
         );
 
         // Send to each event admin...
-        foreach($admin_list as $k=>$user) {
+        foreach ($admin_list as $k=>$user) {
             $this->_sendEmail(array($user->email), $msg, $subject, null, $headers);
         }
 

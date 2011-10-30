@@ -40,7 +40,7 @@ echo form_hidden('attend_list', count($invites));
     <td>Invite Sent</td>
     <td>Status</td>
 </tr>
-<?php foreach($invites as $k=>$user): ?>
+<?php foreach ($invites as $k=>$user): ?>
     <tr>
         <td><?php 
             if ($user->accepted=='A') {

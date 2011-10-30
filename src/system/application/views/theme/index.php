@@ -12,7 +12,7 @@
     <td><b>Theme Created</b></td>
     <td>&nbsp;</td>
 </tr>
-<?php foreach($themes as $theme): 
+<?php foreach ($themes as $theme): 
 $bg=($theme->active==1) ? '#E9E9E9' : '#FFFFFF';
 ?>
 <tr style="background-color:<?php echo $bg; ?>">

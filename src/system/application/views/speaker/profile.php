@@ -54,7 +54,7 @@ $this->load->view('user/_nav_sidebar');
             ?>
             </td><td valign="top" style="padding-left:10px;vertical-align:top">
             <table cellpadding="0" cellspacing="0" border="0">
-            <?php foreach($titles as $k=>$v) { ?>
+            <?php foreach ($titles as $k=>$v) { ?>
             <tr>
                 <td style="padding:3px"><?php echo $v;?>:</td><td><?php echo $d->$k; ?></td>
             </tr>

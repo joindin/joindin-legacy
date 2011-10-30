@@ -453,7 +453,7 @@ class Event extends Controller
                 // Get Current Tags
                 $currentTags = $this->tagsEvents->getTags($id);
                 $ctags = array();
-                foreach($currentTags as $tag) {
+                foreach ($currentTags as $tag) {
                     $ctags[] = $tag->tag_value;
                 }
 
@@ -1393,7 +1393,7 @@ class Event extends Controller
             $approved = 0;
             $denied   = 0;
 
-            foreach($claim as $claimId => $claimStatus) {
+            foreach ($claim as $claimId => $claimStatus) {
                 // Retreive the pending claim before approving or denying as
                 // it will be removed by approveClaim() or deleteClaim().
                 $pendingClaim = $this->pendingClaimsModel->getClaimDetail($claimId);
@@ -2114,7 +2114,7 @@ class Event extends Controller
      */
     public function tagged_check($tagList)
     {
-        foreach(explode(',', $tagList) as $tag) {
+        foreach (explode(',', $tagList) as $tag) {
             if (!preg_match('/^[a-zA-Z0-9]+$/', trim($tag))) {
                 // escape the "%" since it goes to a sprintf()
                 $msg = 'Tag <b>"'.str_replace('%','%%', trim($tag)).'"</b> not valid!';

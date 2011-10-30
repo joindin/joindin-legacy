@@ -4,7 +4,7 @@ menu_pagetitle('Add Blog Post');
 <?php
 
 $chk=array('post_mo'=>'m','post_day'=>'d','post_yr'=>'Y','post_hr'=>'H','post_mi'=>'i');
-foreach($chk as $k=>$v) {
+foreach ($chk as $k=>$v) {
     if (empty($this->validation->$k)) {
         $this->validation->$k=date($v);
     }
@@ -53,11 +53,11 @@ if ($edit_id) {
     <td class="title">Post Date:</td>
     <td>
     <?php
-    foreach(range(date('Y'), date('Y')+5) as $v) { $post_yr[$v]=$v; }
-    foreach(range(1,24) as $v) { $post_hr[$v]=$v; }
-    foreach(range(1,59) as $v) { $post_mi[$v]=$v; }
-    foreach(range(1,12) as $v) { $post_mo[$v]=$v; }
-    foreach(range(1,31) as $v) { $post_day[$v]=$v; }
+    foreach (range(date('Y'), date('Y')+5) as $v) { $post_yr[$v]=$v; }
+    foreach (range(1,24) as $v) { $post_hr[$v]=$v; }
+    foreach (range(1,59) as $v) { $post_mi[$v]=$v; }
+    foreach (range(1,12) as $v) { $post_mo[$v]=$v; }
+    foreach (range(1,31) as $v) { $post_day[$v]=$v; }
     echo form_dropdown('post_mo', $post_mo, $this->validation->post_mo);
     echo form_dropdown('post_day', $post_day, $this->validation->post_day);
     echo form_dropdown('post_yr', $post_yr, $this->validation->post_yr);
@@ -72,7 +72,7 @@ if ($edit_id) {
     <td>
     <?php
     $cat_list=array();
-    foreach($cats as $v) { $cat_list[$v->ID]=$v->name; }
+    foreach ($cats as $v) { $cat_list[$v->ID]=$v->name; }
     echo form_dropdown('category', $cat_list, $this->validation->category);
     ?>
     </td>

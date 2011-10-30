@@ -125,7 +125,7 @@ class User extends Controller
             // List different routes we don't want to reroute to
             $bad_routes = $this->non_forward_urls;
             
-            foreach($bad_routes as $route)
+            foreach ($bad_routes as $route)
             {
                 if (strstr($to, $route))
                 {
@@ -580,7 +580,7 @@ class User extends Controller
         } elseif ($this->input->post('um')) {
             // delete user call
             $selectedUsers = $this->input->post('sel');
-            foreach($selectedUsers as $userId) {
+            foreach ($selectedUsers as $userId) {
                 $this->user_model->deleteUser($userId);
             }
             $msg = count($selectedUsers).' users deleted';

@@ -30,7 +30,7 @@ claim the session. You can then accept/deny based on any match between them.
         <td><b>Speaker</b></td>
         <td><b>Claiming User</b></td>
     </tr>
-    <?php foreach($newClaims as $k=>$claim): ?>
+    <?php foreach ($newClaims as $k=>$claim): ?>
         <tr>
             <td align="center"><?php echo form_radio(array(
                 'name' 	=> 'claim['.$claim->pending_claim_id.']',
@@ -48,7 +48,7 @@ claim the session. You can then accept/deny based on any match between them.
             <td>
                 <?php
                 $speakers = array();
-                foreach($claim->claim_detail as $detail) {
+                foreach ($claim->claim_detail as $detail) {
                     $speakers[] = $detail->speaker_name;
                 }
                 echo implode(', ', $speakers);

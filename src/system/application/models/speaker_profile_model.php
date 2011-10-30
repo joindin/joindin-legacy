@@ -69,7 +69,7 @@ class Speaker_profile_model extends Model {
     function getProfileFields() {
         $fields=array();
         $q=$this->db->query('show columns from speaker_profile');
-        foreach($q->result() as $k=>$v) {
+        foreach ($q->result() as $k=>$v) {
             if ($v->Field!='ID') { $fields[]=$v->Field; }
         }
         return $fields;
@@ -91,7 +91,7 @@ class Speaker_profile_model extends Model {
         $profile=$profile[0];
         
         $details=array();
-        foreach($fields as $f) {
+        foreach ($fields as $f) {
             $name=$f->field_name;
             if (isset($profile->$name) && !empty($profile->$name)) { $details[$name]=$profile->$name; }
         }
@@ -131,11 +131,11 @@ class Speaker_profile_model extends Model {
         if (!isset($profile[0])) { /* no profile! */ return array(); }
         $access	= $this->getProfileTokens($profile[0]->ID);
         if ($public===true) {
-            foreach($access as $a) { if ($a->is_public=='Y') { 
+            foreach ($access as $a) { if ($a->is_public=='Y') { 
                 // here's the tokens they have access to
                 $ret =$this->getTokenAccess($a->ID);
                 $data=array();
-                foreach($ret as $k=>$v) { 
+                foreach ($ret as $k=>$v) { 
                     $field			= $v->field_name;
                     $ret[$k]->val	= $profile[0]->$field;
                     $data[$field]	= $profile[0]->$field;
@@ -193,7 +193,7 @@ class Speaker_profile_model extends Model {
         
         //Be sure we don't already have profile access like this
         $tokens=$this->getProfileTokens($pid);
-        foreach($tokens as $t) { if ($t->access_token==$name) { return false; }}
+        foreach ($tokens as $t) { if ($t->access_token==$name) { return false; }}
         
         //Keep going and do the insert...
         $this->db->insert('speaker_tokens', $arr);
@@ -202,7 +202,7 @@ class Speaker_profile_model extends Model {
         if ($is_public!==null) { $this->setProfileViewable($uid, $tid, $is_public); }
         
         //Now, for each of the fields they gave us, put its name in the fields table
-        foreach($fields as $f) {
+        foreach ($fields as $f) {
             $arr=array('speaker_token_id'=>$tid,'field_name'=>$f);
             $this->db->insert('speaker_token_fields', $arr);
         }
@@ -226,7 +226,7 @@ class Speaker_profile_model extends Model {
         if ($is_public!==null) { $this->setProfileViewable($uid, $tid, $is_public); }
         
         // Now add in our new ones
-        foreach($fields as $f) {
+        foreach ($fields as $f) {
             $arr=array('speaker_token_id'=>$tid,'field_name'=>$f);
             $this->db->insert('speaker_token_fields', $arr);
         }
@@ -243,7 +243,7 @@ class Speaker_profile_model extends Model {
         $profile=$this->getProfile($uid); //print_r($profile);
         
         $tokens=$this->getProfileTokens($profile[0]->ID); //print_r($tokens);
-        foreach($tokens as $t) {
+        foreach ($tokens as $t) {
             if ($t->ID==$tid) { 
                 $this->db->where('ID', $tid); $this->db->delete('speaker_tokens'); 
                 $this->db->where('speaker_token_id', $tid); $this->db->delete('speaker_token_fields'); 
@@ -270,7 +270,7 @@ class Speaker_profile_model extends Model {
                 sp.ID=st.speaker_profile_id
         ', $this->db->escape($uid));
         $q=$this->db->query($sql);
-        foreach($q->result() as $token) { 
+        foreach ($q->result() as $token) { 
             $this->db->where('ID', $token->ID); $this->db->update('speaker_tokens', array('is_public'=>null)); 
         }
         // Now we can just set the one we need

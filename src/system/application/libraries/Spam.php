@@ -10,7 +10,7 @@ class Spam {
         $this->CI =& get_instance();
         $pass=true;
         if (is_array($chk)) {
-            foreach($chk as $k=>$v) {
+            foreach ($chk as $k=>$v) {
                 $ret=$this->{'chk_'.$v}($val);
             }
         } else { $pass=$this->{'chk_'.$chk}($val); }
@@ -31,7 +31,7 @@ class Spam {
     function chk_regex($val) { 
         $pass=true;
         $rows=$this->fetch_txt('regex'); 
-        foreach($rows as $k=>$v) {
+        foreach ($rows as $k=>$v) {
             $m=preg_match($v, $val);
             if ($m) { return false; }
         }

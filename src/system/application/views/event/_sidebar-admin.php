@@ -20,7 +20,7 @@
     <h4>Admins</h4>
     <div class="ctn">
         <ul id="evt_admin_list">
-        <?php foreach($evt_admin as $k=>$user) {
+        <?php foreach ($evt_admin as $k=>$user) {
             echo '<li id="evt_admin_'.$user->ID.'"><a href="/user/view/'.$user->ID.'">'.$user->full_name.'</a> ';
             echo '[<a href="#" onclick="removeEventAdmin('.$eid.',\''.$user->username.'\','.$user->ID.')">X</a>]<br/>';
         } 

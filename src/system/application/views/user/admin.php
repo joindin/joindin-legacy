@@ -76,7 +76,7 @@ else
 </tr>
 <?php
 $ct=0;
-foreach($users as $k=>$v) {
+foreach ($users as $k=>$v) {
     $class 		= ($ct%2==0) ? 'row1' : 'row2';
     $is_admin	= ($v->admin==1) ? '<b style="color:#00E200">Y</b>' : '<b style="color:#FF0000">N</b>';
     $last_log	= (!empty($v->last_login)) ? date('m.d.Y H:i:s', $v->last_login): '';
