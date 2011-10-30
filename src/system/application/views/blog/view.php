@@ -1,7 +1,7 @@
 <?php 
 $v=$details[0];
 $bid=$v->ID;
-if(isset($full_name)){ $this->validation->name=escape($full_name); }
+if (isset($full_name)) { $this->validation->name=escape($full_name); }
  
 menu_pagetitle('Blog: ' . escape($v->title));
 ?>
@@ -11,7 +11,7 @@ menu_pagetitle('Blog: ' . escape($v->title));
     <h1><?php echo $v->title?></h1>
 
     <p class="info">
-        Written <strong><?php echo date('M j, Y',$v->date_posted); ?></strong> at <strong><?php echo date('H:i',$v->date_posted); ?></strong> (<?php echo $v->author_id; ?>)
+        Written <strong><?php echo date('M j, Y', $v->date_posted); ?></strong> at <strong><?php echo date('H:i', $v->date_posted); ?></strong> (<?php echo $v->author_id; ?>)
     </p>
 
     <div class="desc">
@@ -19,7 +19,7 @@ menu_pagetitle('Blog: ' . escape($v->title));
     </div>
 </div>
 
-<?php if(user_is_admin()): ?>
+<?php if (user_is_admin()): ?>
 <p class="admin">
     <a class="btn-small" href="/blog/edit/<?php echo $v->ID; ?>">Edit post</a>	
     <a class="btn-small" href="">Delete post</a>

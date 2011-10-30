@@ -21,8 +21,8 @@ $bg=($theme->active==1) ? '#E9E9E9' : '#FFFFFF';
     <td>
         <?php echo ($theme->active==1) ? 'active' : 'inactive'; ?>
     </td>
-    <td><?php echo date('m.d.Y',$theme->created_at); ?></td>
-    <?php if($theme->active!=1): ?>
+    <td><?php echo date('m.d.Y', $theme->created_at); ?></td>
+    <?php if ($theme->active!=1): ?>
         <td><a href="/theme/activate/<?php echo $theme->ID; ?>" class="btn-small">activate</a></td>
     <?php else: echo '<td>&nbsp;</td>'; endif; ?>
     <td>

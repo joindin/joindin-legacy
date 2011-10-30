@@ -8,16 +8,16 @@ class Addcomment extends BaseWsRequest {
     var $CI	= null;
     var $xml= null;
     
-    public function Addcomment($xml){
+    public function Addcomment($xml) {
         $this->CI=&get_instance(); //print_r($this->CI);
         $this->xml=$xml;
     }
-    public function checkSecurity($xml){
+    public function checkSecurity($xml) {
         // users can comment anonymously, don't require login
         return true;
     }
     //-----------------------
-    public function run(){
+    public function run() {
         $this->CI->load->library('wsvalidate');
         $unq = false;
         
@@ -25,15 +25,15 @@ class Addcomment extends BaseWsRequest {
             'event_id'	=>'required',
             'comment'	=>'required'
         );
-        $ret=$this->CI->wsvalidate->validate($rules,$this->xml->action);
-        if($ret) {
+        $ret=$this->CI->wsvalidate->validate($rules, $this->xml->action);
+        if ($ret) {
             return $this->throwError($ret);
         }
-        $unq=$this->CI->wsvalidate->validate_unique('event_comments',$this->xml->action);
-        if($unq){
+        $unq=$this->CI->wsvalidate->validate_unique('event_comments', $this->xml->action);
+        if ($unq) {
             $in=(array)$this->xml->action;			
             $user=$this->CI->user_model->getUser($this->xml->auth->user);
-            if($user && !$this->isValidLogin($this->xml)) {
+            if ($user && !$this->isValidLogin($this->xml)) {
                 return $this->throwError('Invalid permissions');
             }
             
@@ -41,8 +41,8 @@ class Addcomment extends BaseWsRequest {
             $this->CI->load->model('event_model');
             $event_detail=$this->CI->event_model->getEventDetail($in['event_id']);
             
-            $adv_mo=strtotime('+3 months',$event_detail[0]->event_start);
-            if(time()>$adv_mo){
+            $adv_mo=strtotime('+3 months', $event_detail[0]->event_start);
+            if (time()>$adv_mo) {
                 return $this->throwError('Comments not allowed for this talk!');
             }
 
@@ -53,14 +53,14 @@ class Addcomment extends BaseWsRequest {
                 'date_made'	=> time(),
                 'active'	=> 1
             );
-            if($user) {
+            if ($user) {
                 $arr['user_id'] = $user[0]->ID;
                 $arr['cname'] = $user[0]->full_name;
             }
-            $this->CI->db->insert('event_comments',$arr);
+            $this->CI->db->insert('event_comments', $arr);
             return $this->throwError('Comments added');
-        }else{ 
-            if(!$unq){ $ret='Non-unique entry!'; }
+        } else { 
+            if (!$unq) { $ret='Non-unique entry!'; }
             return $this->throwError($ret);
         }
         return $ret;

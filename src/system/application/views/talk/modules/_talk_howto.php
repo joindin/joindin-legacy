@@ -38,11 +38,11 @@
     </div>
 </div>
 <script type="text/javascript">
-$(document).ready(function(){
-    $('.toggle-faq .question').each(function(){
-        $(this).click(function(){
-            $(this).next().each(function(){
-                if($(this).css('display') != 'none')
+$(document).ready(function() {
+    $('.toggle-faq .question').each(function() {
+        $(this).click(function() {
+            $(this).next().each(function() {
+                if ($(this).css('display') != 'none')
                 {
                     $(this).slideUp('fast');
                 }

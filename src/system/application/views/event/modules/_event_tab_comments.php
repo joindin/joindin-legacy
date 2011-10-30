@@ -13,9 +13,9 @@ if (!empty($msg)):
 
     <?php 
     foreach ($comments as $k => $comment):
-        if($comment->user_id != 0) {
+        if ($comment->user_id != 0) {
             $uname = '<strong><a href="/user/view/'.$comment->user_id.'">'.escape($comment->cname).'</a></strong>';
-        } elseif(isset($comment->cname)) {
+        } elseif (isset($comment->cname)) {
             $uname = '<strong>'.escape($comment->cname).'</strong>';
         } else {
             $uname = "<span class=\"anonymous\">Anonymous</span>";
@@ -25,14 +25,14 @@ if (!empty($msg)):
     <div id="comment-<?php echo $comment->ID ?>" class="row row-event-comment">
         <div class="text">
             <p class="info">
-                <strong><?php echo date('d.M.Y \a\t H:i',$comment->date_made); ?></strong> by <strong><?php echo $uname; ?></strong>
+                <strong><?php echo date('d.M.Y \a\t H:i', $comment->date_made); ?></strong> by <strong><?php echo $uname; ?></strong>
                 <?php echo !empty($comment->source)?"via ".escape($comment->source) : "" ?>
                 (<?php echo escape($type); ?>)
             </p>
             <div class="desc">
                 <?php echo auto_p(escape($comment->comment)); ?>
             </div>
-            <?php if($admin): ?>
+            <?php if ($admin): ?>
                 <a class="btn-small delete-evt-commment" id="<?php echo $comment->ID.'_'.$comment->event_id; ?>" href="#">delete</a>
             <?php endif; ?>
         </div>
@@ -41,8 +41,8 @@ if (!empty($msg)):
     <?php endforeach; ?>
 <?php endif;
 
-$adv_mo=strtotime('+3 months',$event_detail->event_start);
-if(time()<$adv_mo): ?>
+$adv_mo=strtotime('+3 months', $event_detail->event_start);
+if (time()<$adv_mo): ?>
 
     <h3 id="comment-form">Write a comment</h3>
     <?php echo form_open('event/view/'.$event_detail->ID.'#comment-form', array('class' => 'form-event')); ?>

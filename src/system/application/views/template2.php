@@ -13,7 +13,7 @@ $title[] = $this->config->item('site_name');
 
     
     
-    <?php if($css){ ?>
+    <?php if ($css) { ?>
     <link media="all" rel="stylesheet" type="text/css" href="<?php echo $css; ?>"/>
     <?php } ?>
     
@@ -25,11 +25,11 @@ $title[] = $this->config->item('site_name');
     <script type="text/javascript" src="/inc/js/notifications.js"></script>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <?php
-    if(!empty($feedurl)){
+    if (!empty($feedurl)) {
         echo '<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="'.$feedurl.'" />';
     }
-    if(isset($reqkey)){ echo "\n\t" . '<script type="text/javascript">var reqk="'.$reqkey.'";</script>'; }
-    if(isset($seckey)){ echo "\n\t" . '<script type="text/javascript">var seck="'.$seckey.'";</script>'; }
+    if (isset($reqkey)) { echo "\n\t" . '<script type="text/javascript">var reqk="'.$reqkey.'";</script>'; }
+    if (isset($seckey)) { echo "\n\t" . '<script type="text/javascript">var seck="'.$seckey.'";</script>'; }
     ?>
 </head>
 <body id="page-<?php echo menu_get_current_area(); ?>">
@@ -85,7 +85,7 @@ $title[] = $this->config->item('site_name');
 <div id="splash">
     <div class="container_12">
         <div class="grid_12">
-            <?php if(!$this->session->userdata('ID')): ?>
+            <?php if (!$this->session->userdata('ID')): ?>
             <a href="/user/register"><img src="/inc/img/splash.jpg" border="0" alt="Join <?php echo $this->config->item('site_name'); ?> now!"/></a>
             <?php endif; ?>
         </div>
@@ -98,7 +98,7 @@ $title[] = $this->config->item('site_name');
     <div class="container_12 container">
         <div class="grid_8">
             <div class="main">
-                <?php if(isset($info_block)){ echo $info_block; } ?>
+                <?php if (isset($info_block)) { echo $info_block; } ?>
                 <?php echo $content?>
             </div>
         </div>

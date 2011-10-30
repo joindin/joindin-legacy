@@ -6,7 +6,7 @@ class Gravatar {
     private $_servicePathSSL = 'https://secure.gravatar.com/avatar';
     private $CI              = null;
 
-    public function __construct(){
+    public function __construct() {
         $this->CI=&get_instance();
     }
     
@@ -16,7 +16,7 @@ class Gravatar {
      * @param integer $userId User ID to get email from (if email not given)
      * @param string  $userEmail Email address to use for Gravatar
      */
-    public function displayUserImage($userId, $userEmail=null, $size=null){
+    public function displayUserImage($userId, $userEmail=null, $size=null) {
         if ($userId === false) {
             return false;
         }
@@ -50,7 +50,7 @@ class Gravatar {
      *
      * @param string $userEmail User email address
      */
-    protected function buildEmailHash($userEmail){
+    protected function buildEmailHash($userEmail) {
         $userEmail=strtolower(trim($userEmail));
         return md5($userEmail);
     }

@@ -9,7 +9,7 @@ please <a href="/about/contact">contact us</a>.
 </p>
 <?php 
 // If we don't have any event admins, we don't know who to send it to
-if($is_auth && count($admins)>0): ?>
+if ($is_auth && count($admins)>0): ?>
 <p>
 Please <a href="/event/invite/<?php echo $detail[0]->ID;?>/request">click here</a> to request an invite to this event.
 </p>

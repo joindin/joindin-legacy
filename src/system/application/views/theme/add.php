@@ -1,6 +1,6 @@
 
 <?php
-if(!empty($this->validation->error_string)){
+if (!empty($this->validation->error_string)) {
     $this->load->view('msg_info', array('msg' => $this->validation->error_string));
 }
 ?>
@@ -10,13 +10,13 @@ if(!empty($this->validation->error_string)){
     <a href="/theme">Back to Theme List</a><br/><br/>
     <div class="row">
     <label for="theme_title">Theme Name:</label>
-    <?php echo form_input('theme_name',$this->validation->theme_name);?>
+    <?php echo form_input('theme_name', $this->validation->theme_name);?>
     <div class="clear"></div>
     </div>
 
     <div class="row">
     <label for="theme_title">Theme for Event:</label>
-    <?php echo form_dropdown('theme_event',$this->user_events,$this->validation->theme_event); ?>
+    <?php echo form_dropdown('theme_event', $this->user_events, $this->validation->theme_event); ?>
     <div class="clear"></div>
     </div>
     

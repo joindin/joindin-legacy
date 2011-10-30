@@ -5,17 +5,17 @@ class Getdetail extends BaseWsRequest {
     var $CI		= null;
     var $xml	= null;
     
-    public function Getdetail($xml){
+    public function Getdetail($xml) {
         $this->CI=&get_instance(); //print_r($this->CI);
         $this->xml=$xml;
     }
 
-    public function checkSecurity($xml){
+    public function checkSecurity($xml) {
         //public function!
         return true;
     }
     
-    public function run(){
+    public function run() {
         $this->CI->load->model('user_model');
         $this->CI->load->library('wsvalidate');
 
@@ -25,9 +25,9 @@ class Getdetail extends BaseWsRequest {
         $rules=array(
             'uid'	=>'required'
         );
-        $ret=$this->CI->wsvalidate->validate($rules,$this->xml->action);
+        $ret=$this->CI->wsvalidate->validate($rules, $this->xml->action);
 
-        if(!$ret) {
+        if (!$ret) {
             $ret=$this->CI->user_model->getUserDetail(sprintf('%s', $uid));
 
             return array('output'=>'json','data'=>array('items'=>$ret));

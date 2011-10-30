@@ -8,14 +8,14 @@
         <div class="clear"></div>
     </div>
     <?php
-    elseif($status == 'allow'):
+    elseif ($status == 'allow'):
     ?>
     <div class="row">
         <p>Access was granted.  Your verification code is: <?php echo $verification; ?></p>
         <div class="clear"></div>
     </div>
     <?php
-    elseif($status == 'deny'):
+    elseif ($status == 'deny'):
     ?>
     <div class="row">
         <p>Access was not granted.  We hope you enjoy joind.in</p>

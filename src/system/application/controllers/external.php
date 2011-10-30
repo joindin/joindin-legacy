@@ -93,7 +93,7 @@ class External extends Controller
         $this->load->library('sendemail');
         $this->load->model('event_model');
         
-        $events = $this->event_model->getEventDetail(null,null,null,true);
+        $events = $this->event_model->getEventDetail(null, null, null, true);
         $this->sendemail->sendPendingEvents($events);
     }
 }

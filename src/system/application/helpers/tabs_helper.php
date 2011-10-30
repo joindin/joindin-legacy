@@ -152,7 +152,7 @@ class joindIn_TabContainer implements countable {
                 }
                 $tab->setParentId($this->_containerName);
                 $tab->setBaseUrl($this->_baseUrl);
-                list($tabTop,$content) = $tab->render();
+                list($tabTop, $content) = $tab->render();
                 echo $tabTop;
                 $contentList[$tab->getId()] = $content;
             endforeach;

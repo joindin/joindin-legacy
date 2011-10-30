@@ -237,7 +237,7 @@ Below are the request types that you can make to the API including input and out
 <b class="req_title">Authentication:</b> not required<br />
 <b class="req_title">Input:</b>
     <ul>
-        <li>event_type: string, event type [hot,upcoming,past]
+        <li>event_type: string, event type [hot, upcoming, past]
     </ul>
 <b class="req_title">Output:</b>
 <ul>

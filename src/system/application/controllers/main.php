@@ -81,7 +81,7 @@ class Main extends Controller
         }
 
         $events 	= $this->event_model->getCurrentCfp();
-        $this->template->parse_view('sidebar2','event/_event-cfp-sidebar',array('events'=>$events));
+        $this->template->parse_view('sidebar2','event/_event-cfp-sidebar', array('events'=>$events));
         
         $this->template->write_view('content', 'main/index', $arr, true);
         $this->template->render();

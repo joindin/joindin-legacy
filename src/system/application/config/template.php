@@ -57,9 +57,9 @@ $template['active_template'] = 'default';
 */
 
 $default_template='template2';
-if(function_exists('getenv') && $key=strtolower(getenv('USE_KEY'))){
+if (function_exists('getenv') && $key=strtolower(getenv('USE_KEY'))) {
     $path=APPPATH.'views/custom_templates/'.$key.'/_template_'.$key.'.php';
-    if(is_file($path)){
+    if (is_file($path)) {
         $default_template='custom_templates/'.$key.'/_template_'.$key.'.php';
     }
 }

@@ -42,9 +42,9 @@ var_dump($hasCommented);
     <?php $class=(($userId)) ? 'loggedIn':'anonymous'  ?>
     <td colspan="2" style="padding:1px;font-size:11px" align="center" class="<?php echo $class; ?>">
         <?php
-        if($userId){
+        if ($userId) {
             echo 'logged in as <a href="/user/view/'.$userId.'">'.$userName.'</a>';
-        }else{
+        } else {
             echo 'commenting anonymous!';
         }
         ?>
@@ -61,37 +61,37 @@ var_dump($hasCommented);
 </table>
 
 <script>
-$('.rating_img_link').live('mouseover',function(){ 
+$('.rating_img_link').live('mouseover', function() { 
     var curr_id=this.id.replace('r',''); 
     var img_url=$('#'+this.id+' img').attr('src').replace(/rating-.+.jpg/,''); 
-    for(i=1;i<=5;i++){ 
-        if(i<=curr_id){ 
-            $('#r'+i+' img').attr('src',img_url+'/rating-on.jpg'); 
-        }else{ 
-            $('#r'+i+' img').attr('src',img_url+'/rating-off.jpg'); 
+    for(i=1;i<=5;i++) { 
+        if (i<=curr_id) { 
+            $('#r'+i+' img').attr('src', img_url+'/rating-on.jpg'); 
+        } else { 
+            $('#r'+i+' img').attr('src', img_url+'/rating-off.jpg'); 
         } 
     } 
 }); 
-$('.rating_img_link').live('mouseout',function(){ 
-    for(i=1;i<=5;i++){ 
+$('.rating_img_link').live('mouseout', function() { 
+    for(i=1;i<=5;i++) { 
         var img_url=$('#'+this.id+' img').attr('src').replace(/rating-.+.jpg/,''); 
-        if(!$('#vote_rank').val()){ 
-            $('#r'+i+' img').attr('src',img_url+'/rating-off.jpg'); 
-        }else{ 
-            if(i<=$('#vote_rank').val()){ 
-                $('#r'+i+' img').attr('src',img_url+'/rating-on.jpg'); 
-            }else{ 
-                $('#r'+i+' img').attr('src',img_url+'/rating-off.jpg'); 
+        if (!$('#vote_rank').val()) { 
+            $('#r'+i+' img').attr('src', img_url+'/rating-off.jpg'); 
+        } else { 
+            if (i<=$('#vote_rank').val()) { 
+                $('#r'+i+' img').attr('src', img_url+'/rating-on.jpg'); 
+            } else { 
+                $('#r'+i+' img').attr('src', img_url+'/rating-off.jpg'); 
             } 
         } 
     } 
 }); 
-$('.rating_img_link').live('click',function(){ 
+$('.rating_img_link').live('click', function() { 
     var sel_val = this.id.replace('r',''); 
     var img_url = $('#'+this.id+' img').attr('src').replace(/rating-.+.jpg/,''); 
     $('#vote_rank').val(sel_val); 
-    for(i=1;i<=sel_val;i++){ 
-        $('#r'+i+' img').attr('src',img_url+'/rating-on.jpg'); 
+    for(i=1;i<=sel_val;i++) { 
+        $('#r'+i+' img').attr('src', img_url+'/rating-on.jpg'); 
     } 
     return false;
 });

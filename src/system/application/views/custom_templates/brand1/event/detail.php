@@ -8,7 +8,7 @@ $data=array(
     'event_detail'	=> $event_detail,
     'attend'		=> $attend
 );
-$this->load->view('event/modules/_event_detail',$data);
+$this->load->view('event/modules/_event_detail', $data);
 
 $data=array(
     'talks'			=> $talks,
@@ -17,7 +17,7 @@ $data=array(
     'admin'			=> $admin,
     'tracks'		=> $tracks
 );
-$this->load->view('event/modules/_event_tabs',$data);
+$this->load->view('event/modules/_event_tabs', $data);
 ?>
 
 <script type="text/javascript">
@@ -31,7 +31,7 @@ $(function() {
     <?php endif; ?>
     }
 });
-$(document).ready(function(){
+$(document).ready(function() {
     JI_event.init();
 })
 </script>

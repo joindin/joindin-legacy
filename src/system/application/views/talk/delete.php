@@ -2,7 +2,7 @@
 menu_pagetitle('Delete Talk');
 ?>
 <?php
-if(isset($tid)){
+if (isset($tid)) {
     echo form_open('talk/delete/'.$tid);
     ?>
 
@@ -19,8 +19,8 @@ if(isset($tid)){
     <?php 
     echo form_close(); 
 
-}else{ 
-    if(isset($error) && $error == ''){
+} else { 
+    if (isset($error) && $error == '') {
         echo 'talk removed!'; 
     } else {
         echo 'Error: ' . htmlentities($error); 
