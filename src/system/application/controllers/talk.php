@@ -932,7 +932,15 @@ class Talk extends Controller
      */
     function cinput_check($str)
     {
-        if ($this->input->post('cinput') != $this->session->userdata('cinput')) {
+        $str = $this->input->post('cinput');
+        if (! is_numeric($str)) {
+            // If the user input is not numeric, convert it to a numeric value
+            $this->load->plugin('captcha');
+            $digits = captcha_get_digits(true);
+            $str = array_search(strtolower($str), $digits);
+        }
+
+        if ($str != $this->session->userdata('cinput')) {
             $this->validation->_error_messages['cinput_check']
                 = 'Incorrect captcha.';
             return false;
