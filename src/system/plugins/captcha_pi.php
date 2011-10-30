@@ -13,8 +13,7 @@ function create_captcha()
     return get_captcha($seed);
 }
 
-function get_captcha($seed)
-{
+function captcha_get_digits($large_set = false) {
     // @TODO: This needs more translations
     $digits = array(
             0 => "zero",
@@ -28,6 +27,27 @@ function get_captcha($seed)
             8 => "eight",
             9 => "nine"
     );
+
+    if ($large_set) {
+        // Large set is needed to convert captha math sums to digits (ie: 8 + 4 == twelve)
+        $digits = array_merge($digits, array(
+            10 => "ten",
+            11 => "eleven",
+            12 => "twelve",
+            13 => "thirteen",
+            14 => "fourteen",
+            15 => "fifteen",
+            16 => "sixteen",
+            17 => "seventeen",
+            18 => "eighteen",
+        ));
+    }
+    return $digits;
+}
+
+function get_captcha($seed)
+{
+    $digits = captcha_get_digits();
 
     // Initialize the RNG
     srand($seed);
