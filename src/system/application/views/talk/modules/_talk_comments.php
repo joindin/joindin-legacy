@@ -1,6 +1,6 @@
 <div class="box">
 <?php
-if(!$detail->allow_comments) {
+if (!$detail->allow_comments) {
     $this->load->view('msg_info', array('msg' => 'Comments closed.'));
     $comment_closed=true;
 }
@@ -13,9 +13,9 @@ if (empty($comments)) {
     echo '<h2 id="comments">Comments</h2>';
     
     foreach ($comments as $k => $v) {
-        if (isset($v->user_id) && $v->user_id != 0){ 
+        if (isset($v->user_id) && $v->user_id != 0) { 
             $uname = '<a href="/user/view/'.$v->user_id.'">'.escape($v->full_name).'</a> ';
-        }else{ 
+        } else { 
             $uname = '<span class="anonymous">Anonymous</span>'; 
         }
 
@@ -40,17 +40,17 @@ if (empty($comments)) {
         <span class="speaker">Speaker comment:</span>
     <?php else: ?>
         <?php echo rating_image($v->rating); ?><br/>
-        <?php if(!empty($v->twitter_username)): ?>
+        <?php if (!empty($v->twitter_username)): ?>
         <a href="http://twitter.com/<?php echo $v->twitter_username; ?>"><img src="/inc/img/twitter_share_icon.gif" style="margin-top:10px" width="20"/></a>
         <?php endif; ?>
-        <?php if(!empty($v->gravatar)){ 
+        <?php if (!empty($v->gravatar)) { 
         echo '<a href="/user/view/'.$v->user_id.'"><img src="'.$v->gravatar.'" height="45" align="right" style="margin:10px"/></a>'; } 
         ?>
     <?php endif; ?>
     </div>
     <div class="text">
         <p class="info">
-            <strong><?php echo date('d.M.Y \a\t H:i',$v->date_made); ?></strong> by <strong><?php echo $uname; ?></strong>
+            <strong><?php echo date('d.M.Y \a\t H:i', $v->date_made); ?></strong> by <strong><?php echo $uname; ?></strong>
             <?php echo !empty($v->source)?"via ".escape($v->source) : "" ?>
         <?php if ($v->private == 1): ?>
             <span class="private">Private</span>

@@ -10,7 +10,7 @@ class Pending_talk_claims_model extends Model
      * 
      * @return null
      */
-    public function addClaim($talkId,$claimId)
+    public function addClaim($talkId, $claimId)
     {	
         $data = array(
             'talk_id' 		=> $talkId,
@@ -18,7 +18,7 @@ class Pending_talk_claims_model extends Model
             'speaker_id' 	=> $this->session->userdata('ID'),
             'date_added' 	=> time()
         );
-        $this->db->insert('pending_talk_claims',$data);
+        $this->db->insert('pending_talk_claims', $data);
     }
     
     /**
@@ -29,7 +29,7 @@ class Pending_talk_claims_model extends Model
      */
     public function deleteClaim($claimId)
     {
-        $this->db->delete('pending_talk_claims',array('ID'=>$claimId));
+        $this->db->delete('pending_talk_claims', array('ID'=>$claimId));
         return ($this->db->affected_rows()>0) ? true : false;
     }
     
@@ -41,13 +41,13 @@ class Pending_talk_claims_model extends Model
      */
     public function getClaimDetail($claimId)
     {
-        return $this->db->get_where('pending_talk_claims',array('ID'=>$claimId))->result();
+        return $this->db->get_where('pending_talk_claims', array('ID'=>$claimId))->result();
     }
     
     public function approveClaim($claimId)
     {
         $claimDetail 		= $this->getClaimDetail($claimId);
-        if(!isset($claimDetail[0])){
+        if (!isset($claimDetail[0])) {
             return false;
         }
         $talkSpeakerData 	= array(
@@ -55,11 +55,11 @@ class Pending_talk_claims_model extends Model
             'status'	=> null,
         );
         
-        $this->db->where('id',$claimDetail[0]->claim_id);
-        $this->db->update('talk_speaker',$talkSpeakerData);
+        $this->db->where('id', $claimDetail[0]->claim_id);
+        $this->db->update('talk_speaker', $talkSpeakerData);
         
         // remove the claim row
-        $this->db->delete('pending_talk_claims',array('ID'=>$claimId));
+        $this->db->delete('pending_talk_claims', array('ID'=>$claimId));
         return true;
     }
     
@@ -75,23 +75,23 @@ class Pending_talk_claims_model extends Model
         $CI->load->model('event_model','eventModel');
         
         $eventTalks = $CI->eventModel->getEventTalks($eventId);
-        if(empty($eventTalks)){
+        if (empty($eventTalks)) {
             return array();
         }
         
         $talkIds = array();
-        foreach($eventTalks as $talk){ $talkIds[] = $talk->ID; }
+        foreach ($eventTalks as $talk) { $talkIds[] = $talk->ID; }
         
-        $results = $this->db->select('*,pending_talk_claims.id as pending_claim_id')
+        $results = $this->db->select('*, pending_talk_claims.id as pending_claim_id')
             ->from('pending_talk_claims')
             ->join('talks','pending_talk_claims.talk_id = talks.id')
             ->join('user','pending_talk_claims.speaker_id = user.id')
-            ->where_in('pending_talk_claims.talk_id',$talkIds)
+            ->where_in('pending_talk_claims.talk_id', $talkIds)
             ->get()->result();
             
         
-        foreach($results as &$result){
-            $result->claim_detail 	= $this->db->get_where('talk_speaker',array('ID'=>$result->claim_id))->result();
+        foreach ($results as &$result) {
+            $result->claim_detail 	= $this->db->get_where('talk_speaker', array('ID'=>$result->claim_id))->result();
         }
         
         return $results;

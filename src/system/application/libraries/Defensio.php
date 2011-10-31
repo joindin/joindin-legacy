@@ -7,11 +7,11 @@ class Defensio {
     var $owner	= null;
     var $CI		= null;
     
-    function __construct(){
+    function __construct() {
         $this->CI=&get_instance();
     }
     
-    function check($name,$comment,$trust,$url){
+    function check($name, $comment, $trust, $url) {
         $this->key	= $this->CI->config->item('defensio_key');
         $this->owner= $this->CI->config->item('defensio_owner');
         $resp='';
@@ -25,11 +25,11 @@ class Defensio {
             'comment-content'=>$comment,
             'permalink'		=>$this->owner.$url
         );
-        if(isset($_SERVER['HTTP_REFERER'])){
+        if (isset($_SERVER['HTTP_REFERER'])) {
             $arr['referrer']=$_SERVER['HTTP_REFERER'];
         }
         $msg='';
-        foreach($arr as $k=>$v){
+        foreach ($arr as $k=>$v) {
             $msg.=$k.'='.urlencode($v).'&';
         }
         $str= "POST ".$loc." HTTP/1.0\r\n";
@@ -40,19 +40,19 @@ class Defensio {
         $str.="\r\n";
         $str.=$msg;
 
-        $fp=fsockopen('api.defensio.com',80,$errno,$errstr);
-        if($fp){
-            fwrite($fp,$str);
-            while(!feof($fp)){ $resp.=fread($fp,1024); }
+        $fp=fsockopen('api.defensio.com',80, $errno, $errstr);
+        if ($fp) {
+            fwrite($fp, $str);
+            while(!feof($fp)) { $resp.=fread($fp,1024); }
             fclose($fp);
         }
-        if($resp){
+        if ($resp) {
             error_log($resp);
-            $p=explode("\r\n\r\n",$resp);
+            $p=explode("\r\n\r\n", $resp);
             $xml=simplexml_load_string($p[1]);
             //echo 'response: <pre>'; print_r($xml); echo '</pre>';
             return $xml;
-        }else{ return false; }
+        } else { return false; }
     }
     
 }

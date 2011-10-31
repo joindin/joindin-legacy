@@ -2,9 +2,9 @@
 
 menu_pagetitle('Talk: ' . escape($detail->talk_title));
 
-if(!empty($claim_msg)){
+if (!empty($claim_msg)) {
     $class=($claim_status) ? 'notice' : 'err';
-    if($claim_msg && !empty($claim_msg)){
+    if ($claim_msg && !empty($claim_msg)) {
         $this->load->view('msg_info', array('msg' => escape($claim_msg)));
     }
 }
@@ -28,7 +28,7 @@ $data=array(
     'rstr'			=> $rstr,
     'speakers'		=> $speakers
 );
-$this->load->view('talk/modules/_talk_detail',$data);
+$this->load->view('talk/modules/_talk_detail', $data);
 
 $data=array(
     'speaker'		=> $speakers,
@@ -36,7 +36,7 @@ $data=array(
     'is_claimed'	=> $is_claimed,
     'user_id'		=> $user_id
 );
-$this->load->view('talk/modules/_talk_buttons',$data);
+$this->load->view('talk/modules/_talk_buttons', $data);
 ?>
 
 <p class="ad">
@@ -45,12 +45,12 @@ $this->load->view('talk/modules/_talk_buttons',$data);
 
 <?php 
 $data=array();
-$this->load->view('talk/modules/_talk_comments',$data);
-$this->load->view('talk/modules/_talk_comment_form',$data); 
+$this->load->view('talk/modules/_talk_comments', $data);
+$this->load->view('talk/modules/_talk_comment_form', $data); 
 ?>
 <input type="hidden" name="talk_id" id="talk_id" value="<?php echo $detail->ID ?>" />
 <input type="hidden" name="user_id" id="user_id" value="<?php echo $user_id ?>" />
 
 <script type="text/javascript">
-$(document).ready(function(){ talk.init(); })
+$(document).ready(function() { talk.init(); })
 </script>

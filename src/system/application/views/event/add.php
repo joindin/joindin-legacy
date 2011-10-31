@@ -5,7 +5,7 @@ $msg = '';
 $showFields = array();
 
 //$tz_list=array('Select Continent');
-//foreach($tz as $k=>$v){ $tz_list[(string)$v->offset]=floor((string)$v->offset/3600); }
+//foreach ($tz as $k=>$v) { $tz_list[(string)$v->offset]=floor((string)$v->offset/3600); }
 
 if (isset($this->edit_id) && $this->edit_id) {
     echo form_open_multipart('event/edit/'.$this->edit_id);
@@ -27,7 +27,7 @@ echo '<h2>'.$title.'</h2>';
 
 <?php if (!empty($msg) || !empty($this->validation->error_string)): ?>
 <?php 
-    if(!empty($this->validation->error_string)){ $msg.=$this->validation->error_string; }
+    if (!empty($this->validation->error_string)) { $msg.=$this->validation->error_string; }
     $this->load->view('msg_info', array('msg' => $msg)); 
 ?>
 <?php endif; ?>
@@ -35,7 +35,7 @@ echo '<h2>'.$title.'</h2>';
 <div class="box">
     <div class="row">
         <label for="event_name">Event Name:</label>
-    <?php echo form_input('event_name',$this->validation->event_name); ?>
+    <?php echo form_input('event_name', $this->validation->event_name); ?>
     </div>
     <div class="clear"></div>
     <div class="row">
@@ -61,11 +61,11 @@ echo '<h2>'.$title.'</h2>';
         <tr><td>
         <label for="event_start">Event Start:</label>
     <?php
-    foreach(range(1,12) as $v){
-        $m=date('M',mktime(0,0,0,$v,1,date('Y')));
+    foreach (range(1,12) as $v) {
+        $m=date('M', mktime(0,0,0, $v,1, date('Y')));
         $start_mo[$v]=$m; }
-    foreach(range(1,32) as $v){ $start_day[$v]=$v; }
-    foreach(range($min_start_yr,date('Y')+5) as $v){ $start_yr[$v]=$v; }
+    foreach (range(1,32) as $v) { $start_day[$v]=$v; }
+    foreach (range($min_start_yr, date('Y')+5) as $v) { $start_yr[$v]=$v; }
     echo form_dropdown('start_day', $start_day, $this->validation->start_day,   'id="start_day"');
     echo form_dropdown('start_mo',  $start_mo,  $this->validation->start_mo,    'id="start_mo"');
     echo form_dropdown('start_yr',  $start_yr,  $this->validation->start_yr,    'id="start_yr"');
@@ -76,14 +76,14 @@ echo '<h2>'.$title.'</h2>';
     <td>
         <label for="event_end">Event End:</label>
     <?php
-    foreach(range(1,12) as $v){
-        $m=date('M',mktime(0,0,0,$v,1,date('Y')));
+    foreach (range(1,12) as $v) {
+        $m=date('M', mktime(0,0,0, $v,1, date('Y')));
         $end_mo[$v]=$m; }
-    foreach(range(1,32) as $v){ $end_day[$v]=$v; }
-    foreach(range($min_end_yr,date('Y')+5) as $v){ $end_yr[$v]=$v; }
-    echo form_dropdown('end_day',$end_day,$this->validation->end_day);
-    echo form_dropdown('end_mo',$end_mo,$this->validation->end_mo);
-    echo form_dropdown('end_yr',$end_yr,$this->validation->end_yr);
+    foreach (range(1,32) as $v) { $end_day[$v]=$v; }
+    foreach (range($min_end_yr, date('Y')+5) as $v) { $end_yr[$v]=$v; }
+    echo form_dropdown('end_day', $end_day, $this->validation->end_day);
+    echo form_dropdown('end_mo', $end_mo, $this->validation->end_mo);
+    echo form_dropdown('end_yr', $end_yr, $this->validation->end_yr);
     echo form_datepicker('end_day', 'end_mo', 'end_yr');
     ?>
     </td></tr>
@@ -106,7 +106,7 @@ echo '<h2>'.$title.'</h2>';
     <div class="row">
     <label for="event_icon">Tagged with:</label>
     <?php
-        echo form_input('tagged',$this->validation->tagged);
+        echo form_input('tagged', $this->validation->tagged);
     ?>
         <span style="color:#3567AC;font-size:11px">
             Seperate tags with commas, limit <b>5 tags</b>, alpha-numeric only
@@ -118,10 +118,10 @@ echo '<h2>'.$title.'</h2>';
     <?php
         $ev_y=($this->validation->event_private=='Y') ? true : false;
         $ev_n=($this->validation->event_private=='N') ? true : false;
-        if(empty($this->validation->event_private)){ $ev_n=true; }
+        if (empty($this->validation->event_private)) { $ev_n=true; }
 
-        echo form_radio('event_private','Y',$ev_y).' Yes'; 
-        echo form_radio('event_private','N',$ev_n).' No'; 
+        echo form_radio('event_private','Y', $ev_y).' Yes'; 
+        echo form_radio('event_private','N', $ev_n).' No'; 
     ?>
     </div>
     <div class="clear"></div>
@@ -130,7 +130,7 @@ echo '<h2>'.$title.'</h2>';
     <?php echo form_input(
         array('name'=>'event_loc',
             'id'=>'event_loc'
-            ),$this->validation->event_loc); ?>
+            ), $this->validation->event_loc); ?>
     </div>
     <div class="clear"></div>
 
@@ -216,7 +216,7 @@ echo '<h2>'.$title.'</h2>';
             </td>
             <td style="vertical-align:middle">
                 <span style="color:#3567AC;font-size:11px" id="stub_display">
-                <?php if(!empty($this->validation->event_stub)){ 
+                <?php if (!empty($this->validation->event_stub)) { 
                     echo '<a href="http://joind.in/event/'.$this->validation->event_stub.'">http://joind.in/event/'.$this->validation->event_stub.'</a>'; } ?>
                 </span><br/>
         </tr></table>
@@ -225,19 +225,19 @@ echo '<h2>'.$title.'</h2>';
     <div class="clear"></div>
     <div class="row">
         <label for="event_link">Event Link(s):</label>
-    <?php echo form_input('event_href',$this->validation->event_href); ?><br/>
+    <?php echo form_input('event_href', $this->validation->event_href); ?><br/>
     </div>
     <div class="clear"></div>
     <div class="row">
         <label for="event_hashtag">Event Hashtag(s):</label>
-    <?php echo form_input('event_hashtag',$this->validation->event_hashtag); ?>
+    <?php echo form_input('event_hashtag', $this->validation->event_hashtag); ?>
     <span style="color:#3567AC;font-size:11px">Seperate tags with commas</span>
     </div>
     <div class="clear"></div>
     
     <?php
         $cfp_validated = false;
-        if(isset($this->validation->cfp_checked)) {
+        if (isset($this->validation->cfp_checked)) {
             $showFields[] = 'cfp-fields-toggle-link';
             $cfp_validated = true;
         }
@@ -248,7 +248,7 @@ echo '<h2>'.$title.'</h2>';
     <div class="row">
         <?php 
             $js='onClick="toggleCfpDates()"';
-            echo form_checkbox('is_cfp','1',$cfp_validated,$js); 
+            echo form_checkbox('is_cfp','1', $cfp_validated, $js); 
         ?> Yes, we're going to have a Call for Papers
         <br/><br/>
         <label for="start">Call for Papers Start Date</label>
@@ -291,7 +291,7 @@ echo '<h2>'.$title.'</h2>';
         $cfp_end_day[$v] = sprintf('%02d', $v);
     }
 
-    foreach(range('2008', date('Y')+5) as $v) {
+    foreach (range('2008', date('Y')+5) as $v) {
         $cfp_end_yr[$v] = $v;
     }
 
@@ -312,25 +312,25 @@ echo '<h2>'.$title.'</h2>';
     <div class="row">
         <label for="cfp-url-location">Call for Papers URL Location</label>
         <?php 
-            if(isset($this->validation->event_cfp_url)) {
+            if (isset($this->validation->event_cfp_url)) {
                 $cfp_url = $this->validation->event_cfp_url;
             } else {
                 $cfp_url = '';
             }
-            echo form_input('cfp_url',$cfp_url,'id="cfp_url"'); 
+            echo form_input('cfp_url', $cfp_url,'id="cfp_url"'); 
             ?>
         <div class="clear"></div>
     </div>
     </fieldset>
 
     <div class="row">
-        <?php echo form_submit('sub',$sub); ?>
+        <?php echo form_submit('sub', $sub); ?>
     </div>
 </div>
 <?php echo form_close(); ?>
 
 <script type="text/javascript">
-$(document).ready(function(){ 
+$(document).ready(function() { 
     JI_event.init(); 
     var fields = null;
     JI_event.hideFieldsets(fields); 

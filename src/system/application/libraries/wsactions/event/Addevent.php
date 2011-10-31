@@ -5,25 +5,25 @@ class Addevent extends BaseWsRequest {
     var $CI	= null;
     var $xml= null;
     
-    public function Addevent($xml){
+    public function Addevent($xml) {
         $this->CI=&get_instance(); //print_r($this->CI);
         $this->xml=$xml;
     }
     /**
     * Right now, only site admins can add events via the web interface
     */
-    public function checkSecurity($xml){
+    public function checkSecurity($xml) {
         // Check for a valid login
-        if($this->isValidLogin($xml)){
+        if ($this->isValidLogin($xml)) {
             // Now check to see if they're a site admin
-            if(!$this->CI->user_model->isSiteAdmin($xml->auth->user)){
+            if (!$this->CI->user_model->isSiteAdmin($xml->auth->user)) {
                 return false;
-            }else{ return true; }
+            } else { return true; }
             
-        }else{ return false; }
+        } else { return false; }
     }
     //-----------------------
-    public function run(){
+    public function run() {
         $this->CI->load->library('wsvalidate');
         $id=$this->xml->action->id;
         $unique=true;
@@ -36,11 +36,11 @@ class Addevent extends BaseWsRequest {
             'event_tz'			=>'required',
             'event_desc'		=>'required'
         );
-        $ret=$this->CI->wsvalidate->validate($rules,$this->xml->action);
-        if(!$ret){
-            $unique=$this->CI->wsvalidate->validate_unique('event',$this->xml->action);
+        $ret=$this->CI->wsvalidate->validate($rules, $this->xml->action);
+        if (!$ret) {
+            $unique=$this->CI->wsvalidate->validate_unique('event', $this->xml->action);
         }
-        if(!$ret && $unique){
+        if (!$ret && $unique) {
             $this->CI->load->model('event_model');
             $data=(array)$this->xml->action;
             $arr=array(
@@ -52,12 +52,12 @@ class Addevent extends BaseWsRequest {
                 'event_tz'		=> $data['event_tz'],
                 'active'		=> '1',
             );
-            $this->CI->db->insert('events',$arr);
+            $this->CI->db->insert('events', $arr);
             
             return array('output'=>'msg','data'=>array('msg'=>'Event added successfully!'));
-        }else{
-            if(!$unique){ $ret='Non-unique entry!'; }
-            if(is_array($ret)){ $msg=''; foreach($ret as $k=>$v){ $msg.=$v."\n"; } $ret=$msg; }
+        } else {
+            if (!$unique) { $ret='Non-unique entry!'; }
+            if (is_array($ret)) { $msg=''; foreach ($ret as $k=>$v) { $msg.=$v."\n"; } $ret=$msg; }
             return array('output'=>'msg','data'=>array('msg'=>$ret)); 
         }
     }

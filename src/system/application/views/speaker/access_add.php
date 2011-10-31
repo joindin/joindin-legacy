@@ -9,8 +9,8 @@ menu_pagetitle('Manage Speaker Profile Access');
 $this->load->view('user/_nav_sidebar');
 
 $edit_select=array();
-if($curr_access){
-    foreach($curr_access as $curr){ $edit_select[]=(is_object($curr)) ? $curr->field_name : $curr; }
+if ($curr_access) {
+    foreach ($curr_access as $curr) { $edit_select[]=(is_object($curr)) ? $curr->field_name : $curr; }
 }
 ?>
 
@@ -37,13 +37,13 @@ $fields=array(
 );
 
 $path=($req_type=='edit') ? 'speaker/access/edit/'.$token_id : 'speaker/access/add';
-echo form_open($path,array('id'=>'frm_access_add'));
+echo form_open($path, array('id'=>'frm_access_add'));
 ?>
 
 <div id="box">
     <div class="row">
         <label for="token_name">Token Name</label>
-        <?php echo form_input('token_name',$this->validation->token_name); ?>
+        <?php echo form_input('token_name', $this->validation->token_name); ?>
         <span style="color:#3567AC;font-size:11px">
         <b>What's a token?</b> Think of a token as a shortcut to get to this access profile. You
         can name your tokens just about anything you want - something easy to remember usually works best.
@@ -54,7 +54,7 @@ echo form_open($path,array('id'=>'frm_access_add'));
     </div>
     <div class="row">
         <label for="token_desc">Token Description</label>
-        <?php echo form_input('token_desc',$this->validation->token_desc); ?>
+        <?php echo form_input('token_desc', $this->validation->token_desc); ?>
         <div class="clear"></div>
     </div>
     <div class="row">
@@ -62,13 +62,13 @@ echo form_open($path,array('id'=>'frm_access_add'));
         <?php
         $i=0;
         echo '<table cellpadding="0" cellspacing="0" border="0" width="100%"><tr>';
-        foreach($fields as $k=>$v){
+        foreach ($fields as $k=>$v) {
             $i++;
             echo '<td style="padding:3px">';
             //echo '<input type="checkbox" value="'.$k.'" name="fields[]"> '.$v.'</td>';
-            $is_chk=(in_array($k,$edit_select)) ? true : false;
-            echo form_checkbox('fields[]',$k, $is_chk).' '.$v."\n";
-            if($i%2==0){ echo '</tr><tr>'; }
+            $is_chk=(in_array($k, $edit_select)) ? true : false;
+            echo form_checkbox('fields[]', $k, $is_chk).' '.$v."\n";
+            if ($i%2==0) { echo '</tr><tr>'; }
         }
         echo '</tr></table>';
         ?>
@@ -87,6 +87,6 @@ echo form_open($path,array('id'=>'frm_access_add'));
         <?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Save changes'); ?>
         <div class="clear"></div>
     </div>
-    <?php if(isset($token_id)){ echo form_hidden('token_id',$token_id); } ?>
+    <?php if (isset($token_id)) { echo form_hidden('token_id', $token_id); } ?>
 </div>
 <?php echo form_close(); ?>

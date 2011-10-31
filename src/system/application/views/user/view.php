@@ -1,11 +1,11 @@
 <?php
 menu_pagetitle('User: ' . escape($details[0]->full_name));
-if($gravatar){ echo '<img src="'.$gravatar.'" height="80" width="80" alt="" /><br/><br/>'; } ?>
+if ($gravatar) { echo '<img src="'.$gravatar.'" height="80" width="80" alt="" /><br/><br/>'; } ?>
 <h1><?php 
     echo (!empty($details[0]->full_name)) ? $details[0]->full_name : $details[0]->username;
 ?></h1>
 <?php 
-if($is_admin){
+if ($is_admin) {
     $txt=($details[0]->active==1) ? 'Disable User Account' : 'Enable User Account'; ?>
     <a class="btn-small" href="/user/changestat/<?php echo $details[0]->ID; ?>"><?php echo $txt; ?></a>
     <?php $atxt=($details[0]->admin==1) ? 'Remove as Admin' : 'Add as Admin'; ?>
@@ -14,13 +14,13 @@ if($is_admin){
 <?php } ?>
 
 <div class="box">
-<?php if(count($pending_evt)>0): ?>
+<?php if (count($pending_evt)>0): ?>
 <h2>Your Pending Events</h2>
 <?php 
-foreach($pending_evt as $e){
+foreach ($pending_evt as $e) {
     $det=$e->detail[0];
-    echo '<b style="font-size:14px">'.$det->event_name.'</b><br/>'.date('m.d.Y',$det->event_start);
-    if ($det->event_start+86399 != $det->event_end) echo '- '.date('m.d.Y',$det->event_end);
+    echo '<b style="font-size:14px">'.$det->event_name.'</b><br/>'.date('m.d.Y', $det->event_start);
+    if ($det->event_start+86399 != $det->event_end) echo '- '.date('m.d.Y', $det->event_end);
     echo '<br/>';
 }
 ?>
@@ -28,10 +28,10 @@ foreach($pending_evt as $e){
 <?php endif; ?>
 
 <?php
-if(!empty($details[0]->twitter_username)){
+if (!empty($details[0]->twitter_username)) {
     echo '<a href="http://twitter.com/'.$details[0]->twitter_username.'">@'.$details[0]->twitter_username.'</a><br/><br/>';
 }
-if(!empty($pub_profile)){
+if (!empty($pub_profile)) {
     $this->load->view('user/_public_profile', array('profile'=>$pub_profile));
 }
 
@@ -42,32 +42,32 @@ switch ($sort_type) {
     case 'lastcomment':
         $talk_cdate = array();
         $tmp_talk   = array();
-        foreach($talks as $k=>$v){
+        foreach ($talks as $k=>$v) {
             $talk_cdate[$v->ID]	= $v->last_comment_date;
             $tmp_talk[$v->ID]	= $v;
         }
         arsort($talk_cdate);
         // Resort our talks
         $tmp=array();
-        foreach($talk_cdate as $k=>$v){ $tmp[]=$tmp_talk[$k]; }
+        foreach ($talk_cdate as $k=>$v) { $tmp[]=$tmp_talk[$k]; }
         $talks=$tmp;
         $title = 'Talks (By Latest Comment)'; break;
     case 'bycomment':
         $talk_ccount	= array();
         $tmp_talk	= array();
-        foreach($talks as $k=>$v){
+        foreach ($talks as $k=>$v) {
             $talk_ccount[$v->ID]= $v->ccount;
             $tmp_talk[$v->ID]	= $v;
         }
         arsort($talk_ccount);
-        foreach($talk_ccount as $k=>$v){ $tmp[]=$tmp_talk[$k]; }
+        foreach ($talk_ccount as $k=>$v) { $tmp[]=$tmp_talk[$k]; }
         $talks=$tmp;
         $title = 'Talks (By Comment Count)'; break;
     case 'byname':
         // group them together by name - down below it'll look for 
         // the subarray
         $talks_by_name = array();
-        foreach($talks as $talk){
+        foreach ($talks as $talk) {
             $talks_by_name[trim($talk->talk_title)][]=$talk;
         }
         ksort($talks_by_name);
@@ -88,11 +88,11 @@ switch ($sort_type) {
     <p>No talks so far</p>
 <?php else: ?>
     <?php
-        if($sort_type=='byname'){
-            foreach($talks_by_name as $talk_title => $talks){
+        if ($sort_type=='byname') {
+            foreach ($talks_by_name as $talk_title => $talks) {
                 echo '<h3>'.$talk_title.'</h3><br/>';
                 echo '<div style="padding-left:15px">';
-                foreach($talks as $talk){
+                foreach ($talks as $talk) {
                     $this->load->view('talk/_talk-row', array(
                         'talk'		=> $talk,
                         'override'	=> array($details[0]->ID=>$details[0]->full_name)
@@ -100,8 +100,8 @@ switch ($sort_type) {
                 }
                 echo '</div>';
             }
-        }else{
-            foreach($talks as $talk){
+        } else {
+            foreach ($talks as $talk) {
                 $this->load->view('talk/_talk-row', array(
                     'talk'		=> $talk,
                     'override'	=> array($details[0]->ID=>$details[0]->full_name)
@@ -117,7 +117,7 @@ switch ($sort_type) {
 <?php if (count($comments) == 0): ?>
     <p>No comments so far</p>
 <?php else: ?>
-    <?php foreach($comments as $k=>$v): ?>
+    <?php foreach ($comments as $k=>$v): ?>
     <div class="row">
         <strong><a href="/talk/view/<?php echo $v->talk_id; ?>#comment-<?php echo $v->ID; ?>"><?php echo escape($v->talk_title); ?></a></strong>
         <div class="clear"></div>
@@ -129,26 +129,26 @@ switch ($sort_type) {
 <?php
 //sort the events
 $ev=array('attended'=>array(),'attending'=>array());
-foreach($is_attending as $k=>$v){
-    if($v->event_end<time()){
+foreach ($is_attending as $k=>$v) {
+    if ($v->event_end<time()) {
         $ev['attended'][]=$v; 
-    }else{ $ev['attending'][]=$v; }
+    } else { $ev['attending'][]=$v; }
 }
 //minimize my attending
 $my=array();
-foreach($my_attend as $k=>$v){ $my[]=$v->ID; }
+foreach ($my_attend as $k=>$v) { $my[]=$v->ID; }
 
 //check the date and, if they have talks in their list, be sure that its in the list
-foreach($talks as $k=>$v){
+foreach ($talks as $k=>$v) {
     $d=array(
         'event_name'	=> $v->event_name,
         'event_start'	=> $v->date_given,
         'ID'			=> $v->eid
     );
     $d=(object)$d;
-    if($v->date_given<time()){
+    if ($v->date_given<time()) {
         $ev['attended'][]=$d;
-    }else{ $ev['attending'][]=$d; }
+    } else { $ev['attending'][]=$d; }
 }
 ?>
 
@@ -162,13 +162,13 @@ foreach($talks as $k=>$v){
         <?php else: ?>
             <?php 
             $eids=array();
-            foreach($ev['attending'] as $k=>$v){ 
-                if(in_array($v->ID,$eids)){ continue; }else{ $eids[]=$v->ID; }
+            foreach ($ev['attending'] as $k=>$v) { 
+                if (in_array($v->ID, $eids)) { continue; } else { $eids[]=$v->ID; }
             ?>
             <div class="row">
                 <strong><a href="/event/view/<?php echo $v->ID; ?>"><?php echo escape($v->event_name); ?></a></strong>
-                <?php echo date('M d, Y',$v->event_start); ?>
-                <?php if(in_array($v->ID,$my)){ echo "<br/><span style=\"color:#92C53E;font-size:11px\">you'll be there!</span>"; } ?>
+                <?php echo date('M d, Y', $v->event_start); ?>
+                <?php if (in_array($v->ID, $my)) { echo "<br/><span style=\"color:#92C53E;font-size:11px\">you'll be there!</span>"; } ?>
                 <div class="clear"></div>
             </div>
             <?php } ?>
@@ -183,13 +183,13 @@ foreach($talks as $k=>$v){
         <?php else: ?>
             <?php 
             $eids=array();
-            foreach($ev['attended'] as $k=>$v){
-                if(in_array($v->ID,$eids)){ continue; }else{ $eids[]=$v->ID; }
+            foreach ($ev['attended'] as $k=>$v) {
+                if (in_array($v->ID, $eids)) { continue; } else { $eids[]=$v->ID; }
             ?>
             <div class="row">
                 <strong><a href="/event/view/<?php echo $v->ID; ?>"><?php echo escape($v->event_name); ?></a></strong>
-                <?php echo date('M d, Y',$v->event_start); ?>
-                <?php if(in_array($v->ID,$my)){ echo "<br/><span style=\"color:#92C53E\">you were there!</span>"; } ?>
+                <?php echo date('M d, Y', $v->event_start); ?>
+                <?php if (in_array($v->ID, $my)) { echo "<br/><span style=\"color:#92C53E\">you were there!</span>"; } ?>
                 <div class="clear"></div>
             </div>
             <?php } ?>
@@ -197,7 +197,7 @@ foreach($talks as $k=>$v){
         </div>
     </td>
 </tr>
-<?php if($is_admin){ ?>
+<?php if ($is_admin) { ?>
 <tr>
     <td colspan="2">
         <div class="box">
@@ -205,12 +205,12 @@ foreach($talks as $k=>$v){
             <table cellpadding="3" cellspacing="0" border="0">
             <?php
             //echo '<pre>'; print_r($uadmin); echo '</pre>';
-            foreach($uadmin as $k=>$v){
-                if(!isset($v->detail[0])){ continue; }
-                if($v->rtype=='talk'){
+            foreach ($uadmin as $k=>$v) {
+                if (!isset($v->detail[0])) { continue; }
+                if ($v->rtype=='talk') {
                     $title=$v->detail[0]->talk_title;
                     $url='/talk/view/'.$v->detail[0]->ID;
-                }else{ 
+                } else { 
                     $title=$v->detail[0]->event_name;
                     $url='/event/view/'.$v->detail[0]->ID;
                 }
@@ -221,7 +221,7 @@ foreach($talks as $k=>$v){
                         <td style="padding:3px"><a href="%s">%s %s</a></td>
                         <td style="padding:3px"><a href="#" onClick="removeRole(%s);return false;">X</a></td>
                     </tr>
-                ',$v->rid,$v->rtype,$url,$title,$pend,$v->admin_id);
+                ', $v->rid, $v->rtype, $url, $title, $pend, $v->admin_id);
             }
             ?>
             </table>

@@ -1,5 +1,5 @@
 <?php
-$this->load->view('user/_nav_sidebar',array('pending_events'=>$pending_events,
+$this->load->view('user/_nav_sidebar', array('pending_events'=>$pending_events,
                                             'event_claims'=>$event_claims));
 
 ob_start();
@@ -28,7 +28,7 @@ if (!empty($msg)):
 <?php $this->load->view('msg_info', array('msg' => $msg)); ?>
 <?php endif; ?>
 
-<?php if($gravatar): ?>
+<?php if ($gravatar): ?>
     <img src="<?php echo $gravatar; ?>" style="margin-bottom:5px" height="80" width="80" /><br/>
 <?php endif; ?>
 
@@ -38,7 +38,7 @@ if (!empty($msg)):
     <p>No talks so far</p>
 <?php else: ?>
     <?php
-        foreach($talks as $k=>$v){
+        foreach ($talks as $k=>$v) {
             $this->load->view('talk/_talk-row', array('talk'=>$v));
         }
     ?>
@@ -52,7 +52,7 @@ if (!empty($msg)):
 <?php if (count($comments) == 0): ?>
     <p>No comments so far</p>
 <?php else: ?>
-    <?php foreach($comments as $k=>$v): ?>
+    <?php foreach ($comments as $k=>$v): ?>
     <div class="row">
         <strong><a href="/talk/view/<?php echo $v->talk_id; ?>#comment-<?php echo $v->ID; ?>"><?php echo escape($v->talk_title); ?></a></strong>
         <div class="clear"></div>

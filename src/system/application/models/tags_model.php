@@ -15,7 +15,7 @@ class Tags_model extends Model
      */
     public function tagExists($tagValue)
     {
-        $result = $this->db->get_where('tags',array(
+        $result = $this->db->get_where('tags', array(
             'tag_value' => $tagValue
         ))->result();
         
@@ -32,10 +32,10 @@ class Tags_model extends Model
     public function addTag($tagValue)
     {
         $result = $this->tagExists($tagValue);
-        if($result){
+        if ($result) {
             return $result->id;
-        }else{
-            $this->db->insert('tags',array(
+        } else {
+            $this->db->insert('tags', array(
                 'tag_value' => $tagValue
             ));
             return $this->db->insert_id();

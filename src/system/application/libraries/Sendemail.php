@@ -6,7 +6,7 @@ class SendEmail {
     private $_config;
     private $CI		= null;
     
-    public function __construct(){
+    public function __construct() {
         $this->CI=&get_instance();
                 $this->_config = $this->CI->config;
     }
@@ -14,21 +14,21 @@ class SendEmail {
     /**
     * Generic function for sending emails
     */
-    private function _sendEmail($to,$msg,$subj,$from=null,$extra_headers=null){
-        if(!is_array($to)){ $to=array($to); }
+    private function _sendEmail($to, $msg, $subj, $from=null, $extra_headers=null) {
+        if (!is_array($to)) { $to=array($to); }
         $from	= ($from) ? $from : $this->_config->item('email_feedback');
         $to 	= ($this->_config->item('debug_email')) ? array($this->_config->item('debug_email')) : $to;
 
         $headers = array();
         $headers[] = 'From: ' . $from;
-        if(!empty($extra_headers)){
-            foreach($extra_headers as $header){
+        if (!empty($extra_headers)) {
+            foreach ($extra_headers as $header) {
                 $headers[]=$header;
             }
         }
 
-        foreach($to as $email){
-            mail($email,$subj,$msg,implode("\r\n",$headers), '-f'.$from);
+        foreach ($to as $email) {
+            mail($email, $subj, $msg, implode("\r\n", $headers), '-f'.$from);
         }
     }
     //-----------------------
@@ -36,7 +36,7 @@ class SendEmail {
     /**
     * Send a message to user who claimed the talk when its accepted
     */
-    public function claimSuccess($to,$talk_title,$talk_id,$evt_name){
+    public function claimSuccess($to, $talk_title, $talk_id, $evt_name) {
         $subj= $this->_config->item('site_name') . ': Claim on talk "'.$talk_title.'"';
         $msg=sprintf("
 You recently laid claim to a talk at the \"%s\" event on %s - \"%s\"
@@ -47,14 +47,14 @@ Your claim has been approved. This talk will now be listed under your account.
 Thanks,
 The %s Crew
         ", $evt_name, $this->_config->item('site_name'), $talk_title, 
-        $this->_config->site_url(),$talk_id,$this->_config->item('site_name'));
-        $this->_sendEmail($to,$msg,$subj);
+        $this->_config->site_url(), $talk_id, $this->_config->item('site_name'));
+        $this->_sendEmail($to, $msg, $subj);
     }
 
     /**
     * Send a notice of invite to a user (to a private event)
     */
-    public function sendInvite($to,$evt_id,$evt_name){
+    public function sendInvite($to, $evt_id, $evt_name) {
         $subj="You've been invited to ".$evt_name;
         $msg=sprintf("
 You have been invited to the event \"%s\" (a private event)
@@ -63,14 +63,14 @@ To reply to this invite and add yourself to the attending list, please
 visit %sevent/invite/%s/respond
         ", $evt_name, $this->_config->site_url(), $evt_id);
         
-        $this->_sendEmail($to,$msg,$subj);
+        $this->_sendEmail($to, $msg, $subj);
     }
     
     /**
     * Send a request to the event admin from a user wanting an invite
     * $user needs to be the result of a user_model->getUser()
     */
-    public function sendInviteRequest($eid,$evt_name,$user,$admins){
+    public function sendInviteRequest($eid, $evt_name, $user, $admins) {
         $subj='User '.$user[0]->full_name.' ('.$user[0]->username.') is requesting an invite!';
         $msg=sprintf("
 The user %s (%s) has requested an invite to the event \"%s\"
@@ -81,8 +81,8 @@ approve or reject the invite.
         
         //$to=array($user[0]->email);
         $to=array();
-        foreach($admins as $k=>$v){ $to[]=$v->email; }
-        $this->_sendEmail($to,$msg,$subj);
+        foreach ($admins as $k=>$v) { $to[]=$v->email; }
+        $this->_sendEmail($to, $msg, $subj);
     }
     
     /**
@@ -90,7 +90,7 @@ approve or reject the invite.
     * $admins should be a result of a user_model->getEventAdmins
     * $user needs to be the result of a user_model->getUser()
     */
-    public function sendEventContact($eid,$evt_name,$msg,$user,$admins){
+    public function sendEventContact($eid, $evt_name, $msg, $user, $admins) {
         $subj = $this->_config->item('site_name') . ': A question from '.$user[0]->username;
         $msg=sprintf("
 %s (%s) has asked a question about the \"%s\" event:
@@ -98,18 +98,18 @@ approve or reject the invite.
 %s
 
 You can reply directly to them by replying to this email.
-        ",$user[0]->full_name,$user[0]->username,$evt_name,$msg);
+        ", $user[0]->full_name, $user[0]->username, $evt_name, $msg);
         
         $to=array();
-        foreach($admins as $k=>$v){ $to[]=$v->email; }
-        $this->_sendEmail($to,$msg,$subj,$user[0]->email);
+        foreach ($admins as $k=>$v) { $to[]=$v->email; }
+        $this->_sendEmail($to, $msg, $subj, $user[0]->email);
     }
     
     /**
     * Send password reset email to the given user 
     * (user's email address is looked up by username)
     */
-    public function sendPasswordReset($user,$pass){
+    public function sendPasswordReset($user, $pass) {
         $to		= $user[0]->email;
         $subj	= $this->_config->item('site_name') . ' - Password Reset';
         $msg	= sprintf('
@@ -122,7 +122,7 @@ Your new password is below:
 
 Please log in in at %suser/login and change your password as soon as possible.
         ', $user[0]->username, $this->_config->item('site_name'), $pass, $this->_config->site_url());
-        $this->_sendEmail($to,$msg,$subj);
+        $this->_sendEmail($to, $msg, $subj);
     }
 
     public function sendPasswordResetRequest($user, $request_code) {
@@ -143,7 +143,7 @@ has changed. In order to reset your password click on the link below or copy it 
     /**
     * Send an email when a user is added to the admin list for an event
     */
-    public function sendAdminAdd($user,$evt,$added_by=null){
+    public function sendAdminAdd($user, $evt, $added_by=null) {
         $subj='You\'re now an admin on "'.$evt[0]->event_name.'"';
         $aby=($added_by) ? 'by '.$added_by : '';
         $msg=sprintf("
@@ -153,7 +153,7 @@ You can view the event here: %sevent/view/%s
         ", $evt[0]->event_name, $aby, $this->_config->site_url(), $evt[0]->ID);
         
         $to=array($user[0]->email);
-        $this->_sendEmail($to,$msg,$subj);
+        $this->_sendEmail($to, $msg, $subj);
     }
     
     /**
@@ -164,10 +164,10 @@ You can view the event here: %sevent/view/%s
     * @param array $talk_detail Talk detail information
     * @param array $in_arr User data for byline
     */
-    public function sendTalkComment($tid,$to,$talk_detail,$in_arr){
+    public function sendTalkComment($tid, $to, $talk_detail, $in_arr) {
         $CI =& get_instance();
         $byline='';
-        if($in_arr['user_id']!=0){
+        if ($in_arr['user_id']!=0) {
             $CI->load->model('user_model');
             $udata	= $CI->user_model->getUser($in_arr['user_id']);
             $byline	= 'by '.$udata[0]->full_name.' ('.$udata[0]->username.')';
@@ -184,7 +184,7 @@ Click here to view it: %stalk/view/%s
         ", $this->_config->item('site_name'), $byline, $talk_detail[0]->talk_title, trim($in_arr['comment']), $in_arr['rating'], $this->_config->site_url(), $tid);
         
         $to=array($to);
-        $this->_sendEmail($to,$msg,$subj, $this->_config->item('email_comments'));
+        $this->_sendEmail($to, $msg, $subj, $this->_config->item('email_comments'));
     }
     
     /**
@@ -193,11 +193,11 @@ Click here to view it: %stalk/view/%s
     * @param $evt_detail array Event Detail information
     * @param $admins array Site admin information
     */
-    public function sendSuccessfulImport($eid,$evt_detail,$admins=null){
+    public function sendSuccessfulImport($eid, $evt_detail, $admins=null) {
         $subj='Successful Import for event '.$evt_detail[0]->event_name;
         $from	= 'From:' . $this->_config->item('email_feedback');
         
-        if(!$admins){ 
+        if (!$admins) { 
             $this->CI->load->model('event_model');
             $this->CI->event_model->getEventAdmins($eid); 
         }
@@ -208,8 +208,8 @@ You can view the event here: %sevent/view/%s
         ", $evt_detail[0]->event_name, $this->_config->site_url(), $eid);
         
         $to=array();
-        foreach($admins as $k=>$v){ $to[]=$v->email; }
-        $this->_sendEmail($to,$msg,$subj,$this->_config->item('email_comments'));
+        foreach ($admins as $k=>$v) { $to[]=$v->email; }
+        $this->_sendEmail($to, $msg, $subj, $this->_config->item('email_comments'));
     }
     
     /**
@@ -223,29 +223,29 @@ You can view the event here: %sevent/view/%s
         $subj	= 'Pending Events on '.$this->_config->item('site_name');
         $from	= 'From:' . $this->_config->item('email_feedback');
         $admin 	= $this->CI->user_model->getSiteAdminEmail();
-        foreach($admin as $k=>$v){ $to[]=$v->email; }
+        foreach ($admin as $k=>$v) { $to[]=$v->email; }
 
         $msg		= "This is a list of pending events and their start dates. Don't miss one!\n\n";
         $event_list = array();
         $one_week 	= strtotime('+1 week');
         
-        foreach($pending_events as $event){
-            if($event->event_start>time() && $event->event_start<=$one_week){
+        foreach ($pending_events as $event) {
+            if ($event->event_start>time() && $event->event_start<=$one_week) {
                 $event_list['One_Week'][]=$event;
-            }elseif($event->event_start<=time()){
+            } elseif ($event->event_start<=time()) {
                 $event_list['Past'][]=$event;
-            }else{
+            } else {
                 $event_list['Other'][]=$event;
             }
         }
-        foreach($event_list as $list_category => $list_item){
-            $msg.=str_replace('_',' ',$list_category)."\n";
-            foreach($list_item as $list_item_detail){
-                $msg.="\t".date('m.d.Y',$list_item_detail->event_start).': '.$list_item_detail->event_name."\n";
+        foreach ($event_list as $list_category => $list_item) {
+            $msg.=str_replace('_',' ', $list_category)."\n";
+            foreach ($list_item as $list_item_detail) {
+                $msg.="\t".date('m.d.Y', $list_item_detail->event_start).': '.$list_item_detail->event_name."\n";
             }
         }
         
-        $this->_sendEmail($to,$msg,$subj,$this->_config->item('email_comments'));
+        $this->_sendEmail($to, $msg, $subj, $this->_config->item('email_comments'));
     }
     
     /**
@@ -254,7 +254,7 @@ You can view the event here: %sevent/view/%s
      * @param array $talk_detail Talk details
      * @param array $to Email addresses
      */
-    public function sendPendingClaim($talk_detail,$to)
+    public function sendPendingClaim($talk_detail, $to)
     {
         error_log('sending pending');
         
@@ -269,10 +269,10 @@ be logged in to get to the \"Claims\" page for the event!
         ", $talk_detail->talk_title, $this->CI->config->site_url(), $talk_detail->event_id);
         error_log('inside: '.$message);
     
-        $this->_sendEmail($to,$message,$subject);
+        $this->_sendEmail($to, $message, $subject);
     }
     
-    public function sendEventApproved($event_detail,$admin_list){
+    public function sendEventApproved($event_detail, $admin_list) {
         $subject 	= 'The event "'.$event_detail->event_name.'" has been approved!';
         $event_url 	= $this->_config->site_url().'event/view/'.$event_detail->ID;
         
@@ -289,7 +289,7 @@ be logged in to get to the \"Claims\" page for the event!
             <br/></br>
             The Joind.in Team<br/>
             info@joind.in
-        ',$this->_config->site_url(),$event_detail->event_name,$event_url,$event_url);
+        ', $this->_config->site_url(), $event_detail->event_name, $event_url, $event_url);
         
         $headers = array(
             'Content-Type: text/html; charset=ISO-8859-1',
@@ -297,8 +297,8 @@ be logged in to get to the \"Claims\" page for the event!
         );
 
         // Send to each event admin...
-        foreach($admin_list as $k=>$user){
-            $this->_sendEmail(array($user->email),$msg,$subject,null,$headers);
+        foreach ($admin_list as $k=>$user) {
+            $this->_sendEmail(array($user->email), $msg, $subject, null, $headers);
         }
 
     }

@@ -3,7 +3,7 @@ $cl=array();
 
 // work through the talks list and split into days
 $by_day=array();
-foreach($talks as $t){
+foreach ($talks as $t) {
     $day = strtotime($t->display_date);
     $by_day[$day][]=$t;
 }
@@ -33,13 +33,13 @@ $talksTab
 $commentsTab = new joindIn_Tab(
     'comments',
     'Comments ('.count($comments).')',
-    $this->load->view('event/modules/_event_tab_comments',array(), true)
+    $this->load->view('event/modules/_event_tab_comments', array(), true)
 );
 
 $tabs->addTab($talksTab);
 $tabs->addTab($commentsTab);
 
-if(isset($evt_sessions) && count($evt_sessions)>0):
+if (isset($evt_sessions) && count($evt_sessions)>0):
     $relatedTab = new joindIn_Tab(
         'evt_related',
         'Event related ('.count($evt_sessions).')',
@@ -51,7 +51,7 @@ endif;
 $slidesTab = new joindIn_Tab(
     'slides',
     'Slides ('.count($slides_list).')',
-    $this->load->view('event/modules/_event_tab_slides',array('ct'=>$ct), true)
+    $this->load->view('event/modules/_event_tab_slides', array('ct'=>$ct), true)
 );
 $tabs->addTab($slidesTab);
 
@@ -59,12 +59,12 @@ if ($admin):
     $statsTab = new joindIn_Tab(
         'statistics',
         'Statistics',
-        $this->load->view('event/modules/_event_tab_admin',array('talk_stats'=>$talk_stats), true)
+        $this->load->view('event/modules/_event_tab_admin', array('talk_stats'=>$talk_stats), true)
     );
     $tabs->addTab($statsTab);
 endif;
 
-if(count($tracks)>0):
+if (count($tracks)>0):
     $tracksTab = new joindIn_Tab(
         'tracks',
         'Tracks ('.count($tracks).')',

@@ -30,7 +30,7 @@
 // Display the list of private attendees
 //var_dump($invites);
 echo form_open('event/invite/'.$eid);
-echo form_hidden('attend_list',count($invites));
+echo form_hidden('attend_list', count($invites));
 ?>
 <table cellpadding="0" cellspacing="0" border="0" id="invite_list">
 <tr class="header">
@@ -40,19 +40,19 @@ echo form_hidden('attend_list',count($invites));
     <td>Invite Sent</td>
     <td>Status</td>
 </tr>
-<?php foreach($invites as $k=>$user): ?>
+<?php foreach ($invites as $k=>$user): ?>
     <tr>
         <td><?php 
-            if($user->accepted=='A'){
+            if ($user->accepted=='A') {
                 echo form_submit('approve_'.$user->uid,'approve');
                 echo form_submit('decline_'.$user->uid,'decline');
-            }else{ echo form_submit('del_'.$user->uid,'delete'); }
+            } else { echo form_submit('del_'.$user->uid,'delete'); }
         ?></td>
         <td><?php echo $user->full_name; ?></td>
         <td><a href="/user/view/<?php echo $user->uid; ?>"><?php echo $user->username; ?></a></td>
-        <td><?php echo date('m.d.Y H:i:s',$user->date_added); ?></td>
+        <td><?php echo date('m.d.Y H:i:s', $user->date_added); ?></td>
         <td><?php 
-            switch(strtolower($user->accepted)){
+            switch(strtolower($user->accepted)) {
                 case 'y': 
                     $style='accepted'; 
                     break;

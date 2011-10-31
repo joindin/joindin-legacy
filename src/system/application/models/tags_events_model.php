@@ -15,10 +15,10 @@ class Tags_events_model extends Model
      * @param string $tagValue Tag value
      * @return integer $insertId Last insert ID
      */
-    public function addTag($eventId,$tagValue)
+    public function addTag($eventId, $tagValue)
     {
         // Invalid tag value, do not save tag
-        if (empty($tagValue) || !preg_match('/^[a-zA-Z0-9]+$/',trim($tagValue))) {
+        if (empty($tagValue) || !preg_match('/^[a-zA-Z0-9]+$/', trim($tagValue))) {
             return false;
         }
         // normalize
@@ -33,16 +33,16 @@ class Tags_events_model extends Model
                 'tag_value' => $tagValue
             ));
         $hasTag = (bool)$this->db->get()->result();
-        if($hasTag){
+        if ($hasTag) {
             // we already have it - don't add!
             return true;
         }
         
         // check to see if the tag exists first...
-        if($tagRecordId = $this->isTagInUse($tagValue)){
+        if ($tagRecordId = $this->isTagInUse($tagValue)) {
             // if it exists, just use the tag ID to link
             $tagId = $tagRecordId[0]->ID;
-        }else{
+        } else {
             // if not we need to add it to the "Tags" table too
             $CI = &get_instance();
             $CI->load->model('tags_model','tagsModel');
@@ -50,7 +50,7 @@ class Tags_events_model extends Model
             $tagId = $CI->tagsModel->addTag(trim($tagValue));
         }
         
-        $this->db->insert('tags_events',array(
+        $this->db->insert('tags_events', array(
             'event_id' 	=> $eventId,
             'tag_id'	=> $tagId
         ));
@@ -66,13 +66,13 @@ class Tags_events_model extends Model
      * @param integer $tagId Tag ID
      * @return null
      */
-    public function removeTag($eventId,$tagId=null)
+    public function removeTag($eventId, $tagId=null)
     {
         $where = array('event_id' => $eventId);
-        if($tagId != null){
+        if ($tagId != null) {
             $where['ID'] = $tagId;
         }
-        $this->db->delete('tags_events',$where);
+        $this->db->delete('tags_events', $where);
     }
     
     /**
@@ -82,14 +82,14 @@ class Tags_events_model extends Model
      * @param array $tagsToRemove List of tags to remove
      * @return null
      */
-    public function removeUnusedTags($eventId,$tagsToRemove)
+    public function removeUnusedTags($eventId, $tagsToRemove)
     {
         $CI = &get_instance();
         $CI->load->model('tags_model','tagsModel');
 
-        foreach($tagsToRemove as $tag => $detail){
-            if($tagData = $CI->tagsModel->tagExists($tag)){
-                $CI->tagsModel->removeTag($eventId,$tagData[0]->ID);
+        foreach ($tagsToRemove as $tag => $detail) {
+            if ($tagData = $CI->tagsModel->tagExists($tag)) {
+                $CI->tagsModel->removeTag($eventId, $tagData[0]->ID);
             }
         }
     }
@@ -101,14 +101,14 @@ class Tags_events_model extends Model
      * @param mixed $excludeEventId[optional] Event ID(s) to exclude, string or array
      * @return mixed $tagDetail If tag value is found, returns. otherwise, false
      */
-    public function isTagInUse($tagValue,$excludeEventId=null)
+    public function isTagInUse($tagValue, $excludeEventId=null)
     {
         $CI = &get_instance();
         $CI->load->model('tags_model','tagsModel');
         
-        if($tagDetail=$CI->tagsModel->tagExists($tagValue)){
+        if ($tagDetail=$CI->tagsModel->tagExists($tagValue)) {
             return $tagDetail;
-        }else{
+        } else {
             return false;
         }
     }

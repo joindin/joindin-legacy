@@ -52,7 +52,7 @@ $route['event/export/(:num)']					= 'event/export/$1';
 $route['event/edit/(:num)']						= 'event/edit/$1';
 $route['event/view/(:num)']						= 'event/view/$1';
 $route['event/view/(:num)']						= 'event/view/$1';
-foreach(array('talks','comments','statistics', 'evt_related', 'slides', 'tracks') as $tab) {
+foreach (array('talks','comments','statistics', 'evt_related', 'slides', 'tracks') as $tab) {
     $route['event/view/(:num)/'.$tab]			= 'event/view/$1/'.$tab;
 }
 $route['event/view/(:num)/track/(:num)']		= 'event/view/$1/track/$2';

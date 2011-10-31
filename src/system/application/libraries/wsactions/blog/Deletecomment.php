@@ -5,7 +5,7 @@ class Deletecomment extends BaseWsRequest {
     private $CI	= null;
     private $xml= null;
     
-    public function Deletecomment($xml){
+    public function Deletecomment($xml) {
         $this->CI=&get_instance(); //print_r($this->CI);
         $this->xml=$xml;
     }
@@ -15,26 +15,26 @@ class Deletecomment extends BaseWsRequest {
     * - They're for a valid login
     * - They're a site admin
     */
-    public function checkSecurity($xml){
+    public function checkSecurity($xml) {
         $this->CI->load->model('user_model');
 
         // Check for a valid login
-        //if($this->isValidLogin($xml)){
-        if($this->CI->user_model->isAuth() && $this->checkPublicKey()){
+        //if ($this->isValidLogin($xml)) {
+        if ($this->CI->user_model->isAuth() && $this->checkPublicKey()) {
             // Be sure they gave us the blog entry ID and comment ID
-            if(!isset($xml->action->bid) || !isset($xml->action->cid)){
+            if (!isset($xml->action->bid) || !isset($xml->action->cid)) {
                 return false;
             }
             $user=$this->CI->session->userdata('username');
             
             // Now check to see if they're a site admin
-            if(!$this->CI->user_model->isSiteAdmin($user)){
+            if (!$this->CI->user_model->isSiteAdmin($user)) {
                 return false;
-            }else{ return true; }
-        }else{ return false; }
+            } else { return true; }
+        } else { return false; }
     }
     //-----------------------
-    public function run(){
+    public function run() {
         $this->CI->load->library('wsvalidate');
         $this->CI->load->model('blog_comments_model','bcm');
         

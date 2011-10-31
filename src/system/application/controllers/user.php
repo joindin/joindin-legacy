@@ -96,7 +96,7 @@ class User extends Controller
 
         if ($this->validation->run() == false) {
             // add a for-one-request-only session field
-            if($this->session->flashdata('url_after_login')) {
+            if ($this->session->flashdata('url_after_login')) {
                 // the form submission failed, set the flashdata again so it's there for the resubmit
                 $this->session->set_flashdata('url_after_login', $this->session->flashdata('url_after_login'));
             } else {
@@ -125,9 +125,9 @@ class User extends Controller
             // List different routes we don't want to reroute to
             $bad_routes = $this->non_forward_urls;
             
-            foreach($bad_routes as $route)
+            foreach ($bad_routes as $route)
             {
-                if(strstr($to, $route))
+                if (strstr($to, $route))
                 {
                     redirect('user/main');
                 }
@@ -338,7 +338,7 @@ class User extends Controller
         $this->validation->set_fields($fields);
 
         if ($this->validation->run() == false) {
-            //$this->load->view('talk/add',array('events'=>$events));
+            //$this->load->view('talk/add', array('events'=>$events));
         } else {
             //success!
             $this->session->set_flashdata('msg', 'Account successfully created!');
@@ -473,7 +473,7 @@ class User extends Controller
             'has_talks' => (count($arr['talks']) == 0) ? false : true
         );
 
-        if(!empty($block['content'])){
+        if (!empty($block['content'])) {
             $this->template->write_view('sidebar2', 'user/_other-speakers', $block);
         }
         $this->template->write_view('content', 'user/view', $arr);
@@ -573,14 +573,14 @@ class User extends Controller
         $fields = array('user_search' => 'Search Term');
         $this->validation->set_fields($fields);
 
-        if($this->input->post('sub')){
+        if ($this->input->post('sub')) {
             // search call
             $users = $this->user_model->search($this->input->post('user_search'));
             
-        }elseif($this->input->post('um')){
+        } elseif ($this->input->post('um')) {
             // delete user call
             $selectedUsers = $this->input->post('sel');
-            foreach($selectedUsers as $userId){
+            foreach ($selectedUsers as $userId) {
                 $this->user_model->deleteUser($userId);
             }
             $msg = count($selectedUsers).' users deleted';
@@ -765,7 +765,7 @@ class User extends Controller
         if ($this->validation->run() == false) {
             $request_token = filter_var($this->input->get('request_token'), FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^[0-9a-z]*$/')));
             // check for a valid request token 
-            if($this->user_admin_model->oauthRequestTokenVerify($request_token)) {
+            if ($this->user_admin_model->oauthRequestTokenVerify($request_token)) {
                 $this->session->set_flashdata('request_token', $request_token);
             } else {
                 $view_data['status'] = "invalid";
@@ -773,15 +773,15 @@ class User extends Controller
         } else {
             $request_token = $this->session->flashdata('request_token');
 
-            if($this->input->post('access') == 'allow') {
+            if ($this->input->post('access') == 'allow') {
                 $view_data['status'] = "allow";
                 $oauth_info = $this->user_admin_model->oauthAllow($request_token, $this->session->userdata('ID'));
-                if($oauth_info->callback == "oob") {
+                if ($oauth_info->callback == "oob") {
                     // special case, we can't forward the user on so just display verification code
                     $view_data['verification'] = $oauth_info->verification;
                 } else {
                     // add our parameter onto the URL
-                    if(strpos($oauth_info->callback, '?' !== false)) {
+                    if (strpos($oauth_info->callback, '?' !== false)) {
                         $url = $oauth_info->callback . '&';
                     } else {
                         $url = $oauth_info->callback . '?';

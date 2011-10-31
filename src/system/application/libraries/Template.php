@@ -682,16 +682,16 @@ class CI_Template {
     * @param string $view View passed into the functions above
     * @return string Returns path to either the same view or the found custom view
     */
-    public function has_custom_view($view){
+    public function has_custom_view($view) {
         $cpath=$this->CI->config->item('custom_template_dir');
-        if(function_exists('getenv') && $key=getenv('USE_KEY'))
+        if (function_exists('getenv') && $key=getenv('USE_KEY'))
         {
             $cpath=$this->CI->config->item('custom_template_dir').'/'.$key.'/'.$view;
-            if(is_file(APPPATH.'/views/'.$cpath.'.php'))
+            if (is_file(APPPATH.'/views/'.$cpath.'.php'))
             {
                 return $cpath;
-            }else{ return $view; }
-        }else{ return $view; }
+            } else { return $view; }
+        } else { return $view; }
     }
    
 }

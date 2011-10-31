@@ -2,7 +2,7 @@
 <?php if (count($by_day) == 0): ?>
     <?php $this->load->view('msg_info', array('msg' => 'No talks available at the moment.')); ?>
 <?php else: 
-    if(isset($track_filter)){
+    if (isset($track_filter)) {
         echo '<span style="font-size:13px">Sessions for track <b>'.$track_data->track_name.'</b></span>';
         echo ' <span style="font-size:11px"><a href="/event/view/'.$event_detail->ID.'">[show all sessions]</a></span>';
         echo '<br/><br/>';
@@ -20,23 +20,23 @@
                 <h4 id="talks"><?php echo date('d.M.Y', $talk_section_date); ?></h4>
             </th>
         </tr>
-        <?php foreach($talk_section_talks as $ik=>$talk): 
+        <?php foreach ($talk_section_talks as $ik=>$talk): 
 //print_r($talk); echo '<br/><br/>';
 
         $session_rate+=$talk->rank;
         
-        if(isset($track_filter)){
+        if (isset($track_filter)) {
             //Filter to the track ID
-            if(empty($talk->tracks)){ 
+            if (empty($talk->tracks)) { 
                 // If there's no track ID on the talk, don't show it
                 continue; 
-            }else{
+            } else {
                 // There are tracks on the session, let's see if any match...
                 $filter_pass=false;
-                foreach($talk->tracks as $talk_track){
-                    if($talk_track->ID==$track_filter){ $filter_pass=true; }
+                foreach ($talk->tracks as $talk_track) {
+                    if ($talk_track->ID==$track_filter) { $filter_pass=true; }
                 }
-                if(!$filter_pass){ continue; }
+                if (!$filter_pass) { continue; }
             }
         }
     ?>
@@ -48,22 +48,22 @@
             <td>
                 <a href="/talk/view/<?php echo $talk->ID; ?>"><?php echo escape($talk->talk_title); ?></a>
                 <?php
-                    if($talk->display_time != '00:00') {echo '(' . $talk->display_time . ')';}
+                    if ($talk->display_time != '00:00') {echo '(' . $talk->display_time . ')';}
                 ?>
             </td>
             <td>
                 <?php
                 $speaker_list = array();
-                foreach($talk->speaker as $speaker){
-                    if(isset($claimed[$talk->ID][$speaker->speaker_id])){
+                foreach ($talk->speaker as $speaker) {
+                    if (isset($claimed[$talk->ID][$speaker->speaker_id])) {
                         $claim_data = $claimed[$talk->ID][$speaker->speaker_id];
                         $speaker_list[]='<a href="/user/view/'.$claim_data->speaker_id.'">'.$claim_data->full_name.'</a>';
-                    }else{
+                    } else {
                         $speaker_list[]=$speaker->speaker_name; 
                     }
                     
                 }
-                echo implode(', ',$speaker_list);
+                echo implode(', ', $speaker_list);
                 ?>
             </td>
             <td>

@@ -190,7 +190,7 @@ if (! function_exists('form_datepicker'))
         <input type='hidden' id='{$day}_{$month}_{$year}' />
     <script type="text/javascript">
     // <![CDATA[
-        $(function(){
+        $(function() {
             var yr=$('select[name={$year}]');
             var mo=$('select[name={$month}]');
             var da=$('select[name={$day}]');

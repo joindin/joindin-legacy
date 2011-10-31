@@ -18,7 +18,7 @@ if ($event_detail->event_cfp_start>=time()) {
 <div class="detail">
     
     <div class="header">
-        <?php $this->load->view('event/_event-icon',array('event'=>$event_detail)); ?>
+        <?php $this->load->view('event/_event-icon', array('event'=>$event_detail)); ?>
     
         <div class="title">
             <div class="head">
@@ -31,7 +31,7 @@ if ($event_detail->event_cfp_start>=time()) {
                     <?php } ?>
                     <br/> 
                     <strong><?php echo escape($event_detail->event_loc); ?></strong>
-                    <?php if($event_detail->private==1): ?>
+                    <?php if ($event_detail->private==1): ?>
                         <br/><strong>Private Event</strong>
                     <?php endif; ?>
                 </p>
@@ -43,17 +43,17 @@ if ($event_detail->event_cfp_start>=time()) {
                 if its set, but the event is in the future, show a link for "I'll be there!"
                 if its not set show the "I'll be there/I was there" based on time
                 */
-                if($attend && user_is_auth()){
-                    if($event_detail->event_end<time()){
+                if ($attend && user_is_auth()) {
+                    if ($event_detail->event_end<time()) {
                         $link_txt="I attended"; $showt=1;
-                    }else{ $link_txt="I'm attending"; $showt=2; }
-                }else{
-                    if($event_detail->event_end<time()){
+                    } else { $link_txt="I'm attending"; $showt=2; }
+                } else {
+                    if ($event_detail->event_end<time()) {
                         $link_txt="I attended"; $showt=3; 
-                    }else{ $link_txt="I'm attending"; $showt=4; }
+                    } else { $link_txt="I'm attending"; $showt=4; }
                 }
                 //if they're not logged in, show the questions
-                if(!user_is_auth()){ $attend=false; }
+                if (!user_is_auth()) { $attend=false; }
                 ?>
                     
                     <a class="btn<?php echo $attend ? ' btn-success' : ''; ?>" id="mark-attending" href="javascript:void(0);" onclick="return markAttending(this,<?php echo $event_detail->ID?>,<?php echo $event_detail->event_end<time() ? 'true' : 'false'; ?>);"><?php echo $link_txt?></a>
@@ -74,7 +74,7 @@ if ($event_detail->event_cfp_start>=time()) {
     <table cellpadding="5" cellspacing="0" border="0">
     <tr>
     <?php
-    foreach($admins as $admin_user){
+    foreach ($admins as $admin_user) {
         echo '<td style="padding-right:5px;font-size:11px">';
         echo '<a href="/user/view/'.$admin_user->ID.'">'.$admin_user->full_name.'</a></td>';
     }
@@ -82,10 +82,10 @@ if ($event_detail->event_cfp_start>=time()) {
     </tr>
     </table>
 
-    <?php if(!empty($event_detail->event_href) || !empty($event_detail->event_hastag) || !empty($event_detail->event_stub)){ ?>
+    <?php if (!empty($event_detail->event_href) || !empty($event_detail->event_hastag) || !empty($event_detail->event_stub)) { ?>
         <div class="related">
-        <?php if(!empty($event_detail->event_href)){ ?>
-        <?php $hrefs = array_map('trim', explode(',',$event_detail->event_href)); ?>
+        <?php if (!empty($event_detail->event_href)) { ?>
+        <?php $hrefs = array_map('trim', explode(',', $event_detail->event_href)); ?>
             <div class="links">
                 <h2 class="h4">Event Link<?php if (count($hrefs) != 1): ?>s<?php endif; ?></h2>
                 <ul>
@@ -95,8 +95,8 @@ if ($event_detail->event_cfp_start>=time()) {
                 </ul>
             </div>
         <?php } ?>
-        <?php if(!empty($event_detail->event_hashtag)){ ?>
-        <?php $hashtags = array_map('trim', explode(',',$event_detail->event_hashtag)); ?>
+        <?php if (!empty($event_detail->event_hashtag)) { ?>
+        <?php $hashtags = array_map('trim', explode(',', $event_detail->event_hashtag)); ?>
             <div class="hashtags">
                 <h2 class="h4">Hashtag<?php if (count($hashtags) != 1): ?>s<?php endif; ?></h2>
                 <ul>
@@ -107,7 +107,7 @@ if ($event_detail->event_cfp_start>=time()) {
                 </ul>
             </div>
         <?php } ?>
-        <?php if(!empty($event_detail->event_stub)){ ?>
+        <?php if (!empty($event_detail->event_stub)) { ?>
             <div class="links">
                 <h2 class="h4">Quicklink</h2>
                 <ul>
@@ -122,7 +122,7 @@ if ($event_detail->event_cfp_start>=time()) {
     <?php } ?>
             <?php 
             // If there's a Call for Papers open for the event, let them know
-            if(!empty($event_detail->event_cfp_start) || !empty($event_detail->event_cfp_end)){
+            if (!empty($event_detail->event_cfp_start) || !empty($event_detail->event_cfp_end)) {
             ?>
             <div class="links">
                 <b>Call for Papers Status:
@@ -130,14 +130,14 @@ if ($event_detail->event_cfp_start>=time()) {
             switch ($cfp_status) {
                 case "open" :
                     echo '<span style="color:#00BE02">Open!</span>';
-                    echo '<br/>(ends '.date('d.M.Y',$event_detail->event_cfp_end).')';
+                    echo '<br/>(ends '.date('d.M.Y', $event_detail->event_cfp_end).')';
                     if (!empty($event_detail->event_cfp_url)) {
                         echo '<br/>More information: <a href="'.$event_detail->event_cfp_url.'">'.$event_detail->event_cfp_url.'</a>';
                     }
                     break;
                 case "pending" :
                     echo '<span style="color:#BEBE02">Not open yet</span>';
-                    echo '<br/>(opens at '.date('m.d.Y',$event_detail->event_cfp_start).')';
+                    echo '<br/>(opens at '.date('m.d.Y', $event_detail->event_cfp_start).')';
                     break;
                 case "closed" :
                 default :
@@ -148,15 +148,15 @@ if ($event_detail->event_cfp_start>=time()) {
             </div>
             <div class="clear"></div>
             <?php }
-            if(!empty($tags)){
+            if (!empty($tags)) {
                 ?>
                 <div class="links">
                 <?php
                 $tagList = array();
-                foreach($tags as $tag){
+                foreach ($tags as $tag) {
                     $tagList[] = '<a href="/event/tag/'.$tag->tag_value.'">'.$tag->tag_value.'</a>';
                 }
-                echo 'tagged: '.implode(',',$tagList);
+                echo 'tagged: '.implode(',', $tagList);
                 ?>
                 </div>
                 <div class="clear"></div>

@@ -12,7 +12,7 @@ $limit	= 10;
         <ul>
         <?php 
             //print_r($content);
-            foreach($posts as $k=>$v){
+            foreach ($posts as $k=>$v) {
                 echo '<li><a href="/blog/view/'.$v->ID.'">'.$v->title.'</a>';
             }
         ?>

@@ -6,11 +6,11 @@ class Akismet {
     var $blog	= null;
     var $CI		= null;
     
-    function __construct(){
+    function __construct() {
         $this->CI=&get_instance();
     }
 
-    function send($path,$data){
+    function send($path, $data) {
         $this->key	= $this->CI->config->item('akismet_key');
         $req_str	= '';
         $resp		= '';
@@ -19,7 +19,7 @@ class Akismet {
         $data['key']	= $this->key;
         $data['blog']	= $this->CI->config->item('akismet_blog');
         $data['user_ip']= $_SERVER['REMOTE_ADDR'];
-        foreach($data as $k=>$v){ $req_str.=$k.'='.$v.'&'; }
+        foreach ($data as $k=>$v) { $req_str.=$k.'='.$v.'&'; }
         
         $http ="POST ".$path." HTTP/1.0\r\n";
         $http.="Host: ".$host."\r\n";
@@ -29,14 +29,14 @@ class Akismet {
         $http.="\r\n";
         $http.=$req_str;
         
-        $fp=fsockopen($host,$port,$errno,$errstr,10);
-        if($fp){
-            fwrite($fp,$http);
-            while(!feof($fp)){ $resp.=fgets($fp,1024); }
+        $fp=fsockopen($host, $port, $errno, $errstr,10);
+        if ($fp) {
+            fwrite($fp, $http);
+            while(!feof($fp)) { $resp.=fgets($fp,1024); }
             fclose($fp);
-            $p=explode("\r\n\r\n",$resp);
+            $p=explode("\r\n\r\n", $resp);
             return $p[1];
-        }else{ return false; }
+        } else { return false; }
     }
     
 }

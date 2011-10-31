@@ -2,7 +2,7 @@
 
 class Event_themes_model extends Model {
 
-    public function Event_themes_model(){
+    public function Event_themes_model() {
         parent::Model();
     }
 
@@ -12,9 +12,9 @@ class Event_themes_model extends Model {
      * @param integer $theme_id Theme ID
      * @return boolean Allowed/not allowed
      */
-    public function isAuthTheme($uid,$theme_id){
-        foreach($this->getUserThemes($uid) as $theme){
-            if($theme->ID==$theme_id){ return true; }
+    public function isAuthTheme($uid, $theme_id) {
+        foreach ($this->getUserThemes($uid) as $theme) {
+            if ($theme->ID==$theme_id) { return true; }
         }
         return false;
     }
@@ -25,24 +25,24 @@ class Event_themes_model extends Model {
      * @param integer uid[optional] User ID (if not given, tries to pull from session)
      * @return array Theme information
      */
-    public function getUserThemes($uid=null){
+    public function getUserThemes($uid=null) {
         $event_ids	= array();
-        if(!$uid){
+        if (!$uid) {
             //try to get the user info from the session
             $uid=$this->session->userdata('ID');
-            if(empty($uid)){ return false;}
+            if (empty($uid)) { return false;}
         }
         // get the events the user is an admin for
-        $q=$this->db->get_where('user_admin',array('uid'=>$uid,'rtype'=>'event'));
-        foreach($q->result() as $event){ $event_ids[]=$event->rid; }
+        $q=$this->db->get_where('user_admin', array('uid'=>$uid,'rtype'=>'event'));
+        foreach ($q->result() as $event) { $event_ids[]=$event->rid; }
 
         if (empty($event_ids)) {
             return array();
         }
-        $this->db->select('event_themes.*,events.event_name')
+        $this->db->select('event_themes.*, events.event_name')
             ->from('event_themes')
             ->join('events','events.ID=event_themes.event_id')
-            ->where_in('event_id',$event_ids);
+            ->where_in('event_id', $event_ids);
         $q=$this->db->get();
         return $q->result();
     }
@@ -54,12 +54,12 @@ class Event_themes_model extends Model {
      * @return mixed Returns either the theme information or false 
      *   if no theme is found
      */
-    public function getActiveTheme($event_id){
+    public function getActiveTheme($event_id) {
         $arr=array(
             'active'	=> 1,
             'event_id'	=> $event_id
         );
-        $q=$this->db->get_where('event_themes',$arr);
+        $q=$this->db->get_where('event_themes', $arr);
         $ret=$q->result();
         return (!empty($ret)) ? $ret : false;
     }
@@ -70,8 +70,8 @@ class Event_themes_model extends Model {
      * @param array $data Event date from the frontend
      * @return integer Last insert ID
      */
-    public function addEventTheme($data){
-        $this->db->insert('event_themes',$data);
+    public function addEventTheme($data) {
+        $this->db->insert('event_themes', $data);
         return $this->db->insert_id();
     }
     
@@ -80,7 +80,7 @@ class Event_themes_model extends Model {
      * @param integer $theme_id Theme ID
      * @param array $data Theme data to update record with
      */
-    public function saveEventTheme($theme_id,$data){
+    public function saveEventTheme($theme_id, $data) {
         
     }
     
@@ -89,8 +89,8 @@ class Event_themes_model extends Model {
      * @param integer $theme_id Theme ID number to remove
      * @return void
      */
-    public function deleteEventTheme($theme_id){
-        $this->db->delete('event_themes',array('ID'=>$theme_id));
+    public function deleteEventTheme($theme_id) {
+        $this->db->delete('event_themes', array('ID'=>$theme_id));
     }
     
     /**
@@ -100,13 +100,13 @@ class Event_themes_model extends Model {
      * @param integer $theme_id Theme ID number to enable
      * @return void
      */
-    public function activateTheme($theme_id,$event_id){
-        $this->db->where('ID',$theme_id);
-        $this->db->update('event_themes',array('active'=>1));
+    public function activateTheme($theme_id, $event_id) {
+        $this->db->where('ID', $theme_id);
+        $this->db->update('event_themes', array('active'=>1));
         
         // deactivate all the rest
         $this->db->where(array('ID !='=>$theme_id,'event_id'=>$event_id));
-        $this->db->update('event_themes',array('active'=>0));
+        $this->db->update('event_themes', array('active'=>0));
     }
 }
 

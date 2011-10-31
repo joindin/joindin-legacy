@@ -1,7 +1,7 @@
 <?php
     $speaker = (isset($claimed[0]->userid) && $claimed[0]->userid != 0 && user_get_id() == $claimed[0]->userid);
 
-    if($detail->allow_comments) {
+    if ($detail->allow_comments) {
     if (!$auth) {
 ?>
 <p class="info">Want to comment on this talk? <a href="/user/login">Log in</a> or <a href="/user/register">create a new account</a> or comment anonymously</p>
@@ -19,7 +19,7 @@
 
 <div class="row">
 
-    <?php if(!user_is_auth()){
+    <?php if (!user_is_auth()) {
         $this->load->view('msg_error', array('msg'=>
             'Please note: you are <b>not logged in</b> and will be posting anonymously!'
         )); 
@@ -64,7 +64,7 @@
 </div>
 <?php endif; ?>
 
-<?php if(!user_is_auth()){ ?>
+<?php if (!user_is_auth()) { ?>
 <div class="row">
     <label for="cinput">Spambot check</label>
     <span>

@@ -12,7 +12,7 @@
         <pubDate><?php echo date('r')?></pubDate>
     </channel>
     <?php
-    foreach($items as $k=>$v){
+    foreach ($items as $k=>$v) {
         echo sprintf('
             <item>
                 <title>%s</title>
@@ -21,7 +21,7 @@
                 <description>%s</description>
                 <pubDate>%s</pubDate>
             </item>
-        ',escape($v['title']),$v['guid'],$v['link'],escape($v['description']),$v['pubDate']);
+        ', escape($v['title']), $v['guid'], $v['link'], escape($v['description']), $v['pubDate']);
     }
     ?>
 </rss>

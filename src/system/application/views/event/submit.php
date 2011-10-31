@@ -6,7 +6,7 @@ menu_pagetitle('Submit an event');
 <?php $this->load->view('msg_info', array('msg' => $msg)); ?>
 <?php endif; ?>
 
-<?php if(empty($msg)): ?>
+<?php if (empty($msg)): ?>
 <div class="box">
     <?php echo form_open('event/submit', array('class' => 'form-event-submit')); ?>
     
@@ -16,7 +16,7 @@ menu_pagetitle('Submit an event');
 
     <h2>General</h2>
     
-    <?php if($is_site_admin): ?>
+    <?php if ($is_site_admin): ?>
     <div class="row">
         <label for="spam_byass">Bypass Spam Filter</label>
         <?php echo form_checkbox('bypass_spam_filter',1); ?> Check to bypass spam filtering
@@ -166,12 +166,12 @@ menu_pagetitle('Submit an event');
         <div class="clear"></div>
     </div>
     
-    <?php if($is_auth): ?>
+    <?php if ($is_auth): ?>
     <div class="row">
         <label for="is_event_admin">Event Admin</label>
         <?php 
             $is_admin=(isset($this->validation->is_admin)) ? $this->validation->is_admin : '';
-            echo form_checkbox('is_admin','1',$is_admin); ?> I'm an event admin!<br/>
+            echo form_checkbox('is_admin','1', $is_admin); ?> I'm an event admin!<br/>
         <div class="clear"></div>
     </div>
     <?php endif; ?>
@@ -179,17 +179,17 @@ menu_pagetitle('Submit an event');
     <div class="row">
         <label for="start">Event Start Date</label>
         <?php
-        /*foreach(range(1,12) as $v){ $start_mo[$v]=$v; }
-        foreach(range(1,32) as $v){ $start_day[$v]=$v; }
-        foreach(range(date('Y'),date('Y')+5) as $v){ $start_yr[$v]=$v; }*/
+        /*foreach (range(1,12) as $v) { $start_mo[$v]=$v; }
+        foreach (range(1,32) as $v) { $start_day[$v]=$v; }
+        foreach (range(date('Y'), date('Y')+5) as $v) { $start_yr[$v]=$v; }*/
 
-        foreach(range(1,12) as $v){ $start_mo[$v]=strftime('%B', strtotime('2000-' . $v . '-01')); }
-        foreach(range(1,31) as $v){ $start_day[$v]=sprintf('%02d', $v); }
-        foreach(range(date('Y'),date('Y')+5) as $v){ $start_yr[$v]=$v; }
+        foreach (range(1,12) as $v) { $start_mo[$v]=strftime('%B', strtotime('2000-' . $v . '-01')); }
+        foreach (range(1,31) as $v) { $start_day[$v]=sprintf('%02d', $v); }
+        foreach (range(date('Y'), date('Y')+5) as $v) { $start_yr[$v]=$v; }
         
-        echo form_dropdown('start_mo',$start_mo,$this->validation->start_mo);
-        echo form_dropdown('start_day',$start_day,$this->validation->start_day);
-        echo form_dropdown('start_yr',$start_yr,$this->validation->start_yr);
+        echo form_dropdown('start_mo', $start_mo, $this->validation->start_mo);
+        echo form_dropdown('start_day', $start_day, $this->validation->start_day);
+        echo form_dropdown('start_yr', $start_yr, $this->validation->start_yr);
         echo form_datepicker('start_day', 'start_mo', 'start_yr');
         ?>
     <div class="clear"></div>
@@ -197,17 +197,17 @@ menu_pagetitle('Submit an event');
  <div class="row">
         <label for="start">Event End Date</label>
     <?php
-        /*foreach(range(1,12) as $v){ $end_mo[$v]=$v; }
-        foreach(range(1,32) as $v){ $end_day[$v]=$v; }
-        foreach(range(date('Y'),date('Y')+5) as $v){ $end_yr[$v]=$v; }*/
+        /*foreach (range(1,12) as $v) { $end_mo[$v]=$v; }
+        foreach (range(1,32) as $v) { $end_day[$v]=$v; }
+        foreach (range(date('Y'), date('Y')+5) as $v) { $end_yr[$v]=$v; }*/
 
-        foreach(range(1,12) as $v){ $start_mo[$v]=strftime('%B', strtotime('2000-' . $v . '-01')); }
-        foreach(range(1,31) as $v){ $start_day[$v]=sprintf('%02d', $v); }
-        foreach(range(date('Y'),date('Y')+5) as $v){ $start_yr[$v]=$v; }
+        foreach (range(1,12) as $v) { $start_mo[$v]=strftime('%B', strtotime('2000-' . $v . '-01')); }
+        foreach (range(1,31) as $v) { $start_day[$v]=sprintf('%02d', $v); }
+        foreach (range(date('Y'), date('Y')+5) as $v) { $start_yr[$v]=$v; }
 
-        echo form_dropdown('end_mo',$start_mo,$this->validation->end_mo);
-        echo form_dropdown('end_day',$start_day,$this->validation->end_day);
-        echo form_dropdown('end_yr',$start_yr,$this->validation->end_yr);
+        echo form_dropdown('end_mo', $start_mo, $this->validation->end_mo);
+        echo form_dropdown('end_day', $start_day, $this->validation->end_day);
+        echo form_dropdown('end_yr', $start_yr, $this->validation->end_yr);
         echo form_datepicker('end_day', 'end_mo', 'end_yr');
         ?>
      <div class="clear"></div>
@@ -223,8 +223,8 @@ menu_pagetitle('Submit an event');
         <label for="start">Is the event private?</label>
         <?php
         $is_priv=(isset($this->validation->is_private)) ? $this->validation->is_private : '';
-        echo form_radio('is_private','Y',$is_priv).' Yes'; 
-        echo form_radio('is_private','N',$is_priv). 'No'; 
+        echo form_radio('is_private','Y', $is_priv).' Yes'; 
+        echo form_radio('is_private','N', $is_priv). 'No'; 
         ?><br/>
     </div>
 
@@ -232,24 +232,24 @@ menu_pagetitle('Submit an event');
         <label for="start">Call for Papers</label>
         <?php 
             $js='onClick="toggleCfpDates()"';
-            echo form_checkbox('is_cfp','1',$this->validation->cfp_checked,$js); 
+            echo form_checkbox('is_cfp','1', $this->validation->cfp_checked, $js); 
         ?> Yes, we're going to have a Call for Papers
         <br/><br/>
         <label for="start">Call for Papers Start Date</label>
     <?php
-        /*foreach(range(1,12) as $v){ $end_mo[$v]=$v; }
-        foreach(range(1,32) as $v){ $end_day[$v]=$v; }
-        foreach(range(date('Y'),date('Y')+5) as $v){ $end_yr[$v]=$v; }*/
+        /*foreach (range(1,12) as $v) { $end_mo[$v]=$v; }
+        foreach (range(1,32) as $v) { $end_day[$v]=$v; }
+        foreach (range(date('Y'), date('Y')+5) as $v) { $end_yr[$v]=$v; }*/
 
-        foreach(range(1,12) as $v){ $cfp_start_mo[$v]=strftime('%B', strtotime('2000-' . $v . '-01')); }
-        foreach(range(1,31) as $v){ $cfp_start_day[$v]=sprintf('%02d', $v); }
-        foreach(range(date('Y'),date('Y')+5) as $v){ $cfp_start_yr[$v]=$v; }
+        foreach (range(1,12) as $v) { $cfp_start_mo[$v]=strftime('%B', strtotime('2000-' . $v . '-01')); }
+        foreach (range(1,31) as $v) { $cfp_start_day[$v]=sprintf('%02d', $v); }
+        foreach (range(date('Y'), date('Y')+5) as $v) { $cfp_start_yr[$v]=$v; }
 
         $js=($this->validation->cfp_checked==1) ? '' : 'disabled';
         
-        echo form_dropdown('cfp_start_mo',$cfp_start_mo,$this->validation->cfp_start_mo,'id="cfp_start_mo" '.$js);
-        echo form_dropdown('cfp_start_day',$cfp_start_day,$this->validation->cfp_start_day,'id="cfp_start_day" '.$js);
-        echo form_dropdown('cfp_start_yr',$cfp_start_yr,$this->validation->cfp_start_yr,'id="cfp_start_yr" '.$js);
+        echo form_dropdown('cfp_start_mo', $cfp_start_mo, $this->validation->cfp_start_mo,'id="cfp_start_mo" '.$js);
+        echo form_dropdown('cfp_start_day', $cfp_start_day, $this->validation->cfp_start_day,'id="cfp_start_day" '.$js);
+        echo form_dropdown('cfp_start_yr', $cfp_start_yr, $this->validation->cfp_start_yr,'id="cfp_start_yr" '.$js);
         echo form_datepicker('cfp_start_day', 'cfp_start_mo', 'cfp_start_yr');
         ?>
      <div class="clear"></div>
@@ -257,17 +257,17 @@ menu_pagetitle('Submit an event');
  <div class="row">
         <label for="start">Call for Papers End Date</label>
     <?php
-        /*foreach(range(1,12) as $v){ $end_mo[$v]=$v; }
-        foreach(range(1,32) as $v){ $end_day[$v]=$v; }
-        foreach(range(date('Y'),date('Y')+5) as $v){ $end_yr[$v]=$v; }*/
+        /*foreach (range(1,12) as $v) { $end_mo[$v]=$v; }
+        foreach (range(1,32) as $v) { $end_day[$v]=$v; }
+        foreach (range(date('Y'), date('Y')+5) as $v) { $end_yr[$v]=$v; }*/
 
-        foreach(range(1,12) as $v){ $cfp_end_mo[$v]=strftime('%B', strtotime('2000-' . $v . '-01')); }
-        foreach(range(1,31) as $v){ $cfp_end_day[$v]=sprintf('%02d', $v); }
-        foreach(range(date('Y'),date('Y')+5) as $v){ $cfp_end_yr[$v]=$v; }
+        foreach (range(1,12) as $v) { $cfp_end_mo[$v]=strftime('%B', strtotime('2000-' . $v . '-01')); }
+        foreach (range(1,31) as $v) { $cfp_end_day[$v]=sprintf('%02d', $v); }
+        foreach (range(date('Y'), date('Y')+5) as $v) { $cfp_end_yr[$v]=$v; }
 
-        echo form_dropdown('cfp_end_mo',$cfp_end_mo,$this->validation->cfp_end_mo,'id="cfp_end_mo" '.$js);
-        echo form_dropdown('cfp_end_day',$cfp_end_day,$this->validation->cfp_end_day,'id="cfp_end_day" '.$js);
-        echo form_dropdown('cfp_end_yr',$cfp_end_yr,$this->validation->cfp_end_yr,'id="cfp_end_yr" '.$js);
+        echo form_dropdown('cfp_end_mo', $cfp_end_mo, $this->validation->cfp_end_mo,'id="cfp_end_mo" '.$js);
+        echo form_dropdown('cfp_end_day', $cfp_end_day, $this->validation->cfp_end_day,'id="cfp_end_day" '.$js);
+        echo form_dropdown('cfp_end_yr', $cfp_end_yr, $this->validation->cfp_end_yr,'id="cfp_end_yr" '.$js);
         echo form_datepicker('cfp_end_day', 'cfp_end_mo', 'cfp_end_yr');
         ?>
      <div class="clear"></div>
@@ -275,7 +275,7 @@ menu_pagetitle('Submit an event');
 
     <div class="row">
         <label for="cfp-url-location">Call for Papers URL Location</label>
-        <?php echo form_input('cfp_url',$this->validation->cfp_url,'id="cfp_url" '.$js); ?>
+        <?php echo form_input('cfp_url', $this->validation->cfp_url,'id="cfp_url" '.$js); ?>
         <div class="clear"></div>
     </div>
 

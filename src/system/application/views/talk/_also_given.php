@@ -5,7 +5,7 @@
 
     <table cellpadding="10" cellspacing="0" border="0">
     <?php
-    foreach($talks as $t){
+    foreach ($talks as $t) {
     ?>
     <tr>
     <td valign="top" width="50%" style="padding-bottom:10px">

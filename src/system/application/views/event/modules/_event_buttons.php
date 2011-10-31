@@ -1,6 +1,6 @@
 <p class="admin">
-<?php if($admin): ?>
-    <?php if(isset($event_detail->pending) && $event_detail->pending==1){
+<?php if ($admin): ?>
+    <?php if (isset($event_detail->pending) && $event_detail->pending==1) {
         echo '<a class="btn-small" href="/event/approve/'.$event_detail->ID.'">Approve Event</a>';
     } ?>
 <?php else: ?>

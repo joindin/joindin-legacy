@@ -31,14 +31,14 @@ if (!empty($year) && !empty($month)) {
 }
 ?>
 <h1 class="icon-event">
-    <?php if(user_is_admin()){ ?>
+    <?php if (user_is_admin()) { ?>
     <span style="float:left">
     <?php } ?>
     <?php echo $title; ?><?php echo $subtitle; ?>
-    <?php if(user_is_admin()){ ?>
+    <?php if (user_is_admin()) { ?>
     </span>
     <?php } ?>
-    <?php if(user_is_admin()){ ?>
+    <?php if (user_is_admin()) { ?>
     <a class="btn" style="float:right" href="/event/add">Add new event</a>
     <div class="clear"></div>
     <?php } ?>
@@ -52,11 +52,11 @@ if (!empty($year) && !empty($month)) {
 </p>
 
 <?php
-foreach($events as $k=>$v){
+foreach ($events as $k=>$v) {
     $this->load->view('event/_event-row', array('event'=>$v));
 }
 
-if($current_page && $total_count){
+if ($current_page && $total_count) {
     $this->load->view('event/modules/_event-paginate', array(
         'current_page' => $current_page,
         'total_count'  => $total_count

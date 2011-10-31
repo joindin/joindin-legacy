@@ -30,7 +30,7 @@ div.track_color {
     <td>&nbsp;</td>
 </tr>
 <tbody id="track_tbl_body">
-<?php foreach($tracks as $tr): ?>
+<?php foreach ($tracks as $tr): ?>
 <tr class="<?php echo ($ct%2==0) ? 'row1' : 'row2'; ?>" id="rid_<?php echo $ct; ?>">
     <?php $color=(!empty($tr->track_color)) ? 'style="background-color:#'.$tr->track_color.'"' : ''; ?>
     <td style="vertical-align:top">
@@ -40,7 +40,7 @@ div.track_color {
         <div style="display:none;margin-top:2px" id="track_color_sel_<?php echo $ct; ?>">
             <?php
             $color_arr=array('FF0000','FFFF00','0000FF');
-            foreach($color_arr as $c){
+            foreach ($color_arr as $c) {
                 echo '<a href="#" onClick="updateTrackColor('.$ct.',\''.$c.'\')" <div class="track_color" style="background-color:#'.$c.';margin-bottom:2px"></div></a>';
             }
             ?>
@@ -74,7 +74,7 @@ div.track_color {
 
 <!--
 <div id="add_track_form">
-<?php if($admin): echo '<br/>';
+<?php if ($admin): echo '<br/>';
 echo form_open('event/track/'.$evt_detail->ID);
 ?>
 <div id="box">

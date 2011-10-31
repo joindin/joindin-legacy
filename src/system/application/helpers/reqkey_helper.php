@@ -79,7 +79,7 @@ function buildSecFile($reqkey)
  * 
  * @return boolean Reference key has been validated
  */
-function checkReqKey($seckey,$reqkey)
+function checkReqKey($seckey, $reqkey)
 {
     $CI=&get_instance();
     $dir	= $CI->config->item('token_dir');

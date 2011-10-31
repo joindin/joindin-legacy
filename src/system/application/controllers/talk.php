@@ -596,7 +596,7 @@ class Talk extends Controller
         }
 
         // this is for the CAPTACHA - it was disabled for authenticated users
-        if(!$this->user_model->isAuth()){
+        if (!$this->user_model->isAuth()) {
             $rules['cinput']	= 'required|callback_cinput_check';
             $fields['cinput']	= 'Captcha';
         }
@@ -769,7 +769,7 @@ class Talk extends Controller
             );
         }
         
-        if(!isTalkClaimFull($arr['speakers'])){
+        if (!isTalkClaimFull($arr['speakers'])) {
             $this->template->write_view('sidebar3','main/_sidebar-block',
                 array(
                     'title'=>'Claiming Talks',
@@ -781,7 +781,7 @@ class Talk extends Controller
                 );
         }
         
-        if($is_talk_admin)
+        if ($is_talk_admin)
         {
             $this->template->write_view('sidebar3', 'talk/modules/_talk_howto', $arr);
         }
@@ -795,9 +795,9 @@ class Talk extends Controller
      *
      * @return void
      */
-    function claim($talkId,$claimId=null)
+    function claim($talkId, $claimId=null)
     {
-        if($claimId == null){
+        if ($claimId == null) {
             $claimId = $this->input->post('claim_name_select');
         }
     
@@ -805,7 +805,7 @@ class Talk extends Controller
         
         $this->load->model('pending_talk_claims_model','pendingClaims');
         
-        $this->pendingClaims->addClaim($talkId,$claimId);
+        $this->pendingClaims->addClaim($talkId, $claimId);
         
         $this->session->set_flashdata('msg', 'Thanks for claiming this talk! You will be emailed when the claim is approved!');
         redirect('talk/view/'.$talkId);
@@ -822,11 +822,11 @@ class Talk extends Controller
         $speakerName 	= $this->session->userdata('full_name');
         
         // Ie we have no $claimId, look in post for it
-        if($claimId == null){
+        if ($claimId == null) {
             $claimId = $this->input->post('claim_name_select');
         }
         
-        if($this->talkSpeaker->isTalkClaimed($talkId)){
+        if ($this->talkSpeaker->isTalkClaimed($talkId)) {
             $errorData = array(
                 'msg' => sprintf('
                     This talk has already been claimed! If you believe
@@ -844,24 +844,24 @@ class Talk extends Controller
             'talk_id' 	=> $talkId,
             'status'	=> null
         );
-        $query = $this->db->get_where('talk_speaker',$where);
+        $query = $this->db->get_where('talk_speaker', $where);
         $speakerRecord = $query->result();
         
         // if we found a row, update it with the ID of the currently 
         // logged in user and set it to pending
-        if(count($speakerRecord) == 1){
+        if (count($speakerRecord) == 1) {
             
             $updateData = array(
                 'status'		=> 'pending',
                 'speaker_id'	=> $userId
             );
-            $this->db->where('ID',$claimId);
-            $this->db->update('talk_speaker',$updateData);
+            $this->db->where('ID', $claimId);
+            $this->db->update('talk_speaker', $updateData);
             
             $this->session->set_flashdata('msg', 'Thanks for claiming this talk! You will be emailed when the claim is approved!');
             redirect('talk/view/'.$talkId);
             
-        }else{
+        } else {
             $errorData = array(
                 'msg'=>sprintf('
                     There was an error in your attempt to claim the talk ID #%s
@@ -870,7 +870,7 @@ class Talk extends Controller
                     <br/><br/>
                     If you would like more information on this error, please <a style="color:#FFFFFF" href="/event/contact/">contact 
                     this event\'s admins</a>.'
-                ,$talkId)
+                , $talkId)
             );
             $this->template->write_view('content', 'msg_error', $errorData);
             $this->template->render();

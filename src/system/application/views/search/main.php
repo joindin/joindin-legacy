@@ -31,22 +31,22 @@ if (!empty($results)) {
     <div class="row">
         <label for="search_term">Date range</label>
         <?php
-            foreach(range(1,12) as $v){ $start_mo[$v]=strftime('%B', strtotime('2000-' . $v . '-01')); }
-            foreach(range(1,31) as $v){ $start_day[$v]=sprintf('%02d', $v); }
-            foreach(range(date('Y')-5,date('Y')+5) as $v){ $start_yr[$v]=$v; }
+            foreach (range(1,12) as $v) { $start_mo[$v]=strftime('%B', strtotime('2000-' . $v . '-01')); }
+            foreach (range(1,31) as $v) { $start_day[$v]=sprintf('%02d', $v); }
+            foreach (range(date('Y')-5, date('Y')+5) as $v) { $start_yr[$v]=$v; }
     
             $start_mo	= array(''=>'Month') + $start_mo;
             $start_day	= array(''=>'Day') + $start_day;
             $start_yr	= array(''=>'Year') + $start_yr;
             
-            echo form_dropdown('start_mo',$start_mo,$this->validation->start_mo);
-            echo form_dropdown('start_day',$start_day,$this->validation->start_day);
-            echo form_dropdown('start_yr',$start_yr,$this->validation->start_yr);
+            echo form_dropdown('start_mo', $start_mo, $this->validation->start_mo);
+            echo form_dropdown('start_day', $start_day, $this->validation->start_day);
+            echo form_dropdown('start_yr', $start_yr, $this->validation->start_yr);
             echo form_datepicker('start_day', 'start_mo', 'start_yr');
             echo ' - ';
-            echo form_dropdown('end_mo',$start_mo,$this->validation->end_mo);
-            echo form_dropdown('end_day',$start_day,$this->validation->end_day);
-            echo form_dropdown('end_yr',$start_yr,$this->validation->end_yr);
+            echo form_dropdown('end_mo', $start_mo, $this->validation->end_mo);
+            echo form_dropdown('end_day', $start_day, $this->validation->end_day);
+            echo form_dropdown('end_yr', $start_yr, $this->validation->end_yr);
             echo form_datepicker('end_day', 'end_mo', 'end_yr');
             ?>
         <div class="clear"></div>
@@ -68,8 +68,8 @@ if (!empty($results)) {
             <div class="box">
                 <h2>Events</h2>
                 <?php
-                foreach($results['events'] as $k=>$v){
-                if($v->pending==1) continue;
+                foreach ($results['events'] as $k=>$v) {
+                if ($v->pending==1) continue;
                     $this->load->view('event/_event-row', array('event'=>$v));
                 }
                 ?>
@@ -80,7 +80,7 @@ if (!empty($results)) {
             <div class="box">
                 <h2>Talks</h2>
                 <?php
-                foreach($results['talks'] as $k=>$v){
+                foreach ($results['talks'] as $k=>$v) {
                     $this->load->view('talk/_talk-row', array('talk'=>$v));
                 }
                 ?>
@@ -91,7 +91,7 @@ if (!empty($results)) {
             <div class="box">
                 <h2>Users</h2>
                 <?php
-                foreach($results['users'] as $k=>$v){
+                foreach ($results['users'] as $k=>$v) {
                     $this->load->view('user/_user-row', array('user'=>$v));
                 }
                 ?>

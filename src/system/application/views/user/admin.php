@@ -11,8 +11,8 @@
 </div>
 
 <?php 
-echo form_open('user/admin',array('id'=>'userAdminForm'));
-echo form_input('user_search',$this->validation->user_search);
+echo form_open('user/admin', array('id'=>'userAdminForm'));
+echo form_input('user_search', $this->validation->user_search);
 echo form_submit('sub','Search');
 //echo form_button('clear','Clear','onClick="document.location.href=\'/user/admin\';"');
 //echo form_close();
@@ -24,9 +24,9 @@ $links = array();
 // show first
 $links[] = '<a href="/user/admin/1">1</a>...';
 
-for($i=3;$i>0;$i--){
+for($i=3;$i>0;$i--) {
     $p = $page-$i;
-    if($p>1){
+    if ($p>1) {
         $links[] = '<a href="/user/admin/'.$p.'">'.$p.'</a>';
     }
 }
@@ -34,9 +34,9 @@ for($i=3;$i>0;$i--){
 // show current and three around it
 $links[] = '<a style="font-weight:bold;" href="/user/admin/'.$page.'">'.$page.'</a>';
 
-for($i=3;$i>0;$i--){
+for($i=3;$i>0;$i--) {
     $p = $page+$i;
-    if($p<$page_ct){
+    if ($p<$page_ct) {
         $links[] = '<a href="/user/admin/'.$p.'">'.$p.'</a>';
     }
 }
@@ -44,7 +44,7 @@ for($i=3;$i>0;$i--){
 // show last
 $links[] = '...<a href="/user/admin/'.$page_ct.'">'.$page_ct.'</a>';
 
-echo '['.implode(', ',$links).']<br/>';
+echo '['.implode(', ', $links).']<br/>';
 ?>
 <br/>
 <?php
@@ -59,11 +59,11 @@ else
 }
 ?>
 
-<?php echo 'show: '.form_dropdown('showLimit',array(
+<?php echo 'show: '.form_dropdown('showLimit', array(
     '10' => '10 records',
     '20' => '20 records',
     '40' => '40 records'
-),$this->validation->showLimit,'id="showLimit"'); ?>
+), $this->validation->showLimit,'id="showLimit"'); ?>
 
 <table summary="" class="list" width="100%">
 <tr class="header">
@@ -76,10 +76,10 @@ else
 </tr>
 <?php
 $ct=0;
-foreach($users as $k=>$v){
+foreach ($users as $k=>$v) {
     $class 		= ($ct%2==0) ? 'row1' : 'row2';
     $is_admin	= ($v->admin==1) ? '<b style="color:#00E200">Y</b>' : '<b style="color:#FF0000">N</b>';
-    $last_log	= (!empty($v->last_login)) ? date('m.d.Y H:i:s',$v->last_login): '';
+    $last_log	= (!empty($v->last_login)) ? date('m.d.Y H:i:s', $v->last_login): '';
     $active		=  'inact';
     $activeChange =  'activate';
     if (!empty($v->active) && $v->active==1) {
@@ -97,8 +97,8 @@ foreach($users as $k=>$v){
             <td>%7$s</td>
             <td align="right">%8$s <a href="/user/changestat/%2$s/admin" id="status_link_%2$s">%9$s</a></td>
         </tr>
-    ',$class,$v->ID,escape($v->username),escape($v->full_name),escape($v->email),
-    $is_admin,$last_log,$active, $activeChange);
+    ', $class, $v->ID, escape($v->username), escape($v->full_name), escape($v->email),
+    $is_admin, $last_log, $active, $activeChange);
     $ct++;
 }
 ?>

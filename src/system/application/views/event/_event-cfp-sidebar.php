@@ -1,7 +1,7 @@
 <?php
-if(!empty($events)){
+if (!empty($events)) {
     $cfp_data 	= '<ul>';
-    foreach($events as $event){
+    foreach ($events as $event) {
         $cfp_data.='<li><a href="/event/view/'.$event->ID.'">'.$event->event_name.'</a>';
     }
     $cfp_data	.= '</ul>';

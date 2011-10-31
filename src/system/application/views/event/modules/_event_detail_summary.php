@@ -9,7 +9,7 @@ here's what we need
 <div class="detail">
     
     <div class="header">
-        <?php $this->load->view('event/_event-icon',array('event'=>$event_detail)); ?>
+        <?php $this->load->view('event/_event-icon', array('event'=>$event_detail)); ?>
     
         <div class="title">
             <div class="head">
@@ -23,7 +23,7 @@ here's what we need
                     <?php } ?>
                     <br/> 
                     <strong><?php echo escape($event_detail->event_loc); ?></strong>
-                    <?php if($event_detail->private==1): ?>
+                    <?php if ($event_detail->private==1): ?>
                         <br/><strong>Private Event</strong>
                     <?php endif; ?>
                 </p>
@@ -35,17 +35,17 @@ here's what we need
                 if its set, but the event is in the future, show a link for "I'll be there!"
                 if its not set show the "I'll be there/I was there" based on time
                 */
-                if($attend && user_is_auth()){
-                    if($event_detail->event_end<time()){
+                if ($attend && user_is_auth()) {
+                    if ($event_detail->event_end<time()) {
                         $link_txt="I attended"; $showt=1;
-                    }else{ $link_txt="I'm attending"; $showt=2; }
-                }else{
-                    if($event_detail->event_end<time()){
+                    } else { $link_txt="I'm attending"; $showt=2; }
+                } else {
+                    if ($event_detail->event_end<time()) {
                         $link_txt="I attended"; $showt=3; 
-                    }else{ $link_txt="I'm attending"; $showt=4; }
+                    } else { $link_txt="I'm attending"; $showt=4; }
                 }
                 //if they're not logged in, show the questions
-                if(!user_is_auth()){ $attend=false; }
+                if (!user_is_auth()) { $attend=false; }
                 ?>
                     
                     <a class="btn<?php echo $attend ? ' btn-success' : ''; ?>" id="mark-attending" href="javascript:void(0);" onclick="return markAttending(this,<?php echo $event_detail->ID?>,<?php echo $event_detail->event_end<time() ? 'true' : 'false'; ?>);"><?php echo $link_txt?></a>
@@ -62,10 +62,10 @@ here's what we need
         <?php echo auto_p(auto_link(escape($event_detail->event_desc))); ?>
         <hr/>
 
-    <?php if(!empty($event_detail->event_href) || !empty($event_detail->event_hastag) || !empty($event_detail->event_stub)){ ?>
+    <?php if (!empty($event_detail->event_href) || !empty($event_detail->event_hastag) || !empty($event_detail->event_stub)) { ?>
         <div class="related">
-        <?php if(!empty($event_detail->event_href)){ ?>
-        <?php $hrefs = array_map('trim', explode(',',$event_detail->event_href)); ?>
+        <?php if (!empty($event_detail->event_href)) { ?>
+        <?php $hrefs = array_map('trim', explode(',', $event_detail->event_href)); ?>
             <div class="links">
                 <h2 class="h4">Event Link<?php if (count($hrefs) != 1): ?>s<?php endif; ?></h2>
                 <ul>
@@ -75,8 +75,8 @@ here's what we need
                 </ul>
             </div>
         <?php } ?>
-        <?php if(!empty($event_detail->event_hashtag)){ ?>
-        <?php $hashtags = array_map('trim', explode(',',$event_detail->event_hashtag)); ?>
+        <?php if (!empty($event_detail->event_hashtag)) { ?>
+        <?php $hashtags = array_map('trim', explode(',', $event_detail->event_hashtag)); ?>
             <div class="hashtags">
                 <h2 class="h4">Hashtag<?php if (count($hashtags) != 1): ?>s<?php endif; ?></h2>
                 <ul>
@@ -87,7 +87,7 @@ here's what we need
                 </ul>
             </div>
         <?php } ?>
-        <?php if(!empty($event_detail->event_stub)){ ?>
+        <?php if (!empty($event_detail->event_stub)) { ?>
             <div class="links">
                 <h2 class="h4">Quicklink</h2>
                 <ul>
@@ -102,7 +102,7 @@ here's what we need
     <?php } ?>
             <?php 
             // If there's a Call for Papers open for the event, let them know
-            if(!empty($event_detail->event_cfp_start) || !empty($event_detail->event_cfp_end)){ 
+            if (!empty($event_detail->event_cfp_start) || !empty($event_detail->event_cfp_end)) { 
             $cfp_status=($event_detail->event_cfp_end>=time() && $event_detail->event_cfp_start<=mktime(0,0,0)) ? 'Open!' : 'Closed';
             ?>
             <div class="links">

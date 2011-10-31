@@ -21,7 +21,7 @@ $title[] = $this->config->item('site_name');
     <div class="container_12 container">
         <div class="grid_8">
             <div class="main">
-                <?php if(isset($info_block)){ echo $info_block; } ?>
+                <?php if (isset($info_block)) { echo $info_block; } ?>
                 <?php echo $content?>
             </div>
         </div>

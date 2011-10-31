@@ -2,7 +2,7 @@
 
 class Talk_speaker_model extends Model {
 
-    function Talk_speaker_model(){
+    function Talk_speaker_model() {
         parent::Model();
     }
     //----------------
@@ -13,12 +13,12 @@ class Talk_speaker_model extends Model {
      * @param integer $talk_id Talk ID #
      * @param string $speaker_name Speaker name
      */
-    private function _speakerExists($talk_id,$speaker_name){
+    private function _speakerExists($talk_id, $speaker_name) {
         $find=array(
             'talk_id'		=> $talk_id,
             'speaker_name'	=> $speaker_name
         );
-        $q=$this->db->get_where('talk_speaker',$find);
+        $q=$this->db->get_where('talk_speaker', $find);
         return $q->result();
     }
     
@@ -31,34 +31,34 @@ class Talk_speaker_model extends Model {
      * 
      * @return null
      */
-    public function handleSpeakerData($talk_id, array $speaker_data=null){
-        if(!is_array($speaker_data)){ $speaker_data=array($speaker_data); }
+    public function handleSpeakerData($talk_id, array $speaker_data=null) {
+        if (!is_array($speaker_data)) { $speaker_data=array($speaker_data); }
         $speaker_names=array();
         
-        foreach($speaker_data as $speaker){
+        foreach ($speaker_data as $speaker) {
             
             $data=array(
                 'talk_id'		=> $talk_id,
                 'speaker_name'	=> $speaker
             );
-            if(empty($speaker)){ continue; }
+            if (empty($speaker)) { continue; }
             
-            if(!empty($speaker)){ $speaker_names[]=$speaker; }
-            $speaker_row = $this->_speakerExists($talk_id,$speaker);
-            if($speaker_row){
+            if (!empty($speaker)) { $speaker_names[]=$speaker; }
+            $speaker_row = $this->_speakerExists($talk_id, $speaker);
+            if ($speaker_row) {
                 //Update the current information
-                $this->db->update('talk_speaker',$data,array('ID'=>$speaker_row[0]->ID));
-            }else{
+                $this->db->update('talk_speaker', $data, array('ID'=>$speaker_row[0]->ID));
+            } else {
                 // Add the new speaker
-                $this->db->insert('talk_speaker',$data);
+                $this->db->insert('talk_speaker', $data);
             }
         }
         
         // Now lets find the ones that aren't in our list and remove them
         // This means we can't deleet the last speaker on a talk...that's a good thing!
-        if(!empty($speaker_names)){
-            $this->db->where_not_in('speaker_name',$speaker_names);
-            $this->db->where('talk_id',$talk_id);
+        if (!empty($speaker_names)) {
+            $this->db->where_not_in('speaker_name', $speaker_names);
+            $this->db->where('talk_id', $talk_id);
             $this->db->delete('talk_speaker');
         }
     }
@@ -70,7 +70,7 @@ class Talk_speaker_model extends Model {
      * @param boolean $showAll[optional] Switch to have method return all, no matter the status
      * @return array $speaker Speaker data
      */
-    public function getTalkSpeakers($talk_id,$showAll=false)
+    public function getTalkSpeakers($talk_id, $showAll=false)
     {		
         $this->db->select('talk_speaker.*, user.email')
             ->from('talk_speaker')
@@ -79,12 +79,12 @@ class Talk_speaker_model extends Model {
         $query=$this->db->get();
         $speakers = $query->result();
         
-        if($showAll == true){
+        if ($showAll == true) {
             return $speakers;
-        }else{		
+        } else {		
             // if the status isn't null, remove the speaker_id
-            foreach($speakers as $speakerIndex => $speaker){
-                if($speaker->status != null){
+            foreach ($speakers as $speakerIndex => $speaker) {
+                if ($speaker->status != null) {
                     $speakers[$speakerIndex]->speaker_id = null;
                 }
             }
@@ -100,12 +100,12 @@ class Talk_speaker_model extends Model {
      *
      * @return null
      */
-    public function deleteSpeaker($talk_id,$speaker_name){
+    public function deleteSpeaker($talk_id, $speaker_name) {
         $where=array(
             'talk_id'		=> $talk_id,
             'speaker_name'	=> $speaker_name
         );
-        $this->db->delete('talk_speaker',$where);
+        $this->db->delete('talk_speaker', $where);
     }
     
     /**
@@ -115,11 +115,11 @@ class Talk_speaker_model extends Model {
      * 
      * @return array Speaker information
      */
-    public function getSpeakerByTalkId($talk_id,$showAll=false){
+    public function getSpeakerByTalkId($talk_id, $showAll=false) {
         
-        $this->db->select('talk_id,speaker_name,talk_speaker.ID,email,speaker_id,status,full_name');
+        $this->db->select('talk_id, speaker_name, talk_speaker.ID, email, speaker_id, status, full_name');
         $this->db->from('talk_speaker');
-        $this->db->where('talk_id',$talk_id);
+        $this->db->where('talk_id', $talk_id);
         $this->db->distinct();
         
         $this->db->join('user','user.ID=talk_speaker.speaker_id', 'left');
@@ -127,8 +127,8 @@ class Talk_speaker_model extends Model {
         $ret=$result->result();
         
         // For some reason there's no matching names....just get the speakers
-        if(empty($ret)){
-            $result=$this->db->get_Where('talk_speaker',array('talk_id'=>$talk_id));
+        if (empty($ret)) {
+            $result=$this->db->get_Where('talk_speaker', array('talk_id'=>$talk_id));
             $ret=$result->result();
         }
 
@@ -142,22 +142,22 @@ class Talk_speaker_model extends Model {
      * @param integer $talk_id Talk ID #
      * @return mixed Either boolean or integer
      */
-    public function isTalkClaimed($talk_id,$claimComplete=false)
+    public function isTalkClaimed($talk_id, $claimComplete=false)
     {
-        $query 		= $this->db->get_where('talk_speaker',array('talk_id'=>$talk_id));
+        $query 		= $this->db->get_where('talk_speaker', array('talk_id'=>$talk_id));
         $result 	= $query->result();
         
         $totalCount   = count($result);
         $totalClaimed = 0;
         
-        foreach($result as $speaker){
-            if($speaker->speaker_id!=null && $speaker->status!='pending'){
+        foreach ($result as $speaker) {
+            if ($speaker->speaker_id!=null && $speaker->status!='pending') {
                 $totalClaimed++;
             }
         }
-        if($claimComplete==true){
+        if ($claimComplete==true) {
             return ($totalClaimed == $totalCount) ? true : false;
-        }else{
+        } else {
             return ($totalClaimed>0) ? $totalClaimed : false;
         }
     }
@@ -170,9 +170,9 @@ class Talk_speaker_model extends Model {
      * @param integer $talk_id Talk ID
      * @return boolean
      */
-    public function hasPerm($user_id,$talk_id)
+    public function hasPerm($user_id, $talk_id)
     {
-        $query = $this->db->get_where('talk_speaker',array(
+        $query = $this->db->get_where('talk_speaker', array(
             'talk_id'		=> $talk_id,
             'speaker_id'	=> $user_id,
             'IFNULL(status,0) !='=>'pending'

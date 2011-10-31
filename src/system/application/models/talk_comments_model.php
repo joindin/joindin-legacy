@@ -2,7 +2,7 @@
 
 class Talk_comments_model extends Model {
 
-    function Talk_comments_model(){
+    function Talk_comments_model() {
         parent::Model();
     }
     //-------------------
@@ -11,8 +11,8 @@ class Talk_comments_model extends Model {
      * @param array $data Talk data
      * @return boolean Is or Isn't Unique
      */
-    public function isUnique($data){
-        $q=$this->db->get_where('talk_comments',$data);
+    public function isUnique($data) {
+        $q=$this->db->get_where('talk_comments', $data);
         $ret=$q->result();
         return (empty($ret)) ? true : false;
     }
@@ -23,9 +23,9 @@ class Talk_comments_model extends Model {
      * @param integer $user_id User ID
      * @return boolean
      */
-    public function hasUserCommented($talk_id,$user_id){
+    public function hasUserCommented($talk_id, $user_id) {
         $data=array('talk_id'=>$talk_id,'user_id'=>$user_id);
-        $q=$this->db->get_where('talk_comments',$data);
+        $q=$this->db->get_where('talk_comments', $data);
         $ret=$q->result();
         return (!empty($ret)) ? true : false;
     }
@@ -35,9 +35,9 @@ class Talk_comments_model extends Model {
      * @param integer $uid User ID
      * @return array Comment data
      */
-    public function getUserComments($uid){
+    public function getUserComments($uid) {
         $this->db->from('talk_comments');
-        $this->db->where('user_id',$uid);
+        $this->db->where('user_id', $uid);
         $q=$this->db->get();
         return $q->result();
     }
@@ -47,8 +47,8 @@ class Talk_comments_model extends Model {
      * @param integer $cid Comment ID
      * @return null
      */
-    public function deleteComment($cid){
-        $this->db->delete('talk_comments',array('id'=>$cid));
+    public function deleteComment($cid) {
+        $this->db->delete('talk_comments', array('id'=>$cid));
     }
     
     /**
@@ -56,8 +56,8 @@ class Talk_comments_model extends Model {
      * @param integer $cid Comment ID
      * @return array Comment data
      */
-    public function getCommentDetail($cid){
-        $q=$this->db->get_where('talk_comments',array('ID'=>$cid));
+    public function getCommentDetail($cid) {
+        $q=$this->db->get_where('talk_comments', array('ID'=>$cid));
         return $q->result();	
     }
     
@@ -66,7 +66,7 @@ class Talk_comments_model extends Model {
      * @param integer $talk_id Talk ID
      * @return array Talk comment details
      */
-    public function getEventComments($event_id){
+    public function getEventComments($event_id) {
         $sql=sprintf('
             select
                 t.ID as talk_id,
@@ -78,7 +78,7 @@ class Talk_comments_model extends Model {
             where
                 t.event_id=%s and
                 t.ID=tc.talk_id;
-        ',$this->db->escape($event_id));
+        ', $this->db->escape($event_id));
         $q=$this->db->query($sql);
         return $q->result();
     }

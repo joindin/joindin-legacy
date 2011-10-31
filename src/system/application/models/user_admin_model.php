@@ -3,7 +3,7 @@
 class User_admin_model extends Model {
 
     /** constructor */
-    function User_admin_model(){
+    function User_admin_model() {
         parent::Model();
     }
     
@@ -13,9 +13,9 @@ class User_admin_model extends Model {
      * @param integer $aid Resource ID
      * @return void
      */
-    public function removePerm($aid){
+    public function removePerm($aid) {
         //$arr=array('uid'=>$uid,'rid'=>$rid);
-        $this->db->delete('user_admin',array('ID'=>$aid));
+        $this->db->delete('user_admin', array('ID'=>$aid));
     }
     
     /**
@@ -25,13 +25,13 @@ class User_admin_model extends Model {
      * @param string $type Resource type (ex. "talk")
      * @return void
      */
-    public function removeRidPerm($uid,$rid,$type){
+    public function removeRidPerm($uid, $rid, $type) {
         $det=array(
             'rid'=>$rid,
             'uid'=>$uid,
             'rtype'=>$type
         );
-        $this->db->delete('user_admin',$det);
+        $this->db->delete('user_admin', $det);
     }
     
     /**
@@ -42,7 +42,7 @@ class User_admin_model extends Model {
      * @param string $type Resource type (ex. "talk")
      * @return void
      */
-    public function addPerm($uid,$rid,$type){
+    public function addPerm($uid, $rid, $type) {
         error_log($uid.'-'.$rid.'-'.$type);
         $arr=array(
             'uid'	=>$uid,
@@ -50,7 +50,7 @@ class User_admin_model extends Model {
             'rtype'	=>$type,
             'rcode'	=>''
         );
-        $this->db->insert('user_admin',$arr);
+        $this->db->insert('user_admin', $arr);
     }
     
     /**
@@ -59,9 +59,9 @@ class User_admin_model extends Model {
      * @param array $perms Permission settings to change
      * @return void
      */
-    public function updatePerm($id,$perms){
-        $this->db->where('id',$id);
-        $this->db->update('user_admin',$perms);
+    public function updatePerm($id, $perms) {
+        $this->db->where('id', $id);
+        $this->db->update('user_admin', $perms);
     }
     
     /**
@@ -72,17 +72,17 @@ class User_admin_model extends Model {
      * @param string $rtype Resource type (ex. "talk")
      * @return boolean If they have permission or not
      */
-    public function hasPerm($uid,$rid,$rtype){
-        $q=$this->db->get_where('user_admin',array('uid'=>$uid,'rid'=>$rid,'rtype'=>$rtype));
+    public function hasPerm($uid, $rid, $rtype) {
+        $q=$this->db->get_where('user_admin', array('uid'=>$uid,'rid'=>$rid,'rtype'=>$rtype));
         $ret=$q->result(); //print_r($ret);
         return (empty($ret)) ? false : true;
     }
 
-    public function getPendingPerm($uid,$rid,$rtype){
+    public function getPendingPerm($uid, $rid, $rtype) {
         error_log($uid.' - '.$rid.' - '.$rtype);
-        $q=$this->db->get_where('user_admin',array('uid'=>$uid,'rid'=>$rid,'rtype'=>$rtype,'rcode'=>'pending'));
+        $q=$this->db->get_where('user_admin', array('uid'=>$uid,'rid'=>$rid,'rtype'=>$rtype,'rcode'=>'pending'));
         $result = $q->result();
-        error_log('result: '.print_r($result,true));
+        error_log('result: '.print_r($result, true));
         return $result;
     }
 
@@ -108,13 +108,13 @@ class User_admin_model extends Model {
      * @param boolean $pending Toggle to show pending claims or not
      * @return array $ret User claim information
      */
-    public function getUserTypes($uid,$types=null,$pending=false){
+    public function getUserTypes($uid, $types=null, $pending=false) {
         $CI=&get_instance();
         
         $CI->load->model('talks_model');
         $CI->load->model('event_model');
         
-        $tadd=($types) ? " and ua.rtype in ('".implode("','",$types)."')" : '';
+        $tadd=($types) ? " and ua.rtype in ('".implode("','", $types)."')" : '';
         $pend=($pending) ? " and rcode='pending'" : '';
         $sql=sprintf("
             select
@@ -132,8 +132,8 @@ class User_admin_model extends Model {
         $q=$this->db->query($sql);
         $ret=$q->result();
         
-        foreach($ret as $k=>$v){
-            switch($v->rtype){
+        foreach ($ret as $k=>$v) {
+            switch($v->rtype) {
                 case 'talk': 
                     $ret[$k]->detail=$CI->talks_model->getTalks($v->rid);
                     break;
@@ -144,7 +144,7 @@ class User_admin_model extends Model {
         }
         
         return $ret;
-        //$q=$this->db->get_where('user_admin',array('uid'=>$uid));
+        //$q=$this->db->get_where('user_admin', array('uid'=>$uid));
         //return $q->result(); //print_r($ret);
     }
     
@@ -154,7 +154,7 @@ class User_admin_model extends Model {
      * @param integer $uid User ID
      * @return array User admin data
      */
-    public function getUserEventAdmin($uid){
+    public function getUserEventAdmin($uid) {
         $sql=sprintf("
             select
                 e.event_name,
@@ -176,13 +176,13 @@ class User_admin_model extends Model {
      * @param integer $talk_id Talk ID #
      * @param boolean $pending[optional] Whether to include pending claims or not
      */
-    public function getTalkClaims($talk_id,$pending=false){
+    public function getTalkClaims($talk_id, $pending=false) {
         $this->db->select('*');
         $this->db->from('user_admin');
         $this->db->join('user','user_admin.uid=user.ID');
-        $this->db->where('rid',$talk_id);
+        $this->db->where('rid', $talk_id);
         $this->db->where('rtype', 'talk');
-        if(!$pending){ 
+        if (!$pending) { 
             $this->db->where(array('rcode !='=>'pending'));
         }
         
@@ -197,8 +197,8 @@ class User_admin_model extends Model {
      * @param integer $claim_id ID from the claim table
      * @return boolean Is valid claim or not
      */
-    public function isPendingClaim($claim_id){
-        $q=$this->db->get_where('user_admin',array('ID'=>$claim_id,'rcode'=>'pending'));
+    public function isPendingClaim($claim_id) {
+        $q=$this->db->get_where('user_admin', array('ID'=>$claim_id,'rcode'=>'pending'));
         $ret=$q->result();
         return (empty($ret)) ? false : true;
     }
@@ -210,8 +210,8 @@ class User_admin_model extends Model {
      * @param integer $rid[optional] Resource ID (could be talk ID or event ID)
      * @return array Claim data
      */
-    public function getPendingClaims($type='talk',$rid=null){
-        switch($type){
+    public function getPendingClaims($type='talk', $rid=null) {
+        switch($type) {
             //case 'talk':    return $this->getPendingClaims_Talks($rid); break;
             case 'talk':    return $this->getPendingClaim_TalkSpeaker($rid); break;
             case 'event':   return $this->getPendingClaims_Events($rid); break;
@@ -250,12 +250,12 @@ class User_admin_model extends Model {
                 ts.status = 'pending' and
                 t.event_id = %s and
                 t.event_id = e.ID
-        ",$eid);
+        ", $eid);
         
         $query = $this->db->query($sql);
         $results = $query->result();
         
-        foreach($results as $talkKey => $talk){
+        foreach ($results as $talkKey => $talk) {
             $results[$talkKey]->speakers = $CI->talkSpeaker->getSpeakerByTalkId($talk->talk_id);
         }
         
@@ -266,7 +266,7 @@ class User_admin_model extends Model {
     * Get the pending talk claims
     * @param $eid[optional] integer Event ID to restrict on
     */
-    public function getPendingClaims_Talks($eid=null){
+    public function getPendingClaims_Talks($eid=null) {
         $addl=($eid) ? ' e.ID='.$this->db->escape($eid).' and ' : '';
         $sql=sprintf("
             select
@@ -292,11 +292,11 @@ class User_admin_model extends Model {
                 t.id=ua.rid and
                 u.id=ua.uid and %s
                 e.id=t.event_id
-        ",$addl);
+        ", $addl);
         $q=$this->db->query($sql);
         return $q->result();
     }
-    public function getPendingClaims_Events($eid=null){
+    public function getPendingClaims_Events($eid=null) {
         $addl=($eid) ? ' e.ID='.$this->db->escape($eid).' and ' : '';
         $sql=sprintf("
             select
@@ -318,7 +318,7 @@ class User_admin_model extends Model {
                 ua.rcode='pending' and
                 ua.rid=e.ID and %s
                 ua.uid=u.ID
-        ",$addl);
+        ", $addl);
         $q=$this->db->query($sql);
         return $q->result();
     }
@@ -338,7 +338,7 @@ class User_admin_model extends Model {
         $query = $this->db->query($sql);
 
         $result = $query->result();
-        if(count($result) > 0) {
+        if (count($result) > 0) {
             return true;
         }
         return false;

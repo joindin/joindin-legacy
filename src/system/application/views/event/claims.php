@@ -9,7 +9,7 @@
         <td><b>Claiming User</b></td>
     </tr>
     <?php
-        foreach($claims as $k=>$claim): ?>
+        foreach ($claims as $k=>$claim): ?>
         <tr>
             <td align="center"><?php echo form_radio('claim['.$claim->ua_id.']','approve'); ?></td>
             <td align="center"><?php echo form_radio('claim['.$claim->ua_id.']','deny'); ?></td>

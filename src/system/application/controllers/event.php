@@ -119,7 +119,7 @@ class Event extends Controller
             $events = $this->event_model->getUpcomingEvents(null);
             break;
         case 'past':
-            $events = $this->event_model->getPastEvents(null,$per_page,$current_page);
+            $events = $this->event_model->getPastEvents(null, $per_page, $current_page);
             break;
         case 'pending':
             $events = $this->event_model->getEventDetail(
@@ -164,7 +164,7 @@ class Event extends Controller
         $this->template->write_view('content', 'event/main', $arr, true);
 
         $events 	= $this->event_model->getCurrentCfp();
-        $this->template->parse_view('sidebar2','event/_event-cfp-sidebar',array('events'=>$events));
+        $this->template->parse_view('sidebar2','event/_event-cfp-sidebar', array('events'=>$events));
 
         $this->template->render();
     }
@@ -442,7 +442,7 @@ class Event extends Controller
             }
 
             // this section only needed for edit, not add
-            if($id) {
+            if ($id) {
                 // be sure that the image for the event actually exists
                 $eventIconPath = $_SERVER['DOCUMENT_ROOT'] . '/inc/img/event_icons/'.$event_detail[0]->event_icon;
 
@@ -453,7 +453,7 @@ class Event extends Controller
                 // Get Current Tags
                 $currentTags = $this->tagsEvents->getTags($id);
                 $ctags = array();
-                foreach($currentTags as $tag) {
+                foreach ($currentTags as $tag) {
                     $ctags[] = $tag->tag_value;
                 }
 
@@ -582,16 +582,16 @@ class Event extends Controller
                 $tag = trim($tag);
 
                 // if it already exists, remove it from our array
-                if (array_key_exists($tag,$ctags)) {
+                if (array_key_exists($tag, $ctags)) {
                     unset($ctags[$tag]);
                 }
 
-                $this->tagsEvents->addTag($id,$tag);
+                $this->tagsEvents->addTag($id, $tag);
                 $tagList[] = $tag;
             }
 
             // see if we have any left overs
-            $this->tagsEvents->removeUnusedTags($id,$ctags);
+            $this->tagsEvents->removeUnusedTags($id, $ctags);
 
             $this->validation->tagged = implode(array_unique($tagList), ', ');
             //------------------------
@@ -849,7 +849,7 @@ class Event extends Controller
                 $is_spam = 'false';
             }
 
-            // $this->spam->check('regex',$ec['comment']);
+            // $this->spam->check('regex', $ec['comment']);
 
             if ($is_spam == 'false') {
                 $this->db->insert('event_comments', $ec);
@@ -942,7 +942,7 @@ class Event extends Controller
         
         // For single day events, we don't want to prompt for a comment
         // until the event is over
-        if($events[0]->event_start + (60 * 60 * 25) >= $last_day)
+        if ($events[0]->event_start + (60 * 60 * 25) >= $last_day)
         {
             $last_day = $events[0]->event_end;
         }
@@ -955,11 +955,11 @@ class Event extends Controller
         
                 $feedback_deadline = strtotime('+3 month', $last_day);
                 
-        if($is_auth && $chk_attend && ( time() > $last_day && time() < $feedback_deadline))
+        if ($is_auth && $chk_attend && ( time() > $last_day && time() < $feedback_deadline))
         {
             // Check to see if they have left feedback yet.
             $has_commented_event = $this->event_model->hasUserCommentedEvent($id, $arr['user_id']);
-            if(!$has_commented_event)
+            if (!$has_commented_event)
             {
                 $this->template->write_view(
                 'sidebar3', 'event/_event_prompt_comment_sidebar',
@@ -974,13 +974,13 @@ class Event extends Controller
 
         $this->template->write_view('content', 'event/detail', $arr, true);
         // only show the contact button for logged in users
-        if($is_auth) {
+        if ($is_auth) {
             $this->template->write_view(
                 'sidebar2', 'event/_event_contact', array('eid' => $id)
             );
         }
         $this->template->render();
-        //$this->load->view('event/detail',$arr);
+        //$this->load->view('event/detail', $arr);
     }
 
     /**
@@ -1035,7 +1035,7 @@ class Event extends Controller
 
             $this->template->write_view('content', 'event/delete', $arr, true);
             $this->template->render();
-            //$this->load->view('event/delete',$arr);
+            //$this->load->view('event/delete', $arr);
         } else {
             redirect();
         }
@@ -1207,7 +1207,7 @@ class Event extends Controller
             $is_spam  = (string) $def->spam;
 
             $bypassSpamFilter = $this->input->post('bypass_spam_filter');
-            if($bypassSpamFilter == 1){
+            if ($bypassSpamFilter == 1) {
                 $is_spam = false;
             }
 
@@ -1273,7 +1273,7 @@ class Event extends Controller
         $this->session->set_userdata(array('cinput'=>$arr['captcha']['value']));
 
         // user must be logged in to submit
-        if(!$this->user_model->isAuth()){
+        if (!$this->user_model->isAuth()) {
             $arr['msg'] = sprintf('
                 <b>Note</b>: you must be logged in to submit an event!<br/><br/>
                 If you do not have an account, you can <a href="/user/register">sign up here</a>.
@@ -1344,7 +1344,7 @@ class Event extends Controller
             $evt_detail = $this->event_model->getEventDetail($id);
 
             // if the admin list is empty, use the contact info on the event
-            if(empty($admin_list)){
+            if (empty($admin_list)) {
                 $admin_list[]=array(
                     'full_name' => $evt_detail->event_contact_name,
                     'email' 	=> $evt_detail->event_contact_email
@@ -1389,32 +1389,32 @@ class Event extends Controller
         $msg   = array();
 
         // look at each claim submitted and approve/deny them
-        if($claim){
+        if ($claim) {
             $approved = 0;
             $denied   = 0;
 
-            foreach($claim as $claimId => $claimStatus){
+            foreach ($claim as $claimId => $claimStatus) {
                 // Retreive the pending claim before approving or denying as
                 // it will be removed by approveClaim() or deleteClaim().
                 $pendingClaim = $this->pendingClaimsModel->getClaimDetail($claimId);
 
-                if($claimStatus=='approve'){
+                if ($claimStatus=='approve') {
                     $approveCheck = $this->pendingClaimsModel->approveClaim($claimId);
-                    if($approveCheck){
+                    if ($approveCheck) {
                         $approved++;
                         $this->_sendClaimSuccessEmail($pendingClaim);
                     }
-                }elseif($claimStatus=='deny'){
+                } elseif ($claimStatus=='deny') {
                     // delete the claim row
                     $denyCheck = $this->pendingClaimsModel->deleteClaim($claimId);
-                    if($denyCheck){ $denied++; }
+                    if ($denyCheck) { $denied++; }
                 }
             }
-            if($approved>0){ $msg[] = $approved.' claim(s) approved'; }
-            if($denied>0){ $msg[] = $denied.' claims(s) denied'; }
+            if ($approved>0) { $msg[] = $approved.' claim(s) approved'; }
+            if ($denied>0) { $msg[] = $denied.' claims(s) denied'; }
         }
 
-        if(count($msg)>0){
+        if (count($msg)>0) {
             $msg = implode(',', $msg);
             // refresh the list
             $newClaims = $this->pendingClaimsModel->getEventTalkClaims($id);
@@ -1461,7 +1461,7 @@ class Event extends Controller
                         $talk_title = $talk->talk_title;
                         $evt_name = $talk->event_name;
                         $talk_id = $talk->ID;
-                        $this->sendemail->claimSuccess($email,$talk_title,$talk_id,$evt_name);
+                        $this->sendemail->claimSuccess($email, $talk_title, $talk_id, $evt_name);
                         $result = true;
                     }
                 }
@@ -2114,11 +2114,11 @@ class Event extends Controller
      */
     public function tagged_check($tagList)
     {
-        foreach(explode(',',$tagList) as $tag){
-            if(!preg_match('/^[a-zA-Z0-9]+$/',trim($tag))){
+        foreach (explode(',', $tagList) as $tag) {
+            if (!preg_match('/^[a-zA-Z0-9]+$/', trim($tag))) {
                 // escape the "%" since it goes to a sprintf()
-                $msg = 'Tag <b>"'.str_replace('%','%%',trim($tag)).'"</b> not valid!';
-                $this->validation->set_message('tagged_check',$msg);
+                $msg = 'Tag <b>"'.str_replace('%','%%', trim($tag)).'"</b> not valid!';
+                $this->validation->set_message('tagged_check', $msg);
                 return false;
             }
         }
@@ -2166,7 +2166,7 @@ class Event extends Controller
      */
     public function tag($tagData)
     {
-        if($tagData == null){ redirect('/event'); }
+        if ($tagData == null) { redirect('/event'); }
         $this->load->model('event_model','eventModel');
 
         // get events that are tagged with data from url - single value for now

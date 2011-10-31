@@ -1,5 +1,5 @@
 <?php
-if(isset($eid)){
+if (isset($eid)) {
     echo '<h1 class="title">Delete event '.escape($details[0]->event_name).' ?</h1>';
     
     echo form_open('event/delete/'.$eid);
@@ -18,7 +18,7 @@ if(isset($eid)){
     <?php 
     echo form_close(); 
 
-}else{
+} else {
     echo '<h1 class="title">Event Removed!</h1>';
     echo '<a href="/event/pending">Return to pending event list</a>';
 }

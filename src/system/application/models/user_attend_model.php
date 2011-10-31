@@ -2,7 +2,7 @@
 
 class User_attend_model extends Model {
 
-    function User_attend_model(){
+    function User_attend_model() {
         parent::Model();
     }
     //--------------
@@ -14,8 +14,8 @@ class User_attend_model extends Model {
      * @param integer $eid Event ID
      * @return boolean
      */
-    function chkAttend($uid,$eid){
-        $q=$this->db->get_where('user_attend',array('uid'=>$uid,'eid'=>$eid));
+    function chkAttend($uid, $eid) {
+        $q=$this->db->get_where('user_attend', array('uid'=>$uid,'eid'=>$eid));
         $ret=$q->result();
         return (empty($ret)) ? false : true;
     }
@@ -27,13 +27,13 @@ class User_attend_model extends Model {
      * @param integer $eid Event ID
      * @return null
      */
-    function chgAttendStat($uid,$eid){
-        if($this->chkAttend($uid,$eid)){
+    function chgAttendStat($uid, $eid) {
+        if ($this->chkAttend($uid, $eid)) {
             //they are attending, remove them
-            $this->db->delete('user_attend',array('uid'=>$uid,'eid'=>$eid));
-        }else{ 
+            $this->db->delete('user_attend', array('uid'=>$uid,'eid'=>$eid));
+        } else { 
             //they're not attending, add them
-            $this->db->insert('user_attend',array('uid'=>$uid,'eid'=>$eid));
+            $this->db->insert('user_attend', array('uid'=>$uid,'eid'=>$eid));
         }
     }
     
@@ -43,7 +43,7 @@ class User_attend_model extends Model {
      * @param integer $eid Event ID
      * @return integer Count of attendees
      */
-    function getAttendCount($eid){
+    function getAttendCount($eid) {
         $sql='select count(ID) attend_ct from user_attend where eid='.$this->db->escape($eid);
         $query = $this->db->query($sql);
         $countResult = $query->result();
@@ -56,9 +56,9 @@ class User_attend_model extends Model {
      * @param integer $eid Event ID
      * @return array User details
      */
-    function getAttendUsers($eid){
+    function getAttendUsers($eid) {
         $this->db->distinct();
-        $this->db->select('user.ID,user.username,user.full_name');
+        $this->db->select('user.ID, user.username, user.full_name');
         $this->db->from('user');
         $this->db->where('user_attend.eid', $eid);
         $this->db->join('user_attend','user.ID=user_attend.uid');
@@ -73,7 +73,7 @@ class User_attend_model extends Model {
      * @param integer $eid Event Id
      * @return array List of attending users
      */
-    function getAttendees($eid){
+    function getAttendees($eid) {
         
         $sql=sprintf('
             select
@@ -99,7 +99,7 @@ class User_attend_model extends Model {
                 ua.eid=%s
             order by
                 usr.full_name asc
-        ',$this->db->escape((int)$eid), $this->db->escape((int)$eid));
+        ', $this->db->escape((int)$eid), $this->db->escape((int)$eid));
         
         $query = $this->db->query($sql);
         return $query->result();
@@ -111,8 +111,8 @@ class User_attend_model extends Model {
      * @param integer $uid User ID
      * @return array Event details
      */
-    function getUserAttending($uid){
-        $this->db->select('events.event_name,events.ID,events.event_start,events.event_end');
+    function getUserAttending($uid) {
+        $this->db->select('events.event_name, events.ID, events.event_start, events.event_end');
         $this->db->from('events');
         $this->db->join('user_attend','user_attend.eid=events.ID');
         $this->db->where('user_attend.uid',(int)$uid);

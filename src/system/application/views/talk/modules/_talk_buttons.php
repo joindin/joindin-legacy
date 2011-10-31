@@ -3,30 +3,30 @@
     <form action="<?php echo '/talk/claim/'.$detail->tid ?>" method="POST">
     <?php
     $speaker_list = array();
-    foreach($speakers as $speaker){
-        if(empty($speaker->speaker_id)){
+    foreach ($speakers as $speaker) {
+        if (empty($speaker->speaker_id)) {
             $speaker_list[$speaker->ID]=$speaker->speaker_name;
         }
     }
-    echo form_dropdown('claim_name_select', $speaker_list,null,'id="claim_name_select"');
+    echo form_dropdown('claim_name_select', $speaker_list, null,'id="claim_name_select"');
     ?>
     <input type="submit" value="claim" id="claim-btn-submit"/>
     <input type="button" value="cancel" id="claim-cancel-btn"/>
     </form>
 </div>
 <p class="admin">
-<?php if($admin):?>
+<?php if ($admin):?>
     <a class="btn-small" href="/talk/delete/<?php echo $detail->tid; ?>">Delete talk</a>	
     <a class="btn-small" href="/talk/edit/<?php echo $detail->tid; ?>">Edit talk</a>
 <?php endif; ?>
 <?php
-    if(!isset($user_id)){
+    if (!isset($user_id)) {
         $link 	= '/user/login';
         $class 	= '';
-    }elseif(count($speakers)==1){
+    } elseif (count($speakers)==1) {
         $link 	= '/talk/claim/'.$detail->tid.'/'.$speaker->ID;
         $class 	= 'single';
-    }else{
+    } else {
         // multiple speakers, still show the dropdown
         $link 	= '';
         $class 	= 'multi';

@@ -28,7 +28,7 @@ margin: 			0 0 4px 0;
 <body>
     <div id="content">
     <?php
-        if(isset($_SERVER['JOINDIN_DEBUG']) && $_SERVER['JOINDIN_DEBUG'] == 'on') {
+        if (isset($_SERVER['JOINDIN_DEBUG']) && $_SERVER['JOINDIN_DEBUG'] == 'on') {
             echo "<h1>$heading</h1>\n$message\n";
         }
         else {

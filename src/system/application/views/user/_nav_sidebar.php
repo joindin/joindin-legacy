@@ -3,7 +3,7 @@
  * User pages navigation
  */
 $admin_nav_lnks='';
-if(user_is_admin()){
+if (user_is_admin()) {
     $admin_nav_lnks=sprintf('
     <li><b>Admin Links</b>
     <ul>
@@ -12,7 +12,7 @@ if(user_is_admin()){
     <li><a href="/talk/claim">Talk Claims</a>
     <li><a href="/event/claims">Event Claims</a> (%s)
     </ul>
-    ',count($pending_events), count($event_claims)
+    ', count($pending_events), count($event_claims)
     );
 }
 $nav=sprintf('
@@ -25,7 +25,7 @@ $nav=sprintf('
     <li><a href="/user/main">My Sessions</a>
 </ul>
 %s
-</ul>',$admin_nav_lnks);
+</ul>', $admin_nav_lnks);
 
 menu_sidebar('Navigation', $nav);
 ?>

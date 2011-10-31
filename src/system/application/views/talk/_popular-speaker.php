@@ -4,8 +4,8 @@ $ct=0; ?>
 
 <table cellpadding="10" cellspacing="0" border="0"><tr>
 <?php 
-foreach($talks as $t){ 
-    if($ct%2==0 && $ct!=0){ echo '</tr><tr>'; } 
+foreach ($talks as $t) { 
+    if ($ct%2==0 && $ct!=0) { echo '</tr><tr>'; } 
 ?>
 <td valign="top" width="50%" style="padding-bottom:10px">
     <div>

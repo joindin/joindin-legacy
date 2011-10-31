@@ -3,10 +3,10 @@
 
 echo form_open('talk/claim');
 
-if(isset($approved) && $approved>0){
+if (isset($approved) && $approved>0) {
     echo '<div><b>'.$approved.' Talk Claims Approved!</b></div><br/>';
 }
-if(isset($deleted) && $deleted>0){
+if (isset($deleted) && $deleted>0) {
     echo '<div><b>'.$deleted.' Talk Claims Removed!</b></div><br/>';
 }
 ?>
@@ -20,7 +20,7 @@ if(isset($deleted) && $deleted>0){
     <td><b>Claim By</b></td>
 </tr>
 <?php
-foreach($claims as $k=>$v){
+foreach ($claims as $k=>$v) {
     $name=(empty($v->claiming_name)) ? $v->claiming_user : $v->claiming_name;
     echo '<tr><td align="center">'.form_checkbox('claim_'.$v->ua_id,1).'</td>';
     echo '<td align="center">'.form_checkbox('del_claim_'.$v->ua_id,1).'</td>';
@@ -29,7 +29,7 @@ foreach($claims as $k=>$v){
         <td>%s</td>
         <td><a href="/user/view/%s">%s</a></td>
     </tr>
-    ',$v->talk_id,$v->talk_title,$v->speaker,$v->uid,$name);
+    ', $v->talk_id, $v->talk_title, $v->speaker, $v->uid, $name);
 }
 ?>
 <tr>

@@ -9,14 +9,14 @@ $data=array(
     'attend'		=> $attend,
     'admins'		=> $admins
 );
-$this->load->view('event/modules/_event_detail',$data);
+$this->load->view('event/modules/_event_detail', $data);
 
 // These are our buttons below the event detail
 $data=array(
     'admin'			=> $admin,
     'event_detail'	=> $event_detail
 );
-$this->load->view('event/modules/_event_buttons',$data);
+$this->load->view('event/modules/_event_buttons', $data);
 ?>
 
 <p class="ad">
@@ -37,19 +37,19 @@ $data=array(
 );
 
 
-if($prompt_event_comment)
+if ($prompt_event_comment)
 {
         
     $this->load->view('event/_event_prompt_comment', array());
 }
 
 
-$this->load->view('event/modules/_event_tabs',$data);
+$this->load->view('event/modules/_event_tabs', $data);
 ?>
 
 <script type="text/javascript">
 (function($) {
-    $(document).ready(function(){
+    $(document).ready(function() {
         $('#event-tabs').joindIn_tabs();
         <?php if (count($talks) == 0): ?>
             $('a[rel=comments]').click();
