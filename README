@@ -1,10 +1,34 @@
 
 Joind.in (http://joind.in)
-#####################
+##########################
 
 This is the source code for the Joind.in website - a resource set up to allow
 events to get real-time feedback from those attending. It also gives speakers a 
 way to claim and track their presentations over time.
+
+
+Quick start
+###########
+1. Create a vhost entry for the site. The docroot should be `/src`.
+2. Create a MySQL database with username and password.
+   Use a database name of 'joindin'
+3. Initialise, patch, and populate the database.
+   > src/scripts/patchdb.sh -t /path/to/joind.in -d joindin -u username -p password -i
+   (use the correct username and password)
+4. Create directories for user-added content.
+   > mkdir src/system/cache/ctokens && chown apache:apache src/system/cache/ctokens
+   > mkdir src/inc/img/user_gravatar && chown apache:apache src/inc/img/user_gravatar
+   (or whatever user and group your web server runs as)
+5. Create configuration files for database and config (based on the .dist templates):
+   > cp src/system/application/config/database.php.dist src/system/application/config/database.php
+   > cp src/system/application/config/config.php.dist   src/system/application/config/config.php
+   Edit these files as appropriate!
+6. Enjoy the site!
+   The default password for users is "password".
+
+
+Detailed instructions
+#####################
 
 There's a few SQL files that are included with the source to help you get things 
 up and running. The first four will bring your database to the most current, up-to-date

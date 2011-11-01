@@ -4,21 +4,21 @@
     if ($status == 'invalid'):
     ?>
     <div class="row">
-    	<p> Access cannot be granted with this token.  </p>
+        <p> Access cannot be granted with this token.  </p>
         <div class="clear"></div>
     </div>
     <?php
-    elseif($status == 'allow'):
+    elseif ($status == 'allow'):
     ?>
     <div class="row">
-    	<p>Access was granted.  Your verification code is: <?php echo $verification; ?></p>
+        <p>Access was granted.  Your verification code is: <?php echo $verification; ?></p>
         <div class="clear"></div>
     </div>
     <?php
-    elseif($status == 'deny'):
+    elseif ($status == 'deny'):
     ?>
     <div class="row">
-    	<p>Access was not granted.  We hope you enjoy joind.in</p>
+        <p>Access was not granted.  We hope you enjoy joind.in</p>
         <div class="clear"></div>
     </div>
     <?php else: ?>

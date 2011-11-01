@@ -6,8 +6,6 @@
  * 
  * @category  Joind.in
  * @package   Controllers
- * @author    Chris Cornutt <chris@joind.in>
- * @author    Mike van Riel <mike.vanriel@naenius.com>
  * @copyright 2009 - 2010 Joind.in
  * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
  * @link      http://github.com/joindin/joind.in
@@ -20,8 +18,6 @@
  *
  * @category  Joind.in
  * @package   Controllers
- * @author    Chris Cornutt <chris@joind.in>
- * @author    Mike van Riel <mike.vanriel@naenius.com>
  * @copyright 2009 - 2010 Joind.in
  * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
  * @link      http://github.com/joindin/joind.in
@@ -95,7 +91,7 @@ class About extends Controller
         $rules = array(
             'your_name' => 'required',
             'your_com'  => 'required',
-			'your_email'=> 'required|valid_email',
+            'your_email'=> 'required|valid_email',
             'cinput'    => 'required|callback_cinput_check'
         );
         
@@ -190,7 +186,15 @@ class About extends Controller
      */
     function cinput_check($str)
     {
-        if (($this->input->post('cinput') != $this->session->userdata('cinput'))) {
+        $str = $this->input->post('cinput');
+        if (! is_numeric($str)) {
+            // If the user input is not numeric, convert it to a numeric value
+            $this->load->plugin('captcha');
+            $digits = captcha_get_digits(true);
+            $str = array_search(strtolower($str), $digits);
+        }
+
+        if ($str != $this->session->userdata('cinput')) {
             $this->validation->_error_messages['cinput_check']
                 = 'Incorrect captcha.';
 
