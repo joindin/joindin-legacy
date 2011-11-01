@@ -55,7 +55,7 @@ $title[] = $this->config->item('site_name');
 
     <div class="container_12 nav">
         <div class="grid_3 logo">
-            <a href="/"><img src="/inc/img/logo.gif" border="0" alt="<?php echo $this->config->item('site_name'); ?> Logo"/></a>
+            <a href="/"><img src="/inc/img/logo.gif" border="0" alt="<?php echo $this->config->item('site_name'); ?> Logo" height="60" width="200" /></a>
         </div>
         <div class="grid_6 menu">
             <ul>
@@ -86,7 +86,7 @@ $title[] = $this->config->item('site_name');
     <div class="container_12">
         <div class="grid_12">
             <?php if (!$this->session->userdata('ID')): ?>
-            <a href="/user/register"><img src="/inc/img/splash.jpg" border="0" alt="Join <?php echo $this->config->item('site_name'); ?> now!"/></a>
+            <a href="/user/register"><img src="/inc/img/splash.jpg" border="0" alt="Join <?php echo $this->config->item('site_name'); ?> now!" height="215" width="941"/></a>
             <?php endif; ?>
         </div>
         <div class="clear"></div>
