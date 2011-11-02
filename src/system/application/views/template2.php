@@ -56,7 +56,7 @@ $title[] = $this->config->item('site_name');
 
     <div class="container_12 nav">
         <div class="grid_3 logo">
-            <a href="/"><img src="/inc/img/logo.gif" border="0" alt="<?php echo $this->config->item('site_name'); ?> Logo" height="60" width="200" /></a>
+            <a href="/"><img src="/inc/img/logo.png" border="0" alt="<?php echo $this->config->item('site_name'); ?> Logo" height="60" width="200" /></a>
         </div>
         <div class="grid_6 menu">
             <ul>
@@ -73,7 +73,7 @@ $title[] = $this->config->item('site_name');
             <form id="top-search" method="post" action="/search">
                 <label id="top-search-label" accesskey="2" for="top-search-input">Search <?php echo $this->config->item('site_name'); ?>...</label>
                 <input type="text" value="" id="top-search-input" name="search_term"/>
-                <input type="image" alt="Search" src="/inc/img/top-search-submit.gif" id="top-search-submit"/>
+                <input type="image" alt="Search" src="/inc/img/top-search-submit.png" id="top-search-submit"/>
             </form>
             <div class="clear"></div>
         </div>

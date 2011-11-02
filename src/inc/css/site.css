@@ -95,7 +95,7 @@ a {
 .btn {
 	color: #fff !important;
 	font-weight: bold;
-	background: #ff9900 url(/inc/img/bg-btn.gif) 0 50% repeat-x;
+	background: #ff9900 url(/inc/img/bg-btn.png) 0 50% repeat-x;
 	text-decoration: none;
 	border: 1px solid #d1881c;
 
@@ -109,7 +109,7 @@ a {
 .btn-small {
 	color: #fff !important;
 	font-weight: bold;
-	background: #ff9900 url(/inc/img/bg-btn.gif) 0 50% repeat-x;
+	background: #ff9900 url(/inc/img/bg-btn.png) 0 50% repeat-x;
 	text-decoration: none;
 	border: 1px solid #d1881c;
 
@@ -128,7 +128,7 @@ a {
 .btn-big {
 	color: #fff !important;
 	font-weight: bold;
-	background: #ff9900 url(/inc/img/bg-btn.gif) 0 50% repeat-x;
+	background: #ff9900 url(/inc/img/bg-btn.png) 0 50% repeat-x;
 	text-decoration: none;
 	border: 1px solid #d1881c;
 
@@ -264,7 +264,7 @@ a {
 
 .menu li {
       float:left;
-      background:url("/inc/img/bg-menu-lft.gif") no-repeat left top;
+      background:url("/inc/img/bg-menu-lft.png") no-repeat left top;
       margin:0 1px;
       padding:0 0 0 11px;
       border-bottom:1px solid #d7dcdf;
@@ -277,7 +277,7 @@ a {
       float:left;
       display:block;
       width:.1em;
-      background:url("/inc/img/bg-menu-rgt.gif") no-repeat right top;
+      background:url("/inc/img/bg-menu-rgt.png") no-repeat right top;
       padding:6px 20px 3px 8px;
       text-decoration:none;
       font-weight:bold;
