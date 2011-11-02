@@ -22,8 +22,9 @@ joindin.urlBase_api     = "<?php echo $apiBase; ?>";
 joindin.embedStyle      = true;
 joindin.draw = function(talkId, node) {
 	if (!node) {
-		document.write('<div id="joindin-content-placeholder"></div>');
-		node = document.getElementById("joindin-content-placeholder");
+		var rndm = parseInt(Math.random() * 9999999);
+		document.write('<div id="joindin-content-placeholder-' + rndm + '"></div>');
+		node = document.getElementById("joindin-content-placeholder-' + rndm);
 	} else if (typeof node == "string") {
 		node = document.getElementById(node);
     }
