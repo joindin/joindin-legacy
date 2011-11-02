@@ -1,5 +1,5 @@
 <?php
-	header("Content-type: text/javascript");
+	header("Content-type: text/javascript; charset=utf8");
 	header("Cache-control: public, max-age=10000");
 	header("Expires: " . date(DATE_RFC822,strtotime(" 2 day")));
 	define('BASEPATH', 'something');
