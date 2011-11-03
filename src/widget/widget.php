@@ -24,7 +24,7 @@ joindin.draw = function(talkId, node) {
 	if (!node) {
 		var rndm = parseInt(Math.random() * 9999999);
 		document.write('<div id="joindin-content-placeholder-' + rndm + '"></div>');
-		node = document.getElementById("joindin-content-placeholder-' + rndm);
+		node = document.getElementById("joindin-content-placeholder-" + rndm);
 	} else if (typeof node == "string") {
 		node = document.getElementById(node);
     }
