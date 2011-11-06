@@ -9,7 +9,7 @@ class Request
     public $verb;
     public $url_elements;
     public $path_info;
-    public $accept;
+    public $accept = array();
     public $host;
     public $parameters = array();
     public $view;
@@ -22,12 +22,19 @@ class Request
             $this->url_elements = explode('/', $_SERVER['PATH_INFO']);
             $this->path_info = $_SERVER['PATH_INFO'];
         }
-        
-        $this->accept = explode(',', $_SERVER['HTTP_ACCEPT']);
-        $this->host = $_SERVER['HTTP_HOST'];
-        
-        parse_str($_SERVER['QUERY_STRING'], $parameters);
-        $this->parameters = $parameters;
+
+        if (isset($_SERVER['HTTP_ACCEPT'])) {
+            $this->accept = explode(',', $_SERVER['HTTP_ACCEPT']);
+        }
+
+        if (isset($_SERVER['HTTP_HOST'])) {
+            $this->host = $_SERVER['HTTP_HOST'];
+        }
+
+        if (isset($_SERVER['QUERY_STRING'])) {
+            parse_str($_SERVER['QUERY_STRING'], $parameters);
+            $this->parameters = $parameters;
+        }
     }
 
     public function getParameter($param, $default = '')
