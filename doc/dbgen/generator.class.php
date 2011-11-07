@@ -594,8 +594,13 @@ class Generator {
     function _genLorum($max = 15) {
         $lorum = $this->getData()->getDescriptionGeneratorData();
 
-        for ($i=0, $ret="", $r=rand(1, $max); $i!=$r; $i++) {
+        $number = rand(1, $max);
+        for ($i=0, $ret="", $r=$number; $i!=$r; $i++) {
             $ret .= $lorum[array_rand($lorum)];
+
+            if ($number > 10 && $i == (int)($number/2)) {
+                $ret .= "\\n\\n";
+            }
         }
         return trim($ret);
     }
