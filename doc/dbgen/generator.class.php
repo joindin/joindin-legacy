@@ -361,7 +361,7 @@ class Generator {
             if ($this->_chance(EVENT_ADMIN_SINGLE_USER)) {
                 $admin_count = 1;
             } else {
-                $admin_count = rand(1, 5);    // Maximum of five. It's hardcoded.
+                $admin_count = rand(1, (COUNT_USERS < 5 ? COUNT_USERS : 5));    // Maximum of five. It's hardcoded.
             }
 
             $userids = array();
@@ -476,8 +476,9 @@ class Generator {
     protected function _generateUsers($count) {
         echo "TRUNCATE user;\n";
         echo "INSERT INTO `user` (`username`, `password`, `email`, `last_login`, `ID`, `admin`, `full_name`, `active`, `twitter_username`, `request_code`) VALUES\n";
+        echo "('imaadmin', '5f4dcc3b5aa765d61d8327deb882cf99', 'ima@sampledomain.com', unix_timestamp(), 1, 1, 'Ima Admin', 1, '', NULL),\n";
 
-        for ($id=1; $id!=$count+1; $id++) {
+        for ($id=2; $id <= $count+2; $id++) {
             if ($id % 100 == 0) fwrite(STDERR, "USER ID: $id    (".(memory_get_usage(true)/1024)." Kb)        \r");
 
             // Generate and store user
@@ -495,7 +496,7 @@ class Generator {
             printf ("('%s', '%s', '%s', %d, %d, %d, '%s', %d, '%s', NULL)",
                                    $user->username, $user->password, $user->email, $user->last_login, $user->id, $user->admin, $user->fullname, $user->active, $user->twitter);
 
-            if ($id != $count) echo ",\n";
+            if ($id != ($count+2)) echo ",\n";
         }
 
         echo ";";
