@@ -59,7 +59,6 @@ class Generator {
         return $this->_data;
     }
 
-
     /**
      * 
      * Returns a random object from the $tag namespace
@@ -119,6 +118,7 @@ class Generator {
         foreach ($this->getData()->getLanguageData() as $key => $lang) {
             echo sprintf("insert into lang (lang_name, lang_abbr, id) values ('%s','%s', %d);\n", $lang['name'], $lang['abbr'], $key);
         }
+        echo "\n\n";
     }
 
     /**
@@ -131,6 +131,7 @@ class Generator {
         foreach ($this->getData()->getCategoryData() as $key => $cat) {
             echo sprintf("insert into categories (cat_title, cat_desc, id) values ('%s','%s', %d);\n", $cat['title'], $cat['desc'], $key);;
         }
+        echo "\n\n";
     }
 
     // Generate $count talks for random events
@@ -138,6 +139,7 @@ class Generator {
         echo "TRUNCATE talks;\n";
         echo "INSERT INTO talks (talk_title, speaker, slides_link, date_given, event_id, ID, talk_desc, active, owner_id, lang) VALUES \n";
 
+        $first = true;
         for ($id=1; $id!=$count+1; $id++) {
             if ($id % 100 == 0) fwrite(STDERR, "TALK: $id         (".(memory_get_usage(true)/1024)." Kb)        \r");
             
@@ -162,10 +164,12 @@ class Generator {
             $talk->description = $this->_genLorum(50);
             $talk->lang_id = array_rand($this->getData()->getLanguageData());
 
+            if (! $first) echo ",\n";
+
             printf ("('%s', NULL, '%s', %d, %d, %d, '%s', 1, NULL, %d)",
                                    $talk->title, $talk->slides_link, $talk->date_given, $talk->event_id, $id, $talk->description, $talk->lang_id);
 
-            if ($id != $count) echo ",\n";
+            $first = false;
         }
         echo ";";
         echo "\n\n";
@@ -173,21 +177,27 @@ class Generator {
 
         //
         // Add categories to the talks
-        $sql_lines = array();
-        foreach($this->_cacheFetchTag('talks') as $talk) {
-            $cat_id = array_rand($this->getData()->getCategoryData());
-            $sql_lines[] = sprintf("(%d, %d, NULL)", $talk->id, $cat_id);
-        }
         echo "TRUNCATE talk_cat;\n";
         echo "INSERT INTO talk_cat (talk_id, cat_id, ID) VALUES \n";
-        echo join(",\n", $sql_lines);
+        $first = true;
+        foreach($this->_cacheFetchTag('talks') as $talk) {
+            $cat_id = array_rand($this->getData()->getCategoryData());
+
+            if (! $first) echo ",\n";
+            printf("(%d, %d, NULL)", $talk->id, $cat_id);
+
+            $first = false;
+        }
         echo ";";
         echo "\n\n";
 
 
         //
         // Add speakers to the talks
-        $sql_lines = array();
+        echo "TRUNCATE talk_speaker;\n";
+        echo "INSERT INTO talk_speaker (talk_id, speaker_name, ID, speaker_id, status) VALUES \n";
+
+        $first = true;
         foreach($this->_cacheFetchTag('talks') as $talk) {
             // Check if we need multiple speakers or not
             $speaker_count = $this->_chance(TALK_HAS_MULTIPLE_SPEAKERS) ? rand(2, 4) : 1;
@@ -205,12 +215,12 @@ class Generator {
                 }
                 $status = $this->_chance(TALK_SPEAKER_PENDING) ? "pending" : "";
 
-                $sql_lines[] = sprintf("(%d, '%s', NULL, %s, '%s')", $talk->id, $speaker_name, $speaker_id, $status);
+                if (! $first) echo ",\n";
+                printf("(%d, '%s', NULL, %s, '%s')", $talk->id, $speaker_name, $speaker_id, $status);
+
+                $first = false;
             }
         }
-        echo "TRUNCATE talk_speaker;\n";
-        echo "INSERT INTO talk_speaker (talk_id, speaker_name, ID, speaker_id, status) VALUES \n";
-        echo join(",\n", $sql_lines);
         echo ";";
         echo "\n\n";
     }
@@ -220,6 +230,7 @@ class Generator {
         echo "TRUNCATE event_track;\n";
         echo "INSERT INTO event_track (event_id, track_name, track_desc, ID, track_color) VALUES \n";
 
+        $first = true;
         for ($id=1; $id!=$count+1; $id++) {
             if ($id % 100 == 0) fwrite(STDERR, "TRACK: $id       (".(memory_get_usage(true)/1024)." Kb)        \r");
             $event = $this->_cacheFetchRandom('events');
@@ -238,9 +249,12 @@ class Generator {
             $tmp = $this->getData()->getTrackColorData();
             $track_color = $tmp[array_rand($tmp)];
 
+            if (! $first) echo ",\n";
+
             printf ("(%d, '%s', '%s', %d, '%s')",
                                    $event->id, $track_name, $track_desc, $id, $track_color);
-            if ($id != $count) echo ",\n";
+
+            $first = false;
         }
 
         echo ";";
@@ -252,6 +266,7 @@ class Generator {
         echo "TRUNCATE talk_comments;\n";
         echo "INSERT INTO talk_comments (talk_id, rating, comment, date_made, ID, private, active, user_id, comment_type, source) VALUES \n";
 
+        $first = true;
         for ($id=1; $id!=$count+1; $id++) {
             if ($id % 100 == 0) fwrite(STDERR, "TALK COMMENT ID: $id       (".(memory_get_usage(true)/1024)." Kb)        \r");
 
@@ -271,9 +286,13 @@ class Generator {
             $tmp = $this->getData()->getCommentSourceData();
             $source = $tmp[array_rand($tmp)];
 
+            if (! $first) echo ",\n";
+
             printf ("(%d, %d, '%s', %d, %d, %d, %d, %d, NULL, '%s')",
                                    $talk->id, $rating, $comment, (time()-rand(0,10000000)), $id, $private, 1, $id, $source);
-            if ($id != $count) echo ",\n";
+
+
+            $first = false;
         }
 
         echo ";";
@@ -285,7 +304,7 @@ class Generator {
         echo "TRUNCATE event_comments;\n";
         echo "INSERT INTO event_comments (event_id, comment, date_made, user_id, active, ID, cname, comment_type, source) VALUES \n";
 
-
+        $first = true;
         for ($id=1; $id!=$count+1; $id++) {
             if ($id % 100 == 0) fwrite(STDERR, "EVENT COMMENT ID: $id       (".(memory_get_usage(true)/1024)." Kb)        \r");
 
@@ -309,9 +328,12 @@ class Generator {
             $tmp = $this->getData()->getCommentSourceData();
             $source = $tmp[array_rand($tmp)];
 
+            if (! $first) echo ",\n";
+
             printf ("(%d, '%s', %d, %s, %d, %d, %s, NULL, '%s')",
                                    $event->id, $comment, (time()-rand(0,10000000)), $user_id, 1, $id, $comment_name, $source);
-            if ($id != $count) echo ",\n";
+
+            $first = false;
         }
 
         echo ";";
@@ -393,7 +415,7 @@ class Generator {
         `active`, `event_stub`, `event_icon`, `pending`, `event_hashtag`, `event_href`, `event_cfp_start`, `event_cfp_end`,
         `event_voting`, `private`, `event_tz_cont`, `event_tz_place`, `event_contact_name`, `event_contact_email`, `event_cfp_url`) VALUES\n";
 
-
+        $first = true;
         for ($id=1; $id!=$count+1; $id++) {
             if ($id % 100 == 0) fwrite(STDERR, "EVENT ID: $id       (".(memory_get_usage(true)/1024)." Kb)        \r");
 
@@ -461,11 +483,14 @@ class Generator {
                 $event->cfp_end = 0;
             }
 
+            if (! $first) echo ",\n";
+
             printf ("('%s', %d, %d, %f, %f, %d, '%s', '%s', %d, '%s', '%s', %d, '%s', '%s', %d, %d, %d, %d, '%s', '%s', '%s', '%s', '%s')",
                              $event->name, $event->start, $event->end, $event->lat, $event->long, $id, $event->location, $event->description,
                              1, $event->stub, $event->icon, 0, $event->hash, $event->url, $event->cfp_start, $event->cfp_end,
                              0, 0, "Europe", "Amsterdam", "", "", $event->url."/cfp");
-            if ($id != $count) echo ",\n";
+
+            $first = false;
         }
 
         echo ";";
@@ -476,7 +501,7 @@ class Generator {
     protected function _generateUsers($count) {
         echo "TRUNCATE user;\n";
         echo "INSERT INTO `user` (`username`, `password`, `email`, `last_login`, `ID`, `admin`, `full_name`, `active`, `twitter_username`, `request_code`) VALUES\n";
-        echo "('imaadmin', '5f4dcc3b5aa765d61d8327deb882cf99', 'ima@sampledomain.com', unix_timestamp(), 1, 1, 'Ima Admin', 1, '', NULL),\n";
+        echo "('imaadmin', '5f4dcc3b5aa765d61d8327deb882cf99', 'ima@sampledomain.com', unix_timestamp(), 1, 1, 'Ima Admin', 1, '', NULL)";
 
         for ($id=2; $id <= $count+2; $id++) {
             if ($id % 100 == 0) fwrite(STDERR, "USER ID: $id    (".(memory_get_usage(true)/1024)." Kb)        \r");
@@ -493,10 +518,9 @@ class Generator {
             $user->active = 1;
             $user->twitter = $this->_chance(USER_HAS_TWITTER) ? "@".$user->username : "";
 
+            echo ",\n";
             printf ("('%s', '%s', '%s', %d, %d, %d, '%s', %d, '%s', NULL)",
                                    $user->username, $user->password, $user->email, $user->last_login, $user->id, $user->admin, $user->fullname, $user->active, $user->twitter);
-
-            if ($id != ($count+2)) echo ",\n";
         }
 
         echo ";";
