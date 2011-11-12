@@ -301,9 +301,6 @@ class Generator {
 
     // Generate $count comments on events
     protected function _generateEventComments($count) {
-        echo "TRUNCATE event_comments;\n";
-        echo "INSERT INTO event_comments (event_id, comment, date_made, user_id, active, ID, cname, comment_type, source) VALUES \n";
-
         $first = true;
         for ($id=1; $id!=$count+1; $id++) {
             if ($id % 100 == 0) fwrite(STDERR, "EVENT COMMENT ID: $id       (".(memory_get_usage(true)/1024)." Kb)        \r");
@@ -328,7 +325,14 @@ class Generator {
             $tmp = $this->getData()->getCommentSourceData();
             $source = $tmp[array_rand($tmp)];
 
-            if (! $first) echo ",\n";
+            if (! $first) {
+                echo ",\n";
+            } else {
+                // It IS possible that we don't have any event comments at all. Therefore we can only push our SQL statements
+                // when at least 1 comment is available (we know that for a fact at this point)
+                echo "TRUNCATE event_comments;\n";
+                echo "INSERT INTO event_comments (event_id, comment, date_made, user_id, active, ID, cname, comment_type, source) VALUES \n";
+            }
 
             printf ("(%d, '%s', %d, %s, %d, %d, %s, NULL, '%s')",
                                    $event->id, $comment, (time()-rand(0,10000000)), $user_id, 1, $id, $comment_name, $source);
