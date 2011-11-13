@@ -20,6 +20,11 @@ $ji_db = new PDO('mysql:host=' . $db['default']['hostname'] .
     $db['default']['username'],
     $db['default']['password']);
 
+// Set the correct charset for this connection
+$ji_db->query("SET NAMES 'utf8' COLLATE 'utf8_general_ci'");
+$ji_db->query('SET CHARACTER SET utf8');
+
+
 // collect URL and headers
 $request = new Request();
 
