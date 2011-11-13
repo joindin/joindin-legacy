@@ -39,7 +39,7 @@ class ApiMapper {
                     }
                     $entry[$key] = Timezone::formattedEventDatetimeFromUnixtime($row[$value], $tz, 'c');
                 } else {
-                    $entry[$key] = mb_convert_encoding($row[$value], 'UTF-8');
+                    $entry[$key] = $row[$value];
                 }
             }
             $retval[] = $entry;
