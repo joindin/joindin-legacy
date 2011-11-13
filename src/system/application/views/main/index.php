@@ -9,7 +9,7 @@ menu_pagetitle('Start');
 <div class="box">
 <h2 class="h1 icon-event">Hot Events <a class="more" href="/event/hot">More &raquo;</a></h2>
 <?php
-foreach($hot_events as $k=>$v){
+foreach ($hot_events as $k=>$v) {
     $this->load->view('event/_event-row', array('event'=>$v));
 }
 ?>
@@ -20,7 +20,7 @@ foreach($hot_events as $k=>$v){
 <div class="box">
 <h2 class="h1 icon-talk">Popular Talks</h2>
 <?php
-foreach($talks as $k=>$v){
+foreach ($talks as $k=>$v) {
     $this->load->view('talk/_talk-row', array('talk'=>$v));
 }
 ?>

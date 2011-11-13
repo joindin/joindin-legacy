@@ -3,7 +3,7 @@ menu_pagetitle('Widgets');
 ?>
 <h1 class="icon-about">Widgets</h1>
 <div class="box">
-	<p>
+    <p>
     The JavaScript widgets have been created to make it easier to pull relevant
     information from our site into yours.  The data on joind.in belongs to the
     community and we hope this makes it simple to use it as you wish!

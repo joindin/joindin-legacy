@@ -6,7 +6,6 @@
  *
  * @category  Joind.in
  * @package   Controllers
- * @author    Chris Cornutt <chris@joind.in>
  * @copyright 2009 - 2010 Joind.in
  * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
  * @link      http://github.com/joindin/joind.in
@@ -80,7 +79,7 @@ function buildSecFile($reqkey)
  * 
  * @return boolean Reference key has been validated
  */
-function checkReqKey($seckey,$reqkey)
+function checkReqKey($seckey, $reqkey)
 {
     $CI=&get_instance();
     $dir	= $CI->config->item('token_dir');

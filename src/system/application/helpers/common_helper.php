@@ -6,8 +6,6 @@
  *
  * @category  Joind.in
  * @package   Controllers
- * @author    Chris Cornutt <chris@joind.in>
- * @author    Mike van Riel <mike.vanriel@naenius.com>
  * @copyright 2009 - 2010 Joind.in
  * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
  * @link      http://github.com/joindin/joind.in
@@ -192,7 +190,7 @@ if (! function_exists('form_datepicker'))
         <input type='hidden' id='{$day}_{$month}_{$year}' />
     <script type="text/javascript">
     // <![CDATA[
-        $(function(){
+        $(function() {
             var yr=$('select[name={$year}]');
             var mo=$('select[name={$month}]');
             var da=$('select[name={$day}]');

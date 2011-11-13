@@ -6,8 +6,6 @@
  *
  * @category  Joind.in
  * @package   Controllers
- * @author    Chris Cornutt <chris@joind.in>
- * @author    Mike van Riel <mike.vanriel@naenius.com>
  * @copyright 2009 - 2010 Joind.in
  * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
  * @link      http://github.com/joindin/joind.in
@@ -20,8 +18,6 @@
  *
  * @category  Joind.in
  * @package   Controllers
- * @author    Chris Cornutt <chris@joind.in>
- * @author    Mike van Riel <mike.vanriel@naenius.com>
  * @copyright 2009 - 2010 Joind.in
  * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
  * @link      http://github.com/joindin/joind.in
@@ -34,18 +30,18 @@
  */
 class User extends Controller
 {
-	/**
-	 * Contains an array with urls we don't want to forward to after login.
-	 * If a part of the url is in one of these items, it will forward them to
-	 * their main account page.
-	 * 
-	 * @var Array
-	 */
-	private $non_forward_urls = array(
-		'user/login'
-		,'user/forgot'
-	);
-	
+    /**
+     * Contains an array with urls we don't want to forward to after login.
+     * If a part of the url is in one of these items, it will forward them to
+     * their main account page.
+     * 
+     * @var Array
+     */
+    private $non_forward_urls = array(
+        'user/login'
+        ,'user/forgot'
+    );
+    
     /**
      * Constructor, checks whether the user is logged in and passes this to
      * the template.
@@ -100,7 +96,7 @@ class User extends Controller
 
         if ($this->validation->run() == false) {
             // add a for-one-request-only session field
-            if($this->session->flashdata('url_after_login')) {
+            if ($this->session->flashdata('url_after_login')) {
                 // the form submission failed, set the flashdata again so it's there for the resubmit
                 $this->session->set_flashdata('url_after_login', $this->session->flashdata('url_after_login'));
             } else {
@@ -126,19 +122,19 @@ class User extends Controller
             $referer = $this->input->server('HTTP_REFERER');
             $to = $this->session->flashdata('url_after_login') ? $this->session->flashdata('url_after_login') : $referer;
             
-			// List different routes we don't want to reroute to
-			$bad_routes = $this->non_forward_urls;
-			
-			foreach($bad_routes as $route)
-			{
-				if(strstr($to, $route))
-				{
-					redirect('user/main');
-				}
-			}
-			
-			// our $to is good, so redirect
-			redirect($to);
+            // List different routes we don't want to reroute to
+            $bad_routes = $this->non_forward_urls;
+            
+            foreach ($bad_routes as $route)
+            {
+                if (strstr($to, $route))
+                {
+                    redirect('user/main');
+                }
+            }
+            
+            // our $to is good, so redirect
+            redirect($to);
         }
     }
 
@@ -342,7 +338,7 @@ class User extends Controller
         $this->validation->set_fields($fields);
 
         if ($this->validation->run() == false) {
-            //$this->load->view('talk/add',array('events'=>$events));
+            //$this->load->view('talk/add', array('events'=>$events));
         } else {
             //success!
             $this->session->set_flashdata('msg', 'Account successfully created!');
@@ -382,7 +378,7 @@ class User extends Controller
         $this->load->helper('form');
         $this->load->library('validation');
         $this->load->model('talks_model');
-		$this->load->model('event_model');
+        $this->load->model('event_model');
 
         $this->load->library('gravatar');
         $imgStr = $this->gravatar->displayUserImage($this->session->userData('ID'), null, 80);
@@ -396,7 +392,7 @@ class User extends Controller
         $arr['is_admin'] = $this->user_model->isSiteAdmin();
         $arr['gravatar'] = $imgStr;
 
-		$arr['pending_events'] = $this->event_model->getEventDetail(
+        $arr['pending_events'] = $this->event_model->getEventDetail(
             null, null, null, true
         );
 
@@ -436,7 +432,7 @@ class User extends Controller
             redirect();
         }
 
-		$imgStr = $this->gravatar->displayUserImage($uid, $details[0]->email, 80);
+        $imgStr = $this->gravatar->displayUserImage($uid, $details[0]->email, 80);
 
         if (empty($details[0])) {
             redirect();
@@ -477,9 +473,9 @@ class User extends Controller
             'has_talks' => (count($arr['talks']) == 0) ? false : true
         );
 
-        if(!empty($block['content'])){
-			$this->template->write_view('sidebar2', 'user/_other-speakers', $block);
-		}
+        if (!empty($block['content'])) {
+            $this->template->write_view('sidebar2', 'user/_other-speakers', $block);
+        }
         $this->template->write_view('content', 'user/view', $arr);
         $this->template->render();
     }
@@ -554,6 +550,11 @@ class User extends Controller
      */
     function admin($page = null)
     {
+        // Only admins are allowed
+        if (!$this->user_model->isSiteAdmin()) {
+            redirect();
+        }
+
         $this->load->library('validation');
         $this->load->model('user_model');
 
@@ -572,14 +573,14 @@ class User extends Controller
         $fields = array('user_search' => 'Search Term');
         $this->validation->set_fields($fields);
 
-        if($this->input->post('sub')){
+        if ($this->input->post('sub')) {
             // search call
             $users = $this->user_model->search($this->input->post('user_search'));
             
-        }elseif($this->input->post('um')){
+        } elseif ($this->input->post('um')) {
             // delete user call
             $selectedUsers = $this->input->post('sel');
-            foreach($selectedUsers as $userId){
+            foreach ($selectedUsers as $userId) {
                 $this->user_model->deleteUser($userId);
             }
             $msg = count($selectedUsers).' users deleted';
@@ -627,7 +628,15 @@ class User extends Controller
      */
     function cinput_check($str)
     {
-        if ($this->input->post('cinput') != $this->session->userdata('cinput')) {
+        $str = $this->input->post('cinput');
+        if (! is_numeric($str)) {
+            // If the user input is not numeric, convert it to a numeric value
+            $this->load->plugin('captcha');
+            $digits = captcha_get_digits(true);
+            $str = array_search(strtolower($str), $digits);
+        }
+
+        if ($str != $this->session->userdata('cinput')) {
             $this->validation->_error_messages['cinput_check']
                 = 'Incorrect captcha.';
             return false;
@@ -756,7 +765,7 @@ class User extends Controller
         if ($this->validation->run() == false) {
             $request_token = filter_var($this->input->get('request_token'), FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^[0-9a-z]*$/')));
             // check for a valid request token 
-            if($this->user_admin_model->oauthRequestTokenVerify($request_token)) {
+            if ($this->user_admin_model->oauthRequestTokenVerify($request_token)) {
                 $this->session->set_flashdata('request_token', $request_token);
             } else {
                 $view_data['status'] = "invalid";
@@ -764,15 +773,15 @@ class User extends Controller
         } else {
             $request_token = $this->session->flashdata('request_token');
 
-            if($this->input->post('access') == 'allow') {
+            if ($this->input->post('access') == 'allow') {
                 $view_data['status'] = "allow";
                 $oauth_info = $this->user_admin_model->oauthAllow($request_token, $this->session->userdata('ID'));
-                if($oauth_info->callback == "oob") {
+                if ($oauth_info->callback == "oob") {
                     // special case, we can't forward the user on so just display verification code
                     $view_data['verification'] = $oauth_info->verification;
                 } else {
                     // add our parameter onto the URL
-                    if(strpos($oauth_info->callback, '?' !== false)) {
+                    if (strpos($oauth_info->callback, '?' !== false)) {
                         $url = $oauth_info->callback . '&';
                     } else {
                         $url = $oauth_info->callback . '?';
