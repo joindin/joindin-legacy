@@ -46,10 +46,10 @@ $this->load->view('user/_nav_sidebar');
             <table cellpadding="0" cellspacing="0" border="0">
             <tr><td>
             <?php
-            if (isset($d->profile_pic)) { echo '<img src="'.$d->profile_pic.'"/>'; 
-                } else { 
+            if (isset($gravatar_url)) { echo '<img src="'.$gravatar_url.'"/>';
+                } else {
                     echo '<div style="width:100px;height:100px;border:1px solid #919191;text-align:center;background-color:#CCCCCC">
-                <p style="line-height:90px;color:#919191;font-weight:bold">No Image</p></div>'; 
+                <p style="line-height:90px;color:#919191;font-weight:bold">No Image</p></div>';
             }
             ?>
             </td><td valign="top" style="padding-left:10px;vertical-align:top">
