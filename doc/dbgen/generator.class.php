@@ -302,6 +302,7 @@ class Generator {
     // Generate $count comments on events
     protected function _generateEventComments($count) {
         $first = true;
+        $have_event_comments = false;
         for ($id=1; $id!=$count+1; $id++) {
             if ($id % 100 == 0) fwrite(STDERR, "EVENT COMMENT ID: $id       (".(memory_get_usage(true)/1024)." Kb)        \r");
 
@@ -332,6 +333,7 @@ class Generator {
                 // when at least 1 comment is available (we know that for a fact at this point)
                 echo "TRUNCATE event_comments;\n";
                 echo "INSERT INTO event_comments (event_id, comment, date_made, user_id, active, ID, cname, comment_type, source) VALUES \n";
+                $have_event_comments = true;
             }
 
             printf ("(%d, '%s', %d, %s, %d, %d, %s, NULL, '%s')",
@@ -340,8 +342,10 @@ class Generator {
             $first = false;
         }
 
-        echo ";";
-        echo "\n\n";
+        if ($have_event_comments) {
+            echo ";";
+            echo "\n\n";
+        }
     }
 
     // Let randomly attend users to events
