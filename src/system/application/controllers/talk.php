@@ -580,7 +580,7 @@ class Talk extends Controller
 
         $cl = ($r = $this->talks_model->talkClaimDetail($id)) ? $r : false;
 
-        // Find out if there is at least 1 comments that is made by our user
+        // Find out if there is at least 1 comment that is made by our user for this talk
         $already_rated = false;
         foreach ($this->talks_model->getUserComments($this->user_model->getId()) as $comment) {
             if ($comment->talk_id == $id) $already_rated = true;
@@ -669,7 +669,6 @@ class Talk extends Controller
 
                     // be sure they have the right to update the comment
                     $com_detail = $this->tcm->getCommentDetail($cid);
-                    print_r($com_detail[0]);
                     if (isset($com_detail[0])
                         && ($com_detail[0]->user_id == $uid)
                     ) {

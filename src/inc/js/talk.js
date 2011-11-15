@@ -98,7 +98,7 @@ talk = function (){
                 if (obj[0].rating > 0) {
                     $('#ratingbar-norating').css('display','none');
                     $('#ratingbar').css('display','block');
-				    setStars(obj[0].rating);
+                    setStars(obj[0].rating);
                 } else {
                     $('#ratingbar-norating').css('display','block');
                     $('#ratingbar').css('display','none');
