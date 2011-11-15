@@ -94,7 +94,15 @@ talk = function (){
 				// now set the information so they can edit it
 				$('#comment').val(obj[0].comment);
 				if(obj[0].private!=0){ $(':checkbox[name=private]').attr('checked',true); }
-				setStars(obj[0].rating);
+
+                if (obj[0].rating > 0) {
+                    $('#ratingbar-norating').css('display','none');
+                    $('#ratingbar').css('display','block');
+				    setStars(obj[0].rating);
+                } else {
+                    $('#ratingbar-norating').css('display','block');
+                    $('#ratingbar').css('display','none');
+                }
 				$(':input[name=edit_comment]').val(comment_id);
 			});
 			return false;
