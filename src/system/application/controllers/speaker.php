@@ -49,22 +49,13 @@ class Speaker extends Controller
     public function profile()
     {
         $this->load->model('speaker_profile_model', 'sp');
+        $this->load->library('gravatar');
 
         $udata = $this->user_model->getUser($this->session->userdata('ID'));
         $arr   = array(
-            'pdata' => $this->sp->getProfile($udata[0]->ID)
+            'pdata' => $this->sp->getProfile($udata[0]->ID),
+            'gravatar_url' => $this->gravatar->displayUserImage($this->session->userdata('ID'), null, 100)
         );
-
-        if (!empty($arr['pdata'][0]->picture)) {
-            $picture     = strtolower($arr['pdata'][0]->picture);
-            $p = $this->config->item('user_pic_path') . '/' . $picture;
-
-            $profile_pic = (is_file($p))
-                ? '/inc/img/profile/' .$picture
-                : null;
-
-            $arr['pdata'][0]->profile_pic = $profile_pic;
-        }
 
         $this->template->write_view('content', 'speaker/profile', $arr);
         $this->template->render();
@@ -81,9 +72,6 @@ class Speaker extends Controller
         if (!$this->user_model->isAuth()) {
             redirect('user/login');
         }
-
-        $pic_err    = null;
-        $resume_err = null;
 
         $this->load->helper('form');
         $this->load->library('validation');
@@ -104,8 +92,6 @@ class Speaker extends Controller
             'city'       => 'City',
             'zip'        => 'Zip',
             'country_id' => 'Country',
-            'resume'     => 'Resume',
-            'picture'    => 'Picture'
         );
         $rules = array(
             'full_name' => 'required',
@@ -125,40 +111,6 @@ class Speaker extends Controller
 
         // run the form!
         if ($this->validation->run() != false) {
-            // set up the upload for the image
-            $config = array(
-                'upload_path'   => $this->config->item('user_pic_path'),
-                'allowed_types' => 'jpg|gif|png', 'overwrite' => true,
-                'max_size'      => 2000,
-            );
-            $this->load->library('upload', $config);
-
-            // Check for picture upload...reset our filename if it's there
-            if (isset($_FILES['picture']) && $_FILES['picture']['error'] == 0) {
-                $ext = strrchr($_FILES['picture']['name'], '.');
-
-                $_FILES['picture']['name'] = 'user_pic_' . $udata[0]->ID . $ext;
-            }
-
-            // check for resume upload...reset out filename if it's there
-            if (isset($_FILES['resume']) && $_FILES['resume']['error'] == 0) {
-                $ext = strrchr($_FILES['resume']['name'], '.');
-
-                $_FILES['resume']['name'] = 'user_resume_' . $udata[0]->ID . $ext;
-            }
-
-            // only run the upload if they've given us an image
-            $up_data = array();
-            $up_err  = '';
-            if (isset($_FILES['picture']['name'])
-                && ($_FILES['picture']['name'] != '')
-            ) {
-                $this->upload->do_upload('picture');
-
-                $up_err  = $this->upload->display_errors('', '');
-                $up_data = $this->upload->data();
-            }
-
             $data = array(
                 'user_id'       => $udata[0]->ID,
                 'country_id'    => $this->input->post('country_id'),
@@ -174,13 +126,7 @@ class Speaker extends Controller
                 'bio'           => $this->input->post('bio')
             );
 
-            if (isset($up_data['file_name'])) {
-                $data['picture'] = $up_data['file_name'];
-            }
-
-            if ($up_err) {
-                $this->validation->error_string = $up_err;
-            } elseif (isset($cdata[0])) {
+            if (isset($cdata[0])) {
                 $this->sp->updateProfile($udata[0]->ID, $data);
                 $this->validation->error_string = 'Profile successfully updated!';
             } else {
@@ -203,17 +149,6 @@ class Speaker extends Controller
         }
 
         $msg  = $this->validation->error_string;
-        $msg .= ($pic_err) ? 'Profile Image: ' . $pic_err : '';
-        $msg .= ($resume_err) ? 'Resume Upload: ' . $resume_err : '';
-
-        $profile_pic = null;
-        if (!empty($cdata[0]->picture)) {
-            $p = $this->config->item('user_data') . '/' . $cdata[0]->picture;
-
-            if (is_file($p)) {
-                $profile_pic = '/inc/img/profile/' . $cdata[0]->picture;
-            }
-        }
 
         $countries = array();
         foreach ($this->co->getCountries() as $row) {
@@ -221,7 +156,7 @@ class Speaker extends Controller
         }
 
         $arr = array(
-            'msg'       => $msg, 'profile_pic' => $profile_pic,
+            'msg'       => $msg,
             'countries' => $countries
         );
 

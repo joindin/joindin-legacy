@@ -357,9 +357,6 @@ $config['token_rm'] = 5; //time in minutes
 $config['twitter_user']		= '';
 $config['twitter_pass']		= '';
 
-// Set up the config settings for the pics and resumes
-$config['user_pic_path']	= '/www/htdocs/confs/inc/img/profile';
-
 // For the Akismet class
 $config['akismet_key']		= '';
 $config['akismet_blog']		= '';
