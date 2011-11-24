@@ -5,7 +5,6 @@ $this->load->view('user/_nav_sidebar');
  * Create/Edit Speaker Profiles
  */
 echo '<h2>Add/Edit Speaker Info</h2>';
-if ($profile_pic) { echo '<img src="'.$profile_pic.'"/><br/><br/>'; }
 ?>
 
 <?php if (!empty($msg)): ?>
@@ -77,17 +76,6 @@ if ($profile_pic) { echo '<img src="'.$profile_pic.'"/><br/><br/>'; }
     <div class="clear"></div>
     </div>
 
-    <h2>Other</h2>
-    <!--<div class="row">
-    <label for="resume">Resume</label>
-    <?php echo form_upload('resume'); ?>
-    <div class="clear"></div>
-    </div>-->
-    <div class="row">
-    <label for="picture">Picture</label>
-    <?php echo form_upload('picture'); ?>
-    <div class="clear"></div>
-    </div>
     <div class="row">
     <?php echo form_submit(array('name' => 'sub', 'class' => 'btn'), 'Submit'); ?>
     </div>
