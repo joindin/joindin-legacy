@@ -83,7 +83,7 @@ class TalkMapper extends ApiMapper {
     }
 
     public function getBasicSQL() {
-        $sql = 'select t.*, l.lang_name, '
+        $sql = 'select t.*, l.lang_name, e.event_tz_place, e.event_tz_cont, '
             . '(select COUNT(ID) from talk_comments tc where tc.talk_id = t.ID) as comment_count, '
             . '(select ROUND(AVG(rating)) from talk_comments tc where tc.talk_id = t.ID) as avg_rating, '
             . 'CASE 
