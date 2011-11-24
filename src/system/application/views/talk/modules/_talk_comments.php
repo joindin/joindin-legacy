@@ -13,7 +13,7 @@ if (empty($comments)) {
     echo '<h2 id="comments">Comments</h2>';
     
     foreach ($comments as $k => $v) {
-        if (isset($v->user_id) && $v->user_id != 0) { 
+        if (isset($v->user_id) && $v->user_id != 0) {
             $uname = '<a href="/user/view/'.$v->user_id.'">'.escape($v->full_name).'</a> ';
         } else { 
             $uname = '<span class="anonymous">Anonymous</span>'; 
@@ -39,7 +39,7 @@ if (empty($comments)) {
     <?php if (isset($claimed[0]->userid) && $claimed[0]->userid != 0 && isset($v->user_id) && $v->user_id == $claimed[0]->userid): ?>
         <span class="speaker">Speaker comment:</span>
     <?php else: ?>
-        <?php echo rating_image($v->rating); ?><br/>
+        <?php if ($v->rating > 0) echo rating_image($v->rating); ?><br/>
         <?php if (!empty($v->twitter_username)): ?>
         <a href="http://twitter.com/<?php echo $v->twitter_username; ?>"><img src="/inc/img/twitter_share_icon.gif" style="margin-top:10px" width="20"/></a>
         <?php endif; ?>
@@ -60,7 +60,7 @@ if (empty($comments)) {
             <?php echo auto_p(escape($v->comment)); ?>
         </div>
         <p class="admin">
-            <?php if ($detail->allow_comments && ($v->user_id==$user_id)): ?>
+            <?php if (($detail->allow_comments && ($v->user_id==$user_id && (time() < $v->date_made + $this->config->item('comment_edit_time'))))): ?>
                 <a class="btn-small edit-talk-comment-btn" href="#" id="<?php echo $v->ID; ?>">Edit</a>
             <?php endif; ?>
             <?php if (user_is_admin() || user_is_admin_event($detail->eid)): ?>
