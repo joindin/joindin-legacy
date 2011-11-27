@@ -580,10 +580,15 @@ class Talk extends Controller
 
         $cl = ($r = $this->talks_model->talkClaimDetail($id)) ? $r : false;
 
-        $rules = array(
-            'rating' => $cl && $cl[0]->userid == $currentUserId
-                ? null : 'required'
-        );
+        // Find out if there is at least 1 comment that is made by our user for this talk
+        $already_rated = false;
+        foreach ($this->talks_model->getUserComments($this->user_model->getId()) as $comment) {
+            if ($comment->talk_id == $id) $already_rated = true;
+        }
+
+        $rating_rule = ($cl && $cl[0]->userid == $currentUserId || ($already_rated)) ? null : 'required';
+
+        $rules = array('rating' => $rating_rule);
         $fields = array(
             'comment' => 'Comment',
             'rating'  => 'Rating'
@@ -667,9 +672,16 @@ class Talk extends Controller
                     if (isset($com_detail[0])
                         && ($com_detail[0]->user_id == $uid)
                     ) {
-                        $this->db->where('ID', $cid);
-                        $this->db->update('talk_comments', $arr);
-                        $out = 'Comment updated!';
+                        if (time() >= $com_detail[0]->date_made + $this->config->item('comment_edit_time')) {
+                            $out = 'This comment has passed its edit-time. You cannot edit this comment anymore.';
+                        } else {
+                            $this->db->where('ID', $cid);
+                            // unset date made.
+                            unset($arr['date_made']);
+                            if ($com_detail[0]->rating == 0) $arr['rating'] = 0;
+                            $this->db->update('talk_comments', $arr);
+                            $out = 'Comment updated!';
+                        }
                     } else {
                         $out = 'Error on updating comment!';
                     }
@@ -759,7 +771,8 @@ class Talk extends Controller
             'track_info'     => $this->talkTracks->getSessionTrackInfo($id),
             'user_id'        => ($this->user_model->isAuth())
                 ? $this->session->userdata('ID') : null,
-            'captcha'        => $captcha
+            'captcha'        => $captcha,
+            'alreadyRated'   => $already_rated,
         );
 
         $this->template->write('feedurl', '/feed/talk/' . $id);

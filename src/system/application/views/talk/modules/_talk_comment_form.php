@@ -54,14 +54,38 @@
     <div class="clear"></div>
 <?php endif; ?>
 </div>
-<?php if (! $speaker): ?>
-<div class="row">
-    <label for="rating">Rating</label>
-    <div class="rating">
-        <?php echo rating_form('rating', $this->validation->rating); ?>
-    </div>
-    <div class="clear"></div>
-</div>
+
+<?php if (isset($claimed[0]->userid) && $claimed[0]->userid != 0 && user_get_id() == $claimed[0]->userid): ?>
+<?php else: ?>
+
+   <?php if ($alreadyRated) : ?>
+            <div class="row">
+                <label for="rating">Rating</label>
+                <div class="rating" id="ratingbar-norating">
+                  You already rated this talk.
+                </div>
+                <div class="rating" id ="ratingbar" style='display:none'>
+                    <?php echo rating_form('rating', $this->validation->rating); ?>
+                </div>
+                <div class="clear"></div>
+            </div>
+
+
+   <?php else: ?>
+            <div class="row">
+                <label for="rating">Rating</label>
+                <div class="rating" style='display:none' id ="ratingbar-norating">
+                  You already rated this talk.
+                </div>
+                <div class="rating" id ="ratingbar">
+                    <?php echo rating_form('rating', $this->validation->rating); ?>
+                </div>
+                <div class="clear"></div>
+            </div>
+
+   <?php endif; ?>
+   </div>
+
 <?php endif; ?>
 
 <?php if (!user_is_auth()) { ?>
