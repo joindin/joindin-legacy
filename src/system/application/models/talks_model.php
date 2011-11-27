@@ -260,6 +260,7 @@ class Talks_model extends Model {
             ON e.ID=t.event_id
             where
                 t.active=1
+                and (tc.user_id != 0 and tc.rating != 0)
             group by
                 t.ID
             order by
@@ -305,6 +306,7 @@ class Talks_model extends Model {
                 e.event_start > %s
               and
                 (ts.status != 'pending' OR ts.status is null)
+              and (tc.user_id != 0 and tc.rating != 0)
             group by
               t.ID
             having
@@ -468,7 +470,7 @@ class Talks_model extends Model {
         
         if ($start>0) { $this->db->where('date_given >=', $start); }
         if ($end>0) { $this->db->where('date_given <=', $end); }
-        
+
         $term = '%'.$term.'%';
         $this->db->where(sprintf('(talk_title LIKE %1$s OR talk_desc LIKE %1$s OR speaker LIKE %1$s)', $this->db->escape($term)));
 
