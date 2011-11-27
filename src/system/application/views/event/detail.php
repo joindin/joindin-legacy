@@ -19,10 +19,6 @@ $data=array(
 $this->load->view('event/modules/_event_buttons', $data);
 ?>
 
-<p class="ad">
-<?php $this->load->view('main/ads'); ?>
-</p>
-
 <?php
 $data=array(
     'talks'			=> $talks,
