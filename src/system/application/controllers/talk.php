@@ -580,25 +580,22 @@ class Talk extends Controller
 
         $cl = ($r = $this->talks_model->talkClaimDetail($id)) ? $r : false;
 
-        // Find out if there is at least 1 comment that is made by our user for this talk
         $already_rated = false;
-        foreach ($this->talks_model->getUserComments($this->user_model->getId()) as $comment) {
-            if ($comment->talk_id == $id) $already_rated = true;
+        if($this->user_model->isAuth()) {
+            // Find out if there is at least 1 comment that is made by our user for this talk
+            foreach ($this->talks_model->getUserComments($this->user_model->getId()) as $comment) {
+                if ($comment->talk_id == $id) $already_rated = true;
+            }
         }
 
         $rating_rule = ($cl && $cl[0]->userid == $currentUserId || ($already_rated)) ? null : 'required';
 
         $rules = array('rating' => $rating_rule);
+
         $fields = array(
             'comment' => 'Comment',
             'rating'  => 'Rating'
         );
-
-        // if it's past time for the talk, they're required
-        // all other times they're not required...
-        if (time() >= $talk_detail[0]->date_given) {
-            $rules['comment'] = 'required';
-        }
 
         // this is for the CAPTACHA - it was disabled for authenticated users
         if (!$this->user_model->isAuth()) {
