@@ -286,6 +286,7 @@ class User_model extends Model {
                 u.ID <> %s and
                 u.ID = ts.speaker_id and
                 t.ID = ts.talk_id and
+                ts.status != 'pending' and
                 t.event_id in (
                     select
                         distinct t.event_id
@@ -294,7 +295,8 @@ class User_model extends Model {
                         talks t
                     where
                         ts.speaker_id = %s and
-                        t.ID = ts.talk_id
+                        t.ID = ts.talk_id and
+                        ts.status != 'pending'
                 )
             order by rand()
             limit %s	
