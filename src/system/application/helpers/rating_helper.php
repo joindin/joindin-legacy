@@ -23,7 +23,7 @@ function rating_image($rating)
 {
     $rating = min(5, ceil((float)$rating));
     return  '<img class="rating rating-' . $rating . '" src="/inc/img/rating-' .
-                $rating . '.gif" alt="Rating: ' . $rating . ' of 5"/>';
+                $rating . '.gif" alt="Rating: ' . $rating . ' of 5" height="21" width="117" />';
 }
 
 /**

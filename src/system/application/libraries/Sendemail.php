@@ -277,7 +277,7 @@ be logged in to get to the \"Claims\" page for the event!
         $event_url 	= $this->_config->site_url().'event/view/'.$event_detail->ID;
         
         $msg 		= sprintf('
-            <img src="%s/inc/img/logo.gif" width="150"/>
+            <img src="%s/inc/img/logo.png" width="150"/>
             <br/>
             <b>%s</b> has been submitted to Joind.in and has been approved! You can see the event listing here: <a href="%s">%s</a>.
             <br/><br/>
