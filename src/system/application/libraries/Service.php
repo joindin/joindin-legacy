@@ -92,7 +92,7 @@ class Service {
         ############################
 
     }
-    function parseReqXML($xml) { error_log($xml);
+    function parseReqXML($xml) {
         $ret_xml=null;
         try {
             $ret_xml=simplexml_load_string($xml);
@@ -100,7 +100,7 @@ class Service {
         return $ret_xml;
     }
     // Transform the json into XML and make a SimpleXML object out of it
-    function parseReqJson($json) { error_log($json);
+    function parseReqJson($json) {
         $js=json_decode($json);
         if (!isset($js->request)) { return false; }
         
