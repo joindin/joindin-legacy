@@ -8,11 +8,7 @@ menu_pagetitle('About');
 
 <p>As well as the website, there is an open API and applications are freely available for iphone and android, and there is a wordpress plugin to show your event information on your own site.</p>
 
-<h3 style="color:#5181C1">For Organizers</h3>
-<p>Collect real time, public feedback on all your sessions - check out how speakers and sessions have been received at other similar events.  Your event appears in the listings on the site and speakers can claim their talks to get the sessions associated with their profiles.  To make adding sessions even quicker (we organize events ourselves and know how much pressure you are under), there is a handy CSV import function (see the <a href="/about/import">importing talks</a> page for more details).<p>
-
-<h3 style="color:#5181C1">For Speakers</h3>
-<p>This is the site that keeps your speaker credentials in one place and brings feedback directly to you, on the day, allowing you to continuously evaluate your sessions and improve to achieve your potential as a speaker.  The online nature of the feedback allows users to share their thoughts and rate your talks, and they can do so either instantly or a few days later.  Remember to ask for feedback and for better responses, place the URL for your talk on your slides</p>
+<p>To get to grips with how to do various tasks, visit the <a href="/help">help page</a>.</p>
 
 <h3 style="color:#5181C1">For Developers</h3>
 <p><?php echo $this->config->item('site_name'); ?> is an open source project, written in PHP, and we welcome new contributors, commenters and observers.  You can make contact with the project in many ways:<ul>
@@ -28,8 +24,3 @@ menu_pagetitle('About');
 <p>If you have any comments, questions, feedback or anything else you'd like us to know, then do please <a href="/about/contact">get in touch</a> - we'd be delighted to hear from you!</p>
 
 
-<br/>
-<h3 style="color:#5181C1">Other Information</h3>
-<ul>
-<li><a href="/about/evt_admin">Event Admin Cheat Sheet</a>
-</ul>
