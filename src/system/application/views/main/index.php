@@ -27,4 +27,3 @@ foreach ($talks as $k=>$v) {
 </div>
 <?php endif; ?>
 
-<?php $this->load->view('main/ads'); ?>

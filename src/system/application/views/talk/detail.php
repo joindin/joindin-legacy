@@ -39,10 +39,6 @@ $data=array(
 $this->load->view('talk/modules/_talk_buttons', $data);
 ?>
 
-<p class="ad">
-<?php $this->load->view('main/ads'); ?>
-</p>
-
 <?php 
 $data=array();
 $this->load->view('talk/modules/_talk_comments', $data);
