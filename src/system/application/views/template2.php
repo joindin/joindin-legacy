@@ -1,3 +1,4 @@
+<?php header("Content-type: text/html;charset=utf8"); ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr">
 
@@ -21,8 +22,8 @@ $title[] = $this->config->item('site_name');
     <script type="text/javascript" src="/inc/js/jquery.js"></script>
     <script type="text/javascript" src="/inc/js/jquery.pause.js"></script>
     <script type="text/javascript" src="/inc/js/jquery-ui.js"></script>
-    <script type="text/javascript" src="/inc/js/site.js"></script>
-    <script type="text/javascript" src="/inc/js/notifications.js"></script>
+    <script type="text/javascript" src="/inc/js/site.js" async></script>
+    <script type="text/javascript" src="/inc/js/notifications.js" async></script>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <?php
     if (!empty($feedurl)) {
@@ -55,7 +56,7 @@ $title[] = $this->config->item('site_name');
 
     <div class="container_12 nav">
         <div class="grid_3 logo">
-            <a href="/"><img src="/inc/img/logo.gif" border="0" alt="<?php echo $this->config->item('site_name'); ?> Logo"/></a>
+            <a href="/"><img src="/inc/img/logo.png" border="0" alt="<?php echo $this->config->item('site_name'); ?> Logo" height="60" width="200" /></a>
         </div>
         <div class="grid_6 menu">
             <ul>
@@ -72,7 +73,7 @@ $title[] = $this->config->item('site_name');
             <form id="top-search" method="post" action="/search">
                 <label id="top-search-label" accesskey="2" for="top-search-input">Search <?php echo $this->config->item('site_name'); ?>...</label>
                 <input type="text" value="" id="top-search-input" name="search_term"/>
-                <input type="image" alt="Search" src="/inc/img/top-search-submit.gif" id="top-search-submit"/>
+                <input type="image" alt="Search" src="/inc/img/top-search-submit.png" id="top-search-submit"/>
             </form>
             <div class="clear"></div>
         </div>
@@ -86,7 +87,7 @@ $title[] = $this->config->item('site_name');
     <div class="container_12">
         <div class="grid_12">
             <?php if (!$this->session->userdata('ID')): ?>
-            <a href="/user/register"><img src="/inc/img/splash.jpg" border="0" alt="Join <?php echo $this->config->item('site_name'); ?> now!"/></a>
+            <a href="/user/register"><img src="/inc/img/splash.jpg" border="0" alt="Join <?php echo $this->config->item('site_name'); ?> now!" height="215" width="941"/></a>
             <?php endif; ?>
         </div>
         <div class="clear"></div>
@@ -149,7 +150,7 @@ $title[] = $this->config->item('site_name');
                     </div>
                 </div>
                 <div class="box" align="center">
-                    <a href="http://www.combell.com/en" title="Cloud hosting Combell"><img src="/inc/img/LOGO-COMBELL.png" border="0" style="padding-bottom:5px" alt="Combell"></a><br/>
+                    <a href="http://www.combell.com/en" title="Cloud hosting Combell"><img src="/inc/img/LOGO-COMBELL.png" border="0" style="padding-bottom:5px" alt="Combell" height="55" width="200"></a><br/>
                     <a href="http://www.combell.com/en/servers/cloud-server" title="Cloud servers & cloud hosting">Cloud server</a> <a href="http://www.combell.com/en" title="Hosting & webhosting">hosting</a> by Combell
                 </div>
                 <?php endif; ?>
@@ -186,7 +187,7 @@ $title[] = $this->config->item('site_name');
             <a href="/about/contact">Contact</a>
         </div>
         <div class="grid_6 rgt">
-            <a href="http://www.combell.com/en/servers/cloud-server" title="Cloud servers & cloud hosting">Cloud server</a> <a href="http://www.combell.com/en" title="Hosting & webhosting">hosting</a> by Combell <a href="http://www.combell.com/en" title="Cloud hosting Combell"><img src="/inc/img/LOGO-COMBELL_small.gif" border="0" style="vertical-align:text-bottom;" alt="Combell"/></a> 
+            <a href="http://www.combell.com/en/servers/cloud-server" title="Cloud servers & cloud hosting">Cloud server</a> <a href="http://www.combell.com/en" title="Hosting & webhosting">hosting</a> by Combell <a href="http://www.combell.com/en" title="Cloud hosting Combell"><img src="/inc/img/LOGO-COMBELL_small.gif" border="0" style="vertical-align:text-bottom;" alt="Combell" height="22" width="80"/></a> 
         &nbsp;&nbsp;&nbsp;&nbsp;
 &copy; <?php echo $this->config->item('site_name'); ?> <?php echo date('Y')?>
         </div>
