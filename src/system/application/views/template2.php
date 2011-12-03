@@ -12,8 +12,6 @@ $title[] = $this->config->item('site_name');
     <link media="all" rel="stylesheet" type="text/css" href="/inc/css/jquery-ui/jquery-ui-1.7.3.custom.css"/>
     <link media="all" rel="stylesheet" type="text/css" href="/inc/css/jquery-ui/theme/ui.all.css"/>
 
-    
-    
     <?php if ($css) { ?>
     <link media="all" rel="stylesheet" type="text/css" href="<?php echo $css; ?>"/>
     <?php } ?>
@@ -62,7 +60,6 @@ $title[] = $this->config->item('site_name');
             <ul>
                 <li id="menu-event"><a href="/event">Events</a>
                 <li id="menu-talk"><a href="/talk">Talks</a>
-                <!--<li id="menu-search"><a href="/search">Search</a>-->
                 <li id="menu-about" class="sep"><a href="/about">About</a>
                 <li id="menu-help"><a href="/help">Help</a>
                 <li id="menu-blog"><a href="/blog">Blog</a>
@@ -80,20 +77,6 @@ $title[] = $this->config->item('site_name');
         <div class="clear"></div>
     </div>
 </div>
-
-<?php if (menu_get_current_area() == 'home'): ?>
-
-<div id="splash">
-    <div class="container_12">
-        <div class="grid_12">
-            <?php if (!$this->session->userdata('ID')): ?>
-            <a href="/user/register"><img src="/inc/img/splash.jpg" border="0" alt="Join <?php echo $this->config->item('site_name'); ?> now!" height="215" width="941"/></a>
-            <?php endif; ?>
-        </div>
-        <div class="clear"></div>
-    </div>
-</div>
-<?php endif; ?>
 
 <div id="ctn">
     <div class="container_12 container">
