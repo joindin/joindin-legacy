@@ -1,10 +1,18 @@
 <?php
 menu_pagetitle('Start');
-//echo '<pre><b>TALKS:</b>'; print_r($talks); echo '</pre>';
-//echo '<pre>'; print_r($events); echo '</pre>';
-//echo '<pre>'; print_r($latest_blog); echo '</pre>';
-
 ?>
+
+<?php
+//display welcome block
+if(!user_is_auth()) {
+?>
+<div class="box">
+<p>Welcome to joind.in!  This is the site where event attendees can leave feedback on an event and its sessions.  Do you have an opinion?  Then <a href="/user/register">register an account</a> and share it!</p>
+</div>
+<?php
+}
+?>
+
 <?php if (count($hot_events) > 0): ?>
 <div class="box">
 <h2 class="h1 icon-event">Hot Events <a class="more" href="/event/hot">More &raquo;</a></h2>
