@@ -11,18 +11,18 @@
 <?php echo form_open('event/contact/'.$detail[0]->ID); ?>
 <div class="box">
     <div class="row">
-    	<label for="subject">Subject:</label>
-		<?php echo form_input('subject'); ?>
+        <label for="subject">Subject:</label>
+        <?php echo form_input('subject'); ?>
     </div>
     <div class="clear"></div>
-	<div class="row">
-		<label for="subject">Comments:</label>
-		<?php echo form_textarea('comments'); ?>
-	</div>
-	<div class="clear"></div>
-	<div class="row" align="right">
-		<?php echo form_submit('sub','Send Comments'); ?>
-	</div>
+    <div class="row">
+        <label for="subject">Comments:</label>
+        <?php echo form_textarea('comments'); ?>
+    </div>
+    <div class="clear"></div>
+    <div class="row" align="right">
+        <?php echo form_submit('sub','Send Comments'); ?>
+    </div>
 </div>
 
 <?php echo form_close(); ?>

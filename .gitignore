@@ -6,3 +6,4 @@ build/
 nbproject/
 *.kpf
 .idea
+src/inc/img/event_icons/

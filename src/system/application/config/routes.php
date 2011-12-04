@@ -52,8 +52,8 @@ $route['event/export/(:num)']					= 'event/export/$1';
 $route['event/edit/(:num)']						= 'event/edit/$1';
 $route['event/view/(:num)']						= 'event/view/$1';
 $route['event/view/(:num)']						= 'event/view/$1';
-foreach(array('talks','comments','statistics', 'evt_related', 'slides', 'tracks') as $tab) {
-	$route['event/view/(:num)/'.$tab]			= 'event/view/$1/'.$tab;
+foreach (array('talks','comments','statistics', 'evt_related', 'slides', 'tracks') as $tab) {
+    $route['event/view/(:num)/'.$tab]			= 'event/view/$1/'.$tab;
 }
 $route['event/view/(:num)/track/(:num)']		= 'event/view/$1/track/$2';
 $route['event/attendees/(:num)'] 				= 'event/attendees/$1';
@@ -68,12 +68,14 @@ $route['event/import/(:num)']					= 'event/import/$1';
 $route['event/claim/(:num)']					= 'event/claim/$1';
 $route['event/claim']							= 'event/claim';
 $route['event/claims']							= 'event/claims';
+$route['event/claims/(:num)']					= 'event/claims/$1';
 $route['event/tracks/(:num)']					= 'event/tracks/$1';
 $route['event/contact/(:num)']					= 'event/contact/$1';
 $route['event/invite/([0-9]+)/?(.*)']			= 'event/invite/$1/$2';
 $route['event/blog/(:any)/(:any)']				= 'event/blog/$1/$2';
 $route['event/blog/feed']						= 'event/blog/feed';
 $route['event/callforpapers']					= 'event/callforpapers';
+$route['event/tag/(:any)']                      = 'event/tag/$1';
 //now our catch all...
 $route['event/(:any)']							= 'event/cust/$1';
 $route['(:num)']								= 'talk/view/$1';

@@ -6,8 +6,6 @@
  *
  * @category  Joind.in
  * @package   Controllers
- * @author    Chris Cornutt <chris@joind.in>
- * @author    Mike van Riel <mike.vanriel@naenius.com>
  * @copyright 2009 - 2010 Joind.in
  * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
  * @link      http://github.com/joindin/joind.in
@@ -20,8 +18,6 @@
  *
  * @category  Joind.in
  * @package   Controllers
- * @author    Chris Cornutt <chris@joind.in>
- * @author    Mike van Riel <mike.vanriel@naenius.com>
  * @copyright 2009 - 2010 Joind.in
  * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
  * @link      http://github.com/joindin/joind.in
@@ -56,56 +52,6 @@ class Help extends Controller
     }
 
     /**
-     * Displays the events help page of the user guide.
-     *
-     * @return void
-     */
-    function user_guide_events()
-    {
-        $this->writeContentPage('help/user_guide_events');
-    }
-
-    /**
-     * Displays the talks help page of the user guide.
-     *
-     * @return void
-     */
-    function user_guide_talks()
-    {
-        $this->writeContentPage('help/user_guide_talks');
-    }
-
-    /**
-     * Displays the events help page of the admin guide.
-     *
-     * @return void
-     */
-    function event_admin()
-    {
-        $this->writeContentPage('help/event_admin');
-    }
-
-    /**
-     * Displays the talks help page of the admin guide.
-     *
-     * @return void
-     */
-    function talk_admin()
-    {
-        $this->writeContentPage('help/talk_admin');
-    }
-
-    /**
-     * Displays the help page for the user account page.
-     *
-     * @return void
-     */
-    function manage_user_acct()
-    {
-        $this->writeContentPage('help/manage_user_acct');
-    }
-
-    /**
      * Helper method to provide a generic piece of code for selecting
      * which view to write..
      *
@@ -118,6 +64,35 @@ class Help extends Controller
         $this->template->write_view('content', $view);
         $this->template->render();
     }
+
+    /**
+     * Displays the user guide for event organisers
+     * 
+     * @return void
+     */
+    function event_organiser_help() {
+        $this->writeContentPage('help/event_organiser_help');
+    }
+
+    /**
+     * Displays the user guide for speakers
+     * 
+     * @return void
+     */
+    function speaker_help() {
+        $this->writeContentPage('help/speaker_help');
+    }
+
+    /**
+     * Displays the user guide for users
+     * 
+     * @return void
+     */
+    function user_help() {
+        $this->writeContentPage('help/user_help');
+    }
+
+
 
 }
 

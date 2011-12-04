@@ -6,7 +6,6 @@
  *
  * @category  Joind.in
  * @package   Controllers
- * @author    Chris Cornutt <chris@joind.in>
  * @copyright 2009 - 2010 Joind.in
  * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
  * @link      http://github.com/joindin/joind.in
@@ -24,7 +23,7 @@ function rating_image($rating)
 {
     $rating = min(5, ceil((float)$rating));
     return  '<img class="rating rating-' . $rating . '" src="/inc/img/rating-' .
-                $rating . '.gif" alt="Rating: ' . $rating . ' of 5"/>';
+                $rating . '.gif" alt="Rating: ' . $rating . ' of 5" height="21" width="117" />';
 }
 
 /**
@@ -54,7 +53,7 @@ function rating_form($name, $value = null, $selector = null, $required = true)
         $str .='/>';
     }
     
-    $str .= '<script type="text/javascript">$(function(){
+    $str .= '<script type="text/javascript">$(function() {
              $("' . $selector . '").rating(
                 {required: ' . ($required ? 'true' : 'false') . '}); }
              );</script>';

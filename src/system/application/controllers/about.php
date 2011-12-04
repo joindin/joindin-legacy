@@ -6,8 +6,6 @@
  * 
  * @category  Joind.in
  * @package   Controllers
- * @author    Chris Cornutt <chris@joind.in>
- * @author    Mike van Riel <mike.vanriel@naenius.com>
  * @copyright 2009 - 2010 Joind.in
  * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
  * @link      http://github.com/joindin/joind.in
@@ -20,8 +18,6 @@
  *
  * @category  Joind.in
  * @package   Controllers
- * @author    Chris Cornutt <chris@joind.in>
- * @author    Mike van Riel <mike.vanriel@naenius.com>
  * @copyright 2009 - 2010 Joind.in
  * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
  * @link      http://github.com/joindin/joind.in
@@ -83,17 +79,20 @@ class About extends Controller
         $this->load->helper('form');
         $this->load->library('akismet');
         $this->load->library('validation');
+        $this->load->plugin('captcha');
 
         $fields = array(
             'your_name'  => 'Name',
             'your_email' => 'Email',
-            'your_com'   => 'Comments'
+            'your_com'   => 'Comments',
+            'cinput'     => 'Verification'
         );
 
         $rules = array(
             'your_name' => 'required',
             'your_com'  => 'required',
-			'your_email'=> 'required|valid_email'
+            'your_email'=> 'required|valid_email',
+            'cinput'    => 'required|callback_cinput_check'
         );
         
         $this->validation->set_rules($rules);
@@ -121,6 +120,7 @@ class About extends Controller
 
             // sent the mail to every site admin user
             $admin_emails = $this->user_model->getSiteAdminEmail();
+            
             foreach ($admin_emails as $user) {
                 $from = 'From: ' . $this->config->item('email_feedback');
                 mail($user->email, $subj, $cont, $from);
@@ -137,6 +137,9 @@ class About extends Controller
             $this->validation->your_com = '';
         }
 
+        $arr['captcha']=create_captcha();
+        $this->session->set_userdata(array('cinput'=>$arr['captcha']['value']));
+
         $this->template->write_view('content', 'about/contact', $arr);
         $this->template->render();
     }
@@ -149,17 +152,6 @@ class About extends Controller
     function iphone_support()
     {
         $this->template->write_view('content', 'about/iphone_support');
-        $this->template->render();
-    }
-
-    /**
-     * Displays the help page for the widgets.
-     *
-     * @return void
-     */
-    function widget()
-    {
-        $this->template->write_view('content', 'about/widget');
         $this->template->render();
     }
 
@@ -182,6 +174,44 @@ class About extends Controller
     function import()
     {
         $this->template->write_view('content', 'about/import');
+        $this->template->render();
+    }
+
+    /**
+     * Validate captcha input.
+     *
+     * @param string $str The text of the captcha
+     *
+     * @return bool
+     */
+    function cinput_check($str)
+    {
+        $str = $this->input->post('cinput');
+        if (! is_numeric($str)) {
+            // If the user input is not numeric, convert it to a numeric value
+            $this->load->plugin('captcha');
+            $digits = captcha_get_digits(true);
+            $str = array_search(strtolower($str), $digits);
+        }
+
+        if ($str != $this->session->userdata('cinput')) {
+            $this->validation->_error_messages['cinput_check']
+                = 'Incorrect captcha.';
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Displays the page about the widgets
+     *
+     * @return void
+     */
+    function widgets()
+    {
+        $this->template->write_view('content', 'about/widgets', array());
         $this->template->render();
     }
 

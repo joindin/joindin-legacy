@@ -43,7 +43,7 @@ class External extends Controller
         $msg   .= "Check them out! " . $this->config->site_url() .
             "event/upcoming";
 
-		// @todo: shorten this URL to help fit inside a Twitter message
+        // @todo: shorten this URL to help fit inside a Twitter message
         $this->twitter->sendMsg($msg);
     }
 
@@ -83,19 +83,19 @@ class External extends Controller
         $this->twitter->sendMsg($msg);
     }
 
-	/**
-	 * Grab the pending events and send an email to the event admins 
-	 * with a list of things that are: 1 day away, 1 week away, etc.
-	 *
-	 */
-	public function send_pending_event_email()
-	{
-		$this->load->library('sendemail');
-		$this->load->model('event_model');
-		
-		$events = $this->event_model->getEventDetail(null,null,null,true);
-		$this->sendemail->sendPendingEvents($events);
-	}
+    /**
+     * Grab the pending events and send an email to the event admins 
+     * with a list of things that are: 1 day away, 1 week away, etc.
+     *
+     */
+    public function send_pending_event_email()
+    {
+        $this->load->library('sendemail');
+        $this->load->model('event_model');
+        
+        $events = $this->event_model->getEventDetail(null, null, null, true);
+        $this->sendemail->sendPendingEvents($events);
+    }
 }
 
 ?>
