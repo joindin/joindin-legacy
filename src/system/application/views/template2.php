@@ -140,6 +140,9 @@ $title[] = $this->config->item('site_name');
                         </div>
                         
                         <?php echo form_close(); ?>
+                        <p>
+                        Or login via these services:<br/>
+                        <a href="/user/request_token">Twitter</a>
 
     					<p>
 							<small>Need an account? <a href="/user/register">Register now!</a></small><br/>
