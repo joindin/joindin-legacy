@@ -15,7 +15,7 @@ class OauthController {
                 $tokens = $oauth_model->newRequestToken($db, $request->parameters['oauth_callback']);
                 if($tokens) {
                     // bypass the view handling
-                    echo 'login_url=http://lorna.rivendell.local/user/oauth_allow?' .
+                    echo 'login_url=http://' . $request->host . '/user/oauth_allow?' .
                                          'request_token='.$tokens['request_token'].
                                          '&request_token='.$tokens['request_token'].
                                          '&request_token_secret='.$tokens['request_token_secret'].
