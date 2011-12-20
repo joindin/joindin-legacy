@@ -108,33 +108,7 @@ class User extends Controller
         } else {
             // success! get our data and update our login time
             $ret = $this->user_model->getUser($this->input->post('user'));
-            $this->session->set_userdata((array) $ret[0]);
-
-            //update login time
-            $this->db->where('id', $ret[0]->ID);
-            $this->db->update(
-                'user', array(
-                    'last_login' => time()
-                )
-            );
-
-            // send them back to where they came from, either the referer if they have one, or the flashdata
-            $referer = $this->input->server('HTTP_REFERER');
-            $to = $this->session->flashdata('url_after_login') ? $this->session->flashdata('url_after_login') : $referer;
-            
-            // List different routes we don't want to reroute to
-            $bad_routes = $this->non_forward_urls;
-            
-            foreach ($bad_routes as $route)
-            {
-                if (strstr($to, $route))
-                {
-                    redirect('user/main');
-                }
-            }
-            
-            // our $to is good, so redirect
-            redirect($to);
+            $this->_login($ret[0]);
         }
     }
 
@@ -327,12 +301,36 @@ class User extends Controller
         $params = array('key'=>$twitter['consumerKey'], 'secret'=>$twitter['consumerSecret']);
         $this->load->library('twitter_oauth', $params);
         $response = $this->twitter_oauth->get_access_token(false, $this->session->userdata('token_secret'));
-        
-        $whoWeAre = $response['screen_name'];
-        
-        // Todo: 
-        // 1. If we already have an account, update the token and log us in as this account
-        // 2. If we don't have an account for this screen_name create one (but don't let a twitter user overwrite an existing joind.in user!!)
+
+        // @TODO: Check if there is an error on the response
+        if (! isset($response['screen_name'])) {
+            throw new Exception("Something happened during twitter communication");
+        }
+
+        $this->load->model('user_model');
+        $user = $this->user_model->getUserByTwitter($response['screen_name']);
+        if (! $user) {
+            // We haven't found a user with our screen name
+            $arr = array(
+                'username'         => "",       // Empty username
+                'password'         => "",       // Empty password
+                'email'            => "",       // Empty email
+                'full_name'        => $response['screen_name'],
+                'twitter_username' => $response['screen_name'],
+                'active'           => 1,
+                'last_login'       => time()
+            );
+            $this->db->insert('user', $arr);
+
+            // now, since they're set up, log them in a push them to the account management page
+            $ret = $this->user_model->getUserByTwitter($response['screen_name']);
+            $this->session->set_userdata((array) $ret[0]);
+            redirect('user/manage');
+
+        } else {
+            // Found.. Let's login!
+            $this->_login($user[0]);
+        }
     }
     
     function _getTwitterconfig()
@@ -832,6 +830,37 @@ class User extends Controller
         }
         $this->template->write_view('content', 'user/oauth_allow', $view_data);
         $this->template->render();
+    }
+
+
+    protected function _login($user) {
+        $this->session->set_userdata((array) $user);
+
+        //update login time
+        $this->db->where('id', $user->ID);
+        $this->db->update(
+            'user', array(
+                'last_login' => time()
+            )
+        );
+
+        // send them back to where they came from, either the referer if they have one, or the flashdata
+        $referer = $this->input->server('HTTP_REFERER');
+        $to = $this->session->flashdata('url_after_login') ? $this->session->flashdata('url_after_login') : $referer;
+
+        // List different routes we don't want to reroute to
+        $bad_routes = $this->non_forward_urls;
+
+        foreach ($bad_routes as $route)
+        {
+            if (strstr($to, $route))
+            {
+                redirect('user/main');
+            }
+        }
+
+        // our $to is good, so redirect
+        redirect($to);
     }
 }
 
