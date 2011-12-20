@@ -34,14 +34,10 @@ $data=array(
     'speaker'		=> $speakers,
     'speakers'		=> $speakers,
     'is_claimed'	=> $is_claimed,
-    'user_id'		=> $user_id,
+    'user_id'		=> $user_id
 );
 $this->load->view('talk/modules/_talk_buttons', $data);
 ?>
-
-<p class="ad">
-<?php $this->load->view('main/ads'); ?>
-</p>
 
 <?php 
 $data=array();

@@ -2,6 +2,11 @@
 menu_pagetitle('Submit an event');
 ?>
 <h1 class="icon-event">Submit an event</h1>
+
+<p>Submit your event here to be included on joind.in.  All events must be approved by our team of volunteers before they appear on the site.  The site is aimed at events with sessions, where organisers are looking to use this as a tool to gather feedback.</p>
+
+<p>Please supply a description of your event <b>in English</b>, we will consider which events fit our intended criteria (community event, clear description, intent to gather feedback) before approving; you may <a href="/about/contact">contact us</a> if you have any questions.</p>
+
 <?php if (!empty($msg)): ?>
 <?php $this->load->view('msg_info', array('msg' => $msg)); ?>
 <?php endif; ?>

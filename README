@@ -50,6 +50,8 @@ status and ALL should be run for a new install:
 		
 	-> doc/db/seed_countries.sql
 		Some seed data for the countries table (needed for timezone selection)
+
+We also have excellent sample data generation, check out /doc/dbgen/README for information about how to generate sample data to use with your installation
 	-----------------------
 	
 This last SQL file will give you a jumping off point to see how the system works. It will 
