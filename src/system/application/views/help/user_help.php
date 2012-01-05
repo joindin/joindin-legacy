@@ -10,7 +10,7 @@
 
 <h3>Adding an Avatar</h3>
 
-<p>All the avatar images on Joind.in are from <a href="http://gravatar.com">Gravatar</a> - simply register an avatar there (with the same email address you use for joind.in) and your avatar will appear on your account page and with all your comments on joind.in</p>
+<p>All the avatar images on Joind.in are from <a href="https://gravatar.com">Gravatar</a> - simply register an avatar there (with the same email address you use for joind.in) and your avatar will appear on your account page and with all your comments on joind.in</p>
 
 <h3>I Forgot My Password/Username/Email Address</h3>
 

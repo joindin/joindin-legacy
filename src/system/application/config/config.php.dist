@@ -28,7 +28,7 @@ $config['base_url']	= 'https://joind.in/';
 | API Base URL
 |--------------------------------------------------------------------------
 */
-$config['api_base_url']	= 'http://api.joind.in/';
+$config['api_base_url']	= 'https://api.joind.in/';
 
 /*
 |--------------------------------------------------------------------------

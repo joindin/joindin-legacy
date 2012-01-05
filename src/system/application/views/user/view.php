@@ -29,7 +29,7 @@ foreach ($pending_evt as $e) {
 
 <?php
 if (!empty($details[0]->twitter_username)) {
-    echo '<a href="http://twitter.com/'.$details[0]->twitter_username.'">@'.$details[0]->twitter_username.'</a><br/><br/>';
+    echo '<a href="https://twitter.com/'.$details[0]->twitter_username.'">@'.$details[0]->twitter_username.'</a><br/><br/>';
 }
 if (!empty($pub_profile)) {
     $this->load->view('user/_public_profile', array('profile'=>$pub_profile));
