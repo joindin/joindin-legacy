@@ -4,7 +4,7 @@
 
 <h2>Overview</h2>
 
-<p>Joind.in is offering an HTTP web service to give clean, robust access to the data contained in the application to consuming devices.  It follows a RESTful style, is available in HTML and JSON formats, and uses OAuth v1.0a for authentication where this is needed (all data publicly visible on the site is available via the API without authentication).  Hyperlinks are provided the responses to allow you to easily locate related data.
+<p>Joind.in is offering a HTTP web service to give clean, robust access to the data contained in the application to consuming devices.  It follows a RESTful style, is available in HTML and JSON formats, and uses OAuth v1.0a for authentication where this is needed (all data publicly visible on the site is available via the API without authentication).  Hyperlinks are provided the responses to allow you to easily locate related data.
 
 This document gives information about the functionality of the API and how to use it.</p>
 
@@ -32,9 +32,9 @@ This document gives information about the functionality of the API and how to us
 
 <li><strong>count:</strong> 20</li>
 
-<li><strong>this_page:</strong> <a href="http://api.joind.in/v2/events/603/talks?resultsperpage=20&amp;start=0">http://api.joind.in/v2/events/603/talks?resultsperpage=20&amp;start=0</a></li>
+<li><strong>this_page:</strong> <a href="https://api.joind.in/v2/events/603/talks?resultsperpage=20&amp;start=0">https://api.joind.in/v2/events/603/talks?resultsperpage=20&amp;start=0</a></li>
 
-<li><strong>next_page:</strong> <a href="http://api.joind.in/v2/events/603/talks?resultsperpage=20&amp;start=20">http://api.joind.in/v2/events/603/talks?resultsperpage=20&amp;start=20</a></li>
+<li><strong>next_page:</strong> <a href="https://api.joind.in/v2/events/603/talks?resultsperpage=20&amp;start=20">https://api.joind.in/v2/events/603/talks?resultsperpage=20&amp;start=20</a></li>
 
 </ul>
 
@@ -50,21 +50,21 @@ This document gives information about the functionality of the API and how to us
 
 <h3>Request: GET /</h3>
 
-<p><a href="http://api.joind.in">try it</a></p>
+<p><a href="https://api.joind.in">try it</a></p>
 
 This is your starting point and will show you where you can go:
 <blockquote>
 <ul>
 
-<li><strong>events:</strong> <a href="http://api.joind.in/v2/events">http://api.joind.in/v2/events</a></li>
+<li><strong>events:</strong> <a href="https://api.joind.in/v2/events">https://api.joind.in/v2/events</a></li>
 
-<li><strong>hot-events:</strong> <a href="http://api.joind.in/v2/events?filter=hot">http://api.joind.in/v2/events?filter=hot</a></li>
+<li><strong>hot-events:</strong> <a href="https://api.joind.in/v2/events?filter=hot">https://api.joind.in/v2/events?filter=hot</a></li>
 
-<li><strong>upcoming-events:</strong> <a href="http://api.joind.in/v2/events?filter=upcoming">http://api.joind.in/v2/events?filter=upcoming</a></li>
+<li><strong>upcoming-events:</strong> <a href="https://api.joind.in/v2/events?filter=upcoming">https://api.joind.in/v2/events?filter=upcoming</a></li>
 
-<li><strong>past-events:</strong> <a href="http://api.joind.in/v2/events?filter=past">http://api.joind.in/v2/events?filter=past</a></li>
+<li><strong>past-events:</strong> <a href="https://api.joind.in/v2/events?filter=past">https://api.joind.in/v2/events?filter=past</a></li>
 
-<li><strong>open-cfps:</strong> <a href="http://api.joind.in/v2/events?filter=cfp">http://api.joind.in/v2/events?filter=cfp</a></li>
+<li><strong>open-cfps:</strong> <a href="https://api.joind.in/v2/events?filter=cfp">https://api.joind.in/v2/events?filter=cfp</a></li>
 
 </ul>
 </blockquote>
@@ -73,7 +73,7 @@ This is your starting point and will show you where you can go:
 <h3>Request: GET /v2/events</h3>
 <h3>Request: GET /v2/events/[id]</h3>
 
-<p><a href="http://api.joind.in/v2/events">try it</a></p>
+<p><a href="https://api.joind.in/v2/events">try it</a></p>
 
 <p>Shows a list of events, sorted by start time descending.  We will offer other views of events, with different filters and sorting, in time.
 
@@ -89,21 +89,21 @@ Each result looks something like this:</p>
 
 <li><strong>description:</strong> Ibuildings is proud to organise the fifth Dutch PHP Conference on May 20 and 21, plus a pre-conference tutorial day on May 19. Both programs will be completely in English so the only Dutch thing about it is the location. Keywords for these days: Know-how, Technology, Best Practices, Networking, Tips &amp; Tricks.</li>
 
-<li><strong>href:</strong> <a href="http://www.phpconference.nl/">http://www.phpconference.nl/</a></li>
+<li><strong>href:</strong> <a href="https://www.phpconference.nl/">https://www.phpconference.nl/</a></li>
 
 <li><strong>attendee_count:</strong> 134</li>
 
 <li><strong>icon:</strong> icon-90x90.png</li>
 
-<li><strong>uri:</strong> <a href="http://api.joind.in/v2/events/603">http://api.joind.in/v2/events/603</a></li>
+<li><strong>uri:</strong> <a href="https://api.joind.in/v2/events/603">https://api.joind.in/v2/events/603</a></li>
 
-<li><strong>verbose_uri:</strong> <a href="http://api.joind.in/v2/events/603?verbose=yes">http://api.joind.in/v2/events/603?verbose=yes</a></li>
+<li><strong>verbose_uri:</strong> <a href="https://api.joind.in/v2/events/603?verbose=yes">https://api.joind.in/v2/events/603?verbose=yes</a></li>
 
-<li><strong>comments_uri:</strong> <a href="http://api.joind.in/v2/events/603/comments">http://api.joind.in/v2/events/603/comments</a></li>
+<li><strong>comments_uri:</strong> <a href="https://api.joind.in/v2/events/603/comments">https://api.joind.in/v2/events/603/comments</a></li>
 
-<li><strong>talks_uri:</strong> <a href="http://api.joind.in/v2/events/603/talks">http://api.joind.in/v2/events/603/talks</a></li>
+<li><strong>talks_uri:</strong> <a href="https://api.joind.in/v2/events/603/talks">https://api.joind.in/v2/events/603/talks</a></li>
 
-<li><strong>website_uri:</strong> <a href="http://joind.in/event/view/603">http://joind.in/event/view/603</a></li>
+<li><strong>website_uri:</strong> <a href="https://joind.in/event/view/603">https://joind.in/event/view/603</a></li>
 
 </ul>
 </blockquote>
@@ -111,7 +111,7 @@ Each result looks something like this:</p>
 <h3>Request: GET /events/[id]/talks</h3>
 <h3>Request: GET /talks/[id]</h3>
 
-<p><a href="http://api.joind.in/v2/events/110/talks">try it</a></p>
+<p><a href="https://api.joind.in/v2/events/110/talks">try it</a></p>
 
 <p>Following the link to the talks for an event gives a list.  The <b>format</b>, <b>start</b> and <b>requestsperpage</b> parameters are valid.  Each talk entry will look something like this:</p>
 
@@ -138,7 +138,7 @@ Each result looks something like this:</p>
 
 <li><strong>speaker_name:</strong> Ian Barber</li>
 
-<li><strong>speaker_uri:</strong> <a href="http://api.joind.in/v2/users/291">http://api.joind.in/v2/users/291</a></li>
+<li><strong>speaker_uri:</strong> <a href="https://api.joind.in/v2/users/291">https://api.joind.in/v2/users/291</a></li>
 
 </ul>
 
@@ -148,15 +148,15 @@ Each result looks something like this:</p>
 
 </li>
 
-<li><strong>uri:</strong> <a href="http://api.joind.in/v2/talks/3219">http://api.joind.in/v2/talks/3219</a></li>
+<li><strong>uri:</strong> <a href="https://api.joind.in/v2/talks/3219">https://api.joind.in/v2/talks/3219</a></li>
 
-<li><strong>verbose_uri:</strong> <a href="http://api.joind.in/v2/talks/3219?verbose=yes">http://api.joind.in/v2/talks/3219?verbose=yes</a></li>
+<li><strong>verbose_uri:</strong> <a href="https://api.joind.in/v2/talks/3219?verbose=yes">https://api.joind.in/v2/talks/3219?verbose=yes</a></li>
 
-<li><strong>website_uri:</strong> <a href="http://joind.in/talk/view/3219">http://joind.in/talk/view/3219</a></li>
+<li><strong>website_uri:</strong> <a href="https://joind.in/talk/view/3219">https://joind.in/talk/view/3219</a></li>
 
-<li><strong>comments_uri:</strong> <a href="http://api.joind.in/v2/talks/3219/comments">http://api.joind.in/v2/talks/3219/comments</a></li>
+<li><strong>comments_uri:</strong> <a href="https://api.joind.in/v2/talks/3219/comments">https://api.joind.in/v2/talks/3219/comments</a></li>
 
-<li><strong>event_uri:</strong> <a href="http://api.joind.in/v2/events/603">http://api.joind.in/v2/events/603</a></li>
+<li><strong>event_uri:</strong> <a href="https://api.joind.in/v2/events/603">https://api.joind.in/v2/events/603</a></li>
 
 </ul>
 
@@ -174,13 +174,13 @@ Each result looks something like this:</p>
 
 <li><strong>comment:</strong> Interesting discussion and good examples. Will be looking into 0MQ for log aggregation. Also thought it was interesting how many areas of this architecture overlap with some of the principles behind node.js. Well done overall. </li>
 
-<li><strong>uri:</strong> <a href="http://api.joind.in/v2/talks/3219/comments/12578">http://api.joind.in/v2/talks/3219/comments/12578</a></li>
+<li><strong>uri:</strong> <a href="https://api.joind.in/v2/talks/3219/comments/12578">https://api.joind.in/v2/talks/3219/comments/12578</a></li>
 
-<li><strong>verbose_uri:</strong> <a href="http://api.joind.in/v2/talks/3219/comments/12578?verbose=yes">http://api.joind.in/v2/talks/3219/comments/12578?verbose=yes</a></li>
+<li><strong>verbose_uri:</strong> <a href="https://api.joind.in/v2/talks/3219/comments/12578?verbose=yes">https://api.joind.in/v2/talks/3219/comments/12578?verbose=yes</a></li>
 
-<li><strong>talk_uri:</strong> <a href="http://api.joind.in/v2/talks/3219">http://api.joind.in/v2/talks/3219</a></li>
+<li><strong>talk_uri:</strong> <a href="https://api.joind.in/v2/talks/3219">https://api.joind.in/v2/talks/3219</a></li>
 
-<li><strong>user_uri:</strong> <a href="http://api.joind.in/v2/users/14421">http://api.joind.in/v2/users/14421</a></li>
+<li><strong>user_uri:</strong> <a href="https://api.joind.in/v2/users/14421">https://api.joind.in/v2/users/14421</a></li>
 
 </ul>
 </blockquote> 
