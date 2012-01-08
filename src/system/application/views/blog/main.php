@@ -30,7 +30,7 @@ menu_pagetitle('Blog');
     <?php if (user_is_admin()): ?>
     <div class="admin">
         <a class="btn-small" href="/blog/edit/<?php echo $v->ID; ?>">Edit</a>
-        <a class="btn-small" href="">Delete</a>
+        <a class="btn-small" href="/blog/delete/<?php echo $v->ID; ?>">Delete</a>
     </div>
     <?php endif; ?>
     <div class="clear"></div>
