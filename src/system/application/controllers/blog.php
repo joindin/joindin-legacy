@@ -180,6 +180,41 @@ class Blog extends Controller
     }
 
     /**
+	 * Deletes the selected blog post
+	 * 
+	 * @param integer $id ID of the blog post to delete
+	 * 
+	 * @return void
+	 */
+	function delete($id)
+	{
+		if (!$this->user_model->isSiteAdmin()) {
+			redirect();
+		}
+		
+		$this->load->helper('form');
+        $this->load->library('validation');
+
+        $arr = array(
+		    'bid' => $id,
+		);
+
+        $confirm = $this->input->post('confirm');
+
+        if (isset($confirm) && ($confirm == 'yes')) {
+    		$this->db->delete('blog_posts', array('ID' => $id));
+			$arr = array();
+		} 
+		elseif (isset($confirm) && ($confirm == 'no')) {
+			//Used CI's redirect function to stop 2 copies of the same page showing
+			redirect('/blog/view/' . $id, 'refresh');
+		}
+
+        $this->template->write_view('content', 'blog/delete', $arr, true);
+        $this->template->render();
+	}
+
+    /**
      * Displays the details of a specific blog post.
      *
      * @param integer $id ID of the blog post to display

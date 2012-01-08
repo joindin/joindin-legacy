@@ -1032,6 +1032,10 @@ class Event extends Controller
                 $this->event_model->deleteEvent($id);
                 $arr = array();
             }
+			elseif (isset($ans) && ($ans == 'no')) {
+				//Used CI's redirect function to refresh the page and stop it showing 2 copies
+				redirect('/event/view/' . $id, 'refresh');
+			}
 
             $this->template->write_view('content', 'event/delete', $arr, true);
             $this->template->render();
