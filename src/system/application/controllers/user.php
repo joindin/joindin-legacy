@@ -305,6 +305,41 @@ class User extends Controller
             redirect('user/view/' . $uid);
         }
     }
+    
+    /**
+     * Log in via Twitter
+     */
+    function request_token()
+    {
+        $twitter = $this->_getTwitterConfig();
+        
+        $params = array('key'=>$twitter['consumerKey'], 'secret'=>$twitter['consumerSecret']);
+        $this->load->library('twitter_oauth', $params);
+        $response = $this->twitter_oauth->get_request_token(site_url("user/access_token"));
+        $this->session->set_userdata('token_secret', $response['token_secret']);
+        redirect($response['redirect']);
+    }
+    
+    function access_token()
+    {
+        $twitter = $this->_getTwitterConfig();
+        
+        $params = array('key'=>$twitter['consumerKey'], 'secret'=>$twitter['consumerSecret']);
+        $this->load->library('twitter_oauth', $params);
+        $response = $this->twitter_oauth->get_access_token(false, $this->session->userdata('token_secret'));
+        
+        $whoWeAre = $response['screen_name'];
+        
+        // Todo: 
+        // 1. If we already have an account, update the token and log us in as this account
+        // 2. If we don't have an account for this screen_name create one (but don't let a twitter user overwrite an existing joind.in user!!)
+    }
+    
+    function _getTwitterconfig()
+    {
+        include(APPPATH.'config/twitter'.EXT);
+        return $twitter;
+    }
 
     /**
      * Registers a new user in the system.
