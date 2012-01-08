@@ -22,7 +22,7 @@ menu_pagetitle('Blog: ' . escape($v->title));
 <?php if (user_is_admin()): ?>
 <p class="admin">
     <a class="btn-small" href="/blog/edit/<?php echo $v->ID; ?>">Edit post</a>	
-    <a class="btn-small" href="">Delete post</a>
+    <a class="btn-small" href="/blog/delete/<?php echo $v->ID; ?>">Delete post</a>
 </p>
 <?php endif; ?>
 
