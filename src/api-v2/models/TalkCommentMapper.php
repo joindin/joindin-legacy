@@ -114,4 +114,18 @@ class TalkCommentMapper extends ApiMapper {
             . 'and tc.private <> 1 ';
         return $sql;
     }
+
+    public function save($data) {
+        $sql = 'insert into talk_comments (talk_id, rating, comment, user_id, '
+            . 'source, date_made, private, active) '
+            . 'values (:talk_id, :rating, :comment, :user_id, "api-v2", NOW(), 0, 1)';
+
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute(array(
+            ':talk_id' => $data['talk_id'],
+            ':rating' => $data['rating'],
+            ':comment' => $data['comment'],
+            ':user_id' => $data['user_id']
+            ));
+    }
 }

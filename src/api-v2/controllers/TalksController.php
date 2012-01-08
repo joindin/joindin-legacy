@@ -2,15 +2,17 @@
 
 class TalksController extends ApiController {
     public function handle($request, $db) {
-        // only GET is implemented
         if($request->verb == 'GET') {
-                return $this->getAction($request, $db);
+            return $this->getAction($request, $db);
+        } elseif($request->verb == 'POST') {
+            return $this->postAction($request, $db);
+        } else {
+            throw new BadRequestException("method not supported");
         }
-        // should not end up here
         return false;
     }
 
-	public function getAction($request, $db) {
+	protected function getAction($request, $db) {
         $talk_id = $this->getItemId($request);
 
         // verbosity
@@ -38,4 +40,29 @@ class TalksController extends ApiController {
 
         return $list;
 	}
+
+    protected function postAction($request, $db) {
+        $talk_id = $this->getItemId($request);
+
+        if(isset($request->url_elements[4])) {
+            // sub elements
+            if($request->url_elements[4] == "comments") {
+                // no anonymous comments over the API
+                if(!isset($request->user_id) || empty($request->user_id)) {
+                    throw new BadRequestException('You must log in to comment');
+                }
+
+                $comment_mapper = new TalkCommentMapper($db, $request);
+                $data['user_id'] = $request->user_id;
+                $data['talk_id'] = $talk_id;
+                $data['comment'] = $request->getParameter('comment');
+                $data['rating'] = $request->getParameter('rating');
+
+                $comment_mapper->save($data);
+                $this->getAction($request, $db);
+            }
+        } else {
+            throw new Exception("method not yet supported - sorry");
+        }
+    }
 }
