@@ -32,7 +32,11 @@ $title[] = $this->config->item('site_name');
     ?>
 </head>
 <body id="page-<?php echo menu_get_current_area(); ?>">
-
+<?php
+if(!empty($patch))
+{
+	$this->load->view('msg_error', array('msg' => "Your database is {$patch} patches behind"));
+}?>
 <div id="hd">
     <div class="container_12 top">
         <div class="grid_12">

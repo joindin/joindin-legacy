@@ -69,8 +69,15 @@ class Main extends Controller
             'logged'          => $this->user_model->isAuth(),
             'latest_blog'     => $this->bpm->getLatestPost(),
             'reqkey'          => $reqkey,
-            'seckey'          => buildSecFile($reqkey)
+            'seckey'          => buildSecFile($reqkey),
         );
+
+        //Check to see if the database is fully patched, it needs to be here for the $arr variable!!!
+        if(getenv('JOINDIN_DEBUG') == 'on')
+		{
+			$this->load->model('patch_model');
+			$arr['patch'] = $this->patch_model->check_patches();
+		}
 
         // now add the attendance data for the hot events
         $uid = $this->user_model->getID();
