@@ -204,61 +204,40 @@ foreach ($talks as $k=>$v) {
             <h2>Admin</h2>
             <table cellpadding="3" cellspacing="0" border="0">
             <?php
-            //echo '<pre>'; print_r($uadmin); echo '</pre>';
+            foreach($talks as $k => $v) {
+				$title  = $v->talk_title;
+				$url    = '/talk/view/' . $v->ID;
+				$delete = '/talk/deleteSpeaker/' . $v->ID . '/' . $v->speaker[0]->speaker_name;
+			 
+			    echo sprintf('
+                    <tr id="resource_row_1">
+                        <td style="padding:3px">Talk</td>
+                        <td style="padding:3px"><a href="%s">%s</a></td>
+                        <td style="padding:3px"><a href="%s">X</a></td>
+                    </tr>
+                ', $url, $title, $delete);
+			}
+//echo('<PRE>');print_r($uadmin);echo"<PRE>";
             foreach ($uadmin as $k=>$v) {
                 if (!isset($v->detail[0])) { continue; }
-                if ($v->rtype=='talk') {
-                    $title=$v->detail[0]->talk_title;
-                    $url='/talk/view/'.$v->detail[0]->ID;
-                } else { 
+                if ($v->rtype === 'event') {
                     $title=$v->detail[0]->event_name;
                     $url='/event/view/'.$v->detail[0]->ID;
+     				$e = $v->detail[0]->ID;
+					$u = $details[0]->username;
+					$ui = $v->uid;
                 }
+   
                 $pend=($v->rcode=='pending') ? ' (pending)':'';
                 echo sprintf('
-                    <tr id="resource_row_%s">
-                        <td style="padding:3px">%s</td>
+                    <tr id="resource_row_1">
+                        <td style="padding:3px">Event</td>
                         <td style="padding:3px"><a href="%s">%s %s</a></td>
-                        <td style="padding:3px"><a href="#" onClick="removeRole(%s);return false;">X</a></td>
+                        <td style="padding:3px"><a href="#" onclick="removeEventAdmin(%s, \'%s\', %s);">X</a></td>
                     </tr>
-                ', $v->rid, $v->rtype, $url, $title, $pend, $v->admin_id);
+                ', $url, $title, $pend, $e, $u, $ui);
             }
             ?>
-            </table>
-            
-            <b>Add/Remove Permissions</b><br/>
-            <table cellpadding="3" cellspacing="0" border="0">
-            <tr>
-                <td style="padding:3px">Type:</td>
-                <td style="padding:3px">
-                    <select name="add_type" id="add_type" onChange="populateEvents('event_names');">
-                        <option value="">Select Type
-                        <option value="talk">Talk
-                        <option value="event">Event
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:3px">Event:</td>
-                <td style="padding:3px">	
-                    <select name="event_names" id="event_names" onChange="chkAdminType('event_talks')">
-                    <option value="">Select Event
-                    </select>
-                </td>
-            </tr>
-            <tr id="talks_row" style="display:none">
-                <td style="padding:3px">Talks:</td>
-                <td style="padding:3px">
-                    <select name="event_talks" id="event_talks">
-                        <option value="">Select Talk
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" align="right" style="padding:3px">
-                    <input type="button" name="add_role" value="add" onClick="addRole(<?php echo $details[0]->ID; ?>)"/>
-                </td>
-            </tr>
             </table>
         </div>
     </td>

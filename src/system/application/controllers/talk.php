@@ -958,6 +958,21 @@ class Talk extends Controller
 
         return true;
     }
+	
+	function deleteSpeaker($t, $s)
+	{
+		// check to see if they're supposed to be here
+        if (!$this->auth) {
+            redirect('user/login', 'refresh');
+        }
+		
+        $this->load->model('talk_speaker_model','talkSpeaker');
+		
+		$this->talkSpeaker->deleteSpeaker($t, $s);
+		$return = $_SERVER['HTTP_REFERER'];
+
+		redirect($return, 'refresh');
+	}
 }
 
 ?>
