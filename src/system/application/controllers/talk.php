@@ -969,7 +969,7 @@ class Talk extends Controller
         $this->load->model('talk_speaker_model','talkSpeaker');
 		
 		$this->talkSpeaker->deleteSpeaker($t, $s);
-		$return = $_SERVER['HTTP_REFERER'];
+		$return = $this->input->server('HTTP_REFERER');
 
 		redirect($return, 'refresh');
 	}
