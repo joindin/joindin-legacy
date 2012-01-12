@@ -1,33 +1,28 @@
-<h2>Need some help?</h2>
-<p>
-Looking for a little help using <?php echo $this->config->item('site_name'); ?>? Well, you've come to the right place! Linked from
-this page are guides that can help you get the most out of your experience, whether it's 
-as an event administrator or as an attendee coming to rank your favorite sessions.
-</p>
-<h3>iPhone Application</h3>
+<h2>About Joind.in and How To Get Help</h2>
+
+<p>Joind.in is a community project; the software is open source and the site is free to use.  It is built and maintained entirely by volunteers (and more help is always welcome).  We've created guides for various types of user, pick from the list to find the information you need.</p>
+<br />
+
+<h3>Event Organiser</h3>
+
+<p>We have a <a href="/help/event_organiser_help">comprehensive guide</a> for all event admins and prospective event admins.  If there's anything at all that you can't find there, just let us know!</p>
+
+<h3>Speaker</h3>
+
+<p>Speakers can get a lot from joind.in by claiming their talks, publicising the links, and adding slides to the talk after the event.  Read our <a href="/help/speaker_help">guide for speakers</a> for details.
+
+<h3>Users</h3>
+
+<p>For all users, including speakers and event organisers, you can find out all about your joind.in account in our <a href="/help/user_help">user's guid</a></p>
+
+<h3>Everyone</h3>
+
+<p>If you have a smartphone, checkout the applications we have available for various <b>mobile devices:</b>
 <ul>
-<li><a href="http://itunes.apple.com/us/app/joind-in/id355184913?mt=8"><?php echo $this->config->item('site_name'); ?> at the App Store</a>
-<li><a href="/about/iphone_support">iPhone Application Support</a>
+<li><a href="http://itunes.apple.com/us/app/joind-in/id355184913?mt=8">Get the iPhone App</a>
+<li><a href="https://market.android.com/search?q=joind.in&c=apps">Get the Android App</a>
 </ul>
 
-<h3>Events</h3>
-<ul>
-<li><a href="/help/user_guide_events">A User's Guide to Events</a>
-<li><a href="/help/event_admin">Event Administration</a>
-</ul>
+<p>We have two APIs - an older one and a new <b>RESTful API</b> as well.  If you want to use the data from joind.in elsewhere, then take a look at the <a href="/api">API Documentation</a>.  For easy inclusion of talk ratings on your event site, we have some <a href="/about/widgets">javascript widgets</a> ready for you to drop in.</p>
 
-<h3>Talks</h3>
-<ul>
-<li><a href="/help/user_guide_talks">A User's Guide to Talks</a>
-<li><a href="/help/talk_admin">Talk Administration</a>
-</ul>
-
-<h3>User Info</h3>
-<ul>
-<li><a href="/help/manage_user_acct">Managing Your Account</a>
-</ul>
-
-<h3>API</h3>
-<ul>
-<li><a href="/api">API Documentation</a>
-</ul>
+<p>If you still have questions or comments, then please do <a href="/about/contact">contact us</a></p>

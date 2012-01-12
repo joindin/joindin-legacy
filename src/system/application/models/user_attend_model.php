@@ -2,87 +2,125 @@
 
 class User_attend_model extends Model {
 
-	function User_attend_model(){
-		parent::Model();
-	}
-	//--------------
-	function chkAttend($uid,$eid){
-		$q=$this->db->get_where('user_attend',array('uid'=>$uid,'eid'=>$eid));
-		$ret=$q->result();
-		return (empty($ret)) ? false : true;
-	}
-	function chgAttendStat($uid,$eid){
-		if($this->chkAttend($uid,$eid)){
-			//they are attending, remove them
-			$this->db->delete('user_attend',array('uid'=>$uid,'eid'=>$eid));
-		}else{ 
-			//they're not attending, add them
-			$this->db->insert('user_attend',array('uid'=>$uid,'eid'=>$eid));
-		}
-	}
-	function getAttendCount($eid){
-		$sql='select count(ID) attend_ct from user_attend where eid='.$this->db->escape($eid);
-		$q=$this->db->query($sql);
-		$res=$q->result();
-		return (isset($res[0]->attend_ct)) ? $res[0]->attend_ct : 0;
-	}
-	function getAttendUsers($eid){
-		$this->db->distinct();
-		$this->db->select('user.ID,user.username,user.full_name');
-		$this->db->from('user');
-		$this->db->where('user_attend.eid', $eid);
-		$this->db->join('user_attend','user.ID=user_attend.uid');
-		$q=$this->db->get();
-		$ret=$q->result();
-		return $ret;
-	}
-    function getAttendees($eid){
-		$this->db->select('user.*');
-	    $this->db->from('user_attend');
-		$this->db->join('user', 'user.ID = user_attend.uid', 'inner');
-		$this->db->where('user_attend.eid',(int)$eid);
-		$this->db->order_by('user_attend.ID','asc');
-		
-		//$q=$this->db->get();
-		//return $q->result();
-		
-		$sql=sprintf('
-			select
-				usr.ID,
-				usr.username,
-				usr.full_name,
-				(select
-					count(uad.ID)
-				from
-					talks t,
-					user_admin uad
-				where
-					uad.uid=usr.ID and
-					t.event_id=%s and
-					t.ID=uad.rid and uad.rtype=\'talk\' and
-					uad.rcode!=\'pending\'
-				) is_speaker
-			from
-				user_attend ua,
-				user usr
-			where
-				ua.uid=usr.ID and
-				ua.eid=%s
-			order by
-				usr.full_name asc
-		',$this->db->escape((int)$eid), $this->db->escape((int)$eid));
-		$q=$this->db->query($sql);
-		return $q->result();
-	}
-	function getUserAttending($uid){
-		$this->db->select('events.event_name,events.ID,events.event_start,events.event_end');
-		$this->db->from('events');
-		$this->db->join('user_attend','user_attend.eid=events.ID');
-		$this->db->where('user_attend.uid',(int)$uid);
-		$this->db->order_by('events.event_start','desc');
-		
-		$q=$this->db->get(); return $q->result();
-	}
-	
+    function User_attend_model() {
+        parent::Model();
+    }
+    //--------------
+    
+    /**
+     * Check to see if the given user ID is attending the event
+     *
+     * @param integer $uid User ID
+     * @param integer $eid Event ID
+     * @return boolean
+     */
+    function chkAttend($uid, $eid) {
+        $q=$this->db->get_where('user_attend', array('uid'=>$uid,'eid'=>$eid));
+        $ret=$q->result();
+        return (empty($ret)) ? false : true;
+    }
+    
+    /**
+     * Toggle the attending status for a user on an event
+     *
+     * @param integer $uid User ID
+     * @param integer $eid Event ID
+     * @return null
+     */
+    function chgAttendStat($uid, $eid) {
+        if ($this->chkAttend($uid, $eid)) {
+            //they are attending, remove them
+            $this->db->delete('user_attend', array('uid'=>$uid,'eid'=>$eid));
+        } else { 
+            //they're not attending, add them
+            $this->db->insert('user_attend', array('uid'=>$uid,'eid'=>$eid));
+        }
+    }
+    
+    /**
+     * Get a total count of those marked as attending on the event
+     *
+     * @param integer $eid Event ID
+     * @return integer Count of attendees
+     */
+    function getAttendCount($eid) {
+        $sql='select count(ID) attend_ct from user_attend where eid='.$this->db->escape($eid);
+        $query = $this->db->query($sql);
+        $countResult = $query->result();
+        return (isset($countResult[0]->attend_ct)) ? $countResult[0]->attend_ct : 0;
+    }
+    
+    /**
+     * Get the list of users attending an event
+     *
+     * @param integer $eid Event ID
+     * @return array User details
+     */
+    function getAttendUsers($eid) {
+        $this->db->distinct();
+        $this->db->select('user.ID, user.username, user.full_name');
+        $this->db->from('user');
+        $this->db->where('user_attend.eid', $eid);
+        $this->db->join('user_attend','user.ID=user_attend.uid');
+        
+        $query = $this->db->get();
+        return $query->result();
+    }
+    
+    /**
+     * Given an event ID, find those that are marked as attended/attended
+     *
+     * @param integer $eid Event Id
+     * @return array List of attending users
+     */
+    function getAttendees($eid) {
+        
+        $sql=sprintf('
+            select
+                usr.ID,
+                usr.username,
+                usr.full_name,
+                (select
+                    count(ts.ID)
+                from
+                    talk_speaker ts,
+                    talks t
+                where
+                    t.ID = ts.talk_id and
+                    IFNULL(ts.status, 0) != \'pending\' and
+                    ts.speaker_id = usr.ID and
+                    t.event_id = %s
+                ) is_speaker
+            from
+                user_attend ua,
+                user usr
+            where
+                ua.uid=usr.ID and
+                ua.eid=%s
+            order by
+                usr.full_name asc
+        ', $this->db->escape((int)$eid), $this->db->escape((int)$eid));
+        
+        $query = $this->db->query($sql);
+        return $query->result();
+    }
+    
+    /**
+     * Get the list of events that the user is attending/has attended
+     *
+     * @param integer $uid User ID
+     * @return array Event details
+     */
+    function getUserAttending($uid) {
+        $this->db->select('events.event_name, events.ID, events.event_start, events.event_end');
+        $this->db->from('events');
+        $this->db->join('user_attend','user_attend.eid=events.ID');
+        $this->db->where('user_attend.uid',(int)$uid);
+        $this->db->order_by('events.event_start','desc');
+        
+        $query = $this->db->get(); 
+        return $query->result();
+    }
+    
 }
 ?>

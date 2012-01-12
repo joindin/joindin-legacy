@@ -20,18 +20,64 @@ talk = function (){
 	// Requires API
 	var _claimTalk = function(){
 		$('#claim_btn').click(function(){
-			var obj={ "talk_id": $('#talk_id').val() };
+			// see if they're logged in...
+			if($('#user_id').val().length<=0){
+				window.location.href = '/user/login';
+				return false;
+			}
+			
+			if($('#claim_btn').attr('name')=='single'){
+				
+				$('#claim-dialog').dialog({
+					autoOpen: false,
+					resizable: false,
+					modal: true,
+					buttons: {
+						"Yes, Proceeed": function() {
+							window.location.href = $('#claim_btn').attr('href');
+							$( this ).dialog( "close" );
+						},
+						Cancel: function() {
+							$( this ).dialog( "close" );
+						}
+					}
+				});
+				
+				//Open confirmation dialog
+				$( "#claim-dialog" ).dialog('open');
+				
+				//Respond to dialog not link
+				return false;
+			}
+			
+			var obj={ 
+				"talk_id": $('#talk_id').val(),
+				"talk_speaker_id": $('#claim_name_select').val()
+			};
+			$('#claim_select_div').css('display','block');
+			$('#claim_btn').css('display','none');
+			return false;
+			
 			$('#claim_btn').html('Sending Claim >>');
 
 			apiRequest('talk','claim',obj, function(obj) {
-				//alert(obj);
+				//notifications.alert(obj);
 				$('#claim_btn').css('display','none');
 				if(obj.msg=='Success'){
-					alert("Thanks for claiming this talk! You will be emailed when the claim is approved!");
+					notifications.alert("Thanks for claiming this talk! You will be emailed when the claim is approved!");
+					$('#claim_select_div').css('display','none');
 				}else{
-					alert(obj.msg);
+					notifications.alert(obj.msg);
 				}
 				return false;
+			});
+			return false;
+		});
+		$('#claim-cancel-btn').click(function(){
+			$('#claim_select_div').css('display','none');
+			$('#claim_btn').css({
+				'display'	: 'inline',
+				'width'		: '90px'
 			});
 			return false;
 		});
@@ -48,7 +94,15 @@ talk = function (){
 				// now set the information so they can edit it
 				$('#comment').val(obj[0].comment);
 				if(obj[0].private!=0){ $(':checkbox[name=private]').attr('checked',true); }
-				setStars(obj[0].rating);
+
+                if (obj[0].rating > 0) {
+                    $('#ratingbar-norating').css('display','none');
+                    $('#ratingbar').css('display','block');
+                    setStars(obj[0].rating);
+                } else {
+                    $('#ratingbar-norating').css('display','block');
+                    $('#ratingbar').css('display','none');
+                }
 				$(':input[name=edit_comment]').val(comment_id);
 			});
 			return false;
@@ -73,6 +127,27 @@ talk = function (){
 			}
 		});
 	}
+	
+	/* remove old method from above for claim_btn */
+	var _claimButton = function(){
+		$('#claim-btn').click(function(){
+			var obj=new Object();
+			//obj.cid		= cid;
+			//obj.rtype	= rtype;
+			obj.talk_id = $('#talk_id').val();
+			obj.talk_speaker_id = $('#claim_name_select').val();
+			apiRequest('talk','claim',obj, function(obj) {
+				if(obj.msg=='Success'){
+					notifications.alert("Thanks for claiming this talk! You will be emailed when the claim is approved!");
+				}else{
+					notifications.alert(obj.msg);
+				}
+				return false;
+				return false;
+			});
+			return false;
+		});
+	}
 
 	return {
 		init: function(){
@@ -81,6 +156,7 @@ talk = function (){
 				_claimTalk();
 				_editTalkComment();
                 _changeAnonymous();
+				_claimButton();
 			});
 		}
 	}

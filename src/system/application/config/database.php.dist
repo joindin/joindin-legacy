@@ -38,8 +38,8 @@ $active_group = "default";
 $active_record = TRUE;
 
 $db['default']['hostname'] = "localhost";
-$db['default']['username'] = "root";
-$db['default']['password'] = "local";
+$db['default']['username'] = "joind_in";
+$db['default']['password'] = "pleasechangeme";
 $db['default']['database'] = "joindin";
 $db['default']['dbdriver'] = "mysql";
 $db['default']['dbprefix'] = "";
@@ -49,6 +49,19 @@ $db['default']['cache_on'] = FALSE;
 $db['default']['cachedir'] = "";
 $db['default']['char_set'] = "utf8";
 $db['default']['dbcollat'] = "utf8_general_ci";
+
+$db['test']['hostname'] = "localhost";
+$db['test']['username'] = "joindin_test";
+$db['test']['password'] = "pleasechangemetoo";
+$db['test']['database'] = "joindin_test";
+$db['test']['dbdriver'] = "mysql";
+$db['test']['dbprefix'] = "";
+$db['test']['pconnect'] = TRUE;
+$db['test']['db_debug'] = TRUE;
+$db['test']['cache_on'] = FALSE;
+$db['test']['cachedir'] = "";
+$db['test']['char_set'] = "utf8";
+$db['test']['dbcollat'] = "utf8_general_ci";
 
 
 /* End of file database.php */

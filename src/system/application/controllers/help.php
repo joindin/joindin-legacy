@@ -1,24 +1,99 @@
 <?php
+/**
+ * Help pages controller.
+ *
+ * PHP version 5
+ *
+ * @category  Joind.in
+ * @package   Controllers
+ * @copyright 2009 - 2010 Joind.in
+ * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
+ * @link      http://github.com/joindin/joind.in
+ */
 
-class Help extends Controller {
-	
-	function Help(){
-		parent::Controller();
-	}
-	function index(){
-		$this->template->write_view('content','help/main');
-		$this->template->render();
-	}
-	function write_static($view){
-		$this->template->write_view('content',$view);
-		$this->template->render();
-	}
-	//---------------------------------
-	## Content pages
-	function user_guide_events(){ 	$this->write_static('help/user_guide_events'); }
-	function user_guide_talks(){ 	$this->write_static('help/user_guide_talks'); }
-	function event_admin(){ 		$this->write_static('help/event_admin'); }
-	function talk_admin(){ 			$this->write_static('help/talk_admin'); }
-	function manage_user_acct(){ 	$this->write_static('help/manage_user_acct'); }
+/**
+ * Help pages controller.
+ *
+ * Responsible for displaying the help pages for the application.
+ *
+ * @category  Joind.in
+ * @package   Controllers
+ * @copyright 2009 - 2010 Joind.in
+ * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
+ * @link      http://github.com/joindin/joind.in
+ *
+ * @property  CI_Config   $config
+ * @property  CI_Loader   $load
+ * @property  CI_Template $template
+ * @property  CI_Input    $input
+ * @property  User_model  $user_model
+ */
+class Help extends Controller
+{
+
+    /**
+     * Constructor, responsible for initializing the parent constructor.
+     *
+     * @return void
+     */
+    function Help()
+    {
+        parent::Controller();
+    }
+
+    /**
+     * Displays the help contents page.
+     *
+     * @return void
+     */
+    function index()
+    {
+        $this->writeContentPage('help/main');
+    }
+
+    /**
+     * Helper method to provide a generic piece of code for selecting
+     * which view to write..
+     *
+     * @param string $view Name of the view to show
+     *
+     * @return void
+     */
+    function writeContentPage($view)
+    {
+        $this->template->write_view('content', $view);
+        $this->template->render();
+    }
+
+    /**
+     * Displays the user guide for event organisers
+     * 
+     * @return void
+     */
+    function event_organiser_help() {
+        $this->writeContentPage('help/event_organiser_help');
+    }
+
+    /**
+     * Displays the user guide for speakers
+     * 
+     * @return void
+     */
+    function speaker_help() {
+        $this->writeContentPage('help/speaker_help');
+    }
+
+    /**
+     * Displays the user guide for users
+     * 
+     * @return void
+     */
+    function user_help() {
+        $this->writeContentPage('help/user_help');
+    }
+
+
+
 }
+
 ?>

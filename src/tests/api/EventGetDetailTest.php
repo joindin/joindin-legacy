@@ -16,6 +16,9 @@
 			$eventDetailStr = self::makeApiRequest('event', 'getdetail', array('event_id'=>$event->ID), 'json');
 			$eventDetail = $this->decode_response($eventDetailStr, 'json');
 
+			// check we only got one event
+			$this->assertEquals(count($eventDetail), 1, 'event/getdetail should return one event only');
+
 			// Check that the detail returned from the event list is the same as the event detail
 			$this->assertExpectedEventFields($eventDetail);
 		}
@@ -31,6 +34,9 @@
 			// Get the event detail
 			$eventDetailStr = self::makeApiRequest('event', 'getdetail', array('event_id'=>$event->ID), 'xml');
 			$eventDetail = $this->decode_response($eventDetailStr, 'xml');
+
+			// check we only got one event
+			$this->assertEquals(count($eventDetail), 1, 'event/getdetail should return one event only');
 
 			// Check that the detail returned from the event list is the same as the event detail
 			$this->assertExpectedEventFields($eventDetail);

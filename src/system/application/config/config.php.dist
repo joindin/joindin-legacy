@@ -21,7 +21,14 @@ $config['site_name']	= 'Joind.in';
 |	http://example.com/
 |
 */
-$config['base_url']	= 'http://joind.in/';
+$config['base_url']	= 'https://joind.in/';
+
+/*
+|--------------------------------------------------------------------------
+| API Base URL
+|--------------------------------------------------------------------------
+*/
+$config['api_base_url']	= 'https://api.joind.in/';
 
 /*
 |--------------------------------------------------------------------------
@@ -350,9 +357,6 @@ $config['token_rm'] = 5; //time in minutes
 $config['twitter_user']		= '';
 $config['twitter_pass']		= '';
 
-// Set up the config settings for the pics and resumes
-$config['user_pic_path']	= '/www/htdocs/confs/inc/img/profile';
-
 // For the Akismet class
 $config['akismet_key']		= '';
 $config['akismet_blog']		= '';
@@ -365,6 +369,12 @@ $config['defensio_owner']	= '';
 // Note that the Gravatar cache must be accessible to the web server
 $config['gravatar_cache_dir']   = realpath(dirname(__FILE__) .'/../../../inc/img/user_gravatar');
 $config['gravatar_cache_relative_url']   = '/inc/img/user_gravatar';
+
+// If you're debugging and want all emails to go to one address, use this
+// $config['debug_email']		= '';
+
+// Number of seconds a user is allowed to edit his/her comment
+$config['comment_edit_time'] = 60;
 
 /* End of file config.php */
 /* Location: ./system/application/config/config.php */

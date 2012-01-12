@@ -48,13 +48,13 @@ class CI_Template {
    var $parse_template = FALSE;
    
    /**
-	 * Constructor
-	 *
-	 * Loads template configuration, template regions, and validates existence of 
-	 * default template
-	 *
-	 * @access	public
-	 */
+     * Constructor
+     *
+     * Loads template configuration, template regions, and validates existence of 
+     * default template
+     *
+     * @access	public
+     */
    
    function CI_Template()
    {
@@ -308,14 +308,14 @@ class CI_Template {
    // --------------------------------------------------------------------
    
    /**
-	 * Write contents to a region
-	 *
-	 * @access	public
-	 * @param	string	region to write to
-	 * @param	string	what to write
-	 * @param	boolean	FALSE to append to region, TRUE to overwrite region
-	 * @return	void
-	 */
+     * Write contents to a region
+     *
+     * @access	public
+     * @param	string	region to write to
+     * @param	string	what to write
+     * @param	boolean	FALSE to append to region, TRUE to overwrite region
+     * @return	void
+     */
    
    function write($region, $content, $overwrite = FALSE)
    {
@@ -339,15 +339,15 @@ class CI_Template {
    // --------------------------------------------------------------------
    
    /**
-	 * Write content from a View to a region. 'Views within views'
-	 *
-	 * @access	public
-	 * @param	string	region to write to
-	 * @param	string	view file to use
-	 * @param	array	variables to pass into view
-	 * @param	boolean	FALSE to append to region, TRUE to overwrite region
-	 * @return	void
-	 */
+     * Write content from a View to a region. 'Views within views'
+     *
+     * @access	public
+     * @param	string	region to write to
+     * @param	string	view file to use
+     * @param	array	variables to pass into view
+     * @param	boolean	FALSE to append to region, TRUE to overwrite region
+     * @return	void
+     */
    
    function write_view($region, $view, $data = NULL, $overwrite = FALSE)
    {
@@ -356,7 +356,7 @@ class CI_Template {
       // Get rid of non-views
       unset($args[0], $args[2], $args[3]);
 
-	  //check to see if it has a custom view
+      //check to see if it has a custom view
       $view=$this->has_custom_view($view);
       
       // Do we have more view suggestions?
@@ -540,13 +540,13 @@ class CI_Template {
    // --------------------------------------------------------------------
    
    /**
-	 * Render the master template or a single region
-	 *
-	 * @access	public
-	 * @param	string	optionally opt to render a specific region
-	 * @param	boolean	FALSE to output the rendered template, TRUE to return as a string. Always TRUE when $region is supplied
-	 * @return	void or string (result of template build)
-	 */
+     * Render the master template or a single region
+     *
+     * @access	public
+     * @param	string	optionally opt to render a specific region
+     * @param	boolean	FALSE to output the rendered template, TRUE to return as a string. Always TRUE when $region is supplied
+     * @return	void or string (result of template build)
+     */
    
    function render($region = NULL, $buffer = FALSE, $parse = FALSE)
    {
@@ -611,14 +611,14 @@ class CI_Template {
    // --------------------------------------------------------------------
    
    /**
-	 * Build a region from it's contents. Apply wrapper if provided
-	 *
-	 * @access	private
-	 * @param	string	region to build
-	 * @param	string	HTML element to wrap regions in; like '<div>'
-	 * @param	array	Multidimensional array of HTML elements to apply to $wrapper
-	 * @return	string	Output of region contents
-	 */
+     * Build a region from it's contents. Apply wrapper if provided
+     *
+     * @access	private
+     * @param	string	region to build
+     * @param	string	HTML element to wrap regions in; like '<div>'
+     * @param	array	Multidimensional array of HTML elements to apply to $wrapper
+     * @return	string	Output of region contents
+     */
    
    function _build_content($region, $wrapper = NULL, $attributes = NULL)
    {
@@ -675,24 +675,24 @@ class CI_Template {
       return $output;
    }
 
-	/**
-	* Check to see if they have a custom template for the style (based on the 
-	* custom directory path in the config)
-	*
-	* @param string $view View passed into the functions above
-	* @return string Returns path to either the same view or the found custom view
-	*/
-	public function has_custom_view($view){
-		$cpath=$this->CI->config->item('custom_template_dir');
-		if($key=apache_getenv('USE_KEY'))
-		{
-			$cpath=$this->CI->config->item('custom_template_dir').'/'.$key.'/'.$view;
-			if(is_file(APPPATH.'/views/'.$cpath.'.php'))
-			{
-				return $cpath;
-			}else{ return $view; }
-		}else{ return $view; }
-	}
+    /**
+    * Check to see if they have a custom template for the style (based on the 
+    * custom directory path in the config)
+    *
+    * @param string $view View passed into the functions above
+    * @return string Returns path to either the same view or the found custom view
+    */
+    public function has_custom_view($view) {
+        $cpath=$this->CI->config->item('custom_template_dir');
+        if (function_exists('getenv') && $key=getenv('USE_KEY'))
+        {
+            $cpath=$this->CI->config->item('custom_template_dir').'/'.$key.'/'.$view;
+            if (is_file(APPPATH.'/views/'.$cpath.'.php'))
+            {
+                return $cpath;
+            } else { return $view; }
+        } else { return $view; }
+    }
    
 }
 // END Template Class

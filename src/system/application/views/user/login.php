@@ -7,28 +7,28 @@
     <?php endif; ?>
 
     <div class="row">
-    	<p>
-    		Please login below. If you do not have an account you can <a href="/user/register">create</a> a new one.
-    	</p>
+        <p>
+            Please login below. If you do not have an account you can <a href="/user/register">create</a> a new one.
+        </p>
         <div class="clear"></div>
     </div>
 
     <div class="row">
-    	<label for="user">Username</label>
-    	<?php echo form_input(array('name' => 'user', 'id' => 'user'), $this->validation->user); ?>
+        <label for="user">Username</label>
+        <?php echo form_input(array('name' => 'user', 'id' => 'user'), $this->validation->user); ?>
     
         <div class="clear"></div>
     </div>
     
     <div class="row">
-    	<label for="pass">Password</label>
-    	<?php echo form_input(array('name' => 'pass', 'id' => 'pass', 'type' => 'password')); ?>
+        <label for="pass">Password</label>
+        <?php echo form_input(array('name' => 'pass', 'id' => 'pass', 'type' => 'password')); ?>
     
         <div class="clear"></div>
     </div>
     
     <div class="row row-buttons">
-    	<?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Login'); ?>
+        <?php echo form_submit(array('name' => 'sub', 'class' => 'btn-big'), 'Login'); ?>
     </div>
     
     <?php echo form_close(); ?>

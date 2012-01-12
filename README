@@ -1,10 +1,34 @@
 
 Joind.in (http://joind.in)
-#####################
+##########################
 
 This is the source code for the Joind.in website - a resource set up to allow
 events to get real-time feedback from those attending. It also gives speakers a 
 way to claim and track their presentations over time.
+
+
+Quick start
+###########
+1. Create a vhost entry for the site. The docroot should be `/src`.
+2. Create a MySQL database with username and password.
+   Use a database name of 'joindin'
+3. Initialise, patch, and populate the database.
+   > src/scripts/patchdb.sh -t /path/to/joind.in -d joindin -u username -p password -i
+   (use the correct username and password)
+4. Create directories for user-added content.
+   > mkdir src/system/cache/ctokens && chown apache:apache src/system/cache/ctokens
+   > mkdir src/inc/img/user_gravatar && chown apache:apache src/inc/img/user_gravatar
+   (or whatever user and group your web server runs as)
+5. Create configuration files for database and config (based on the .dist templates):
+   > cp src/system/application/config/database.php.dist src/system/application/config/database.php
+   > cp src/system/application/config/config.php.dist   src/system/application/config/config.php
+   Edit these files as appropriate!
+6. Enjoy the site!
+   The default password for users is "password".
+
+
+Detailed instructions
+#####################
 
 There's a few SQL files that are included with the source to help you get things 
 up and running. The first four will bring your database to the most current, up-to-date
@@ -21,10 +45,13 @@ status and ALL should be run for a new install:
 	-> doc/db/patch*.sql
 		Numbered patch files to run in order after running init_db.  All database changes to be
 		managed using these, init_db does NOT get updated.  For more information on this approach,
-		see http://www.lornajane.net/posts/2010/Simple-Database-Patching-Strategy
+		see http://www.lornajane.net/posts/2010/Simple-Database-Patching-Strategy. If patch 17
+		fails it can be skipped.
 		
 	-> doc/db/seed_countries.sql
 		Some seed data for the countries table (needed for timezone selection)
+
+We also have excellent sample data generation, check out /doc/dbgen/README for information about how to generate sample data to use with your installation
 	-----------------------
 	
 This last SQL file will give you a jumping off point to see how the system works. It will 
@@ -39,8 +66,8 @@ Finally, there's some other scripts that come with the source to make things eas
 	- Release of CodeIgniter
 	- Sample cron jobs (in /src/scripts)
 	
-You can find more on github: http://github.com/enygma/joind.in
-Issues should be filed at: http://github.com/enygma/joind.in/issues
+You can find more on github: http://github.com/joindin/joind.in
+Issues should be filed at: http://joindin.jira.com/
 
 See LICENSE file for license information for this software
 (located in /doc/LICENSE)
@@ -57,6 +84,9 @@ The following are the steps you'll need to correctly install the software:
 
 - In the /src/system/cache directory, create a web server-writeable 
 	directory called "ctokens"
+
+- In the /src/inc/img directory, create a web server writable directory
+    called "user_gravatar"
 	
 - In your src/system/application/config directory:
 	> Make a database.php file using the database.php.dist as a guide
@@ -70,9 +100,14 @@ If you'd like some seed data, you can use the seed.sql to load in a few events,
 users and talks. You'll also need to load in the seed_countries.sql file to
 get the complete list of countries for the event details.
 
+The default password for users is "password"
+
+
 Extensions
 ###################
-Make sure you have the following extensions installed and configured
+In order to run tests make sure you have the following extensions installed and
+configured. This library can be ignored if you are not planning on running
+tests.
 - pecl_http
   $ pecl install pecl_http
   
@@ -97,9 +132,20 @@ Tests
 #############
 
 There are some tests set up, which use PHPUnit; these can be found in the
-src/tests directory.  There is a phing task configured to run them - from the
-root directory simply run "phing phpunit" to run the tests.
+src/tests directory.  There is an ant task configured to run them - from the
+root directory simply run "ant phpunit" to run the tests.
 
-Note: The API tests actually call the service externally and rely on pecl_http
+Note 1: The API tests actually call the service externally and rely on pecl_http
 being installed to run.
+
+Issues
+#############
+
+The issue tracker can be found here: http://joindin.jira.com/
+
+RewriteEngine
+###################
+
+It is advisable to enable the RewriteEngine (sudo a2enmod rewrite).
+.htaccess in /src takes care of all the rewrite rules.
 
