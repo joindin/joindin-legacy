@@ -183,6 +183,19 @@ class User_model extends Model {
     }
 
     /**
+     * Search for user information based on a twitter screen name
+     *
+     * @param $screenName integer/string User ID or Username
+     * @return array User details
+     */
+    function getUserByTwitter($screenName) {
+        $q = $this->db->get_where('user', array('twitter_username' => (string)$screenName));
+        $result = $q->result();
+
+        return $result ? $result : false;
+    }
+
+    /**
      * Delete a user with the given ID
      * 
      * @param $userId
