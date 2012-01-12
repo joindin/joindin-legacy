@@ -285,9 +285,11 @@ class User extends Controller
      */
     function request_token()
     {
-        $twitter = $this->_getTwitterConfig();
+        $params = array(
+            'key'    => $this->config->item('twitter_consumer_key'),
+            'secret' => $this->config->item('twitter_consumer_secret')
+        );
 
-        $params = array('key'=>$twitter['consumerKey'], 'secret'=>$twitter['consumerSecret']);
         $this->load->library('twitter_oauth', $params);
         $response = $this->twitter_oauth->get_request_token(site_url("user/access_token"));
         $this->session->set_userdata('token_secret', $response['token_secret']);
@@ -296,9 +298,11 @@ class User extends Controller
 
     function access_token()
     {
-        $twitter = $this->_getTwitterConfig();
+        $params = array(
+            'key' => $this->config->item('twitter_consumer_key'),
+            'secret' => $this->config->item('twitter_consumer_secret')
+        );
 
-        $params = array('key'=>$twitter['consumerKey'], 'secret'=>$twitter['consumerSecret']);
         $this->load->library('twitter_oauth', $params);
         $response = $this->twitter_oauth->get_access_token(false, $this->session->userdata('token_secret'));
 
@@ -331,16 +335,6 @@ class User extends Controller
             // Found.. Let's login!
             $this->_login($user[0]);
         }
-    }
-
-    /**
-     * Returns the twitter configuration as defined in src/application/config/twitter.php.
-     *
-     * @return string[]
-     */
-    function _getTwitterconfig()
-    {
-        return include(APPPATH . 'config/twitter' . EXT);
     }
 
     /**
