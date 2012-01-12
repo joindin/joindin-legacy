@@ -34,14 +34,14 @@ class User extends Controller
      * Contains an array with urls we don't want to forward to after login.
      * If a part of the url is in one of these items, it will forward them to
      * their main account page.
-     * 
+     *
      * @var Array
      */
     private $non_forward_urls = array(
         'user/login'
         ,'user/forgot'
     );
-    
+
     /**
      * Constructor, checks whether the user is logged in and passes this to
      * the template.
@@ -108,33 +108,7 @@ class User extends Controller
         } else {
             // success! get our data and update our login time
             $ret = $this->user_model->getUser($this->input->post('user'));
-            $this->session->set_userdata((array) $ret[0]);
-
-            //update login time
-            $this->db->where('id', $ret[0]->ID);
-            $this->db->update(
-                'user', array(
-                    'last_login' => time()
-                )
-            );
-
-            // send them back to where they came from, either the referer if they have one, or the flashdata
-            $referer = $this->input->server('HTTP_REFERER');
-            $to = $this->session->flashdata('url_after_login') ? $this->session->flashdata('url_after_login') : $referer;
-            
-            // List different routes we don't want to reroute to
-            $bad_routes = $this->non_forward_urls;
-            
-            foreach ($bad_routes as $route)
-            {
-                if (strstr($to, $route))
-                {
-                    redirect('user/main');
-                }
-            }
-            
-            // our $to is good, so redirect
-            redirect($to);
+            $this->_login($ret[0]);
         }
     }
 
@@ -149,10 +123,10 @@ class User extends Controller
         $this->session->sess_destroy();
         redirect();
     }
-    
+
     /**
      * Check if either the email or username is set
-     * 
+     *
      * @param string $str
      * @return bool
      */
@@ -230,7 +204,7 @@ class User extends Controller
             //reset their password and send it out to the account
             $email = $this->input->post('email');
             $login = $this->input->post('user');
-            if ($email)            
+            if ($email)
                 $ret = $this->user_model->getUserByEmail($email);
             elseif ($login)
                 $ret = $this->user_model->getUserByUsername($login);
@@ -304,6 +278,69 @@ class User extends Controller
         } else {
             redirect('user/view/' . $uid);
         }
+    }
+
+    /**
+     * Log in via Twitter
+     */
+    function request_token()
+    {
+        $twitter = $this->_getTwitterConfig();
+
+        $params = array('key'=>$twitter['consumerKey'], 'secret'=>$twitter['consumerSecret']);
+        $this->load->library('twitter_oauth', $params);
+        $response = $this->twitter_oauth->get_request_token(site_url("user/access_token"));
+        $this->session->set_userdata('token_secret', $response['token_secret']);
+        redirect($response['redirect']);
+    }
+
+    function access_token()
+    {
+        $twitter = $this->_getTwitterConfig();
+
+        $params = array('key'=>$twitter['consumerKey'], 'secret'=>$twitter['consumerSecret']);
+        $this->load->library('twitter_oauth', $params);
+        $response = $this->twitter_oauth->get_access_token(false, $this->session->userdata('token_secret'));
+
+        // @TODO: Check if there is an error on the response
+        if (! isset($response['screen_name'])) {
+            throw new Exception("Something happened during twitter communication");
+        }
+
+        $this->load->model('user_model');
+        $user = $this->user_model->getUserByTwitter($response['screen_name']);
+        if (! $user) {
+            // We haven't found a user with our screen name
+            $arr = array(
+                'username'         => "",       // Empty username
+                'password'         => "",       // Empty password
+                'email'            => "",       // Empty email
+                'full_name'        => $response['screen_name'],
+                'twitter_username' => $response['screen_name'],
+                'active'           => 1,
+                'last_login'       => time()
+            );
+            $this->db->insert('user', $arr);
+
+            // now, since they're set up, log them in a push them to the account management page
+            $ret = $this->user_model->getUserByTwitter($response['screen_name']);
+            $this->session->set_userdata((array) $ret[0]);
+            redirect('user/manage');
+
+        } else {
+            // Found.. Let's login!
+            $this->_login($user[0]);
+        }
+    }
+
+    /**
+     * Returns the twitter configuration as defined in src/application/config/twitter.php.
+     *
+     * @return string[]
+     */
+    function _getTwitterconfig()
+    {
+        return include(APPPATH . 'config/twitter' . EXT);
     }
 
     /**
@@ -576,7 +613,7 @@ class User extends Controller
         if ($this->input->post('sub')) {
             // search call
             $users = $this->user_model->search($this->input->post('user_search'));
-            
+
         } elseif ($this->input->post('um')) {
             // delete user call
             $selectedUsers = $this->input->post('sel');
@@ -749,9 +786,9 @@ class User extends Controller
         $this->load->helper('url');
         $this->load->library('validation');
         $this->load->library('SSL');
- 
+
         $this->ssl->sslRoute();
- 
+
         $fields = array(
             'access' => 'Permit access?'
         );
@@ -760,11 +797,11 @@ class User extends Controller
         );
         $this->validation->set_rules($rules);
         $this->validation->set_fields($fields);
- 
+
         $view_data['status'] = NULL;
         if ($this->validation->run() == false) {
             $request_token = filter_var($this->input->get('request_token'), FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^[0-9a-z]*$/')));
-            // check for a valid request token 
+            // check for a valid request token
             if ($this->user_admin_model->oauthRequestTokenVerify($request_token)) {
                 $this->session->set_flashdata('request_token', $request_token);
             } else {
@@ -788,7 +825,7 @@ class User extends Controller
                     }
                     $url .= 'oauth_token=' . $oauth_info->verification;
                     redirect($url);
-                    exit; // we shouldn't be here 
+                    exit; // we shouldn't be here
                 }
             } else {
                 $view_data['status'] = "deny";
@@ -797,6 +834,37 @@ class User extends Controller
         }
         $this->template->write_view('content', 'user/oauth_allow', $view_data);
         $this->template->render();
+    }
+
+
+    protected function _login($user) {
+        $this->session->set_userdata((array) $user);
+
+        //update login time
+        $this->db->where('id', $user->ID);
+        $this->db->update(
+            'user', array(
+                'last_login' => time()
+            )
+        );
+
+        // send them back to where they came from, either the referer if they have one, or the flashdata
+        $referer = $this->input->server('HTTP_REFERER');
+        $to = $this->session->flashdata('url_after_login') ? $this->session->flashdata('url_after_login') : $referer;
+
+        // List different routes we don't want to reroute to
+        $bad_routes = $this->non_forward_urls;
+
+        foreach ($bad_routes as $route)
+        {
+            if (strstr($to, $route))
+            {
+                redirect('user/main');
+            }
+        }
+
+        // our $to is good, so redirect
+        redirect($to);
     }
 }
 
