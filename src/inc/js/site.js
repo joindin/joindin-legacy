@@ -5,7 +5,7 @@ function apiRequest(rtype,raction,data,callback){
 	});
 	xml_str='<request><action type="'+raction+'" output="json">'+xml_str+'</action></request>';
 	var gt_url="/api/"+rtype+'?reqk='+reqk+'&seck='+seck;
-	
+
 	$.ajax({
 		type: "POST",
 		url	: gt_url,
@@ -18,25 +18,25 @@ function apiRequest(rtype,raction,data,callback){
 			//obj=eval('('+rdata+')'); //notifications.alert(obj.msg);
 			/* rdata should be json now ... parsed properly by the browser */
 			var obj = rdata;
-			
+
 			//check for the redirect
 			if(obj.msg && obj.msg.match('redirect:')){
 				var targetLocation=obj.msg.replace(/redirect:/,'');
 				document.location.href=targetLocation;
 			}else{
-				//maybe add some callback method here 
-				//notifications.alert('normal'); 
+				//maybe add some callback method here
+				//notifications.alert('normal');
 				if ($.isFunction(callback))
 					callback(obj);
 			}
 		}
-		
+
 	});
 }
 //-------------------------
 function delEventComment(cid){ deleteComment(cid,'event'); }
-function delTalkComment(cid){ 
-	deleteComment(cid,'talk'); 
+function delTalkComment(cid){
+	deleteComment(cid,'talk');
 	$('#comment-'+cid).remove();
 }
 function deleteComment(cid,rtype){
@@ -84,7 +84,7 @@ function markAttending(el,eid,isPast){
 		}
 
 		$el.html(link_txt);
-		
+
 		function hideLoading()
 		{
 			if ($loading)
@@ -138,7 +138,7 @@ function populateEvents(fname){
 }
 function populateTalks(fname){
 	var obj=new Object();
-	obj.eid=$('#event_names').val(); 
+	obj.eid=$('#event_names').val();
 	apiRequest('event','gettalks',obj, function(obj) {
 		$.each(obj,function(k,v){
 			$('#'+fname).append('<option value="'+v.ID+'">'+v.talk_title+' ('+v.speaker+')');
@@ -162,7 +162,7 @@ function addRole(uid){
 	tp=$('#add_type').val();
 	if(tp=='talk'){
 		obj.type='addtalk';
-		obj.rid=$('#event_talks').val();		
+		obj.rid=$('#event_talks').val();
 		apiRequest('user','role',obj, function(obj) { });
 	}else if(tp=='event'){
 		obj.type='addevent';
@@ -179,8 +179,8 @@ function addEventAdmin(eid){
 	apiRequest('event','addadmin',obj, function(obj) {
 		if(obj.msg=='Success'){
 			$('#evt_admin_list').append('<li id="evt_admin_'+obj.user.ID+'"><a href="/user/view/'+obj.user.ID+'">'+obj.user.full_name+'</a> [<a onclick="removeEventAdmin('+eid+',\''+obj.user.username+'\','+obj.user.ID+')" href="#">X</a>]');
-		}else{ 
-            notifications.alert(obj.msg); 
+		}else{
+            notifications.alert(obj.msg);
         }
 	});
 }
@@ -190,10 +190,10 @@ function removeEventAdmin(eid,uname,uid){
 	obj.username=uname;
 	apiRequest('event','rmadmin',obj, function(obj) {
 		$('#evt_admin_'+uid).remove();
-	});	
+	});
 }
 function toggleCfpDates(){
-	
+
 	var sel_fields = new Array(
 		'cfp_start_mo','cfp_start_day','cfp_start_yr',
 		'cfp_end_mo','cfp_end_day','cfp_end_yr','cfp_url'
@@ -202,13 +202,15 @@ function toggleCfpDates(){
 	// Get the current status of the first one...
 	stat=$('#cfp_start_mo').attr("disabled");
 	if(stat){
+        $('div.cfp').show();
 		$.each(sel_fields,function(){
 			$('#'+this).removeAttr("disabled");
 		});
         datePickerController.enable('cfp_start_yr');
         datePickerController.enable('cfp_end_yr');
 	}else{
-		$.each(sel_fields,function(){
+        $('div.cfp').hide();
+        $.each(sel_fields,function(){
 			$('#'+this).attr("disabled","disabled");
 		});
         datePickerController.disable('cfp_start_yr');
@@ -251,7 +253,7 @@ function cancelTrackAdd(rid){
 function cancelTrackEdit(rid){
 	//Switch back to display
 	switchTrackDisplay(rid);
-	
+
 	$('#ctrl_cell_'+rid).html('\
 		<a href="#" class="btn-small" onClick="editTrack('+rid+')">edit</a>\
 	');
@@ -261,13 +263,13 @@ function saveTrackAdd(rid){
 	obj.event_id	= $('#event_id').val();
 	obj.track_name	= $("#track_tbl_body input[id='name_"+rid+"']").val();
 	obj.track_desc	= $("#track_tbl_body textarea[id='desc_"+rid+"']").val();
-	
+
 	apiRequest('event','addtrack',obj, function(obj) {
 		notifications.alert(obj.msg);
 		if(obj.msg=='Success'){
 			//Switch back to display
 			switchTrackDisplay(rid);
-			
+
 			//And clear out that last cell..
 			$('#ctrl_cell_'+rid).html('');
 		}
@@ -280,13 +282,13 @@ function saveTrackUpdate(rid){
 	obj.track_desc	= $("#track_tbl_body textarea[id='desc_"+rid+"']").val();
 	obj.track_id	= $("#track_tbl_body input[id='trackid_"+rid+"']").val();
 	obj.track_color	= $("#track_tbl_body input[id='track_color_"+rid+"']").val();
-	
+
 	apiRequest('event','updatetrack',obj, function(obj) {
 		notifications.alert(obj.msg);
 		if(obj.msg=='Success'){
 			//Switch back to display
 			switchTrackDisplay(rid);
-			
+
 			//And clear out that last cell..
 			$('#ctrl_cell_'+rid).html('');
 		}
@@ -296,7 +298,7 @@ function deleteTrack(rid,tid){
 	var obj			= new Object();
 	obj.event_id	= $('#event_id').val();
 	obj.track_id	= tid;
-	
+
 	apiRequest('event','deletetrack',obj, function(obj) {
 		notifications.alert(obj.msg);
 		if(obj.msg=='Success'){ $("#track_tbl_body tr[id='rid_"+rid+"']").remove(); }
@@ -307,7 +309,7 @@ function editTrack(rid){
 	$('#disp_desc_'+rid).hide(); $('#desc_'+rid).show();
 	$('#track_color_sel_'+rid).show();
 	//Put the "save" and "cancel" buttons in the last column...
-	
+
 	$('#ctrl_cell_'+rid).html('\
 		<a href="#" class="btn-small" onClick="saveTrackUpdate(\''+rid+'\')">save</a>\
 		<a href="#" class="btn-small" onClick="cancelTrackEdit(\''+rid+'\')">cancel</a>\
@@ -318,11 +320,11 @@ function switchTrackDisplay(rid){
 	$('#name_'+rid).hide();
 	$('#disp_name_'+rid).html($("#track_tbl_body input[id='name_"+rid+"']").val());
 	$('#disp_name_'+rid).show();
-	
+
 	$('#desc_'+rid).hide();
 	$('#disp_desc_'+rid).html($("#track_tbl_body textarea[id='desc_"+rid+"']").val());
 	$('#disp_desc_'+rid).show();
-	
+
 	$('#track_color_sel_'+rid).hide();
 }
 
@@ -346,21 +348,21 @@ $(document).ready(function(){
 /*# AVOID COLLISIONS #*/
 ;if(window.jQuery) (function($){
 /*# AVOID COLLISIONS #*/
-	
+
 	// IE6 Background Image Fix
 	if ($.browser.msie) try { document.execCommand("BackgroundImageCache", false, true)} catch(e) { }
 	// Thanks to http://www.visualjquery.com/rating/rating_redux.html
-	
+
 	// default settings
 	$.rating = {
 		cancel: 'Cancel Rating',   // advisory title for the 'cancel' link
 		cancelValue: '',           // value to submit when user click the 'cancel' link
 		split: 0,                  // split the star into how many parts?
-		
+
 		// Width of star image in case the plugin can't work it out. This can happen if
 		// the jQuery.dimensions plugin is not available OR the image is hidden at installation
 		starWidth: 21,
-		
+
 		//NB.: These don't need to be defined (can be undefined/null) so let's save some code!
 		//half:     false,         // just a shortcut to settings.split = 2
 		//required: false,         // disables the 'cancel' button so user can only select one of the specified values
@@ -368,7 +370,7 @@ $(document).ready(function(){
 		//focus:    function(){},  // executed when stars are focused
 		//blur:     function(){},  // executed when stars are focused
 		//callback: function(){},  // executed when a star is clicked
-		
+
 		// required properties:
 		groups: {},// allows multiple star ratings on one page
 		event: {// plugin event handlers
@@ -401,48 +403,48 @@ $(document).ready(function(){
 				$.rating.event.reset(n, el, settings);
 				// click callback, as requested here: http://plugins.jquery.com/node/1655
 				if(settings.callback) settings.callback.apply($.rating.groups[n].valueElem[0], [val, lnk[0]]);
-			}      
+			}
 		}// plugin events
 	};
-	
+
 	$.fn.rating = function(instanceSettings){
 		if(this.length==0) return this; // quick fail
-		
+
 		instanceSettings = $.extend(
 			{}/* new object */,
 			$.rating/* global settings */,
 			instanceSettings || {} /* just-in-time settings */
 		);
-		
+
 		// loop through each matched element
 		this.each(function(i){
-			
+
 			var settings = $.extend(
 				{}/* new object */,
 				instanceSettings || {} /* current call settings */,
 				($.metadata? $(this).metadata(): ($.meta?$(this).data():null)) || {} /* metadata settings */
 			);
-			
+
 			////if(window.console) console.log([this.name, settings.half, settings.split], '#');
-			
+
 			// Generate internal control ID
 			// - ignore square brackets in element names
 			var n = (this.name || 'unnamed-rating').replace(/\[|\]+/g, "_");
-  
+
 			// Grouping
 			if(!$.rating.groups[n]) $.rating.groups[n] = {count: 0};
 			i = $.rating.groups[n].count; $.rating.groups[n].count++;
-			
+
 			// Accept readOnly setting from 'disabled' property
 			$.rating.groups[n].readOnly = $.rating.groups[n].readOnly || settings.readOnly || $(this).attr('disabled');
-			
+
 			// Things to do with the first element...
 			if(i == 0){
 				// Create value element (disabled if readOnly)
 				$.rating.groups[n].valueElem = $('<input type="hidden" name="' + n + '" value=""' + (settings.readOnly ? ' disabled="disabled"' : '') + '/>');
 				// Insert value element into form
 				$(this).before($.rating.groups[n].valueElem);
-				
+
 				if($.rating.groups[n].readOnly || settings.required){
 					// DO NOT display 'cancel' button
 				}
@@ -456,14 +458,14 @@ $(document).ready(function(){
 					);
 				}
 			}; // if (i == 0) (first element)
-			
+
 			// insert rating option right after preview element
 			eStar = $('<div class="star"><a title="' + (this.title || this.value) + '">' + this.value + '</a></div>');
 			$(this).after(eStar);
-			
+
 			// Half-stars?
 			if(settings.half) settings.split = 2;
-			
+
 			// Prepare division settings
 			if(typeof settings.split=='number' && settings.split>0){
 				var stw = ($.fn.width ? $(eStar).width() : 0) || settings.starWidth;
@@ -475,10 +477,10 @@ $(document).ready(function(){
 				// this is work-around to IE's stupid box model (position:relative doesn't work)
 				.find('a').css({ 'margin-left':'-'+ (spi*spw) +'px' })
 			};
-			
+
 			// Remember group name so controls within the same container don't get mixed up
 			$(eStar).addClass('star_group_'+n);
-			
+
 			// readOnly?
 			if($.rating.groups[n].readOnly)//{ //save a byte!
 				// Mark star as readOnly so user can customize display
@@ -493,18 +495,18 @@ $(document).ready(function(){
 				.mouseout(function(){ $.rating.event.drain(n, this, settings); $.rating.event.reset(n, this, settings); })
 				.click(function(){ $.rating.event.click(n, this, settings); });
 			//}; //save a byte!
-			
+
 			////if(window.console) console.log(['###', n, this.checked, $.rating.groups[n].initial]);
 			if(this.checked) $.rating.groups[n].current = eStar;
-			
+
 			//remove this checkbox
 			$(this).remove();
-			
+
 			// reset display if last element
 			if(i + 1 == this.length) $.rating.event.reset(n, this, settings);
-		
+
 		}); // each element
-			
+
 		// initialize groups...
 		for(n in $.rating.groups)//{ not needed, save a byte!
 			(function(c, v, n){ if(!c) return;
@@ -513,21 +515,21 @@ $(document).ready(function(){
 			})
 			($.rating.groups[n].current, $.rating.groups[n].valueElem, n);
 		//}; not needed, save a byte!
-		
+
 		return this; // don't break the chain...
 	};
-	
-	
-	
+
+
+
 	/*
 		### Default implementation ###
 		The plugin will attach itself to file inputs
 		with the class 'multi' when the page loads
 	*/
 	//$(function(){ $('input[type=radio].star').rating(); });
-	
-	
-	
+
+
+
 /*# AVOID COLLISIONS #*/
 })(jQuery);
 /*# AVOID COLLISIONS #*/

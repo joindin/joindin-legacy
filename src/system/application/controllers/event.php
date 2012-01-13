@@ -128,7 +128,7 @@ class Event extends Controller
             break;
         case 'hot':
             // hot is the default case
-        default: 
+        default:
             $events = $this->event_model->getHotEvents(null);
             break;
         }
@@ -935,26 +935,26 @@ class Event extends Controller
                 )
             );
         }
-        
+
         // Get the start of the last day for prompting attending users
         // for event level feedback
         $last_day = strtotime(date('Y-m-d', $events[0]->event_end));
-        
+
         // For single day events, we don't want to prompt for a comment
         // until the event is over
         if ($events[0]->event_start + (60 * 60 * 25) >= $last_day)
         {
             $last_day = $events[0]->event_end;
         }
-        
+
         // Requirements for prompting for event comments
         // - logged in
         // - attending
         // - either last day of event, or no later than 3 months from last day
         // - haven't left feedback yet already
-        
+
                 $feedback_deadline = strtotime('+3 month', $last_day);
-                
+
         if ($is_auth && $chk_attend && ( time() > $last_day && time() < $feedback_deadline))
         {
             // Check to see if they have left feedback yet.
@@ -1134,6 +1134,8 @@ class Event extends Controller
             }
             $this->validation->cfp_checked = false;
             $this->validation->is_private = 'n';
+            $this->validation->event_contact_name = $this->session->userdata('full_name');
+            $this->validation->event_contact_email = $this->session->userdata('email');
         } else {
             $this->validation->cfp_checked = $this->validation->is_cfp;
         }
@@ -1439,7 +1441,7 @@ class Event extends Controller
 
     /**
      * Send an "your claim has been approved" email to the speaker
-     * 
+     *
      * @param pending_talk_claims_model $claim
      * @return boolean result
      */
@@ -2112,7 +2114,7 @@ class Event extends Controller
     /**
      * Callback check for tag values in form
      * Only alpha-numeric tags allowed
-     * 
+     *
      * @param string $tagList Listing of tags, comma separated
      * @return bool
      */
@@ -2136,12 +2138,12 @@ class Event extends Controller
      * @return void
      */
     public function callforpapers($eventId=null)
-    {	
+    {
         $this->load->model('event_model','eventModel');
         $this->load->model('user_attend_model');
-        
+
         $this->load->helper('reqkey');
-        
+
         $reqkey = buildReqKey();
     $arr = array(
                 'current_cfp' => $this->eventModel->getCurrentCfp(),
@@ -2156,7 +2158,7 @@ class Event extends Controller
                 ? $this->user_attend_model->chkAttend($uid, $e->ID)
                 : false;
         }
-        
+
         $this->template->write_view('content', 'event/callforpapers', $arr);
         $this->template->render();
     }

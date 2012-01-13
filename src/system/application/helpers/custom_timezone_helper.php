@@ -52,7 +52,7 @@ function custom_timezone_menu($name, $valueCont = null, $valuePlace = null)
     $str   = '';
     $str  .= '<select onchange="change_cont_' . $hname . '(this);" name="' .
         $hname . '_cont" id="' . $hname . '_cont">';
-    $str  .= '<option value=""></option>';
+    $str  .= '<option value="">Please select a continent</option>';
     $conts = array_keys($tzs);
 
     foreach ($conts as $cont) {
@@ -65,7 +65,7 @@ function custom_timezone_menu($name, $valueCont = null, $valuePlace = null)
     $str .= '</select>';
 
     $str .= '<select name="' . $hname . '_place" id="' . $hname . '_place">';
-    $str .= '<option value="">&lt;-- Please choose a continent</option>';
+    $str .= '<option value="">&lt;= Please choose a continent first</option>';
     $str .= '</select>';
 
     $str .= <<<EOT
@@ -77,6 +77,7 @@ function custom_timezone_menu($name, $valueCont = null, $valuePlace = null)
             var cont = document.getElementById("${hname}_cont");
             var placeSelect = document.getElementById("${hname}_place");
             placeSelect.options.length = 0;
+            $(placeSelect).show();
             switch(cont.value) {
 
 EOT;
@@ -97,7 +98,8 @@ EOT;
     }
     $str .= <<<EOT
                 case "":
-                    placeSelect.options[placeSelect.options.length] = new Option("<-- Please choose a continent");
+                    $(placeSelect).hide();
+                    placeSelect.options[placeSelect.options.length] = new Option("<= Please choose a continent first");
                     break;
                 default:
                     notifications.alert('Unknown continent, please select a valid continent');
