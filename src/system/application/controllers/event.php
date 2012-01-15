@@ -1075,6 +1075,8 @@ class Event extends Controller
             'start_day'           => 'Event Start Day',
             'start_yr'            => 'Event Start Year',
             'is_cfp'              => 'Is CfP',
+            'is_private'          => 'Is this event private?',
+            'is_admin'            => 'I\'m an event admin?',
             'cfp_start_day'       => 'CfP Start Day',
             'cfp_start_mo'        => 'CfP Start Month',
             'cfp_start_yr'        => 'CfP Start Year',
@@ -1133,7 +1135,8 @@ class Event extends Controller
                 $this->validation->$k = date($v);
             }
             $this->validation->cfp_checked = false;
-            $this->validation->is_private = 'n';
+            $this->validation->is_private = 'N';
+            $this->validation->is_admin   = '1';
             $this->validation->event_contact_name = $this->session->userdata('full_name');
             $this->validation->event_contact_email = $this->session->userdata('email');
         } else {
@@ -1269,8 +1272,6 @@ class Event extends Controller
                     $this->config->item('email_submissions') .
                     '">send us an email</a> with all the details!';
             }
-        } else {
-            $this->validation->is_admin = 0;
         }
         $arr['is_auth'] 		= $this->user_model->isAuth();
         $arr['is_site_admin'] 	= $this->user_model->isSiteAdmin();
@@ -1959,7 +1960,7 @@ class Event extends Controller
 
         if ($cfp_st >= $cfp_end) {
             $this->validation->set_message(
-                'cfp_start_mo_check', 'Invalid Call for Papers start date!'
+                'cfp_start_mo_check', 'Call for Papers end date must be later than the start date.'
             );
 
             return false;

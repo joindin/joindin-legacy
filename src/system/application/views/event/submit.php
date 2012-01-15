@@ -64,7 +64,33 @@
             });
         }
     }
-    window.onload = load_map;
+
+    function toggleCfpDates(){
+
+        var sel_fields = new Array(
+            'cfp_start_mo','cfp_start_day','cfp_start_yr',
+            'cfp_end_mo','cfp_end_day','cfp_end_yr','cfp_url'
+        );
+
+        // Get the current status of the first one...
+        stat = $('input[name="is_cfp"]').is(':checked');
+        if(stat){
+            $('div.cfp').show();
+            $.each(sel_fields,function(){
+                $('#'+this).removeAttr("disabled");
+            });
+        }else{
+            $('div.cfp').hide();
+            $.each(sel_fields,function(){
+                $('#'+this).attr("disabled","disabled");
+            });
+        }
+    }
+
+    $('document').ready(function(){
+        load_map();
+        toggleCfpDates();
+    });
 </script>
 <style type="text/css">
     h2.first
@@ -77,7 +103,7 @@
         margin-top: 40px;
     }
 
-    input, textarea
+    #ctn .main form input, #ctn .main form textarea
     {
         border: 1px solid silver;
         padding: 3px 5px;
@@ -98,11 +124,12 @@
     #addr_selection
     {
         border:           1px solid silver;
-        height:           220px;
+        height:           210px;
         margin-right:     13px;
         background:       white;
         overflow:         auto;
         list-style-image: none;
+        margin-bottom:    0px;
     }
 
     #addr_selection li
@@ -247,8 +274,7 @@
     <?php if ($is_auth): ?>
     <div class="row last">
         <?php
-            $is_admin=(isset($this->validation->is_admin)) ? $this->validation->is_admin : '';
-            echo form_checkbox('is_admin','1', $is_admin); ?> I'm an event admin!<br/>
+        echo form_checkbox('is_admin','1', ($this->validation->is_admin == '1')); ?> I'm an event admin!<br/>
         <div class="clear"></div>
     </div>
     <?php endif; ?>
@@ -256,7 +282,7 @@
     <h2>Event Details</h2>
     <div class="row">
         <label for="event_stub">Event Stub</label>
-        <?php echo form_input(array('name' => 'event_stub', 'id' => 'event_stub'), $this->validation->event_stub); ?>
+        <?php echo form_input(array('name' => 'event_stub', 'id' => 'event_stub'), $this->validation->event_stub, 'placeholder="my-event"'); ?>
         <div class="clear"></div>
     </div>
 
@@ -363,16 +389,15 @@
 
     <div class="row cfp">
         <label for="cfp-url">Call for Papers URL</label>
-        <?php echo form_input('cfp_url', $this->validation->cfp_url, 'id="cfp_url" ' . $js); ?>
+        <?php echo form_input('cfp_url', $this->validation->cfp_url, 'id="cfp_url" placeholder="http://www.example.com"' . $js); ?>
         <div class="clear"></div>
     </div>
 
     <div class="row">
         <label for="is_private">Is this event private?</label>
         <?php
-        $is_priv=(isset($this->validation->is_private)) ? $this->validation->is_private : '';
-        echo form_radio('is_private','Y', $is_priv).' Yes';
-        echo form_radio('is_private','N', $is_priv). 'No';
+        echo form_radio('is_private','Y', $this->validation->is_private == 'Y') . ' Yes';
+        echo form_radio('is_private','N', $this->validation->is_private == 'N') . ' No';
         ?><br/>
     </div>
 
