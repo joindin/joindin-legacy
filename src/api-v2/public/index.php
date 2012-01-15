@@ -91,7 +91,9 @@ exit;
 function routeV2($request, $ji_db)
 {
     $return_data = false;
-    if(isset($request->parameters['oauth_version']) && ($request->url_elements[2] != 'oauth')) {
+    // check if this is an oauth request and if so, who are we?
+    if(array_key_exists('Authorization', apache_request_headers())
+        && ($request->url_elements[2] != 'oauth')) {
         $oauth_model = new OAuthModel();
         $oauth_model->in_flight = true;
         $oauth_model->setUpOAuthAndDb($ji_db);
