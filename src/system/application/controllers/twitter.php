@@ -11,6 +11,9 @@
  * @link      http://github.com/joindin/joind.in
  */
 
+/** Required for inheritance */
+require('AuthAbstract.php');
+
 /**
  * Twitter pages controller.
  *
@@ -42,7 +45,7 @@
  * @property  User_model    $user_model
  * @property  twitter_oauth $twitter_oauth
  */
-class Twitter extends Controller
+class Twitter extends AuthAbstract
 {
 
     /**
@@ -83,35 +86,30 @@ class Twitter extends Controller
             );
         }
 
-        var_dump($response);
-        $user_info = json_decode(file_get_contents(
-            'https://api.twitter.com/1/users/show.json?screen_name='
-            . $response['screen_name'] . '&include_entities=true'
-        ));
-
         $user = current(
             $this->user_model->getUserByTwitter($response['screen_name'])
         );
 
         if ($user) {
             $this->_login($user);
+        } else {
+            $user_info = $this->getTwitterUserdata($response['screen_name']);
+            $ret = $this->_addUser(
+                $this->user_model->findAvailableUsername($response['screen_name']),
+                '', '', $user_info->name, $response['screen_name']
+            );
+
+            // now, since they're set up, log them in a push them to the account
+            // management page
+            $this->session->set_userdata((array)$ret);
+            $this->session->set_flashdata(
+                'msg',
+                'To receive notifications; please enter your e-mail address.'
+                .'<br />Without a password you can only log in using your '
+                .'twitter account.'
+            );
+            redirect('user/manage');
         }
-
-        $arr = array(
-            'username'         => '',
-            'password'         => '',
-            'email'            => '',
-            'full_name'        => $user_info->name,
-            'twitter_username' => $response['screen_name'],
-            'active'           => 1,
-            'last_login'       => time()
-        );
-        $this->db->insert('user', $arr);
-
-        // now, since they're set up, log them in a push them to the account management page
-        $ret = $this->user_model->getUserByTwitter($response['screen_name']);
-        $this->session->set_userdata((array)$ret[0]);
-        redirect('user/manage');
     }
 
     protected function loadTwitterLibrary()
@@ -122,30 +120,15 @@ class Twitter extends Controller
         ));
     }
 
-    protected function _login($user)
+    protected function getTwitterUserdata($screen_name)
     {
-        $this->session->set_userdata((array)$user);
+        $this->load->library('curl');
 
-        //update login time
-        $this->db->where('id', $user->ID);
-        $this->db->update('user', array('last_login' => time()));
-
-        // send them back to where they came from, either the referer if they have one, or the flashdata
-        $referer = $this->input->server('HTTP_REFERER');
-        $to = $this->session->flashdata('url_after_login') ? $this->session->flashdata('url_after_login') : $referer;
-
-        // List different routes we don't want to reroute to
-        $bad_routes = $this->non_forward_urls;
-
-        foreach ($bad_routes as $route)
-        {
-            if (strstr($to, $route))
-            {
-                redirect('user/main');
-            }
-        }
-
-        // our $to is good, so redirect
-        redirect($to);
+        return json_decode(
+            $this->curl->simple_get(
+                'https://api.twitter.com/1/users/show.json?screen_name='
+                . $screen_name
+            )
+        );
     }
 }

@@ -11,6 +11,9 @@
  * @link      http://github.com/joindin/joind.in
  */
 
+/** Required for inheritance */
+require('AuthAbstract.php');
+
 /**
  * User pages controller.
  *
@@ -28,20 +31,8 @@
  * @property  CI_Input    $input
  * @property  User_model  $user_model
  */
-class User extends Controller
+class User extends AuthAbstract
 {
-    /**
-     * Contains an array with urls we don't want to forward to after login.
-     * If a part of the url is in one of these items, it will forward them to
-     * their main account page.
-     *
-     * @var Array
-     */
-    private $non_forward_urls = array(
-        'user/login'
-        ,'user/forgot'
-    );
-
     /**
      * Constructor, checks whether the user is logged in and passes this to
      * the template.
@@ -315,21 +306,12 @@ class User extends Controller
             //$this->load->view('talk/add', array('events'=>$events));
         } else {
             //success!
+            $this->session->set_userdata((array)$this->_addUser(
+                $this->input->post('user'), $this->input->post('pass'),
+                $this->input->post('email'), $this->input->post('full_name'),
+                $this->input->post('twitter_username')
+            ));
             $this->session->set_flashdata('msg', 'Account successfully created!');
-            $arr = array(
-                'username'         => $this->input->post('user'),
-                'password'         => $this->input->post('pass'),
-                'email'            => $this->input->post('email'),
-                'full_name'        => $this->input->post('full_name'),
-                'twitter_username' => $this->input->post('twitter_username'),
-                'active'           => 1,
-                'last_login'       => time()
-            );
-            $this->db->insert('user', $arr);
-
-            // now, since they're set up, log them in a push them to the main page
-            $ret = $this->user_model->getUser($arr['username']);
-            $this->session->set_userdata((array) $ret[0]);
             redirect('user/main');
         }
 
@@ -773,34 +755,4 @@ class User extends Controller
         $this->template->render();
     }
 
-
-    protected function _login($user) {
-        $this->session->set_userdata((array) $user);
-
-        //update login time
-        $this->db->where('id', $user->ID);
-        $this->db->update(
-            'user', array(
-                'last_login' => time()
-            )
-        );
-
-        // send them back to where they came from, either the referer if they have one, or the flashdata
-        $referer = $this->input->server('HTTP_REFERER');
-        $to = $this->session->flashdata('url_after_login') ? $this->session->flashdata('url_after_login') : $referer;
-
-        // List different routes we don't want to reroute to
-        $bad_routes = $this->non_forward_urls;
-
-        foreach ($bad_routes as $route)
-        {
-            if (strstr($to, $route))
-            {
-                redirect('user/main');
-            }
-        }
-
-        // our $to is good, so redirect
-        redirect($to);
-    }
 }
