@@ -128,7 +128,7 @@ class Facebook extends Controller
     protected function generateCsrfSecret()
     {
         $csrf_value = md5(uniqid(rand(), TRUE));
-        $this->session->set_flashdata('facebook_csrf', $csrf_value);
+        $this->session->set_userdata('facebook_csrf', $csrf_value);
 
         return $csrf_value;
     }
@@ -140,7 +140,9 @@ class Facebook extends Controller
      */
     protected function getCsrfSecret()
     {
-        return $this->session->flashdata('facebook_csrf');
+        $token = $this->session->userdata('facebook_csrf');
+        $this->session->unset_userdata('facebook_csrf');
+        return $token;
     }
 
     /**
