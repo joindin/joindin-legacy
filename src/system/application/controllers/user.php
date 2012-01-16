@@ -281,63 +281,6 @@ class User extends Controller
     }
 
     /**
-     * Log in via Twitter
-     */
-    function request_token()
-    {
-        $params = array(
-            'key'    => $this->config->item('twitter_consumer_key'),
-            'secret' => $this->config->item('twitter_consumer_secret')
-        );
-
-        $this->load->library('twitter_oauth', $params);
-        $response = $this->twitter_oauth->get_request_token(site_url("user/access_token"));
-        $this->session->set_userdata('token_secret', $response['token_secret']);
-        redirect($response['redirect']);
-    }
-
-    function access_token()
-    {
-        $params = array(
-            'key' => $this->config->item('twitter_consumer_key'),
-            'secret' => $this->config->item('twitter_consumer_secret')
-        );
-
-        $this->load->library('twitter_oauth', $params);
-        $response = $this->twitter_oauth->get_access_token(false, $this->session->userdata('token_secret'));
-
-        // @TODO: Check if there is an error on the response
-        if (! isset($response['screen_name'])) {
-            throw new Exception("Something happened during twitter communication");
-        }
-
-        $this->load->model('user_model');
-        $user = $this->user_model->getUserByTwitter($response['screen_name']);
-        if (! $user) {
-            // We haven't found a user with our screen name
-            $arr = array(
-                'username'         => "",       // Empty username
-                'password'         => "",       // Empty password
-                'email'            => "",       // Empty email
-                'full_name'        => $response['screen_name'],
-                'twitter_username' => $response['screen_name'],
-                'active'           => 1,
-                'last_login'       => time()
-            );
-            $this->db->insert('user', $arr);
-
-            // now, since they're set up, log them in a push them to the account management page
-            $ret = $this->user_model->getUserByTwitter($response['screen_name']);
-            $this->session->set_userdata((array) $ret[0]);
-            redirect('user/manage');
-
-        } else {
-            // Found.. Let's login!
-            $this->_login($user[0]);
-        }
-    }
-
-    /**
      * Registers a new user in the system.
      *
      * @return void
@@ -861,5 +804,3 @@ class User extends Controller
         redirect($to);
     }
 }
-
-?>

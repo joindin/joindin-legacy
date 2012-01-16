@@ -127,7 +127,7 @@ $title[] = $this->config->item('site_name');
                         <?php echo form_close(); ?>
                         <p>
                             Or login via these services:<br/>
-                            <a href="/user/request_token"><img src="/inc/img/signin_twitter.png" alt="Sign in with twitter" title="Sign in with twitter" /></a>
+                            <a href="/twitter/request_token"><img src="/inc/img/signin_twitter.png" alt="Sign in with twitter" title="Sign in with twitter" /></a>
                         </p>
 
                         <p>
