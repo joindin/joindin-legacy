@@ -1,5 +1,11 @@
 <?php
-    $speaker = (isset($claimed[0]->userid) && $claimed[0]->userid != 0 && user_get_id() == $claimed[0]->userid);
+    $speaker = false;
+    foreach ($claimed as $claim) {
+        if (isset($claim->userid) && $claim->userid != 0 && user_get_id() == $claim->userid) {
+            $speaker = true;
+        }
+    }
+
 
     if ($detail->allow_comments) {
     if (!$auth) {
@@ -55,7 +61,7 @@
 <?php endif; ?>
 </div>
 
-<?php if (isset($claimed[0]->userid) && $claimed[0]->userid != 0 && user_get_id() == $claimed[0]->userid): ?>
+<?php if ($speaker): ?>
 <?php else: ?>
 
    <?php if ($alreadyRated) : ?>
