@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr">
 
 <head>
-<?php 
+<?php
 $title = menu_pagetitle();
 $title[] = $this->config->item('site_name');
 ?>
@@ -15,8 +15,8 @@ $title[] = $this->config->item('site_name');
     <?php if ($css) { ?>
     <link media="all" rel="stylesheet" type="text/css" href="<?php echo $css; ?>"/>
     <?php } ?>
-    
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" /> 
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <script type="text/javascript" src="/inc/js/jquery.js"></script>
     <script type="text/javascript" src="/inc/js/jquery.pause.js"></script>
     <script type="text/javascript" src="/inc/js/jquery-ui.js"></script>
@@ -39,8 +39,8 @@ $title[] = $this->config->item('site_name');
             <div class="usr">
                 <div class="wrapper">
                 <?php if (user_is_auth()): ?>
-                    Logged in as <strong><a href="/user/view/<?php echo user_get_id(); ?>"><?php echo escape(user_get_username()); ?></a></strong> | 
-                    <a href="/user/main">Account</a> | 
+                    Logged in as <strong><a href="/user/view/<?php echo user_get_id(); ?>"><?php echo escape(user_get_username()); ?></a></strong> |
+                    <a href="/user/main">Account</a> |
                     <a href="/user/logout">Logout</a>
                 <?php else: ?>
                     <a href="/user/login">Login</a> or <a href="/user/register">Register</a>
@@ -102,30 +102,34 @@ $title[] = $this->config->item('site_name');
                 <div class="box">
                     <h4>Sign in</h4>
                     <div class="ctn">
-                    
+
                         <?php echo form_open('user/login', array('class' => 'form-login')); ?>
-    
+
                         <div class="row">
                             <label for="sidebar_user">Username</label>
                             <?php echo form_input(array('name' => 'user', 'id' => 'sidebar_user')); ?>
-                        
+
                             <div class="clear"></div>
                         </div>
-                        
+
                         <div class="row">
                             <label for="sidebar_pass">Password</label>
                             <?php echo form_input(array('name' => 'pass', 'id' => 'sidebar_pass', 'type' => 'password')); ?>
-                        
+
                             <div class="clear"></div>
                         </div>
-                        
+
                         <div class="row row-buttons">
-                            <?php echo form_submit(array('name' => 'sub', 'class' => 'btn'), 'Login'); ?> 
+                            <?php echo form_submit(array('name' => 'sub', 'class' => 'btn'), 'Login'); ?>
                             <!-- <a style="margin-left:10px" href="/user">Forgot your password?</a> -->
                         </div>
-                        
+
                         <?php echo form_close(); ?>
 
+                        <p>
+                            Or login via these services:<br />
+                            <a href="/facebook/request_token"><img src="/inc/img/signin_facebook.png" alt="Sign in with Facebook" title="Sign in with Facebook" /></a>
+                        </p>
                         <p>
                             <small>Need an account? <a href="/user/register">Register now!</a></small><br/>
                             <small><a href="/user/forgot">Forgot Password</a></small>
@@ -160,17 +164,17 @@ $title[] = $this->config->item('site_name');
 <div id="ftr">
     <div class="container_12">
         <div class="grid_6">
-            <a href="/event">Events</a> | 
-            <a href="/talk">Talks</a> | 
-            <a href="/search">Search</a> | 
-            <a href="/about">About</a> | 
-            <a href="/help">Help</a> | 
-            <a href="/blog">Blog</a> | 
+            <a href="/event">Events</a> |
+            <a href="/talk">Talks</a> |
+            <a href="/search">Search</a> |
+            <a href="/about">About</a> |
+            <a href="/help">Help</a> |
+            <a href="/blog">Blog</a> |
             <a href="/api">API</a> |
             <a href="/about/contact">Contact</a>
         </div>
         <div class="grid_6 rgt">
-            <a href="http://www.combell.com/en/servers/cloud-server" title="Cloud servers & cloud hosting">Cloud server</a> <a href="http://www.combell.com/en" title="Hosting & webhosting">hosting</a> by Combell <a href="http://www.combell.com/en" title="Cloud hosting Combell"><img src="/inc/img/LOGO-COMBELL_small.gif" border="0" style="vertical-align:text-bottom;" alt="Combell" height="22" width="80"/></a> 
+            <a href="http://www.combell.com/en/servers/cloud-server" title="Cloud servers & cloud hosting">Cloud server</a> <a href="http://www.combell.com/en" title="Hosting & webhosting">hosting</a> by Combell <a href="http://www.combell.com/en" title="Cloud hosting Combell"><img src="/inc/img/LOGO-COMBELL_small.gif" border="0" style="vertical-align:text-bottom;" alt="Combell" height="22" width="80"/></a>
         &nbsp;&nbsp;&nbsp;&nbsp;
 &copy; <?php echo $this->config->item('site_name'); ?> <?php echo date('Y')?>
         </div>
@@ -180,7 +184,7 @@ $title[] = $this->config->item('site_name');
 
 <div id="jQueryUImessageBox" style="display:none">
 </div>
-    
+
 <script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
 document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
