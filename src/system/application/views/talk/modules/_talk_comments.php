@@ -28,15 +28,31 @@ if (empty($comments)) {
         if ($v->private == 1) {
             $class .= ' row-talk-comment-private';
         }
-        
-        if (isset($claimed[0]->userid) && $claimed[0]->userid != 0 && isset($v->user_id) && $v->user_id == $claimed[0]->userid) {
+
+        $is_speaker = false;
+        $is_speaker_comment = false;
+        foreach ($claimed as $claim) {
+            // Check if this comment is from a speaker
+            if (isset($claim->userid) && $claim->userid != 0 &&
+                isset($v->user_id) && $v->user_id == $claim->userid) {
+                $is_speaker_comment = true;
+            }
+            // Check if the current user is one of the speakers
+            if (isset($claim->userid) && $claim->userid != 0 &&
+                isset($currentUserId) && $currentUserId == $claim->userid) {
+                $is_speaker = true;
+            }
+
+        }
+
+        if ($is_speaker_comment) {
             $class .= ' row-talk-comment-speaker';
         }
 
 ?>
 <div id="comment-<?php echo $v->ID ?>" class="row row-talk-comment<?php echo $class?>">
     <div class="img">
-    <?php if (isset($claimed[0]->userid) && $claimed[0]->userid != 0 && isset($v->user_id) && $v->user_id == $claimed[0]->userid): ?>
+    <?php if ($is_speaker_comment): ?>
         <span class="speaker">Speaker comment:</span>
     <?php else: ?>
         <?php if ($v->rating > 0) echo rating_image($v->rating); ?><br/>
@@ -66,8 +82,7 @@ if (empty($comments)) {
             <?php if (user_is_admin() || user_is_admin_event($detail->eid)): ?>
                 <a class="btn-small" href="#" onClick="delTalkComment(<?php echo $v->ID?>);return false;">Delete</a>
             <?php endif; ?>
-            <?php if (
-                (isset($claimed[0]->userid) && $claimed[0]->userid != 0 && isset($currentUserId) && $currentUserId == $claimed[0]->userid) || $admin): ?>
+            <?php if ($is_speaker || $admin): ?>
                 <a class="btn-small" href="#" onClick="commentIsSpam(<?php echo $v->ID?>,<?php echo $v->talk_id?>,'talk');return false;">Is Spam</a>
             <?php endif; ?>
         </p>
