@@ -183,6 +183,19 @@ class User_model extends Model {
     }
 
     /**
+     * Search for user information based on a twitter screen name
+     *
+     * @param $screenName integer/string User ID or Username
+     * @return array User details
+     */
+    function getUserByTwitter($screenName) {
+        $q = $this->db->get_where('user', array('twitter_username' => (string)$screenName));
+        $result = $q->result();
+
+        return $result ? $result : false;
+    }
+
+    /**
      * Delete a user with the given ID
      *
      * @param $userId
@@ -366,29 +379,4 @@ class User_model extends Model {
 
         return $username . $count;
     }
-
-    /**
-     * Create a Joind.in user from retrieved facebook user data.
-     *
-     * @param stdClass $facebook_user
-     *
-     * @todo move this to the user_model
-     * @return void
-     */
-    public function createUserFromFacebook(stdClass $facebook_user)
-    {
-        $username = $this->findAvailableUsername($facebook_user->username);
-
-        $this->db->insert('user', array(
-            'username'         => $username,
-            'password'         => '',
-            'email'            => $facebook_user->email,
-            'full_name'        => $facebook_user->name,
-            'twitter_username' => '',
-            'active'           => 1, // enable user
-            'last_login'       => time()
-        ));
-    }
-
 }
-?>
