@@ -66,7 +66,7 @@ abstract class AuthAbstract extends Controller
         $bad_routes = $this->non_forward_urls;
 
         foreach ($bad_routes as $route) {
-            if (strstr($to, $route) {
+            if (strstr($to, $route)) {
                 redirect('user/main');
             }
         }
