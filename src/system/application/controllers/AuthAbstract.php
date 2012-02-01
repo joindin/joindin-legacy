@@ -56,13 +56,17 @@ abstract class AuthAbstract extends Controller
         $to = $this->session->flashdata('url_after_login')
             ? $this->session->flashdata('url_after_login') : $referer;
 
+        // if no valid referer or flashdata was found, redirect to the user 
+        // main page
+        if (!$to) {
+            redirect('user/main');
+        }
+        
         // List different routes we don't want to reroute to
         $bad_routes = $this->non_forward_urls;
 
-        foreach ($bad_routes as $route)
-        {
-            if (strstr($to, $route))
-            {
+        foreach ($bad_routes as $route) {
+            if (strstr($to, $route) {
                 redirect('user/main');
             }
         }
