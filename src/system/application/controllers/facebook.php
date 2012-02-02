@@ -11,6 +11,9 @@
  * @link      http://github.com/joindin/joind.in
  */
 
+/** Required for inheritance */
+require('AuthAbstract.php');
+
 /**
  * Facebook pages controller.
  *
@@ -43,7 +46,7 @@
  * @property User_model  $user_model
  * @property Curl        $curl
  */
-class Facebook extends Controller
+class Facebook extends AuthAbstract
 {
     /**
      * oAuth initialization action.
@@ -106,12 +109,12 @@ class Facebook extends Controller
         $user = current($this->user_model->getUserByEmail($facebook_user->email));
 
         if (!$user) {
-            $this->user_model->createUserFromFacebook($facebook_user);
+            $user = $this->_addUser(
+                $this->user_model->findAvailableUsername($facebook_user->username),
+                '', $facebook_user->email, $facebook_user->name, ''
+            );
 
             // overwrite user and url to re-use the _login method
-            $user = current(
-                $this->user_model->getUserByEmail($facebook_user->email)
-            );
             $this->session->set_flashdata(
                 'url_after_login', site_url('user/manage')
             );
@@ -196,41 +199,6 @@ class Facebook extends Controller
                 'https://graph.facebook.com/me?access_token=' . $access_token
             )
         );
-    }
-
-    /**
-     * Login method as duplicated from the user controller.
-     *
-     * @param User_model $user
-     *
-     * @todo this method is a duplicate; the functionality should be moved to a
-     *     parent class or model method.
-     *
-     * @return void
-     */
-    protected function _login($user)
-    {
-        $this->session->set_userdata((array)$user);
-
-        //update login time
-        $this->db->where('id', $user->ID);
-        $this->db->update('user', array('last_login' => time()));
-
-        // send them back to where they came from, either the referer if they
-        // have one, or the flashdata
-        $to = $this->session->flashdata('url_after_login')
-            ? $this->session->flashdata('url_after_login')
-            : $this->input->server('HTTP_REFERER');
-
-        // List different routes we don't want to reroute to
-        foreach (array('user/login', 'user/forgot') as $route) {
-            if (strstr($to, $route)) {
-                redirect('user/main');
-            }
-        }
-
-        // our $to is good, so redirect
-        redirect($to);
     }
 
 }
