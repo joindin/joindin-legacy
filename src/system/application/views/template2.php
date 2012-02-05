@@ -131,7 +131,6 @@ $title[] = $this->config->item('site_name');
                         </p>
 
                         <p>
-                            Or login via these services:<br />
                             <a href="/facebook/request_token"><img src="/inc/img/signin_facebook.png" alt="Sign in with Facebook" title="Sign in with Facebook" /></a>
                         </p>
                         <p>
