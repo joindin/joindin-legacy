@@ -53,6 +53,14 @@ abstract class AuthAbstract extends Controller
         // send them back to where they came from, either the referer if they
         // have one, or the flashdata
         $referer = $this->input->server('HTTP_REFERER');
+
+        // Only allow the referrer to be on this site - this prevents a loop
+        // to Twitter after login, and other possible phishing attacks
+        $base = $this->config->item('base_url');
+        if (substr($referer, 0, strlen($base)) != $base) {
+            $referer = $base;
+        }
+
         $to = $this->session->flashdata('url_after_login')
             ? $this->session->flashdata('url_after_login') : $referer;
 
