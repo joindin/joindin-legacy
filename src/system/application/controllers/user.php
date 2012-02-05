@@ -406,7 +406,7 @@ class User extends AuthAbstract
             'is_attending'  => $this->uam->getUserAttending($uid),
             'my_attend'     => $this->uam->getUserAttending($curr_user),
             'uadmin'        => $this->uadmin->getUserTypes(
-                $uid, array('talk', 'event')
+                $uid, array('event')
             ),
             'reqkey'        => $reqkey,
             'seckey'        => buildSecFile($reqkey),
