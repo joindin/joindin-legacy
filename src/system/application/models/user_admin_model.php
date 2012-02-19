@@ -401,6 +401,45 @@ class User_admin_model extends Model {
         return substr(md5(rand()), 0, 6);
     }
 
+    /**
+     * oauthGenerateConsumerCredentials 
+     * 
+     * @param int $user_id The user that requested the credentials
+     * @param string $application The display name of the application
+     * @param string $description What the app does (not displayed, just interesting)
+     */
+    public function oauthGenerateConsumerCredentials($user_id, $application, $description) 
+    {
+        $fp = fopen('/dev/urandom','rb');
+        $entropy = fread($fp, 32);
+        fclose($fp);
+        // in case /dev/urandom is reusing entropy from its pool, let's add a bit more entropy
+        $entropy .= uniqid(mt_rand(), true);
+        $hash = sha1($entropy);  // sha1 gives us a 40-byte hash
+        // The first 30 bytes should be plenty for the consumer_key
+        // We use the last 10 for the shared secret
+        $key = array(substr($hash,0,30),substr($hash,30,10));
+
+        $sql = "INSERT INTO oauth_consumers SET user_id = "
+            . $this->db->escape($user_id) . ",
+            consumer_key = " . $this->db->escape($key[0]) . ", 
+            consumer_secret = " . $this->db->escape($key[1]);
+
+        $query = $this->db->query($sql);
+        return true;
+    }
+
+    public function oauthGetConsumerKeysByUser($user_id)
+    {
+        $sql = "SELECT application, consumer_key, consumer_secret"
+            . " FROM oauth_consumers WHERE user_id = "
+            . $this->db->escape($user_id);
+
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        return $result;
+        
+    }
 }
 
 ?>

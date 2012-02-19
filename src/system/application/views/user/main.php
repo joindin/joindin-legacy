@@ -9,11 +9,11 @@ ob_start();
 <?php endif; ?>
 <div class="menu">
     <ul>
-        <li class="active"><a href="/user/main">Dashboard</a>
-        <li><a href="/user/manage">Manage Account</a>
+        <li class="active"><a href="/user/main">Dashboard</a></li>
+        <li><a href="/user/manage">Manage Account</a></li>
     <?php if (user_is_admin()): ?>
-        <li><a href="/user/admin">User Admin</a>
-        <li><a href="/event/pending">Pending Events</a>
+        <li><a href="/user/admin">User Admin</a></li>
+        <li><a href="/event/pending">Pending Events</a></li>
     <?php endif; ?>
     </ul>
     <div class="clear"></div>

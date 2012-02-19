@@ -755,4 +755,54 @@ class User extends AuthAbstract
         $this->template->render();
     }
 
+    /**
+     * Show this user's API keys, generating them if they don't exist
+     * 
+     * @access public
+     * @return void
+     */
+    function apikey()
+    {
+        if (!$this->user_model->isAuth()) {
+            redirect('user/login', 'refresh');
+        }
+
+        $this->load->model('user_admin_model');
+        $this->load->helper('form');
+        $this->load->helper('url');
+        $this->load->library('validation');
+
+        $view_data = array();
+
+        $fields = array(
+            'application' => 'application display name',
+            'description' => 'application description'
+
+        );
+        $rules = array(
+            'application' => 'required',
+            'description' => 'required|min_length[20]'
+        );
+
+        $this->validation->set_rules($rules);
+        $this->validation->set_fields($fields);
+
+        if (($this->validation->run() == false)) {
+            // either we just arrived, or the user sees error messages
+        } else {
+            // generate new keys
+            $this->user_admin_model->oauthGenerateConsumerCredentials(
+                $this->session->userdata('ID'),
+                $this->input->post('application'),
+                $this->input->post('description')
+                );
+        }
+
+        // fetch all keys
+        $view_data['keys'] = $this->user_admin_model->oauthGetConsumerKeysByUser(
+                $this->session->userdata('ID'));
+        
+        $this->template->write_view('content', 'user/apikey', $view_data);
+        $this->template->render();
+    }
 }
