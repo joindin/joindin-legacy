@@ -381,11 +381,6 @@ $config['akismet_blog']		= '';
 $config['defensio_key']		= '';
 $config['defensio_owner']	= '';
 
-// Directory to store chached Gravatar images
-// Note that the Gravatar cache must be accessible to the web server
-$config['gravatar_cache_dir']   = realpath(dirname(__FILE__) .'/../../../inc/img/user_gravatar');
-$config['gravatar_cache_relative_url']   = '/inc/img/user_gravatar';
-
 // If you're debugging and want all emails to go to one address, use this
 // $config['debug_email']		= '';
 

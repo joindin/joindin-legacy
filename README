@@ -17,7 +17,6 @@ Quick start
    (use the correct username and password)
 4. Create directories for user-added content.
    > mkdir src/system/cache/ctokens && chown apache:apache src/system/cache/ctokens
-   > mkdir src/inc/img/user_gravatar && chown apache:apache src/inc/img/user_gravatar
    (or whatever user and group your web server runs as)
 5. Create configuration files for database and config (based on the .dist templates):
    > cp src/system/application/config/database.php.dist src/system/application/config/database.php
@@ -85,9 +84,6 @@ The following are the steps you'll need to correctly install the software:
 - In the /src/system/cache directory, create a web server-writeable 
 	directory called "ctokens"
 
-- In the /src/inc/img directory, create a web server writable directory
-    called "user_gravatar"
-	
 - In your src/system/application/config directory:
 	> Make a database.php file using the database.php.dist as a guide
 	> Make a config.php file using the config.php.dist as a guide
