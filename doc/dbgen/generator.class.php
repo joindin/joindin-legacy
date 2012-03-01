@@ -283,13 +283,21 @@ class Generator {
 
             $private = $this->_chance("COMMENT_IS_PRIVATE") ? 1 : 0;
 
+            if ($this->_chance(TALK_COMMENT_IS_ANONYMOUS)) {
+                $user_id = "NULL";
+            } else {
+                $user = $this->_cacheFetchRandom('users');
+                $user_id = $user->id;
+            }
+
+
             $tmp = $this->getData()->getCommentSourceData();
             $source = $tmp[array_rand($tmp)];
 
             if (! $first) echo ",\n";
 
             printf ("(%d, %d, '%s', %d, %d, %d, %d, %d, NULL, '%s')",
-                                   $talk->id, $rating, $comment, (time()-rand(0,10000000)), $id, $private, 1, $id, $source);
+                                   $talk->id, $rating, $comment, (time()-rand(0,10000000)), $id, $private, 1, $user_id, $source);
 
 
             $first = false;
