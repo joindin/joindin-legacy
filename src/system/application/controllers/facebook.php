@@ -109,8 +109,13 @@ class Facebook extends AuthAbstract
         $user = current($this->user_model->getUserByEmail($facebook_user->email));
 
         if (!$user) {
+            // url_title acts as slugify method and filters unwanted characters
+            $username = $facebook_user->username
+                ? $facebook_user->username
+                : url_title(strtolower($facebook_user->name));
+
             $user = $this->_addUser(
-                $this->user_model->findAvailableUsername($facebook_user->username),
+                $this->user_model->findAvailableUsername($username),
                 '', $facebook_user->email, $facebook_user->name, ''
             );
 
