@@ -131,6 +131,9 @@ $title[] = $this->config->item('site_name');
                         </p>
 
                         <p>
+                            <a href="/facebook/request_token"><img src="/inc/img/signin_facebook.png" alt="Sign in with Facebook" title="Sign in with Facebook" /></a>
+                        </p>
+                        <p>
                             <small>Need an account? <a href="/user/register">Register now!</a></small><br/>
                             <small><a href="/user/forgot">Forgot Password</a></small>
                         </p>
