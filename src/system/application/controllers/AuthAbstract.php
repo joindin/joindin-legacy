@@ -92,6 +92,6 @@ abstract class AuthAbstract extends Controller
             'last_login'       => time()
         );
         $this->db->insert('user', $arr);
-        return current($this->user_model->getUser($arr['username']));
+        return current($this->user_model->getUserByUsername($arr['username']));
     }
 }
