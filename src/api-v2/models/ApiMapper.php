@@ -44,6 +44,7 @@ class ApiMapper {
             }
             $retval[] = $entry;
         }
+        $retval = $this->addPaginationLinks($retval);
         return $retval;
     }
 
@@ -61,15 +62,18 @@ class ApiMapper {
 
     protected function addPaginationLinks($list) {
         $request = $this->_request;
-        $list['meta']['count'] = count($list);
+        $count = count($list);
+        $list['meta']['count'] = $count; 
         $list['meta']['this_page'] = 'http://' . $request->host . $request->path_info .'?' . http_build_query($request->parameters);
         $next_params = $prev_params = $request->parameters;
 
-        $next_params['start'] = $next_params['start'] + $next_params['resultsperpage'];
-        $list['meta']['next_page'] = 'http://' . $request->host . $request->path_info . '?' . http_build_query($next_params);
-        if($prev_params['start'] >= $prev_params['resultsperpage']) {
-            $prev_params['start'] = $prev_params['start'] - $prev_params['resultsperpage'];
-            $list['meta']['prev_page'] = 'http://' . $request->host . $request->path_info . '?' . http_build_query($prev_params);
+        if($count > 1) {
+            $next_params['start'] = $next_params['start'] + $next_params['resultsperpage'];
+            $list['meta']['next_page'] = 'http://' . $request->host . $request->path_info . '?' . http_build_query($next_params);
+            if($prev_params['start'] >= $prev_params['resultsperpage']) {
+                $prev_params['start'] = $prev_params['start'] - $prev_params['resultsperpage'];
+                $list['meta']['prev_page'] = 'http://' . $request->host . $request->path_info . '?' . http_build_query($prev_params);
+            }
         }
         return $list;
     }
