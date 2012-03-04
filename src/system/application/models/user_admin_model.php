@@ -443,6 +443,14 @@ class User_admin_model extends Model {
         return $hash;
     }
 
+    /**
+     * deleteApiKey remove an API key for this user with this ID
+     * 
+     * @param int $user_id 
+     * @param int $api_id 
+     * @access public
+     * @return whether the query was successful
+     */
     public function deleteApiKey($user_id, $api_id) {
         $id = (int)$api_id;
 
@@ -451,5 +459,36 @@ class User_admin_model extends Model {
             and id=' . $this->db->escape($id);
         return $this->db->query($sql);
     }
+
+    /**
+     * Show all the access tokens currently available for this user
+     * 
+     * @param int $user_id 
+     * @return an array of all the keys and which consumers they relate to
+     */
+    public function oauthGetAccessKeysByUser($user_id)
+    {
+        $sql = "SELECT t.id, t.consumer_key, t.access_token, t.last_used_date,
+            c.application 
+            FROM oauth_access_tokens t
+            INNER JOIN oauth_consumers c USING (consumer_key)
+            WHERE t.user_id = "
+            . $this->db->escape($user_id);
+
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        return $result;
+    }
+
+    public function deleteAccessToken($user_id, $api_id) {
+        $id = (int)$api_id;
+
+        $sql = 'delete from oauth_access_tokens
+            where user_id=' . $this->db->escape($user_id) . '
+            and id=' . $this->db->escape($id);
+        return $this->db->query($sql);
+    }
+
+
 }
 ?>

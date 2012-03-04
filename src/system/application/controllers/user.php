@@ -799,11 +799,19 @@ class User extends AuthAbstract
         // fetch all keys
         $view_data['keys'] = $this->user_admin_model->oauthGetConsumerKeysByUser(
                 $this->session->userdata('ID'));
+        $view_data['grants'] = $this->user_admin_model->oauthGetAccessKeysByUser(
+                $this->session->userdata('ID'));
         
         $this->template->write_view('content', 'user/apikey', $view_data);
         $this->template->render();
     }
 
+    /**
+     * Remove the API key record for this user
+     * 
+     * @access public
+     * @return void
+     */
     public function apikey_delete() {
         if (!$this->user_model->isAuth()) {
             redirect('user/login', 'refresh');
@@ -812,6 +820,23 @@ class User extends AuthAbstract
         $this->load->model('user_admin_model');
 
         $this->user_admin_model->deleteApiKey($this->session->userdata('ID'), $this->input->get('id'));
+        redirect('/user/apikey');
+    }
+
+    /**
+     * Remove this application authorisation for this user
+     * 
+     * @access public
+     * @return void
+     */
+    public function revoke_access() {
+        if (!$this->user_model->isAuth()) {
+            redirect('user/login', 'refresh');
+        }
+
+        $this->load->model('user_admin_model');
+
+        $this->user_admin_model->deleteAccessToken($this->session->userdata('ID'), $this->input->get('id'));
         redirect('/user/apikey');
     }
 }

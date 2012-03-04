@@ -1,14 +1,28 @@
-<h1>API Keys</h1>
+<h1>API Access Keys</h1>
 
-<p>On this page you can obtain a <b>key</b> and <b>secret</b> to use with the Joind.in web API if you wish to create a client to consume the data.  Many activities are publicly accessible, however to post comments or perform other actions which change our data, you will need to identify yourself using OAuth.  Please note that the secret should never be shared in any way (e.g. included in a public code repository).</p>
-
-<p>You can find out more by <a href="/api/v2docs">reading the API documentation</a></p><br />
+<?php
+if(isset($grants) && is_array($grants)) {
+?>
+<p>These are the applications that you have granted access to.  You can revoke their access here</p>
 
 <?php
 
+    echo "<ul>";
+    foreach($grants as $access) {
+        echo "<li>" . $access->application . ", (last used " . $access->last_used_date . ") <a href=\"/user/revoke_access?id=" . $access->id . "\" onclick=\"notifications.prompt('are you sure?  This application will no longer recognise your joind.in account', function(){window.location='/user/revoke_access?id=" . $access->id . "';}, function(){return false;}); return false;\" >revoke permissions</a>";
+        echo "</li>";
+    }
+    echo "</ul>";
+}
+
 if(isset($keys) && is_array($keys)) {
 ?>
-    <h2>Your Existing Keys</h2>
+    <h2>Your API Keys</h2>
+
+<p>You can obtain a <b>key</b> and <b>secret</b> to use with the Joind.in web API if you wish to create a client to consume the data.  Many activities are publicly accessible, however to post comments or perform other actions which change our data, you will need to identify yourself using OAuth.  Please note that the secret should never be shared in any way (e.g. included in a public code repository).</p>
+
+<p>You can find out more by <a href="/api/v2docs">reading the API documentation</a></p><br />
+
 <?php
     echo "<ul>";
     foreach($keys as $key) {
