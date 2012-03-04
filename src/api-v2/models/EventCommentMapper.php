@@ -77,9 +77,6 @@ class EventCommentMapper extends ApiMapper {
                     . $row['event_id'] . '/comments';
             }
 
-            if (count($list) > 1) {
-                $list = $this->addPaginationLinks($list);
-            }
         }
         return $list;
     }

@@ -283,10 +283,6 @@ class EventMapper extends ApiMapper
                         . $row['ID'] . '/talk_comments';
                 }
             }
-
-            if (count($list) > 1) {
-                $list = $this->addPaginationLinks($list);
-            }
         }
 
         return $list;
