@@ -404,6 +404,8 @@ class User_admin_model extends Model {
     /**
      * oauthGenerateConsumerCredentials 
      * 
+     * taken mostly from http://toys.lerdorf.com/archives/55-Writing-an-OAuth-Provider-Service.html
+     *
      * @param int $user_id The user that requested the credentials
      * @param string $application The display name of the application
      * @param string $description What the app does (not displayed, just interesting)
@@ -422,6 +424,8 @@ class User_admin_model extends Model {
 
         $sql = "INSERT INTO oauth_consumers SET user_id = "
             . $this->db->escape($user_id) . ",
+            application = " . $this->db->escape($application) . ", 
+            description = " . $this->db->escape($description) . ", 
             consumer_key = " . $this->db->escape($key[0]) . ", 
             consumer_secret = " . $this->db->escape($key[1]);
 
@@ -429,6 +433,12 @@ class User_admin_model extends Model {
         return true;
     }
 
+    /**
+     * oauthGetConsumerKeysByUser 
+     * 
+     * @param int $user_id The ID of the user whose keys we want
+     * @return array The application name, key and secret for each key associated with this user id
+     */
     public function oauthGetConsumerKeysByUser($user_id)
     {
         $sql = "SELECT application, consumer_key, consumer_secret"
@@ -438,7 +448,6 @@ class User_admin_model extends Model {
         $query = $this->db->query($sql);
         $result = $query->result();
         return $result;
-        
     }
 }
 

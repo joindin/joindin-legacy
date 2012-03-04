@@ -18,7 +18,7 @@ if(isset($keys) && is_array($keys)) {
         echo "</li>";
     }
     echo "</ul>";
-} else {
+} 
 ?>
 <p>To obtain a new consumer key and secret to use with the Joind.in API, please fill in the form below:</p>
         <?php if (!empty($this->validation->error_string)): ?>
@@ -32,7 +32,6 @@ if(isset($keys) && is_array($keys)) {
 <input type="submit" value="Request API Keys" />
 <?php
 echo form_close();
-}
 
 ?>
 
