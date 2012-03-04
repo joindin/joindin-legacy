@@ -719,36 +719,34 @@ class User extends AuthAbstract
 
         $view_data['status'] = NULL;
         if ($this->validation->run() == false) {
-            $request_token = filter_var($this->input->get('request_token'), FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^[0-9a-z]*$/')));
-            // check for a valid request token
-            if ($this->user_admin_model->oauthRequestTokenVerify($request_token)) {
-                $this->session->set_flashdata('request_token', $request_token);
+            $api_key = $this->input->get('api_key');
+            if($api_key && $this->user_admin_model->oauthVerifyApiKey($api_key)) {
+                $callback = $this->input->get('callback');
+                $this->session->set_flashdata('callback', $callback);
+                $this->session->set_flashdata('api_key', $api_key);
             } else {
-                $view_data['status'] = "invalid";
+                $view_data['status'] = 'invalid';
             }
         } else {
-            $request_token = $this->session->flashdata('request_token');
+            $api_key = $this->session->flashdata('api_key');
+            $callback = $this->session->flashdata('callback');
 
             if ($this->input->post('access') == 'allow') {
                 $view_data['status'] = "allow";
-                $oauth_info = $this->user_admin_model->oauthAllow($request_token, $this->session->userdata('ID'));
-                if ($oauth_info->callback == "oob") {
-                    // special case, we can't forward the user on so just display verification code
-                    $view_data['verification'] = $oauth_info->verification;
-                } else {
+                $access_token = $this->user_admin_model->oauthAllow($api_key, $this->session->userdata('ID'));
+                if(!empty($callback)) {
                     // add our parameter onto the URL
-                    if (strpos($oauth_info->callback, '?' !== false)) {
-                        $url = $oauth_info->callback . '&';
+                    if (strpos($callback, '?') !== false) {
+                        $url = $callback . '&';
                     } else {
-                        $url = $oauth_info->callback . '?';
+                        $url = $callback . '?';
                     }
-                    $url .= 'oauth_token=' . $oauth_info->verification;
+                    $url .= 'access_token=' . $access_token;
                     redirect($url);
                     exit; // we shouldn't be here
                 }
             } else {
                 $view_data['status'] = "deny";
-                $this->user_admin_model->oauthDeny($request_token);
             }
         }
         $this->template->write_view('content', 'user/oauth_allow', $view_data);

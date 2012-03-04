@@ -4,14 +4,14 @@
     if ($status == 'invalid'):
     ?>
     <div class="row">
-        <p> Access cannot be granted with this token.  </p>
+        <p> Access cannot be granted for this key.  </p>
         <div class="clear"></div>
     </div>
     <?php
     elseif ($status == 'allow'):
     ?>
     <div class="row">
-        <p>Access was granted.  Your verification code is: <?php echo $verification; ?></p>
+        <p>Access was granted, but we cannot return you to your application</p>
         <div class="clear"></div>
     </div>
     <?php

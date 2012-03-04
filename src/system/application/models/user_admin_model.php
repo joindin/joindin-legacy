@@ -324,17 +324,15 @@ class User_admin_model extends Model {
     }
 
     /**
-     * Check that the request token actually exists and is valid
+     * Check that the API key actually exists and is valid
      * 
-     * @param string $token the request token supplied by the API
-     * @access public
-     * @return boolean true if the token is OK, false otherwise
+     * @param string $key the value of incoming api key
+     * @return boolean true if it exists, false otherwise
      */
-    public function oauthRequestTokenVerify($token)
+    public function oauthVerifyApiKey($key)
     {
-        $sql = 'SELECT request_token FROM oauth_request_tokens
-            WHERE request_token = ' . $this->db->escape($token) . '
-            AND authorised_user_id IS NULL';
+        $sql = 'SELECT application FROM oauth_consumers
+            WHERE consumer_key = ' . $this->db->escape($key);
         $query = $this->db->query($sql);
 
         $result = $query->result();
@@ -345,81 +343,33 @@ class User_admin_model extends Model {
     }
 
     /**
-     * Deny access for this request token
-     * 
-     * @param string $token The request token given to the user
-     * @access public
-     * @return boolean true
-     */
-    public function oauthDeny($token)
-    {
-        $sql = 'DELETE from oauth_request_tokens 
-            WHERE request_token = ' . $this->db->escape($token);
-        $query = $this->db->query($sql);
-
-        return true;
-    }
-
-    /**
      * This user granted access for this application using this request 
      * token, record this and give a verification token
      * 
-     * @param string $token The request token the user is authorising
-     * @param int $user_id The user's database ID (comes from the session 
+     * @param string api_key The request token the user is authorising
+     * @param int user_id The user's database ID (comes from the session 
      * when called from the webcontroller)
      * @access public
      * @return array containing verification code and callback url, or false if something went wrong
      */
-    public function oauthAllow($token, $user_id)
+    public function oauthAllow($api_key, $user_id)
     {
-        $verification_code = $this->oauthGenerateVerificationCode();
-        $sql = 'UPDATE oauth_request_tokens SET authorised_user_id = '
-            . $this->db->escape($user_id) . ',
-            verification = "' . $verification_code . '"
-            WHERE request_token = ' . $this->db->escape($token);
-        $query = $this->db->query($sql);
-
-        if ($this->db->affected_rows() == 1) {
-            $fetch_sql = 'SELECT callback, verification FROM oauth_request_tokens
-                WHERE request_token = ' . $this->db->escape($token);
-            $fetch_query = $this->db->query($fetch_sql);
-
-            $result = $fetch_query->result();
-            return $result[0];
-        }
-        return false;
-    }
-
-    /**
-     * Generate a verification code to send back to the oauth consumer with the user
-     * 
-     * @access public
-     * @return string the verification code
-     */
-    public function oauthGenerateVerificationCode()
-    {
-        return substr(md5(rand()), 0, 6);
+        $access = $this->newAccessToken($api_key, $user_id);
+        return $access;
     }
 
     /**
      * oauthGenerateConsumerCredentials 
      * 
-     * taken mostly from http://toys.lerdorf.com/archives/55-Writing-an-OAuth-Provider-Service.html
-     *
      * @param int $user_id The user that requested the credentials
      * @param string $application The display name of the application
      * @param string $description What the app does (not displayed, just interesting)
      */
     public function oauthGenerateConsumerCredentials($user_id, $application, $description) 
     {
-        $fp = fopen('/dev/urandom','rb');
-        $entropy = fread($fp, 32);
-        fclose($fp);
-        // in case /dev/urandom is reusing entropy from its pool, let's add a bit more entropy
-        $entropy .= uniqid(mt_rand(), true);
-        $hash = sha1($entropy);  // sha1 gives us a 40-byte hash
         // The first 30 bytes should be plenty for the consumer_key
         // We use the last 10 for the shared secret
+        $hash = $this->generateToken();
         $key = array(substr($hash,0,30),substr($hash,30,10));
 
         $sql = "INSERT INTO oauth_consumers SET user_id = "
@@ -449,6 +399,48 @@ class User_admin_model extends Model {
         $result = $query->result();
         return $result;
     }
-}
 
+    /**
+     * Generate, store and return a new access token to the user
+     * 
+     * @param string api_key the identifier for the consumer
+     * @param int user_id the user granting access
+     * @return string access token
+     */
+    public function newAccessToken($api_key, $user_id) {
+        $hash = $this->generateToken();
+        $access_token = substr($hash,0,16);
+        $access_token_secret = substr($hash,16,16);
+
+        // store new token
+        $sql = 'insert into oauth_access_tokens set '
+            . 'access_token = ' . $this->db->escape($access_token) . ',' 
+            . 'access_token_secret = ' . $this->db->escape($access_token_secret) . ','
+            . 'consumer_key = ' . $this->db->escape($api_key) . ', '
+            . 'user_id = ' . $this->db->escape($user_id);
+        $query = $this->db->query($sql);
+        if($query) {
+            return $access_token;
+        }
+        return false;
+    }
+
+    /**
+     * generateToken 
+     * 
+     * taken mostly from http://toys.lerdorf.com/archives/55-Writing-an-OAuth-Provider-Service.html
+     * 
+     * @access public
+     * @return void
+     */
+    public function generateToken() {
+        $fp = fopen('/dev/urandom','rb');
+        $entropy = fread($fp, 32);
+        fclose($fp);
+        // in case /dev/urandom is reusing entropy from its pool, let's add a bit more entropy
+        $entropy .= uniqid(mt_rand(), true);
+        $hash = sha1($entropy);  // sha1 gives us a 40-byte hash
+        return $hash;
+    }
+}
 ?>

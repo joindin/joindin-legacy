@@ -32,7 +32,6 @@ $request = new Request();
 $request->parameters['resultsperpage'] = $request->getParameter('resultsperpage', 20);
 $request->parameters['start'] = $request->getParameter('start', 0);
 
-
 // Which content type to return? Parameter takes precedence over accept headers 
 // with final fall back to json 
 $format_choices = array('application/json', 'text/html');
@@ -91,12 +90,6 @@ exit;
 function routeV2($request, $ji_db)
 {
     $return_data = false;
-    if(isset($request->parameters['oauth_version']) && ($request->url_elements[2] != 'oauth')) {
-        $oauth_model = new OAuthModel();
-        $oauth_model->in_flight = true;
-        $oauth_model->setUpOAuthAndDb($ji_db);
-        $request->user_id = $oauth_model->user_id;
-    }
 
     // Route: call the handle() method of the class with the first URL element
     if(isset($request->url_elements[2])) {
