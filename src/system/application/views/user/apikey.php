@@ -12,7 +12,7 @@ if(isset($keys) && is_array($keys)) {
 <?php
     echo "<ul>";
     foreach($keys as $key) {
-        echo "<li>" . $key->application;
+        echo "<li>" . $key->application . " <a href=\"/user/apikey_delete?id=" . $key->id . "\" onclick=\"notifications.prompt('are you sure?', function(){window.location='/user/apikey_delete?id=" . $key->id . "';}, function(){return false;}); return false;\" >delete this key</a>";
         echo "<ul><li>" . $key->consumer_key . "</li>";
         echo "<li>" . $key->consumer_secret. "</li></ul>";
         echo "</li>";

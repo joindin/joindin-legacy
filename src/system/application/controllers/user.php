@@ -803,4 +803,15 @@ class User extends AuthAbstract
         $this->template->write_view('content', 'user/apikey', $view_data);
         $this->template->render();
     }
+
+    public function apikey_delete() {
+        if (!$this->user_model->isAuth()) {
+            redirect('user/login', 'refresh');
+        }
+
+        $this->load->model('user_admin_model');
+
+        $this->user_admin_model->deleteApiKey($this->session->userdata('ID'), $this->input->get('id'));
+        redirect('/user/apikey');
+    }
 }

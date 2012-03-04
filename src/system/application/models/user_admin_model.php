@@ -391,7 +391,7 @@ class User_admin_model extends Model {
      */
     public function oauthGetConsumerKeysByUser($user_id)
     {
-        $sql = "SELECT application, consumer_key, consumer_secret"
+        $sql = "SELECT id, application, consumer_key, consumer_secret"
             . " FROM oauth_consumers WHERE user_id = "
             . $this->db->escape($user_id);
 
@@ -441,6 +441,15 @@ class User_admin_model extends Model {
         $entropy .= uniqid(mt_rand(), true);
         $hash = sha1($entropy);  // sha1 gives us a 40-byte hash
         return $hash;
+    }
+
+    public function deleteApiKey($user_id, $api_id) {
+        $id = (int)$api_id;
+
+        $sql = 'delete from oauth_consumers
+            where user_id=' . $this->db->escape($user_id) . '
+            and id=' . $this->db->escape($id);
+        return $this->db->query($sql);
     }
 }
 ?>
