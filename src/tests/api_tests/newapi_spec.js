@@ -2,6 +2,8 @@
 var frisby = require('frisby');
 var util   = require('util');
 
+var baseURL = "http://api.joind.in";
+
 frisby.globalSetup({ // globalSetup is for ALL requests
     request: {
       headers: { 'Content-type': 'application/json' }
@@ -9,15 +11,15 @@ frisby.globalSetup({ // globalSetup is for ALL requests
 });
 
 frisby.create('Initial discovery')
-  .get('http://api.joind.in')
+  .get(baseURL)
   .expectStatus(200)
   .expectHeader("content-type", "application/json; charset=utf8")
   .expectJSON({
-    'events': 'http://api.joind.in/v2/events',
-    'hot-events': 'http://api.joind.in/v2/events?filter=hot',
-    'upcoming-events': 'http://api.joind.in/v2/events?filter=upcoming',
-    'past-events': 'http://api.joind.in/v2/events?filter=past',
-    'open-cfps': 'http://api.joind.in/v2/events?filter=cfp'
+    'events'          : baseURL + '/v2/events',
+    'hot-events'      : baseURL + '/v2/events?filter=hot',
+    'upcoming-events' : baseURL + '/v2/events?filter=upcoming',
+    'past-events'     : baseURL + '/v2/events?filter=past',
+    'open-cfps'       : baseURL + '/v2/events?filter=cfp'
   })
   .afterJSON(function(apis) {
 
@@ -42,8 +44,8 @@ frisby.create('Initial discovery')
                 expect(ev[i].href).toBeDefined();
                 expect(typeof ev[i].href).toBe('string');
                 if (ev[i].href != '') {
-                  expect(ev[i].href).toMatch(/^http/);
-  			  }
+                  //expect(ev[i].href).toMatch(/^http/);
+  			    }
               }
               if (ev[i].icon != null) {
                 expect(ev[i].icon).toBeDefined();
@@ -114,7 +116,7 @@ frisby.create('Initial discovery')
                   if (evt.href != null) {
                     expect(typeof evt.href).toBe('string', "Event href");
                     if (evt.href != '') {
-                      expect(evt.href).toMatch(/^http/);
+                      //expect(evt.href).toMatch(/^http/);
                     }
                   }
                   if (evt.icon != null) {
@@ -143,6 +145,19 @@ frisby.create('Initial discovery')
                   expect(typeof evt.talks_uri).toBe('string');
                   expect(typeof evt.website_uri).toBe('string');
                   expect(typeof evt.all_talk_comments_uri).toBe('string');
+
+
+                  frisby.create('Event comments')
+                    .get(evt.comments_uri)
+                    .expectStatus(200)
+                    .expectHeader("content-type", "application/json; charset=utf8")
+                    .afterJSON(function(detailedEv) {
+					})
+				  .toss();
+
+
+
+
                 })
               .toss();
             }
