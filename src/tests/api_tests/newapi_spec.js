@@ -14,6 +14,7 @@ frisby.create('Initial discovery')
   .get(baseURL)
   .expectStatus(200)
   .expectHeader("content-type", "application/json; charset=utf8")
+  .inspectJSON()
   .expectJSON({
     'events'          : baseURL + '/v2/events',
     'hot-events'      : baseURL + '/v2/events?filter=hot',
@@ -26,7 +27,7 @@ frisby.create('Initial discovery')
     // Loop over all of the event types
     for (var evType in apis) {
 
-      frisby.create('Event list')
+      frisby.create('Event list for ' + evType)
         .get(apis[evType])
         .expectStatus(200)
         .expectHeader("content-type", "application/json; charset=utf8")
@@ -77,7 +78,7 @@ frisby.create('Initial discovery')
               expect(typeof ev[i].website_uri).toBe('string');
 
   			// Check for more detail in the events
-              frisby.create('Event detail')
+              frisby.create('Event detail for ' + ev[i].name)
                 .get(ev[i].verbose_uri)
                 .expectStatus(200)
                 .expectHeader("content-type", "application/json; charset=utf8")
@@ -147,7 +148,7 @@ frisby.create('Initial discovery')
                   expect(typeof evt.all_talk_comments_uri).toBe('string');
 
 
-                  frisby.create('Event comments')
+                  frisby.create('Event comments for ' + evt.name)
                     .get(evt.comments_uri)
                     .expectStatus(200)
                     .expectHeader("content-type", "application/json; charset=utf8")
