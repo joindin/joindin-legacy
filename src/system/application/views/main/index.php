@@ -11,6 +11,18 @@ if(!user_is_auth()) {
 </div>
 <?php
 }
+
+$info = array(
+    'msg' => sprintf(
+        ' <h4 style="color:#3A74C5">' .
+        $this->config->item('site_name') .
+        ' nominated for prestigious php|architect Impact Award!
+         </h4>
+         <a href="http://www.phparch.com/impact-awards/">Click here</a> to learn more!'
+    )
+);
+$this->template->write_view('info_block', 'msg_info', $info, true);
+
 ?>
 
 <?php if (count($hot_events) > 0): ?>
