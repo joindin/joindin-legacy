@@ -97,16 +97,18 @@ class Request
         }
 
         // now how about PUT/POST bodies? These override what we already had
-        $body = file_get_contents("php://input");
-        if($_SERVER['CONTENT_TYPE'] == "application/json") {
-            $body_params = json_decode($body);
-            if($body_params) {
-                foreach($body_params as $param_name => $param_value) {
-                    $this->parameters[$param_name] = $param_value;
+        if($this->verb == 'POST' || $this->verb == 'PUT') {
+            $body = file_get_contents("php://input");
+            if(isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] == "application/json") {
+                $body_params = json_decode($body);
+                if($body_params) {
+                    foreach($body_params as $param_name => $param_value) {
+                        $this->parameters[$param_name] = $param_value;
+                    }
                 }
+            } else {
+                // we could parse other supported formats here
             }
-        } else {
-            // we could parse other supported formats here
         }
         return true;
     }
