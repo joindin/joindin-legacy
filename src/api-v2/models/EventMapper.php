@@ -49,6 +49,7 @@ class EventMapper extends ApiMapper
             'tz_continent' => 'event_tz_cont',
             'tz_place' => 'event_tz_place',
             'location' => 'event_loc',
+            'hashtag' => 'event_hashtag',
             'attendee_count' => 'attendee_count',
             'comments_enabled' => 'comments_enabled',
             'event_comments_count' => 'event_comments_count',
@@ -252,6 +253,7 @@ class EventMapper extends ApiMapper
         // add per-item links 
         if (is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
+                $list[$key]['tags'] = $this->getTags($row['ID']);;
                 $list[$key]['uri'] = 'http://' . $host . '/v2/events/' 
                     . $row['ID'];
                 $list[$key]['verbose_uri'] = 'http://' . $host . '/v2/events/' 
@@ -261,13 +263,71 @@ class EventMapper extends ApiMapper
                 $list[$key]['talks_uri'] = 'http://' . $host . '/v2/events/' 
                 . $row['ID'] . '/talks';
                 $list[$key]['website_uri'] = 'http://joind.in/event/view/' . $row['ID'];
+                // handle the slug
+                if(!empty($row['event_stub'])) {
+                    $list[$key]['humane_website_uri'] = 'http://joind.in/event/' . $row['event_stub'];    
+                }
+
                 if($verbose) {
                     $list[$key]['all_talk_comments_uri'] = 'http://' . $host . '/v2/events/' 
                         . $row['ID'] . '/talk_comments';
+                    $list[$key]['hosts'] = $this->getHosts($row['ID']);
                 }
             }
         }
 
         return $list;
+    }
+
+    /**
+     * Fetch the users who are hosting this event
+     * 
+     * @param int $event_id 
+     * @return array The list of people hosting the event 
+     */
+    protected function getHosts($event_id)
+    {
+        $host = $this->_request->host;
+        $host_sql = 'select a.uid as user_id, u.full_name'
+            . ' from user_admin a '
+            . ' inner join user u on u.ID = a.uid '
+            . ' where rid = :event_id and rtype="event" and rcode!="pending"';
+        $host_stmt = $this->_db->prepare($host_sql);
+        $host_stmt->execute(array("event_id" => $event_id));
+        $hosts = $host_stmt->fetchAll(PDO::FETCH_ASSOC);
+        $retval = array();
+        if(is_array($hosts)) {
+           foreach($hosts as $person) {
+               $entry = array();
+               $entry['host_name'] = $person['full_name'];
+               $entry['host_uri'] = 'http://' . $host . '/v2/users/' . $person['user_id'];
+               $retval[] = $entry;
+           }
+        }
+        return $retval;
+    }
+
+    /**
+     * Return an array of tags for the event
+     * 
+     * @param int $event_id The event whose tags we want
+     * @return array An array of tags
+     */
+    protected function getTags($event_id)
+    {
+        $tag_sql = 'select tag_value as tag'
+            . ' from tags_events te'
+            . ' inner join tags t on t.ID = te.tag_id'
+            . ' where te.event_id = :event_id';
+        $tag_stmt = $this->_db->prepare($tag_sql);
+        $tag_stmt->execute(array("event_id" => $event_id));
+        $tags = $tag_stmt->fetchAll(PDO::FETCH_ASSOC);
+        $retval = array();
+        if(is_array($tags)) {
+           foreach($tags as $row) {
+               $retval[] = $row['tag'];
+           }
+        }
+        return $retval;
     }
 }
