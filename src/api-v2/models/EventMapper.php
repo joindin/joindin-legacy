@@ -51,7 +51,7 @@ class EventMapper extends ApiMapper
             'location' => 'event_loc',
             'attendee_count' => 'attendee_count',
             'comments_enabled' => 'comments_enabled',
-            'event_comment_count' => 'event_comment_count',
+            'event_comments_count' => 'event_comments_count',
             'cfp_start_date' => 'event_cfp_start',
             'cfp_end_date' => 'event_cfp_end',
             'cfp_url' => 'event_cfp_url'
@@ -96,7 +96,7 @@ class EventMapper extends ApiMapper
                 as attendee_count, '
             . '(select count(*) from event_comments where 
                 event_comments.event_id = events.ID) 
-                as event_comment_count, '
+                as event_comments_count, '
             . 'abs(datediff(from_unixtime(events.event_start), 
                 from_unixtime('.mktime(0, 0, 0).'))) as score, '
             . 'CASE 
