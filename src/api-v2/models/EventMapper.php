@@ -69,26 +69,9 @@ class EventMapper extends ApiMapper
      */
     public function getEventById($event_id, $verbose = false) 
     {
-        $sql = 'select events.*, '
-            . '(select count(*) from user_attend where user_attend.eid = events.ID) 
-                as attendee_count, '
-            . '(select count(*) from event_comments where 
-                event_comments.event_id = events.ID) 
-                as event_comment_count, '
-            . 'CASE 
-                WHEN (((events.event_start - 3600*24) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
-                ELSE 0
-               END as comments_enabled '
-            . 'from events '
-            . 'where active = 1 and '
-            . '(pending = 0 or pending is NULL) and '
-            . 'ID = :event_id';
-        $stmt = $this->_db->prepare($sql);
-        $response = $stmt->execute(
-            array(':event_id' => $event_id)
-        );
-        if ($response) {
-            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $order = 'events.event_start desc';
+        $results = $this->getEvents(1, 0, 'ID=' . (int)$event_id, null);
+        if ($results) {
             $retval = $this->transformResults($results, $verbose);
             return $retval;
         }
