@@ -85,4 +85,19 @@ class Request
         
         return 'json';
     } 
+
+    public function identifyUser($db, $auth_header) {
+        // identify the user
+        $oauth_pieces = explode(' ', $auth_header);
+        if(count($oauth_pieces) <> 2) {
+            throw new Exception('Invalid Authorization Header', '400');
+        }
+        if(strtolower($oauth_pieces[0]) != "oauth") {
+            throw new Exception('Unknown Authorization Header Received', '400');
+        }
+        $oauth_model = new OAuthModel($db);
+        $user_id = $oauth_model->verifyAccessToken($oauth_pieces[1]);
+        $this->user_id = $user_id;
+        return true;
+    }
 }

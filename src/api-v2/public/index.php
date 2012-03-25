@@ -32,6 +32,12 @@ $request = new Request();
 $request->parameters['resultsperpage'] = $request->getParameter('resultsperpage', 20);
 $request->parameters['start'] = $request->getParameter('start', 0);
 
+// identify our user if applicable
+$headers = apache_request_headers();
+if(isset($headers['Authorization'])) {
+    $request->identifyUser($ji_db, $headers['Authorization']);
+}
+
 // Which content type to return? Parameter takes precedence over accept headers 
 // with final fall back to json 
 $format_choices = array('application/json', 'text/html');
