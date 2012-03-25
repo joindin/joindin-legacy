@@ -392,7 +392,7 @@ class User_admin_model extends Model {
      */
     public function oauthGetConsumerKeysByUser($user_id)
     {
-        $sql = "SELECT id, application, consumer_key, consumer_secret"
+        $sql = "SELECT id, application, callback_url, consumer_key, consumer_secret"
             . " FROM oauth_consumers WHERE user_id = "
             . $this->db->escape($user_id);
 
