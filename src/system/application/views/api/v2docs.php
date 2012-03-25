@@ -44,6 +44,22 @@ This document gives information about the functionality of the API and how to us
 
 </blockquote>
 
+<h2>Authentication</h2>
+
+<p>You only need to authenticate if you're adding or editing data (including comments) or want to access private data.  For most operations, particularly just retrieving information, authentication is not required.</p>
+
+<p>This API uses OAuth2.  To authenticate you will need the following:
+<ol><li>Every app must first register for an API key and give the callback that they will use to send users to.  To register an API key, sign in to joind.in and visit: <a href="http://joind.in/user/apikey">http://joind.in/user/apikey</a>.  These are assocaited with your user account, you can have as many as you like and you can delete them at any time.</li>
+<li>When you want a user to grant you access to their data, send them to: <a href="http://joind.in/user/oauth_allow">http://joind.in/user/oauth_allow</a> with the following query variables on the URL:
+    <ul><li><code>api_key</code> The key you registered for in step 1 (the secret isn't currently used)</li>
+    <li><code>callback</code> The callback URL to send the user to afterwards.  This can be a device URL and it <b>must match the URL you registered</b> in step 1 (exactly match)</li>
+    <li><code>state</code> (optional) Whatever you pass in here will be passed back with the user when we redirect them back to you.  Use it however you like</li></ul></li>
+    <li>When the user is sent to the redirect URL, it will contain one additional parameter: <code>access_token</code>.  Capture this and store it - this is a per-user token.</li>
+    <li>To make requests with access to that user's data, add the access token into an authorisation header.  The format should be: <br />
+<code>Authorization: OAuth [access_code]</code></li></ul><br />
+
+<p>If you have any questions or problems, just <a href="http://joind.in/about/contact">let us know</a>, this is new functionality and feedback is more than welcome.</p>
+
 <h2>Service Detail</h2>
 
 <p>Examples shown in HTML format.  The JSON response holds identical data, passed through json_encode rather than pretty-printed</p>
