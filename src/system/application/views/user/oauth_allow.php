@@ -1,10 +1,25 @@
 <h1>Grant Access</h1>
+<?php echo $status; ?>
 <div class="box">
     <?php
     if ($status == 'invalid'):
     ?>
     <div class="row">
         <p> Access cannot be granted for this key.  </p>
+        <div class="clear"></div>
+    </div>
+    <?php
+    elseif ($status == 'keyfail'):
+    ?>
+    <div class="row">
+        <p>The client identifier <code>api_key</code> was not recognised.</p>
+        <div class="clear"></div>
+    </div>
+    <?php
+    elseif ($status == 'callbackfail'):
+    ?>
+    <div class="row">
+        <p>Callback URL <code>callback</code> is missing or incorrect.</p>
         <div class="clear"></div>
     </div>
     <?php

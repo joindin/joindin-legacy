@@ -329,10 +329,11 @@ class User_admin_model extends Model {
      * @param string $key the value of incoming api key
      * @return boolean true if it exists, false otherwise
      */
-    public function oauthVerifyApiKey($key)
+    public function oauthVerifyApiKey($key, $callback)
     {
         $sql = 'SELECT application FROM oauth_consumers
-            WHERE consumer_key = ' . $this->db->escape($key);
+            WHERE consumer_key = ' . $this->db->escape($key)
+            . ' AND callback_url = ' . $this->db->escape($callback);
         $query = $this->db->query($sql);
 
         $result = $query->result();

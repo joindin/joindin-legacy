@@ -720,10 +720,15 @@ class User extends AuthAbstract
         $view_data['status'] = NULL;
         if ($this->validation->run() == false) {
             $api_key = $this->input->get('api_key');
-            if($api_key && $this->user_admin_model->oauthVerifyApiKey($api_key)) {
-                $callback = $this->input->get('callback');
-                $this->session->set_flashdata('callback', $callback);
+            $callback = urldecode($this->input->get('callback'));
+
+            if(empty($api_key)) {
+                $view_data['status'] = 'keyfail';
+            } elseif(empty($callback)) {
+                $view_data['status'] = 'callbackfail';
+            } elseif($this->user_admin_model->oauthVerifyApiKey($api_key, $callback)) {
                 $this->session->set_flashdata('api_key', $api_key);
+                $this->session->set_flashdata('callback', $callback);
             } else {
                 $view_data['status'] = 'invalid';
             }
