@@ -2,7 +2,6 @@
 $this->load->view('user/_nav_sidebar', array('pending_events'=>$pending_events,
                                             'event_claims'=>$event_claims));
 
-ob_start();
 ?>
 <?php if (!empty($this->validation->error_string)): ?>
     <?php $this->load->view('msg_error', array('msg' => $this->validation->error_string)); ?>
