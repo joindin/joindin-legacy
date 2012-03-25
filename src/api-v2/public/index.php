@@ -81,6 +81,9 @@ switch ($version) {
         throw new Exception('API version must be specified', 404);
         break;
 }
+if(isset($request->user_id)) {
+    $return_data['meta']['your_user_id'] = $request->user_id;
+}
 
 // Handle output
 // TODO sort out headers, caching, etc
