@@ -49,8 +49,8 @@ This document gives information about the functionality of the API and how to us
 <p>You only need to authenticate if you're adding or editing data (including comments) or want to access private data.  For most operations, particularly just retrieving information, authentication is not required.</p>
 
 <p>This API uses OAuth2.  To authenticate you will need the following:
-<ol><li>Every app must first register for an API key and give the callback that they will use to send users to.  To register an API key, sign in to joind.in and visit: <a href="http://joind.in/user/apikey">http://joind.in/user/apikey</a>.  These are assocaited with your user account, you can have as many as you like and you can delete them at any time.</li>
-<li>When you want a user to grant you access to their data, send them to: <a href="http://joind.in/user/oauth_allow">http://joind.in/user/oauth_allow</a> with the following query variables on the URL:
+<ol><li>Every app must first register for an API key and give the callback that they will use to send users to.  To register an API key, sign in to joind.in and visit: <a href="https://joind.in/user/apikey">https://joind.in/user/apikey</a>.  These are associated with your user account, you can have as many as you like and you can delete them at any time.</li>
+<li>When you want a user to grant you access to their data, send them to: <a href="https://joind.in/user/oauth_allow">https://joind.in/user/oauth_allow</a> with the following query variables on the URL:
     <ul><li><code>api_key</code> The key you registered for in step 1 (the secret isn't currently used)</li>
     <li><code>callback</code> The callback URL to send the user to afterwards.  This can be a device URL and it <b>must match the URL you registered</b> in step 1 (exactly match)</li>
     <li><code>state</code> (optional) Whatever you pass in here will be passed back with the user when we redirect them back to you.  Use it however you like</li></ul></li>
