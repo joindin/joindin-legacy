@@ -46,6 +46,8 @@ if(isset($keys) && is_array($keys)) {
 <?php echo form_open('user/apikey', array('class' => 'form-oauth')); ?>
 <p>Application display name: <input type="text" name="application" /></p>
 <p>What does your application do? <textarea name="description"></textarea></p>
+<p>Callback URL: <input type="text" name="callback_url" /><br />
+The callback URL is the location that users should be returned to after they have granted authorisation.  Device-specific URLs can be used here.  Users can only authorise this application when they arrive with this callback URL specified.</p>
 <input type="submit" value="Request API Keys" />
 <?php
 echo form_close();

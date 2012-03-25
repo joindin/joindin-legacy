@@ -774,12 +774,14 @@ class User extends AuthAbstract
 
         $fields = array(
             'application' => 'application display name',
-            'description' => 'application description'
+            'description' => 'application description',
+            'callback_url' => 'callback URL'
 
         );
         $rules = array(
             'application' => 'required',
-            'description' => 'required|min_length[20]'
+            'description' => 'required|min_length[20]',
+            'callback_url' => 'required',
         );
 
         $this->validation->set_rules($rules);
@@ -792,7 +794,8 @@ class User extends AuthAbstract
             $this->user_admin_model->oauthGenerateConsumerCredentials(
                 $this->session->userdata('ID'),
                 $this->input->post('application'),
-                $this->input->post('description')
+                $this->input->post('description'),
+                $this->input->post('callback_url')
                 );
         }
 

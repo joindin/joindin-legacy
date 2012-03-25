@@ -365,7 +365,7 @@ class User_admin_model extends Model {
      * @param string $application The display name of the application
      * @param string $description What the app does (not displayed, just interesting)
      */
-    public function oauthGenerateConsumerCredentials($user_id, $application, $description) 
+    public function oauthGenerateConsumerCredentials($user_id, $application, $description, $callback_url) 
     {
         // The first 30 bytes should be plenty for the consumer_key
         // We use the last 10 for the shared secret
@@ -376,6 +376,7 @@ class User_admin_model extends Model {
             . $this->db->escape($user_id) . ",
             application = " . $this->db->escape($application) . ", 
             description = " . $this->db->escape($description) . ", 
+            callback_url = " . $this->db->escape($callback_url) . ", 
             consumer_key = " . $this->db->escape($key[0]) . ", 
             consumer_secret = " . $this->db->escape($key[1]);
 
