@@ -1,3 +1,7 @@
+<?php
+$this->load->view('user/_nav_sidebar', array('pending_events'=>$pending_events,
+                                            'event_claims'=>$event_claims));
+?>
 <h1>API Keys</h1>
 
 <p>On this page you can obtain a <b>key</b> and <b>secret</b> to use with the Joind.in web API if you wish to create a client to consume the data.  Many activities are publicly accessible, however to post comments or perform other actions which change our data, you will need to identify yourself using OAuth.  Please note that the secret should never be shared in any way (e.g. included in a public code repository).</p>
