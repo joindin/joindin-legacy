@@ -721,6 +721,7 @@ class User extends AuthAbstract
         if ($this->validation->run() == false) {
             $api_key = $this->input->get('api_key');
             $callback = urldecode($this->input->get('callback'));
+            $state = $this->input->get('state');
 
             if(empty($api_key)) {
                 $view_data['status'] = 'keyfail';
@@ -729,12 +730,14 @@ class User extends AuthAbstract
             } elseif($this->user_admin_model->oauthVerifyApiKey($api_key, $callback)) {
                 $this->session->set_flashdata('api_key', $api_key);
                 $this->session->set_flashdata('callback', $callback);
+                $this->session->set_flashdata('state', $state);
             } else {
                 $view_data['status'] = 'invalid';
             }
         } else {
             $api_key = $this->session->flashdata('api_key');
             $callback = $this->session->flashdata('callback');
+            $state = $this->session->flashdata('state');
 
             if ($this->input->post('access') == 'allow') {
                 $view_data['status'] = "allow";
@@ -747,6 +750,9 @@ class User extends AuthAbstract
                         $url = $callback . '?';
                     }
                     $url .= 'access_token=' . $access_token;
+                    if(!empty($state)) {
+                       $url .= "&state=" . $state;
+                    }
                     redirect($url);
                     exit; // we shouldn't be here
                 }
