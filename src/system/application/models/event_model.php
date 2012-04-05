@@ -552,18 +552,35 @@ SQL
         $term = mysql_real_escape_string($term);
         
         //if we have the dates, limit by them
-        $attend = '(SELECT COUNT(*) FROM user_attend WHERE eid = events.ID AND uid = ' . $this->db->escape((int)$this->session->userdata('ID')) . ')as user_attending';
+        $attend = '(SELECT COUNT(*) FROM user_attend '
+            . ' WHERE eid = events.ID AND uid = ' 
+            . $this->db->escape((int)$this->session->userdata('ID')) 
+            . ')as user_attending';
 
-        $this->db->select('events.*, COUNT(DISTINCT user_attend.ID) AS num_attend, COUNT(DISTINCT event_comments.ID) AS num_comments, ' . $attend);
+        $this->db->select('events.*, COUNT(DISTINCT user_attend.ID) AS num_attend, '
+            . ' COUNT(DISTINCT event_comments.ID) AS num_comments, ' . $attend);
         $this->db->from('events');
         $this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
-        $this->db->join('event_comments', 'event_comments.event_id = events.ID', 'left');
+        $this->db->join(
+            'event_comments', 
+            'event_comments.event_id = events.ID', 
+            'left'
+        );
         
-        if ($start>0) { $this->db->where('event_start >=', $start); }
-        if ($end>0) { $this->db->where('event_start <=', $end); }
+        if ($start>0) { 
+            $this->db->where('event_start >=', $start); 
+        }
+        if ($end>0) { 
+            $this->db->where('event_start <=', $end); 
+        }
 
         $term = '%'.$term.'%';
-        $this->db->where(sprintf('(event_name LIKE %1$s OR event_desc LIKE %1$s)', $this->db->escape($term)));
+        $this->db->where(
+            sprintf(
+                '(event_name LIKE %1$s OR event_desc LIKE %1$s)',
+                $this->db->escape($term)
+            )
+        );
         $this->db->limit(10);
         $this->db->group_by('events.ID');
         $this->db->order_by('event_start DESC');
