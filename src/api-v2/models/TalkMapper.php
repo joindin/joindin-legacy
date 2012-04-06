@@ -60,10 +60,6 @@ class TalkMapper extends ApiMapper {
                 $list[$key]['verbose_comments_uri'] = 'http://' . $host . '/v2/talks/' . $row['ID'] . '/comments?verbose=yes';
                 $list[$key]['event_uri'] = 'http://' . $host . '/v2/events/' . $row['event_id'];
             }
-
-            if(count($list) > 1) {
-                $list = $this->addPaginationLinks($list);
-            }
         }
 
         return $list;

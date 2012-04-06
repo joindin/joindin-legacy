@@ -11,6 +11,15 @@ if(!user_is_auth()) {
 </div>
 <?php
 }
+
+/*
+// use this block to add a nicely-formatted headline to the homepage
+$info = array(
+    'msg' => ' <h4 style="color:#3A74C5"></h4>'
+);
+$this->template->write_view('info_block', 'msg_info', $info, true);
+*/
+
 ?>
 
 <?php if (count($hot_events) > 0): ?>

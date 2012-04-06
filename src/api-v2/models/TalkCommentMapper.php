@@ -96,10 +96,6 @@ class TalkCommentMapper extends ApiMapper {
                         . $row['user_id'];
                 }
             }
-
-            if (count($list) > 1) {
-                $list = $this->addPaginationLinks($list); 
-            }
         }
         return $list;
     }
