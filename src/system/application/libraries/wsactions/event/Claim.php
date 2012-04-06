@@ -40,7 +40,7 @@ class Claim extends BaseWsRequest {
                 $q=$this->CI->db->get_where('user_admin', $arr);
                 $ret=$q->result();
                 if (isset($ret[0]->ID)) {
-                    return array('output'=>'json','data'=>array('items'=>array('msg'=>'Fail: Duplicate Claim!')));
+                    return array('output'=>'json','data'=>array('items'=>array('msg'=>'You already have an outstanding claim on this event')));
                 } else {
                     //we're good isert the row!
                     $this->CI->db->insert('user_admin', $arr);
