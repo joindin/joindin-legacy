@@ -180,8 +180,7 @@ class EventMapper extends ApiMapper
      */
     public function getHotEventList($resultsperpage, $start, $verbose = false) 
     {
-        $order = '(((attendee_count + event_comment_count) * 0.5) 
-                - EXP(GREATEST(1,score)/20)) desc';
+        $order = "score - ((event_comment_count + attendee_count + 1) / 5)";
         $results = $this->getEvents($resultsperpage, $start, null, $order);
         if ($results) {
             $retval = $this->transformResults($results, $verbose);
