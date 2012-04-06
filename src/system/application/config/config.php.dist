@@ -48,6 +48,22 @@ $config['email_admin']	= 'enygma@phpdeveloper.org';
 
 /*
 |--------------------------------------------------------------------------
+| Twitter API Settings
+|--------------------------------------------------------------------------
+*/
+$config['twitter_consumer_key']    = 'ENTER KEY HERE';
+$config['twitter_consumer_secret'] = 'ENTER SECRET HERE';
+
+/*
+|--------------------------------------------------------------------------
+| Facebook API Settings
+|--------------------------------------------------------------------------
+*/
+$config['facebook_app_id']     = 'ENTER APP ID';
+$config['facebook_app_secret'] = 'ENTER SECRET HERE';
+
+/*
+|--------------------------------------------------------------------------
 | Index File
 |--------------------------------------------------------------------------
 |
@@ -191,7 +207,7 @@ $config['function_trigger'] = 'm';
 | Error Logging Threshold
 |--------------------------------------------------------------------------
 |
-| If you have enabled error logging, you can set an error threshold to 
+| If you have enabled error logging, you can set an error threshold to
 | determine what gets logged. Threshold options are:
 | You can enable error logging by setting a threshold over zero. The
 | threshold determines what gets logged. Threshold options are:
@@ -364,11 +380,6 @@ $config['akismet_blog']		= '';
 // For the Defensio class
 $config['defensio_key']		= '';
 $config['defensio_owner']	= '';
-
-// Directory to store chached Gravatar images
-// Note that the Gravatar cache must be accessible to the web server
-$config['gravatar_cache_dir']   = realpath(dirname(__FILE__) .'/../../../inc/img/user_gravatar');
-$config['gravatar_cache_relative_url']   = '/inc/img/user_gravatar';
 
 // If you're debugging and want all emails to go to one address, use this
 // $config['debug_email']		= '';
