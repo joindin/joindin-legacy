@@ -12,10 +12,10 @@ This document gives information about the functionality of the API and how to us
 <h2>Global Parameters</h2>
 
 <p>There are a few parameters supported on every request:
-<ul><li><b>verbose: </b> set to <b>yes</b> to see a more detailed set of data in the responses</li>
-<li><b>start: </b> for responses which return lists, this will offset the start of the result set which is returned.  Use in conjuction with <b>resultsperpage</b></li>
-<li><b>resultsperpage: </b>for responses which return lists, set how many results will be returned.  Use with <b>start</b> to get large result sets in manageable chunks</b></li>
-<li><b>format: </b>set this to <b>html</b> or <b>json</b> to specify what format the response should be in.</li>
+<ul><li><b>verbose: </b> set to <b>yes</b> to see a more detailed set of data in the responses.  This works for individual records and collections.</li>
+<li><b>start: </b> for responses which return lists, this will offset the start of the result set which is returned.  The default is zero; use in conjuction with <b>resultsperpage</b></li>
+<li><b>resultsperpage: </b>for responses which return lists, set how many results will be returned.  The default is currently 20 records; use with <b>start</b> to get large result sets in manageable chunks</b></li>
+<li><b>format: </b>set this to <b>html</b> or <b>json</b> to specify what format the response should be in (preferably use the Accept Header, alternatively you can pass this param)</li>
 </ul></p>
 
 
