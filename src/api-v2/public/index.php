@@ -98,8 +98,6 @@ exit;
  */
 function routeV2($request, $ji_db)
 {
-    $return_data = false;
-
     // Route: call the handle() method of the class with the first URL element
     if(isset($request->url_elements[2])) {
         $class = ucfirst($request->url_elements[2]) . 'Controller';

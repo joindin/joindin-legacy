@@ -284,7 +284,10 @@ class EventMapper extends ApiMapper
                 }
             }
         }
+        $retval = array();
+        $retval['events'] = $list;
+        $retval['meta'] = $this->getPaginationLinks($list);
 
-        return $list;
+        return $retval;
     }
 }

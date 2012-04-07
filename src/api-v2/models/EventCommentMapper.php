@@ -78,13 +78,18 @@ class EventCommentMapper extends ApiMapper {
             }
 
         }
-        return $list;
+        $retval = array();
+        $retval['comments'] = $list;
+        $retval['meta'] = $this->getPaginationLinks($list);
+
+        return $retval;
     }
 
     protected function getBasicSQL() {
-        $sql = 'select ec.*, user.full_name '
+        $sql = 'select ec.*, user.full_name, e.event_tz_cont, e.event_tz_place '
             . 'from event_comments ec '
             . 'left join user on user.ID = ec.user_id '
+            . 'inner join events e on ec.event_id = e.ID '
             . 'where ec.active = 1 ';
         return $sql;
 

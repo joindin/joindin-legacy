@@ -97,16 +97,35 @@ class TalkCommentMapper extends ApiMapper {
                 }
             }
         }
-        return $list;
+        $retval = array();
+        $retval['comments'] = $list;
+        $retval['meta'] = $this->getPaginationLinks($list);
+
+        return $retval;
     }
 
     protected function getBasicSQL() {
-        $sql = 'select tc.*, user.full_name, t.talk_title '
+        $sql = 'select tc.*, user.full_name, t.talk_title, e.event_tz_cont, e.event_tz_place '
             . 'from talk_comments tc '
             . 'inner join talks t on t.ID = tc.talk_id '
+            . 'inner join events e on t.event_id = e.ID '
             . 'left join user on tc.user_id = user.ID '
             . 'where tc.active = 1 '
             . 'and tc.private <> 1 ';
         return $sql;
+    }
+
+    public function save($data) {
+        $sql = 'insert into talk_comments (talk_id, rating, comment, user_id, '
+            . 'source, date_made, private, active) '
+            . 'values (:talk_id, :rating, :comment, :user_id, "api-v2", NOW(), 0, 1)';
+
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute(array(
+            ':talk_id' => $data['talk_id'],
+            ':rating' => $data['rating'],
+            ':comment' => $data['comment'],
+            ':user_id' => $data['user_id']
+            ));
     }
 }
