@@ -65,15 +65,23 @@ switch ($format) {
 
 $version = $request->getUrlElement(1);
 switch ($version) {
-    case 'v2':
-        // default routing for version 2
+    case 'v2.1':
+        // default routing for version 2.1
+        $request->version = "v2.1";
         $return_data = routeV2($request, $ji_db);
         break;
     
     case '':
+        // current newest version
+        $request->version = "v2.1";
         // version parameter not specified routes to default controller
         $defaultController = new DefaultController();
         $return_data = $defaultController->handle($request, $ji_db);
+        break;
+
+    case 'v2':
+        // old versions
+        throw new Exception('This API version is no longer supported.  Please use v2.1');
         break;
     
     default:

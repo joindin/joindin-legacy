@@ -53,6 +53,7 @@ class EventCommentMapper extends ApiMapper {
     public function transformResults($results, $verbose) {
         $list = parent::transformResults($results, $verbose);
         $host = $this->_request->host;
+        $version = $this->_request->version;
 
         if (is_array($list) && count($list)) {
 
@@ -60,20 +61,20 @@ class EventCommentMapper extends ApiMapper {
                 // figure out user
                 if($row['user_id']) {
                     $list[$key]['user_display_name'] = $row['full_name'];
-                    $list[$key]['user_uri'] = 'http://' . $host . '/v2/users/' 
+                    $list[$key]['user_uri'] = 'http://' . $host . '/' . $version . '/users/' 
                         . $row['user_id'];
                 } else {
                     $list[$key]['user_display_name'] = $row['cname'];
                 }
 
                 // useful links
-                $list[$key]['comment_uri'] = 'http://' . $host . '/v2/event_comments/' 
+                $list[$key]['comment_uri'] = 'http://' . $host . '/' . $version . '/event_comments/' 
                     . $row['ID'];
-                $list[$key]['verbose_comment_uri'] = 'http://' . $host . '/v2/event_comments/' 
+                $list[$key]['verbose_comment_uri'] = 'http://' . $host . '/' . $version . '/event_comments/' 
                     . $row['ID'] . '?verbose=yes';
-                $list[$key]['event_uri'] = 'http://' . $host . '/v2/events/' 
+                $list[$key]['event_uri'] = 'http://' . $host . '/' . $version . '/events/' 
                     . $row['event_id'];
-                $list[$key]['event_comments_uri'] = 'http://' . $host . '/v2/events/' 
+                $list[$key]['event_comments_uri'] = 'http://' . $host . '/' . $version . '/events/' 
                     . $row['event_id'] . '/comments';
             }
 

@@ -249,18 +249,19 @@ class EventMapper extends ApiMapper
     {
         $list = parent::transformResults($results, $verbose);
         $host = $this->_request->host;
+        $version = $this->_request->version;
 
         // add per-item links 
         if (is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
                 $list[$key]['tags'] = $this->getTags($row['ID']);;
-                $list[$key]['uri'] = 'http://' . $host . '/v2/events/' 
+                $list[$key]['uri'] = 'http://' . $host . '/' . $version . '/events/' 
                     . $row['ID'];
-                $list[$key]['verbose_uri'] = 'http://' . $host . '/v2/events/' 
+                $list[$key]['verbose_uri'] = 'http://' . $host . '/' . $version . '/events/' 
                     . $row['ID'] . '?verbose=yes';
-                $list[$key]['comments_uri'] = 'http://' . $host . '/v2/events/' 
+                $list[$key]['comments_uri'] = 'http://' . $host . '/' . $version . '/events/' 
                     . $row['ID'] . '/comments';
-                $list[$key]['talks_uri'] = 'http://' . $host . '/v2/events/' 
+                $list[$key]['talks_uri'] = 'http://' . $host . '/' . $version . '/events/' 
                 . $row['ID'] . '/talks';
                 $list[$key]['website_uri'] = 'http://joind.in/event/view/' . $row['ID'];
                 // handle the slug
@@ -269,7 +270,7 @@ class EventMapper extends ApiMapper
                 }
 
                 if($verbose) {
-                    $list[$key]['all_talk_comments_uri'] = 'http://' . $host . '/v2/events/' 
+                    $list[$key]['all_talk_comments_uri'] = 'http://' . $host . '/' . $version . '/events/' 
                         . $row['ID'] . '/talk_comments';
                     $list[$key]['hosts'] = $this->getHosts($row['ID']);
                 }
@@ -291,6 +292,8 @@ class EventMapper extends ApiMapper
     protected function getHosts($event_id)
     {
         $host = $this->_request->host;
+        $version = $this->_request->version;
+
         $host_sql = 'select a.uid as user_id, u.full_name'
             . ' from user_admin a '
             . ' inner join user u on u.ID = a.uid '
@@ -303,7 +306,7 @@ class EventMapper extends ApiMapper
            foreach($hosts as $person) {
                $entry = array();
                $entry['host_name'] = $person['full_name'];
-               $entry['host_uri'] = 'http://' . $host . '/v2/users/' . $person['user_id'];
+               $entry['host_uri'] = 'http://' . $host . '/' . $version . ' /users/' . $person['user_id'];
                $retval[] = $entry;
            }
         }
