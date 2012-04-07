@@ -74,111 +74,81 @@ This document gives information about the functionality of the API and how to us
 This is your starting point and will show you where you can go:
 <blockquote>
 <ul>
-
-<li><strong>events:</strong> <a href="https://api.joind.in/v2/events">https://api.joind.in/v2/events</a></li>
-
-<li><strong>hot-events:</strong> <a href="https://api.joind.in/v2/events?filter=hot">https://api.joind.in/v2/events?filter=hot</a></li>
-
-<li><strong>upcoming-events:</strong> <a href="https://api.joind.in/v2/events?filter=upcoming">https://api.joind.in/v2/events?filter=upcoming</a></li>
-
-<li><strong>past-events:</strong> <a href="https://api.joind.in/v2/events?filter=past">https://api.joind.in/v2/events?filter=past</a></li>
-
-<li><strong>open-cfps:</strong> <a href="https://api.joind.in/v2/events?filter=cfp">https://api.joind.in/v2/events?filter=cfp</a></li>
-
+<li><strong>events:</strong> <a href="http://api.joind.in/v2.1/events">http://api.joind.in/v2.1/events</a></li>
+<li><strong>hot-events:</strong> <a href="http://api.joind.in/v2.1/events?filter=hot">http://api.joind.in/v2.1/events?filter=hot</a></li>
+<li><strong>upcoming-events:</strong> <a href="http://api.joind.in/v2.1/events?filter=upcoming">http://api.joind.in/v2.1/events?filter=upcoming</a></li>
+<li><strong>past-events:</strong> <a href="http://api.joind.in/v2.1/events?filter=past">http://api.joind.in/v2.1/events?filter=past</a></li>
+<li><strong>open-cfps:</strong> <a href="http://api.joind.in/v2.1/events?filter=cfp">http://api.joind.in/v2.1/events?filter=cfp</a></li>
 </ul>
 </blockquote>
 
 
-<h3>Request: GET /v2/events</h3>
-<h3>Request: GET /v2/events/[id]</h3>
+<h3>Request: GET /events</h3>
+<h3>Request: GET /events/[id]</h3>
 
-<p><a href="https://api.joind.in/v2/events">try it</a></p>
+<p><a href="https://api.joind.in/v2.1/events">try it</a></p>
 
-<p>Shows a list of events, sorted by start time descending.  We will offer other views of events, with different filters and sorting, in time.
+<p>Shows a list of events, with a variety of filter/sorting behaviour supported (see above entry).  The default is all events sorted by date descending</p>
 
 Each result looks something like this:</p>
 <blockquote>
 <ul>
-
 <li><strong>name:</strong> Dutch PHP Conference 2011</li>
-
-<li><strong>start_date:</strong> 2011-05-18T22:00:00+00:00</li>
-
-<li><strong>end_date:</strong> 2011-05-21T21:59:59+00:00</li>
-
+<li><strong>start_date:</strong> 2011-05-19T00:00:00+02:00</li>
+<li><strong>end_date:</strong> 2011-05-21T23:59:59+02:00</li>
 <li><strong>description:</strong> Ibuildings is proud to organise the fifth Dutch PHP Conference on May 20 and 21, plus a pre-conference tutorial day on May 19. Both programs will be completely in English so the only Dutch thing about it is the location. Keywords for these days: Know-how, Technology, Best Practices, Networking, Tips &amp; Tricks.</li>
-
-<li><strong>href:</strong> <a href="https://www.phpconference.nl/">https://www.phpconference.nl/</a></li>
-
-<li><strong>attendee_count:</strong> 134</li>
-
+<li><strong>href:</strong> <a href="http://www.phpconference.nl/">http://www.phpconference.nl/</a></li>
+<li><strong>attendee_count:</strong> 34</li>
 <li><strong>icon:</strong> icon-90x90.png</li>
-
-<li><strong>uri:</strong> <a href="https://api.joind.in/v2/events/603">https://api.joind.in/v2/events/603</a></li>
-
-<li><strong>verbose_uri:</strong> <a href="https://api.joind.in/v2/events/603?verbose=yes">https://api.joind.in/v2/events/603?verbose=yes</a></li>
-
-<li><strong>comments_uri:</strong> <a href="https://api.joind.in/v2/events/603/comments">https://api.joind.in/v2/events/603/comments</a></li>
-
-<li><strong>talks_uri:</strong> <a href="https://api.joind.in/v2/events/603/talks">https://api.joind.in/v2/events/603/talks</a></li>
-
-<li><strong>website_uri:</strong> <a href="https://joind.in/event/view/603">https://joind.in/event/view/603</a></li>
-
+<li><strong>tags:</strong> <ul>
+</ul>
+</li>
+<li><strong>uri:</strong> <a href="http://api.joind.in/v2.1/events/603">http://api.joind.in/v2.1/events/603</a></li>
+<li><strong>verbose_uri:</strong> <a href="http://api.joind.in/v2.1/events/603?verbose=yes">http://api.joind.in/v2.1/events/603?verbose=yes</a></li>
+<li><strong>comments_uri:</strong> <a href="http://api.joind.in/v2.1/events/603/comments">http://api.joind.in/v2.1/events/603/comments</a></li>
+<li><strong>talks_uri:</strong> <a href="http://api.joind.in/v2.1/events/603/talks">http://api.joind.in/v2.1/events/603/talks</a></li>
+<li><strong>website_uri:</strong> <a href="http://joind.in/event/view/603">http://joind.in/event/view/603</a></li>
+<li><strong>humane_website_uri:</strong> <a href="http://joind.in/event/dpc11">http://joind.in/event/dpc11</a></li>
 </ul>
 </blockquote>
 
 <h3>Request: GET /events/[id]/talks</h3>
 <h3>Request: GET /talks/[id]</h3>
 
-<p><a href="https://api.joind.in/v2/events/110/talks">try it</a></p>
+<p><a href="https://api.joind.in/v2.1/events/110/talks">try it</a></p>
 
-<p>Following the link to the talks for an event gives a list.  The <b>format</b>, <b>start</b> and <b>requestsperpage</b> parameters are valid.  Each talk entry will look something like this:</p>
+<p>Following the link to the talks for an event gives a list.  The <b>format</b>, <b>verbose</b>, <b>start</b> and <b>requestsperpage</b> parameters are valid.  Each talk entry will look something like this:</p>
 
 <blockquote>
-<ul>
-
+ <ul>
 <li><strong>talk_title:</strong> ZeroMQ Is The Answer</li>
-
 <li><strong>talk_description:</strong> Using Mikko Koppanen's PHP ZMQ extension we will look at how you can easily distribute work to background processes, provide flexible service brokering for your next service oriented architecture, and manage caches efficiently and easily with just PHP and the ZeroMQ libraries. Whether the problem is asynchronous communication, message distribution, process management or just about anything, ZeroMQ can help you build an architecture that is more resilient, more scalable and more flexible, without introducing unnecessary overhead or requiring a heavyweight queue manager node.
-
 </li>
-
-<li><strong>start_date:</strong> 2011-05-20T08:45:00+00:00</li>
-
-<li><strong>average_rating:</strong> 4</li>
-
-<li><strong>comments_enabled:</strong> 1</li>
-
-<li><strong>comment_count:</strong> 15</li>
-
+<li><strong>start_date:</strong> 2011-05-20T10:45:00+02:00</li>
+<li><strong>average_rating:</strong> 0</li>
+<li><strong>comments_enabled:</strong> 0</li>
+<li><strong>comment_count:</strong> 0</li>
 <li><strong>speakers:</strong> <ul>
-
 <li><strong>0:</strong> <ul>
-
 <li><strong>speaker_name:</strong> Ian Barber</li>
-
-<li><strong>speaker_uri:</strong> <a href="https://api.joind.in/v2/users/291">https://api.joind.in/v2/users/291</a></li>
-
 </ul>
-
 </li>
-
 </ul>
-
 </li>
-
-<li><strong>uri:</strong> <a href="https://api.joind.in/v2/talks/3219">https://api.joind.in/v2/talks/3219</a></li>
-
-<li><strong>verbose_uri:</strong> <a href="https://api.joind.in/v2/talks/3219?verbose=yes">https://api.joind.in/v2/talks/3219?verbose=yes</a></li>
-
-<li><strong>website_uri:</strong> <a href="https://joind.in/talk/view/3219">https://joind.in/talk/view/3219</a></li>
-
-<li><strong>comments_uri:</strong> <a href="https://api.joind.in/v2/talks/3219/comments">https://api.joind.in/v2/talks/3219/comments</a></li>
-
-<li><strong>event_uri:</strong> <a href="https://api.joind.in/v2/events/603">https://api.joind.in/v2/events/603</a></li>
-
+<li><strong>tracks:</strong> <ul>
+<li><strong>0:</strong> <ul>
+<li><strong>track_name:</strong> Track 2</li>
 </ul>
-
+</li>
+</ul>
+</li>
+<li><strong>uri:</strong> <a href="http://api.joind.in/v2.1/talks/3219">http://api.joind.in/v2.1/talks/3219</a></li>
+<li><strong>verbose_uri:</strong> <a href="http://api.joind.in/v2.1/talks/3219?verbose=yes">http://api.joind.in/v2.1/talks/3219?verbose=yes</a></li>
+<li><strong>website_uri:</strong> <a href="http://joind.in/talk/view/3219">http://joind.in/talk/view/3219</a></li>
+<li><strong>comments_uri:</strong> <a href="http://api.joind.in/v2.1/talks/3219/comments">http://api.joind.in/v2.1/talks/3219/comments</a></li>
+<li><strong>verbose_comments_uri:</strong> <a href="http://api.joind.in/v2.1/talks/3219/comments?verbose=yes">http://api.joind.in/v2.1/talks/3219/comments?verbose=yes</a></li>
+<li><strong>event_uri:</strong> <a href="http://api.joind.in/v2.1/events/603">http://api.joind.in/v2.1/events/603</a></li>
+</ul>
 </blockquote>
 
 <h3>Request: GET /talks/[talk_id]/comments</h3>
@@ -188,19 +158,16 @@ Each result looks something like this:</p>
 
 <blockquote>
 <ul>
-
-<li><strong>rating:</strong> 4</li>
-
-<li><strong>comment:</strong> Interesting discussion and good examples. Will be looking into 0MQ for log aggregation. Also thought it was interesting how many areas of this architecture overlap with some of the principles behind node.js. Well done overall. </li>
-
-<li><strong>uri:</strong> <a href="https://api.joind.in/v2/talks/3219/comments/12578">https://api.joind.in/v2/talks/3219/comments/12578</a></li>
-
-<li><strong>verbose_uri:</strong> <a href="https://api.joind.in/v2/talks/3219/comments/12578?verbose=yes">https://api.joind.in/v2/talks/3219/comments/12578?verbose=yes</a></li>
-
-<li><strong>talk_uri:</strong> <a href="https://api.joind.in/v2/talks/3219">https://api.joind.in/v2/talks/3219</a></li>
-
-<li><strong>user_uri:</strong> <a href="https://api.joind.in/v2/users/14421">https://api.joind.in/v2/users/14421</a></li>
-
+<li><strong>rating:</strong> 5</li>
+<li><strong>comment:</strong> Very interesting, we are currently implementing CI and the Hudson section of this talk was most enlightening.</li>
+<li><strong>user_display_name:</strong> Andy Martin</li>
+<li><strong>talk_title:</strong> Quality Assurance in PHP Projects</li>
+<li><strong>created_date:</strong> 2010-06-14T16:23:05+02:00</li>
+<li><strong>uri:</strong> <a href="http://api.joindin.local/v2.1/talk_comments/4685">http://api.joindin.local/v2.1/talk_comments/4685</a></li>
+<li><strong>verbose_uri:</strong> <a href="http://api.joindin.local/v2.1/talk_comments/4685?verbose=yes">http://api.joindin.local/v2.1/talk_comments/4685?verbose=yes</a></li>
+<li><strong>talk_uri:</strong> <a href="http://api.joindin.local/v2.1/talks/1525">http://api.joindin.local/v2.1/talks/1525</a></li>
+<li><strong>talk_comments_uri:</strong> <a href="http://api.joindin.local/v2.1/talks/1525/comments">http://api.joindin.local/v2.1/talks/1525/comments</a></li>
+<li><strong>user_uri:</strong> <a href="http://api.joindin.local/v2.1/users/3008">http://api.joindin.local/v2.1/users/3008</a></li>
 </ul>
 </blockquote> 
 
