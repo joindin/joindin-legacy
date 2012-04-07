@@ -62,7 +62,11 @@ class TalkMapper extends ApiMapper {
             }
         }
 
-        return $list;
+        $retval = array();
+        $retval['talks'] = $list;
+        $retval['meta'] = $this->getPaginationLinks($list);
+
+        return $retval;
     }
 
     public function getTalkById($talk_id, $verbose = false) {

@@ -78,7 +78,11 @@ class EventCommentMapper extends ApiMapper {
             }
 
         }
-        return $list;
+        $retval = array();
+        $retval['comments'] = $list;
+        $retval['meta'] = $this->getPaginationLinks($list);
+
+        return $retval;
     }
 
     protected function getBasicSQL() {
