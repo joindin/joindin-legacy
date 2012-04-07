@@ -25,6 +25,7 @@ if (!empty($msg)):
     <div id="comment-<?php echo $comment->ID ?>" class="row row-event-comment">
         <div class="text">
             <p class="info">
+		<?php if ($comment->rating > 0) echo rating_image($comment->rating); ?>
                 <strong><?php echo date('d.M.Y \a\t H:i', $comment->date_made); ?></strong> by <strong><?php echo $uname; ?></strong>
                 <?php echo !empty($comment->source)?"via ".escape($comment->source) : "" ?>
                 (<?php echo escape($type); ?>)
@@ -83,7 +84,34 @@ if (time()<$adv_mo): ?>
         ?>
         <div class="clear"></div>
     </div>
+    <?php if ($admin): ?>
+    <?php else: ?>
+        <?php if ($alreadyRated) : ?>
+            <div class="row">
+                <label for="rating">Rating</label>
+                <div class="rating" id="ratingbar-norating">
+                    You already rated this event.
+                </div>
+                <div class="rating" id ="ratingbar" style='display:none'>
+                    <?php echo rating_form('rating', $this->validation->rating); ?>
+                </div>
+                <div class="clear"></div>
+            </div>
+        <?php else: ?>
+            <div class="row">
+                <label for="rating">Rating</label>
+                <div class="rating" style='display:none' id ="ratingbar-norating">
+                    You already rated this event.
+                </div>
+                <div class="rating" id ="ratingbar">
+                    <?php echo rating_form('rating', $this->validation->rating); ?>
+                </div>
+                <div class="clear"></div>
+            </div>
 
+        <?php endif; ?>
+
+    <?php endif; ?>
     <div class="row">
         <label for="cinput">Spambot check</label>
         <span>

@@ -811,14 +811,25 @@ class Event extends Controller
         } elseif (in_array(strtolower($opt), $tabList)) {
             $arr['tab'] = strtolower($opt);
         }
+	
+	$already_rated = false;
+	if($is_auth) {
+    		// Find out if there is at least 1 comment that is made by our user for this event
+    		foreach ($this->event_comments_model->getUserComments($this->user_model->getId()) as $comment) {
+        		if ($comment->event_id == $id) $already_rated = true;
+    		}
+	}
 
         //our event comment form
+	$rating_rule = ($this->user_model->isAdminEvent($id) || ($already_rated)) ? null : 'required';
         $rules = array(
             'event_comment' => 'required',
+            'rating' => $rating_rule,
             'cinput'        => 'required|callback_cinput_check'
         );
         $fields = array(
             'event_comment' => 'Event Comment',
+            'rating' => 'Event Rating',
             'cinput'        => 'Captcha'
         );
         $this->validation->set_fields($fields);
@@ -828,6 +839,7 @@ class Event extends Controller
             $ec = array(
                 'event_id'  => $id,
                 'comment'   => $this->input->post('event_comment'),
+                'rating'   => $this->input->post('rating'),
                 'date_made' => time(), 'active' => 1
             );
 
@@ -850,7 +862,6 @@ class Event extends Controller
             }
 
             // $this->spam->check('regex', $ec['comment']);
-
             if ($is_spam == 'false') {
                 $this->db->insert('event_comments', $ec);
                 $arr['msg'] = 'Comment inserted successfully!';
@@ -886,16 +897,15 @@ class Event extends Controller
                 $this->session->set_flashdata(
                     'msg', 'Comment inserted successfully!'
                 );
-            }
-
+            } 
             redirect(
                 'event/view/' . $events[0]->ID . '#comments', 'location', 302
             );
         }
-
+	$arr['alreadyRated'] = $already_rated;
         $arr['comments'] = $this->event_comments_model->getEventComments($id);
-
-        if (!$is_auth) {
+        
+	if (!$is_auth) {
             $info = array(
                 'msg' => sprintf(
                     ' <h4 style="color:#3A74C5">New to ' .

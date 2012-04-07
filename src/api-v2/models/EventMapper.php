@@ -23,7 +23,8 @@ class EventMapper extends ApiMapper
             'description' => 'event_desc',
             'href' => 'event_href',
             'attendee_count' => 'attendee_count',
-            'icon' => 'event_icon'
+            'icon' => 'event_icon',
+	    'average_rating' => 'avg_rating'
             );
         return $fields;
     }
@@ -54,7 +55,8 @@ class EventMapper extends ApiMapper
             'event_comment_count' => 'event_comment_count',
             'cfp_start_date' => 'event_cfp_start',
             'cfp_end_date' => 'event_cfp_end',
-            'cfp_url' => 'event_cfp_url'
+            'cfp_url' => 'event_cfp_url',
+	    'average_rating' => 'avg_rating'
             );
         return $fields;
     }
@@ -78,7 +80,8 @@ class EventMapper extends ApiMapper
             . 'CASE 
                 WHEN (((events.event_start - 3600*24) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
-               END as comments_enabled '
+               END as comments_enabled, '
+	    . '(select get_event_rating(events.ID)) as avg_rating '
             . 'from events '
             . 'where active = 1 and '
             . '(pending = 0 or pending is NULL) and '
@@ -119,7 +122,8 @@ class EventMapper extends ApiMapper
             . 'CASE 
                 WHEN (((events.event_start - 3600*24) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
-               END as comments_enabled '
+               END as comments_enabled, '
+	    . '(select get_talk_rating(t.ID)) as avg_rating '
             . 'from events '
             . 'where active = 1 and '
             . '(pending = 0 or pending is NULL) and '

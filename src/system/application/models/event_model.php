@@ -99,6 +99,7 @@ class Event_model extends Model {
         // attendees and comments
         $db->select(<<<SQL
             events.*,
+	    get_event_rating(events.ID) as eavg,
             if ((((events.event_start - $day_in_seconds) < $now) AND ((events.event_start + $closing_days_in_seconds) > $now)), 1, 0) AS allow_comments,
             COUNT(DISTINCT user_attend.ID) AS num_attend,
             COUNT(DISTINCT event_comments.ID) AS num_comments
@@ -251,7 +252,8 @@ SQL
               CASE 
                 WHEN (((events.event_start - 86400) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
-                END as allow_comments
+                END as allow_comments,
+	    get_event_rating(events.ID) as eavg
             FROM `events`
             WHERE active = 1 AND (pending = 0 OR pending IS NULL)';
 
@@ -325,7 +327,8 @@ SQL
               CASE
                 WHEN (((events.event_start - 86400) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
-                END as allow_comments
+                END as allow_comments,
+	    get_event_rating(events.ID) as eavg
             FROM events, tags_events, tags
             WHERE active = 1 AND (pending = 0 OR pending IS NULL) AND
             tags_events.event_id = events.ID AND tags_events.tag_id = tags.ID AND

@@ -31,6 +31,10 @@ if ($event_detail->event_cfp_start>=time()) {
                     <?php } ?>
                     <br/> 
                     <strong><?php echo escape($event_detail->event_loc); ?></strong>
+		    <br/>
+		    <p class="rating">
+		    	<?php echo rating_image($event_detail->eavg); ?>
+    		    </p>
                     <?php if ($event_detail->private==1): ?>
                         <br/><strong>Private Event</strong>
                     <?php endif; ?>
