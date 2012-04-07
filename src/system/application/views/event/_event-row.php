@@ -4,6 +4,9 @@ $this->load->library('timezone');
 ?>
 <div class="row row-event">
     <?php $this->load->view('event/_event-icon', array('event'=>$event, 'showlink' => true)); ?>
+    <div class="img">
+        <?php echo rating_image($event->eavg); ?>
+    </div>
     <div class="text">
         <h3><a href="/event/view/<?php echo $event->ID; ?>"><?php echo escape($event->event_name); ?></a></h3>
         <p class="info"><strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event->event_start, $event->event_tz_cont.'/'.$event->event_tz_place, 'd.M.Y'); ?></strong>

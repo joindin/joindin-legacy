@@ -5,6 +5,7 @@ class EventCommentMapper extends ApiMapper {
         // warning, users added in build array
         $fields = array(
             'comment' => 'comment',
+            'rating' => 'rating',
             'created_date' => 'date_made'
             );
         return $fields;
@@ -13,6 +14,7 @@ class EventCommentMapper extends ApiMapper {
     public function getVerboseFields() {
         $fields = array(
             'comment' => 'comment',
+            'rating' => 'rating',
             'source' => 'source',
             'created_date' => 'date_made'
             );
