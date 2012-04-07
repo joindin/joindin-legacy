@@ -237,8 +237,8 @@ function cancelTrackEdit(rid){
 function saveTrackAdd(rid){
 	var obj			= new Object();
 	obj.event_id	= $('#event_id').val();
-	obj.track_name	= $("#track_tbl_body input[id='name_"+rid+"']").val();
-	obj.track_desc	= $("#track_tbl_body textarea[id='desc_"+rid+"']").val();
+	obj.track_name	= "<![CDATA[" + $("#track_tbl_body input[id='name_"+rid+"']").val() + "]]>";
+	obj.track_desc	= "<![CDATA[" + $("#track_tbl_body textarea[id='desc_"+rid+"']").val() + "]]>";
 
 	apiRequest('event','addtrack',obj, function(obj) {
 		notifications.alert(obj.msg);
@@ -254,8 +254,8 @@ function saveTrackAdd(rid){
 function saveTrackUpdate(rid){
 	var obj			= new Object();
 	obj.event_id	= $('#event_id').val();
-	obj.track_name	= $("#track_tbl_body input[id='name_"+rid+"']").val();
-	obj.track_desc	= $("#track_tbl_body textarea[id='desc_"+rid+"']").val();
+	obj.track_name	= "<![CDATA[" + $("#track_tbl_body input[id='name_"+rid+"']").val() + "]]>";
+	obj.track_desc	= "<![CDATA[" + $("#track_tbl_body textarea[id='desc_"+rid+"']").val() + "]]>";
 	obj.track_id	= $("#track_tbl_body input[id='trackid_"+rid+"']").val();
 	obj.track_color	= $("#track_tbl_body input[id='track_color_"+rid+"']").val();
 
