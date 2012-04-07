@@ -217,7 +217,7 @@ SQL
 
         if ($type == "hot") {
             // if you change this, change the API too please
-            $order_by = "(((num_attend + num_comments) * 0.5) - EXP(GREATEST(1, score)/20)) desc";
+            $order_by = "score - ((num_comments + num_attend + 1) / 5)";
         }
 
         if ($type == "upcoming") {
