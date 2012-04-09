@@ -69,7 +69,7 @@
 
  <target name="frisby" description="Run new API tests in Frisby">
   <exec executable="jasmine-node" dir="${basedir}/src/tests/api_tests" failonerror="true">
-	  <arg line="--junitreport --output ${basedir}/build/logs/frisby/ ." />
+	  <arg line="--nocolor --junitreport --output ${basedir}/build/logs/frisby/ ." />
   </exec>
  </target>
 
