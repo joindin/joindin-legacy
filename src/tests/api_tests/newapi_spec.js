@@ -2,8 +2,12 @@
 var frisby = require('frisby');
 var util   = require('util');
 
-// TODO this needs to move to separate config
-var baseURL = "http://api.joindin.local";
+var baseURL;
+if (typeof process.env.API_BASE_URL != 'undefined') {
+	baseURL = process.env.API_BASE_URL;
+} else {
+	baseURL = "http://api.joind.in";
+}
 
 frisby.globalSetup({ // globalSetup is for ALL requests
     request: {
