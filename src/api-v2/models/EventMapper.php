@@ -49,9 +49,10 @@ class EventMapper extends ApiMapper
             'tz_continent' => 'event_tz_cont',
             'tz_place' => 'event_tz_place',
             'location' => 'event_loc',
+            'hashtag' => 'event_hashtag',
             'attendee_count' => 'attendee_count',
             'comments_enabled' => 'comments_enabled',
-            'event_comment_count' => 'event_comment_count',
+            'event_comments_count' => 'event_comments_count',
             'cfp_start_date' => 'event_cfp_start',
             'cfp_end_date' => 'event_cfp_end',
             'cfp_url' => 'event_cfp_url'
@@ -69,26 +70,9 @@ class EventMapper extends ApiMapper
      */
     public function getEventById($event_id, $verbose = false) 
     {
-        $sql = 'select events.*, '
-            . '(select count(*) from user_attend where user_attend.eid = events.ID) 
-                as attendee_count, '
-            . '(select count(*) from event_comments where 
-                event_comments.event_id = events.ID) 
-                as event_comment_count, '
-            . 'CASE 
-                WHEN (((events.event_start - 3600*24) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
-                ELSE 0
-               END as comments_enabled '
-            . 'from events '
-            . 'where active = 1 and '
-            . '(pending = 0 or pending is NULL) and '
-            . 'ID = :event_id';
-        $stmt = $this->_db->prepare($sql);
-        $response = $stmt->execute(
-            array(':event_id' => $event_id)
-        );
-        if ($response) {
-            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $order = 'events.event_start desc';
+        $results = $this->getEvents(1, 0, 'ID=' . (int)$event_id, null);
+        if ($results) {
             $retval = $this->transformResults($results, $verbose);
             return $retval;
         }
@@ -113,7 +97,7 @@ class EventMapper extends ApiMapper
                 as attendee_count, '
             . '(select count(*) from event_comments where 
                 event_comments.event_id = events.ID) 
-                as event_comment_count, '
+                as event_comments_count, '
             . 'abs(datediff(from_unixtime(events.event_start), 
                 from_unixtime('.mktime(0, 0, 0).'))) as score, '
             . 'CASE 
@@ -180,8 +164,7 @@ class EventMapper extends ApiMapper
      */
     public function getHotEventList($resultsperpage, $start, $verbose = false) 
     {
-        $order = '(((attendee_count + event_comment_count) * 0.5) 
-                - EXP(GREATEST(1,score)/20)) desc';
+        $order = "score - ((event_comments_count + attendee_count + 1) / 5)";
         $results = $this->getEvents($resultsperpage, $start, null, $order);
         if ($results) {
             $retval = $this->transformResults($results, $verbose);
@@ -265,26 +248,91 @@ class EventMapper extends ApiMapper
     {
         $list = parent::transformResults($results, $verbose);
         $host = $this->_request->host;
+        $version = $this->_request->version;
 
         // add per-item links 
         if (is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
-                $list[$key]['uri'] = 'http://' . $host . '/v2/events/' 
+                $list[$key]['tags'] = $this->getTags($row['ID']);;
+                $list[$key]['uri'] = 'http://' . $host . '/' . $version . '/events/' 
                     . $row['ID'];
-                $list[$key]['verbose_uri'] = 'http://' . $host . '/v2/events/' 
+                $list[$key]['verbose_uri'] = 'http://' . $host . '/' . $version . '/events/' 
                     . $row['ID'] . '?verbose=yes';
-                $list[$key]['comments_uri'] = 'http://' . $host . '/v2/events/' 
+                $list[$key]['comments_uri'] = 'http://' . $host . '/' . $version . '/events/' 
                     . $row['ID'] . '/comments';
-                $list[$key]['talks_uri'] = 'http://' . $host . '/v2/events/' 
+                $list[$key]['talks_uri'] = 'http://' . $host . '/' . $version . '/events/' 
                 . $row['ID'] . '/talks';
                 $list[$key]['website_uri'] = 'http://joind.in/event/view/' . $row['ID'];
+                // handle the slug
+                if(!empty($row['event_stub'])) {
+                    $list[$key]['humane_website_uri'] = 'http://joind.in/event/' . $row['event_stub'];    
+                }
+
                 if($verbose) {
-                    $list[$key]['all_talk_comments_uri'] = 'http://' . $host . '/v2/events/' 
+                    $list[$key]['all_talk_comments_uri'] = 'http://' . $host . '/' . $version . '/events/' 
                         . $row['ID'] . '/talk_comments';
+                    $list[$key]['hosts'] = $this->getHosts($row['ID']);
                 }
             }
         }
+        $retval = array();
+        $retval['events'] = $list;
+        $retval['meta'] = $this->getPaginationLinks($list);
 
-        return $list;
+        return $retval;
+    }
+
+    /**
+     * Fetch the users who are hosting this event
+     * 
+     * @param int $event_id 
+     * @return array The list of people hosting the event 
+     */
+    protected function getHosts($event_id)
+    {
+        $host = $this->_request->host;
+        $version = $this->_request->version;
+
+        $host_sql = 'select a.uid as user_id, u.full_name'
+            . ' from user_admin a '
+            . ' inner join user u on u.ID = a.uid '
+            . ' where rid = :event_id and rtype="event" and rcode!="pending"';
+        $host_stmt = $this->_db->prepare($host_sql);
+        $host_stmt->execute(array("event_id" => $event_id));
+        $hosts = $host_stmt->fetchAll(PDO::FETCH_ASSOC);
+        $retval = array();
+        if(is_array($hosts)) {
+           foreach($hosts as $person) {
+               $entry = array();
+               $entry['host_name'] = $person['full_name'];
+               $entry['host_uri'] = 'http://' . $host . '/' . $version . ' /users/' . $person['user_id'];
+               $retval[] = $entry;
+           }
+        }
+        return $retval;
+    }
+
+    /**
+     * Return an array of tags for the event
+     * 
+     * @param int $event_id The event whose tags we want
+     * @return array An array of tags
+     */
+    protected function getTags($event_id)
+    {
+        $tag_sql = 'select tag_value as tag'
+            . ' from tags_events te'
+            . ' inner join tags t on t.ID = te.tag_id'
+            . ' where te.event_id = :event_id';
+        $tag_stmt = $this->_db->prepare($tag_sql);
+        $tag_stmt->execute(array("event_id" => $event_id));
+        $tags = $tag_stmt->fetchAll(PDO::FETCH_ASSOC);
+        $retval = array();
+        if(is_array($tags)) {
+           foreach($tags as $row) {
+               $retval[] = $row['tag'];
+           }
+        }
+        return $retval;
     }
 }

@@ -2,18 +2,17 @@
 $this->load->view('user/_nav_sidebar', array('pending_events'=>$pending_events,
                                             'event_claims'=>$event_claims));
 
-ob_start();
 ?>
 <?php if (!empty($this->validation->error_string)): ?>
     <?php $this->load->view('msg_error', array('msg' => $this->validation->error_string)); ?>
 <?php endif; ?>
 <div class="menu">
     <ul>
-        <li class="active"><a href="/user/main">Dashboard</a>
-        <li><a href="/user/manage">Manage Account</a>
+        <li class="active"><a href="/user/main">Dashboard</a></li>
+        <li><a href="/user/manage">Manage Account</a></li>
     <?php if (user_is_admin()): ?>
-        <li><a href="/user/admin">User Admin</a>
-        <li><a href="/event/pending">Pending Events</a>
+        <li><a href="/user/admin">User Admin</a></li>
+        <li><a href="/event/pending">Pending Events</a></li>
     <?php endif; ?>
     </ul>
     <div class="clear"></div>

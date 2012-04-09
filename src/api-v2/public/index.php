@@ -32,6 +32,11 @@ $request = new Request();
 $request->parameters['resultsperpage'] = $request->getParameter('resultsperpage', 20);
 $request->parameters['start'] = $request->getParameter('start', 0);
 
+// identify our user if applicable
+$headers = apache_request_headers();
+if(isset($headers['Authorization'])) {
+    $request->identifyUser($ji_db, $headers['Authorization']);
+}
 
 // Which content type to return? Parameter takes precedence over accept headers 
 // with final fall back to json 
@@ -60,21 +65,32 @@ switch ($format) {
 
 $version = $request->getUrlElement(1);
 switch ($version) {
-    case 'v2':
-        // default routing for version 2
+    case 'v2.1':
+        // default routing for version 2.1
+        $request->version = "v2.1";
         $return_data = routeV2($request, $ji_db);
         break;
     
     case '':
+        // current newest version
+        $request->version = "v2.1";
         // version parameter not specified routes to default controller
         $defaultController = new DefaultController();
         $return_data = $defaultController->handle($request, $ji_db);
+        break;
+
+    case 'v2':
+        // old versions
+        throw new Exception('This API version is no longer supported.  Please use v2.1');
         break;
     
     default:
         // unexpected version
         throw new Exception('API version must be specified', 404);
         break;
+}
+if(isset($request->user_id)) {
+    $return_data['meta']['your_user_id'] = $request->user_id;
 }
 
 // Handle output
@@ -90,16 +106,6 @@ exit;
  */
 function routeV2($request, $ji_db)
 {
-    $return_data = false;
-    // check if this is an oauth request and if so, who are we?
-    if(array_key_exists('Authorization', apache_request_headers())
-        && ($request->url_elements[2] != 'oauth')) {
-        $oauth_model = new OAuthModel();
-        $oauth_model->in_flight = true;
-        $oauth_model->setUpOAuthAndDb($ji_db);
-        $request->user_id = $oauth_model->user_id;
-    }
-
     // Route: call the handle() method of the class with the first URL element
     if(isset($request->url_elements[2])) {
         $class = ucfirst($request->url_elements[2]) . 'Controller';

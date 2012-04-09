@@ -81,23 +81,28 @@ class TalkCommentMapper extends ApiMapper {
     public function transformResults($results, $verbose) {
         $list = parent::transformResults($results, $verbose);
         $host = $this->_request->host;
+        $version = $this->_request->version;
 
         // add per-item links 
         if (is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
-                $list[$key]['uri'] = 'http://' . $host . '/v2/talk_comments/' . $row['ID'];
-                $list[$key]['verbose_uri'] = 'http://' . $host . '/v2/talk_comments/' . $row['ID'] . '?verbose=yes';
-                $list[$key]['talk_uri'] = 'http://' . $host . '/v2/talks/' 
+                $list[$key]['uri'] = 'http://' . $host . '/' . $version . '/talk_comments/' . $row['ID'];
+                $list[$key]['verbose_uri'] = 'http://' . $host . '/' . $version . '/talk_comments/' . $row['ID'] . '?verbose=yes';
+                $list[$key]['talk_uri'] = 'http://' . $host . '/' . $version . '/talks/' 
                     . $row['talk_id'];
-                $list[$key]['talk_comments_uri'] = 'http://' . $host . '/v2/talks/' 
+                $list[$key]['talk_comments_uri'] = 'http://' . $host . '/' . $version . '/talks/' 
                     . $row['talk_id'] . '/comments';
                 if($row['user_id']) {
-                    $list[$key]['user_uri'] = 'http://' . $host . '/v2/users/' 
+                    $list[$key]['user_uri'] = 'http://' . $host . '/' . $version . '/users/' 
                         . $row['user_id'];
                 }
             }
         }
-        return $list;
+        $retval = array();
+        $retval['comments'] = $list;
+        $retval['meta'] = $this->getPaginationLinks($list);
+
+        return $retval;
     }
 
     protected function getBasicSQL() {

@@ -47,22 +47,28 @@ class TalkMapper extends ApiMapper {
     public function transformResults($results, $verbose) {
         $list = parent::transformResults($results, $verbose);
         $host = $this->_request->host;
+        $version = $this->_request->version;
+
         // loop again and add links specific to this item
         if(is_array($list) && count($list)) {
             foreach($results as $key => $row) {
                 // add speakers
                 $list[$key]['speakers'] = $this->getSpeakers($row['ID']);
                 $list[$key]['tracks'] = $this->getTracks($row['ID']);
-                $list[$key]['uri'] = 'http://' . $host . '/v2/talks/' . $row['ID'];
-                $list[$key]['verbose_uri'] = 'http://' . $host . '/v2/talks/' . $row['ID'] . '?verbose=yes';
+                $list[$key]['uri'] = 'http://' . $host . '/' . $version . '/talks/' . $row['ID'];
+                $list[$key]['verbose_uri'] = 'http://' . $host . '/' . $version . '/talks/' . $row['ID'] . '?verbose=yes';
                 $list[$key]['website_uri'] = 'http://joind.in/talk/view/' . $row['ID'];
-                $list[$key]['comments_uri'] = 'http://' . $host . '/v2/talks/' . $row['ID'] . '/comments';
-                $list[$key]['verbose_comments_uri'] = 'http://' . $host . '/v2/talks/' . $row['ID'] . '/comments?verbose=yes';
-                $list[$key]['event_uri'] = 'http://' . $host . '/v2/events/' . $row['event_id'];
+                $list[$key]['comments_uri'] = 'http://' . $host . '/' . $version . '/talks/' . $row['ID'] . '/comments';
+                $list[$key]['verbose_comments_uri'] = 'http://' . $host . '/' . $version . '/talks/' . $row['ID'] . '/comments?verbose=yes';
+                $list[$key]['event_uri'] = 'http://' . $host . '/' . $version . '/events/' . $row['event_id'];
             }
         }
 
-        return $list;
+        $retval = array();
+        $retval['talks'] = $list;
+        $retval['meta'] = $this->getPaginationLinks($list);
+
+        return $retval;
     }
 
     public function getTalkById($talk_id, $verbose = false) {
@@ -99,6 +105,8 @@ class TalkMapper extends ApiMapper {
 
     protected function getSpeakers($talk_id) {
         $host = $this->_request->host;
+        $version = $this->_request->version;
+
         $speaker_sql = 'select ts.*, user.full_name from talk_speaker ts '
             . 'left join user on user.ID = ts.speaker_id '
             . 'where ts.talk_id = :talk_id and ts.status IS NULL';
@@ -111,7 +119,7 @@ class TalkMapper extends ApiMapper {
                $entry = array();
                if($person['full_name']) {
                    $entry['speaker_name'] = $person['full_name'];
-                   $entry['speaker_uri'] = 'http://' . $host . '/v2/users/' . $person['speaker_id'];
+                   $entry['speaker_uri'] = 'http://' . $host . '/' . $version . '/users/' . $person['speaker_id'];
                } else {
                    $entry['speaker_name'] = $person['speaker_name'];
                }

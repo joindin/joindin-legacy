@@ -324,17 +324,16 @@ class User_admin_model extends Model {
     }
 
     /**
-     * Check that the request token actually exists and is valid
+     * Check that the API key actually exists and is valid
      * 
-     * @param string $token the request token supplied by the API
-     * @access public
-     * @return boolean true if the token is OK, false otherwise
+     * @param string $key the value of incoming api key
+     * @return boolean true if it exists, false otherwise
      */
-    public function oauthRequestTokenVerify($token)
+    public function oauthVerifyApiKey($key, $callback)
     {
-        $sql = 'SELECT request_token FROM oauth_request_tokens
-            WHERE request_token = ' . $this->db->escape($token) . '
-            AND authorised_user_id IS NULL';
+        $sql = 'SELECT application FROM oauth_consumers
+            WHERE consumer_key = ' . $this->db->escape($key)
+            . ' AND callback_url = ' . $this->db->escape($callback);
         $query = $this->db->query($sql);
 
         $result = $query->result();
@@ -345,62 +344,153 @@ class User_admin_model extends Model {
     }
 
     /**
-     * Deny access for this request token
-     * 
-     * @param string $token The request token given to the user
-     * @access public
-     * @return boolean true
-     */
-    public function oauthDeny($token)
-    {
-        $sql = 'DELETE from oauth_request_tokens 
-            WHERE request_token = ' . $this->db->escape($token);
-        $query = $this->db->query($sql);
-
-        return true;
-    }
-
-    /**
      * This user granted access for this application using this request 
      * token, record this and give a verification token
      * 
-     * @param string $token The request token the user is authorising
-     * @param int $user_id The user's database ID (comes from the session 
+     * @param string api_key The request token the user is authorising
+     * @param int user_id The user's database ID (comes from the session 
      * when called from the webcontroller)
      * @access public
      * @return array containing verification code and callback url, or false if something went wrong
      */
-    public function oauthAllow($token, $user_id)
+    public function oauthAllow($api_key, $user_id)
     {
-        $verification_code = $this->oauthGenerateVerificationCode();
-        $sql = 'UPDATE oauth_request_tokens SET authorised_user_id = '
-            . $this->db->escape($user_id) . ',
-            verification = "' . $verification_code . '"
-            WHERE request_token = ' . $this->db->escape($token);
+        $access = $this->newAccessToken($api_key, $user_id);
+        return $access;
+    }
+
+    /**
+     * oauthGenerateConsumerCredentials 
+     * 
+     * @param int $user_id The user that requested the credentials
+     * @param string $application The display name of the application
+     * @param string $description What the app does (not displayed, just interesting)
+     */
+    public function oauthGenerateConsumerCredentials($user_id, $application, $description, $callback_url) 
+    {
+        // The first 30 bytes should be plenty for the consumer_key
+        // We use the last 10 for the shared secret
+        $hash = $this->generateToken();
+        $key = array(substr($hash,0,30),substr($hash,30,10));
+
+        $sql = "INSERT INTO oauth_consumers SET user_id = "
+            . $this->db->escape($user_id) . ",
+            application = " . $this->db->escape($application) . ", 
+            description = " . $this->db->escape($description) . ", 
+            callback_url = " . $this->db->escape($callback_url) . ", 
+            consumer_key = " . $this->db->escape($key[0]) . ", 
+            consumer_secret = " . $this->db->escape($key[1]);
+
         $query = $this->db->query($sql);
+        return true;
+    }
 
-        if ($this->db->affected_rows() == 1) {
-            $fetch_sql = 'SELECT callback, verification FROM oauth_request_tokens
-                WHERE request_token = ' . $this->db->escape($token);
-            $fetch_query = $this->db->query($fetch_sql);
+    /**
+     * oauthGetConsumerKeysByUser 
+     * 
+     * @param int $user_id The ID of the user whose keys we want
+     * @return array The application name, key and secret for each key associated with this user id
+     */
+    public function oauthGetConsumerKeysByUser($user_id)
+    {
+        $sql = "SELECT id, application, callback_url, consumer_key, consumer_secret"
+            . " FROM oauth_consumers WHERE user_id = "
+            . $this->db->escape($user_id);
 
-            $result = $fetch_query->result();
-            return $result[0];
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        return $result;
+    }
+
+    /**
+     * Generate, store and return a new access token to the user
+     * 
+     * @param string api_key the identifier for the consumer
+     * @param int user_id the user granting access
+     * @return string access token
+     */
+    public function newAccessToken($api_key, $user_id) {
+        $hash = $this->generateToken();
+        $access_token = substr($hash,0,16);
+        $access_token_secret = substr($hash,16,16);
+
+        // store new token
+        $sql = 'insert into oauth_access_tokens set '
+            . 'access_token = ' . $this->db->escape($access_token) . ',' 
+            . 'access_token_secret = ' . $this->db->escape($access_token_secret) . ','
+            . 'consumer_key = ' . $this->db->escape($api_key) . ', '
+            . 'user_id = ' . $this->db->escape($user_id);
+        $query = $this->db->query($sql);
+        if($query) {
+            return $access_token;
         }
         return false;
     }
 
     /**
-     * Generate a verification code to send back to the oauth consumer with the user
+     * generateToken 
+     * 
+     * taken mostly from http://toys.lerdorf.com/archives/55-Writing-an-OAuth-Provider-Service.html
      * 
      * @access public
-     * @return string the verification code
+     * @return void
      */
-    public function oauthGenerateVerificationCode()
-    {
-        return substr(md5(rand()), 0, 6);
+    public function generateToken() {
+        $fp = fopen('/dev/urandom','rb');
+        $entropy = fread($fp, 32);
+        fclose($fp);
+        // in case /dev/urandom is reusing entropy from its pool, let's add a bit more entropy
+        $entropy .= uniqid(mt_rand(), true);
+        $hash = sha1($entropy);  // sha1 gives us a 40-byte hash
+        return $hash;
     }
 
-}
+    /**
+     * deleteApiKey remove an API key for this user with this ID
+     * 
+     * @param int $user_id 
+     * @param int $api_id 
+     * @access public
+     * @return whether the query was successful
+     */
+    public function deleteApiKey($user_id, $api_id) {
+        $id = (int)$api_id;
 
+        $sql = 'delete from oauth_consumers
+            where user_id=' . $this->db->escape($user_id) . '
+            and id=' . $this->db->escape($id);
+        return $this->db->query($sql);
+    }
+
+    /**
+     * Show all the access tokens currently available for this user
+     * 
+     * @param int $user_id 
+     * @return an array of all the keys and which consumers they relate to
+     */
+    public function oauthGetAccessKeysByUser($user_id)
+    {
+        $sql = "SELECT t.id, t.consumer_key, t.access_token, t.last_used_date,
+            c.application 
+            FROM oauth_access_tokens t
+            INNER JOIN oauth_consumers c USING (consumer_key)
+            WHERE t.user_id = "
+            . $this->db->escape($user_id);
+
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        return $result;
+    }
+
+    public function deleteAccessToken($user_id, $api_id) {
+        $id = (int)$api_id;
+
+        $sql = 'delete from oauth_access_tokens
+            where user_id=' . $this->db->escape($user_id) . '
+            and id=' . $this->db->escape($id);
+        return $this->db->query($sql);
+    }
+
+
+}
 ?>

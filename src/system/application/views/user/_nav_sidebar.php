@@ -17,13 +17,13 @@ if (user_is_admin()) {
 }
 $nav=sprintf('
 <ul>
-<li><a href="/user/main">Dashboard</a>
-<li><a href="/user/manage">Manage Account</a>
-<li><a href="/speaker/profile">Speaker Profile</a>
-<ul>
-    <li><a href="/user/main">My Talks</a>
-    <li><a href="/user/main">My Sessions</a>
-</ul>
+<li><a href="/user/main">Dashboard</a></li>
+<li><a href="/user/manage">Manage Account</a></li>
+<li><a href="/user/apikey">API Keys</a></li>
+<li>My Activities:<ul>
+    <li><a href="/user/main">My Talks</a></li>
+    <li><a href="/user/main">My Sessions</a></li>
+</ul></li>
 %s
 </ul>', $admin_nav_lnks);
 

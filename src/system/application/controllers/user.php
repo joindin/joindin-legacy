@@ -719,40 +719,138 @@ class User extends AuthAbstract
 
         $view_data['status'] = NULL;
         if ($this->validation->run() == false) {
-            $request_token = filter_var($this->input->get('request_token'), FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^[0-9a-z]*$/')));
-            // check for a valid request token
-            if ($this->user_admin_model->oauthRequestTokenVerify($request_token)) {
-                $this->session->set_flashdata('request_token', $request_token);
+            $api_key = $this->input->get('api_key');
+            $callback = urldecode($this->input->get('callback'));
+            $state = $this->input->get('state');
+
+            if(empty($api_key)) {
+                $view_data['status'] = 'keyfail';
+            } elseif(empty($callback)) {
+                $view_data['status'] = 'callbackfail';
+            } elseif($this->user_admin_model->oauthVerifyApiKey($api_key, $callback)) {
+                $this->session->set_flashdata('api_key', $api_key);
+                $this->session->set_flashdata('callback', $callback);
+                $this->session->set_flashdata('state', $state);
             } else {
-                $view_data['status'] = "invalid";
+                $view_data['status'] = 'invalid';
             }
         } else {
-            $request_token = $this->session->flashdata('request_token');
+            $api_key = $this->session->flashdata('api_key');
+            $callback = $this->session->flashdata('callback');
+            $state = $this->session->flashdata('state');
 
             if ($this->input->post('access') == 'allow') {
                 $view_data['status'] = "allow";
-                $oauth_info = $this->user_admin_model->oauthAllow($request_token, $this->session->userdata('ID'));
-                if ($oauth_info->callback == "oob") {
-                    // special case, we can't forward the user on so just display verification code
-                    $view_data['verification'] = $oauth_info->verification;
-                } else {
+                $access_token = $this->user_admin_model->oauthAllow($api_key, $this->session->userdata('ID'));
+                if(!empty($callback)) {
                     // add our parameter onto the URL
-                    if (strpos($oauth_info->callback, '?' !== false)) {
-                        $url = $oauth_info->callback . '&';
+                    if (strpos($callback, '?') !== false) {
+                        $url = $callback . '&';
                     } else {
-                        $url = $oauth_info->callback . '?';
+                        $url = $callback . '?';
                     }
-                    $url .= 'oauth_token=' . $oauth_info->verification;
+                    $url .= 'access_token=' . $access_token;
+                    if(!empty($state)) {
+                       $url .= "&state=" . $state;
+                    }
                     redirect($url);
                     exit; // we shouldn't be here
                 }
             } else {
                 $view_data['status'] = "deny";
-                $this->user_admin_model->oauthDeny($request_token);
             }
         }
         $this->template->write_view('content', 'user/oauth_allow', $view_data);
         $this->template->render();
     }
 
+    /**
+     * Show this user's API keys, generating them if they don't exist
+     * 
+     * @access public
+     * @return void
+     */
+    function apikey()
+    {
+        if (!$this->user_model->isAuth()) {
+            redirect('user/login', 'refresh');
+        }
+
+        $this->load->model('user_admin_model');
+        $this->load->helper('form');
+        $this->load->helper('url');
+        $this->load->library('validation');
+
+        $view_data = array();
+
+        $fields = array(
+            'application' => 'application display name',
+            'description' => 'application description',
+            'callback_url' => 'callback URL'
+
+        );
+        $rules = array(
+            'application' => 'required',
+            'description' => 'required|min_length[20]',
+            'callback_url' => 'required',
+        );
+
+        $this->validation->set_rules($rules);
+        $this->validation->set_fields($fields);
+
+        if (($this->validation->run() == false)) {
+            // either we just arrived, or the user sees error messages
+        } else {
+            // generate new keys
+            $this->user_admin_model->oauthGenerateConsumerCredentials(
+                $this->session->userdata('ID'),
+                $this->input->post('application'),
+                $this->input->post('description'),
+                $this->input->post('callback_url')
+                );
+        }
+
+        // fetch all keys
+        $view_data['keys'] = $this->user_admin_model->oauthGetConsumerKeysByUser(
+                $this->session->userdata('ID'));
+        $view_data['grants'] = $this->user_admin_model->oauthGetAccessKeysByUser(
+                $this->session->userdata('ID'));
+        
+        $this->template->write_view('content', 'user/apikey', $view_data);
+        $this->template->render();
+    }
+
+    /**
+     * Remove the API key record for this user
+     * 
+     * @access public
+     * @return void
+     */
+    public function apikey_delete() {
+        if (!$this->user_model->isAuth()) {
+            redirect('user/login', 'refresh');
+        }
+
+        $this->load->model('user_admin_model');
+
+        $this->user_admin_model->deleteApiKey($this->session->userdata('ID'), $this->input->get('id'));
+        redirect('/user/apikey');
+    }
+
+    /**
+     * Remove this application authorisation for this user
+     * 
+     * @access public
+     * @return void
+     */
+    public function revoke_access() {
+        if (!$this->user_model->isAuth()) {
+            redirect('user/login', 'refresh');
+        }
+
+        $this->load->model('user_admin_model');
+
+        $this->user_admin_model->deleteAccessToken($this->session->userdata('ID'), $this->input->get('id'));
+        redirect('/user/apikey');
+    }
 }
