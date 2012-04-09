@@ -125,7 +125,8 @@ class EventMapper extends ApiMapper
         $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute();
         if ($response) {
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $results;
         }
         return false;
     }
@@ -143,7 +144,7 @@ class EventMapper extends ApiMapper
     {
         $order = 'events.event_start desc';
         $results = $this->getEvents($resultsperpage, $start, null, $order);
-        if ($results) {
+        if (is_array($results)) {
             $retval = $this->transformResults($results, $verbose);
             return $retval;
         }
@@ -166,7 +167,7 @@ class EventMapper extends ApiMapper
     {
         $order = "score - ((event_comments_count + attendee_count + 1) / 5)";
         $results = $this->getEvents($resultsperpage, $start, null, $order);
-        if ($results) {
+        if (is_array($results)) {
             $retval = $this->transformResults($results, $verbose);
             return $retval;
         }
@@ -187,7 +188,7 @@ class EventMapper extends ApiMapper
         $where = '(events.event_start >=' . (mktime(0, 0, 0) - (3 * 86400)) . ')';
         $order = 'events.event_start';
         $results = $this->getEvents($resultsperpage, $start, $where, $order);
-        if ($results) {
+        if (is_array($results)) {
             $retval = $this->transformResults($results, $verbose);
             return $retval;
         }
@@ -208,7 +209,7 @@ class EventMapper extends ApiMapper
         $where = '(events.event_start <' . (mktime(0, 0, 0)) . ')';
         $order = 'events.event_start desc';
         $results = $this->getEvents($resultsperpage, $start, $where, $order);
-        if ($results) {
+        if (is_array($results)) {
             $retval = $this->transformResults($results, $verbose);
             return $retval;
         }
@@ -229,7 +230,7 @@ class EventMapper extends ApiMapper
         $where = 'events.event_cfp_url IS NOT NULL AND events.event_cfp_end >= ' . mktime(0, 0, 0);
         $order = 'events.event_start';
         $results = $this->getEvents($resultsperpage, $start, $where, $order);
-        if ($results) {
+        if (is_array($results)) {
             $retval = $this->transformResults($results, $verbose);
             return $retval;
         }
