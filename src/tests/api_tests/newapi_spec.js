@@ -2,7 +2,8 @@
 var frisby = require('frisby');
 var util   = require('util');
 
-var baseURL = "http://api.joind.in";
+// TODO this needs to move to separate config
+var baseURL = "http://api.joindin.local";
 
 frisby.globalSetup({ // globalSetup is for ALL requests
     request: {
@@ -14,14 +15,14 @@ frisby.create('Initial discovery')
   .get(baseURL)
   .expectStatus(200)
   .expectHeader("content-type", "application/json; charset=utf8")
-  .inspectJSON()
   .expectJSON({
-    'events'          : baseURL + '/v2/events',
-    'hot-events'      : baseURL + '/v2/events?filter=hot',
-    'upcoming-events' : baseURL + '/v2/events?filter=upcoming',
-    'past-events'     : baseURL + '/v2/events?filter=past',
-    'open-cfps'       : baseURL + '/v2/events?filter=cfp'
+    'events'          : baseURL + '/v2.1/events',
+    'hot-events'      : baseURL + '/v2.1/events?filter=hot',
+    'upcoming-events' : baseURL + '/v2.1/events?filter=upcoming',
+    'past-events'     : baseURL + '/v2.1/events?filter=past',
+    'open-cfps'       : baseURL + '/v2.1/events?filter=cfp'
   })
+
   .afterJSON(function(apis) {
 
     // Loop over all of the event types
@@ -32,60 +33,56 @@ frisby.create('Initial discovery')
         .expectStatus(200)
         .expectHeader("content-type", "application/json; charset=utf8")
         .afterJSON(function(ev) {
-
           // Check meta-data
           expect(ev.meta).toContainJsonTypes({"count":Number});
+          expect(ev).toContainJsonTypes({"events":Array});
 
-          for (var i in ev) {
-            if (!isNaN(i)) {
-            	// Numeric ID, therefore an actual event
-
-            	// Check optional fields, only if they have data present
-              if (ev[i].href != null) {
-                expect(ev[i].href).toBeDefined();
-                expect(typeof ev[i].href).toBe('string');
-                if (ev[i].href != '') {
-                  //expect(ev[i].href).toMatch(/^http/);
+          for(var i in ev.events) {
+              if (ev.events[i].href != null) {
+                expect(ev.events[i].href).toBeDefined();
+                expect(typeof ev.events[i].href).toBe('string');
+                if (ev.events[i].href != '') {
+                  //expect(ev.events[i].href).toMatch(/^http/);
   			    }
               }
-              if (ev[i].icon != null) {
-                expect(ev[i].icon).toBeDefined();
-                expect(typeof ev[i].icon).toBe('string');
+              if (ev.events[i].icon != null) {
+                expect(ev.events[i].icon).toBeDefined();
+                expect(typeof ev.events[i].icon).toBe('string');
               }
-
-            	// Check required fields
-              expect(ev[i].name).toBeDefined();
-              expect(ev[i].start_date).toBeDefined();
-              expect(ev[i].end_date).toBeDefined();
-              expect(ev[i].description).toBeDefined();
-              expect(ev[i].href).toBeDefined();
-              expect(ev[i].icon).toBeDefined();
-              expect(ev[i].attendee_count).toBeDefined();
-              expect(ev[i].uri).toBeDefined();
-              expect(ev[i].verbose_uri).toBeDefined();
-              expect(ev[i].comments_uri).toBeDefined();
-              expect(ev[i].talks_uri).toBeDefined();
-              expect(ev[i].website_uri).toBeDefined();
-              expect(typeof ev[i].name).toBe('string');
-              expect(typeof ev[i].start_date).toBe('string');
-              expect(typeof ev[i].end_date).toBe('string');
-              expect(typeof ev[i].description).toBe('string');
-              expect(typeof ev[i].attendee_count).toBe('number');
-              expect(typeof ev[i].uri).toBe('string');
-              expect(typeof ev[i].verbose_uri).toBe('string');
-              expect(typeof ev[i].comments_uri).toBe('string');
-              expect(typeof ev[i].talks_uri).toBe('string');
-              expect(typeof ev[i].website_uri).toBe('string');
-
-  			// Check for more detail in the events
-              frisby.create('Event detail for ' + ev[i].name)
-                .get(ev[i].verbose_uri)
+         
+             // Check required fields
+              expect(ev.events[i].name).toBeDefined();
+              expect(ev.events[i].start_date).toBeDefined();
+              expect(ev.events[i].end_date).toBeDefined();
+              expect(ev.events[i].description).toBeDefined();
+              expect(ev.events[i].href).toBeDefined();
+              expect(ev.events[i].icon).toBeDefined();
+              expect(ev.events[i].attendee_count).toBeDefined();
+              expect(ev.events[i].uri).toBeDefined();
+              expect(ev.events[i].verbose_uri).toBeDefined();
+              expect(ev.events[i].comments_uri).toBeDefined();
+              expect(ev.events[i].talks_uri).toBeDefined();
+              expect(ev.events[i].website_uri).toBeDefined();
+              expect(typeof ev.events[i].name).toBe('string');
+              expect(typeof ev.events[i].start_date).toBe('string');
+              expect(typeof ev.events[i].end_date).toBe('string');
+              expect(typeof ev.events[i].description).toBe('string');
+              expect(typeof ev.events[i].attendee_count).toBe('number');
+              expect(typeof ev.events[i].uri).toBe('string');
+              expect(typeof ev.events[i].verbose_uri).toBe('string');
+              expect(typeof ev.events[i].comments_uri).toBe('string');
+              expect(typeof ev.events[i].talks_uri).toBe('string');
+              expect(typeof ev.events[i].website_uri).toBe('string');
+  		
+          // Check for more detail in the events
+              frisby.create('Event detail for ' + ev.events[i].name)
+                .get(ev.events[i].verbose_uri)
                 .expectStatus(200)
                 .expectHeader("content-type", "application/json; charset=utf8")
                 .afterJSON(function(detailedEv) {
-                  expect(detailedEv[0]).toBeDefined();
-                  expect(typeof detailedEv[0]).toBe('object');
-                  var evt = detailedEv[0];
+                  expect(detailedEv.events[0]).toBeDefined();
+                  expect(typeof detailedEv.events[0]).toBe('object');
+                  var evt = detailedEv.events[0];
                   expect(evt.name).toBeDefined();
                   expect(evt.start_date).toBeDefined();
                   expect(evt.end_date).toBeDefined();
@@ -99,7 +96,7 @@ frisby.create('Initial discovery')
                   expect(evt.location).toBeDefined();
                   expect(evt.attendee_count).toBeDefined();
                   expect(evt.comments_enabled).toBeDefined();
-                  expect(evt.event_comment_count).toBeDefined();
+                  expect(evt.event_comments_count).toBeDefined();
                   expect(evt.cfp_start_date).toBeDefined();
                   expect(evt.cfp_end_date).toBeDefined();
                   expect(evt.cfp_url).toBeDefined();
@@ -130,7 +127,7 @@ frisby.create('Initial discovery')
                   expect(typeof evt.location).toBe('string');
                   expect(typeof evt.attendee_count).toBe('number');
                   expect(typeof evt.comments_enabled).toBe('number');
-                  expect(typeof evt.event_comment_count).toBe('number');
+                  expect(typeof evt.event_comments_count).toBe('number');
                   if (evt.cfp_start_date != null) {
                     expect(typeof evt.cfp_start_date).toBe('string');
                   }
@@ -157,16 +154,14 @@ frisby.create('Initial discovery')
 				  .toss();
 
 
+                  
 
 
-                })
-              .toss();
+                } ).toss();
             }
-  		  }
-        })
-      .toss();
+  		  })
+          .toss();
     }
-
   })
 .toss();
 
