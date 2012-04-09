@@ -49,7 +49,7 @@ class HtmlView extends ApiView
             } else {
                 // value, with hyperlinked hyperlinks
                 $value = htmlentities($value, ENT_COMPAT, 'UTF-8');
-                if (strpos($value, 'http://') === 0) {
+                if ((strpos($value, 'http://') === 0) || (strpos($value, 'https://') === 0)) {
                     echo "<a href=\"" . $value . "\">" . $value . "</a>";
                 } else {
                     echo $value;

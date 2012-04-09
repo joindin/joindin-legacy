@@ -63,15 +63,15 @@ class ApiMapper {
         $request = $this->_request;
         $count = count($list);
         $meta['count'] = $count; 
-        $meta['this_page'] = 'http://' . $request->host . $request->path_info .'?' . http_build_query($request->parameters);
+        $meta['this_page'] = $request->base . $request->path_info .'?' . http_build_query($request->parameters);
         $next_params = $prev_params = $request->parameters;
 
         if($count > 1) {
             $next_params['start'] = $next_params['start'] + $next_params['resultsperpage'];
-            $meta['next_page'] = 'http://' . $request->host . $request->path_info . '?' . http_build_query($next_params);
+            $meta['next_page'] = $request->base . $request->path_info . '?' . http_build_query($next_params);
             if($prev_params['start'] >= $prev_params['resultsperpage']) {
                 $prev_params['start'] = $prev_params['start'] - $prev_params['resultsperpage'];
-                $meta['prev_page'] = 'http://' . $request->host . $request->path_info . '?' . http_build_query($prev_params);
+                $meta['prev_page'] = $request->base . $request->path_info . '?' . http_build_query($prev_params);
             }
         }
         return $meta;

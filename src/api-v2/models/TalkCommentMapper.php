@@ -80,20 +80,20 @@ class TalkCommentMapper extends ApiMapper {
 
     public function transformResults($results, $verbose) {
         $list = parent::transformResults($results, $verbose);
-        $host = $this->_request->host;
+        $base = $this->_request->base;
         $version = $this->_request->version;
 
         // add per-item links 
         if (is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
-                $list[$key]['uri'] = 'http://' . $host . '/' . $version . '/talk_comments/' . $row['ID'];
-                $list[$key]['verbose_uri'] = 'http://' . $host . '/' . $version . '/talk_comments/' . $row['ID'] . '?verbose=yes';
-                $list[$key]['talk_uri'] = 'http://' . $host . '/' . $version . '/talks/' 
+                $list[$key]['uri'] = $base . '/' . $version . '/talk_comments/' . $row['ID'];
+                $list[$key]['verbose_uri'] = $base . '/' . $version . '/talk_comments/' . $row['ID'] . '?verbose=yes';
+                $list[$key]['talk_uri'] = $base . '/' . $version . '/talks/' 
                     . $row['talk_id'];
-                $list[$key]['talk_comments_uri'] = 'http://' . $host . '/' . $version . '/talks/' 
+                $list[$key]['talk_comments_uri'] = $base . '/' . $version . '/talks/' 
                     . $row['talk_id'] . '/comments';
                 if($row['user_id']) {
-                    $list[$key]['user_uri'] = 'http://' . $host . '/' . $version . '/users/' 
+                    $list[$key]['user_uri'] = $base . '/' . $version . '/users/' 
                         . $row['user_id'];
                 }
             }

@@ -31,6 +31,14 @@ class Request
             $this->host = $_SERVER['HTTP_HOST'];
         }
 
+        if (isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == "on")) {
+            $this->scheme = "https://";
+        } else {
+            $this->scheme = "http://";
+        }
+
+        $this->base = $this->scheme . $this->host;
+
         $this->parseParameters();
     }
 
