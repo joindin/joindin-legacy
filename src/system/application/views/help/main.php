@@ -13,7 +13,7 @@
 
 <h3>Users</h3>
 
-<p>For all users, including speakers and event organisers, you can find out all about your joind.in account in our <a href="/help/user_help">user's guid</a></p>
+<p>For all users, including speakers and event organisers, you can find out all about your joind.in account in our <a href="/help/user_help">user's guide</a></p>
 
 <h3>Everyone</h3>
 
