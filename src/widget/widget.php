@@ -35,7 +35,7 @@ joindin.draw = function(talkId, node) {
 			return;
 		}
 	}
-	jQuery.getJSON(joindin.urlBase_api + '/v2/talks/' + talkId + '?format=json&callback=?', {talk:talkId}, function(data){joindin.gotData(data, node);});
+	jQuery.getJSON(joindin.urlBase_api + '/v2.1/talks/' + talkId + '?format=json&callback=?', {talk:talkId}, function(data){joindin.gotData(data, node);});
 }
 
 joindin.gotData = function(data, node) {
@@ -43,7 +43,7 @@ joindin.gotData = function(data, node) {
 		// No content returned, do nothing
 		return;
 	}
-	data = data[0];
+	data = data.talks[0];
 	var content = "";
 	if (!joindin.gotData.embeddedStyles && joindin.embedStyle) {
 		joindin.gotData.embeddedStyles = true;
