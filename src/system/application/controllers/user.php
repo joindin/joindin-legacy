@@ -296,6 +296,7 @@ class User extends AuthAbstract
             'user'  => 'required|trim|callback_usern_check|xss_clean',
             'pass'  => 'required|trim|matches[passc]|md5',
             'passc' => 'required|trim',
+            'twitter_username' => 'required|trim|callback_twitter_check',
             'email' => 'required|trim|valid_email',
             'cinput'=> 'required|callback_cinput_check'
         );
@@ -468,6 +469,7 @@ class User extends AuthAbstract
             'email'     => 'required',
             'pass'      => 'trim|matches[pass_conf]|md5',
             'pass_conf' => 'trim',
+            'twitter_username' => 'required|trim|callback_twitter_check['.$uid.']',
         );
         $this->validation->set_rules($rules);
         $this->validation->set_fields($fields);
@@ -615,6 +617,31 @@ class User extends AuthAbstract
         if (!empty($ret)) {
             $this->validation->_error_messages['usern_check']
                 = 'Username already exists!';
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Validates whether the twitter name already exists.
+     *
+     * @param string $str The twitter name to check
+     *
+     * @return bool
+     */
+    function twitter_check($str, $uid = -1)
+    {
+        // Strip away the @ if found
+        if ($str[1] == '@') {
+            $str = substr($str, 1);
+        }
+        $user = $this->user_model->getUserbyTwitter($str);
+        if (empty($user)) return true;
+
+        if ($uid == -1 || $user[0]->ID != $uid) {
+            $this->validation->_error_messages['twitter_check']
+                = "This twitter name is already used!";
             return false;
         }
 
