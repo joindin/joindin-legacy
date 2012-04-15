@@ -3,7 +3,7 @@
 
 Vagrant::Config.run do |config|
   config.vm.box = 'puppet-centos-56-64'
-  #config.vm.box_url = 'http://dl.dropbox.com/u/1627760/centos-6.0-x86_64.box'
+  config.vm.box_url = 'http://puppetlabs.s3.amazonaws.com/pub/centos56_64.box'
 
   # Forward a port from the guest to the host, which allows for outside
   # computers to access the VM, whereas host only networking does not.
