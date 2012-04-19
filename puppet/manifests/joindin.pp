@@ -24,7 +24,7 @@ php::module { mysql: }
 
 apache::vhost{ 'dev.joind.in':
 	docroot	=>	'/vagrant/src',
-	template => 	'/vagrant/templates/virtualhost/vhost.conf.erb',
+	template => 	'/vagrant/puppet/templates/virtualhost/vhost.conf.erb',
 }
 
 class something::db {
@@ -41,9 +41,9 @@ exec { 'patch-db':
 
 file { 'database-config':
     path => '/vagrant/src/system/application/config/database.php',
-    source => '/vagrant/templates/database.php.erb',
+    source => '/vagrant/puppet/templates/database.php.erb',
 }
 file { 'application-config':
     path => '/vagrant/src/system/application/config/config.php',
-    source => '/vagrant/templates/config.php.erb',
+    source => '/vagrant/puppet/templates/config.php.erb',
 }
