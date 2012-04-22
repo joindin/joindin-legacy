@@ -12,7 +12,7 @@ define php::module {
     include php
 
     package { "php-${name}":
-        name => $operatingsystem ? {
+        name => $::operatingsystem ? {
             ubuntu  => "php5-${name}",
             debian  => "php5-${name}",
             default => "php-${name}",

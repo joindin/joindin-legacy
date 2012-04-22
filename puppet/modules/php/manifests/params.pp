@@ -12,38 +12,38 @@ class php::params  {
 
 # MODULES INTERNAL VARIABLES
 # (Modify only to adapt to unsupported OSes)
-    $packagename = $operatingsystem ? {
+    $packagename = $::operatingsystem ? {
             ubuntu  => "php5",
             debian  => "php5",
             suse    => "php5",
             default => "php",
             }
 
-    $packagenamecommon = $operatingsystem ? {
+    $packagenamecommon = $::operatingsystem ? {
             ubuntu  => "php5-common",
             debian  => "php5-common",
             default => "php-common",
             }
 
-    $configfile = $operatingsystem ? {
+    $configfile = $::operatingsystem ? {
         ubuntu  => "/etc/php5/apache2/php.ini",
         debian  => "/etc/php5/apache2/php.ini",
         default => "/etc/php.ini",
     }
 
-    $configfile_mode = $operatingsystem ? {
+    $configfile_mode = $::operatingsystem ? {
         default => "644",
     }
 
-    $configfile_owner = $operatingsystem ? {
+    $configfile_owner = $::operatingsystem ? {
         default => "root",
     }
 
-    $configfile_group = $operatingsystem ? {
+    $configfile_group = $::operatingsystem ? {
         default => "root",
     }
 
-    $configdir = $operatingsystem ? {
+    $configdir = $::operatingsystem ? {
         ubuntu  => "/etc/php5/conf.d",
         debian  => "/etc/php5/conf.d",
         default => "/etc/php/conf.d",
@@ -59,7 +59,7 @@ class php::params  {
 
     case $base_source {
         '': {
-            $general_base_source = $puppetversion ? {
+            $general_base_source = $::puppetversion ? {
                 /(^0.25)/ => "puppet:///modules",
                 /(^0.)/   => "puppet://$servername",
                 default   => "puppet:///modules",
