@@ -90,11 +90,13 @@ file { 'application-config':
 
 # Create directory for user-generated content
 file { 'upload-directory':
-  ensure   => directory,
-  path     => '/tmp/ctokens',
-  mode     => '0644',
-  owner    => 'apache',
-  group    => 'apache',
+  ensure  => directory,
+  path    => '/tmp/ctokens',
+  mode    => '0644',
+  owner   => 'apache',
+  group   => 'apache',
+  require => Service['apache'],
+  before  => Notify['running'],
 }
 
 # Announce success message
