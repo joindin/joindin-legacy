@@ -29,6 +29,8 @@ php::module { 'mysql': }
 
 file { 'replace-php-ini':
   path    => '/etc/php.ini',
+  owner   => 'root',
+  group   => 'root',
   require => Package['php'],
   notify  => Service['apache'],
   source  => '/vagrant/puppet/templates/php.ini.erb',
