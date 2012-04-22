@@ -29,12 +29,7 @@ php::module { 'mysql': }
 
 file { 'replace-php-ini':
   path    => '/etc/php.ini',
-  #mode   => "${php::params::configfile_mode}",
-  #owner  => "${php::params::configfile_owner}",
-  #group  => "${php::params::configfile_group}",
-  #require => File['php.ini'],
-  #notify  => Service['apache'],
-  #ensure => present,
+  notify  => Service['apache'],
   source  => '/vagrant/puppet/templates/php.ini.erb',
 }
 
