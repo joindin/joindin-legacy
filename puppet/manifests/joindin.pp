@@ -27,6 +27,17 @@ apache::vhost { $host:
 # Install PHP modules
 php::module { 'mysql': }
 
+file { 'replace-php-ini':
+  path    => '/etc/php.ini',
+  #mode   => "${php::params::configfile_mode}",
+  #owner  => "${php::params::configfile_owner}",
+  #group  => "${php::params::configfile_group}",
+  #require => File['php.ini'],
+  #notify  => Service['apache'],
+  #ensure => present,
+  source  => '/vagrant/puppet/templates/php.ini.erb',
+}
+
 # Create and grant privileges to joindin database
 exec { 'create-db':
   unless  => "mysql -u${dbuser} -p${dbpass} ${dbname}",
@@ -82,7 +93,7 @@ file { 'application-config':
 }
 
 # Create directory for user-generated content
-file { 'upload_directory':
+file { 'upload-directory':
   ensure   => directory,
   path     => '/tmp/ctokens',
   mode     => '0644',
