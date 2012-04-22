@@ -9,6 +9,7 @@
 <% end -%>
     ErrorLog <%= scope.lookupvar('apache::log_dir') %>/<%= name %>-error_log
     CustomLog <%= scope.lookupvar('apache::log_dir') %>/<%= name %>-access_log common
+    SetEnv JOINDIN_DEBUG on
 
    <Directory <%= docroot %>>
                 <IfModule mod_rewrite.c>

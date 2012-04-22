@@ -18,5 +18,11 @@ Vagrant::Config.run do |config|
     puppet.manifests_path = "puppet/manifests"
     puppet.module_path = "puppet/modules"
     puppet.manifest_file = "joindin.pp"
+    puppet.options = [
+      '--verbose',
+      # '--debug',
+      # '--graph',
+      # '--graphdir=/vagrant/puppet/graphs'
+    ]
   end
 end
