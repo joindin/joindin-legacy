@@ -249,7 +249,6 @@ class Talks_model extends Model {
                 t.talk_title,
                 t.ID,
                 count(tc.ID) as ccount,
-                get_talk_rating(t.ID) as tavg,
                 e.ID eid,
                 e.event_name
             from
@@ -273,6 +272,11 @@ class Talks_model extends Model {
         $CI=&get_instance();
         $CI->load->model('talk_speaker_model','tsm');
         foreach ($talks as $k=>$talk) {
+            $sql = "select get_talk_rating(" . $talk->ID . ") as tavg";
+            $rating_result = $this->db->query($sql)->result();
+            $rating = $rating_result[0];
+            $talks[$k]->tavg = $rating->tavg;
+
             $talks[$k]->speaker=$CI->tsm->getTalkSpeakers($talk->ID);
         }
         return $talks;
