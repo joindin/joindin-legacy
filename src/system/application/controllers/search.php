@@ -76,7 +76,15 @@ class Search extends Controller
 
         //success! search the talks and events
         if ($this->validation->run() == true) {
-            $query = 'q:' . urlencode($this->input->post('search_term'));
+            $search_term = ($this->input->post('search_term') == '/') 
+                ? '' : $this->input->post('search_term');
+
+            if (empty($search_term)) {
+                $this->validation->error_string = 'Error: Empty search string!';
+                $this->validation->search_term  = '';
+            }
+
+            $query = 'q:' . urlencode($search_term);
 
             $start    = 0;
             $end      = 0;
@@ -102,7 +110,9 @@ class Search extends Controller
                 $query .= '/end:' . $end;
             }
 
-            redirect('search/' . $query, 'location', 302);
+            if (!empty($search_term)) {
+                redirect('search/' . $query, 'location', 302);
+            }
         }
 
         $results   = null;
