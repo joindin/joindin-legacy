@@ -73,6 +73,7 @@ class Search extends Controller
         );
         $this->validation->set_rules($rules);
         $this->validation->set_fields($fields);
+        $rsegments = array('search','index');
 
         //success! search the talks and events
         if ($this->validation->run() == true) {
@@ -85,6 +86,7 @@ class Search extends Controller
             }
 
             $query = 'q:' . urlencode($search_term);
+            $rsegments['q:'] = $query;
 
             $start    = 0;
             $end      = 0;
@@ -98,6 +100,7 @@ class Search extends Controller
                     $this->input->post('start_day')
                 );
                 $query .= '/start:' . $start;
+                $rsegments['start:'] = $start;
             }
 
             if (!empty($end_mo)) {
@@ -108,15 +111,11 @@ class Search extends Controller
                     $this->input->post('end_day')
                 );
                 $query .= '/end:' . $end;
-            }
-
-            if (!empty($search_term)) {
-                redirect('search/' . $query, 'location', 302);
+                $rsegments['end:'] = $end;
             }
         }
 
         $results   = null;
-        $rsegments = $this->uri->rsegments;
         array_shift($rsegments); // Remove controller
         array_shift($rsegments); // Remove action
 
