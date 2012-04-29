@@ -48,6 +48,11 @@ class Speaker extends Controller
      */
     public function profile()
     {
+        // if the user is not logged in, redirect to the login page
+        if (!$this->user_model->isAuth()) {
+            redirect('user/login');
+        }
+
         $this->load->model('speaker_profile_model', 'sp');
         $this->load->library('gravatar');
 
