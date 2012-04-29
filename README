@@ -112,6 +112,8 @@ npm.  Then run:
 I also found that I needed:
   export NODE_PATH=/usr/local/lib/node_modules
 
+Then run the tests by going to /src/tests/api_tests and running:
+  jasmine-node newapi_spec.js
 
 (I think the below no longer applies)
 - pecl_http
