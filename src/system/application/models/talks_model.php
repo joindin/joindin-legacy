@@ -504,34 +504,20 @@ class Talks_model extends Model {
      * @return the amended array with additional fields
      */
     public function setDisplayFields($det) {
+	$this->load->library('timezone');
+
         $retval = array();
 
         foreach ($det as $talk) {
-            // create datetime object
-            $talk_datetime = new DateTime("@{$talk->date_given}");
 
             // if a timezone is specified, adjust times
             if (!empty($talk->event_tz_cont) && !empty($talk->event_tz_place)) {
-                $event_timezone = new DateTimeZone($talk->event_tz_cont . '/' . $talk->event_tz_place);
+	        $a = $talk->event_tz_cont . '/' . $talk->event_tz_place;
             } else {
-                $event_timezone = new DateTimeZone('UTC');
+                $a = 'UTC';
             }
-            $talk_datetime->setTimezone($event_timezone);
 
-
-            // How much wrong will ->format("U") be if I do it now, due to DST changes?
-            // Only needed until PHP Bug #51051 delivers a better method
-            $unix_offset1 = $event_timezone->getOffset($talk_datetime);
-            $unix_offset2 = $event_timezone->getOffset(new DateTime());
-            $unix_correction = $unix_offset1 - $unix_offset2;
-
-
-            // create datetime object corrected for DST offset
-            $timestamp = $talk->date_given + $unix_correction;
-            $talk_datetime = new DateTime("@{$timestamp}");
-            $talk_datetime->setTimezone($event_timezone);
-
-
+            $talk_datetime = $this->timezone->getDatetimeFromUnixtime($talk->date_given, $a);
 
             // set a datetime string, ignoring talks at midnight and assuming they are without times
             if ($talk_datetime->format('H') != '0') { 
