@@ -17,7 +17,3 @@ To configure:
  start (a number, used for pagination.  Resultset will start this many records into the set, defaults to 0)
  resultsperpage (a number, used for pagination. Defaults to 20, if 0 is passed, all results are returned)
 
-To add credentials for a new consumer:
- - run scripts/generateNewKeys.php (taken entirely from http://toys.lerdorf.com/archives/55-Writing-an-OAuth-Provider-Service.html)
- - run the resulting SQL against the database
- - give consumer key and secret to new consumer, and ask them not to check the secret into source control
