@@ -101,6 +101,13 @@ file { 'upload-directory':
   before  => Notify['running'],
 }
 
+# Set database config for application
+file { 'api-database-config':
+  path   => '/vagrant/src/api-v2/database.php',
+  source => '/vagrant/puppet/templates/database.php.erb',
+  before => Notify['running'],
+}
+
 # Announce success message
 notify { 'running':
   message => "Visit http://${host}:8080 in your browser.",
