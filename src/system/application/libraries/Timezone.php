@@ -12,18 +12,6 @@ class Timezone {
         $this->CI=&get_instance();
     }
     
-    /**
-    * Return the difference from UTC for my machine
-    * @param $tz integer Timezone string
-    */
-    private function _getMyTimeDiff($tz=null) {
-        if (!$tz) { $tz=date_default_timezone_get(); }
-        $here	= new DateTimeZone($tz);
-        $there	= new DateTimeZone('UTC');
-        $offset	= $here->getOffset(new DateTime("now", $here))-$there->getOffset(new DateTime("now", $there));
-        
-        return $offset;
-    }
     /** 
     * Find the local time at the event...
     * @param $evt_offset integer Event's offset from UTC
