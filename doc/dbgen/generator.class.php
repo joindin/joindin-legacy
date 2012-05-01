@@ -216,7 +216,7 @@ class Generator {
                 $status = $this->_chance(TALK_SPEAKER_PENDING) ? "pending" : "";
 
                 if (! $first) echo ",\n";
-                printf("(%d, '%s', NULL, %s, '%s')", $talk->id, $speaker_name, $speaker_id, $status);
+                printf("(%d, '%s', NULL, %s, %s)", $talk->id, $speaker_name, $speaker_id, $status ? "'pending'" : "null");
 
                 $first = false;
             }
