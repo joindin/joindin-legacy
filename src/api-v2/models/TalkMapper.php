@@ -146,4 +146,38 @@ class TalkMapper extends ApiMapper {
         }
         return $retval;
     }
+
+    public function getTalksBySpeaker($user_id, $resultsperpage, $start, $verbose = false) {
+        // based on getBasicSQL() but needs the speaker table joins
+        $sql = 'select t.*, l.lang_name, e.event_tz_place, e.event_tz_cont, '
+            . '(select COUNT(ID) from talk_comments tc where tc.talk_id = t.ID) as comment_count, '
+            . '(select get_talk_rating(t.ID)) as avg_rating, '
+            . 'CASE 
+                WHEN (((t.date_given - 3600*24) < '.mktime(0,0,0).') and (t.date_given + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
+                ELSE 0
+               END as comments_enabled '
+            . 'from talks t '
+            . 'inner join events e on e.ID = t.event_id '
+            . 'inner join lang l on l.ID = t.lang '
+            . 'left join talk_speaker ts on t.id = ts.talk_id '
+            . 'where t.active = 1 and '
+            . 'e.active = 1 and '
+            . '(e.pending = 0 or e.pending is NULL) and '
+            . '(e.private <> "y" or e.private is NULL) and '
+            . 'ts.speaker_id = :user_id';
+        $sql .= $this->buildLimit($resultsperpage, $start);
+
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute(array(
+            ':user_id' => $user_id
+            ));
+        if($response) {
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $retval = $this->transformResults($results, $verbose);
+            return $retval;
+        }
+        return false;
+
+    }
+
 }
