@@ -109,6 +109,8 @@ class UserMapper extends ApiMapper
                 $list[$key]['website_uri'] = 'http://joind.in/user/view/' . $row['ID'];
                 $list[$key]['talks_uri'] = $base . '/' . $version . '/users/' 
                     . $row['ID'] . '/talks/';
+                $list[$key]['attended_events_uri'] = $base . '/' . $version . '/users/' 
+                    . $row['ID'] . '/attended/';
             }
         }
         $retval = array();
