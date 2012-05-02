@@ -326,7 +326,7 @@ class EventMapper extends ApiMapper
            foreach($hosts as $person) {
                $entry = array();
                $entry['host_name'] = $person['full_name'];
-               $entry['host_uri'] = $base . '/' . $version . ' /users/' . $person['user_id'];
+               $entry['host_uri'] = $base . '/' . $version . '/users/' . $person['user_id'];
                $retval[] = $entry;
            }
         }
