@@ -164,7 +164,8 @@ class TalkMapper extends ApiMapper {
             . 'e.active = 1 and '
             . '(e.pending = 0 or e.pending is NULL) and '
             . '(e.private <> "y" or e.private is NULL) and '
-            . 'ts.speaker_id = :user_id';
+            . 'ts.speaker_id = :user_id '
+            . 'order by t.date_given desc';
         $sql .= $this->buildLimit($resultsperpage, $start);
 
         $stmt = $this->_db->prepare($sql);
