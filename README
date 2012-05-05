@@ -136,6 +136,18 @@ Extensions
 In order to run tests make sure you have the following extensions installed and
 configured. This library can be ignored if you are not planning on running
 tests.
+
+To run the frisby tests (frisby.js), you will first need to install node.js and
+npm.  Then run:
+  npm install -g frisby jasmine-node
+
+I also found that I needed:
+  export NODE_PATH=/usr/local/lib/node_modules
+
+Then run the tests by going to /src/tests/api_tests and running:
+  jasmine-node newapi_spec.js
+
+(I think the below no longer applies)
 - pecl_http
   $ pecl install pecl_http
   

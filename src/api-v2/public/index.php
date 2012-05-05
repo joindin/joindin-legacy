@@ -90,7 +90,7 @@ switch ($version) {
         break;
 }
 if(isset($request->user_id)) {
-    $return_data['meta']['your_user_id'] = $request->user_id;
+    $return_data['meta']['user_uri'] = $request->base . '/' . $request->version . '/users/' . $request->user_id;
 }
 
 // Handle output

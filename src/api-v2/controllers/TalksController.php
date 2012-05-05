@@ -52,14 +52,25 @@ class TalksController extends ApiController {
                     throw new BadRequestException('You must log in to comment');
                 }
 
+                $comment = $request->getParameter('comment');
+                if(empty($comment)) {
+                    throw new BadRequestException('The field "comment" is required');
+                }
+
+                $rating = $request->getParameter('rating');
+                if(empty($rating)) {
+                    throw new BadRequestException('The field "rating" is required');
+                }
+
                 $comment_mapper = new TalkCommentMapper($db, $request);
                 $data['user_id'] = $request->user_id;
                 $data['talk_id'] = $talk_id;
-                $data['comment'] = $request->getParameter('comment');
-                $data['rating'] = $request->getParameter('rating');
+                $data['comment'] = $comment;
+                $data['rating'] = $rating;
 
                 $comment_mapper->save($data);
-                $this->getAction($request, $db);
+                header("Location: " . $request->base . $request->path_info);
+                exit;
             }
         } else {
             throw new Exception("method not yet supported - sorry");

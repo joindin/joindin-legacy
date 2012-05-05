@@ -216,7 +216,7 @@ class Generator {
                 $status = $this->_chance(TALK_SPEAKER_PENDING) ? "pending" : "";
 
                 if (! $first) echo ",\n";
-                printf("(%d, '%s', NULL, %s, '%s')", $talk->id, $speaker_name, $speaker_id, $status);
+                printf("(%d, '%s', NULL, %s, %s)", $talk->id, $speaker_name, $speaker_id, $status ? "'pending'" : "null");
 
                 $first = false;
             }
@@ -492,18 +492,20 @@ class Generator {
             // Call for papers
             if (! $future && $this->_chance(EVENT_HAS_CFP)) {
                 // @TODO: Add CFP
-                $event->cfp_start = 0;
-                $event->cfp_end = 0;
+                $event->cfp_start = null;
+                $event->cfp_end = null;
             } else {
-                $event->cfp_start = 0;
-                $event->cfp_end = 0;
+                $event->cfp_start = null;
+                $event->cfp_end = null;
             }
 
             if (! $first) echo ",\n";
 
-            printf ("('%s', %d, %d, %f, %f, %d, '%s', '%s', %d, '%s', '%s', %d, '%s', '%s', %d, %d, %d, %d, '%s', '%s', '%s', '%s', '%s')",
+            printf ("('%s', %d, %d, %f, %f, %d, '%s', '%s', %d, '%s', '%s', %d, '%s', '%s', %s, %s, %d, %d, '%s', '%s', '%s', '%s', '%s')",
                              $event->name, $event->start, $event->end, $event->lat, $event->long, $id, $event->location, $event->description,
-                             1, $event->stub, $event->icon, 0, $event->hash, $event->url, $event->cfp_start, $event->cfp_end,
+                             1, $event->stub, $event->icon, 0, $event->hash, $event->url, 
+                             $event->cfp_start ? $event->cfp_start : 'null', 
+                             $event->cfp_end ? $event->cfp_end : 'null',
                              0, 0, "Europe", "Amsterdam", "", "", $event->url."/cfp");
 
             $first = false;

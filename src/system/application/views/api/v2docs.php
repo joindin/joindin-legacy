@@ -88,66 +88,61 @@ This is your starting point and will show you where you can go:
 
 <p><a href="https://api.joind.in/v2.1/events">try it</a></p>
 
-<p>Shows a list of events, with a variety of filter/sorting behaviour supported (see above entry).  The default is all events sorted by date descending</p>
+<p>Shows a list of events, with a variety of filter/sorting behaviour supported (see above entry).  The default is all events sorted by date descending.  As ever, you can use the links to get to other information, and the <b>verbose</b>, <b>start</b>, <b>requestsperpage</b> and <b>format</b> parameters as you need to.  The "attending" field will be set to 1 when there is an authenticated user who is marked as attending this event.</p>
 
 Each result looks something like this:</p>
 <blockquote>
 <ul>
-<li><strong>name:</strong> Dutch PHP Conference 2011</li>
-<li><strong>start_date:</strong> 2011-05-19T00:00:00+02:00</li>
-<li><strong>end_date:</strong> 2011-05-21T23:59:59+02:00</li>
-<li><strong>description:</strong> Ibuildings is proud to organise the fifth Dutch PHP Conference on May 20 and 21, plus a pre-conference tutorial day on May 19. Both programs will be completely in English so the only Dutch thing about it is the location. Keywords for these days: Know-how, Technology, Best Practices, Networking, Tips &amp; Tricks.</li>
-<li><strong>href:</strong> <a href="http://www.phpconference.nl/">http://www.phpconference.nl/</a></li>
-<li><strong>attendee_count:</strong> 34</li>
-<li><strong>icon:</strong> icon-90x90.png</li>
+<li><strong>name:</strong> Whisky Web Conference</li>
+<li><strong>start_date:</strong> 2012-04-12T00:00:00+01:00</li>
+<li><strong>end_date:</strong> 2012-04-14T23:59:59+01:00</li>
+<li><strong>description:</strong> THE WEB CONFERENCE IN SCOTLAND
+
+The inaugural Whisky Web conference kicks off in Edinburgh on the 13th and 14th of April 2012. A web conference created for the web community, by the web community; Whisky Web will have something to offer everyone who works with the web, be they a designer, a developer or something in between. This is an amazing opportunity to get your geek on in Scotland's inspiring capital.
+
+More at http://whiskyweb.co.uk/</li>
+<li><strong>href:</strong> </li>
+<li><strong>attendee_count:</strong> 35</li>
+<li><strong>attending:</strong> 1</li>
+<li><strong>event_comments_count:</strong> 4</li>
+<li><strong>icon:</strong> logo.90x90_.png</li>
 <li><strong>tags:</strong> <ul>
+<li><strong>0:</strong> php</li>
+<li><strong>1:</strong> ruby</li>
+<li><strong>2:</strong> python</li>
+<li><strong>3:</strong> web</li>
 </ul>
 </li>
-<li><strong>uri:</strong> <a href="http://api.joind.in/v2.1/events/603">http://api.joind.in/v2.1/events/603</a></li>
-<li><strong>verbose_uri:</strong> <a href="http://api.joind.in/v2.1/events/603?verbose=yes">http://api.joind.in/v2.1/events/603?verbose=yes</a></li>
-<li><strong>comments_uri:</strong> <a href="http://api.joind.in/v2.1/events/603/comments">http://api.joind.in/v2.1/events/603/comments</a></li>
-<li><strong>talks_uri:</strong> <a href="http://api.joind.in/v2.1/events/603/talks">http://api.joind.in/v2.1/events/603/talks</a></li>
-<li><strong>website_uri:</strong> <a href="http://joind.in/event/view/603">http://joind.in/event/view/603</a></li>
-<li><strong>humane_website_uri:</strong> <a href="http://joind.in/event/dpc11">http://joind.in/event/dpc11</a></li>
+<li><strong>uri:</strong> <a href="http://api.joind.in/v2.1/events/886">http://api.joind.in/v2.1/events/886</a></li>
+<li><strong>verbose_uri:</strong> <a href="http://api.joind.in/v2.1/events/886?verbose=yes">http://api.joind.in/v2.1/events/886?verbose=yes</a></li>
+<li><strong>comments_uri:</strong> <a href="http://api.joind.in/v2.1/events/886/comments">http://api.joind.in/v2.1/events/886/comments</a></li>
+<li><strong>talks_uri:</strong> <a href="http://api.joind.in/v2.1/events/886/talks">http://api.joind.in/v2.1/events/886/talks</a></li>
+<li><strong>website_uri:</strong> <a href="http://joind.in/event/view/886">http://joind.in/event/view/886</a></li>
+<li><strong>humane_website_uri:</strong> <a href="http://joind.in/event/whiskyweb">http://joind.in/event/whiskyweb</a></li>
 </ul>
 </blockquote>
 
 <h3>Request: GET /events/[id]/talks</h3>
 <h3>Request: GET /talks/[id]</h3>
 
-<p><a href="https://api.joind.in/v2.1/events/110/talks">try it</a></p>
+<p><a href="https://api.joind.in/v2.1/events/886/talks">try it</a></p>
 
 <p>Following the link to the talks for an event gives a list.  The <b>format</b>, <b>verbose</b>, <b>start</b> and <b>requestsperpage</b> parameters are valid.  Each talk entry will look something like this:</p>
 
 <blockquote>
- <ul>
-<li><strong>talk_title:</strong> ZeroMQ Is The Answer</li>
-<li><strong>talk_description:</strong> Using Mikko Koppanen's PHP ZMQ extension we will look at how you can easily distribute work to background processes, provide flexible service brokering for your next service oriented architecture, and manage caches efficiently and easily with just PHP and the ZeroMQ libraries. Whether the problem is asynchronous communication, message distribution, process management or just about anything, ZeroMQ can help you build an architecture that is more resilient, more scalable and more flexible, without introducing unnecessary overhead or requiring a heavyweight queue manager node.
-</li>
-<li><strong>start_date:</strong> 2011-05-20T10:45:00+02:00</li>
-<li><strong>average_rating:</strong> 0</li>
-<li><strong>comments_enabled:</strong> 0</li>
-<li><strong>comment_count:</strong> 0</li>
+<ul>
+<li><strong>talk_title:</strong> Estimation, or &quot;How To Dig Your Own Grave&quot;</li>
+<li><strong>talk_description:</strong> Clients need to know how much a project will cost. Waterfall development is always late and over-budget. Agile development is done when it's done. You're left with estimates that you know are too low and then you squeeze them anyway. It shouldn't be this way. We'll look at how this happens, early warning signs, ways out and ways of avoiding it in the first place.</li>
+<li><strong>slides_link:</strong> <a href="http://merewood.org/estimation-or-how-to-dig-your-own-grave/">http://merewood.org/estimation-or-how-to-dig-your-own-grave/</a></li>
+<li><strong>language:</strong> English - UK</li>
+<li><strong>start_date:</strong> 2012-04-13T09:50:00+01:00</li>
+<li><strong>average_rating:</strong> 5</li>
+<li><strong>comments_enabled:</strong> 1</li>
+<li><strong>comment_count:</strong> 12</li>
 <li><strong>speakers:</strong> <ul>
 <li><strong>0:</strong> <ul>
-<li><strong>speaker_name:</strong> Ian Barber</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><strong>tracks:</strong> <ul>
-<li><strong>0:</strong> <ul>
-<li><strong>track_name:</strong> Track 2</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><strong>uri:</strong> <a href="http://api.joind.in/v2.1/talks/3219">http://api.joind.in/v2.1/talks/3219</a></li>
-<li><strong>verbose_uri:</strong> <a href="http://api.joind.in/v2.1/talks/3219?verbose=yes">http://api.joind.in/v2.1/talks/3219?verbose=yes</a></li>
-<li><strong>website_uri:</strong> <a href="http://joind.in/talk/view/3219">http://joind.in/talk/view/3219</a></li>
-<li><strong>comments_uri:</strong> <a href="http://api.joind.in/v2.1/talks/3219/comments">http://api.joind.in/v2.1/talks/3219/comments</a></li>
-<li><strong>verbose_comments_uri:</strong> <a href="http://api.joind.in/v2.1/talks/3219/comments?verbose=yes">http://api.joind.in/v2.1/talks/3219/comments?verbose=yes</a></li>
-<li><strong>event_uri:</strong> <a href="http://api.joind.in/v2.1/events/603">http://api.joind.in/v2.1/events/603</a></li>
+<li><strong>speaker_name:</strong> Rowan Merewood</li>
+<li><strong>speaker_uri:</strong> <a href="http://api.joind.in/v2.1/users/118">http://api.joind.in/v2.1/users/118</a></li>
 </ul>
 </blockquote>
 
@@ -156,18 +151,82 @@ Each result looks something like this:</p>
 
 <p>The talk comments (note that event comments are a different thing) include a rating and comment, and if the comment was made by a logged-in user, a link to their user account. The <b>format</b>, <b>start</b> and <b>requestsperpage</b> parameters are valid, and the record for each comment looks something like this:</p>
 
+<p><a href="http://api.joind.in/v2.1/talks/6287/comments">try it</a></p>
+
 <blockquote>
 <ul>
 <li><strong>rating:</strong> 5</li>
-<li><strong>comment:</strong> Very interesting, we are currently implementing CI and the Hudson section of this talk was most enlightening.</li>
-<li><strong>user_display_name:</strong> Andy Martin</li>
-<li><strong>talk_title:</strong> Quality Assurance in PHP Projects</li>
-<li><strong>created_date:</strong> 2010-06-14T16:23:05+02:00</li>
-<li><strong>uri:</strong> <a href="http://api.joindin.local/v2.1/talk_comments/4685">http://api.joindin.local/v2.1/talk_comments/4685</a></li>
-<li><strong>verbose_uri:</strong> <a href="http://api.joindin.local/v2.1/talk_comments/4685?verbose=yes">http://api.joindin.local/v2.1/talk_comments/4685?verbose=yes</a></li>
-<li><strong>talk_uri:</strong> <a href="http://api.joindin.local/v2.1/talks/1525">http://api.joindin.local/v2.1/talks/1525</a></li>
-<li><strong>talk_comments_uri:</strong> <a href="http://api.joindin.local/v2.1/talks/1525/comments">http://api.joindin.local/v2.1/talks/1525/comments</a></li>
-<li><strong>user_uri:</strong> <a href="http://api.joindin.local/v2.1/users/3008">http://api.joindin.local/v2.1/users/3008</a></li>
+<li><strong>comment:</strong> He gave some interesting pieces of info and theories that are applicable to professional world!
+
+Very Good</li>
+<li><strong>user_display_name:</strong> Martin Moscosa</li>
+<li><strong>talk_title:</strong> Estimation, or &quot;How To Dig Your Own Grave&quot;</li>
+<li><strong>created_date:</strong> 2012-04-14T13:45:22+01:00</li>
+<li><strong>uri:</strong> <a href="http://api.joind.in/v2.1/talk_comments/19450">http://api.joind.in/v2.1/talk_comments/19450</a></li>
+<li><strong>verbose_uri:</strong> <a href="http://api.joind.in/v2.1/talk_comments/19450?verbose=yes">http://api.joind.in/v2.1/talk_comments/19450?verbose=yes</a></li>
+<li><strong>talk_uri:</strong> <a href="http://api.joind.in/v2.1/talks/6287">http://api.joind.in/v2.1/talks/6287</a></li>
+<li><strong>talk_comments_uri:</strong> <a href="http://api.joind.in/v2.1/talks/6287/comments">http://api.joind.in/v2.1/talks/6287/comments</a></li>
+<li><strong>user_uri:</strong> <a href="http://api.joind.in/v2.1/users/18140">http://api.joind.in/v2.1/users/18140</a></li>
 </ul>
 </blockquote> 
+
+<h3>Request: GET /events/[event_id]/comments</h3>
+<h3>Request: GET /events/[event_id]/comments/[comment_id]</h3>
+
+<p>The comments show who made the comment and their comment and rating. The <b>format</b>, <b>start</b> and <b>requestsperpage</b> parameters are valid, and the record for each comment looks something like this:</p>
+
+<p><a href="http://api.joind.in/v2.1/events/886/comments">try it</a></p>
+
+<blockquote>
+<ul>
+<li><strong>comment:</strong> This was a great opportunity to learn. The selection of speakers was very impressive, and the talks I attended were all interesting.
+
+All credit to the organisers for making it happen, especially at such short notice.
+For me, as a local (and a Scot), the low price made it a &quot;no-brainer&quot; to attend at my own cost
+(for that price I didn't expect lunch and dinner to be included too).
+
+Well done and thanks to the various sponsors (including Joe) - you deserved the unashamed plugs at the end of the day !
+
+I hope it will happen again next year.</li>
+<li><strong>created_date:</strong> 2012-04-15T12:51:25+01:00</li>
+<li><strong>user_display_name:</strong> Rory Davies</li>
+<li><strong>user_uri:</strong> <a href="http://api.joind.in/v2.1/users/18152">http://api.joind.in/v2.1/users/18152</a></li>
+<li><strong>comment_uri:</strong> <a href="http://api.joind.in/v2.1/event_comments/679">http://api.joind.in/v2.1/event_comments/679</a></li>
+<li><strong>verbose_comment_uri:</strong> <a href="http://api.joind.in/v2.1/event_comments/679?verbose=yes">http://api.joind.in/v2.1/event_comments/679?verbose=yes</a></li>
+<li><strong>event_uri:</strong> <a href="http://api.joind.in/v2.1/events/886">http://api.joind.in/v2.1/events/886</a></li>
+<li><strong>event_comments_uri:</strong> <a href="http://api.joind.in/v2.1/events/886/comments">http://api.joind.in/v2.1/events/886/comments</a></li>
+</ul>
+</blockquote>
+
+<h3>Request: GET /users/[user_id]</h3>
+
+<p>The user resource is available where the user is the speaker for a talk, a host of an event, and where they have left comments logged in as themselves.  It includes links to the talks given by this user and the events they attended</p>
+
+<p><a href="http://api.joind.in/v2.1/users/118">try it</a></p>
+
+<blockquote>
+<ul>
+<li><strong>username:</strong> rowan_m</li>
+<li><strong>full_name:</strong> Rowan Merewood</li>
+<li><strong>twitter_username:</strong> rowan_m</li>
+<li><strong>uri:</strong> <a href="http://api.joind.in/v2.1/users/118">http://api.joind.in/v2.1/users/118</a></li>
+<li><strong>verbose_uri:</strong> <a href="http://api.joind.in/v2.1/users/118?verbose=yes">http://api.joind.in/v2.1/users/118?verbose=yes</a></li>
+<li><strong>website_uri:</strong> <a href="http://joind.in/user/view/118">http://joind.in/user/view/118</a></li>
+<li><strong>talks_uri:</strong> <a href="http://api.joind.in/v2.1/users/118/talks/">http://api.joind.in/v2.1/users/118/talks/</a></li>
+<li><strong>attended_events_uri:</strong> <a href="http://api.joind.in/v2.1/users/118/attended/">http://api.joind.in/v2.1/users/118/attended/</a></li>
+</ul>
+</blockquote>
+
+<h3>Request: GET /users/[user_id]/attended</h3>
+
+<p>A list of all the events a user has been to (where they have marked themselves as attending the event).  The output format is exactly as the other events</p>
+
+<p><a href="http://api.joind.in/v2.1/users/118/attended/">try it</a></p>
+
+<h3>Request: GET /users/[user_id]/talks</h3>
+
+<p>All the talks given by this user, in the same format as the other talk results</p>
+
+<p><a href="http://api.joind.in/v2.1/users/118/talks/">try it</a></p>
+
 

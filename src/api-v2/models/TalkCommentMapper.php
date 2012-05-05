@@ -27,6 +27,7 @@ class TalkCommentMapper extends ApiMapper {
     public function getCommentsByTalkId($talk_id, $resultsperpage, $start, $verbose = false) {
         $sql = $this->getBasicSQL();
         $sql .= 'and talk_id = :talk_id';
+        $sql .= ' order by tc.date_made';
 
         $sql .= $this->buildLimit($resultsperpage, $start);
         $stmt = $this->_db->prepare($sql);
@@ -119,7 +120,7 @@ class TalkCommentMapper extends ApiMapper {
     public function save($data) {
         $sql = 'insert into talk_comments (talk_id, rating, comment, user_id, '
             . 'source, date_made, private, active) '
-            . 'values (:talk_id, :rating, :comment, :user_id, "api-v2", NOW(), 0, 1)';
+            . 'values (:talk_id, :rating, :comment, :user_id, "api-v2", UNIX_TIMESTAMP(), 0, 1)';
 
         $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute(array(
