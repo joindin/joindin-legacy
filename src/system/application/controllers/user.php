@@ -296,7 +296,7 @@ class User extends AuthAbstract
             'user'  => 'required|trim|callback_usern_check|xss_clean',
             'pass'  => 'required|trim|matches[passc]|md5',
             'passc' => 'required|trim',
-            'twitter_username' => 'required|trim|callback_twitter_check',
+            'twitter_username' => 'trim|callback_twitter_check',
             'email' => 'required|trim|valid_email',
             'cinput'=> 'required|callback_cinput_check'
         );
@@ -469,7 +469,7 @@ class User extends AuthAbstract
             'email'     => 'required',
             'pass'      => 'trim|matches[pass_conf]|md5',
             'pass_conf' => 'trim',
-            'twitter_username' => 'required|trim|callback_twitter_check['.$uid.']',
+            'twitter_username' => 'trim|callback_twitter_check['.$uid.']',
         );
         $this->validation->set_rules($rules);
         $this->validation->set_fields($fields);
