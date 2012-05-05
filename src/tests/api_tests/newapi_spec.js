@@ -56,7 +56,6 @@ frisby.create('Initial discovery')
                 var evt = detailedEv.events[0];
                 checkVerboseEvent(evt);
 
-
                 frisby.create('Event comments for ' + evt.name)
                   .get(evt.comments_uri)
                   .expectStatus(200)
@@ -68,13 +67,24 @@ frisby.create('Initial discovery')
                         checkEventComment(comment);
                       }
                     }
-					})
-				  .toss();
+					      }).toss();
 
-                } ).toss();
-            }
-  		  })
-          .toss();
+                frisby.create('Talks at ' + evt.name)
+                  .get(evt.talks_uri + '?resultsperpage=3')
+                  .expectStatus(200)
+                  .expectHeader("content-type", "application/json; charset=utf8")
+                  .afterJSON(function(evTalks) {
+                    if(typeof evTalks.talks == 'object') {
+                      for(var i in evTalks.talks) {
+                        var talk = evTalks.talks[i];
+                        checkTalk(talk);
+                      }
+                    }
+					      }).toss();
+
+              }).toss();
+          }
+  		  }).toss();
     }
   })
 .toss();
@@ -219,3 +229,37 @@ function checkEventComment(comment) {
   expect(comment.event_comments_uri).toBeDefined();
   expect(typeof comment.event_comments_uri).toBe('string');
 }
+
+function checkTalk(talk) {
+  expect(talk.talk_title).toBeDefined();
+  expect(typeof talk.talk_title).toBe('string');
+  expect(talk.talk_description).toBeDefined();
+  expect(typeof talk.talk_description).toBe('string');
+  expect(talk.uri).toBeDefined();
+  expect(typeof talk.uri).toBe('string');
+  expect(talk.verbose_uri).toBeDefined();
+  expect(typeof talk.verbose_uri).toBe('string');
+  expect(talk.comments_uri).toBeDefined();
+  expect(typeof talk.comments_uri).toBe('string');
+  expect(talk.event_uri).toBeDefined();
+  expect(typeof talk.event_uri).toBe('string');
+  expect(talk.website_uri).toBeDefined();
+  expect(typeof talk.website_uri).toBe('string');
+  expect(talk.verbose_comments_uri).toBeDefined();
+  expect(typeof talk.verbose_comments_uri).toBe('string');
+  if(typeof talk.slides_link != 'undefined') {
+      expect(typeof talk.slides_link).toBe('string');
+  }
+  expect(talk.language).toBeDefined();
+  expect(typeof talk.language).toBe('string');
+  expect(talk.start_date).toBeDefined();
+  checkDate(talk.start_date);
+  if(typeof talk.average_rating != 'undefined') {
+    expect(typeof talk.average_rating).toBe('number');
+  }
+  expect(talk.comments_enabled).toBeDefined();
+  expect(typeof talk.comments_enabled).toBe('number');
+  expect(talk.comment_count).toBeDefined();
+  expect(typeof talk.comment_count).toBe('number');
+}
+
