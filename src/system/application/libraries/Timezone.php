@@ -12,18 +12,6 @@ class Timezone {
         $this->CI=&get_instance();
     }
     
-    /**
-    * Return the difference from UTC for my machine
-    * @param $tz integer Timezone string
-    */
-    private function _getMyTimeDiff($tz=null) {
-        if (!$tz) { $tz=date_default_timezone_get(); }
-        $here	= new DateTimeZone($tz);
-        $there	= new DateTimeZone('UTC');
-        $offset	= $here->getOffset(new DateTime("now", $here))-$there->getOffset(new DateTime("now", $there));
-        
-        return $offset;
-    }
     /** 
     * Find the local time at the event...
     * @param $evt_offset integer Event's offset from UTC
@@ -76,17 +64,18 @@ class Timezone {
         }
         $datetime->setTimezone($tz);
 
+/* Commented out as it appears to be causing a DST bug - see JOINDIN-169 in Jira
         // How much wrong will ->format("U") be if I do it now, due to DST changes?
         // Only needed until PHP Bug #51051 delivers a better method
         $unix_offset1 = $tz->getOffset($datetime);
         $unix_offset2 = $tz->getOffset(new DateTime());
         $unix_correction = $unix_offset1 - $unix_offset2;
-
         // create datetime object corrected for DST offset
         $timestamp = $unixtime + $unix_correction;
-
         $datetime = new DateTime("@{$timestamp}");
         $datetime->setTimezone($tz);
+*/
+
         return $datetime;
     }
 
@@ -106,13 +95,17 @@ class Timezone {
         $dateObj->setDate($year, $month, $day);
         $dateObj->setTime($hour, $minute, $second);
 
+        $unixTimestamp = $dateObj->format("U") - $unix_correction;
+
+/* Commented out as it appears to be causing a DST bug - see JOINDIN-169 in Jira
         // How much wrong will ->format("U") be if I do it now, due to DST changes?
         // Only needed until PHP Bug #51051 delivers a better method
         $unix_offset1 = $tz->getOffset($dateObj);
         $unix_offset2 = $tz->getOffset(new DateTime());
         $unix_correction = $unix_offset1 - $unix_offset2;
+        $unixTimestamp = $unix_timestamp - $unix_correction;
+*/
 
-        $unixTimestamp = $dateObj->format("U") - $unix_correction;
 
         return $unixTimestamp;
     }
