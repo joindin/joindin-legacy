@@ -110,7 +110,6 @@ class EventMapper extends ApiMapper
                END as comments_enabled, '
             . 'current_ua.uid as attending '
             . 'from events '
-            . 'left join user_attend ua on ua.eid = events.ID '
             . 'left join user_attend current_ua on (current_ua.eid = events.ID and current_ua.uid ';
         if(isset($this->_request->user_id)) {
             $sql .= ' = ' . $this->_request->user_id;
