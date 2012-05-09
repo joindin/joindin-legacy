@@ -108,15 +108,9 @@ class EventMapper extends ApiMapper
                 WHEN (((events.event_start - 3600*24) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
                END as comments_enabled, '
-            . 'current_ua.uid as attending '
+            . '0 as attending '
             . 'from events '
-            . 'left join user_attend current_ua on (current_ua.eid = events.ID and current_ua.uid ';
-        if(isset($this->_request->user_id)) {
-            $sql .= ' = ' . $this->_request->user_id;
-        } else {
-            $sql .= ' is null';
-        }
-        $sql .= ') ';
+            . 'left join user_attend current_ua on (current_ua.eid = events.ID)';
         $sql .= 'where active = 1 and '
             . '(pending = 0 or pending is NULL) and '
             . 'private <> "y" ';
@@ -125,6 +119,9 @@ class EventMapper extends ApiMapper
         if ($where) {
             $sql .= ' and ' . $where;
         }
+
+        // group by for the multiple attending recipes; only ever want to see each event once
+        $sql .= 'group by events.ID ';
 
         // order by
         if ($order) {
@@ -367,7 +364,7 @@ class EventMapper extends ApiMapper
      */
     public function getEventsAttendedByUser($user_id, $resultsperpage, $start, $verbose = false) 
     {
-        $where = ' ua.uid = ' . (int)$user_id;
+        $where = ' current_ua.uid = ' . (int)$user_id;
         $order = ' events.event_start desc ';
         $results = $this->getEvents($resultsperpage, $start, $where, $order);
         if (is_array($results)) {
