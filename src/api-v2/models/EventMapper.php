@@ -121,7 +121,7 @@ class EventMapper extends ApiMapper
         }
 
         // group by for the multiple attending recipes; only ever want to see each event once
-        $sql .= 'group by events.ID ';
+        $sql .= ' group by events.ID ';
 
         // order by
         if ($order) {
