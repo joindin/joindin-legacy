@@ -3,7 +3,7 @@
         <?php if ($talk->ccount > 0): ?>
             <?php echo rating_image($talk->tavg); ?>
         <?php else: ?>
-            <img class="rating no-rating" src="/inc/img/no-rating.png" alt="No Ratings Yet" height="21" width="117" />
+            <div style="width: 117px">&nbsp;</div>
         <?php endif; ?>
     </div>
     <div class="text">
