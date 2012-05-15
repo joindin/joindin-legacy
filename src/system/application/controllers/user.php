@@ -724,7 +724,7 @@ class User extends AuthAbstract
     function oauth_allow()
     {
         if (!$this->user_model->isAuth()) {
-            redirect('user/login', 'refresh');
+            redirect('user/login');
         }
 
         $this->load->model('user_admin_model');
