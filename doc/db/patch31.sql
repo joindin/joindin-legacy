@@ -19,6 +19,8 @@ BEGIN
 		tc.user_id NOT IN
 		(
 			SELECT IFNULL(ts.speaker_id,0) FROM talk_speaker ts WHERE ts.talk_id = talk_id
+			UNION
+			SELECT 0
 		);
 
 	RETURN rating_out;
