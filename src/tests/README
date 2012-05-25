@@ -48,3 +48,7 @@ $ phpunit
 
 This should run joindin unit tests cases and if all goes well, no errors or
 failures will be shown.
+
+To enable the development mode for better debugging, set a local environment
+variable - for example for linux:
+  export JOINDIN_DEBUG=on

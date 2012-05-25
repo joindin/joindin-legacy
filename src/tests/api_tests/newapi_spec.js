@@ -68,8 +68,8 @@ frisby.create('Initial discovery')
               expect(ev.events[i].talks_uri).toBeDefined();
               expect(ev.events[i].website_uri).toBeDefined();
               expect(typeof ev.events[i].name).toBe('string');
-              expect(typeof ev.events[i].start_date).toBe('string');
-              expect(typeof ev.events[i].end_date).toBe('string');
+              checkDate(ev.events[i].start_date);
+              checkDate(ev.events[i].end_date);
               expect(typeof ev.events[i].description).toBe('string');
               expect(typeof ev.events[i].attendee_count).toBe('number');
               expect(typeof ev.events[i].uri).toBe('string');
@@ -112,14 +112,11 @@ frisby.create('Initial discovery')
                   expect(evt.all_talk_comments_uri).toBeDefined();
 
                   expect(typeof evt.name).toBe('string', "Event name");
-                  expect(typeof evt.start_date).toBe('string');
-                  expect(typeof evt.end_date).toBe('string');
+                  checkDate(evt.start_date);
+                  checkDate(evt.end_date);
                   expect(typeof evt.description).toBe('string');
                   if (evt.href != null) {
                     expect(typeof evt.href).toBe('string', "Event href");
-                    if (evt.href != '') {
-                      //expect(evt.href).toMatch(/^http/);
-                    }
                   }
                   if (evt.icon != null) {
                     expect(typeof evt.icon).toBe('string');
@@ -133,10 +130,10 @@ frisby.create('Initial discovery')
                   expect(typeof evt.comments_enabled).toBe('number');
                   expect(typeof evt.event_comments_count).toBe('number');
                   if (evt.cfp_start_date != null) {
-                    expect(typeof evt.cfp_start_date).toBe('string');
+                      checkDate(evt.cfp_start_date);
                   }
                   if (evt.cfp_end_date != null) {
-                    expect(typeof evt.cfp_end_date).toBe('string');
+                      checkDate(evt.cfp_end_date);
                   }
                   if (evt.cfp_url != null) {
                     expect(typeof evt.cfp_url).toBe('string');
@@ -153,13 +150,31 @@ frisby.create('Initial discovery')
                     .get(evt.comments_uri)
                     .expectStatus(200)
                     .expectHeader("content-type", "application/json; charset=utf8")
-                    .afterJSON(function(detailedEv) {
+                    .afterJSON(function(evComments) {
+                        if(typeof evComments.comments == 'object') {
+                            for(var i in evComments.comments) {
+                                var comment = evComments.comments[i];
+
+                                expect(comment.comment).toBeDefined();
+                                expect(typeof comment.comment).toBe('string');
+                                expect(comment.created_date).toBeDefined();
+                                checkDate(comment.created_date);
+                                expect(comment.user_display_name).toBeDefined();
+                                if(typeof comment.user_uri != 'undefined') {
+                                    expect(typeof comment.user_uri).toBe('string');
+                                }
+                                expect(comment.comment_uri).toBeDefined();
+                                expect(typeof comment.comment_uri).toBe('string');
+                                expect(comment.verbose_comment_uri).toBeDefined();
+                                expect(typeof comment.verbose_comment_uri).toBe('string');
+                                expect(comment.event_uri).toBeDefined();
+                                expect(typeof comment.event_uri).toBe('string');
+                                expect(comment.event_comments_uri).toBeDefined();
+                                expect(typeof comment.event_comments_uri).toBe('string');
+                            }
+                        }
 					})
 				  .toss();
-
-
-                  
-
 
                 } ).toss();
             }
@@ -169,4 +184,27 @@ frisby.create('Initial discovery')
   })
 .toss();
 
+function checkDate(fieldValue) {
+    dateVal = new Date(fieldValue);
+    expect(getObjectClass(dateVal)).toBe('Date');
+    return true;
+}
+
+/**
+ * getObjectClass 
+ * 
+ * stolen from: http://blog.magnetiq.com/post/514962277/finding-out-class-names-of-javascript-objects
+ */
+function getObjectClass(obj) {
+    if (obj && obj.constructor && obj.constructor.toString) {
+        var arr = obj.constructor.toString().match(
+            /function\s*(\w+)/);
+
+        if (arr && arr.length == 2) {
+            return arr[1];
+        }
+    }
+
+    return undefined;
+}
 

@@ -23,6 +23,8 @@ class EventMapper extends ApiMapper
             'description' => 'event_desc',
             'href' => 'event_href',
             'attendee_count' => 'attendee_count',
+            'attending' => 'attending',
+            'event_comments_count' => 'event_comments_count',
             'icon' => 'event_icon'
             );
         return $fields;
@@ -51,6 +53,7 @@ class EventMapper extends ApiMapper
             'location' => 'event_loc',
             'hashtag' => 'event_hashtag',
             'attendee_count' => 'attendee_count',
+            'attending' => 'attending',
             'comments_enabled' => 'comments_enabled',
             'event_comments_count' => 'event_comments_count',
             'cfp_start_date' => 'event_cfp_start',
@@ -71,7 +74,7 @@ class EventMapper extends ApiMapper
     public function getEventById($event_id, $verbose = false) 
     {
         $order = 'events.event_start desc';
-        $results = $this->getEvents(1, 0, 'ID=' . (int)$event_id, null);
+        $results = $this->getEvents(1, 0, 'events.ID=' . (int)$event_id, null);
         if ($results) {
             $retval = $this->transformResults($results, $verbose);
             return $retval;
@@ -92,6 +95,7 @@ class EventMapper extends ApiMapper
      */
     protected function getEvents($resultsperpage, $start, $where = null, $order = null) 
     {
+        $data = array();
         $sql = 'select events.*, '
             . '(select count(*) from user_attend where user_attend.eid = events.ID) 
                 as attendee_count, '
@@ -103,9 +107,11 @@ class EventMapper extends ApiMapper
             . 'CASE 
                 WHEN (((events.event_start - 3600*24) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
-               END as comments_enabled '
+               END as comments_enabled, '
+            . '0 as attending '
             . 'from events '
-            . 'where active = 1 and '
+            . 'left join user_attend current_ua on (current_ua.eid = events.ID)';
+        $sql .= 'where active = 1 and '
             . '(pending = 0 or pending is NULL) and '
             . 'private <> "y" ';
         
@@ -113,6 +119,9 @@ class EventMapper extends ApiMapper
         if ($where) {
             $sql .= ' and ' . $where;
         }
+
+        // group by for the multiple attending recipes; only ever want to see each event once
+        $sql .= ' group by events.ID ';
 
         // order by
         if ($order) {
@@ -123,7 +132,7 @@ class EventMapper extends ApiMapper
         $sql .= $this->buildLimit($resultsperpage, $start);
 
         $stmt = $this->_db->prepare($sql);
-        $response = $stmt->execute();
+        $response = $stmt->execute($data);
         if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return $results;
@@ -254,6 +263,13 @@ class EventMapper extends ApiMapper
         // add per-item links 
         if (is_array($list) && count($list)) {
             foreach ($results as $key => $row) {
+                // flip the attending to be true/false rather than user id or null
+                if($row['attending']) {
+                    $list[$key]['attending'] = true;
+                } else {
+                    $list[$key]['attending'] = false;
+                }
+
                 $list[$key]['tags'] = $this->getTags($row['ID']);;
                 $list[$key]['uri'] = $base . '/' . $version . '/events/' 
                     . $row['ID'];
@@ -306,7 +322,7 @@ class EventMapper extends ApiMapper
            foreach($hosts as $person) {
                $entry = array();
                $entry['host_name'] = $person['full_name'];
-               $entry['host_uri'] = $base . '/' . $version . ' /users/' . $person['user_id'];
+               $entry['host_uri'] = $base . '/' . $version . '/users/' . $person['user_id'];
                $retval[] = $entry;
            }
         }
@@ -336,4 +352,26 @@ class EventMapper extends ApiMapper
         }
         return $retval;
     }
+
+    /**
+     * Events that the currently logged-in user is marked as attending
+     * 
+     * @param int $resultsperpage how many records to return
+     * @param int $start offset to start returning records from
+     * @param boolean $verbose used to determine how many fields are needed
+     * 
+     * @return array the data, or false if something went wrong
+     */
+    public function getEventsAttendedByUser($user_id, $resultsperpage, $start, $verbose = false) 
+    {
+        $where = ' current_ua.uid = ' . (int)$user_id;
+        $order = ' events.event_start desc ';
+        $results = $this->getEvents($resultsperpage, $start, $where, $order);
+        if (is_array($results)) {
+            $retval = $this->transformResults($results, $verbose);
+            return $retval;
+        }
+        return false;
+    }
+
 }

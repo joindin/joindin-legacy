@@ -27,6 +27,7 @@ class TalkCommentMapper extends ApiMapper {
     public function getCommentsByTalkId($talk_id, $resultsperpage, $start, $verbose = false) {
         $sql = $this->getBasicSQL();
         $sql .= 'and talk_id = :talk_id';
+        $sql .= ' order by tc.date_made';
 
         $sql .= $this->buildLimit($resultsperpage, $start);
         $stmt = $this->_db->prepare($sql);

@@ -189,7 +189,13 @@ class User_model extends Model {
      * @return array User details
      */
     function getUserByTwitter($screenName) {
-        $q = $this->db->get_where('user', array('twitter_username' => (string)$screenName));
+        // Strip @ sign if needed
+        if ($screenName[0] == '@') {
+            $screenName = substr($screenName, 1);
+        }
+        $this->db->where('twitter_username', (string)$screenName);
+        $this->db->orwhere('twitter_username', (string)'@'.$screenName);
+        $q = $this->db->get('user');
         $result = $q->result();
 
         return $result ? $result : false;
