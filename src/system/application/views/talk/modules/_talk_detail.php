@@ -10,7 +10,8 @@
             <?php 
             if (!empty($speaker->speaker_id) && $speaker->status!='pending') {
                 if (empty($speaker->full_name)) { $speaker->full_name = 'N/A'; }
-                $speaker_names[] = '<a href="/user/view/'.$speaker->speaker_id.'">'.$speaker->full_name.'</a>';
+                $speaker_names[] = '<a href="/user/view/'.$speaker->speaker_id.'">'.$speaker->full_name.'</a> '
+                    .'<a class="btn-small" href="/talk/unlink/'.$speaker->talk_id.'/'.$speaker->speaker_id.'">< unlink</a>';
             } else {
                 $speaker_names[] = $speaker->speaker_name;
             }
