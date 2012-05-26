@@ -1,4 +1,12 @@
 <?php
+function translateComment($comment)
+{
+    // because CI has decided to embed htmlspecialchars in the form helper...
+    $comment = htmlspecialchars_decode($comment);
+    $comment = str_replace(array("&#39;", "&quot;"), array("'", '"'), $comment);
+    return $comment;
+}
+
     $speaker = false;
     foreach ($claimed as $claim) {
         if (isset($claim->userid) && $claim->userid != 0 && user_get_id() == $claim->userid) {
@@ -38,10 +46,12 @@
         <span id="comment_anonymously" <?php if ($auth):?>style="display: none;"<?php endif; ?>> anonymously</span>
     </label>
     <?php 
+    
+
     echo form_textarea(array(
         'name'	=> 'comment',
         'id'	=> 'comment',
-        'value'	=> $this->validation->comment,
+        'value'	=> translateComment($this->validation->comment),
         'cols'	=> 40,
         'rows'	=> 10
     ));
