@@ -1,12 +1,4 @@
 <?php
-function translateComment($comment)
-{
-    // because CI has decided to embed htmlspecialchars in the form helper...
-    $comment = htmlspecialchars_decode($comment);
-    $comment = str_replace(array("&#39;", "&quot;"), array("'", '"'), $comment);
-    return $comment;
-}
-
     $speaker = false;
     foreach ($claimed as $claim) {
         if (isset($claim->userid) && $claim->userid != 0 && user_get_id() == $claim->userid) {
@@ -51,7 +43,7 @@ function translateComment($comment)
     echo form_textarea(array(
         'name'	=> 'comment',
         'id'	=> 'comment',
-        'value'	=> translateComment($this->validation->comment),
+        'value'	=> $this->validation->translated_comment,
         'cols'	=> 40,
         'rows'	=> 10
     ));
