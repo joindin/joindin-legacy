@@ -1,6 +1,10 @@
 <div class="row row-talk">
     <div class="img">
-        <?php echo rating_image($talk->tavg); ?>
+        <?php if ($talk->ccount > 0): ?>
+            <?php echo rating_image($talk->tavg); ?>
+        <?php else: ?>
+            <img class="rating no-rating" src="/inc/img/no-rating.png" alt="No Ratings Yet" height="21" width="117" />
+        <?php endif; ?>
     </div>
     <div class="text">
         <h3><a href="/talk/view/<?php echo escape($talk->ID); ?>"><?php echo escape($talk->talk_title); ?></a></h3>
