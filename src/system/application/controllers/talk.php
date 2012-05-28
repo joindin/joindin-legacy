@@ -888,6 +888,52 @@ class Talk extends Controller
     }
 
     /**
+     * Unlink a talk claim from a speaker
+     * 
+     * @param int $talkId    Talk ID
+     * @param int $speakerId Speaker ID
+     * 
+     * @return null
+     */
+    public function unlink($talkId,$speakerId)
+    {
+        if (!$this->user_model->isAuth()) {
+            redirect('talk/view/'.$talkId);
+        }
+
+        // get the event the talk is a part of
+        $this->load->model('talks_model');
+        $this->load->model('user_model');
+
+        $event = $this->talks_model->getTalkEvent($talkId);
+        error_log(print_r($event,true));
+
+        // ensure that the user is either a site admin or event admin
+        if ($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($event->ID)) {
+
+            $data = array(
+                'talkId'    => $talkId,
+                'speakerId' => $speakerId
+            );
+
+            $this->template->write_view('content','talk/unlink',$data);
+
+            if (isset($_POST['answer']) && ($_POST['answer'] == 'yes')) {
+
+                $this->load->model('talk_speaker_model');
+                $user = $this->user_model->getUser($speakerId);
+
+                $this->talk_speaker_model->unlinkSpeaker($talkId,$user[0]->ID);
+                redirect('talk/view/'.$talkId);
+            }
+
+            $this->template->render();
+        } else {
+            redirect('talk/view/'.$talkId);
+        }
+    }
+
+    /**
      * Validates whether the given date is within the event's period.
      *
      * @param string $str The string to validate.
