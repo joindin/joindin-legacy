@@ -725,7 +725,12 @@ class Event extends Controller
             }
         }
 
-        $talks   = $this->event_model->getEventTalks($id, false);
+        $uid = 0;
+        $user=$this->user_model->getID();
+        if ($user) {
+            $uid = $user;
+        }
+        $talks   = $this->event_model->getEventTalks($id, $uid, false);
         $is_auth = $this->user_model->isAuth();
 
         foreach ($talks as $k => $v) {

@@ -1,7 +1,7 @@
 <div id="talks">
 <?php if (count($by_day) == 0): ?>
     <?php $this->load->view('msg_info', array('msg' => 'No talks available at the moment.')); ?>
-<?php else: 
+<?php else:
     if (isset($track_filter)) {
         echo '<span style="font-size:13px">Sessions for track <b>'.$track_data->track_name.'</b></span>';
         echo ' <span style="font-size:11px"><a href="/event/view/'.$event_detail->ID.'">[show all sessions]</a></span>';
@@ -20,16 +20,16 @@
                 <h4 id="talks"><?php echo date('d.M.Y', $talk_section_date); ?></h4>
             </th>
         </tr>
-        <?php foreach ($talk_section_talks as $ik=>$talk): 
+        <?php foreach ($talk_section_talks as $ik=>$talk):
 //print_r($talk); echo '<br/><br/>';
 
         $session_rate+=$talk->rank;
-        
+
         if (isset($track_filter)) {
             //Filter to the track ID
-            if (empty($talk->tracks)) { 
+            if (empty($talk->tracks)) {
                 // If there's no track ID on the talk, don't show it
-                continue; 
+                continue;
             } else {
                 // There are tracks on the session, let's see if any match...
                 $filter_pass=false;
@@ -59,9 +59,9 @@
                         $claim_data = $claimed[$talk->ID][$speaker->speaker_id];
                         $speaker_list[]='<a href="/user/view/'.$claim_data->speaker_id.'">'.$claim_data->full_name.'</a>';
                     } else {
-                        $speaker_list[]=$speaker->speaker_name; 
+                        $speaker_list[]=$speaker->speaker_name;
                     }
-                    
+
                 }
                 echo implode(', ', $speaker_list);
                 ?>
@@ -75,6 +75,15 @@
             </td>
             <td>
                 <a class="comment-count" href="/talk/view/<?php echo $talk->ID; ?>/#comments"><?php echo $talk->comment_count; ?></a>
+            </td>
+            <td>
+	<?php
+        if ($talk->date_given<time()) {
+            $link_txt="I attended";
+        } else { $link_txt="I'm attending"; }
+    ?>
+
+                <a class="btn-small<?php echo $talk->user_attending ? ' btn-success' : ''; ?>" href="#" onclick="markAttendingTalk(this,<?php echo $talk->ID?>,<?php echo $talk->date_given<time() ? 'true' : 'false'; ?>);return false;"><?php echo $link_txt?></a>
             </td>
         </tr>
     <?php
