@@ -16,7 +16,7 @@
         $ct = 0;
     ?>
         <tr>
-            <th colspan="5">
+            <th colspan="6">
                 <h4 id="talks"><?php echo date('d.M.Y', $talk_section_date); ?></h4>
             </th>
         </tr>
@@ -77,13 +77,7 @@
                 <a class="comment-count" href="/talk/view/<?php echo $talk->ID; ?>/#comments"><?php echo $talk->comment_count; ?></a>
             </td>
             <td>
-	<?php
-        if ($talk->date_given<time()) {
-            $link_txt="I attended";
-        } else { $link_txt="I'm attending"; }
-    ?>
-
-                <a class="btn-small<?php echo $talk->user_attending ? ' btn-success' : ''; ?>" href="#" onclick="markAttendingTalk(this,<?php echo $talk->ID?>,<?php echo $talk->date_given<time() ? 'true' : 'false'; ?>);return false;"><?php echo $link_txt?></a>
+                <a class="btn-small<?php echo $talk->user_attending ? ' btn-success' : ''; ?>" href="#" onclick="markAttendingTalk(this,<?php echo $talk->ID?>,<?php echo $talk->date_given<time() ? 'true' : 'false'; ?>);return false;"><?php echo $talk->date_given<time() ? "I attended" : "I'm attending"; ?></a>
             </td>
         </tr>
     <?php
