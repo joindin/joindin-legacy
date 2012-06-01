@@ -104,9 +104,62 @@ function markAttending(el,eid,isPast){
 	return false;
 }
 
+function markAttendingTalk(el,tid,isPast){
+	var $loading;
+	var $el = $(el);
+	if (!$el.next().is('.loading')) {
+		$loading = $('<span class="loading">Loading...</span>');
+		var pos = $el.position();
+		$loading.css({left: pos.left + 15, top: pos.top - 30}).hide();
+		$el.after($loading);
+		$loading.fadeIn('fast');
+	}
+
+	var obj=new Object();
+	obj.tid=tid;
+
+	apiRequest('talk','attend',obj, function(obj) {
+		if ($el.is('.btn-success')) {
+			$el.removeClass('btn-success');
+			link_txt=isPast ? 'I attended' : 'I\'m attending';
+			adjustAttendTalkCount(tid, -1);
+		} else {
+			$el.addClass('btn-success');
+			link_txt=isPast ? 'I attended' : 'I\'m attending';
+			adjustAttendTalkCount(tid, 1);
+		}
+
+		$el.html(link_txt);
+
+		function hideLoading()
+		{
+			if ($loading)
+				$loading.addClass('loading-complete').html('Thanks for letting us know!').pause(1500).fadeOut(function() { $(this).remove() });
+		}
+
+		if ($('#attendees').length == 0 || $('#attendees').is(':hidden')) {
+			$('#attendees').data('loaded', false);
+			hideLoading();
+		} else {
+			$('#attendees').load('/event/attendees/' + tid, function() {
+				hideLoading()
+			});
+		}
+	});
+
+	return false;
+}
+
 function adjustAttendCount(eid, num)
 {
 	$('.event-attend-count-' + eid).each(function() {
+		$(this).text(parseInt($(this).text()) + num);
+	});
+}
+
+function adjustAttendTalkCount(tid, num)
+{
+	$('.talk-attend-count-' + tid).each(function() {
 		$(this).text(parseInt($(this).text()) + num);
 	});
 }

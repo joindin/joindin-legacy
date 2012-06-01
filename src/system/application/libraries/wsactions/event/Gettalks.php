@@ -1,10 +1,10 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Gettalks extends BaseWsRequest {
-    
+
     var $CI	= null;
     var $xml= null;
-    
+
     public function Gettalks($xml) {
         $this->CI=&get_instance(); //print_r($this->CI);
         $this->xml=$xml;
@@ -15,12 +15,12 @@ class Gettalks extends BaseWsRequest {
         if (!isset($xml->action->event_id)) { return false; }
 
         return true;
-        
+
     }
     //-----------------------
     public function run() {
         $this->CI->load->library('wsvalidate');
-        
+
         $rules=array(
             'event_id'		=>'required|isevent',
             //'reqkey'	=>'required|reqkey'
@@ -30,9 +30,17 @@ class Gettalks extends BaseWsRequest {
         if (!$valid) {
             $this->CI->load->model('event_model');
             $this->CI->load->model('talk_track_model');
-            $ret=$this->CI->event_model->getEventTalks($eid, false);
 
-            // add the track and format the speaker information for each talk
+            // identify user so we can do the attending (or not if they're not identified)
+            $uid = 0;
+            $user=$this->CI->user_model->getUser($this->xml->auth->user);
+            if ($user) {
+                $uid = $user[0]->ID;
+            }
+
+            $ret=$this->CI->event_model->getEventTalks($eid, $uid, false);
+
+				// add the track, format the speaker information and add attendance info for each talk
             foreach ($ret as $talk) {
                 $talk->tracks = $this->CI->talk_track_model->getSessionTrackInfo($talk->ID);
                 $speaker = '';
@@ -49,6 +57,6 @@ class Gettalks extends BaseWsRequest {
             return array('output'=>'json','data'=>array('items'=>array('msg'=>'Invalid Event ID!')));
         }
     }
-    
+
 }
 ?>

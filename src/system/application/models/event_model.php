@@ -6,7 +6,7 @@ class Event_model extends Model {
         parent::Model();
     }
     /**
-     * Match all data given against the events table to see 
+     * Match all data given against the events table to see
      * is there's anything matching
      */
     function isUnique($data) {
@@ -23,7 +23,7 @@ class Event_model extends Model {
             ->from('events')
             ->where('event_stub', $str);
         if ($eid) { $this->db->where('ID !=', $eid); }
-        
+
         $q=$this->db->get();
         $ret=$q->result();
         return (empty($ret)) ? true : false;
@@ -34,10 +34,10 @@ class Event_model extends Model {
         //get the event
         //$this->db->where('ID', $id);
         //$this->db->update('events', array('active'=>0,'pending'=>0));
-        
+
         // No mercy!
         $this->db->delete('events', array('ID'=>$id));
-        
+
         $this->deleteEventTalks($id);
         $this->deleteTalkComments($id);
     }
@@ -60,7 +60,7 @@ class Event_model extends Model {
         }
     }
     //---------------------
-    
+
     /**
      * Sets the Active and Pending statuses to make the event show correctly
      */
@@ -72,7 +72,7 @@ class Event_model extends Model {
         $this->db->where('ID', $id);
         $this->db->update('events', $arr);
     }
-    
+
     /**
      * Returns the details for a specific event, a series within a given date range, or all events if
      * no arguments have been provided.
@@ -155,11 +155,11 @@ SQL
         return $res;
     }
 
-    function getEventTalks($id, $includeEventRelated = true, $includePrivate = false) {
+    function getEventTalks($id, $uid = 0, $includeEventRelated = true, $includePrivate = false) {
         $this->load->helper("events");
         $this->load->helper("talk");
         $private=($includePrivate) ? '' : ' and ifnull(private,0)!=1';
-        $sql='
+        $sql=sprintf('
             select
                 talks.talk_title,
                 talks.speaker,
@@ -168,6 +168,7 @@ SQL
                 talks.event_id,
                 talks.ID,
                 talks.talk_desc,
+					 IF(user_attend_talk.tid IS NULL, 0, 1) as user_attending,
                 events.event_tz_cont,
                 events.event_tz_place,
                 events.event_start,
@@ -182,8 +183,9 @@ SQL
             inner join events on events.ID = talks.event_id
             left join talk_cat on talks.ID = talk_cat.talk_id
             left join categories on talk_cat.cat_id = categories.ID
+            left join user_attend_talk on talks.ID = user_attend_talk.tid AND user_attend_talk.uid=%s
             where
-                ';
+                ',$this->db->escape($uid));
         if (!$includeEventRelated) {
             $sql .= 'categories.cat_title <> "Event Related" and
             ';
@@ -201,7 +203,7 @@ SQL
         if (is_array($res) && count($res) > 0 && is_object($res[0]) && event_isNowOn($res[0]->event_start, $res[0]->event_end)) {
             $res = talk_listDecorateNowNext($res);
         }
-        
+
         $CI=&get_instance();
         $CI->load->model('talk_speaker_model','tsm');
         foreach ($res as $k=>$talk) {
@@ -248,7 +250,7 @@ SQL
             (select count(*) from user_attend where user_attend.eid = events.ID) as num_attend,
             (select count(*) from event_comments where event_comments.event_id = events.ID) as num_comments, abs(0) as user_attending, '
                     .' abs(datediff(from_unixtime(events.event_start), from_unixtime('.mktime(0,0,0).'))) as score,
-              CASE 
+              CASE
                 WHEN (((events.event_start - 86400) < '.mktime(0,0,0).') and (events.event_start + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
                 END as allow_comments
@@ -293,16 +295,16 @@ SQL
         $result = $this->getEventsOfType("upcoming", $limit);
         return $result;
     }
-    
+
     function getPastEvents($limit = null, $per_page = null, $current_page = null) {
-    
-        $result = $this->getEventsOfType("past", $limit);			
+
+        $result = $this->getEventsOfType("past", $limit);
         if ($per_page && $current_page) {
             $total_count 	= count($result)/$per_page;
             $result			= array_slice($result, $current_page*$per_page, $per_page);
             $result['total_count'] = $total_count;
         }
-        
+
         return $result;
     }
 
@@ -317,7 +319,7 @@ SQL
     {
         $CI=&get_instance();
         $CI->load->model('tags_events_model','eventTags');
-        
+
         $sql = 'SELECT events.* ,
             (select count(*) from user_attend where user_attend.eid = events.ID) as num_attend,
             (select count(*) from event_comments where event_comments.event_id = events.ID) as num_comments, abs(0) as user_attending, '
@@ -360,7 +362,7 @@ SQL
         if (!$all_results) {
             $sql.=" and (rcode!='pending' or IFNULL(rcode,0)!='pending' or rcode=NULL)";
         }
-    
+
         return $this->db->query($sql)->result();
     }
 
@@ -381,7 +383,7 @@ SQL
         $q=$this->db->query($sql);
         return $q->result();
     }
-    
+
     function hasUserCommentedEvent($eid, $user_id)
     {
         $sql=sprintf("
@@ -392,15 +394,15 @@ SQL
         ", $this->db->escape($eid), $this->db->escape($user_id));
         $q=$this->db->query($sql);
         $r = $q->result();
-        
+
         if (count($r) > 0)
         {
             return true;
         }
-        
+
         return false;
     }
-    
+
     function getEventIdByName($name) {
         $q=$this->db->get_where('events', array('event_stub'=>$name));
         return $q->result();
@@ -412,7 +414,7 @@ SQL
         $q=$this->db->get();
         return $q->result();
     }
-    
+
     function getEventClaims($event_id) {
         $sql=sprintf('
             select
@@ -436,13 +438,13 @@ SQL
         ', $this->db->escape($event_id));
         $q=$this->db->query($sql);
         $ret=$q->result();
-        
+
         return $ret;
     }
-    
+
     function getClaimedTalks($eid, $talks = null) {
         $this->load->helper('events');
-        
+
         $sql=sprintf("
             select
                 ts.speaker_id,
@@ -461,12 +463,12 @@ SQL
         ", $eid);
         $query		= $this->db->query($sql);
         $claims 	= $query->result();
-        
+
         $claimedTalks = array();
         foreach ($claims as $claim) {
             $claimedTalks[$claim->talk_id][$claim->speaker_id]=$claim;
         }
-        
+
         // This gives us a return array of all of the claimed talks
         // for the this event
         return $claimedTalks;
@@ -534,7 +536,7 @@ SQL
         $q=$this->db->query($sql);
         return $q->result();
     }
-    
+
     /**
      * Find the currently open calls for papers on events
      */
@@ -550,11 +552,11 @@ SQL
     //----------------------
     function search($term, $start, $end) {
         $term = mysql_real_escape_string($term);
-        
+
         //if we have the dates, limit by them
         $attend = '(SELECT COUNT(*) FROM user_attend '
-            . ' WHERE eid = events.ID AND uid = ' 
-            . $this->db->escape((int)$this->session->userdata('ID')) 
+            . ' WHERE eid = events.ID AND uid = '
+            . $this->db->escape((int)$this->session->userdata('ID'))
             . ')as user_attending';
 
         $this->db->select('events.*, COUNT(DISTINCT user_attend.ID) AS num_attend, '
@@ -562,16 +564,16 @@ SQL
         $this->db->from('events');
         $this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
         $this->db->join(
-            'event_comments', 
-            'event_comments.event_id = events.ID', 
+            'event_comments',
+            'event_comments.event_id = events.ID',
             'left'
         );
-        
-        if ($start>0) { 
-            $this->db->where('event_start >=', $start); 
+
+        if ($start>0) {
+            $this->db->where('event_start >=', $start);
         }
-        if ($end>0) { 
-            $this->db->where('event_start <=', $end); 
+        if ($end>0) {
+            $this->db->where('event_start <=', $end);
         }
 
         $term = '%'.$term.'%';

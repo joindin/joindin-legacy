@@ -7,7 +7,7 @@
             <?php
             $speaker_names = array();
             foreach ($speakers as $speaker): ?>
-            <?php 
+            <?php
             if (!empty($speaker->speaker_id) && $speaker->status!='pending') {
                 if (empty($speaker->full_name)) { $speaker->full_name = 'N/A'; }
                 $speaker_names[] = '<a href="/user/view/'.$speaker->speaker_id.'">'.$speaker->full_name.'</a>';
@@ -17,9 +17,31 @@
             ?>
             <?php endforeach; echo implode(', ', $speaker_names); ?>
         </strong> (<?php echo $detail->display_datetime; ?>)
-        <br/> 
+        <br/>
         <?php echo escape($detail->tcid); ?> at <strong><a href="/event/view/<?php echo $detail->event_id; ?>"><?php echo escape($detail->event_name); ?></a></strong> (<?php echo escape($detail->lang_name);?>)
     </p>
+                <p class="opts">
+                <?php
+                /*
+                if its set, but the talk was in the past, just show the text "I was there!"
+                if its set, but the talk is in the future, show a link for "I'll be there!"
+                if its not set show the "I'll be there/I was there" based on time
+                */
+                if ($attend && user_is_auth()) {
+                    if ($detail->date_given<time()) {
+                        $link_txt="I attended"; $showt=1;
+                    } else { $link_txt="I'm attending"; $showt=2; }
+                } else {
+                    if ($detail->date_given<time()) {
+                        $link_txt="I attended"; $showt=3;
+                    } else { $link_txt="I'm attending"; $showt=4; }
+                }
+                //if they're not logged in, show the questions
+                if (!user_is_auth()) { $attend=false; }
+                ?>
+
+                    <a class="btn<?php echo $attend ? ' btn-success' : ''; ?>" id="mark-attending" href="javascript:void(0);" onclick="return markAttendingTalk(this,<?php echo $detail->ID?>,<?php echo $detail->date_given<time() ? 'true' : 'false'; ?>);"><?php echo $link_txt?></a>
+                </p>
 
     <p class="rating">
         <?php echo $rstr; ?>
@@ -29,13 +51,13 @@
         <span align="left"><?php
         if (!empty($speaker_img)) {
             foreach ($speaker_img as $uid => $img) {
-                echo '<a href="/user/view/'.$uid.'"><img src="'.$img.'" align="left" border="0" style="margin-right:10px;" height="50" width="50"></a>'; 
+                echo '<a href="/user/view/'.$uid.'"><img src="'.$img.'" align="left" border="0" style="margin-right:10px;" height="50" width="50"></a>';
             }
         }
         ?></span>
         <?php echo auto_p(auto_link(escape_allowing_presentation_tags($detail->talk_desc)));?>
     </div>
-    
+
     <p class="quicklink">
         Quicklink: <strong><a href="<?php echo $this->config->site_url(); ?><?php echo $detail->tid; ?>"><?php echo $this->config->site_url(); ?><?php echo $detail->tid; ?></a></strong>
     <?php
@@ -44,7 +66,7 @@
         }
     ?>
     </p>
-    
+
     <?php if (!empty($track_info)): ?>
     <p class="quicklink">
     <?php
@@ -52,7 +74,7 @@
     ?>
     </p>
     <?php endif; ?>
-    
+
     <?php if (!empty($detail->slides_link)): ?>
     <p class="quicklink">
         Slides: <strong><a href="<?php echo $detail->slides_link; ?>"><?php echo $detail->talk_title; ?></a></strong>
