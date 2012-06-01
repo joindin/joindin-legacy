@@ -76,7 +76,7 @@
             <td>
                 <a class="comment-count" href="/talk/view/<?php echo $talk->ID; ?>/#comments"><?php echo $talk->comment_count; ?></a>
             </td>
-            <td>
+            <td nowrap>
                 <a class="btn-small<?php echo $talk->user_attending ? ' btn-success' : ''; ?>" href="#" onclick="markAttendingTalk(this,<?php echo $talk->ID?>,<?php echo $talk->date_given<time() ? 'true' : 'false'; ?>);return false;"><?php echo $talk->date_given<time() ? "I attended" : "I'm attending"; ?></a>
             </td>
         </tr>
