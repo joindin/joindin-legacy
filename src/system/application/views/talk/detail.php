@@ -10,7 +10,7 @@ if (!empty($claim_msg)) {
 }
 ?>
 <script type="text/javascript" src="/inc/js/talk.js"></script>
-<?php 
+<?php
 $msg=$this->session->flashdata('msg');
 if (!empty($msg)): ?>
 <?php $this->load->view('msg_info', array('msg' => $msg)); ?>
@@ -26,7 +26,8 @@ $data=array(
     'detail'		=> $detail,
     'speaker_img'	=> $speaker_images,
     'rstr'			=> $rstr,
-    'speakers'		=> $speakers
+    'speakers'		=> $speakers,
+	 'attend'		=> $attend,
 );
 $this->load->view('talk/modules/_talk_detail', $data);
 
@@ -39,10 +40,10 @@ $data=array(
 $this->load->view('talk/modules/_talk_buttons', $data);
 ?>
 
-<?php 
+<?php
 $data=array();
 $this->load->view('talk/modules/_talk_comments', $data);
-$this->load->view('talk/modules/_talk_comment_form', $data); 
+$this->load->view('talk/modules/_talk_comment_form', $data);
 ?>
 <input type="hidden" name="talk_id" id="talk_id" value="<?php echo $detail->ID ?>" />
 <input type="hidden" name="user_id" id="user_id" value="<?php echo $user_id ?>" />
