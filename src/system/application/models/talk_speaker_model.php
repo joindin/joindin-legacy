@@ -107,6 +107,22 @@ class Talk_speaker_model extends Model {
         );
         $this->db->delete('talk_speaker', $where);
     }
+
+    /**
+     * Unlink a speaker claim from a talk
+     * 
+     * @param int $talk_id    Talk ID
+     * @param int $speaker_id Speaker ID
+     * 
+     * @return null
+     */
+    public function unlinkSpeaker($talk_id, $speaker_id) {
+        $data = array('speaker_id' => null);
+        $this->db->update(
+            'talk_speaker', $data,
+             array('speaker_id' => $speaker_id, 'talk_id' => $talk_id)
+        );
+    }
     
     /**
      * Find all speakers for a given talk ID #
