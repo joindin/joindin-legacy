@@ -314,6 +314,28 @@ function setStars(rate){
 	$('.rating .star').eq(rate-1).click();
 }
 
+function toggleCfpDates(){
+
+	var sel_fields = new Array(
+	    'cfp_start_mo','cfp_start_day','cfp_start_yr',
+	    'cfp_end_mo','cfp_end_day','cfp_end_yr','cfp_url'
+	);
+
+	// Get the current status of the first one...
+	stat = $('input[name="is_cfp"]').is(':checked');
+	if(stat){
+	    $('div.cfp').show();
+	    $.each(sel_fields,function(){
+	        $('#'+this).removeAttr("disabled");
+	    });
+	}else{
+	    $('div.cfp').hide();
+	    $.each(sel_fields,function(){
+	        $('#'+this).attr("disabled","disabled");
+	    });
+	}
+	}
+    
 $(document).ready(function(){
     $('#showLimit').change(function(){
         $('#userAdminForm').submit();
