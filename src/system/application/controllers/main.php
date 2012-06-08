@@ -64,7 +64,7 @@ class Main extends Controller
         $reqkey = buildReqKey();
 
         $arr = array(
-            'talks'           => $this->talks_model->getPopularTalks(),
+            'talks'           => $this->talks_model->getPopularTalks(7),
             'hot_events'      => $this->event_model->getHotEvents(7),
             'logged'          => $this->user_model->isAuth(),
             'latest_blog'     => $this->bpm->getLatestPost(),
