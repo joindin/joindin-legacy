@@ -10,10 +10,13 @@ class User_model extends Model {
      * Check to see if the user is authenticated
      * @return mixed Return value is either the username or false
      */
-    function isAuth() {
-        if ($u=$this->session->userdata('username')) {
+    function isAuth()
+    {
+        if ($u = $this->session->userdata('username')) {
             return $u;
-        } else { return false; }
+        }
+
+        return false;
     }
 
     /**
