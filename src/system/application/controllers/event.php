@@ -687,7 +687,7 @@ class Event extends Controller
                 ? true : false;
 
             if ($is_auth) {
-                $udata = $this->user_model->getUser($is_auth);
+                $udata = $this->user_model->getUserByUsername($is_auth);
                 $is_invite = $this->ilm->isInvited($id, $udata[0]->ID);
 
                 //If they're invited, accept if they haven't already
@@ -1621,7 +1621,7 @@ class Event extends Controller
         $detail = $this->event_model->getEventDetail($id);
 
         $is_auth = $this->user_model->isAuth();
-        $user    = ($is_auth) ? $this->user_model->getUser($is_auth) : false;
+        $user    = ($is_auth) ? $this->user_model->getUserByUsername($is_auth) : false;
         $admins  = $this->event_model->getEventAdmins($id);
 
         if ($resp && $user) {
@@ -1672,7 +1672,7 @@ class Event extends Controller
             // see if they're adding a username and check to see if it's valid
             $u = $this->input->post('user');
             if (!empty($u)) {
-                $ret = $this->user_model->getUser($u);
+                $ret = $this->user_model->getUserByUsername($u);
                 if (empty($ret)) {
                     $msg = 'Invalid user <b>' . $u . '</b>!';
                 } else {
@@ -1747,7 +1747,7 @@ class Event extends Controller
     function contact($id)
     {
         // They need to be logged in...
-        if (!$this->user_model->isAuth()) {
+        if (!$is_auth = $this->user_model->isAuth()) {
             redirect('/user/login', 'refresh');
         }
 
@@ -1772,7 +1772,7 @@ class Event extends Controller
         );
 
         if ($this->validation->run() != false) {
-            $user = $this->user_model->getUser($is_auth);
+            $user = $this->user_model->getUserByUsername($is_auth);
 
             // grab the event admins
             $admins = $this->event_model->getEventAdmins($id);
