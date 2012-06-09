@@ -38,10 +38,12 @@
         <span id="comment_anonymously" <?php if ($auth):?>style="display: none;"<?php endif; ?>> anonymously</span>
     </label>
     <?php 
+    
+
     echo form_textarea(array(
         'name'	=> 'comment',
         'id'	=> 'comment',
-        'value'	=> $this->validation->comment,
+        'value'	=> $this->validation->translated_comment,
         'cols'	=> 40,
         'rows'	=> 10
     ));
