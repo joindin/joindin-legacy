@@ -247,12 +247,19 @@ class User_model extends Model {
         return $q->result();
     }
 
-        function getUserByUsername($username)
-        {
-            $query = $this->db->get_where('user', array('username' => $username));
-            $result = $query->result();
-            return $result;
-        }
+    function getUserByUsername($username)
+    {
+        $query = $this->db->get_where('user', array('username' => $username));
+        $result = $query->result();
+        return $result;
+    }
+
+    function getUserById($userId)
+    {
+        $query = $this->db->get_where('user', array('ID' => $userId));
+        $result = $query->result();
+        return $result;
+    }
 
     /**
      * Find email addresses for all users marked as site admins
