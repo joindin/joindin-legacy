@@ -169,7 +169,7 @@ You can view the event here: %sevent/view/%s
         $byline='';
         if ($in_arr['user_id']!=0) {
             $CI->load->model('user_model');
-            $udata	= $CI->user_model->getUser($in_arr['user_id']);
+            $udata	= $CI->user_model->getUserById($in_arr['user_id']);
             $byline	= 'by '.$udata[0]->full_name.' ('.$udata[0]->username.')';
         }
         
