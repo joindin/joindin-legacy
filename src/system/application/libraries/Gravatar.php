@@ -24,7 +24,7 @@ class Gravatar {
         // Get the user's email address
         $this->CI->load->model('user_model');
         if ($userEmail === null) {
-            $userDetail = $this->CI->user_model->getUser($userId);
+            $userDetail = $this->CI->user_model->getUserById($userId);
             if (empty($userDetail)) {
                 return false;
             }
