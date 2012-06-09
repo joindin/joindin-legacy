@@ -895,10 +895,10 @@ class Talk extends Controller
      * 
      * @return null
      */
-    public function unlink($talkId,$speakerId)
+    public function unlink($talkId, $speakerId)
     {
         if (!$this->user_model->isAuth()) {
-            redirect('talk/view/'.$talkId);
+            redirect('talk/view/' . $talkId);
         }
 
         // get the event the talk is a part of
@@ -906,7 +906,7 @@ class Talk extends Controller
         $this->load->model('user_model');
 
         $event = $this->talks_model->getTalkEvent($talkId);
-        error_log(print_r($event,true));
+        error_log(print_r($event,true)); // Is this really needed?
 
         // ensure that the user is either a site admin or event admin
         if ($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($event->ID)) {
@@ -916,20 +916,20 @@ class Talk extends Controller
                 'speakerId' => $speakerId
             );
 
-            $this->template->write_view('content','talk/unlink',$data);
+            $this->template->write_view('content', 'talk/unlink', $data);
 
             if (isset($_POST['answer']) && ($_POST['answer'] == 'yes')) {
 
                 $this->load->model('talk_speaker_model');
-                $user = $this->user_model->getUser($speakerId);
+                $user = $this->user_model->getUserById($speakerId);
 
                 $this->talk_speaker_model->unlinkSpeaker($talkId,$user[0]->ID);
-                redirect('talk/view/'.$talkId);
+                redirect('talk/view/' . $talkId);
             }
 
             $this->template->render();
         } else {
-            redirect('talk/view/'.$talkId);
+            redirect('talk/view/' . $talkId);
         }
     }
 
