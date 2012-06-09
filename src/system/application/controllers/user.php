@@ -84,7 +84,6 @@ class User extends AuthAbstract
         $this->validation->set_rules($rules);
         $this->validation->set_fields($fields);
 
-
         if ($this->validation->run() == false) {
             // add a for-one-request-only session field
             if ($this->session->flashdata('url_after_login')) {
@@ -98,7 +97,7 @@ class User extends AuthAbstract
             $this->template->render();
         } else {
             // success! get our data and update our login time
-            $ret = $this->user_model->getUser($this->input->post('user'));
+            $ret = $this->user_model->getUserByUsername($this->input->post('user'));
             $this->_login($ret[0]);
         }
     }
@@ -159,7 +158,7 @@ class User extends AuthAbstract
 
         // ID and Request code are given?
         if ($id != null and $request_code != null) {
-            $ret = $this->user_model->getUser($id);
+            $ret = $this->user_model->getUserById($id);
             if (empty($ret) || strcasecmp($ret[0]->request_code, $request_code)) {
                 // Could not find the user. Maybe already used, maybe a false code
                 $arr['msg'] = "The request code is already used or is invalid.";
@@ -382,7 +381,7 @@ class User extends AuthAbstract
         // see if we have a sort type and apply it
         $p         = explode('/', uri_string());
         $sort_type = (isset($p[4])) ? $p[4] : null;
-        $details   = $this->user_model->getUser($uid);
+        $details   = $this->user_model->getUserById($uid);
 
         // sf the user doesn't exist, redirect!
         if (!isset($details[0])) {
@@ -454,7 +453,7 @@ class User extends AuthAbstract
         $this->load->library('validation');
         $uid = $this->session->userdata('ID');
         $arr = array(
-            'curr_data' => $this->user_model->getUser($uid)
+            'curr_data' => $this->user_model->getUserById($uid)
         );
 
         $fields = array(
@@ -612,7 +611,7 @@ class User extends AuthAbstract
      */
     function usern_check($str)
     {
-        $ret = $this->user_model->getUser($str);
+        $ret = $this->user_model->getUserByUsername($str);
 
         if (!empty($ret)) {
             $this->validation->_error_messages['usern_check']
@@ -676,7 +675,7 @@ class User extends AuthAbstract
      */
     function login_exist_check($str)
     {
-        $ret = $this->user_model->getUser($str);
+        $ret = $this->user_model->getUserByUsername($str);
 
         if (empty($ret)) {
             $this->validation->_error_messages['login_exist_check']
