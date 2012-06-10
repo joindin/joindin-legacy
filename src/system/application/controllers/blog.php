@@ -230,7 +230,7 @@ class Blog extends Controller
         $this->load->library('spam');
         $this->load->helper('reqkey');
         $this->load->model('blog_posts_model', 'blogPostsModel');
-    $this->load->model('blog_comments_model','blogCommentsModel');
+        $this->load->model('blog_comments_model','blogCommentsModel');
 
         $this->blogPostsModel->updatePostViews($id);
         $reqkey = buildReqKey();
@@ -239,16 +239,18 @@ class Blog extends Controller
             'details'  => $this->blogPostsModel->getPostDetail($id),
             'is_admin' => $this->user_model->isSiteAdmin(),
             'reqkey'   => $reqkey, 'seckey' => buildSecFile($reqkey),
-        'comments' => $this->blogCommentsModel->getCommentsByPostId($id)
+            'comments' => $this->blogCommentsModel->getCommentsByPostId($id)
         );
         $other_data = array(
             'title' => 'Popular Blog Posts',
             'posts' => $this->blogPostsModel->getPostDetail(), 'curr_id' => $id
         );
-        if ($this->user_model->isAuth()) {
-            $udata = $this->user_model->getUser($this->session->userdata('ID'));
+
+        if ($username = $this->user_model->isAuth()) {
+            $udata = $this->user_model->getUserByUsername($username);
             $arr['full_name'] = (!empty($udata[0]->full_name))
-                ? $udata[0]->full_name : $udata[0]->username;
+                              ? $udata[0]->full_name
+                              : $udata[0]->username;
         }
         $this->template->write('feedurl', '/feed/blog');
         $this->template->write_view('sidebar2', 'blog/_other-posts', $other_data);

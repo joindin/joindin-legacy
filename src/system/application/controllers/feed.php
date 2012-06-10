@@ -155,25 +155,25 @@ class Feed extends Controller
     /**
      * Outputs a feed with the event and talk comments of a specific user.
      *
-     * @param integer $in Id of the user
+     * @param integer $userId Id of the user
      *
      * @return void
      */
-    function user($in)
+    function user($userId)
     {
         $this->load->model('talks_model');
         $this->load->model('talk_comments_model', 'tcm');
         $this->load->model('event_comments_model', 'ecm');
 
-        $udata    = $this->user_model->getUser($in);
+        $udata    = $this->user_model->getUserById($userId);
         $talks    = array();
         $comments = array();
 
         if (!empty($udata)) {
-            $uid = $udata[0]->ID;
+            $userId = $udata[0]->ID;
 
             //get the upcoming talks for this user
-            $ret = $this->talks_model->getUserTalks($uid);
+            $ret = $this->talks_model->getUserTalks($userId);
 
             //re-sort them by date_given
             $tmp = array();
@@ -197,7 +197,7 @@ class Feed extends Controller
             }
 
             //on to the comments!
-            $ecom = $this->ecm->getUserComments($uid);
+            $ecom = $this->ecm->getUserComments($userId);
             foreach ($ecom as $k => $v) {
                 $comments[] = array(
                     'content'  => $v->comment,
@@ -206,7 +206,7 @@ class Feed extends Controller
                 );
             }
 
-            $tcom = $this->tcm->getUserComments($uid);
+            $tcom = $this->tcm->getUserComments($userId);
             foreach ($tcom as $k => $v) {
                 $comments[] = array(
                     'content'  => $v->comment,
