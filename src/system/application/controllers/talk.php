@@ -914,7 +914,6 @@ class Talk extends Controller
         $this->load->model('user_model');
 
         $event = $this->talks_model->getTalkEvent($talkId);
-        error_log(print_r($event,true)); // Is this really needed?
 
         // ensure that the user is either a site admin or event admin
         if ($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($event->ID)) {
