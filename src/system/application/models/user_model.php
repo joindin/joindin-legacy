@@ -179,7 +179,9 @@ class User_model extends Model {
             }
         }
 
-        if ($result) return $result;
+        if ($result) { 
+            return $result;
+        }
 
         return false;
     }
