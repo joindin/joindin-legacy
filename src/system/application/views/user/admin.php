@@ -18,34 +18,14 @@ echo form_submit('sub','Search');
 //echo form_close();
 ?>
 
-<b>Pages:</b>
-<?php
-$links = array();
-// show first
-$links[] = '<a href="/user/admin/1">1</a>...';
+<br/>
+<b>Paging:</b>
+<?php if ($paging): ?>
+<?php echo $paging; ?>
+<?php else: ?>
+<strong>1</strong>
+<?php endif; ?>
 
-for($i=3;$i>0;$i--) {
-    $p = $page-$i;
-    if ($p>1) {
-        $links[] = '<a href="/user/admin/'.$p.'">'.$p.'</a>';
-    }
-}
-
-// show current and three around it
-$links[] = '<a style="font-weight:bold;" href="/user/admin/'.$page.'">'.$page.'</a>';
-
-for($i=3;$i>0;$i--) {
-    $p = $page+$i;
-    if ($p<$page_ct) {
-        $links[] = '<a href="/user/admin/'.$p.'">'.$p.'</a>';
-    }
-}
-
-// show last
-$links[] = '...<a href="/user/admin/'.$page_ct.'">'.$page_ct.'</a>';
-
-echo '['.implode(', ', $links).']<br/>';
-?>
 <br/>
 <?php
 if (empty($msg)) {
@@ -59,11 +39,11 @@ else
 }
 ?>
 
-<?php echo 'show: '.form_dropdown('showLimit', array(
+<?php echo 'show: '.form_dropdown('users_per_page', array(
     '10' => '10 records',
     '20' => '20 records',
     '40' => '40 records'
-), $this->validation->showLimit,'id="showLimit"'); ?>
+), $this->validation->users_per_page,'id="showLimit"'); ?>
 
 <table summary="" class="list" width="100%">
 <tr class="header">
@@ -109,3 +89,11 @@ foreach ($users as $k=>$v) {
 </tr>
 </table>
 <?php echo form_close(); ?>
+
+<br/>
+<b>Paging:</b>
+<?php if ($paging): ?>
+<?php echo $paging; ?>
+<?php else: ?>
+<strong>1</strong>
+<?php endif; ?>

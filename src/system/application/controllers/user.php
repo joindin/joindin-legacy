@@ -501,32 +501,50 @@ class User extends AuthAbstract
      *
      * View users listing, enable/disable, etc.
      *
-     * @param integer $page Number of the page to handle
+     * @param string $start Determine if we are selecting another page of results
+     * @param integer $offset Starting index of records to display
      *
      * @return void
      */
-    function admin($page = null)
+    function admin($start=null, $offset = null)
     {
+        $this->load->library('validation');
+        $this->load->library('pagination');
+        $this->load->model('user_model');
+
         // Only admins are allowed
         if (!$this->user_model->isSiteAdmin()) {
             redirect();
         }
 
-        $this->load->library('validation');
-        $this->load->model('user_model');
+        // The $start parameter exists so that we can tell the difference 
+        // between the user selecting page 1 and the user coming to this page
+        // via another method. If the user has not specifically selected
+        // page 1, then we extract the last page they were on via the session.
+        // We need to do this as otherwise toggling the admin setting on a user
+        // that is on page 2 takes us back to page 1.
+        if (null === $start) {
+            // retreive via session
+            $offset = (int)$this->session->userdata('user-admin-offset');
+        }
+        $this->session->set_userdata('user-admin-offset', $offset);
 
-        $showLimit = $this->input->post('showLimit') ?: 10;
-        $this->validation->showLimit = $showLimit;
+        // Retrieve users_per_page from post data or session if not in post
+        // and then store to session
+        $users_per_page = $this->session->userdata('user-admin-users_per_page');
+        if (!$users_per_page) {
+            $users_per_page = 10;
+        }
+        $users_per_page = $this->input->post('users_per_page') ?: $users_per_page;
+        $this->session->set_userdata('user-admin-users_per_page', $users_per_page);
 
-        $page        = (!$page) ? 1 : $page;
-        $rows_in_pg  = $showLimit;
-        $offset      = ($page == 1) ? 1 : $page * 10;
-        $all_users   = $this->user_model->getAllUsers($showLimit);
-        $all_user_ct = count($all_users);
-        $page_ct     = ceil($all_user_ct / $rows_in_pg);
-        $users       = array_slice($all_users, $offset, $rows_in_pg);
+        $this->validation->users_per_page = $users_per_page;
+
+        // Retreive this page's list of users along with total count of users
+        $users       = $this->user_model->getAllUsers($users_per_page, $offset);
+        $total_users = $this->user_model->countAllUsers();
+
         $msg         = '';
-
         $fields = array('user_search' => 'Search Term');
         $this->validation->set_fields($fields);
 
@@ -543,12 +561,18 @@ class User extends AuthAbstract
             $msg = count($selectedUsers).' users deleted';
         }
 
+        $this->pagination->initialize(array(
+            'base_url'    => $this->config->item('base_url') . 'user/admin/start',
+            'uri_segment' => 4,
+            'total_rows'  => $total_users,
+            'per_page'    => $users_per_page,
+            'cur_page'    => $offset,
+        ));
+
         $arr = array(
-            'users'         => $users,
-            'all_user_ct'   => $all_user_ct,
-            'page_ct'       => $page_ct,
-            'page'          => $page,
-            'msg'           => $msg
+            'users'       => $users,
+            'paging'      => $this->pagination->create_links(),
+            'msg'         => $msg
         );
 
         $this->template->write_view('content', 'user/admin', $arr);
