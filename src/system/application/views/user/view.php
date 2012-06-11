@@ -225,41 +225,6 @@ foreach ($talks as $k=>$v) {
             }
             ?>
             </table>
-            
-            <b>Add/Remove Permissions</b><br/>
-            <table cellpadding="3" cellspacing="0" border="0">
-            <tr>
-                <td style="padding:3px">Type:</td>
-                <td style="padding:3px">
-                    <select name="add_type" id="add_type" onChange="populateEvents('event_names');">
-                        <option value="">Select Type
-                        <option value="talk">Talk
-                        <option value="event">Event
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td style="padding:3px">Event:</td>
-                <td style="padding:3px">	
-                    <select name="event_names" id="event_names" onChange="chkAdminType('event_talks')">
-                    <option value="">Select Event
-                    </select>
-                </td>
-            </tr>
-            <tr id="talks_row" style="display:none">
-                <td style="padding:3px">Talks:</td>
-                <td style="padding:3px">
-                    <select name="event_talks" id="event_talks">
-                        <option value="">Select Talk
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" align="right" style="padding:3px">
-                    <input type="button" name="add_role" value="add" onClick="addRole(<?php echo $details[0]->ID; ?>)"/>
-                </td>
-            </tr>
-            </table>
         </div>
     </td>
 </tr>
