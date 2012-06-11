@@ -1,446 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr">
-  <head>
-    <title>Start - Joind.in</title>
-    <link media="all" rel="stylesheet" type="text/css" href="css/site.css"/>
-    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
-    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-  </head>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" dir="ltr" lang="en">
+<head>
+  <title>Developers Guide - Joind.in</title>
+  <link media="all" rel="stylesheet" type="text/css" href="inc/css/site.css" />
+  <link media="all" rel="stylesheet" type="text/css" href="inc/css/devguide.css" />
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+  <script type="text/javascript" src="inc/js/jquery.js"></script>
+  <script type="text/javascript" src="inc/js/jquery.pause.js"></script>
+  <script type="text/javascript" src="inc/js/jquery-ui.js"></script>
+  <script type="text/javascript" src="inc/js/site.js" async=""></script>
+  <script type="text/javascript" src="inc/js/notifications.js" async=""></script>
+  <meta http-equiv="content-type" content="text/html; charset=us-ascii" />
+</head>
+
   <body id="page-home">
     <div id="hd">
       <div class="container_12 top">
-          <div class="grid_12">
-              <div class="usr">
-                  <div class="wrapper">
-                                      <a href="/user/login">Login</a> or <a href="/user/register">Register</a>
-                                  </div>
-                  <div class="clear"></div>
-              </div>
+        <div class="grid_12">
+          <div class="usr">
+            <div class="wrapper">
+              <h3><a href="http://joind.in">Main Site</a></h3> - <h3><a href="http://github.com/joindin/">GitHub</a></h3> - <h3><a href="http://joindin.jira.com/">Bug Tracker</a></h3>
+            </div>
+
+            <div class="clear"></div>
           </div>
-          <div class="clear"></div>
+        </div>
+
+        <div class="clear"></div>
       </div>
 
-    <div class="container_12 nav">
+      <div class="container_12 nav">
         <div class="grid_3 logo">
-            <a href="/"><img src="/inc/img/logo.png" border="0" alt="Joind.in Logo" height="60" width="200" /></a>
+          <a href="/"><img src="inc/img/logo.png" border="0" alt="Joind.in Logo" height=
+          "60" width="200" /></a>
         </div>
-        <div class="grid_6 menu">
-            <ul>
-                <li id="menu-event"><a href="/event">Events</a>
-                <li id="menu-talk"><a href="/talk">Talks</a>
-                <li id="menu-about" class="sep"><a href="/about">About</a>
-                <li id="menu-help"><a href="/help">Help</a>
-                <li id="menu-blog"><a href="/blog">Blog</a>
-            </ul>
-            <div class="clear"></div>
-        </div>
-        <div class="grid_3 search">
-            <form id="top-search" method="post" action="/search">
-                <label id="top-search-label" accesskey="2" for="top-search-input">Search Joind.in...</label>
-                <input type="text" value="" id="top-search-input" name="search_term"/>
-                <input type="image" alt="Search" src="/inc/img/top-search-submit.png" id="top-search-submit"/>
-            </form>
-            <div class="clear"></div>
-        </div>
-        <div class="clear"></div>
-    </div>
-</div>
 
-<div id="ctn">
-    <div class="container_12 container">
-        <div class="grid_8">
-            <div class="main">
-                                
-<div class="box">
-<p>Welcome to joind.in!  This is the site where event attendees can leave feedback on an event and its sessions.  Do you have an opinion?  Then <a href="/user/register">register an account</a> and share it!</p>
-</div>
+        <div class="grid_9 menu">
+          <ul>
+            <li id="menu-event"><a href="/event">Events</a></li>
 
-<div class="box">
-<h2 class="h1 icon-event">Hot Events <a class="more" href="/event/hot">More &raquo;</a></h2>
-<div class="row row-event">
-    <div class="img">
-    <div class="frame">
-            <a href="/event/view/853"><img src="/inc/img/event_icons/dpc12_90px.png" alt="Dutch PHP Conference 2012" height="90" width="90" /></a>    </div>
-</div>
-    <div class="text">
-        <h3><a href="/event/view/853">Dutch PHP Conference 2012</a></h3>
-        <p class="info"><strong>06.Jun.2012</strong>
-                - <strong>09.Jun.2012</strong> at <strong>Amsterdam RAI</strong>
-                </p>
-        <div class="desc">
-        <p>Ibuildings is proud to organise the sixth Dutch PHP Conference on June 8 and 9, plus a pre-conference tutorial day&#8230;</p>
-                </div>
-        <p class="opts">
-            <a href="/event/view/853#comments">6 comments</a> |
-            <strong><span class="event-attend-count-853">142</span> attended</strong> | 
+            <li id="menu-talk"><a href="/talk">Talks</a></li>
 
-            <!--<input type="checkbox" name="attend" value="1"/> Attending?-->
+            <li id="menu-about" class="sep"><a href="/about">About</a></li>
 
-                <a class="btn-small" href="#" onclick="markAttending(this,853,true);return false;">I attended</a> 
-        </p>
-        <div class="desc" style="padding-top:6px">
-                </div>
-            </div>
-    <div class="clear"></div>
-</div>
-<div class="row row-event">
-    <div class="img">
-    <div class="frame">
-            <a href="/event/view/976"><img src="/inc/img/event_icons/sfl_paris.png" alt="Symfony Live Paris 2012" height="90" width="90" /></a>    </div>
-</div>
-    <div class="text">
-        <h3><a href="/event/view/976">Symfony Live Paris 2012</a></h3>
-        <p class="info"><strong>06.Jun.2012</strong>
-                - <strong>09.Jun.2012</strong> at <strong>Cité Universitaire Internationale</strong>
-                </p>
-        <div class="desc">
-        <p>The Symfony Live Conference 2012 is a unique opportunity to meet the Symfony community, talk with the Symfony core team,&#8230;</p>
-        <b>tagged</b> <a href="/event/tag/php">php</a>, <a href="/event/tag/symfony">symfony</a>        </div>
-        <p class="opts">
-            <a href="/event/view/976#comments">1 comment</a> |
-            <strong><span class="event-attend-count-976">78</span> attended</strong> | 
+            <li id="menu-help"><a href="/help">Help</a></li>
 
-            <!--<input type="checkbox" name="attend" value="1"/> Attending?-->
+            <li id="menu-blog"><a href="/blog">Blog</a></li>
+          </ul>
 
-                <a class="btn-small" href="#" onclick="markAttending(this,976,true);return false;">I attended</a> 
-        </p>
-        <div class="desc" style="padding-top:6px">
-                </div>
-            </div>
-    <div class="clear"></div>
-</div>
-<div class="row row-event">
-    <div class="img">
-    <div class="frame">
-            <a href="/event/view/854"><img src="/inc/img/event_icons/dmconf_90px.png" alt="Dutch Mobile Conference 2012" height="90" width="90" /></a>    </div>
-</div>
-    <div class="text">
-        <h3><a href="/event/view/854">Dutch Mobile Conference 2012</a></h3>
-        <p class="info"><strong>07.Jun.2012</strong>
-                - <strong>09.Jun.2012</strong> at <strong>Amsterdam RAI</strong>
-                </p>
-        <div class="desc">
-        <p>Ibuildings is proud to organise the first Dutch Mobile Conference on June 8 and 9, plus a pre-conference tutorial day&#8230;</p>
-                </div>
-        <p class="opts">
-            <a href="/event/view/854#comments">1 comment</a> |
-            <strong><span class="event-attend-count-854">51</span> attended</strong> | 
-
-            <!--<input type="checkbox" name="attend" value="1"/> Attending?-->
-
-                <a class="btn-small" href="#" onclick="markAttending(this,854,true);return false;">I attended</a> 
-        </p>
-        <div class="desc" style="padding-top:6px">
-                </div>
-            </div>
-    <div class="clear"></div>
-</div>
-<div class="row row-event">
-    <div class="img">
-    <div class="frame">
-            <a href="/event/view/947"><img src="/inc/img/event_icons/logo_forum2012.png" alt="Forum PHP 2012" height="90" width="90" /></a>    </div>
-</div>
-    <div class="text">
-        <h3><a href="/event/view/947">Forum PHP 2012</a></h3>
-        <p class="info"><strong>05.Jun.2012</strong>
-                - <strong>06.Jun.2012</strong> at <strong>Paris</strong>
-                </p>
-        <div class="desc">
-        <p>The &quot;Forum PHP&quot; is the main French PHP conference. Being hold once a year, it gathers more than 500 developers,&#8230;</p>
-        <b>tagged</b> <a href="/event/tag/france">france</a>, <a href="/event/tag/paris">paris</a>, <a href="/event/tag/performance">performance</a>, <a href="/event/tag/php">php</a>, <a href="/event/tag/quality">quality</a>        </div>
-        <p class="opts">
-            <a href="/event/view/947#comments">2 comments</a> |
-            <strong><span class="event-attend-count-947">32</span> attended</strong> | 
-
-            <!--<input type="checkbox" name="attend" value="1"/> Attending?-->
-
-                <a class="btn-small" href="#" onclick="markAttending(this,947,true);return false;">I attended</a> 
-        </p>
-        <div class="desc" style="padding-top:6px">
-                </div>
-            </div>
-    <div class="clear"></div>
-</div>
-<div class="row row-event">
-    <div class="img">
-    <div class="frame">
-            <a href="/event/view/940"><img src="/inc/img/event_icons/none.gif" alt="International PHP Conference 2012 Spring Edition" height="90" width="90" /></a>    </div>
-</div>
-    <div class="text">
-        <h3><a href="/event/view/940">International PHP Conference 2012 Spring Edition</a></h3>
-        <p class="info"><strong>03.Jun.2012</strong>
-                - <strong>06.Jun.2012</strong> at <strong>Maritim proArte</strong>
-                </p>
-        <div class="desc">
-        <p>The International PHP Conference is the global recognized event for PHP developers, webworkers, IT managers and everyone interested in web-technology.&#8230;</p>
-                </div>
-        <p class="opts">
-            <a href="/event/view/940#comments">0 comments</a> |
-            <strong><span class="event-attend-count-940">42</span> attended</strong> | 
-
-            <!--<input type="checkbox" name="attend" value="1"/> Attending?-->
-
-                <a class="btn-small" href="#" onclick="markAttending(this,940,true);return false;">I attended</a> 
-        </p>
-        <div class="desc" style="padding-top:6px">
-                </div>
-            </div>
-    <div class="clear"></div>
-</div>
-<div class="row row-event">
-    <div class="img">
-    <div class="frame">
-            <a href="/event/view/917"><img src="/inc/img/event_icons/none.gif" alt="5th Annual Pipe Tech World Summit 2012" height="90" width="90" /></a>    </div>
-</div>
-    <div class="text">
-        <h3><a href="/event/view/917">5th Annual Pipe Tech World Summit 2012</a></h3>
-        <p class="info"><strong>12.Jun.2012</strong>
-                - <strong>15.Jun.2012</strong> at <strong>Grand Cevahir Hotel &amp; Convention Centre, Istanbul, Turkey</strong>
-                </p>
-        <div class="desc">
-        <p>&quot;The leading heads of pipeline projects and technology will be in attendance at the 5th edition of the Pipe Tech&#8230;</p>
-                </div>
-        <p class="opts">
-            <a href="/event/view/917#comments">0 comments</a> |
-            <strong><span class="event-attend-count-917">0</span> attending</strong> | 
-
-            <!--<input type="checkbox" name="attend" value="1"/> Attending?-->
-
-                <a class="btn-small" href="#" onclick="markAttending(this,917,false);return false;">I'm attending</a> 
-        </p>
-        <div class="desc" style="padding-top:6px">
-                </div>
-            </div>
-    <div class="clear"></div>
-</div>
-<div class="row row-event">
-    <div class="img">
-    <div class="frame">
-            <a href="/event/view/958"><img src="/inc/img/event_icons/none.gif" alt="php|tek '12" height="90" width="90" /></a>    </div>
-</div>
-    <div class="text">
-        <h3><a href="/event/view/958">php|tek '12</a></h3>
-        <p class="info"><strong>22.May.2012</strong>
-                - <strong>25.May.2012</strong> at <strong>Sheraton Gateway Suites O’Hare</strong>
-                </p>
-        <div class="desc">
-        <p>Once again, the PHP community gathers in Chicago, IL for a few days of learning and laughing. There are plenty&#8230;</p>
-                </div>
-        <p class="opts">
-            <a href="/event/view/958#comments">7 comments</a> |
-            <strong><span class="event-attend-count-958">84</span> attended</strong> | 
-
-            <!--<input type="checkbox" name="attend" value="1"/> Attending?-->
-
-                <a class="btn-small" href="#" onclick="markAttending(this,958,true);return false;">I attended</a> 
-        </p>
-        <div class="desc" style="padding-top:6px">
-                </div>
-            </div>
-    <div class="clear"></div>
-</div>
-</div>
-
-<div class="box">
-<h2 class="h1 icon-talk">Popular Talks</h2>
-<div class="row row-talk">
-    <div class="img">
-                    <img class="rating rating-4" src="/inc/img/rating-4.gif" alt="Rating: 4 of 5" height="21" width="117" />            </div>
-    <div class="text">
-        <h3><a href="/talk/view/6174">Information Fair</a></h3>
-        <p class="opts">
-            at <a href="/event/view/900">Stop By, Get Started 2012</a> 
-                        |
-            <a href="/talk/view/6174#comments">79 comments</a>
-        |
-                </p>
-    </div>
-    <div class="clear"></div>
-</div>
-<div class="row row-talk">
-    <div class="img">
-                    <img class="rating rating-4" src="/inc/img/rating-4.gif" alt="Rating: 4 of 5" height="21" width="117" />            </div>
-    <div class="text">
-        <h3><a href="/talk/view/6360">Meal Provided for the event</a></h3>
-        <p class="opts">
-            at <a href="/event/view/900">Stop By, Get Started 2012</a> 
-                        |
-            <a href="/talk/view/6360#comments">73 comments</a>
-        |
-                </p>
-    </div>
-    <div class="clear"></div>
-</div>
-<div class="row row-talk">
-    <div class="img">
-                    <img class="rating rating-5" src="/inc/img/rating-5.gif" alt="Rating: 5 of 5" height="21" width="117" />            </div>
-    <div class="text">
-        <h3><a href="/talk/view/3582">How to Stand on the Shoulders of Giants</a></h3>
-        <p class="opts">
-            at <a href="/event/view/677">PHP North West 2011</a> 
-                        |
-            <a href="/talk/view/3582#comments">65 comments</a>
-        |
-        <a href="/user/view/291">Ian Barber</a>        </p>
-    </div>
-    <div class="clear"></div>
-</div>
-<div class="row row-talk">
-    <div class="img">
-                    <img class="rating rating-4" src="/inc/img/rating-4.gif" alt="Rating: 4 of 5" height="21" width="117" />            </div>
-    <div class="text">
-        <h3><a href="/talk/view/6361">Registration prior to the event</a></h3>
-        <p class="opts">
-            at <a href="/event/view/900">Stop By, Get Started 2012</a> 
-                        |
-            <a href="/talk/view/6361#comments">65 comments</a>
-        |
-                </p>
-    </div>
-    <div class="clear"></div>
-</div>
-<div class="row row-talk">
-    <div class="img">
-                    <img class="rating rating-5" src="/inc/img/rating-5.gif" alt="Rating: 5 of 5" height="21" width="117" />            </div>
-    <div class="text">
-        <h3><a href="/talk/view/6362">Check In Process on the day of the event</a></h3>
-        <p class="opts">
-            at <a href="/event/view/900">Stop By, Get Started 2012</a> 
-                        |
-            <a href="/talk/view/6362#comments">65 comments</a>
-        |
-                </p>
-    </div>
-    <div class="clear"></div>
-</div>
-<div class="row row-talk">
-    <div class="img">
-                    <img class="rating rating-4" src="/inc/img/rating-4.gif" alt="Rating: 4 of 5" height="21" width="117" />            </div>
-    <div class="text">
-        <h3><a href="/talk/view/6169">Mandatory Orientation Session (Student Track)</a></h3>
-        <p class="opts">
-            at <a href="/event/view/900">Stop By, Get Started 2012</a> 
-                        |
-            <a href="/talk/view/6169#comments">63 comments</a>
-        |
-        <a href="/user/view/17577">Annie Denton</a>, Aaron Ackey        </p>
-    </div>
-    <div class="clear"></div>
-</div>
-<div class="row row-talk">
-    <div class="img">
-                    <img class="rating rating-5" src="/inc/img/rating-5.gif" alt="Rating: 5 of 5" height="21" width="117" />            </div>
-    <div class="text">
-        <h3><a href="/talk/view/3375">Making the new everyday things </a></h3>
-        <p class="opts">
-            at <a href="/event/view/603">Dutch PHP Conference 2011</a> 
-                        |
-            <a href="/talk/view/3375#comments">57 comments</a>
-        |
-        <a href="/user/view/14307">Aral Balkan</a>        </p>
-    </div>
-    <div class="clear"></div>
-</div>
-</div>
-
-            </div>
-        </div>
-        <div class="grid_4">
-            <div class="sidebar">
-                                        <div class="box">
-                    <h4>Sign in</h4>
-                    <div class="ctn">
-
-                        <form action="https://joind.in/user/login" method="post" class="form-login">
-                        <div class="row">
-                            <label for="sidebar_user">Username</label>
-                            <input type="text" name="user" value="" id="sidebar_user"  />
-                            <div class="clear"></div>
-                        </div>
-
-                        <div class="row">
-                            <label for="sidebar_pass">Password</label>
-                            <input type="password" name="pass" value="" id="sidebar_pass"  />
-                            <div class="clear"></div>
-                        </div>
-
-                        <div class="row row-buttons">
-                            <input type="submit" name="sub" value="Login" class="btn"  />                            <!-- <a style="margin-left:10px" href="/user">Forgot your password?</a> -->
-                        </div>
-
-                        </form>                        <p>
-                            Or login via these services:<br/>
-                            <a href="/twitter/request_token"><img src="/inc/img/signin_twitter.png" alt="Sign in with twitter" title="Sign in with twitter" /></a>
-                        </p>
-
-                        <p>
-                            <a href="/facebook/request_token"><img src="/inc/img/signin_facebook.png" alt="Sign in with Facebook" title="Sign in with Facebook" /></a>
-                        </p>
-                        <p>
-                            <small>Need an account? <a href="/user/register">Register now!</a></small><br/>
-                            <small><a href="/user/forgot">Forgot Password</a></small>
-                        </p>
-                    </div>
-                </div>
-                <div class="box" align="center">
-                    <a href="http://www.combell.com/en" title="Cloud hosting Combell"><img src="/inc/img/LOGO-COMBELL.png" border="0" style="padding-bottom:5px" alt="Combell" height="55" width="200"></a><br/>
-                    <a href="http://www.combell.com/en/servers/cloud-server" title="Cloud servers & cloud hosting">Cloud server</a> <a href="http://www.combell.com/en" title="Hosting & webhosting">hosting</a> by Combell
-                </div>
-                                <div class="box">
-                    <h4>Submit your event</h4>
-                    <div class="ctn">
-                        <p>
-                            Know of an event happening? Let us know! We love to get the word out about events the community would be interested in and you can help us spread the word!
-                        </p>
-                        <p style="text-align:center">
-                            <a href="/event/submit" class="btn-big">Submit your event!</a>
-                        </p>
-                    </div>
-
-                </div>
-                                <div class="box">
-    <h4>Currently Open Call for Papers</h4>
-    <div class="ctn">
-        <ul><li><a href="/event/view/986">PHPNW12</a><li><a href="/event/view/944">Jesień Linuksowa (Linux Autumn) 2012</a><li><a href="/event/view/985">CakeFest 2012</a><li><a href="/event/view/907">JS.everywhere()</a><li><a href="/event/view/974">PHPCon Poland 2012</a><li><a href="/event/view/952">PHP Conference Brasil 2012</a><li><a href="/event/view/982">PHP Tour Nantes 2012</a></ul><div style="padding-left:20px"><a href="/event/callforpapers">more...</a></div>    </div>
-</div>
-            </div>
+          <div class="clear"></div>
         </div>
         <div class="clear"></div>
+      </div>
     </div>
-</div>
+    <div id="ctn">
+      <div class="container_12 container">
+        <div class="grid_12">
+          <div class="main">
+            <div class="box">
+              <h2 class="h1 icon-event">Developer's Guide - Welcome </h2>
+              <p>Joind.in provides the missing link between the people attending a conference and the ones that presented. The usual method of handing out paper forms is outdated and needs to be replaced. That’s where we come in – attendees can post their comments directly to each of the talks they attended, giving the speaker direct feedback on how they did and what they can do to improve.
 
-<div id="ftr">
-    <div class="container_12">
+Joind.in also has something to offer the speakers – you can track your record across the conferences and see how changes in your talk might have made a difference in your ratings.</p>
+              <div class="clear"></div>
+            </div>
+          </div>
+          
+        </div>
+        <div class="clear"></div>
+      </div>
+    </div>
+    <div id="ftr">
+      <div class="container_12">
         <div class="grid_6">
-            <a href="/event">Events</a> |
-            <a href="/talk">Talks</a> |
-            <a href="/search">Search</a> |
-            <a href="/about">About</a> |
-            <a href="/help">Help</a> |
-            <a href="/blog">Blog</a> |
-            <a href="/api">API</a> |
-            <a href="/about/contact">Contact</a>
+          <a href="/event">Events</a> | <a href="/talk">Talks</a> | <a href=
+          "/search">Search</a> | <a href="/about">About</a> | <a href="/help">Help</a> |
+          <a href="/blog">Blog</a> | <a href="/api">API</a> | <a href=
+          "/about/contact">Contact</a>
         </div>
+
         <div class="grid_6 rgt">
-            <a href="http://www.combell.com/en/servers/cloud-server" title="Cloud servers & cloud hosting">Cloud server</a> <a href="http://www.combell.com/en" title="Hosting & webhosting">hosting</a> by Combell <a href="http://www.combell.com/en" title="Cloud hosting Combell"><img src="/inc/img/LOGO-COMBELL_small.gif" border="0" style="vertical-align:text-bottom;" alt="Combell" height="22" width="80"/></a>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-&copy; Joind.in 2012        </div>
+          <a href="http://www.combell.com/en/servers/cloud-server" title=
+          "Cloud servers &amp; cloud hosting">Cloud server</a> <a href=
+          "http://www.combell.com/en" title="Hosting &amp; webhosting">hosting</a> by
+          Combell <a href="http://www.combell.com/en" title=
+          "Cloud hosting Combell"><img src="inc/img/LOGO-COMBELL_small.gif" border="0"
+          style="vertical-align:text-bottom;" alt="Combell" height="22" width="80" /></a>
+          &nbsp;&nbsp;&nbsp;&nbsp; &copy; Joind.in 2012
+        </div>
+
         <div class="clear"></div>
+      </div>
     </div>
-</div>
-
-<div id="jQueryUImessageBox" style="display:none">
-</div>
-
-<script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-var pageTracker = _gat._getTracker("UA-246789-3");
-pageTracker._trackPageview();
-</script>
-
-</body>
+  </body>
 </html>

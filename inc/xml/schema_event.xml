@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : schema_event.xml
+    Created on : October 30, 2009, 12:48 PM
+    Author     : enygma
+    Description:
+        Validation schema for event information
+-->
+
+<xsd:schema attributeFormDefault="unqualified" elementFormDefault="qualified" version="1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:element name="event">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="sessions">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element maxOccurs="unbounded" name="session">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="session_start" type="xsd:int" />
+                    <xsd:element name="session_type" type="xsd:string" />
+                    <xsd:element name="session_speakers">
+                      <xsd:complexType>
+                        <xsd:sequence>
+                          <xsd:element name="speaker" type="xsd:string" />
+                        </xsd:sequence>
+                      </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="session_title" type="xsd:string" />
+                    <xsd:element name="session_desc" type="xsd:string" />
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>
