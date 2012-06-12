@@ -202,29 +202,81 @@ foreach ($talks as $k=>$v) {
     <td colspan="2">
         <div class="box">
             <h2>Admin</h2>
+
+            <?php if (!empty($uadmin['events'])) : ?>
+            <p>Events for which they are an admin</p>
             <table cellpadding="3" cellspacing="0" border="0">
             <?php
-            //echo '<pre>'; print_r($uadmin); echo '</pre>';
-            foreach ($uadmin as $k=>$v) {
+            foreach ($uadmin['events'] as $k=>$v) {
                 if (!isset($v->detail[0])) { continue; }
-                if ($v->rtype=='talk') {
-                    $title=$v->detail[0]->talk_title;
-                    $url='/talk/view/'.$v->detail[0]->ID;
-                } else { 
-                    $title=$v->detail[0]->event_name;
-                    $url='/event/view/'.$v->detail[0]->ID;
-                }
+                $title=$v->detail[0]->event_name;
+                $url='/event/view/'.$v->detail[0]->ID;
                 $pend=($v->rcode=='pending') ? ' (pending)':'';
                 echo sprintf('
                     <tr id="resource_row_%s">
-                        <td style="padding:3px">%s</td>
                         <td style="padding:3px"><a href="%s">%s %s</a></td>
-                        <td style="padding:3px"><a href="#" onClick="removeRole(%s);return false;">X</a></td>
+                        <td style="padding:3px">[<a href="#" onClick="removeRole(%s);return false;" title="Remove this user from this event">X</a>]</td>
                     </tr>
-                ', $v->rid, $v->rtype, $url, $title, $pend, $v->admin_id);
+                ', $v->admin_id, $url, $title, $pend, $v->admin_id);
             }
             ?>
             </table>
+            <?php endif; ?>
+
+            <?php if (!empty($uadmin['pending_talks'])) : ?>
+            <p>Pending talk claims</p>
+            <table cellpadding="3" cellspacing="0" border="0">
+            <?php
+            $count = 0;
+            foreach ($uadmin['pending_talks'] as $k=>$v) {
+                $count++;
+                $row_id = 'p'. $count;
+                $url = '/talk/view/'.$v->talk_id;
+                $title = $v->talk_title;
+                $event_url = '/event/view/'.$v->event_id;
+                $event_name = $v->event_name;
+                $event_date = date('M d, Y', $v->event_start);
+                echo sprintf('
+                    <tr id="resource_row_%s">
+                        <td style="padding:3px">
+                            <a href="%s">%s</a>
+                            at <a href="%s">%s</a> %s
+                        </td>
+                        <td style="padding:3px">[<a href="javascript:" onClick="removeTalkClaim(%s, \'%s\');return false;" title="Remove this speaker\'s claim">X</a>]</td>
+                    </tr>
+                ', $row_id, $url, $title, $event_url, $event_name, $event_date, $v->ID, $row_id);
+            }
+            ?>
+            </table>
+            <?php endif; ?>
+
+            <?php if (!empty($uadmin['talks'])) : ?>
+            <p>Claimed talks</p>
+            <table cellpadding="3" cellspacing="0" border="0">
+            <?php
+            $count = 0;
+            foreach ($uadmin['talks'] as $k=>$v) {
+                $count++;
+                $row_id = 't'. $count;
+                $title=$v->talk_title;
+                $url='/talk/view/'.$v->ID;
+                $event_url = '/event/view/'.$v->event_id;
+                $event_name = $v->event_name;
+                $event_date = date('M d, Y', $v->event_start);
+                echo sprintf('
+                    <tr id="resource_row_%s">
+                        <td style="padding:3px">
+                            <a href="%s">%s</a>
+                            at <a href="%s">%s</a> %s
+                        </td>
+                        <td style="padding:3px">[<a href="javascript:" onClick="unlinkSpeaker(%s, %s, \'%s\');return false;" title="Unlink this speaker">X</a>]</td>
+                    </tr>
+                ', $row_id, $url, $title, $event_url, $event_name, $event_date, $v->ID, $v->speaker_id, $row_id);
+            }
+
+            ?>
+            </table>
+            <?php endif; ?>
         </div>
     </td>
 </tr>
