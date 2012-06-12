@@ -395,6 +395,7 @@ class Talk extends Controller
         $out = array(
             'msg'            => (isset($msg)) ? $msg : '',
             'err'            => (isset($err)) ? $err : '',
+            'timezone'       => $this->timezone,
             'events'         => $events,
             'cats'           => $cats,
             'langs'          => $langs,
