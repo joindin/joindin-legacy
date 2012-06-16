@@ -238,13 +238,19 @@ class Talks_model extends Model {
         }
         return $comments;
     }
-    
-    public function getPopularTalks($len=7) {
-        if (!ctype_digit((string)$len)) {
-            throw new Exception('Expected length to be a number, received '.$len);
+
+    /**
+     * Get recent talks from any and all events
+     *
+     * @return array Talk detail information
+     */
+    public function getPopularTalks($limit = 7)
+    {
+        if (!ctype_digit((string) $limit)) {
+            throw new Exception('Expected length to be a number, received '.$limit);
         }
 
-        $sql=sprintf('
+        $sql = '
             select
                 t.talk_title,
                 t.ID,
@@ -264,14 +270,15 @@ class Talks_model extends Model {
                 t.ID
             order by
                 ccount desc
-            limit '.$len.'
-        ');
+            limit ' . $limit;
+
         $query = $this->db->query($sql);
         $talks = $query->result();
         
-        $CI=&get_instance();
-        $CI->load->model('talk_speaker_model','tsm');
-        foreach ($talks as $k=>$talk) {
+        $CI =& get_instance();
+        $CI->load->model('talk_speaker_model', 'tsm');
+
+        foreach ($talks as $k => $talk) {
             $sql = "select get_talk_rating(" . $talk->ID . ") as tavg";
             $rating_result = $this->db->query($sql)->result();
             $rating = $rating_result[0];
@@ -287,35 +294,41 @@ class Talks_model extends Model {
      *
      * @return array Talk detail information
      */
-    public function getRecentTalks() {
-        $sql=sprintf("
-            select
+    public function getRecentTalks($limit = 10)
+    {
+        if (!ctype_digit((string) $limit)) {
+            throw new Exception('Expected length to be a number, received '.$limit);
+        }
+
+        $sql = '
+            SELECT
               DISTINCT t.ID,
               t.talk_title,
               t.date_given,
-              count(tc.ID) as ccount,
+              COUNT(tc.ID) as ccount,
               get_talk_rating(t.ID) as tavg,
               e.ID eid,
               e.event_name,
               e.event_start
-            from
+            FROM
               talks t
               JOIN events e
-                ON e.ID=t.event_id
+                ON e.ID = t.event_id
               JOIN talk_comments tc
-                ON tc.talk_id=t.ID AND tc.private = 0
+                ON tc.talk_id = t.ID AND tc.private = 0
               INNER JOIN talk_speaker ts
                 ON t.ID = ts.talk_id
             WHERE
-                e.event_start > %s
-              and
-                (ts.status != 'pending' OR ts.status is null)
-              and (tc.user_id != 0 and tc.rating != 0)
-            group by
+                e.event_start > UNIX_TIMESTAMP(NOW() - INTERVAL 3 MONTH)
+              AND
+                (ts.status != "pending" OR ts.status is null)
+              AND (tc.user_id != 0 AND tc.rating != 0)
+            GROUP BY
               t.ID
-            having
-              tavg>3 and ccount>3
-        ", strtotime('-3 months'));
+            HAVING
+              tavg > 3 and ccount > 3
+            LIMIT ' . $limit;
+
         $query = $this->db->query($sql);
         return $query->result();
     }
