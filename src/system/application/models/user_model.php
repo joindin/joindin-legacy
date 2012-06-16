@@ -143,7 +143,7 @@ class User_model extends Model {
      * @return null
      */
     function toggleUserAdminStatus($uid) {
-        $udata=$this->getUser((int)$uid); //echo $uid; print_r($udata);
+        $udata=$this->getUserById((int)$uid);
         $up=($udata[0]->admin==1) ? array('admin'=>null) : array('admin'=>'1');
         $this->updateUserinfo($uid, $up);
     }
