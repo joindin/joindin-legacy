@@ -60,10 +60,10 @@ class Rmadmin extends BaseWsRequest {
         
         // Event ID must be an integer
         if (!is_int($eid)) { return array('output'=>'json','data'=>array('items'=>array('msg'=>'Invalid Event ID!'))); }
-        
-        if (!is_int($user)) { 
-            $udata=$this->CI->um->getUser($user);
-            if (!empty($udata)) { 
+
+        if (!is_int($user)) {
+            $udata=$this->CI->um->getUserByUsername($user);
+            if (!empty($udata)) {
                 $user=$udata[0]->ID;
             } else { return false; }
         }
