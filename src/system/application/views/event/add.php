@@ -243,85 +243,56 @@ echo '<h2>'.$title.'</h2>';
         }
     ?>
     
-    <h4>Call for Papers <a id="cfp-fields-toggle-link" class="fieldset-toggle" href="#">show</a></h4>
-    <fieldset id="cfp-fields">
     <div class="row">
-        <?php 
-            $js='onClick="toggleCfpDates()"';
-            echo form_checkbox('is_cfp','1', $cfp_validated, $js); 
-        ?> Yes, we're going to have a Call for Papers
-        <br/><br/>
-        <label for="start">Call for Papers Start Date</label>
-<?php
-    foreach (range(1, 12) as $v) {
-        $cfp_start_mo[$v] = strftime('%B', strtotime('2000-' . $v . '-01'));
-    }
-
-    foreach (range(1, 31) as $v) {
-        $cfp_start_day[$v] = sprintf('%02d', $v);
-    }
-
-    foreach (range('2008', date('Y')+5) as $v) {
-        $cfp_start_yr[$v] = $v;
-    }
-
-    $js = ($cfp_validated) ? '' : 'disabled';
-
-    if (isset($this->validation->event_cfp_start)) {
-        echo form_dropdown('cfp_start_day', $cfp_start_day, date('d', $this->validation->event_cfp_start), 'id="cfp_start_day" ' . $js);
-        echo form_dropdown('cfp_start_mo', $cfp_start_mo, date('m', $this->validation->event_cfp_start), 'id="cfp_start_mo" ' . $js);
-        echo form_dropdown('cfp_start_yr', $cfp_start_yr, date('Y', $this->validation->event_cfp_start), 'id="cfp_start_yr" ' . $js);
-    } else {
-        echo form_dropdown('cfp_start_day', $cfp_start_day, date('d'), 'id="cfp_start_day" ' . $js);
-        echo form_dropdown('cfp_start_mo', $cfp_start_mo, date('m'), 'id="cfp_start_mo" ' . $js);
-        echo form_dropdown('cfp_start_yr', $cfp_start_yr, date('Y'), 'id="cfp_start_yr" ' . $js);
-    }
-    echo form_datepicker('cfp_start_day', 'cfp_start_mo', 'cfp_start_yr');
-?>
-     <div class="clear"></div>
-    </div>
-    <div class="row">
-        <label for="start">Call for Papers End Date</label>
-<?php
-    foreach (range(1, 12) as $v) {
-        $cfp_end_mo[$v] = strftime('%B', strtotime('2000-' . $v . '-01'));
-    }
-
-    foreach (range(1, 31) as $v) {
-        $cfp_end_day[$v] = sprintf('%02d', $v);
-    }
-
-    foreach (range('2008', date('Y')+5) as $v) {
-        $cfp_end_yr[$v] = $v;
-    }
-
-    if (isset($this->validation->event_cfp_end)) {
-        echo form_dropdown('cfp_end_day', $cfp_end_day, date('d', $this->validation->event_cfp_end), 'id="cfp_end_day" ' . $js);
-        echo form_dropdown('cfp_end_mo', $cfp_end_mo, date('m', $this->validation->event_cfp_end), 'id="cfp_end_mo" ' . $js);
-        echo form_dropdown('cfp_end_yr', $cfp_end_yr, date('Y', $this->validation->event_cfp_end), 'id="cfp_end_yr" ' . $js);
-    } else {
-        echo form_dropdown('cfp_end_day', $cfp_end_day, date('d'), 'id="cfp_end_day" ' . $js);
-        echo form_dropdown('cfp_end_mo', $cfp_end_mo, date('m'), 'id="cfp_end_mo" ' . $js);
-        echo form_dropdown('cfp_end_yr', $cfp_end_yr, date('Y'), 'id="cfp_end_yr" ' . $js);
-    }
-    echo form_datepicker('cfp_end_day', 'cfp_end_mo', 'cfp_end_yr');
-?>
-     <div class="clear"></div>
-    </div>
-
-    <div class="row">
-        <label for="cfp-url-location">Call for Papers URL Location</label>
-        <?php 
-            if (isset($this->validation->event_cfp_url)) {
-                $cfp_url = $this->validation->event_cfp_url;
-            } else {
-                $cfp_url = '';
-            }
-            echo form_input('cfp_url', $cfp_url,'id="cfp_url"'); 
-            ?>
+        <label for="start">Call for Papers</label>
+        <?php echo form_checkbox('is_cfp','1', $this->validation->cfp_checked, 'onclick="toggleCfpDates()"'); ?>
+        Yes, we're going to have a Call for Papers
         <div class="clear"></div>
     </div>
-    </fieldset>
+
+    <div class="row cfp">
+        <table>
+            <tr>
+                <td><label for="cfp_start">Call for Papers Start Date</label></td>
+                <td><label for="cfp_end">Call for Papers End Date</label></td>
+            </tr>
+            <tr>
+                <td>
+                    <?php
+                    $js = ($this->validation->cfp_checked == 1) ? '' : 'disabled';
+
+                    foreach (range(1,12) as $v) { $cfp_start_mo[$v]=strftime('%B', strtotime('2000-' . $v . '-01')); }
+                    foreach (range(1,31) as $v) { $cfp_start_day[$v]=sprintf('%02d', $v); }
+                    foreach (range(date('Y'), date('Y')+5) as $v) { $cfp_start_yr[$v]=$v; }
+
+                    echo form_dropdown('cfp_start_mo', $cfp_start_mo, $this->validation->cfp_start_mo, 'id="cfp_start_mo" ' . $js);
+                    echo form_dropdown('cfp_start_day', $cfp_start_day, $this->validation->cfp_start_day, 'id="cfp_start_day" ' . $js);
+                    echo form_dropdown('cfp_start_yr', $cfp_start_yr, $this->validation->cfp_start_yr, 'id="cfp_start_yr" ' . $js);
+                    echo form_datepicker('cfp_start_day', 'cfp_start_mo', 'cfp_start_yr');
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    foreach (range(1,12) as $v) { $cfp_end_mo[$v]=strftime('%B', strtotime('2000-' . $v . '-01')); }
+                    foreach (range(1,31) as $v) { $cfp_end_day[$v]=sprintf('%02d', $v); }
+                    foreach (range(date('Y'), date('Y')+5) as $v) { $cfp_end_yr[$v]=$v; }
+
+                    echo form_dropdown('cfp_end_mo', $cfp_end_mo, $this->validation->cfp_end_mo, 'id="cfp_end_mo" ' . $js);
+                    echo form_dropdown('cfp_end_day', $cfp_end_day, $this->validation->cfp_end_day, 'id="cfp_end_day" ' . $js);
+                    echo form_dropdown('cfp_end_yr', $cfp_end_yr, $this->validation->cfp_end_yr, 'id="cfp_end_yr" ' . $js);
+                    echo form_datepicker('cfp_end_day', 'cfp_end_mo', 'cfp_end_yr');
+                    ?>
+                </td>
+            </tr>
+        </table>
+        <div class="clear"></div>
+    </div>
+
+    <div class="row cfp">
+        <label for="cfp-url">Call for Papers URL</label>
+        <?php echo form_input('cfp_url', $this->validation->cfp_url, 'id="cfp_url" placeholder="http://www.example.com"' . $js); ?>
+        <div class="clear"></div>
+    </div>
 
     <div class="row">
         <?php echo form_submit('sub', $sub); ?>
@@ -330,10 +301,34 @@ echo '<h2>'.$title.'</h2>';
 <?php echo form_close(); ?>
 
 <script type="text/javascript">
+    function toggleCfpDates(){
+
+        var sel_fields = new Array(
+            'cfp_start_mo','cfp_start_day','cfp_start_yr',
+            'cfp_end_mo','cfp_end_day','cfp_end_yr','cfp_url'
+        );
+
+        // Get the current status of the first one...
+        stat = $('input[name="is_cfp"]').is(':checked');
+        if(stat){
+            $('div.cfp').show();
+            $.each(sel_fields,function(){
+                $('#'+this).removeAttr("disabled");
+            });
+        }else{
+            $('div.cfp').hide();
+            $.each(sel_fields,function(){
+                $('#'+this).attr("disabled","disabled");
+            });
+        }
+    }
+
 $(document).ready(function() { 
     JI_event.init(); 
     var fields = null;
-    JI_event.hideFieldsets(fields); 
+    JI_event.hideFieldsets(fields);
+
+    toggleCfpDates();
     
     var showFields = <?php echo json_encode($showFields); ?>;
     

@@ -348,6 +348,9 @@ class Event extends Controller
         $min_start_yr = '2008';
         $min_end_yr   = '2008';
 
+
+        $this->validation->cfp_checked = false;
+
         if ($this->validation->run() == false) {
             if ($id) {
                 $event_detail = $this->event_model->getEventDetail($id);
@@ -1134,6 +1137,7 @@ class Event extends Controller
             foreach ($sel_fields as $k => $v) {
                 $this->validation->$k = date($v);
             }
+            $this->validation->is_cfp = false;
             $this->validation->cfp_checked = false;
             $this->validation->is_private = 'N';
             $this->validation->is_admin   = '1';
