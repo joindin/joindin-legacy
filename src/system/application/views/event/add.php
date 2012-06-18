@@ -237,7 +237,7 @@ echo '<h2>'.$title.'</h2>';
     
     <?php
         $cfp_validated = false;
-        if (isset($this->validation->cfp_checked)) {
+        if (isset($this->validation->cfp_checked) && $this->validation->cfp_checked == true) {
             $showFields[] = 'cfp-fields-toggle-link';
             $cfp_validated = true;
         }
