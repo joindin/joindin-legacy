@@ -67,6 +67,16 @@ class CSRF_Protection
         // Is this a post request?
         if ($_SERVER['REQUEST_METHOD'] == 'POST')
         {
+
+            // is this an API request?
+            if ( strpos($_SERVER['PATH_INFO'], '/api') === 0
+                && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'
+                && $this->checkPublicKey()) {
+                    // API call
+                    $this->CI->session->set_userdata(self::$token_name, FALSE);
+                    return;
+            }
+
             // Is the token field set and valid?
             $posted_token = $this->CI->input->post(self::$token_name);
             if ($posted_token === FALSE || $posted_token != $this->CI->session->userdata(self::$token_name))
@@ -77,6 +87,18 @@ class CSRF_Protection
         }
         // clear token, so that we get a new one for the next request
         $this->CI->session->set_userdata(self::$token_name, FALSE);
+    }
+
+    /**
+     * Check an API request's public key is valid
+     *
+     * @return boolean
+     */
+    protected function checkPublicKey()
+    {
+        $this->CI->load->library('wsactions/BaseWsRequest');
+        $baseWsRequest = new BaseWsRequest();
+        return $baseWsRequest->checkPublicKey();
     }
 
     /**
