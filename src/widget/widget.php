@@ -15,7 +15,6 @@
 ?>
 var joindin = function(){};
 
-// TODO: lookup this URL from the config
 joindin.urlBase_website = "<?php echo $siteBase; ?>";
 joindin.urlBase_api     = "<?php echo $apiBase; ?>";
 

@@ -1,8 +1,22 @@
+<?php
+	header("Content-type: text/javascript; charset=utf8");
+	header("Cache-control: public, max-age=10000");
+	header("Expires: " . date(DATE_RFC822,strtotime(" 2 day")));
+	define('BASEPATH', 'something');
+	$config_filename = dirname(__FILE__).'/../system/application/config/config.php';
+	if (is_readable($config_filename)) {
+		require($config_filename);
+		$siteBase = $config['base_url'];
+		$apiBase  = $config['api_base_url'];
+	} else {
+		$siteBase = '//joind.in';
+		$apiBase  = '//api.joind.in';
+	}
+?>
 var joindin_speaker = function(){};
 
-// TODO: lookup this URL from the config
-joindin_speaker.urlBase_website = "https://joind.in/";
-joindin_speaker.urlBase_api     = "http://api.joind.in/";
+joindin_speaker.urlBase_website = "<?php echo $siteBase; ?>";
+joindin_speaker.urlBase_api     = "<?php echo $apiBase; ?>";
 
 joindin_speaker.embedStyle      = true;
 
