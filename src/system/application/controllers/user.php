@@ -508,6 +508,17 @@ class User extends AuthAbstract
      */
     function admin($start=null, $offset = null)
     {
+        // The $start parameter exists because we are using a hybrid system
+        // of route. Specifically 'enable_query_strings' is set to true, but
+        // most of our routing uses segments. As a result, the pagination
+        // library will try to add &offset=X to the end of a URL. As we aren't
+        // using query params everywhere, we add ?start=1 to ensure that the
+        // URL is valid.
+        if ($this->config->item('enable_query_strings') === TRUE) {
+            $start = $this->input->get('start');
+            $offset = $this->input->get('offset');
+        }
+
         $this->load->library('validation');
         $this->load->library('pagination');
         $this->load->model('user_model');
@@ -517,17 +528,18 @@ class User extends AuthAbstract
             redirect();
         }
 
-        // The $start parameter exists so that we can tell the difference 
-        // between the user selecting page 1 and the user coming to this page
-        // via another method. If the user has not specifically selected
-        // page 1, then we extract the last page they were on via the session.
-        // We need to do this as otherwise toggling the admin setting on a user
-        // that is on page 2 takes us back to page 1.
-        if (null === $start) {
-            // retreive via session
+
+        // In an ideal world, we want to tell the difference between the user
+        // selecting page 1 and the user coming to this page via another method.
+        // If the user has not specifically selected page 1, then we extract
+        // the last page they were on via the session. We need to do this as
+        // otherwise toggling the admin setting on a user that is on page 2
+        // takes us back to page 1. This test works when 'enable_query_strings'
+        // is set to either true or false
+        if ($offset === false || $start === null) {
+            // retrieve via session
             $offset = (int)$this->session->userdata('user-admin-offset');
         }
-        $this->session->set_userdata('user-admin-offset', $offset);
 
         // Retrieve users_per_page from post data or session if not in post
         // and then store to session
@@ -536,8 +548,16 @@ class User extends AuthAbstract
             $users_per_page = 10;
         }
         $users_per_page = $this->input->post('users_per_page') ?: $users_per_page;
-        $this->session->set_userdata('user-admin-users_per_page', $users_per_page);
 
+        // If we change the number of users per page, reset to page 1
+        if ($this->input->post('users_per_page')) {
+            $offset = 0;
+        }
+
+        // Save back to session
+        $this->session->set_userdata('user-admin-offset', $offset);
+        $this->session->set_userdata('user-admin-users_per_page', $users_per_page);
+        
         $this->validation->users_per_page = $users_per_page;
 
         // Retreive this page's list of users along with total count of users
@@ -561,12 +581,24 @@ class User extends AuthAbstract
             $msg = count($selectedUsers).' users deleted';
         }
 
+        // The configuration of the pagination library depends on setting
+        // of 'enable_query_strings'
+        if ($this->config->item('enable_query_strings') === TRUE) {
+            $base_url = $this->config->item('base_url') . 'user/admin?start=1';
+            $page_query_string = true;
+        } else {
+            $base_url = $this->config->item('base_url') . 'user/admin/start';
+            $page_query_string = false;
+        }
+
         $this->pagination->initialize(array(
-            'base_url'    => $this->config->item('base_url') . 'user/admin/start',
-            'uri_segment' => 4,
-            'total_rows'  => $total_users,
-            'per_page'    => $users_per_page,
-            'cur_page'    => $offset,
+            'base_url'             => $base_url,
+            'uri_segment'          => 4,
+            'total_rows'           => $total_users,
+            'per_page'             => $users_per_page,
+            'cur_page'             => $offset,
+            'page_query_string'    => $page_query_string,
+            'query_string_segment' => 'offset',
         ));
 
         $arr = array(
