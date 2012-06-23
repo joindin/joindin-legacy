@@ -50,8 +50,7 @@
                 <?php
                     if ($talk->display_time != '00:00') {echo '(' . $talk->display_time . ')';}
                 ?>
-            </td>
-            <td>
+                <div class="speakers">
                 <?php
                 $speaker_list = array();
                 foreach ($talk->speaker as $speaker) {
@@ -65,6 +64,10 @@
                 }
                 echo implode(', ', $speaker_list);
                 ?>
+                </div>
+            </td>
+            <td style="vertical-align:middle">
+                <?php echo rating_image($talk->rank); ?>
             </td>
             <td>
                 <?php if (! empty($talk->slides_link)) : ?>
