@@ -369,6 +369,7 @@ class User extends AuthAbstract
     function view($uid)
     {
         $this->load->model('talks_model');
+        $this->load->model('pending_talk_claims_model');
         $this->load->model('user_attend_model', 'uam');
         $this->load->model('user_admin_model', 'uadmin');
         $this->load->model('speaker_profile_model', 'spm');
@@ -405,8 +406,10 @@ class User extends AuthAbstract
             'is_admin'      => $this->user_model->isSiteAdmin(),
             'is_attending'  => $this->uam->getUserAttending($uid),
             'my_attend'     => $this->uam->getUserAttending($curr_user),
-            'uadmin'        => $this->uadmin->getUserTypes(
-                $uid, array('talk', 'event')
+            'uadmin'        => array(
+                'events'        => $this->uadmin->getUserTypes($uid, array('event')),
+                'talks'         => $this->talks_model->getSpeakerTalks($uid, true),
+                'pending_talks' => $this->pending_talk_claims_model->getTalkClaimsForUser($uid),
             ),
             'reqkey'        => $reqkey,
             'seckey'        => buildSecFile($reqkey),

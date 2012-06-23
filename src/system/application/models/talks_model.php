@@ -346,20 +346,30 @@ class Talks_model extends Model {
     }
     
     /**
-     * Get successfully claimed talks by speaker
+     * Get successfully claimed talks by speaker. Optionally collect the name
+     * and date of each talk's event.
      *
      * @param integer $speakerId User ID
+     * @param boolean $includeEventInfo
      * @return array 
      */
-    public function getSpeakerTalks($speakerId)
+    public function getSpeakerTalks($speakerId, $includeEventInfo=false)
     {
         $talks = array();
         
-        $this->db->select('*');
-        $this->db->from('talk_speaker');
-        $this->db->join('talks','talks.id=talk_speaker.talk_id');
+        if ($includeEventInfo) {
+            $this->db->select('talk_speaker.*, talks.*, events.event_name, events.event_start, events.event_end');
+            $this->db->from('talk_speaker');
+            $this->db->join('talks','talks.id=talk_speaker.talk_id');
+            $this->db->join('events','talks.event_id = events.ID');
+        } else {
+            $this->db->select('*');
+            $this->db->join('talks','talks.id=talk_speaker.talk_id');
+            $this->db->from('talk_speaker');
+        }
         $this->db->where('speaker_id', $speakerId);
         $this->db->order_by('talks.date_given desc');
+
         
         $query 	= $this->db->get();
         $talks 	= $query->result();

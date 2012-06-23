@@ -125,9 +125,29 @@ function removeRole(aid){
 	obj.aid=aid;
 	obj.type='remove';
 	apiRequest('user','role',obj, function(obj) {
-		$('#resource_row_'+aid).css('display','none');
+		$('#resource_row_'+obj.aid).css('display','none');
 	});
 }
+
+function unlinkSpeaker(talk_id, speaker_id, css_row_id){
+	var obj=new Object();
+	obj.talk_id=talk_id;
+	obj.speaker_id=speaker_id;
+	obj.css_row_id=css_row_id;
+	apiRequest('user', 'unlink', obj, function(obj) {
+		$('#resource_row_'+obj.css_row_id).hide();
+	});
+}
+
+function removeTalkClaim(claim_id, css_row_id){
+	var obj=new Object();
+	obj.claim_id=claim_id;
+	obj.css_row_id=css_row_id;
+	apiRequest('user', 'removeTalkClaim', obj, function(obj) {
+		$('#resource_row_'+obj.css_row_id).hide();
+	});
+}
+
 function populateEvents(fname){
 	var obj=new Object();
 	apiRequest('event','getlist',obj, function(obj) {

@@ -165,7 +165,11 @@ class Api extends Controller
             } else {
                 $out = 'out_json';
             }
-            $this->load->view('api/' . $out, $ret['out']['data']);
+            $params = $ret['out'];
+            if (isset($ret['out']['data'])) {
+                $params = $ret['out']['data'];
+            }
+            $this->load->view('api/' . $out, $params);
         } else {
             $arr = array('items' => array(
                 'msg' => 'Unknown Error'
