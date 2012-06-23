@@ -749,6 +749,10 @@ a {
 
 }
 
+#talks .speakers {
+	padding-top: 3px;
+}
+
 /***/
 
 /*#ctn .main */form {
