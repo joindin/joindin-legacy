@@ -279,13 +279,26 @@ class User_model extends Model {
      * @param int $limit Limit number of users returned
      * @return array User details
      */
-    function getAllUsers($limit=null) {
+    function getAllUsers($limit=null, $offset=null) {
         $this->db->order_by('username','asc');
         if ($limit != null) {
             $this->db->limit($limit);
         }
+        if ($offset != null) {
+            $this->db->offset($offset);
+        }
         $q=$this->db->get('user');
         return $q->result();
+    }
+
+    /**
+     * Count all users
+     * 
+     * @return int
+     */
+    function countAllUsers()
+    {
+        return $this->db->count_all_results('user');
     }
 
     /**

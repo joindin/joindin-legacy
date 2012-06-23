@@ -504,32 +504,70 @@ class User extends AuthAbstract
      *
      * View users listing, enable/disable, etc.
      *
-     * @param integer $page Number of the page to handle
+     * @param string $start Determine if we are selecting another page of results
+     * @param integer $offset Starting index of records to display
      *
      * @return void
      */
-    function admin($page = null)
+    function admin($start=null, $offset = null)
     {
+        // The $start parameter exists because we are using a hybrid system
+        // of route. Specifically 'enable_query_strings' is set to true, but
+        // most of our routing uses segments. As a result, the pagination
+        // library will try to add &offset=X to the end of a URL. As we aren't
+        // using query params everywhere, we add ?start=1 to ensure that the
+        // URL is valid.
+        if ($this->config->item('enable_query_strings') === TRUE) {
+            $start = $this->input->get('start');
+            $offset = $this->input->get('offset');
+        }
+
+        $this->load->library('validation');
+        $this->load->library('pagination');
+        $this->load->model('user_model');
+
         // Only admins are allowed
         if (!$this->user_model->isSiteAdmin()) {
             redirect();
         }
 
-        $this->load->library('validation');
-        $this->load->model('user_model');
 
-        $showLimit = $this->input->post('showLimit') ?: 10;
-        $this->validation->showLimit = $showLimit;
+        // In an ideal world, we want to tell the difference between the user
+        // selecting page 1 and the user coming to this page via another method.
+        // If the user has not specifically selected page 1, then we extract
+        // the last page they were on via the session. We need to do this as
+        // otherwise toggling the admin setting on a user that is on page 2
+        // takes us back to page 1. This test works when 'enable_query_strings'
+        // is set to either true or false
+        if ($offset === false || $start === null) {
+            // retrieve via session
+            $offset = (int)$this->session->userdata('user-admin-offset');
+        }
 
-        $page        = (!$page) ? 1 : $page;
-        $rows_in_pg  = $showLimit;
-        $offset      = ($page == 1) ? 1 : $page * 10;
-        $all_users   = $this->user_model->getAllUsers($showLimit);
-        $all_user_ct = count($all_users);
-        $page_ct     = ceil($all_user_ct / $rows_in_pg);
-        $users       = array_slice($all_users, $offset, $rows_in_pg);
+        // Retrieve users_per_page from post data or session if not in post
+        // and then store to session
+        $users_per_page = $this->session->userdata('user-admin-users_per_page');
+        if (!$users_per_page) {
+            $users_per_page = 10;
+        }
+        $users_per_page = $this->input->post('users_per_page') ?: $users_per_page;
+
+        // If we change the number of users per page, reset to page 1
+        if ($this->input->post('users_per_page')) {
+            $offset = 0;
+        }
+
+        // Save back to session
+        $this->session->set_userdata('user-admin-offset', $offset);
+        $this->session->set_userdata('user-admin-users_per_page', $users_per_page);
+        
+        $this->validation->users_per_page = $users_per_page;
+
+        // Retreive this page's list of users along with total count of users
+        $users       = $this->user_model->getAllUsers($users_per_page, $offset);
+        $total_users = $this->user_model->countAllUsers();
+
         $msg         = '';
-
         $fields = array('user_search' => 'Search Term');
         $this->validation->set_fields($fields);
 
@@ -546,12 +584,30 @@ class User extends AuthAbstract
             $msg = count($selectedUsers).' users deleted';
         }
 
+        // The configuration of the pagination library depends on setting
+        // of 'enable_query_strings'
+        if ($this->config->item('enable_query_strings') === TRUE) {
+            $base_url = $this->config->item('base_url') . 'user/admin?start=1';
+            $page_query_string = true;
+        } else {
+            $base_url = $this->config->item('base_url') . 'user/admin/start';
+            $page_query_string = false;
+        }
+
+        $this->pagination->initialize(array(
+            'base_url'             => $base_url,
+            'uri_segment'          => 4,
+            'total_rows'           => $total_users,
+            'per_page'             => $users_per_page,
+            'cur_page'             => $offset,
+            'page_query_string'    => $page_query_string,
+            'query_string_segment' => 'offset',
+        ));
+
         $arr = array(
-            'users'         => $users,
-            'all_user_ct'   => $all_user_ct,
-            'page_ct'       => $page_ct,
-            'page'          => $page,
-            'msg'           => $msg
+            'users'       => $users,
+            'paging'      => $this->pagination->create_links(),
+            'msg'         => $msg
         );
 
         $this->template->write_view('content', 'user/admin', $arr);
