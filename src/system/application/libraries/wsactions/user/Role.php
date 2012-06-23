@@ -19,7 +19,7 @@ class Role extends BaseWsRequest {
         //if ($this->isValidLogin($xml) || $this->CI->user_model->isAuth()) {
         if ($this->CI->user_model->isAuth()) {
             // Now check to see if they're a site admin
-            $user=$this->session->userdata('username');
+            $user=$this->CI->session->userdata('username');
             if (!$this->CI->user_model->isSiteAdmin($user)) {
                 return false;
             } else { return true; }
@@ -31,20 +31,27 @@ class Role extends BaseWsRequest {
         $this->CI->load->model('user_admin_model','uam');
         $type=$this->xml->action->type;
         
+        $result = array();
         if ($type=='remove') {
             $aid=$this->xml->action->aid;
+            $result['aid'] = (int)$aid;
             $this->CI->uam->removePerm($aid);
         } elseif ($type=='addevent') {
             $uid=$this->xml->action->uid;
             $rid=$this->xml->action->rid;
+            $result['uid'] = (int)$uid;
+            $result['rid'] = (int)$rid;
             $this->CI->uam->addPerm($uid, $rid,'event');
         } elseif ($type=='addtalk') {
             $uid=$this->xml->action->uid;
             $rid=$this->xml->action->rid;
+            $result['uid'] = (int)$uid;
+            $result['rid'] = (int)$rid;
             $this->CI->uam->addPerm($uid, $rid,'talk');
         }
-        
-        return array('output'=>'json','items'=>array('msg'=>'Success'));
+
+        $result['msg'] = 'Success';
+        return array('output'=>'json','items'=>$result);
     }
     
 }

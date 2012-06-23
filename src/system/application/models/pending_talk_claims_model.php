@@ -96,6 +96,25 @@ class Pending_talk_claims_model extends Model
         
         return $results;
     }
+
+    /**
+     * Given the user's id, find all their claims
+     *
+     * @param integer $eventId Event ID
+     * @return array $result Pending claims found
+     */
+    public function getTalkClaimsForUser($userId)
+    {
+        $results = $this->db->select('pending_talk_claims.*, talks.talk_title, talks.event_id, events.event_name, events.event_start, events.event_end')
+            ->from('pending_talk_claims')
+            ->join('talks','pending_talk_claims.talk_id = talks.id')
+            ->join('events','talks.event_id = events.ID')
+            ->where_in('pending_talk_claims.speaker_id', $userId)
+            ->order_by('talks.date_given desc')
+            ->get()->result();
+
+        return $results;
+    }
     
 }
 
