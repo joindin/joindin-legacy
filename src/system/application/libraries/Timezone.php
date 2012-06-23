@@ -95,7 +95,10 @@ class Timezone {
         $dateObj->setDate($year, $month, $day);
         $dateObj->setTime($hour, $minute, $second);
 
-        $unixTimestamp = $dateObj->format("U");
+        if (! isset($unix_correction)) {
+            $unix_correction = 0;
+        }
+        $unixTimestamp = $dateObj->format("U") - $unix_correction;
 
 /* Commented out as it appears to be causing a DST bug - see JOINDIN-169 in Jira
         // How much wrong will ->format("U") be if I do it now, due to DST changes?
