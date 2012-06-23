@@ -40,9 +40,19 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
     <div class="row">
     <label for="event"></label>
     <?php
+    // create formatted dates for start and end using the timezone of the event.
+    $event_start = $timezone->formattedEventDatetimeFromUnixtime(
+                    $ev->event_start,
+                    $ev->event_tz_cont . '/' . $ev->event_tz_place,
+                    'd.M.Y');
+    $event_end = $timezone->formattedEventDatetimeFromUnixtime(
+                    $ev->event_end,
+                    $ev->event_tz_cont . '/' . $ev->event_tz_place,
+                    'd.M.Y');
+
     echo form_hidden('event_id', $ev->ID);
-    echo '<b><a href="/event/view/'.$ev->ID.'">'.escape($ev->event_name).'</a> ('.date('d.M.Y', $ev->event_start);
-    if ($ev->event_start+86399 != $ev->event_end) echo '- '.date('d.M.Y', $ev->event_end);
+    echo '<b><a href="/event/view/'.$ev->ID.'">'.escape($ev->event_name).'</a> ('.$event_start;
+    if ($ev->event_start+86399 != $ev->event_end) echo '- '.$event_end;
     echo ')'.$priv.'</b>';
     ?>
     <div class="clear"></div>
