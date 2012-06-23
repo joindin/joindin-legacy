@@ -16,14 +16,23 @@
  * Get the correct image for the rating
  *
  * @param integer $rating The rating of the object
+ * @param string  $scale  Whether to draw the thumbs "small" or "normal" (default: normal)
  * 
  * @return string The correct rating image
  */
-function rating_image($rating)
+function rating_image($rating, $scale="normal")
 {
+    if($scale == "small") {
+        $width = 80;
+        $height = 14;
+    } else {
+        $width = 117;
+        $height = 21;
+    }
     $rating = min(5, ceil((float)$rating));
     return  '<img class="rating rating-' . $rating . '" src="/inc/img/rating-' .
-                $rating . '.gif" alt="Rating: ' . $rating . ' of 5" height="21" width="117" />';
+        $rating . '.gif" alt="Rating: ' . $rating . ' of 5" height="' . $height 
+        . '" width="' . $width . '" />';
 }
 
 /**

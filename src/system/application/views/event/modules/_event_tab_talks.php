@@ -67,7 +67,7 @@
                 </div>
             </td>
             <td style="vertical-align:middle">
-                <?php echo rating_image($talk->rank); ?>
+                <?php echo rating_image($talk->rank, "small"); ?>
             </td>
             <td>
                 <?php if (! empty($talk->slides_link)) : ?>
