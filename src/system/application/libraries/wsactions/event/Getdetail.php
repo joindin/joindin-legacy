@@ -30,7 +30,7 @@ class Getdetail extends BaseWsRequest {
 
             // identify user so we can do the attending (or not if they're not identified)
             $uid = false;
-            $user=$this->CI->user_model->getUser($this->xml->auth->user);
+            $user=$this->CI->user_model->getUserByUsername($this->xml->auth->user);
             if ($user) {
                 $uid = $user[0]->ID;
             }

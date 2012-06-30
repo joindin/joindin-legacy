@@ -20,17 +20,20 @@ class Addadmin extends BaseWsRequest {
         if ($this->CI->um->isAuth() || $this->isValidLogin($xml)) {
             // They either need to be an admin of the event or a site admin
             
+            $user = false;
             if ($this->CI->um->isAuth()) {
                 $user=$this->CI->session->userdata('username');
             } elseif (!$this->CI->um->isAuth()) {
                 $user=$xml->auth->user;
             }
-            if (!is_int($user)) { 
-                $udata=$this->CI->um->getUser($user);
-                if (!empty($udata)) {
-                    $user=$udata[0]->ID;
-                } else { return false; }
+
+            $udata=$this->CI->um->getUserByUsername($user);
+            if (!empty($udata)) {
+                $user=$udata[0]->ID;
+            } else { 
+                return false; 
             }
+
             $eid	= (int)$xml->action->eid;
             $rtype	= 'event';
             
@@ -63,7 +66,7 @@ class Addadmin extends BaseWsRequest {
         // Event ID must be an integer
         if (!is_int($eid)) { return array('output'=>'json','data'=>array('items'=>array('msg'=>'Invalid Event ID!'))); }
         
-        $udata=$this->CI->um->getUser($user);
+        $udata=$this->CI->um->getUserByUsername($user);
         if (empty($udata)) { 
             //Let's search too...
             $udata=$this->CI->um->search($user);

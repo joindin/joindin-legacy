@@ -35,7 +35,7 @@ class User_model extends Model {
      * @param $plaintxt boolean Flag to treat incoming password as plaintext or md5
      */
     function validate($user, $pass, $plaintxt=false) {
-        $ret=$this->getUser($user);
+        $ret=$this->getUserByUsername($user);
         $pass=($plaintxt) ? $pass : md5($pass);
         $valid = (isset($ret[0]) && $ret[0]->password==$pass) ? true : false;
         return $valid;
@@ -58,14 +58,14 @@ class User_model extends Model {
      * Check to see if the given user is a site admin
      * If the user is logged in, check their session. If not, search the database
      *
-     * @param $user User ID/username
+     * @param $user User username (WARNING this accepted user_id once upon a time)
      * @return boolean User's admin status
      */
     function isSiteAdmin($user=null) {
         if (!$this->isAuth()) {
             // get our user information
             if ($user) {
-                $udata=$this->getUser($user);
+                $udata=$this->getUserByUsername($user);
                 return (isset($udata[0]) && $udata[0]->admin==1) ? true : false;
             } else { return false; }
         } else {
@@ -84,7 +84,7 @@ class User_model extends Model {
         if ($this->isAuth()) {
             $uid=$this->session->userdata('ID');
         } elseif (!$this->isAuth() && $uid) {
-            $udata=$this->getUser($uid);
+            $udata=$this->getUserByUsername($uid);
             if ($udata) {
                 $uid=$udata[0]->ID;
             } else { return false; }
@@ -131,7 +131,7 @@ class User_model extends Model {
      * @return null
      */
     public function toggleUserStatus($uid) {
-        $udata	= $this->getUser((int)$uid);
+        $udata	= $this->getUserById((int)$uid);
         $up		= ($udata[0]->active==1) ? array('active'=>'0') : array('active'=>'1');
         $this->updateUserinfo($uid, $up);
     }
@@ -143,7 +143,7 @@ class User_model extends Model {
      * @return null
      */
     function toggleUserAdminStatus($uid) {
-        $udata=$this->getUser((int)$uid); //echo $uid; print_r($udata);
+        $udata=$this->getUserById((int)$uid);
         $up=($udata[0]->admin==1) ? array('admin'=>null) : array('admin'=>'1');
         $this->updateUserinfo($uid, $up);
     }
@@ -157,33 +157,6 @@ class User_model extends Model {
     function updateUserInfo($uid, $arr) {
         $this->db->where('ID', $uid);
         $this->db->update('user', $arr);
-    }
-
-    /**
-     * Search for user information based on a user ID or username
-     *
-     * @param $in integer/string User ID or Username
-     * @return array User details
-     */
-    function getUser($in)
-    {
-        if (is_numeric($in)) {
-            $q = $this->db->get_where('user', array('ID' => $in));
-            $result = $q->result();
-        } else {
-            $q = $this->db->get_where('user', array('username' => (string) $in));
-            $result = $q->result();
-            if (!$result) {
-                $q = $this->db->get_where('user', array('email' => (string) $in));
-                $result = $q->result();
-            }
-        }
-
-        if ($result) { 
-            return $result;
-        }
-
-        return false;
     }
 
     /**

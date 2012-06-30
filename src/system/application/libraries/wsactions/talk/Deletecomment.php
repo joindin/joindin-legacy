@@ -18,8 +18,8 @@ class Deletecomment extends BaseWsRequest {
         
         // Check for a valid login
         if ($this->isValidLogin($xml)) {
-            $udata=$this->CI->user_model->getUser($xml->auth->user);
-            
+            $udata=$this->CI->user_model->getUserByUsername($xml->auth->user);
+
             // Now check to see if they're a site admin
             $is_site=$this->CI->user_model->isSiteAdmin($xml->auth->user);
             $is_talk=$this->CI->uam->hasPerm($udata[0]->ID, $xml->action->tid,'talk');

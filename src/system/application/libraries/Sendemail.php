@@ -59,16 +59,16 @@ The %s Crew
         $msg=sprintf("
 You have been invited to the event \"%s\" (a private event)
 
-To reply to this invite and add yourself to the attending list, please 
+To reply to this invite and add yourself to the attending list, please
 visit %sevent/invite/%s/respond
         ", $evt_name, $this->_config->site_url(), $evt_id);
-        
+
         $this->_sendEmail($to, $msg, $subj);
     }
-    
+
     /**
     * Send a request to the event admin from a user wanting an invite
-    * $user needs to be the result of a user_model->getUser()
+    * $user needs to be the result of a user_model->getUserBy*()
     */
     public function sendInviteRequest($eid, $evt_name, $user, $admins) {
         $subj='User '.$user[0]->full_name.' ('.$user[0]->username.') is requesting an invite!';
@@ -88,7 +88,7 @@ approve or reject the invite.
     /**
     * Send en email back to the event admins from the user
     * $admins should be a result of a user_model->getEventAdmins
-    * $user needs to be the result of a user_model->getUser()
+    * $user needs to be the result of a user_model->getUserBy*()
     */
     public function sendEventContact($eid, $evt_name, $msg, $user, $admins) {
         $subj = $this->_config->item('site_name') . ': A question from '.$user[0]->username;
@@ -169,7 +169,7 @@ You can view the event here: %sevent/view/%s
         $byline='';
         if ($in_arr['user_id']!=0) {
             $CI->load->model('user_model');
-            $udata	= $CI->user_model->getUser($in_arr['user_id']);
+            $udata	= $CI->user_model->getUserById($in_arr['user_id']);
             $byline	= 'by '.$udata[0]->full_name.' ('.$udata[0]->username.')';
         }
         
