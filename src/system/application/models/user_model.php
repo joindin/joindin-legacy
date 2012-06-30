@@ -58,14 +58,14 @@ class User_model extends Model {
      * Check to see if the given user is a site admin
      * If the user is logged in, check their session. If not, search the database
      *
-     * @param $user User ID/username
+     * @param $user User username (WARNING this accepted user_id once upon a time)
      * @return boolean User's admin status
      */
     function isSiteAdmin($user=null) {
         if (!$this->isAuth()) {
             // get our user information
             if ($user) {
-                $udata=$this->getUser($user);
+                $udata=$this->getUserByUsername($user);
                 return (isset($udata[0]) && $udata[0]->admin==1) ? true : false;
             } else { return false; }
         } else {
