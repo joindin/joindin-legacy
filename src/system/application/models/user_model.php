@@ -160,33 +160,6 @@ class User_model extends Model {
     }
 
     /**
-     * Search for user information based on a user ID or username
-     *
-     * @param $in integer/string User ID or Username
-     * @return array User details
-     */
-    function getUser($in)
-    {
-        if (is_numeric($in)) {
-            $q = $this->db->get_where('user', array('ID' => $in));
-            $result = $q->result();
-        } else {
-            $q = $this->db->get_where('user', array('username' => (string) $in));
-            $result = $q->result();
-            if (!$result) {
-                $q = $this->db->get_where('user', array('email' => (string) $in));
-                $result = $q->result();
-            }
-        }
-
-        if ($result) { 
-            return $result;
-        }
-
-        return false;
-    }
-
-    /**
      * Search for user information based on a twitter screen name
      *
      * @param $screenName integer/string User ID or Username
