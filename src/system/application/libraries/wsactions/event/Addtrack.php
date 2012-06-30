@@ -17,17 +17,20 @@ class Addtrack extends BaseWsRequest {
         if ($this->CI->um->isAuth() || $this->isValidLogin($xml)) {
             // They either need to be an admin of the event or a site admin
             
+            $user= false;
             if ($this->CI->um->isAuth()) {
                 $user=$this->CI->session->userdata('username');
             } elseif (!$this->CI->um->isAuth()) {
                 $user=$xml->auth->user;
             }
-            if (!is_int($user)) { 
-                $udata=$this->CI->um->getUserByUsername($user);
-                if (!empty($udata)) { 
-                    $user=$udata[0]->ID;
-                } else { return false; }
+
+            $udata=$this->CI->um->getUserByUsername($user);
+            if (!empty($udata)) { 
+                $user=$udata[0]->ID;
+            } else { 
+                return false; 
             }
+
             $eid	= (int)$xml->action->event_id;
             $rtype	= 'event';
             
