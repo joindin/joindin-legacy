@@ -26,7 +26,7 @@ class Addadmin extends BaseWsRequest {
                 $user=$xml->auth->user;
             }
             if (!is_int($user)) { 
-                $udata=$this->CI->um->getUser($user);
+                $udata=$this->CI->um->getUserByUsername($user);
                 if (!empty($udata)) {
                     $user=$udata[0]->ID;
                 } else { return false; }
@@ -63,7 +63,7 @@ class Addadmin extends BaseWsRequest {
         // Event ID must be an integer
         if (!is_int($eid)) { return array('output'=>'json','data'=>array('items'=>array('msg'=>'Invalid Event ID!'))); }
         
-        $udata=$this->CI->um->getUser($user);
+        $udata=$this->CI->um->getUserByUsername($user);
         if (empty($udata)) { 
             //Let's search too...
             $udata=$this->CI->um->search($user);

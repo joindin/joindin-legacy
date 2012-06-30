@@ -25,7 +25,7 @@ class Getdetail extends BaseWsRequest {
         if (isset($ret['items'][0]) && $ret['items'][0]->private=='Y') {
             if (isset($this->xml->auth) && isset($this->xml->auth->user) && $this->auth->pass) {
                 $this->CI->load->model('user_model');
-                $user=$this->CI->user_model->getUser($this->xml->auth->user);
+                $user=$this->CI->user_model->getUserByUsername($this->xml->auth->user);
                 
                 if (empty($user)) { return $this->throwError('Not authorized for private talk'); }
                 

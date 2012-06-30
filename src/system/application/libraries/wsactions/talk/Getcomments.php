@@ -31,7 +31,7 @@ class Getcomments extends BaseWsRequest {
             $this->CI->load->model('user_admin_model','uam');
             $this->CI->load->model('user_model','um');
             
-            $udata=$this->CI->um->getUser($this->xml->action->username);
+            $udata=$this->CI->um->getUserByUsername($this->xml->action->username);
             if (!empty($udata)) {
                 $priv=($this->CI->uam->hasPerm($udata[0]->ID, $id,'talk')) ? true : false;
             }

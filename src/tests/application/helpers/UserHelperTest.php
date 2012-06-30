@@ -28,7 +28,7 @@ class UserHelperTest extends PHPUnit_Framework_TestCase
 	{
 		$this->ci->load->model('user_model');
 		
-		$userDetail = $this->ci->user_model->getUser($this->_username);
+		$userDetail = $this->ci->user_model->getUserByUsername($this->_username);
 		$this->ci->session->set_userdata((array)$userDetail[0]);
 
 		$this->assertTrue(user_is_auth());
@@ -41,7 +41,7 @@ class UserHelperTest extends PHPUnit_Framework_TestCase
 	{
 		$this->ci->load->model('user_model');
 
-		$userDetail = $this->ci->user_model->getUser($this->_username);
+		$userDetail = $this->ci->user_model->getUserByUsername($this->_username);
                 $this->ci->session->set_userdata((array)$userDetail[0]);	
 
 		$this->assertEquals($userDetail[0]->ID,user_get_id());
