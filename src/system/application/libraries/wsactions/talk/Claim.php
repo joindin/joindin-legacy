@@ -45,7 +45,7 @@ class Claim extends BaseWsRequest {
                         return array('output'=>'json','data'=>array('items'=>array('msg'=>'Fail: Username required!')));
                     }
                     $this->CI->load->model('user_model');
-                    $udata=$this->CI->user_model->getUser($username);
+                    $udata=$this->CI->user_model->getUserByUsername($username);
                     if (!empty($udata)) {
                         $uid=$udata[0]->ID;
                     } else {

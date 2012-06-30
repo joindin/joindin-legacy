@@ -33,7 +33,7 @@ class Getcomments extends BaseWsRequest {
             $comments=array();
             $restrict=(isset($this->xml->action->type)) ? strtolower($this->xml->action->type) : false;
 
-            $udata=$this->CI->user_model->getUser($this->xml->action->username);
+            $udata=$this->CI->user_model->getUserByUsername($this->xml->action->username);
             if (empty($udata)) {
                 return array('output'=>'json','data'=>array('items'=>array('msg'=>'Invalid username!')));
             }

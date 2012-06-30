@@ -35,7 +35,7 @@ class User_model extends Model {
      * @param $plaintxt boolean Flag to treat incoming password as plaintext or md5
      */
     function validate($user, $pass, $plaintxt=false) {
-        $ret=$this->getUser($user);
+        $ret=$this->getUserByUsername($user);
         $pass=($plaintxt) ? $pass : md5($pass);
         $valid = (isset($ret[0]) && $ret[0]->password==$pass) ? true : false;
         return $valid;
@@ -84,7 +84,7 @@ class User_model extends Model {
         if ($this->isAuth()) {
             $uid=$this->session->userdata('ID');
         } elseif (!$this->isAuth() && $uid) {
-            $udata=$this->getUser($uid);
+            $udata=$this->getUserByUsername($uid);
             if ($udata) {
                 $uid=$udata[0]->ID;
             } else { return false; }
@@ -131,7 +131,7 @@ class User_model extends Model {
      * @return null
      */
     public function toggleUserStatus($uid) {
-        $udata	= $this->getUser((int)$uid);
+        $udata	= $this->getUserById((int)$uid);
         $up		= ($udata[0]->active==1) ? array('active'=>'0') : array('active'=>'1');
         $this->updateUserinfo($uid, $up);
     }
@@ -143,7 +143,7 @@ class User_model extends Model {
      * @return null
      */
     function toggleUserAdminStatus($uid) {
-        $udata=$this->getUser((int)$uid); //echo $uid; print_r($udata);
+        $udata=$this->getUserById((int)$uid);
         $up=($udata[0]->admin==1) ? array('admin'=>null) : array('admin'=>'1');
         $this->updateUserinfo($uid, $up);
     }

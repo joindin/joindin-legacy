@@ -56,7 +56,7 @@ class Speaker extends Controller
         $this->load->model('speaker_profile_model', 'sp');
         $this->load->library('gravatar');
 
-        $udata = $this->user_model->getUser($this->session->userdata('ID'));
+        $udata = $this->user_model->getUserById($this->session->userdata('ID'));
         $arr   = array(
             'pdata' => $this->sp->getProfile($udata[0]->ID),
             'gravatar_url' => $this->gravatar->displayUserImage($this->session->userdata('ID'), null, 100)
@@ -83,7 +83,7 @@ class Speaker extends Controller
         $this->load->model('speaker_profile_model', 'sp');
         $this->load->model('countries_model', 'co');
 
-        $udata = $this->user_model->getUser($this->session->userdata('ID'));
+        $udata = $this->user_model->getUserById($this->session->userdata('ID'));
 
         $fields = array(
             'full_name'  => 'Full Name',
@@ -145,7 +145,7 @@ class Speaker extends Controller
         } else {
             // If there's not an data set, get from their profile
             if (empty($this->validation->email)) {
-                $udata = $this->user_model->getUser(
+                $udata = $this->user_model->getUserById(
                     $this->session->userdata('ID')
                 );
                 $this->validation->email     = $udata[0]->email;
@@ -321,7 +321,7 @@ class Speaker extends Controller
             $view = 'speaker/access';
         }
 
-        $udata = $this->user_model->getUser($this->session->userdata('ID'));
+        $udata = $this->user_model->getUserById($this->session->userdata('ID'));
 
         $arr['req_type']    = $req_type;
         $arr['access_data'] = $this->spm->getUserProfileAccess($udata[0]->ID);

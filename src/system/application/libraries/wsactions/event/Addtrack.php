@@ -23,7 +23,7 @@ class Addtrack extends BaseWsRequest {
                 $user=$xml->auth->user;
             }
             if (!is_int($user)) { 
-                $udata=$this->CI->um->getUser($user);
+                $udata=$this->CI->um->getUserByUsername($user);
                 if (!empty($udata)) { 
                     $user=$udata[0]->ID;
                 } else { return false; }
