@@ -113,13 +113,13 @@ class User_model extends Model {
         }
         
         $ad     = false;
-        $uid	= $this->session->userdata('ID');
+        $uid    = $this->session->userdata('ID');
 
         $this->db->select('*');
         $this->db->from('talk_speaker');
         $this->db->where(array('speaker_id'=>$uid,'talk_id'=>$tid,'IFNULL(status,0) !='=>'pending'));
         $query = $this->db->get();
-        $talk	= $query->result();
+        $talk    = $query->result();
         if (isset($talk[0]->ID)) { $ad=true; }
 
         //also check to see if the user is an admin of the talk's event
@@ -135,8 +135,8 @@ class User_model extends Model {
      * @return null
      */
     public function toggleUserStatus($uid) {
-        $udata	= $this->getUserById((int)$uid);
-        $up		= ($udata[0]->active==1) ? array('active'=>'0') : array('active'=>'1');
+        $udata    = $this->getUserById((int)$uid);
+        $up        = ($udata[0]->active==1) ? array('active'=>'0') : array('active'=>'1');
         $this->updateUserinfo($uid, $up);
     }
 
@@ -321,8 +321,8 @@ class User_model extends Model {
             order by rand()
             limit %s
         ", $uid, $uid, $limit);
-        $query 		= $this->db->query($sql);
-        $speakers	= $query->result();
+        $query         = $this->db->query($sql);
+        $speakers    = $query->result();
 
         foreach ($speakers as $speaker) { $other_speakers[$speaker->user_id]=$speaker; }
         return $other_speakers;
@@ -356,11 +356,11 @@ class User_model extends Model {
                 lower(username) like '%%%s%%' or
                 lower(full_name) like '%%%s%%'
         ", $term, $term);
-        $query	= $this->db->query($sql);
+        $query    = $this->db->query($sql);
         $results = $query->result();
         foreach ($results as $key => $user) {
-            $results[$key]->talk_count 	= count($ci->talksModel->getSpeakerTalks($user->ID));
-            $results[$key]->event_count	= count($ci->userAttend->getUserAttending($user->ID));
+            $results[$key]->talk_count     = count($ci->talksModel->getSpeakerTalks($user->ID));
+            $results[$key]->event_count    = count($ci->userAttend->getUserAttending($user->ID));
         }
         return $results;
     }
