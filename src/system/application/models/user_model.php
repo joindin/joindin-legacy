@@ -81,6 +81,7 @@ class User_model extends Model {
      * @return boolean User's site admin status
      */
     function isAdminEvent($eid, $uid=null) {
+        
         if ($this->isAuth()) {
             $uid=$this->session->userdata('ID');
         } elseif (!$this->isAuth() && $uid) {
@@ -107,22 +108,25 @@ class User_model extends Model {
      * @return boolean User's admin status related to the talk
      */
     function isAdminTalk($tid) {
-        if ($this->isAuth()) {
-            $ad		= false;
-            $uid	= $this->session->userdata('ID');
+        if (!$this->isAuth()) {
+            return false;
+        }
+        
+        $ad     = false;
+        $uid	= $this->session->userdata('ID');
 
-            $this->db->select('*');
-            $this->db->from('talk_speaker');
-            $this->db->where(array('speaker_id'=>$uid,'talk_id'=>$tid,'IFNULL(status,0) !='=>'pending'));
-            $query = $this->db->get();
-            $talk	= $query->result();
-            if (isset($talk[0]->ID)) { $ad=true; }
+        $this->db->select('*');
+        $this->db->from('talk_speaker');
+        $this->db->where(array('speaker_id'=>$uid,'talk_id'=>$tid,'IFNULL(status,0) !='=>'pending'));
+        $query = $this->db->get();
+        $talk	= $query->result();
+        if (isset($talk[0]->ID)) { $ad=true; }
 
-            //also check to see if the user is an admin of the talk's event
-            $talkDetail = $this->talks_model->getTalks($tid); //print_r($ret);
-            if (isset($talkDetail[0]->event_id) && $this->isAdminEvent($talkDetail[0]->event_id)) { $ad=true; }
-            return $ad;
-        } else { return false; }
+        //also check to see if the user is an admin of the talk's event
+        $talkDetail = $this->talks_model->getTalks($tid); //print_r($ret);
+        if (isset($talkDetail[0]->event_id) && $this->isAdminEvent($talkDetail[0]->event_id)) { $ad=true; }
+        return $ad;
+        
     }
 
     /**
