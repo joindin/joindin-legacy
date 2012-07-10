@@ -70,6 +70,11 @@ class User extends AuthAbstract
         $this->load->library('validation');
         $this->load->model('user_model');
         $this->load->library('SSL');
+        $arr = array();
+
+        // Used when someone forgot their password.
+        // Cleans up the flow some.
+        $arr['msg'] = $this->session->flashdata('forgot_password_reset');
 
         $this->ssl->sslRoute();
 
@@ -93,7 +98,7 @@ class User extends AuthAbstract
                 $this->session->set_flashdata('url_after_login', $this->input->server('HTTP_REFERER'));
             }
 
-            $this->template->write_view('content', 'user/login');
+            $this->template->write_view('content', 'user/login', $arr);
             $this->template->render();
         } else {
             // success! get our data and update our login time
@@ -186,7 +191,11 @@ class User extends AuthAbstract
                 $this->sendemail->sendPasswordReset($ret, $pass);
 
                 $arr['msg'] = 'A new password has been sent to your email - ' .
-                    'open it and click on the login link to use the new password';
+                    'open it, and login below';
+
+                $this->session->set_flashdata('forgot_password_reset', $arr['msg']);
+
+                redirect('user/login');
             }
         }
 
