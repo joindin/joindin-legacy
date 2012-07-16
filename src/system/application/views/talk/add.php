@@ -88,7 +88,8 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
         'name'	=> 'add_speaker_line',
         'id'	=> 'add_speaker_line',
         'value'	=> '+ more',
-        'type'	=> 'button'
+        'type'	=> 'button',
+        'class' => 'button'
     );
     echo form_input($attr);
     ?>
@@ -191,10 +192,43 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
     ?>
     <div class="clear"></div>
     </div>
-
+    
     <div class="row">
     <label for="slides_link">Slides Link</label>
     <td><?php echo form_input('slides_link', $this->validation->slides_link); ?></td>
+    <div class="clear"></div>
+    </div>
+
+    <div class="row">
+    <label for="links">Other Links</label>
+    <td>
+        <?php
+        if (isset($this->validation->links) && count($this->validation->links) != 0) {
+            foreach ($this->validation->links as $i => $link) {
+                echo form_input('link_row['.$i.']', $link);
+            }
+        } else {
+            echo form_input('link_row[new_1]','');
+        }
+        ?>
+        <div id="link_row_container">
+
+        </div>
+        <?php 
+        $attr=array(
+            'name'	=> 'add_link_line',
+            'id'	=> 'add_link_line',
+            'value'	=> '+ more',
+            'type'	=> 'button',
+            'class' => 'button'
+        );
+        echo form_input($attr);
+        ?>
+        <noscript>
+        <!-- no javascript? no problem... -->
+        <?php echo form_input('link_row[new_1]'); ?>
+        </noscript>
+    </td>
     <div class="clear"></div>
     </div>
     <div class="row">
@@ -205,7 +239,6 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
 <?php form_close(); ?>
 
 <script type="text/javascript">
-$('#add_speaker_line').css('display','block');
 $(document).ready(function() {
     talk.init();
 })

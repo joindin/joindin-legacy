@@ -404,12 +404,6 @@ class Talks_model extends Model {
         return $q->result();
     }
     
-    public function getTalkEvent($tid) {
-        $q	 = $this->db->query('select event_id from talks where id='.$this->db->escape($tid));
-        $ret = $q->result();
-        return (isset($ret['event_id'])) ? $ret['event_id'] : false;
-    }
-    
     /**
      * Find the other events where the session was given
      *
