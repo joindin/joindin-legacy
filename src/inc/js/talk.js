@@ -3,16 +3,31 @@ if(!talk){ var talk = {} }
 
 talk = function (){
 	
+	var link_row_ct	= 1;
 	var speaker_row_ct	= 1;
 
+	var _addLinkLine = function(){
+		$('#add_link_line').click(function(){
+			var self = $(this);
+			var lnk_count = $("input[name^='link_row']").length+1;
+			var lnk		  = 'link_row[new_'+lnk_count+']';
+			
+			$('#link_row_container').append(
+				'<input type="text" name="'+lnk+'" class="link_row"/>'
+			).append(self);
+			link_row_ct++;
+		});
+	}
+	
 	var _addSpeakerLine = function(){
 		$('#add_speaker_line').click(function(){
+			var self = $(this);
 			var spr_count = $("input[name^='speaker_row']").length+1;
 			var spr		  = 'speaker_row[new_'+spr_count+']';
 			
 			$('#speaker_row_container').append(
 				'<input type="text" name="'+spr+'" class="speaker_row"/>'
-			);
+			).append(self);
 			speaker_row_ct++;
 		});
 	}
@@ -152,6 +167,7 @@ talk = function (){
 	return {
 		init: function(){
 			$(document).ready(function(){
+			  _addLinkLine();
 				_addSpeakerLine();
 				_claimTalk();
 				_editTalkComment();

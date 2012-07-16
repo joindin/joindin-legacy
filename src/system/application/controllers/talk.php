@@ -148,6 +148,7 @@ class Talk extends Controller
             'given_hour'   => 'Given Hour',
             'given_min'    => 'Given Minute',
             'slides_link'  => 'Slides Link',
+            'links'        => 'Links',
             'talk_desc'    => 'Talk Description',
             'session_type' => 'Session Type',
             'session_lang' => 'Session Language',
@@ -183,6 +184,7 @@ class Talk extends Controller
             // set our speaker information
             $this->validation->speaker
                 = $this->talkSpeakers->getSpeakerByTalkId($id);
+            $this->validation->links = explode(';', $thisTalk->links);
 
             $this->validation->eid       = $thisTalk->eid;
             $this->validation->given_day = $this->timezone
@@ -236,6 +238,7 @@ class Talk extends Controller
 
             $this->validation->session_track = null;
             $this->validation->speaker       = array();
+            $this->validation->links         = array();
 
             // If we have an error but have posted speakers, load them...
             if ($posted_speakers = $this->input->post('speaker_row')) {
@@ -280,9 +283,17 @@ class Talk extends Controller
             $unix_correction = $unix_offset1 - $unix_offset2;
             $unix_timestamp  = $talk_datetime->format("U") - $unix_correction;
 
+            $links = array();
+            foreach ( $this->input->post('link_row') as $link ) {
+                if ( trim($link) != '' ) {
+                    $links[] = $link;
+                }
+            }
+
             $arr = array(
                 'talk_title'  => $this->input->post('talk_title'),
                 'slides_link' => $this->input->post('slides_link'),
+                'links'       => implode(';', $links),
                 'date_given'  => $unix_timestamp,
                 'event_id'    => $this->input->post('event_id'),
                 'talk_desc'   => $this->input->post('talk_desc'),

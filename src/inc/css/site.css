@@ -540,6 +540,22 @@ a {
 	font-size: 12px;
 }
 
+#ctn .main .desc {
+	position: relative;
+}
+#ctn .main .desc img {
+	float: left;
+	margin-bottom: 10px;
+}
+#ctn .main .desc div.right {
+	position: relative;
+	padding-left: 60px;
+}
+
+#ctn .main .quicklink {
+	clear: both;
+}
+
 #ctn .main .row-talk-comment .desc {
 	*margin-bottom: 0;
 }
@@ -857,6 +873,10 @@ a {
 	text-align: right;
 	border: 0;
 	margin-bottom: 0;
+}
+
+#ctn .main form .button {
+  width: inherit;
 }
 
 /***/
