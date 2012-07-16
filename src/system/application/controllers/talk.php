@@ -914,10 +914,13 @@ class Talk extends Controller
         $this->load->model('talks_model');
         $this->load->model('user_model');
 
-        $event = $this->talks_model->getTalkEvent($talkId);
+        $talks = $this->talks_model->getTalks($talkId);
+        if ( count($talks) ) {
+            $talk = $talks[0];
+        }
 
         // ensure that the user is either a site admin or event admin
-        if ($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($event->ID)) {
+        if ($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($talk->event_id)) {
 
             $data = array(
                 'talkId'    => $talkId,
