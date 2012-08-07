@@ -181,4 +181,19 @@ class TalkMapper extends ApiMapper {
 
     }
 
+
+    public function save($data) {
+        // TODO map from the field mappings in getVerboseFields()
+        $sql = 'insert into talks (event_id, talk_title, talk_desc) '
+            . 'values (:event_id, :talk_title, :talk_description)';
+
+        $stmt = $this->_db->prepare($sql);
+        $response = $stmt->execute(array(
+            ':event_id' => $data['event_id'],
+            ':talk_title' => $data['title'],
+            ':talk_description' => $data['description'],
+            ));
+        return $this->_db->lastInsertId();
+    }
+
 }

@@ -5,6 +5,8 @@ class EventsController extends ApiController {
         // only GET is implemented so far
         if($request->verb == 'GET') {
             return $this->getAction($request, $db);
+        } elseif ($request->verb == 'POST') {
+            return $this->postAction($request, $db);
         }
         return false;
     }
@@ -70,4 +72,26 @@ class EventsController extends ApiController {
 
         return $list;
 	}
+
+    public function postAction($request, $db) {
+        $talk['event_id'] = $this->getItemId($request);
+        if(empty($talk['event_id'])) {
+            throw new BadRequestException("POST expects a talk representation sent to a specific event URL", 400);
+        }
+        $talk['title'] = filter_var($request->getParameter('talk_title'), FILTER_SANITIZE_STRING);
+        if(empty($talk['title'])) {
+            throw new BadRequestException("The talk title field is required", 400);
+        }
+        $talk['description'] = filter_var($request->getParameter('talk_description'), FILTER_SANITIZE_STRING);
+        if(empty($talk['description'])) {
+            throw new BadRequestException("The talk description field is required", 400);
+        }
+
+        $talk_mapper = new TalkMapper($db, $request);
+        $new_id = $talk_mapper->save($talk);
+
+        header("Location: " . $request->base . $request->path_info .'/' . $new_id);
+        return $talk;
+        exit;
+    }
 }
