@@ -183,17 +183,39 @@ class TalkMapper extends ApiMapper {
 
 
     public function save($data) {
+        $date = $data['date']->format('U');
+ 
         // TODO map from the field mappings in getVerboseFields()
-        $sql = 'insert into talks (event_id, talk_title, talk_desc) '
-            . 'values (:event_id, :talk_title, :talk_description)';
+        $sql = 'insert into talks (event_id, talk_title, talk_desc, '
+            . 'lang, date_given) '
+            . 'values (:event_id, :talk_title, :talk_description, '
+            . '(select ID from lang where lang_name = :language), '
+            . ':date)';
 
         $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute(array(
             ':event_id' => $data['event_id'],
             ':talk_title' => $data['title'],
             ':talk_description' => $data['description'],
-            ));
-        return $this->_db->lastInsertId();
+            ':language' => $data['language'],
+            ':date' => $date
+        ));
+        $talk_id = $this->_db->lastInsertId();
+
+        // save speakers
+        if(isset($data['speakers']) && is_array($data['speakers'])) {
+            foreach($data['speakers'] as $speaker) {
+                $speaker_sql = 'insert into talk_speaker (talk_id, speaker_name) values '
+                    . '(:talk_id, :speaker)';
+                $speaker_stmt = $this->_db->prepare($speaker_sql);
+                $speaker_stmt->execute(array(
+                    ':talk_id' => $talk_id,
+                    ':speaker' => $speaker
+                ));
+            }
+        }
+
+        return $talk_id;
     }
 
 }
