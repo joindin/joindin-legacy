@@ -202,6 +202,12 @@ class TalkMapper extends ApiMapper {
         ));
         $talk_id = $this->_db->lastInsertId();
 
+        // set talk type
+        // TODO support more than just talks
+        $cat_sql = 'insert into talk_cat (talk_id, cat_id) values (:talk_id, 1)';
+        $cat_stmt = $this->_db->prepare($cat_sql);
+        $cat_stmt->execute(array(':talk_id' => $talk_id));
+
         // save speakers
         if(isset($data['speakers']) && is_array($data['speakers'])) {
             foreach($data['speakers'] as $speaker) {
