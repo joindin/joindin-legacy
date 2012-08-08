@@ -74,6 +74,9 @@ class EventsController extends ApiController {
 	}
 
     public function postAction($request, $db) {
+        if(!isset($request->user_id)) {
+            throw new BadRequestException("You must be logged in to create data", 400);
+        }
         if(isset($request->url_elements[4])) {
             switch($request->url_elements[4]) {
                 case 'talks':
