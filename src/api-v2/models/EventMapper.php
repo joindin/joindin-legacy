@@ -310,10 +310,7 @@ class EventMapper extends ApiMapper
         $base = $this->_request->base;
         $version = $this->_request->version;
 
-        $host_sql = 'select a.uid as user_id, u.full_name'
-            . ' from user_admin a '
-            . ' inner join user u on u.ID = a.uid '
-            . ' where rid = :event_id and rtype="event" and rcode!="pending"';
+        $host_sql = $this->getHostSql();
         $host_stmt = $this->_db->prepare($host_sql);
         $host_stmt->execute(array("event_id" => $event_id));
         $hosts = $host_stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -327,6 +324,19 @@ class EventMapper extends ApiMapper
            }
         }
         return $retval;
+    }
+
+    /**
+     * SQL for fetching event hosts, so it can be used in multiple places
+     *
+     * @return SQL to fetch hosts, containing an :event_id named parameter
+     */
+    protected function getHostSql() {
+        $host_sql = 'select a.uid as user_id, u.full_name'
+            . ' from user_admin a '
+            . ' inner join user u on u.ID = a.uid '
+            . ' where rid = :event_id and rtype="event" and rcode!="pending"';
+        return $host_sql;
     }
 
     /**
@@ -374,4 +384,35 @@ class EventMapper extends ApiMapper
         return false;
     }
 
+    /**
+     * Does the currently-authenticated user have rights on a particular event?
+     *
+     * @param int $event_id The identifier for the event to check
+     * @return bool True if the user has privileges, false otherwise
+     */
+    public function thisUserHasAdminOn($event_id) {
+        // do we even have an authenticated user?
+        if(isset($this->_request->user_id)) {
+            $user_mapper = new UserMapper($this->_db, $this->_request);
+
+            // is user site admin?
+            $is_site_admin = $user_mapper->isSiteAdmin($this->_request->user_id);
+            $is_site_admin = false; 
+            if($is_site_admin) { 
+                return true;
+            }
+
+            // is user an event admin?
+            $sql = $this->getHostSql();
+            $sql .= ' AND u.ID = :user_id';
+            $stmt = $this->_db->prepare($sql);
+            $stmt->execute(array("event_id" => $event_id, 
+                "user_id" => $this->_request->user_id));
+            $results = $stmt->fetchAll();
+            if($results) {
+                return true;
+            }
+        } 
+        return false;
+    }
 }

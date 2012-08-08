@@ -87,6 +87,12 @@ class EventsController extends ApiController {
                             400
                         );
                     }
+                    $event_mapper = new EventMapper($db, $request);
+                    $is_admin = $event_mapper->thisUserHasAdminOn($talk['event_id']);
+                    if(!$is_admin) {
+                        throw new BadRequestException("You do not have permission to add talks to this event", 400);
+                    }
+
                     $talk['title'] = filter_var(
                         $request->getParameter('talk_title'), 
                         FILTER_SANITIZE_STRING
