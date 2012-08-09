@@ -7,7 +7,7 @@ class TalksController extends ApiController {
         } elseif($request->verb == 'POST') {
             return $this->postAction($request, $db);
         } else {
-            throw new BadRequestException("method not supported");
+            throw new Exception("method not supported");
         }
         return false;
     }
@@ -49,17 +49,17 @@ class TalksController extends ApiController {
             if($request->url_elements[4] == "comments") {
                 // no anonymous comments over the API
                 if(!isset($request->user_id) || empty($request->user_id)) {
-                    throw new BadRequestException('You must log in to comment');
+                    throw new Exception('You must log in to comment');
                 }
 
                 $comment = $request->getParameter('comment');
                 if(empty($comment)) {
-                    throw new BadRequestException('The field "comment" is required');
+                    throw new Exception('The field "comment" is required');
                 }
 
                 $rating = $request->getParameter('rating');
                 if(empty($rating)) {
-                    throw new BadRequestException('The field "rating" is required');
+                    throw new Exception('The field "rating" is required');
                 }
 
                 $comment_mapper = new TalkCommentMapper($db, $request);

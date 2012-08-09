@@ -75,14 +75,14 @@ class EventsController extends ApiController {
 
     public function postAction($request, $db) {
         if(!isset($request->user_id)) {
-            throw new BadRequestException("You must be logged in to create data", 400);
+            throw new Exception("You must be logged in to create data", 400);
         }
         if(isset($request->url_elements[4])) {
             switch($request->url_elements[4]) {
                 case 'talks':
                     $talk['event_id'] = $this->getItemId($request);
                     if(empty($talk['event_id'])) {
-                        throw new BadRequestException(
+                        throw new Exception(
                             "POST expects a talk representation sent to a specific event URL", 
                             400
                         );
@@ -90,7 +90,7 @@ class EventsController extends ApiController {
                     $event_mapper = new EventMapper($db, $request);
                     $is_admin = $event_mapper->thisUserHasAdminOn($talk['event_id']);
                     if(!$is_admin) {
-                        throw new BadRequestException("You do not have permission to add talks to this event", 400);
+                        throw new Exception("You do not have permission to add talks to this event", 400);
                     }
 
                     $talk['title'] = filter_var(
@@ -98,14 +98,14 @@ class EventsController extends ApiController {
                         FILTER_SANITIZE_STRING
                     );
                     if(empty($talk['title'])) {
-                        throw new BadRequestException("The talk title field is required", 400);
+                        throw new Exception("The talk title field is required", 400);
                     }
                     $talk['description'] = filter_var(
                         $request->getParameter('talk_description'), 
                         FILTER_SANITIZE_STRING
                     );
                     if(empty($talk['description'])) {
-                        throw new BadRequestException("The talk description field is required", 400);
+                        throw new Exception("The talk description field is required", 400);
                     }
 
                     $talk['language'] = filter_var($request->getParameter('language'), FILTER_SANITIZE_STRING);
@@ -129,10 +129,10 @@ class EventsController extends ApiController {
                     header("Location: " . $request->base . $request->path_info .'/' . $new_id);
                     exit;
                 default:
-                    throw new BadRequestException("Operation not supported, sorry", 404);
+                    throw new Exception("Operation not supported, sorry", 404);
             }
         } else {
-            throw new BadRequestException("Operation not supported, sorry", 404);
+            throw new Exception("Operation not supported, sorry", 404);
         }
 
     }
