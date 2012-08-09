@@ -126,8 +126,9 @@ class EventsController extends ApiController {
                     $talk_mapper = new TalkMapper($db, $request);
                     $new_id = $talk_mapper->save($talk);
 
-                    header("Location: " . $request->base . $request->path_info .'/' . $new_id);
-                    exit;
+                    header("Location: " . $request->base . $request->path_info .'/' . $new_id, NULL, 201);
+                    $new_talk = $talk_mapper->getTalkById($new_id);
+                    return $new_talk;
                 default:
                     throw new Exception("Operation not supported, sorry", 404);
             }
