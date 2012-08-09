@@ -63,8 +63,8 @@ class ApiMapper {
         $request = $this->_request;
         $count = count($list);
         $meta['count'] = $count; 
-        $meta['this_page'] = $request->base . $request->path_info .'?' . http_build_query($request->parameters);
-        $next_params = $prev_params = $request->parameters;
+        $meta['this_page'] = $request->base . $request->path_info .'?' . http_build_query($request->paginationParameters);
+        $next_params = $prev_params = $request->paginationParameters;
 
         if($count > 1) {
             $next_params['start'] = $next_params['start'] + $next_params['resultsperpage'];

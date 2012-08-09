@@ -117,6 +117,8 @@ class Request
         if (isset($_SERVER['QUERY_STRING'])) {
             parse_str($_SERVER['QUERY_STRING'], $parameters);
             $this->parameters = $parameters;
+            // grab these again, keep them separate for building page hyperlinks
+            $this->paginationParameters = $parameters;
         }
 
         // now how about PUT/POST bodies? These override what we already had
