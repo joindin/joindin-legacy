@@ -56,18 +56,18 @@ class User_model extends Model {
 
     /**
      * Check to see if the given user is a site admin
-     * If the user is logged in, check their session. If not, search the database
+     *      Check the passed user is an admin, 
+     *      if no username is passed check for logged in user
      *
      * @param $user User username (WARNING this accepted user_id once upon a time)
      * @return boolean User's admin status
      */
     function isSiteAdmin($user=null) {
-        if (!$this->isAuth()) {
-            // get our user information
-            if ($user) {
-                $udata=$this->getUserByUsername($user);
-                return (isset($udata[0]) && $udata[0]->admin==1) ? true : false;
-            } else { return false; }
+        if ($user !== null) {
+            $udata=$this->getUserByUsername($user);
+            return (isset($udata[0]) && $udata[0]->admin==1) ? true : false;
+        } elseif (!$this->isAuth()) {
+            return false;
         } else {
             return ($this->session->userdata('admin')==1) ? true : false;
         }
@@ -81,6 +81,7 @@ class User_model extends Model {
      * @return boolean User's site admin status
      */
     function isAdminEvent($eid, $uid=null) {
+        
         if ($this->isAuth()) {
             $uid=$this->session->userdata('ID');
         } elseif (!$this->isAuth() && $uid) {
@@ -107,22 +108,25 @@ class User_model extends Model {
      * @return boolean User's admin status related to the talk
      */
     function isAdminTalk($tid) {
-        if ($this->isAuth()) {
-            $ad		= false;
-            $uid	= $this->session->userdata('ID');
+        if (!$this->isAuth()) {
+            return false;
+        }
+        
+        $ad     = false;
+        $uid    = $this->session->userdata('ID');
 
-            $this->db->select('*');
-            $this->db->from('talk_speaker');
-            $this->db->where(array('speaker_id'=>$uid,'talk_id'=>$tid,'IFNULL(status,0) !='=>'pending'));
-            $query = $this->db->get();
-            $talk	= $query->result();
-            if (isset($talk[0]->ID)) { $ad=true; }
+        $this->db->select('*');
+        $this->db->from('talk_speaker');
+        $this->db->where(array('speaker_id'=>$uid,'talk_id'=>$tid,'IFNULL(status,0) !='=>'pending'));
+        $query = $this->db->get();
+        $talk    = $query->result();
+        if (isset($talk[0]->ID)) { $ad=true; }
 
-            //also check to see if the user is an admin of the talk's event
-            $talkDetail = $this->talks_model->getTalks($tid); //print_r($ret);
-            if (isset($talkDetail[0]->event_id) && $this->isAdminEvent($talkDetail[0]->event_id)) { $ad=true; }
-            return $ad;
-        } else { return false; }
+        //also check to see if the user is an admin of the talk's event
+        $talkDetail = $this->talks_model->getTalks($tid); //print_r($ret);
+        if (isset($talkDetail[0]->event_id) && $this->isAdminEvent($talkDetail[0]->event_id)) { $ad=true; }
+        return $ad;
+        
     }
 
     /**
@@ -131,8 +135,8 @@ class User_model extends Model {
      * @return null
      */
     public function toggleUserStatus($uid) {
-        $udata	= $this->getUserById((int)$uid);
-        $up		= ($udata[0]->active==1) ? array('active'=>'0') : array('active'=>'1');
+        $udata    = $this->getUserById((int)$uid);
+        $up        = ($udata[0]->active==1) ? array('active'=>'0') : array('active'=>'1');
         $this->updateUserinfo($uid, $up);
     }
 
@@ -317,8 +321,8 @@ class User_model extends Model {
             order by rand()
             limit %s
         ", $uid, $uid, $limit);
-        $query 		= $this->db->query($sql);
-        $speakers	= $query->result();
+        $query         = $this->db->query($sql);
+        $speakers    = $query->result();
 
         foreach ($speakers as $speaker) { $other_speakers[$speaker->user_id]=$speaker; }
         return $other_speakers;
@@ -352,11 +356,11 @@ class User_model extends Model {
                 lower(username) like '%%%s%%' or
                 lower(full_name) like '%%%s%%'
         ", $term, $term);
-        $query	= $this->db->query($sql);
+        $query    = $this->db->query($sql);
         $results = $query->result();
         foreach ($results as $key => $user) {
-            $results[$key]->talk_count 	= count($ci->talksModel->getSpeakerTalks($user->ID));
-            $results[$key]->event_count	= count($ci->userAttend->getUserAttending($user->ID));
+            $results[$key]->talk_count     = count($ci->talksModel->getSpeakerTalks($user->ID));
+            $results[$key]->event_count    = count($ci->userAttend->getUserAttending($user->ID));
         }
         return $results;
     }
