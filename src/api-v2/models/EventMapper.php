@@ -397,7 +397,6 @@ class EventMapper extends ApiMapper
 
             // is user site admin?
             $is_site_admin = $user_mapper->isSiteAdmin($this->_request->user_id);
-            $is_site_admin = false; 
             if($is_site_admin) { 
                 return true;
             }
