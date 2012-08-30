@@ -247,8 +247,8 @@ function checkTalk(talk) {
   expect(typeof talk.website_uri).toBe('string');
   expect(talk.verbose_comments_uri).toBeDefined();
   expect(typeof talk.verbose_comments_uri).toBe('string');
-  if(typeof talk.slides_link != 'undefined') {
-      expect(typeof talk.slides_link).toBe('string');
+  if(typeof talk.slides_link != 'undefined' && talk.slides_link != null) {
+    expect(typeof talk.slides_link).toBe('string');
   }
   expect(talk.language).toBeDefined();
   expect(typeof talk.language).toBe('string');
