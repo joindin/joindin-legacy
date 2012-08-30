@@ -28,10 +28,6 @@ $ji_db->query('SET CHARACTER SET utf8');
 // collect URL and headers
 $request = new Request();
 
-// set some default parameters
-$request->parameters['resultsperpage'] = $request->getParameter('resultsperpage', 20);
-$request->parameters['start'] = $request->getParameter('start', 0);
-
 // identify our user if applicable
 $headers = apache_request_headers();
 if(isset($headers['Authorization'])) {

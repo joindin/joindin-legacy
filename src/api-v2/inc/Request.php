@@ -121,6 +121,13 @@ class Request
             $this->paginationParameters = $parameters;
         }
 
+        if(!isset($this->paginationParameters['start'])) {
+            $this->paginationParameters['start'] = 0;
+        }
+        if(!isset($this->paginationParameters['resultsperpage'])) {
+            $this->paginationParameters['resultsperpage'] = 20;
+        }
+
         // now how about PUT/POST bodies? These override what we already had
         if($this->verb == 'POST' || $this->verb == 'PUT') {
             $body = file_get_contents("php://input");

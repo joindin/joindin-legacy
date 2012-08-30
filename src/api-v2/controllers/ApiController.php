@@ -24,12 +24,12 @@ abstract class ApiController {
     }
 
     public function getStart($request) {
-        return (int)$request->parameters['start'];
+        return (int)$request->paginationParameters['start'];
          
     }
     
     public function getResultsPerPage($request) {
-        return (int)$request->parameters['resultsperpage'];
+        return (int)$request->paginationParameters['resultsperpage'];
     }
 
     public function getSort($request) {
