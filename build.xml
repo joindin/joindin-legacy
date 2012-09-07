@@ -25,16 +25,12 @@
   </exec>
  </target>
 
- <!-- TODO -->
  <target name="parallelTasks" description="Run the phpmd, phpcs, phpdoc and phploc tasks in parallel using a maximum of 2 threads.">
   <parallel threadCount="2">
-   <sequential>
-    <antcall target="pdepend"/>
-    <antcall target="phpmd"/>
-   </sequential>
-   <antcall target="phpcs"/>
-   <antcall target="phpdoc"/>
-   <antcall target="phploc"/>
+   <phingcall target="phpmd"/>
+   <phingcall target="phpcs"/>
+   <phingcall target="phpdoc"/>
+   <phingcall target="phploc"/>
   </parallel>
  </target>
 
@@ -63,20 +59,16 @@
   </phpcodesniffer>
  </target>
 
- <!-- TODO -->
  <target name="phpdoc" description="Generate API documentation using PHPDocumentor">
-  <exec executable="phpdoc">
-   <arg line="-d ${source} -t ${basedir}/build/api" />
-  </exec>
+  <phpdoc2 destdir="${basedir}/build/api">
+   <fileset dir="${source}" />
+  </phpdoc2>
  </target>
 
- <!-- TODO -->
  <target name="phpcb" description="Aggregate tool output with PHP_CodeBrowser">
-  <exec executable="phpcb">
-   <arg line="--log    ${basedir}/build/logs
+  <exec command="phpcb --log ${basedir}/build/logs
               --source ${source}
               --output ${basedir}/build/code-browser" />
-  </exec>
  </target>
 
  <!-- TODO -->
