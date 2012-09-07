@@ -18,7 +18,6 @@
   <mkdir dir="${basedir}/build/pdepend"/>
  </target>
 
-
  <!-- TODO -->
  <target name="phpunit" description="Run unit tests using PHPUnit and generates junit.xml and clover.xml">
   <exec executable="phpunit" failonerror="true">
@@ -27,27 +26,16 @@
  </target>
 
  <!-- TODO -->
- <target name="parallelTasks" description="Run the pdepend, phpmd, phpcpd, phpcs, phpdoc and phploc tasks in parallel using a maximum of 2 threads.">
+ <target name="parallelTasks" description="Run the phpmd, phpcs, phpdoc and phploc tasks in parallel using a maximum of 2 threads.">
   <parallel threadCount="2">
    <sequential>
     <antcall target="pdepend"/>
     <antcall target="phpmd"/>
    </sequential>
-   <antcall target="phpcpd"/>
    <antcall target="phpcs"/>
    <antcall target="phpdoc"/>
    <antcall target="phploc"/>
   </parallel>
- </target>
-
- <!-- TODO -->
- <target name="pdepend" description="Generate jdepend.xml and software metrics charts using PHP_Depend">
-  <exec executable="pdepend">
-   <arg line="--jdepend-xml=${basedir}/build/logs/jdepend.xml
-              --jdepend-chart=${basedir}/build/pdepend/dependencies.svg
-              --overview-pyramid=${basedir}/build/pdepend/overview-pyramid.svg
-              ${source}" />
-  </exec>
  </target>
 
  <target name="phpmd" description="Generate pmd.xml using PHPMD">
@@ -55,13 +43,6 @@
    <fileset dir="${source}" />
    <formatter type="xml" outfile="${basedir}/build/logs/pmd.xml" />
   </phpmd>
- </target>
-
- <target name="phpcpd" description="Generate pmd-cpd.xml using PHPCPD">
-  <phpcpd>
-   <fileset dir="${source}" />
-   <formatter type="pmd" outfile="${basedir}/build/logs/pmd-cpd.xml" />
-  </phpcpd>
  </target>
 
  <target name="phploc" description="Generate phploc.csv">
@@ -75,14 +56,11 @@
   </exec>
  </target>
 
- <!-- TODO -->
  <target name="phpcs" description="Generate checkstyle.xml using PHP_CodeSniffer">
-  <exec executable="phpcs" output="/dev/null">
-   <arg line="--report=checkstyle
-              --report-file=${basedir}/build/logs/checkstyle.xml
-              --standard=doc/codesniffer/JoindIn/
-              ${source}" />
-  </exec>
+  <phpcodesniffer standard="doc/codesniffer/JoindIn/" >
+   <fileset dir="${source}" />
+   <formatter type="checkstyle" outfile="${basedir}/build/logs/checkstyle.xml" />
+  </phpcodesniffer>
  </target>
 
  <!-- TODO -->
