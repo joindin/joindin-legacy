@@ -62,9 +62,10 @@
 
  <!-- TODO -->
  <target name="phpcpd" description="Generate pmd-cpd.xml using PHPCPD">
-  <exec executable="phpcpd">
-   <arg line="--log-pmd ${basedir}/build/logs/pmd-cpd.xml ${source}" />
-  </exec>
+  <phpcpd>
+   <fileset dir="${source}" />
+   <formatter type="pmd" outfile="${basedir}/build/logs/pmd-cpd.xml" />
+  </phpcpd>
  </target>
 
  <target name="phploc" description="Generate phploc.csv">
