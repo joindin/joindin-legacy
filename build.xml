@@ -50,17 +50,13 @@
   </exec>
  </target>
 
- <!-- TODO -->
  <target name="phpmd" description="Generate pmd.xml using PHPMD">
-  <exec executable="phpmd">
-   <arg line="${source}
-              xml
-              codesize,design,naming,unusedcode
-              --reportfile ${basedir}/build/logs/pmd.xml" />
-  </exec>
+  <phpmd rulesets="codesize,design,naming,unusedcode">
+   <fileset dir="${source}" />
+   <formatter type="xml" outfile="${basedir}/build/logs/pmd.xml" />
+  </phpmd>
  </target>
 
- <!-- TODO -->
  <target name="phpcpd" description="Generate pmd-cpd.xml using PHPCPD">
   <phpcpd>
    <fileset dir="${source}" />
