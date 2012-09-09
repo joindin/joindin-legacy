@@ -18,11 +18,8 @@
   <mkdir dir="${basedir}/build/pdepend"/>
  </target>
 
- <!-- TODO -->
  <target name="phpunit" description="Run unit tests using PHPUnit and generates junit.xml and clover.xml">
-  <exec executable="phpunit" failonerror="true">
-    <arg line="-c src/tests/phpunit.xml ./src/tests" />
-  </exec>
+  <exec command="phpunit -c src/tests/phpunit.xml ./src/tests" />
  </target>
 
  <target name="parallelTasks" description="Run the phpmd, phpcs, phpdoc and phploc tasks in parallel using a maximum of 2 threads.">
@@ -74,9 +71,8 @@
  <!-- TODO -->
  <target name="build" depends="clean,parallelTasks,phpunit,phpcb"/>
 
- <!-- TODO -->
  <target name="launch">
-  <exec executable="src/scripts/jenkinslaunch.sh" failonerror="true" />
+  <exec command="src/scripts/jenkinslaunch.sh" />
  </target>
 
 </project>
