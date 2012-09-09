@@ -69,9 +69,7 @@ class CSRF_Protection
         {
 
             // is this an API request?
-            if ( strpos($_SERVER['PATH_INFO'], '/api') === 0
-                && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'
-                && $this->checkPublicKey()) {
+            if ( strpos($_SERVER['PATH_INFO'], '/api') === 0) {
                     // API call
                     $this->CI->session->set_userdata(self::$token_name, FALSE);
                     return;
@@ -91,6 +89,8 @@ class CSRF_Protection
 
     /**
      * Check an API request's public key is valid
+     *
+     * Only useful for requests from the website; external users are keyless
      *
      * @return boolean
      */
