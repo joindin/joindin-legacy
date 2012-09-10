@@ -16,7 +16,7 @@ class Addevent extends BaseWsRequest {
         // Check for a valid login
         if ($this->isValidLogin($xml)) {
             // Now check to see if they're a site admin
-            if (!$this->CI->user_model->isSiteAdmin($xml->auth->user)) {
+            if (!$this->CI->user_model->isSiteAdmin((string)$xml->auth->user)) {
                 return false;
             } else { return true; }
             

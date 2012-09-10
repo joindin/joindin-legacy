@@ -21,7 +21,7 @@ class Addtrack extends BaseWsRequest {
             if ($this->CI->um->isAuth()) {
                 $user=$this->CI->session->userdata('username');
             } elseif (!$this->CI->um->isAuth()) {
-                $user=$xml->auth->user;
+                $user=(string)$xml->auth->user;
             }
 
             $udata=$this->CI->um->getUserByUsername($user);

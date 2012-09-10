@@ -11,7 +11,7 @@ class Status {
     }
     public function checkSecurity($xml) {
         if ($this->isValidLogin($xml)) {
-            if ($this->CI->user_model->isSiteAdmin($xml->auth->user)) {
+            if ($this->CI->user_model->isSiteAdmin((string)$xml->auth->user)) {
                 return true;
             } else { return false; }
         } else { return false; }

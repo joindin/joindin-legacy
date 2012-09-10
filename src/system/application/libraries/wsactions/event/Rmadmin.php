@@ -27,7 +27,7 @@ class Rmadmin extends BaseWsRequest {
                 $user=$xml->auth->user;
             }
 
-            $udata=$this->CI->um->getUserByUsername($user);
+            $udata=$this->CI->um->getUserByUsername((string)$user);
             if (!empty($udata)) { 
                 $user=$udata[0]->ID;
             } else { 

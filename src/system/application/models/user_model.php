@@ -227,9 +227,13 @@ class User_model extends Model {
 
     function getUserByUsername($username)
     {
-        $query = $this->db->get_where('user', array('username' => $username));
-        $result = $query->result();
-        return $result;
+        if(!empty($username)) {
+            $query = $this->db->get_where('user', array('username' => $username));
+            $result = $query->result();
+            return $result;
+        }
+
+        return false;
     }
 
     function getUserById($userId)

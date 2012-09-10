@@ -38,7 +38,7 @@ class Addcomment extends BaseWsRequest {
 
             $in			 = (array)$this->xml->action;
             $talk_detail = $this->CI->talks_model->getTalks($in['talk_id']);
-            $user		 = $this->CI->user_model->getUserByUsername($this->xml->auth->user);
+            $user		 = $this->CI->user_model->getUserByUsername((string)$this->xml->auth->user);
 
             // event ID in $talk_detial[0]->eid
 

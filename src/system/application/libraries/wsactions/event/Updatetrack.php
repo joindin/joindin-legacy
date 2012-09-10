@@ -20,7 +20,7 @@ class Updatetrack extends BaseWsRequest {
             if ($this->CI->um->isAuth()) {
                 $user=$this->CI->session->userdata('username');
             } elseif (!$this->CI->um->isAuth()) {
-                $user=$xml->auth->user;
+                $user=(string)$xml->auth->user;
             }
             if (!is_int($user)) { 
                 $udata=$this->CI->um->getUserByUsername($user);

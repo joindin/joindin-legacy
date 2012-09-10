@@ -32,7 +32,7 @@ class Addcomment extends BaseWsRequest {
         $unq=$this->CI->wsvalidate->validate_unique('event_comments', $this->xml->action);
         if ($unq) {
             $in=(array)$this->xml->action;			
-            $user=$this->CI->user_model->getUserByUsername($this->xml->auth->user);
+            $user=$this->CI->user_model->getUserByUsername((string)$this->xml->auth->user);
             if ($user && !$this->isValidLogin($this->xml)) {
                 return $this->throwError('Invalid permissions');
             }

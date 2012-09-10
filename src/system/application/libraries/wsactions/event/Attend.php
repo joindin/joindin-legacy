@@ -34,7 +34,7 @@ class Attend extends BaseWsRequest {
                 $uid=$this->CI->session->userdata('ID');
                 if (!$uid) {
                     // its an API call, grab from the XML
-                    $user=$this->CI->user_model->getUserByUsername($this->xml->auth->user);
+                    $user=$this->CI->user_model->getUserByUsername((string)$this->xml->auth->user);
                     $uid = $user[0]->ID;
                 }
                 

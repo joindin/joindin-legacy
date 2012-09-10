@@ -40,7 +40,7 @@ class Claim extends BaseWsRequest {
                     // If it is, we need to be sure they've given us the user to add the claim for
 
                     // can only claim talks for ourselves - use logged in user
-                    $username = $this->xml->auth->user;
+                    $username = (string)$this->xml->auth->user;
                     if (!isset($username)) {
                         return array('output'=>'json','data'=>array('items'=>array('msg'=>'Fail: Username required!')));
                     }
