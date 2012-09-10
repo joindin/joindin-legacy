@@ -20,16 +20,17 @@ class Addadmin extends BaseWsRequest {
         if ($this->CI->um->isAuth() || $this->isValidLogin($xml)) {
             // They either need to be an admin of the event or a site admin
             
-            $user = false;
+            $username = false;
+            $user_id = false;
             if ($this->CI->um->isAuth()) {
-                $user=$this->CI->session->userdata('username');
+                $username=$this->CI->session->userdata('username');
             } elseif (!$this->CI->um->isAuth()) {
-                $user=$xml->auth->user;
+                $username=(string)$xml->auth->user;
             }
 
-            $udata=$this->CI->um->getUserByUsername((string)$user);
+            $udata=$this->CI->um->getUserByUsername($username);
             if (!empty($udata)) {
-                $user=$udata[0]->ID;
+                $user_id=$udata[0]->ID;
             } else { 
                 return false; 
             }
@@ -40,8 +41,8 @@ class Addadmin extends BaseWsRequest {
             // Event ID must be an integer
             if (!is_int($eid)) { return array('output'=>'json','data'=>array('items'=>array('msg'=>'Invalid Event ID!'))); }
             
-            $is_evt_admin = $this->CI->uam->hasPerm($user, $eid, $rtype);
-            $is_site_admin= $this->CI->um->isSiteAdmin($user);
+            $is_evt_admin = $this->CI->uam->hasPerm($user_id, $eid, $rtype);
+            $is_site_admin= $this->CI->um->isSiteAdmin($username);
             
             if ($is_site_admin || $is_evt_admin) {
                 return true;
@@ -59,7 +60,7 @@ class Addadmin extends BaseWsRequest {
         $this->CI->load->library('sendemail');
         $this->CI->load->model('event_model','em');
         
-        $user	= $this->xml->action->username;
+        $user	= (string)$this->xml->action->username;
         $eid	= (int)$this->xml->action->eid;
         $type	= 'event';
         
