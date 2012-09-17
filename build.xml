@@ -43,7 +43,7 @@
  </target>
 
  <target name="frisby" description="Run new API tests in Frisby">
-  <exec command="jasmine-node --nocolor --junitreport --output ${basedir}/build/logs/frisby/ ." 
+     <exec command="jasmine-node --nocolor --junitreport --output ../../../build/logs/frisby/ ." 
          dir="${basedir}/src/tests/api_tests">
   </exec>
  </target>
