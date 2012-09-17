@@ -42,10 +42,9 @@
   <exec command="phploc --log-csv ${basedir}/build/logs/phploc.csv ${source}" />
  </target>
 
- <!-- TODO -->
  <target name="frisby" description="Run new API tests in Frisby">
-  <exec executable="jasmine-node" dir="${basedir}/src/tests/api_tests" failonerror="true">
-	  <arg line="--nocolor --junitreport --output ${basedir}/build/logs/frisby/ ." />
+  <exec command="jasmine-node --nocolor --junitreport --output ${basedir}/build/logs/frisby/ ." 
+         dir="${basedir}/src/tests/api_tests">
   </exec>
  </target>
 
@@ -68,7 +67,6 @@
               --output ${basedir}/build/code-browser" />
  </target>
 
- <!-- TODO -->
  <target name="build" depends="clean,parallelTasks,phpunit,phpcb"/>
 
  <target name="launch">
