@@ -54,12 +54,12 @@ class TalksController extends ApiController {
 
                 $comment = $request->getParameter('comment');
                 if(empty($comment)) {
-                    throw new Exception('The field "comment" is required');
+                    throw new Exception('The field "comment" is required', 400);
                 }
 
                 $rating = $request->getParameter('rating');
                 if(empty($rating)) {
-                    throw new Exception('The field "rating" is required');
+                    throw new Exception('The field "rating" is required', 400);
                 }
 
                 $comment_mapper = new TalkCommentMapper($db, $request);
