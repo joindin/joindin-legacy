@@ -7,9 +7,15 @@ $base_url = $this->config->config['base_url'];
 
 <h2>Overview</h2>
 
-<p>Joind.in is offering a HTTP web service to give clean, robust access to the data contained in the application to consuming devices.  It follows a RESTful style, is available in HTML and JSON formats, and uses OAuth v1.0a for authentication where this is needed (all data publicly visible on the site is available via the API without authentication).  Hyperlinks are provided the responses to allow you to easily locate related data.
+<p>Joind.in is offering a HTTP web service to give clean, robust access to the data contained in the application to consuming devices.  It follows a RESTful style, is available in HTML and JSON formats, and uses OAuth v2 for authentication where this is needed (all data publicly visible on the site is available via the API without authentication). We also have an HTML output handler and hypermedia links, so you can click around the API in your browser: <a href="http://api.joind.in">http://api.joind.in</a>.</p>
 
-This document gives information about the functionality of the API and how to use it.</p>
+<h2>Interactive Documentation</h2>
+
+<p>We use <a href="https://github.com/mashery/iodocs">IODocs from Mashery</a> to give an interactive way of viewing the API and testing it out.  To use this, you'll need a valid access token which you enter at the top of the page.</p>
+
+<p><a href="http://test.joind.in/user/oauth_allow?api_key=5d3a1d71c8b5a42aa6fec6e577a633&callback=http://joind.in/api/v2docs">Click here to generate your access token</a> <?php if($_GET['access_token']) echo " access token: " . $_GET['access_token']; ?></p>
+
+<p>Copy the token, and <a href="http://lornajane-iodocs.heroku.com/joindinv2">try the interactive docs</a>/  Or, keep reading for more detailed information.</p>
 
 
 <h2>Global Parameters</h2>

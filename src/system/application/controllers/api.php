@@ -200,6 +200,16 @@ class Api extends Controller
         $this->template->write_view('content', 'api/v2docs');
         $this->template->render();
     }
+
+    /**
+     * Documentation for the v1 API
+     * 
+     * @return void
+     */
+    public function v1docs() {
+        $this->template->write_view('content', 'api/v1docs');
+        $this->template->render();
+    }
 }
 
 ?>
