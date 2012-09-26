@@ -49,22 +49,28 @@ You can set up a development virtual machine running joind.in by following these
   `vagrant destroy` if you wish to delete the VM completely
 
 - Also, when any of of the Puppet manifests change, it is a good idea to rerun them:
-  > vagrant provision
+
+        vagrant provision
 
 ## Quick Start - Existing Platforms
+
 1. Create a vhost entry for the site. The docroot should be `/src`.
+
 2. Create a MySQL database with username and password.
    Use a database name of 'joindin'
+
 3. Initialise, patch, and populate the database.
 
         src/scripts/patchdb.sh -t /path/to/joind.in -d joindin -u username -p password -i
 
    (use the correct username and password)
+
 4. Create directories for user-added content.
 
         mkdir src/system/cache/ctokens && chown apache:apache src/system/cache/ctokens
 
    (or whatever user and group your web server runs as)
+
 5. Create configuration files for database and config (based on the .dist templates):
 
         cp src/system/application/config/database.php.dist src/system/application/config/database.php
@@ -83,9 +89,8 @@ You can set up a development virtual machine running joind.in by following these
 ## Other Resources
 
 * The main website http://joind.in
-
 * Issues list: http://joindin.jira.com/ (good bug reports ALWAYS welcome!)
-
+* CI Environment: lots of output and information about tests, deploys etc: http://jenkins.joind.in
 * Community: We hang out on IRC, pop in with questions or comments! #joind.in on Freenode
 
 See LICENSE file for license information for this software
@@ -97,9 +102,11 @@ See LICENSE file for license information for this software
 
 To run the frisby tests (frisby.js), you will first need to install node.js and
 npm.  Then run:
-  npm install -g frisby jasmine-node
+
+        npm install -g frisby jasmine-node
 
 I also found that I needed:
+
         export NODE_PATH=/usr/local/lib/node_modules
 
 Then run the tests by going to `/src/tests/api_tests` and running:
