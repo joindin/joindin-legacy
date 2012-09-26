@@ -16,31 +16,38 @@ You can set up a development virtual machine running joind.in by following these
    - Vagrant (http://vagrantup.com/)
 
 2. Clone repository to any location and fetch required submodules (containing Puppet manifests).
+
         git clone https://github.com/joindin/joind.in && cd joind.in
         git submodule init
         git submodule update
 
 3. Start the process by running Vagrant.
+
         vagrant up
 
 4. Add hostname to /etc/hosts.
+
         echo "127.0.0.1 dev.joind.in" | sudo tee -a /etc/hosts
 
 5. Browse to the newly provisioned development copy of joind.in.
+
         open http://dev.joind.in:8080
 
 *Notes:*
 
 - HTTP and SSH ports on the VM are forwarded to localhost (22 -> 2222, 80 -> 8080)
-- The joind.in directory you cloned will be mounted inside the VM at /vagrant
+- The joind.in directory you cloned will be mounted inside the VM at `/vagrant`
 - You can develop by editing the files you cloned in the IDE of you choice.
 - The database is running inside the VM. You can get to it by doing the following:
+
         you@you> vagrant ssh
         vagrant@vm> sudo su
         root@vm> mysql joindin
+
 - To stop the VM do one of the following:
-  > vagrant suspend # if you plan on running it later
-  > vagrant destroy # if you wish to delete the VM completely
+  `vagrant suspend` if you plan on running it later
+  `vagrant destroy` if you wish to delete the VM completely
+
 - Also, when any of of the Puppet manifests change, it is a good idea to rerun them:
   > vagrant provision
 
@@ -65,9 +72,9 @@ You can set up a development virtual machine running joind.in by following these
 
    Edit these files as appropriate!
 
-6. Create some sample data to get you started - see /doc/dbgen/README for information about this excellent tool
+6. Create some sample data to get you started - see `/doc/dbgen/README` for information about this excellent tool
 
-7. To enable useful error messages, add the following to your .htaccess
+7. To enable useful error messages, add the following to your `.htaccess`
 
         SetEnv JOINDIN_DEBUG On
         
@@ -93,22 +100,11 @@ npm.  Then run:
   npm install -g frisby jasmine-node
 
 I also found that I needed:
-  export NODE_PATH=/usr/local/lib/node_modules
+        export NODE_PATH=/usr/local/lib/node_modules
 
-Then run the tests by going to /src/tests/api_tests and running:
-  jasmine-node newapi_spec.js
+Then run the tests by going to `/src/tests/api_tests` and running:
 
-Debugging
-By default the application is in production mode. This primarily means that
-error messages and notices are suppressed.
-
-To allow errors and notices to be shown on the site you have to change the
-environment variable JOINDIN_DEBUG to the value 'on'. It is discouraged to
-do this on production environments as this will allow visitors to see any
-errors produced by the site.
-
-The JOINDIN_DEBUG environment variable is controlled from the accompanying
-.htaccess file.
+        jasmine-node newapi_spec.js
 
 ### Unit Tests
 
