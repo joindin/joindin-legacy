@@ -17,9 +17,8 @@ You can set up a development virtual machine running joind.in by following these
 
 2. Clone repository to any location and fetch required submodules (containing Puppet manifests).
 
-        git clone https://github.com/joindin/joind.in && cd joind.in
-        git submodule init
-        git submodule update
+        git clone https://github.com/joindin/joind.in --recursive
+        cd joind.in
 
 3. Start the process by running Vagrant.
 
