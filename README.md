@@ -20,6 +20,12 @@ You can set up a development virtual machine running joind.in by following these
         git clone https://github.com/joindin/joind.in --recursive
         cd joind.in
 
+or 
+
+        git clone https://github.com/joindin/joind.in && cd joind.in
+        git submodule init
+        git submodule update
+
 3. Start the process by running Vagrant.
 
         vagrant up
