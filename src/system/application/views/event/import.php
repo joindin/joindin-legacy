@@ -18,7 +18,7 @@
         <li><b>Speaker</b> (separate multiple speakers with commas)</li>
         <li><b>Date</b> (in the format YYYY-MM-DD, your spreadsheet program should have an option for formatting dates this way)</li>
         <li><b>Time</b> (in the format HH:MM)</li>
-        <li>Language (Two-character language code.  Currently supported: fr, us, de, it, sp, ge, uk, porb.  Default is uk)</li>
+        <li>Language (Two-character language code.  Currently supported: fr, us, de, it, sp, ge, uk, porb, pl, fi.  Default is uk)</li>
         <li>Type (this can be one of "Talk", "Keynote", "Workshop", "Social")</li>
         <li>Track (separate multiple tracks with commas)</li></ul>
     </p>

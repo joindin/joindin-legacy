@@ -45,6 +45,9 @@ class Generator_Data implements Generator_Data_Interface {
             4 => array ('name' => 'Nederlands', 'abbr' => 'ne'),
             5 => array ('name' => 'Francais', 'abbr' => 'fr'),
             6 => array ('name' => 'Espanol', 'abbr' => 'es'),
+            7 => array ('name' => 'Polish', 'abbr' => 'pl'),
+            8 => array ('name' => 'Finnish', 'abbr' => 'fi'),
+            9 => array ('name' => 'Brazilian Portuguese', 'abbr' => 'pobr'),
         );
         return $languages;
     }
