@@ -17,7 +17,7 @@ class Generator {
      */
     public function __construct(Generator_Data_Interface $data) {
         $this->_data = $data;
-		$this->_existing_stubs = array();
+        $this->_existing_stubs = array();
     }
 
     /**
