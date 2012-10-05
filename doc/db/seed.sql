@@ -20,7 +20,7 @@ insert into user (
 	'John Doe',
 	1, NULL
 );
-SELECT @fuserid:=LAST_INSERT_ID();
+SET @fuserid:=LAST_INSERT_ID();
 /* Ima Admin is an admin, her password is also "password" */
 insert into user (
 	username,password,
@@ -36,7 +36,7 @@ insert into user (
 	'Ima Admin',
 	1, NULL
 );
-SELECT @suserid:=LAST_INSERT_ID();
+SET @suserid:=LAST_INSERT_ID();
 /* ----------------------------------*/
 
 /* Insert sample past event data */
@@ -63,7 +63,7 @@ insert into events (
 	null,null,0,
 	0,0,1,NULL
 );
-SELECT @pevtid:=LAST_INSERT_ID();
+SET @pevtid:=LAST_INSERT_ID();
 /* ----------------------------------*/
 
 /* Insert past event attendees */
@@ -105,7 +105,7 @@ insert into events (
 	null,null,0,
 	0,0,1,NULL
 );
-SELECT @evtid:=LAST_INSERT_ID();
+SET @evtid:=LAST_INSERT_ID();
 /* ----------------------------------*/
 
 /* Add a sample event comment */
@@ -117,15 +117,14 @@ insert into event_comments (
 	active,
 	cname,
 	comment_type,
-	ID,
-	source
+	ID
 ) values (
 	@evtid,
 	'This is a sample comment on the Test Event #2',
 	unix_timestamp(),
 	@fuserid,
 	1,
-	'John Doe',NULL,NULL,'api'
+	'John Doe',NULL,NULL
 );
 /* ----------------------------------*/
 
@@ -147,7 +146,7 @@ insert into talks (
 	1,
 	NULL
 );
-SELECT @ftalkid:=LAST_INSERT_ID();
+SET @ftalkid:=LAST_INSERT_ID();
 
 /* Insert speaker data for the talk */
 insert into talk_speaker (
@@ -190,7 +189,7 @@ insert into talks (
 	1,
 	NULL
 );
-SELECT @stalkid:=LAST_INSERT_ID();
+SET @stalkid:=LAST_INSERT_ID();
 
 /* Insert speaker data for the talk */
 insert into talk_speaker (
