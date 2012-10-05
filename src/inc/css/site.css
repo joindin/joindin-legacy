@@ -82,6 +82,7 @@ h2 .more,
 
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
+	border-radius: 4px;
 }
 
 p {
@@ -104,6 +105,7 @@ a {
 	padding: 2px 18px;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
+	border-radius: 4px;
 }
 
 .btn-small {
@@ -118,6 +120,7 @@ a {
 	padding: 1px 6px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
+	border-radius: 3px;
 }
 
 .btn-small.disabled {
@@ -139,6 +142,7 @@ a {
 	padding: 5px 24px;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
+	border-radius: 5px;
 }
 
 .btn-success {
@@ -168,8 +172,10 @@ a {
 	z-index: 100;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
+	border-radius: 5px;
 	-moz-box-shadow: red 2px 2px 2px -2px, blue 4px 4px;
 	-webkit-box-shadow: #999 1px 1px;
+	box-shadow: #999 1px 1px;
 }
 
 .loading-complete {
@@ -476,6 +482,7 @@ a {
 	border: 1px solid #d7dcdf;
 	-moz-border-radius: 6px;
 	-webkit-border-radius: 6px;
+	border-radius: 6px;
 	padding: 5px;
 	/*background: #f0f4f8 url(/inc/img/bg-box.gif) left top repeat-x;*/
 	background: #fff;
@@ -492,6 +499,7 @@ a {
 	background: #f0f4f8 url(/inc/img/bg-box.gif) left top repeat-x;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
+	border-radius: 4px;
 	padding: 5px 7px;
 }
 
@@ -521,6 +529,7 @@ a {
 	background: #d5dfea;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
+	border-radius: 4px;
 	padding: 5px;
 	display: inline-block;
 	text-align: center;
@@ -589,6 +598,7 @@ a {
 	border: 1px solid #d7dcdf;
 	-moz-border-radius: 6px;
 	-webkit-border-radius: 6px;
+	border-radius: 6px;
 }
 
 /***/
@@ -611,6 +621,7 @@ a {
 	background: #fff;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
+	border-radius: 4px;
 	padding: 5px;
 	display: inline-block;
 	text-align: center;
@@ -680,6 +691,7 @@ a {
 	border: 1px solid #D7DCDF;
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
+	border-radius: 5px;
 	padding: 10px;
 	margin: 0;
 }
@@ -841,6 +853,7 @@ a {
 	border: 1px solid #d7dcdf;
 	-moz-border-radius: 6px;
 	-webkit-border-radius: 6px;
+	border-radius: 6px;
 }
 
 #ctn .main form input[type=text],
@@ -909,6 +922,7 @@ a {
 	padding: 5px;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
+	border-radius: 4px;
 	margin: 0;
 }
 
@@ -917,6 +931,7 @@ a {
 	margin-bottom: 2px;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
+	border-radius: 4px;
 	padding: 5px;
 }
 
@@ -947,6 +962,7 @@ a {
 	text-decoration: none;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
+	border-radius: 4px;
 }
 
 .calendar th {
@@ -958,6 +974,7 @@ a {
 	padding: 3px 0;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
+	border-radius: 4px;
 }
 
 .calendar .calendar-day {
@@ -967,6 +984,7 @@ a {
 	padding: 2px 0;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
+	border-radius: 4px;
 }
 
 .calendar .calendar-day a {
@@ -980,6 +998,7 @@ a {
 	padding: 2px 0;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
+	border-radius: 4px;
 }
 
 .calendar .calendar-day-events {
