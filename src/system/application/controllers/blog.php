@@ -230,7 +230,7 @@ class Blog extends Controller
         $this->load->library('spam');
         $this->load->helper('reqkey');
         $this->load->model('blog_posts_model', 'blogPostsModel');
-        $this->load->model('blog_comments_model','blogCommentsModel');
+        $this->load->model('blog_comments_model', 'blogCommentsModel');
 
         $this->blogPostsModel->updatePostViews($id);
         $reqkey = buildReqKey();
