@@ -329,8 +329,10 @@ SQL
             FROM events, tags_events, tags
             WHERE active = 1 AND (pending = 0 OR pending IS NULL) AND
             tags_events.event_id = events.ID AND tags_events.tag_id = tags.ID AND
-            tags.tag_value = "'.$tagData.'"';
+            tags.tag_value = "'.$this->db->escape($tagData).'"
+            ORDER BY events.event_start ASC';
 
+		
         $query  = $this->db->query($sql);
         $result = $query->result();
         foreach ($result as $index => $event) {
