@@ -8,14 +8,16 @@ require_once "generator_data.interface.php";
  */
 
 class Generator {
-    protected $_data;       // Configuration data
-    protected $_cache;      // Caching of data
+    protected $_data;       	// Configuration data
+    protected $_cache;      	// Caching of data
+	protected $_exiting_stubs; 	// Stubs that have already been generated, to stop duplicates.
 
     /**
      * @param Generator_Data_Interface $data
      */
     public function __construct(Generator_Data_Interface $data) {
         $this->_data = $data;
+		$this->_existing_stubs = array();
     }
 
     /**
@@ -483,7 +485,13 @@ class Generator {
             $event->long = $city[2];
 
             // Global event info
-            $event->stub = soundex($event->name);
+			$stub = soundex($event->name);
+			if (in_array($stub, $this->_existing_stubs)) {
+				$stub = '';
+			} else {
+				$this->_existing_stubs[] = $stub;
+			}
+            $event->stub = $stub;
             $event->url = str_replace(" ", "", "http://".strtolower($event->name).".example.org");
             $event->hash = "#".$event->stub;
             $event->description = $this->_genLorum();
