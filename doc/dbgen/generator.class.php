@@ -10,7 +10,7 @@ require_once "generator_data.interface.php";
 class Generator {
     protected $_data;       	// Configuration data
     protected $_cache;      	// Caching of data
-	protected $_exiting_stubs; 	// Stubs that have already been generated, to stop duplicates.
+    protected $_exiting_stubs; 	// Stubs that have already been generated, to stop duplicates.
 
     /**
      * @param Generator_Data_Interface $data
@@ -485,12 +485,12 @@ class Generator {
             $event->long = $city[2];
 
             // Global event info
-			$stub = soundex($event->name);
-			if (in_array($stub, $this->_existing_stubs)) {
-				$stub = '';
-			} else {
-				$this->_existing_stubs[] = $stub;
-			}
+            $stub = soundex($event->name);
+            if (in_array($stub, $this->_existing_stubs)) {
+                $stub = '';
+            } else {
+                $this->_existing_stubs[] = $stub;
+            }
             $event->stub = $stub;
             $event->url = str_replace(" ", "", "http://".strtolower($event->name).".example.org");
             $event->hash = "#".$event->stub;
