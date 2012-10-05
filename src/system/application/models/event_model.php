@@ -332,7 +332,6 @@ SQL
             tags.tag_value = "'.$this->db->escape($tagData).'"
 			ORDER BY events.event_start ASC';
 
-//		print_r($sql);exit;
 		
         $query  = $this->db->query($sql);
         $result = $query->result();
