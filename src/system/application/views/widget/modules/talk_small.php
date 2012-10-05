@@ -52,7 +52,14 @@ var_dump($hasCommented);
 </tr>
 <tr>
     <td>
-        <?php for($i=1;$i<=5;$i++): ?><a href="#" class="rating_img_link" id="r<?php echo $i; ?>"><img class="rating_img" src="/inc/img/rating-off.jpg" style="border:0px;margin:0px;padding:0px"></a><?php endfor; ?>
+        <?php for($i=1;$i<=5;$i++): ?>
+            <a href="#" class="rating_img_link" id="r<?php echo $i; ?>">
+                <img 
+                    class="rating_img" 
+                    src="/inc/img/rating-off.jpg" 
+                    style="border:0px;margin:0px;padding:0px">
+            </a>
+        <?php endfor; ?>
     </td>
     <td align="right">
     <input type="button" name="btn_vote_submit" id="btn_vote_submit" value="vote"/>
