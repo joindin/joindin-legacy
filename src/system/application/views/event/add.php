@@ -136,7 +136,7 @@ echo '<h2>'.$title.'</h2>';
 
     <div class="row">
         <label for="geo">Event Location</label>
-        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+        <script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false"></script>
         <table cellpadding="0" cellspacing="0" border="0">
         <tr>
             <td>
