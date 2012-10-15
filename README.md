@@ -32,7 +32,7 @@ or
 
 4. Add hostname to /etc/hosts.
 
-        echo "127.0.0.1 dev.joind.in" | sudo tee -a /etc/hosts
+        echo "127.0.0.1 dev.joind.in api.dev.joind.in" | sudo tee -a /etc/hosts
 
 5. Browse to the newly provisioned development copy of joind.in.
 
