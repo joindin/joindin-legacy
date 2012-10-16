@@ -14,7 +14,7 @@ if (empty($comments)) {
     
     foreach ($comments as $k => $v) {
         if (isset($v->user_id) && $v->user_id != 0) {
-						$displayname = (empty($v->full_name)) ? $v->username : $v->full_name;
+						$displayname = (empty($v->full_name)) ? $v->uname : $v->full_name;
             $uname = '<a href="/user/view/'.$v->user_id.'">'.escape($displayname).'</a> ';
         } else { 
             $uname = '<span class="anonymous">Anonymous</span>'; 
