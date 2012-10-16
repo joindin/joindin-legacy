@@ -281,18 +281,17 @@ EOF;
 	    echo "DECODED MESSAGE:\n";
 	}
 
+	$result = null;
 	switch ($output) {
 		case 'json':
 			$result = json_decode($response, 1);
 			break;
 
 		case 'xml':
-			$result = json_decode(json_encode((array) simplexml_load_string($response)), 1);
-			//$result = simplexml_load_string($response);
-			break;
-
-		default:
-			$result = null;
+			// Note: we may not get XML back...
+			if(substr($response, 0, 5) == "<?xml") {
+				$result = json_decode(json_encode((array) simplexml_load_string($response)), 1);
+			}
 			break;
 	}
 
