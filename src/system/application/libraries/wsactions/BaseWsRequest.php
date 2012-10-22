@@ -18,7 +18,7 @@ class BaseWsRequest {
         // Check for a valid login
         if (isset($xml->auth->user) && isset($xml->auth->pass)) {
             // Check to see if they're a valid user
-            if (!$this->CI->user_model->validate($xml->auth->user, $xml->auth->pass, true)) {
+            if (!$this->CI->user_model->validate((string)$xml->auth->user, (string)$xml->auth->pass, true)) {
                 // Invalid login! fail!
                 return false;
             } else { return true; }

@@ -24,7 +24,7 @@ class Validate extends BaseWsRequest {
         $ret = array('msg'=>'Invalid user');;
         if (isset($this->xml->action->uid) && isset($this->xml->action->pass)) {
             // check to see if they're a valid user
-            if ($this->CI->user_model->validate($this->xml->action->uid, $this->xml->action->pass, true)) {
+            if ($this->CI->user_model->validate((string)$this->xml->action->uid, (string)$this->xml->action->pass, true)) {
                 $ret = array('msg'=>'success');;
             }
         }
