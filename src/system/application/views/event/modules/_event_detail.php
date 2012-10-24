@@ -14,15 +14,25 @@ if ($event_detail->event_cfp_start>=time()) {
 }
 
 ?>
+<link rel="stylesheet" href="/inc/css/event_detail.css" />
+<link rel="stylesheet" href="/inc/leaflet/leaflet.css" />
+<!--[if lte IE 8]><link rel="stylesheet" href="/inc/leaflet/leaflet.ie.css" /><![endif]-->
+<script src="/inc/leaflet/leaflet.js"></script>
 
 <div class="detail">
     
     <div class="header">
-        <?php $this->load->view('event/_event-icon', array('event'=>$event_detail)); ?>
+        <div>
+            <div id="map" data-lat="<?php echo $event_detail->event_lat; ?>" data-lon="<?php echo $event_detail->event_long; ?>" data-zoom="14"></div>
+            <div class="image-container">
+                <?php $this->load->view('event/_event-icon', array('event'=>$event_detail)); ?>
+            </div>
+        </div>
     
         <div class="title">
             <div class="head">
                 <input type="hidden" name="eid" id="eid" value="<?php echo $event_detail->ID; ?>"/>
+                <div class="event-detail">
                 <h1><?php echo escape($event_detail->event_name)?> <?php echo (($event_detail->pending==1) ? '(Pending)':'')?></h1>
                 <p class="info">
                     <strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event_detail->event_start, $event_detail->event_tz_cont.'/'.$event_detail->event_tz_place, 'd.M.Y'); ?></strong>
@@ -35,7 +45,12 @@ if ($event_detail->event_cfp_start>=time()) {
                         <br/><strong>Private Event</strong>
                     <?php endif; ?>
                 </p>
-                
+                </div>
+                <script type="text/javascript">
+                    jQuery(function($) {
+                        $('#map').joindIn_map();
+                    });
+                </script>
                 <p class="opts">
                 <?php 
                 /*
