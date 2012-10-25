@@ -1,0 +1,10 @@
+API V1 Tester
+
+This command line script enables you to test the v1 API.
+
+Help is included wihtin the script, so to see which commands are
+available, just type:
+
+$ php apiv1_test.php
+
+Edit the top of the file to set URL, username and password.
