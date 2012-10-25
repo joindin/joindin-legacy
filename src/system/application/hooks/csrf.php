@@ -71,7 +71,6 @@ class CSRF_Protection
             // is this an API request?
             if ( strpos($_SERVER['PATH_INFO'], '/api') === 0) {
                     // API call
-                    $this->CI->session->set_userdata(self::$token_name, FALSE);
                     return;
             }
 
