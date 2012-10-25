@@ -19,10 +19,10 @@ class CSRF_Protection
     private static $token_name = 'hash';
 
     /**
-     * Stores the token 
-     * @var string
+     * Stores a list of tokens 
+     * @var array
      */
-    private static $token;
+    private static $tokens = array();
 
     // -----------------------------------------------------------------------------------
 
@@ -43,18 +43,23 @@ class CSRF_Protection
         // Load session library if not loaded
         $this->CI->load->library('session');
 
-        if ($this->CI->session->userdata(self::$token_name) === FALSE)
-        {
-            // Generate a token and store it on session, since old one appears to have expired.
-            self::$token = md5(uniqid() . microtime() . rand());
+        // Extract the list of tokens we currently know about
+        self::$tokens = $this->CI->session->userdata(self::$token_name);
+        if (!is_array(self::$tokens)) {
+            self::$tokens = array();
+        }
 
-            $this->CI->session->set_userdata(self::$token_name, self::$token);
+        // We only want to keep the most recent tokens
+        if (count(self::$tokens) > 5) {
+            array_pop(self::$tokens);
         }
-        else
-        {
-            // Set it to local variable for easy access
-            self::$token = $this->CI->session->userdata(self::$token_name);
-        }
+
+        // Generate a new token for this request, add to the list
+        $token = md5(uniqid() . microtime() . rand());
+        array_unshift(self::$tokens, $token);
+
+        // Store to the session
+        $this->CI->session->set_userdata(self::$token_name, self::$tokens);
     }
 
     /**
@@ -70,20 +75,19 @@ class CSRF_Protection
 
             // is this an API request?
             if ( strpos($_SERVER['PATH_INFO'], '/api') === 0) {
-                    // API call
+                    // API call - don't expect a CSRF token
                     return;
             }
 
             // Is the token field set and valid?
             $posted_token = $this->CI->input->post(self::$token_name);
-            if ($posted_token === FALSE || $posted_token != $this->CI->session->userdata(self::$token_name))
+            if ($posted_token === FALSE || 
+                !in_array($posted_token, $this->CI->session->userdata(self::$token_name)))
             {
                 // Invalid request, send error 400.
                 show_error('Request was invalid. Tokens did not match.', 400);
             }
         }
-        // clear token, so that we get a new one for the next request
-        $this->CI->session->set_userdata(self::$token_name, FALSE);
     }
 
     /**
@@ -111,7 +115,7 @@ class CSRF_Protection
 
         // Inject into any forms that use POST
         $output = preg_replace('/(<(form|FORM)[^>]*(method|METHOD)="(post|POST)"[^>]*>)/',
-                               '$0<input type="hidden" name="' . self::$token_name . '" value="' . self::$token . '">',
+                               '$0<input type="hidden" name="' . self::$token_name . '" value="' . self::$tokens[0] . '">',
                                $output);
 
         $this->CI->output->_display($output);
