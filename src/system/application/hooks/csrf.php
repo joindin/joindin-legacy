@@ -45,6 +45,9 @@ class CSRF_Protection
 
         // Extract the list of tokens we currently know about
         self::$tokens = $this->CI->session->userdata(self::$token_name);
+        if (!is_array(self::$tokens)) {
+            self::$tokens = array();
+        }
 
         // We only want to keep the most recent tokens
         if (count(self::$tokens) > 5) {
