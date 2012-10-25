@@ -29,7 +29,8 @@ class Rmadmin extends BaseWsRequest {
 
             $udata=$this->CI->um->getUserByUsername((string)$user);
             if (!empty($udata)) { 
-                $user=$udata[0]->ID;
+                $user_id = $udata[0]->ID;
+                $username = $udata[0]->username;
             } else { 
                 return false; 
             }
@@ -39,9 +40,8 @@ class Rmadmin extends BaseWsRequest {
             
             // Event ID must be an integer
             if (!is_int($eid)) { return array('output'=>'json','data'=>array('items'=>array('msg'=>'Invalid Event ID!'))); }
-            
-            $is_evt_admin = $this->CI->uam->hasPerm($user, $eid, $rtype);
-            $is_site_admin= $this->CI->um->isSiteAdmin($user);
+            $is_evt_admin = $this->CI->uam->hasPerm($user_id, $eid, $rtype);
+            $is_site_admin= $this->CI->um->isSiteAdmin($username);
             
             if ($is_site_admin || $is_evt_admin) {
                 return true;
