@@ -91,20 +91,6 @@ class CSRF_Protection
     }
 
     /**
-     * Check an API request's public key is valid
-     *
-     * Only useful for requests from the website; external users are keyless
-     *
-     * @return boolean
-     */
-    protected function checkPublicKey()
-    {
-        $this->CI->load->library('wsactions/BaseWsRequest');
-        $baseWsRequest = new BaseWsRequest();
-        return $baseWsRequest->checkPublicKey();
-    }
-
-    /**
      * This injects hidden tags on all POST forms with the csrf token.
      *
      * @return void
