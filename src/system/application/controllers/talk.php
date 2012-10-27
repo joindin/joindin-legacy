@@ -589,7 +589,13 @@ class Talk extends Controller
             }
         }
 
-        $rating_rule = ($cl && $cl[0]->userid == $currentUserId || ($already_rated)) ? null : 'required';
+        // build array of userIds with claim to this talk
+        $claim_user_ids = array();
+        foreach ($cl as $claim_item) {
+            $claim_user_ids[] = $claim_item->userid;
+        }
+
+        $rating_rule = ($cl && in_array($currentUserId , $claim_user_ids) || ($already_rated)) ? null : 'required';
 
         $rules = array('rating' => $rating_rule);
 
