@@ -750,14 +750,6 @@ class Talk extends Controller
                     }
                 }
 
-        if (isset($this->validation->comment)) {
-            // because CI has decided to embed htmlspecialchars in the form helper...
-            $this->validation->translated_comment = htmlspecialchars_decode($this->validation->comment);
-            $this->validation->translated_comment = str_replace(array("&#39;", "&quot;"), array("'", '"'), $this->validation->translated_comment);    
-        } else {
-            $this->validation->translated_comment = '';
-        }
-        
         $arr = array(
             'detail'         => $talk_detail[0],
             'comments'       => (isset($talk_comments['comment']))
