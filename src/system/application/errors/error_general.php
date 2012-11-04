@@ -1,3 +1,14 @@
+<?php
+/**
+ * Standard codeigniter error view for general error conditions
+ *
+ * @category  Error
+ * @package   View
+ * @copyright 2009 - 2012 Joind.in
+ * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
+ * @link      http://github.com/joindin/joind.in
+ */
+?>
 <html>
 <head>
 <title>Error</title>
