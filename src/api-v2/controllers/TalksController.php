@@ -32,6 +32,9 @@ class TalksController extends ApiController {
             if($talk_id) {
                 $mapper = new TalkMapper($db, $request);
                 $list = $mapper->getTalkById($talk_id, $verbose);
+                if(false === $list) {
+                    throw new Exception('Talk not found', 404);
+                }
             } else {
                 // listing makes no sense
                 return false;
