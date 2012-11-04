@@ -330,6 +330,7 @@
 
     <div class="row">
         <label for="event_desc">Event Description *</label>
+        <div>(In <em>English</em>, with optional alternative translation)</div>
         <?php
         echo form_textarea(array(
             'name'	=> 'event_desc',
