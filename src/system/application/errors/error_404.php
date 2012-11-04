@@ -1,4 +1,14 @@
-<?php header("HTTP/1.1 404 Not Found"); ?>
+<?php
+/**
+ * Standard codeigniter error view
+ *
+ * @category  Error
+ * @package   View
+ * @copyright 2009 - 2012 Joind.in
+ * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
+ * @link      http://github.com/joindin/joind.in
+ */
+header("HTTP/1.1 404 Not Found"); ?>
 <html>
 <head>
 <title>404 Page Not Found</title>
