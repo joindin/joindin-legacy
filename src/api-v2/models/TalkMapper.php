@@ -78,8 +78,10 @@ class TalkMapper extends ApiMapper {
         $response = $stmt->execute(array("talk_id" => $talk_id));
         if($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $retval = $this->transformResults($results, $verbose);
-            return $retval;
+            if ($results) {
+                $retval = $this->transformResults($results, $verbose);
+                return $retval;
+            }
         }
         return false;
     }
