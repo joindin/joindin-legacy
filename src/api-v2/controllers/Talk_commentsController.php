@@ -22,6 +22,9 @@ class Talk_commentsController extends ApiController {
         $mapper = new TalkCommentMapper($db, $request);
         if($comment_id) {
             $list = $mapper->getCommentById($comment_id, $verbose);
+            if(false === $list) {
+                throw new Exception('Comment not found', 404);
+            }
             return $list;
         } 
 
