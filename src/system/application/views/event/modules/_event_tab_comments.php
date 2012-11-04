@@ -75,7 +75,7 @@ if (time()<$adv_mo): ?>
         $arr = array(
                 'name'=>'event_comment',
                 'id'=>'event_comment',
-                'value'=>$this->validation->event_comment,
+                'value'=>translate_htmlspecialchars($this->validation->event_comment),
                 'cols'=>40,
                 'rows'=>10
         );

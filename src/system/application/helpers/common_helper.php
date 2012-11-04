@@ -219,4 +219,15 @@ JSCRIPT;
         return $javascript;
     }
 }
+
+/**
+ * Remove htmlspecialchars from a string, used for comments
+ * Because CI has decided to embed htmlspecialchars in the form helper...
+ */
+function translate_htmlspecialchars($comment)
+{
+    $comment = htmlspecialchars_decode($comment);
+    $comment = str_replace(array("&#39;", "&quot;"), array("'", '"'), $comment);
+    return $comment;
+}
 // --------------------------------------------------------------------

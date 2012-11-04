@@ -43,7 +43,7 @@
     echo form_textarea(array(
         'name'	=> 'comment',
         'id'	=> 'comment',
-        'value'	=> $this->validation->translated_comment,
+        'value'	=> translate_htmlspecialchars($this->validation->comment),
         'cols'	=> 40,
         'rows'	=> 10
     ));
