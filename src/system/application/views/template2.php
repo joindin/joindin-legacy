@@ -20,7 +20,7 @@ $title[] = $this->config->item('site_name');
     <script type="text/javascript" src="/inc/js/jquery.js"></script>
     <script type="text/javascript" src="/inc/js/jquery.pause.js"></script>
     <script type="text/javascript" src="/inc/js/jquery-ui.js"></script>
-    <script type="text/javascript" src="/inc/js/site.js" async></script>
+    <script type="text/javascript" src="/inc/js/site.js"></script>
     <script type="text/javascript" src="/inc/js/notifications.js" async></script>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <?php
