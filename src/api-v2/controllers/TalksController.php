@@ -37,7 +37,7 @@ class TalksController extends ApiController {
                 }
             } else {
                 // listing makes no sense
-                return false;
+                throw new Exception('Generic talks listing not supported', 405);
             }
         }
 
