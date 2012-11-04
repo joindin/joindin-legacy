@@ -44,6 +44,9 @@ class EventsController extends ApiController {
             $mapper = new EventMapper($db, $request);
             if($event_id) {
                 $list = $mapper->getEventById($event_id, $verbose);
+                if(false === $list) {
+                    throw new Exception('Event not found', 404);
+                }
             } else {
                 // check if we're filtering
                 if(isset($request->parameters['filter'])) {
