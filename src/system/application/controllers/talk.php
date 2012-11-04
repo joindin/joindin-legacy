@@ -579,7 +579,7 @@ class Talk extends Controller
             }
         }
 
-        $cl = ($r = $this->talks_model->talkClaimDetail($id)) ? $r : false;
+        $cl = ($r = $this->talks_model->talkClaimDetail($id)) ? $r : array();
 
         $already_rated = false;
         if($this->user_model->isAuth()) {
@@ -595,7 +595,7 @@ class Talk extends Controller
             $claim_user_ids[] = $claim_item->userid;
         }
 
-        $rating_rule = ($cl && in_array($currentUserId , $claim_user_ids) || ($already_rated)) ? null : 'required';
+        $rating_rule = (in_array($currentUserId, $claim_user_ids) || ($already_rated)) ? null : 'required';
 
         $rules = array('rating' => $rating_rule);
 
