@@ -114,6 +114,10 @@ I also found that I needed:
 
         export NODE_PATH=/usr/local/lib/node_modules
 
+You should set the URL that the tests run against to be your local installation:
+
+        export JOINDIN_API_BASE_URL=http://api.joindin.localhost
+
 Then run the tests by going to `/src/tests/api_tests` and running:
 
         jasmine-node newapi_spec.js

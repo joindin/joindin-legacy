@@ -4,8 +4,8 @@ var frisby = require('frisby');
 var util   = require('util');
 
 var baseURL;
-if (typeof process.env.API_BASE_URL != 'undefined') {
-	baseURL = process.env.API_BASE_URL;
+if (typeof process.env.JOINDIN_API_BASE_URL != 'undefined') {
+	baseURL = process.env.JOINDIN_API_BASE_URL;
 } else {
 	baseURL = "http://api.dev.joind.in:8080";
 }
