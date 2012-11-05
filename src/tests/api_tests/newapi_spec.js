@@ -107,6 +107,20 @@ frisby.create('Non-existent event comment')
   .expectHeader("content-type", "application/json; charset=utf8")
 .toss();
 
+frisby.create('Non-existent talk comment')
+  .get(baseURL + "/v2.1/talk_comments/100100100")
+  .expectStatus(404)
+  .expectHeader("content-type", "application/json; charset=utf8")
+  .expectJSON(["Comment not found"])
+  .toss();
+
+frisby.create('Non-existent user')
+  .get(baseURL + "/v2.1/users/100100100")
+  .expectStatus(404)
+  .expectHeader("content-type", "application/json; charset=utf8")
+  .expectJSON(["User not found"])
+  .toss();
+
 
 function checkDate(fieldValue) {
   dateVal = new Date(fieldValue);
