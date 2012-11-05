@@ -89,6 +89,39 @@ frisby.create('Initial discovery')
   })
 .toss();
 
+frisby.create('Non-existent event')
+  .get(baseURL + '/v2.1/events/100100')
+  .expectStatus(404)
+  .expectHeader("content-type", "application/json; charset=utf8")
+.toss();
+
+frisby.create('Non-existent talk')
+  .get(baseURL + '/v2.1/talks/100100100')
+  .expectStatus(404)
+  .expectHeader("content-type", "application/json; charset=utf8")
+.toss();
+
+frisby.create('Non-existent event comment')
+  .get(baseURL + '/v2.1/event_comments/100100')
+  .expectStatus(404)
+  .expectHeader("content-type", "application/json; charset=utf8")
+.toss();
+
+frisby.create('Non-existent talk comment')
+  .get(baseURL + "/v2.1/talk_comments/100100100")
+  .expectStatus(404)
+  .expectHeader("content-type", "application/json; charset=utf8")
+  .expectJSON(["Comment not found"])
+  .toss();
+
+frisby.create('Non-existent user')
+  .get(baseURL + "/v2.1/users/100100100")
+  .expectStatus(404)
+  .expectHeader("content-type", "application/json; charset=utf8")
+  .expectJSON(["User not found"])
+  .toss();
+
+
 function checkDate(fieldValue) {
   dateVal = new Date(fieldValue);
   expect(getObjectClass(dateVal)).toBe('Date');

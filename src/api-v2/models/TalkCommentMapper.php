@@ -73,8 +73,10 @@ class TalkCommentMapper extends ApiMapper {
             ));
         if($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $retval = $this->transformResults($results, $verbose);
-            return $retval;
+            if ($results) {
+                $retval = $this->transformResults($results, $verbose);
+                return $retval;
+            }
         }
         return false;
     }
