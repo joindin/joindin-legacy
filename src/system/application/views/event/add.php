@@ -136,7 +136,10 @@ echo '<h2>'.$title.'</h2>';
 
     <div class="row">
         <label for="geo">Event Location</label>
-        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+        <link rel="stylesheet" href="/inc/leaflet/leaflet.css" />
+        <!--[if lte IE 8]><link rel="stylesheet" href="/inc/leaflet/leaflet.ie.css" />< ![endif]-->
+        <script src="/inc/leaflet/leaflet.js"></script>
+
         <table cellpadding="0" cellspacing="0" border="0">
         <tr>
             <td>
@@ -176,7 +179,8 @@ echo '<h2>'.$title.'</h2>';
                         echo form_input($attr); 
                     ?>
                     <button type="button" onclick="addr_search();">Search</button>
-                    <br/><br/><br/>
+                    <br/><br/>
+                    <div id="results"></div>
                     <table cellpadding="0" cellspacing="0" border="0">
                     <tr>
                         <td style="padding-right:8px"><b>Latitude</b></td>
@@ -192,7 +196,7 @@ echo '<h2>'.$title.'</h2>';
             </tr>
             </table>
             
-            <script type="text/javascript" src="/inc/js/event_google_map.js"></script>
+            <script type="text/javascript" src="/inc/js/event_osm_map.js"></script>
             </td>
         </tr>
         </table>
