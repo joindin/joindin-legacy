@@ -699,8 +699,6 @@ a {
 
 #ctn .main .detail .links,
 #ctn .main .detail .hashtags {
-	float: left;
-	width: 40%;
 	padding-right: 10px;
 	font-size: 85%;
 }

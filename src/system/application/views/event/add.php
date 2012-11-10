@@ -154,10 +154,10 @@ echo '<h2>'.$title.'</h2>';
             <input type="hidden" name="map_latitude" id="map_latitude" value="<?php echo $lat; ?>"/>
             <input type="hidden" name="map_longitude" id="map_longitude" value="<?php echo $long; ?>"/>
             <input type="hidden" name="map_zoom" id="map_zoom" value="<?php echo $zoom; ?>"/>
-            
+
             <input type="hidden" name="event_lat" id="event_lat" value="<?php echo $lat; ?>"/>
             <input type="hidden" name="event_long" id="event_long" value="<?php echo $long; ?>"/>
-            
+
             <table cellpadding="0" cellspacing="0" border="0">
             <tr>
                 <td style="padding-right:5px">
@@ -167,11 +167,11 @@ echo '<h2>'.$title.'</h2>';
                     Address Search:<br/>
                     <?php 
                         $attr = array(
-                            'id' 	=> 'addr',
-                            'name' 	=> 'addr',
-                            'size'	=> 10,
-                            'value'	=> $this->validation->addr,
-                            'style'	=> 'width: 250px'
+                            'id'       => 'addr',
+                            'name'     => 'addr',
+                            'size'     => 10,
+                            'value'    => $this->validation->addr,
+                            'style'    => 'width: 250px'
                         );
                         echo form_input($attr); 
                     ?>

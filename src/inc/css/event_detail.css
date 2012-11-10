@@ -1,25 +1,12 @@
 #map {
-	height: 100px;
-	width: 79%;
-	float: right;
+	height: 200px;
+	width: 350px;
 }
 
-div.title {
-	margin-top: 10px;
-	clear: both;
-}
-
-div.image-container {
-	width: 20%;
+div.desc-normal {
 	float: left;
 }
 
-div.image-container .img {
-	margin: 0 auto;
-	float: none;
-}
-
-#ctn .main .detail .header div.image-container .img {
-	margin: 0 auto;
-	float: none;
+div#desc-map {
+	float: right;
 }

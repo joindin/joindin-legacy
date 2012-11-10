@@ -22,12 +22,7 @@ if ($event_detail->event_cfp_start>=time()) {
 <div class="detail">
     
     <div class="header">
-        <div>
-            <div id="map" data-lat="<?php echo $event_detail->event_lat; ?>" data-lon="<?php echo $event_detail->event_long; ?>" data-zoom="14"></div>
-            <div class="image-container">
-                <?php $this->load->view('event/_event-icon', array('event'=>$event_detail)); ?>
-            </div>
-        </div>
+        <?php $this->load->view('event/_event-icon', array('event'=>$event_detail)); ?>
     
         <div class="title">
             <div class="head">
@@ -46,11 +41,6 @@ if ($event_detail->event_cfp_start>=time()) {
                     <?php endif; ?>
                 </p>
                 </div>
-                <script type="text/javascript">
-                    jQuery(function($) {
-                        $('#map').joindIn_map();
-                    });
-                </script>
                 <p class="opts">
                 <?php 
                 /*
@@ -85,6 +75,7 @@ if ($event_detail->event_cfp_start>=time()) {
         <?php echo auto_p(auto_link(escape($event_detail->event_desc))); ?>
         <hr/>
         
+        <div class="desc-normal">
     <b>Your host(s):</b><br/>
     <table cellpadding="5" cellspacing="0" border="0">
     <tr>
@@ -132,7 +123,6 @@ if ($event_detail->event_cfp_start>=time()) {
                 </ul>
             </div>
         <?php } ?>
-            <div class="clear"></div>
         </div>
     <?php } ?>
             <?php 
@@ -161,7 +151,6 @@ if ($event_detail->event_cfp_start>=time()) {
             }
                 ?> </b> 
             </div>
-            <div class="clear"></div>
             <?php }
             if (!empty($tags)) {
                 ?>
@@ -174,8 +163,17 @@ if ($event_detail->event_cfp_start>=time()) {
                 echo 'tagged: '.implode(',', $tagList);
                 ?>
                 </div>
-                <div class="clear"></div>
             <?php }
             ?>
+        </div>
+        <div id="desc-map">
+            <div id="map" data-lat="<?php echo $event_detail->event_lat; ?>" data-lon="<?php echo $event_detail->event_long; ?>" data-zoom="14"></div>
+            <script type="text/javascript">
+                jQuery(function($) {
+                    $('#map').joindIn_map();
+                });
+            </script>
+        </div>
+        <div class="clear"></div>
     </div>
 </div>
