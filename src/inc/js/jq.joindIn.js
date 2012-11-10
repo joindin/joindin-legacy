@@ -25,7 +25,7 @@
             if (zoomLevel > 18) {
                 zoomLevel = 18;
             }
-            var map = new L.Map(this.attr('id'), {zoomControl: false});
+            var map = new L.Map(this.attr('id'), {zoomControl: true});
             
             var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                 osmAttribution = 'Map data &copy; 2012 <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
