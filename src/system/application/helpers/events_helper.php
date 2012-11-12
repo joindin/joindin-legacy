@@ -172,3 +172,4 @@ function buildTalkStats($talks)
         'rating_avg' => $avg
     );
 }
+

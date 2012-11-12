@@ -78,4 +78,3 @@ function user_is_admin_event($eventId)
     return (bool)$CI->user_model->isAdminEvent($eventId);
 }
 
-?>
