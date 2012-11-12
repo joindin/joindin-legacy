@@ -94,6 +94,8 @@ or
 ## Other Resources
 
 * The main website http://joind.in
+* Wiki: https://github.com/joindin/joind.in/wiki
+** How to contribute page of wiki: https://github.com/joindin/joind.in/wiki/How-to-Contribute-Code
 * Issues list: http://joindin.jira.com/ (good bug reports ALWAYS welcome!)
 * CI Environment: lots of output and information about tests, deploys etc: http://jenkins.joind.in
 * Community: We hang out on IRC, pop in with questions or comments! #joind.in on Freenode
