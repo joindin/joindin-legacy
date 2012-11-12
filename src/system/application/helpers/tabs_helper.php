@@ -522,7 +522,7 @@ class joindIn_Tab
             $headerFormat, 
             $classText, 
             $this->_baseURL.$this->_url, 
-            (!empty($this->_parentId)?$this->_parentId : $this->_id), 
+            (!empty($this->_parentId) ? $this->_parentId : $this->_id), 
             $this->_id, 
             $this->_caption
         );

@@ -262,4 +262,3 @@ function isTalkClaimFull($claim_data)
     return $isFull;
 }
 
-?>

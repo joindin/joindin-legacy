@@ -81,7 +81,7 @@ function buildSecFile($reqkey)
  */
 function checkReqKey($seckey, $reqkey)
 {
-    $CI=&get_instance();
+    $CI     = &get_instance();
     $dir	= $CI->config->item('token_dir');
     $p		= $dir.'/'.$seckey.'.tok';
     if (is_file($p) ) {
@@ -91,4 +91,4 @@ function checkReqKey($seckey, $reqkey)
         return false;
     }
 }
-?>
+

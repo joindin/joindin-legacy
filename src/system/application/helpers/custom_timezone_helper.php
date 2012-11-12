@@ -116,4 +116,3 @@ EOT;
     return $str;
 }
 
-?>

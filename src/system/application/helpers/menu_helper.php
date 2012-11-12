@@ -117,4 +117,3 @@ function menu_pagetitle()
     return $title;
 }
 
-?>

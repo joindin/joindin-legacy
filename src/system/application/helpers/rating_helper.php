@@ -71,4 +71,3 @@ function rating_form($name, $value = null, $selector = null, $required = true)
     return $str;
 }
 
-?>
