@@ -16,7 +16,7 @@
  * 
  * @param object  $talk_detail The detail information of the talk
  * @param array   $talk_claims Array of claims
- * @param integer $ftalk       Identifier?
+ * @param integer &$ftalk      Identifier?
  *
  * @return array Holding links to speaker pages
  */
@@ -115,16 +115,17 @@ function splitCommentTypes($talk_comments, $admin, $user_id)
  *
  * @return string List of all speakers of this talk
  */
-function buildClaimedLinks($speakers, $claim_detail) {
-    
-    $speaker_data	= array();
-    $speaker_links	= array();
+function buildClaimedLinks($speakers, $claim_detail) 
+{
+    $speaker_data  = array();
+    $speaker_links = array();
     
     // find ones that have a speaker ID
     foreach ($speakers as $speakerKey => $speaker) {
         if (isset($speaker->speaker_id)) {
             // we know this one is right
-            $speaker_links[]='<a href="/user/view/'.$speaker->speaker_id.'">'.$speaker->speaker_name.'</a>';
+            $speaker_links[] = '<a href="/user/view/'.$speaker->speaker_id.
+                '">'.$speaker->speaker_name.'</a>';
             unset($speakers[$speakerKey]);
         }
     }
@@ -136,27 +137,43 @@ function buildClaimedLinks($speakers, $claim_detail) {
     foreach ($speakers as $speaker) {
         $name=$speaker->speaker_name;
         if (array_key_exists($name, $speaker_data)) {
-            $speaker_links[]='<a href="/user/view/'.$speaker_data[$name].'">'.$name.'</a>';
-        } else { $speaker_links[]=$name; }
+            $speaker_links[] = '<a href="/user/view/'.$speaker_data[$name].
+                '">'.$name.'</a>';
+        } else {
+            $speaker_links[] = $name; 
+        }
     }
     
     //Check the claim...if there's only one claim, assign no matter what
     if (count($speakers)==1 && count($claim_detail)) {
-        $speaker_links	= array();
-        $speaker_links[]= '<a href="/user/view/'.$claim_detail[0]->uid.'">'.$speakers[0]->speaker_name.'</a>';
+        $speaker_links	 = array();
+        $speaker_links[] = '<a href="/user/view/'.$claim_detail[0]->uid
+            .'">'.$speakers[0]->speaker_name.'</a>';
     }
 
     return implode(', ', $speaker_links);
 }
 
-function buildSpeakerImg($speakers) {
-    $ci=&get_instance();
+/**
+ * Builds array of gravatar images for provided speakers
+ *
+ * @param array $speakers Array of speakers
+ *
+ * @return array
+ */
+function buildSpeakerImg($speakers) 
+{
+    $ci = &get_instance();
     $ci->load->library('gravatar');	
-    $user_images=array();
+    $user_images = array();
     
     foreach ($speakers as $speaker) {
         if (!empty($speaker->speaker_id) && $speaker->status!='pending') {
-            $user_images[$speaker->speaker_id]=$ci->gravatar->displayUserImage($speaker->speaker_id, null, 50);
+            $user_images[$speaker->speaker_id] = $ci->gravatar->displayUserImage(
+                $speaker->speaker_id, 
+                null, 
+                50
+            );
         }
     }
     return $user_images;
@@ -229,6 +246,10 @@ function talk_listDecorateNowNext($talks)
 
 /**
  * Check the current speaker data to see if any have no  speaker linked
+ *
+ * @param array $claim_data Speaker claim data to look at
+ *
+ * @return boolean
  */
 function isTalkClaimFull($claim_data)
 {

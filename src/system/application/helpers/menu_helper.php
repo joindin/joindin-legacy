@@ -50,9 +50,20 @@ function menu_set_current_area()
  * Collects the data necessary for the sidebar and returns it in the
  * required format.
  *
- * @param string [title]   Title
- * @param string [content] Content
- * @param string [...]     Items to display
+ * Function accepts arguments and builds up an array based on how many 
+ * arguments are passed in. Each time the function is called it will 
+ * return all the previous array elements along with a new array element
+ * which will be built based on the following logic:
+ *
+ * Number of arguments:
+ * 3 Args: First argument is title, second is content, third is included
+ *      in the array but will be a numbered index
+ * 2 Args: First is title, second is content
+ * 1 Arg or more than 3: First argument is content, all other parts are
+ *      ignored.
+ *
+ * @todo This method needs to be refactored as it requires more in explanation
+ * to understand what it does than there is code that does it.
  *
  * @return array
  */
@@ -90,10 +101,10 @@ function menu_sidebar()
 
 /**
  * Sets and gets the title of the page.
+ * Function looks for an argument which will be appended to an array which
+ * is returned.
  *
- * @param [title] Title of this page.
- *
- * @return string
+ * @return array
  */
 function menu_pagetitle()
 {

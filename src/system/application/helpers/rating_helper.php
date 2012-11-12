@@ -16,13 +16,14 @@
  * Get the correct image for the rating
  *
  * @param integer $rating The rating of the object
- * @param string  $scale  Whether to draw the thumbs "small" or "normal" (default: normal)
+ * @param string  $scale  Whether to draw the thumbs "small" or "normal"
+ *                        (default: normal)
  * 
  * @return string The correct rating image
  */
 function rating_image($rating, $scale="normal")
 {
-    if($scale == "small") {
+    if ($scale == "small") {
         $width = 80;
         $height = 14;
     } else {

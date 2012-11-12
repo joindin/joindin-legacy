@@ -99,10 +99,12 @@ EOT;
     $str .= <<<EOT
                 case "":
                     $(placeSelect).hide();
-                    placeSelect.options[placeSelect.options.length] = new Option("<= Please choose a continent first");
+                    placeSelect.options[placeSelect.options.length] = 
+                        new Option("<= Please choose a continent first");
                     break;
                 default:
-                    notifications.alert('Unknown continent, please select a valid continent');
+                    notifications.alert('Unknown continent, please '+
+                        'select a valid continent');
                     break;
             }
         }

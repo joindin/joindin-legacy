@@ -40,7 +40,7 @@ function escape($str)
  *
  * When you get the result, you'll need to run a saveXML() on it.
  *
- * @param DOMDocument $doc    The document to append to.
+ * @param DOMDocument &$doc   The document to append to.
  * @param array       $data   An array containing elements to append
  * @param DOMDocument $append The data to append
  *
@@ -182,8 +182,16 @@ function escape_allowing_presentation_tags($str)
  * @param	year
  * @return	string
  */
-if (! function_exists('form_datepicker'))
-{
+if (! function_exists('form_datepicker')) {
+    /**
+     * Returns the javascript required for a datepicker for a form
+     *
+     * @param string $day   Day to select initially in datepicker
+     * @param string $month Month to select initially in datepicker
+     * @param string $year  Year to select initially in datepicker
+     *
+     * @return string
+     **/
     function form_datepicker($day, $month, $year)
     {
         $javascript = <<< JSCRIPT
@@ -195,7 +203,8 @@ if (! function_exists('form_datepicker'))
             var mo=$('select[name={$month}]');
             var da=$('select[name={$day}]');
             var b4show = function(input, dpicker) {
-                var dte = '' + padstring(mo.val(),2)+'-'+padstring(da.val(),2)+'-'+yr.val();
+                var dte = '' + padstring(mo.val(),2)
+                    +'-'+padstring(da.val(),2)+'-'+yr.val();
                 $(input).val(dte);
             };
             var selectdte = function(dateText, inst) {
@@ -223,6 +232,10 @@ JSCRIPT;
 /**
  * Remove htmlspecialchars from a string, used for comments
  * Because CI has decided to embed htmlspecialchars in the form helper...
+ *
+ * @param string $comment Comment to decode 
+ *
+ * @return string
  */
 function translate_htmlspecialchars($comment)
 {
