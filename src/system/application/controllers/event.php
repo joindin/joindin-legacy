@@ -81,8 +81,8 @@ class Event extends Controller
         if (isset($id[0]->ID)) {
             redirect('event/view/' . $id[0]->ID);
         } else {
-        $this->template->write_view('content', 'error/404', array());
-        $this->template->render();
+            $this->template->write_view('content', 'error/404', array());
+            $this->template->render();
         }
     }
 
@@ -90,16 +90,22 @@ class Event extends Controller
      * Helper method to display a selection of special lists (all, hot,
      * upcoming, past).
      *
-     * @param string $type    Type of list to show, may be either hot, upcoming,
-     *                        past. Anything else will result in all events
-     *                        being shown.
-     * @param bool   $pending Flag indicating whether to show pending or active
-     *                        events.
+     * @param string $type         Type of list to show, may be either hot,
+     *                             upcoming, past. Anything else will result 
+     *                             in all events being shown.
+     * @param bool   $pending      Flag indicating whether to show pending 
+     *                             or active events.
+     * @param int    $per_page     Number of events per page
+     * @param int    $current_page Current page to display
      *
      * @return void
      */
-    function _runList($type, $pending = false, $per_page = null, $current_page = null)
-    {
+    function _runList(
+        $type, 
+        $pending = false, 
+        $per_page = null, 
+        $current_page = null
+    ) {
         //$prefs = array(
         //    'show_next_prev' => TRUE, 'next_prev_url' => '/event'
         //);
@@ -119,7 +125,8 @@ class Event extends Controller
             $events = $this->event_model->getUpcomingEvents(null);
             break;
         case 'past':
-            $events = $this->event_model->getPastEvents(null, $per_page, $current_page);
+            $events = $this->event_model
+                ->getPastEvents(null, $per_page, $current_page);
             break;
         case 'pending':
             $events = $this->event_model->getEventDetail(
@@ -148,23 +155,27 @@ class Event extends Controller
         $reqkey = buildReqKey();
 
         $arr = array(
-            'type'   		=> $type,
-            'events' 		=> $events,
-            'month'  		=> null,
-            'day'    		=> null,
-            'year'   		=> null,
-            'all'    		=> true,
-            'reqkey' 		=> $reqkey,
-            'seckey' 		=> buildSecFile($reqkey),
-            'total_count' 	=> $total_count,
-            'current_page' 	=> $current_page,
-            'view_type'		=> $type
-            //'admin'	 =>($this->user_model->isAdminEvent($id)) ? true : false
+            'type'         => $type,
+            'events'       => $events,
+            'month'        => null,
+            'day'          => null,
+            'year'         => null,
+            'all'          => true,
+            'reqkey'       => $reqkey,
+            'seckey'       => buildSecFile($reqkey),
+            'total_count'    => $total_count,
+            'current_page'    => $current_page,
+            'view_type'      => $type
+            //'admin'    =>($this->user_model->isAdminEvent($id)) ? true : false
         );
         $this->template->write_view('content', 'event/main', $arr, true);
 
-        $events 	= $this->event_model->getCurrentCfp();
-        $this->template->parse_view('sidebar2','event/_event-cfp-sidebar', array('events'=>$events));
+        $events = $this->event_model->getCurrentCfp();
+        $this->template->parse_view(
+            'sidebar2',
+            'event/_event-cfp-sidebar',
+            array('events'=>$events)
+        );
 
         $this->template->render();
     }
@@ -224,6 +235,8 @@ class Event extends Controller
 
     /**
      * Displays an overview of all past events.
+     *
+     * @param unknown $current_page Current page of event display
      *
      * @return void
      */
@@ -287,15 +300,15 @@ class Event extends Controller
         $this->load->library('validation');
         $this->load->library('timezone');
         $this->load->model('event_model');
-        $this->load->model('tags_events_model','tagsEvents');
+        $this->load->model('tags_events_model', 'tagsEvents');
 
         $config = array(
-          'upload_path'   => $_SERVER['DOCUMENT_ROOT'] . '/inc/img/event_icons',
-          'allowed_types' => 'gif|jpg|png',
-          'max_size'      => '100',
-          'max_width'     => '90',
-          'max_height'    => '90',
-          'max_filename'  => '23'
+            'upload_path'   => $_SERVER['DOCUMENT_ROOT'] . '/inc/img/event_icons',
+            'allowed_types' => 'gif|jpg|png',
+            'max_size'      => '100',
+            'max_width'     => '90',
+            'max_height'    => '90',
+            'max_filename'  => '23'
         );
         $this->load->library('upload', $config);
 
@@ -307,8 +320,8 @@ class Event extends Controller
             'start_mo'       => 'callback_start_mo_check',
             'end_mo'         => 'callback_end_mo_check',
             'event_stub'     => 'callback_stub_check',
-            'cfp_end_mo'	 => 'callback_cfp_end_mo_check',
-            'cfp_start_mo'	 => 'callback_cfp_start_mo_check',
+            'cfp_end_mo'    => 'callback_cfp_end_mo_check',
+            'cfp_start_mo'    => 'callback_cfp_start_mo_check',
             'cfp_url'        => 'callback_cfp_url_check',
             'tagged'         => 'callback_tagged_check'
         );
@@ -362,13 +375,16 @@ class Event extends Controller
                     $min_end_yr = date('Y', $event_detail[0]->event_end);
                 }
 
-                $this->validation->event_cfp_start = $event_detail[0]->event_cfp_start;
-                $this->validation->event_cfp_end   = $event_detail[0]->event_cfp_end;
-                $this->validation->event_cfp_url   = $event_detail[0]->event_cfp_url;
+                $this->validation->event_cfp_start 
+                    = $event_detail[0]->event_cfp_start;
+                $this->validation->event_cfp_end   
+                    = $event_detail[0]->event_cfp_end;
+                $this->validation->event_cfp_url   
+                    = $event_detail[0]->event_cfp_url;
 
                 foreach ($event_detail[0] as $k => $v) {
                     if ($k == 'event_start') {
-                        $this->validation->start_mo = $this->timezone
+                        $this->validation->start_mo  = $this->timezone
                             ->formattedEventDatetimeFromUnixtime(
                                 $v,
                                 $event_detail[0]->event_tz_cont . '/' .
@@ -382,7 +398,7 @@ class Event extends Controller
                                 $event_detail[0]->event_tz_place,
                                 'd'
                             );
-                        $this->validation->start_yr = $this->timezone
+                        $this->validation->start_yr  = $this->timezone
                             ->formattedEventDatetimeFromUnixtime(
                                 $v,
                                 $event_detail[0]->event_tz_cont . '/' .
@@ -390,7 +406,7 @@ class Event extends Controller
                                 'Y'
                             );
                     } elseif ($k == 'event_end') {
-                        $this->validation->end_mo = $this->timezone
+                        $this->validation->end_mo  = $this->timezone
                             ->formattedEventDatetimeFromUnixtime(
                                 $v,
                                 $event_detail[0]->event_tz_cont . '/' .
@@ -404,7 +420,7 @@ class Event extends Controller
                                 $event_detail[0]->event_tz_place,
                                 'd'
                             );
-                        $this->validation->end_yr = $this->timezone
+                        $this->validation->end_yr  = $this->timezone
                             ->formattedEventDatetimeFromUnixtime(
                                 $v,
                                 $event_detail[0]->event_tz_cont . '/' .
@@ -416,9 +432,9 @@ class Event extends Controller
                     }
                 }
                 $this->validation->event_private = $event_detail[0]->private;
-                $this->validation->cfp_checked =
-                        ($event_detail[0]->event_cfp_start != null
-                            && $event_detail[0]->event_cfp_end != null) ? true : false;
+                $this->validation->cfp_checked   
+                    = ($event_detail[0]->event_cfp_start != null
+                    && $event_detail[0]->event_cfp_end != null) ? true : false;
 
                 if ($this->input->post('is_cfp') == null && $id == null) {
 
@@ -427,18 +443,22 @@ class Event extends Controller
 
                 } elseif ($this->input->post('is_cfp') == '1') {
 
-                    $this->validation->cfp_checked   = true;
-                    $this->validation->event_cfp_end = mktime(
-                            0,0,0,
-                            $this->input->post('cfp_end_mo'),
-                            $this->input->post('cfp_end_day'),
-                            $this->input->post('cfp_end_yr')
+                    $this->validation->cfp_checked     = true;
+                    $this->validation->event_cfp_end   = mktime(
+                        0,
+                        0,
+                        0,
+                        $this->input->post('cfp_end_mo'),
+                        $this->input->post('cfp_end_day'),
+                        $this->input->post('cfp_end_yr')
                     );
                     $this->validation->event_cfp_start = mktime(
-                            0,0,0,
-                            $this->input->post('cfp_start_mo'),
-                            $this->input->post('cfp_start_day'),
-                            $this->input->post('cfp_start_yr')
+                        0,
+                        0,
+                        0,
+                        $this->input->post('cfp_start_mo'),
+                        $this->input->post('cfp_start_day'),
+                        $this->input->post('cfp_start_yr')
                     );
 
                 }
@@ -447,7 +467,8 @@ class Event extends Controller
             // this section only needed for edit, not add
             if ($id) {
                 // be sure that the image for the event actually exists
-                $eventIconPath = $_SERVER['DOCUMENT_ROOT'] . '/inc/img/event_icons/'.$event_detail[0]->event_icon;
+                $eventIconPath = $_SERVER['DOCUMENT_ROOT'] .
+                    '/inc/img/event_icons/'.$event_detail[0]->event_icon;
 
                 if (!is_file($eventIconPath)) {
                     $event_detail[0]->event_icon = 'none.gif';
@@ -455,20 +476,22 @@ class Event extends Controller
 
                 // Get Current Tags
                 $currentTags = $this->tagsEvents->getTags($id);
-                $ctags = array();
+                $ctags       = array();
                 foreach ($currentTags as $tag) {
                     $ctags[] = $tag->tag_value;
                 }
 
                 // Get our submitted tags
-                $tags = $this->input->post('tagged') ? $this->input->post('tagged') : $ctags;
+                $tags = $this->input->post('tagged') 
+                    ? $this->input->post('tagged') : $ctags;
 
                 // If tags is a string format it to an array
                 if (is_string($tags)) {
                     if ($tags != '' && strpos($tags, ',') === false) {
                         $tagList[] = trim($tags);
                     } else {
-                        $tagList = (strpos($tags, ',')) ? explode(',', $tags) : array();
+                        $tagList = (strpos($tags, ',')) 
+                            ? explode(',', $tags) : array();
                     }
                 } else {
                     $tagList = $tags;
@@ -476,15 +499,24 @@ class Event extends Controller
 
                 // Remove any duplicate tags
                 if (count($tagList) > 1) {
-                    function trim_tags(&$tag) {
+                    /**
+                     * Trims tags.
+                     *
+                     * @param string &$tag Tag to trim
+                     *
+                     * @return null
+                     */
+                    function trim_tags(&$tag) 
+                    {
                         $tag = trim($tag);
                     }
-                    array_walk($tagList,'trim_tags');
+                    array_walk($tagList, 'trim_tags');
                     $tagList = array_unique($tagList);
                 }
 
                 // Convert array to string
-                $this->validation->tagged = (count($tagList) > 0) ? implode(', ', $tagList) : '';
+                $this->validation->tagged 
+                    = (count($tagList) > 0) ? implode(', ', $tagList) : '';
             }
 
             $arr = array(
@@ -509,7 +541,8 @@ class Event extends Controller
                 'event_end'   => $this->timezone->UnixtimeForTimeInTimezone(
                     $this->input->post('event_tz_cont') . '/' .
                     $this->input->post('event_tz_place'),
-                    $this->input->post('end_yr'), $this->input->post('end_mo'),
+                    $this->input->post('end_yr'),
+                    $this->input->post('end_mo'),
                     $this->input->post('end_day'), 23, 59, 59
                 ),
                 'event_loc'      => $this->input->post('event_loc'),
@@ -518,31 +551,39 @@ class Event extends Controller
                 'event_desc'     => $this->input->post('event_desc'),
                 'active'         => '1',
                 'event_tz_cont'  => $this->input->post('event_tz_cont'),
-                'event_tz_place' => $this->input->post('event_tz_place'),
-                'event_href'     => $this->input->post('event_href'),
-                'event_hashtag'  => $this->input->post('event_hashtag'),
-                'private'        => $this->input->post('event_private'),
-                'event_stub'     => $this->input->post('event_stub'),
-                'event_contact_name'  => $this->input->post('event_contact_name'),
-                'event_contact_email' => $this->input->post('event_contact_email'),
-                'event_cfp_url'	      => $this->input->post('cfp_url')
+                'event_tz_place' => 
+                $this->input->post('event_tz_place'),
+                    'event_href'     => $this->input->post('event_href'),
+                    'event_hashtag'  => $this->input->post('event_hashtag'),
+                    'private'        => $this->input->post('event_private'),
+                    'event_stub'     => $this->input->post('event_stub'),
+                    'event_contact_name'  => 
+                        $this->input->post('event_contact_name'),
+                    'event_contact_email' => 
+                        $this->input->post('event_contact_email'),
+                    'event_cfp_url'         => $this->input->post('cfp_url')
             );
 
             $is_cfp = $this->input->post('is_cfp');
             if ($is_cfp) {
 
                 $arr['event_cfp_start'] = mktime(
-                        0,0,0,
-                        $this->input->post('cfp_start_mo'),
-                        $this->input->post('cfp_start_day'),
-                        $this->input->post('cfp_start_yr')
+                    0,
+                    0,
+                    0,
+                    $this->input->post('cfp_start_mo'),
+                    $this->input->post('cfp_start_day'),
+                    $this->input->post('cfp_start_yr')
                 );
-                $arr['event_cfp_end'] = mktime(
-                        0,0,0,
-                        $this->input->post('cfp_end_mo'),
-                        $this->input->post('cfp_end_day'),
-                        $this->input->post('cfp_end_yr')
+                $arr['event_cfp_end']   = mktime(
+                    0,
+                    0,
+                    0,
+                    $this->input->post('cfp_end_mo'),
+                    $this->input->post('cfp_end_day'),
+                    $this->input->post('cfp_end_yr')
                 );
+
                 $this->validation->cfp_checked     = true;
                 $this->validation->event_cfp_end   = $arr['event_cfp_end'];
                 $this->validation->event_cfp_start = $arr['event_cfp_start'];
@@ -550,12 +591,12 @@ class Event extends Controller
             } else {
                 // it's empty, remove any values
                 $arr['event_cfp_start'] = null;
-                $arr['event_cfp_end']	= null;
-                $arr['event_cfp_url']	= null;
+                $arr['event_cfp_end']   = null;
+                $arr['event_cfp_url']   = null;
             }
 
             if ($this->upload->do_upload('event_icon')) {
-                $updata = $this->upload->data();
+                $updata            = $this->upload->data();
                 $arr['event_icon'] = $updata['file_name'];
             }
 
@@ -571,8 +612,8 @@ class Event extends Controller
 
             // see if we have tags
             //------------------------
-            $tags    = explode(',', $this->input->post('tagged'));
-            $tagList = '';
+            $tags        = explode(',', $this->input->post('tagged'));
+            $tagList     = '';
             $currentTags = $this->tagsEvents->getTags($id);
 
             // parse them into an array
@@ -600,12 +641,13 @@ class Event extends Controller
             //------------------------
 
             if (!$is_cfp) {
-                    $this->validation->event_cfp_start 	= time();
-                    $this->validation->event_cfp_end 	= time();
+                $this->validation->event_cfp_start = time();
+                $this->validation->event_cfp_end   = time();
             }
 
             $arr = array(
-                'msg' => 'Data saved! <a href="/event/view/' . $id . '">View event</a>',
+                'msg' => 'Data saved! <a href="/event/view/' . $id .
+                    '">View event</a>',
                 'min_start_yr' => $min_start_yr,
                 'min_end_yr'   => $min_end_yr,
                 'detail'       => $event_detail
@@ -668,9 +710,9 @@ class Event extends Controller
         $this->load->model('event_track_model', 'etm');
         $this->load->model('talk_comments_model', 'tcm');
         $this->load->model('user_admin_model', 'uadm');
-        $this->load->model('tags_events_model','eventTags');
+        $this->load->model('tags_events_model', 'eventTags');
         $this->load->model('talks_model');
-        $this->load->model('Pending_talk_claims_model','pendingTalkClaims');
+        $this->load->model('Pending_talk_claims_model', 'pendingTalkClaims');
 
         // validate user input (id)
         if (!ctype_digit((string)$id)) {
@@ -690,7 +732,7 @@ class Event extends Controller
                 ? true : false;
 
             if ($is_auth) {
-                $udata = $this->user_model->getUserByUsername($is_auth);
+                $udata     = $this->user_model->getUserByUsername($is_auth);
                 $is_invite = $this->ilm->isInvited($id, $udata[0]->ID);
 
                 //If they're invited, accept if they haven't already
@@ -784,25 +826,32 @@ class Event extends Controller
             'evt_sessions'   => $event_related_sessions,
             'slides_list'    => buildSlidesList($talks),
             'admin'          => ($this->user_model->isAdminEvent($id))
-                ? true : false,
+            ? true : false,
             'claimed'        => $claimed_talks,
             'user_id'        => ($is_auth)
-                ? $this->session->userdata('ID') : '0',
-            'attend'         => $chk_attend,
-            'attend_ct'      => count($attend),
-            'reqkey'         => $reqkey, 'seckey' => buildSecFile($reqkey),
-            'attending'      => $attend,
-            'latest_comment' => $this->event_model->getLatestComment($id),
-            'admins'         => $evt_admins,
-            'tracks'         => $this->etm->getEventTracks($id),
-            'talk_stats'     => $talk_stats,
-            'tab'			 => '',
-            'tags'           => $this->eventTags->getTags($id),
-            'prompt_event_comment'	 => false
-            //'started'=>$this->tz->hasEvtStarted($id),
-        );
+            ? $this->session->userdata('ID') : '0',
+                'attend'         => $chk_attend,
+                'attend_ct'      => count($attend),
+                'reqkey'         => $reqkey, 'seckey' => buildSecFile($reqkey),
+                'attending'      => $attend,
+                'latest_comment' => $this->event_model->getLatestComment($id),
+                'admins'         => $evt_admins,
+                'tracks'         => $this->etm->getEventTracks($id),
+                'talk_stats'     => $talk_stats,
+                'tab'          => '',
+                'tags'           => $this->eventTags->getTags($id),
+                'prompt_event_comment'    => false
+                //'started'=>$this->tz->hasEvtStarted($id),
+            );
 
-        $tabList = array('talks','comments','statistics', 'evt_related', 'slides', 'tracks');
+        $tabList = array(
+            'talks',
+            'comments',
+            'statistics', 
+            'evt_related',
+            'slides',
+            'tracks'
+        );
         if ($opt == 'track') {
             $arr['track_filter'] = $opt_id;
             $arr['track_data']   = null;
@@ -816,7 +865,7 @@ class Event extends Controller
         }
 
         //our event comment form
-        $rules = array(
+        $rules  = array(
             'event_comment' => 'required',
             'cinput'        => 'required|callback_cinput_check'
         );
@@ -913,7 +962,8 @@ class Event extends Controller
 
         $this->template->write('feedurl', '/feed/event/' . $id);
 
-        $this->gravatar->decorateUsers($attend, 20); // Add 20px gravatar info to $attend
+        // Add 20px gravatar info to $attend
+        $this->gravatar->decorateUsers($attend, 20); 
 
         if (count($attend) > 0) {
             $this->template->write_view(
@@ -945,8 +995,7 @@ class Event extends Controller
 
         // For single day events, we don't want to prompt for a comment
         // until the event is over
-        if ($events[0]->event_start + (60 * 60 * 25) >= $last_day)
-        {
+        if ($events[0]->event_start + (60 * 60 * 25) >= $last_day) {
             $last_day = $events[0]->event_end;
         }
 
@@ -956,23 +1005,25 @@ class Event extends Controller
         // - either last day of event, or no later than 3 months from last day
         // - haven't left feedback yet already
 
-                $feedback_deadline = strtotime('+3 month', $last_day);
+        $feedback_deadline = strtotime('+3 month', $last_day);
 
-        if ($is_auth && $chk_attend && ( time() > $last_day && time() < $feedback_deadline))
-        {
+        if ($is_auth 
+            && $chk_attend 
+            && ( time() > $last_day && time() < $feedback_deadline)
+        ) {
             // Check to see if they have left feedback yet.
-            $has_commented_event = $this->event_model->hasUserCommentedEvent($id, $arr['user_id']);
-            if (!$has_commented_event)
-            {
+            $has_commented_event = $this->event_model
+                ->hasUserCommentedEvent($id, $arr['user_id']);
+            if (!$has_commented_event) {
                 $this->template->write_view(
-                'sidebar3', 'event/_event_prompt_comment_sidebar',
+                    'sidebar3', 'event/_event_prompt_comment_sidebar',
                     array()
                 );
                 $arr['prompt_event_comment'] = true;
             }
         }
 
-        $arr['captcha']=create_captcha();
+        $arr['captcha'] = create_captcha();
         $this->session->set_userdata(array('cinput'=>$arr['captcha']['value']));
 
         $this->template->write_view('content', 'event/detail', $arr, true);
@@ -1034,11 +1085,11 @@ class Event extends Controller
             if (isset($ans) && ($ans == 'yes')) {
                 $this->event_model->deleteEvent($id);
                 $arr = array();
+            } else if (isset($ans) && ($ans == 'no')) {
+                // Used CI's redirect function to refresh the page and stop 
+                // it showing 2 copies
+                redirect('/event/view/' . $id, 'refresh');
             }
-			elseif (isset($ans) && ($ans == 'no')) {
-				//Used CI's redirect function to refresh the page and stop it showing 2 copies
-				redirect('/event/view/' . $id, 'refresh');
-			}
 
             $this->template->write_view('content', 'event/delete', $arr, true);
             $this->template->render();
@@ -1093,12 +1144,13 @@ class Event extends Controller
             'event_loc'           => 'Event Location',
             'event_tz_cont'       => 'Event Timezone (Continent)',
             'event_tz_place'      => 'Event Timezone (Place)',
-            'event_lat'			  => 'Event Latitude',
-            'event_long'		  => 'Event Longitude',
+            'event_lat'           => 'Event Latitude',
+            'event_long'        => 'Event Longitude',
             'event_stub'          => 'Event Stub',
-            'addr'				  => 'Event Address',
-            'cinput'				=> 'Captcha'
+            'addr'              => 'Event Address',
+            'cinput'            => 'Captcha'
         );
+
         $rules = array(
             'event_title'         => 'required|callback_event_title_check',
             'event_loc'           => 'required',
@@ -1137,12 +1189,14 @@ class Event extends Controller
             foreach ($sel_fields as $k => $v) {
                 $this->validation->$k = date($v);
             }
-            $this->validation->is_cfp = false;
+            $this->validation->is_cfp      = false;
             $this->validation->cfp_checked = false;
-            $this->validation->is_private = 'N';
-            $this->validation->is_admin   = '1';
-            $this->validation->event_contact_name = $this->session->userdata('full_name');
-            $this->validation->event_contact_email = $this->session->userdata('email');
+            $this->validation->is_private  = 'N';
+            $this->validation->is_admin    = '1';
+            $this->validation->event_contact_name  
+                = $this->session->userdata('full_name');
+            $this->validation->event_contact_email 
+                = $this->session->userdata('email');
         } else {
             $this->validation->cfp_checked = $this->validation->is_cfp;
         }
@@ -1184,9 +1238,11 @@ class Event extends Controller
                 'pending'        => 1,
                 'private'        => ($this->input->post('is_private') == 'n')
                     ? null : $this->input->post('is_private'),
-                'event_contact_name'  => $this->input->post('event_contact_name'),
-                'event_contact_email' => $this->input->post('event_contact_email'),
-            );
+                    'event_contact_name'  => 
+                        $this->input->post('event_contact_name'),
+                    'event_contact_email' => 
+                        $this->input->post('event_contact_email'),
+                );
 
             // check to see if our Call for Papers dates are set...
             $cfp_check = $this->input->post('cfp_start_mo');
@@ -1250,15 +1306,15 @@ class Event extends Controller
                 }
                 $arr['msg'] = sprintf(
                     '<span style="font-size:15px; font-weight:bold;">
-                        Event successfully submitted!
+                    Event successfully submitted!
                     </span><br/>
                     <span style="font-size:13px;">
-                        Once your event is approved, you (or the contact person
-                        for the event) will receive an email letting you know
+                    Once your event is approved, you (or the contact person
+                    for the event) will receive an email letting you know
                         it\'s been accepted.<br/>
                         <br/>
                         We\'ll get back to you soon!
-                    </span>'
+                        </span>'
                 );
 
                 //put it into the database
@@ -1277,18 +1333,19 @@ class Event extends Controller
                     '">send us an email</a> with all the details!';
             }
         }
-        $arr['is_auth'] 		= $this->user_model->isAuth();
-        $arr['is_site_admin'] 	= $this->user_model->isSiteAdmin();
+        $arr['is_auth']       = $this->user_model->isAuth();
+        $arr['is_site_admin'] = $this->user_model->isSiteAdmin();
 
-        $arr['captcha']=create_captcha();
+        $arr['captcha'] = create_captcha();
         $this->session->set_userdata(array('cinput'=>$arr['captcha']['value']));
 
         // user must be logged in to submit
         if (!$this->user_model->isAuth()) {
-            $arr['msg'] = sprintf('
-                <b>Note</b>: you must be logged in to submit an event!<br/><br/>
-                If you do not have an account, you can <a href="/user/register">sign up here</a>.
-            ');
+            $arr['msg'] = sprintf(
+                '<b>Note</b>: you must be logged in to submit an event!'.
+                '<br/><br/> If you do not have an account, you can '.
+                '<a href="/user/register">sign up here</a>.'
+            );
         }
 
 
@@ -1356,9 +1413,9 @@ class Event extends Controller
 
             // if the admin list is empty, use the contact info on the event
             if (empty($admin_list)) {
-                $admin_list[]=array(
+                $admin_list[] = array(
                     'full_name' => $evt_detail->event_contact_name,
-                    'email' 	=> $evt_detail->event_contact_email
+                    'email'    => $evt_detail->event_contact_email
                 );
             }
 
@@ -1388,8 +1445,8 @@ class Event extends Controller
         }
 
         $this->load->model('user_admin_model', 'userAdmin');
-        $this->load->model('event_model','eventModel');
-        $this->load->model('pending_talk_claims_model','pendingClaimsModel');
+        $this->load->model('event_model', 'eventModel');
+        $this->load->model('pending_talk_claims_model', 'pendingClaimsModel');
         $this->load->helper('events_helper');
         $this->load->library('sendemail');
 
@@ -1407,22 +1464,31 @@ class Event extends Controller
             foreach ($claim as $claimId => $claimStatus) {
                 // Retreive the pending claim before approving or denying as
                 // it will be removed by approveClaim() or deleteClaim().
-                $pendingClaim = $this->pendingClaimsModel->getClaimDetail($claimId);
+                $pendingClaim = $this->pendingClaimsModel
+                    ->getClaimDetail($claimId);
 
-                if ($claimStatus=='approve') {
-                    $approveCheck = $this->pendingClaimsModel->approveClaim($claimId);
+                if ($claimStatus == 'approve') {
+                    $approveCheck = $this->pendingClaimsModel
+                        ->approveClaim($claimId);
                     if ($approveCheck) {
                         $approved++;
                         $this->_sendClaimSuccessEmail($pendingClaim);
                     }
                 } elseif ($claimStatus=='deny') {
                     // delete the claim row
-                    $denyCheck = $this->pendingClaimsModel->deleteClaim($claimId);
-                    if ($denyCheck) { $denied++; }
+                    $denyCheck = $this->pendingClaimsModel
+                        ->deleteClaim($claimId);
+                    if ($denyCheck) {
+                        $denied++;
+                    }
                 }
             }
-            if ($approved>0) { $msg[] = $approved.' claim(s) approved'; }
-            if ($denied>0) { $msg[] = $denied.' claims(s) denied'; }
+            if ($approved > 0) { 
+                $msg[] = $approved.' claim(s) approved'; 
+            }
+            if ($denied > 0) {
+                $msg[] = $denied.' claims(s) denied';
+            }
         }
 
         if (count($msg)>0) {
@@ -1433,10 +1499,10 @@ class Event extends Controller
 
         // Data to pass out to the view
         $arr = array(
-            'claims' 	=> $this->userAdmin->getPendingClaims('talk', $id),
+            'claims'    => $this->userAdmin->getPendingClaims('talk', $id),
             'newClaims' => $newClaims,
             'eventId'   => $id,
-            'msg'    	=> $msg,
+            'msg'       => $msg,
             'event_detail' => $this->eventModel->getEventDetail($id)
         );
 
@@ -1447,7 +1513,8 @@ class Event extends Controller
     /**
      * Send an "your claim has been approved" email to the speaker
      *
-     * @param pending_talk_claims_model $claim
+     * @param pending_talk_claims_model $claim Claim object
+     *
      * @return boolean result
      */
     protected function _sendClaimSuccessEmail($claim)
@@ -1458,21 +1525,26 @@ class Event extends Controller
         }
 
         $talk_id = $claim->talk_id;
-        $this->load->model('talks_model','talkModel');
+        $this->load->model('talks_model', 'talkModel');
         $talk = $this->talkModel->getTalks($talk_id);
         if ($talk) {
-            $talk = $talk[0];
+            $talk     = $talk[0];
             $speakers = $talk->speaker;
             foreach ($speakers as $speaker) {
                 if ($speaker->speaker_id == $claim->speaker_id) {
                     // found this speaker
 
                     if ($speaker->email) {
-                        $email = $speaker->email;
+                        $email      = $speaker->email;
                         $talk_title = $talk->talk_title;
-                        $evt_name = $talk->event_name;
-                        $talk_id = $talk->ID;
-                        $this->sendemail->claimSuccess($email, $talk_title, $talk_id, $evt_name);
+                        $evt_name   = $talk->event_name;
+                        $talk_id    = $talk->ID;
+                        $this->sendemail->claimSuccess(
+                            $email,
+                            $talk_title,
+                            $talk_id,
+                            $evt_name
+                        );
                         $result = true;
                     }
                 }
@@ -1486,6 +1558,8 @@ class Event extends Controller
      * Manage the claims that have been made on events.
      *
      * Not the same as the claims on talks in an event.
+     *
+     * @param int $id [optional] ID of claim for event
      *
      * @return void
      */
@@ -1505,12 +1579,14 @@ class Event extends Controller
 
         if (isset($sub) && !empty($posted_claims)) {
             foreach ($posted_claims as $uam_key => $claim) {
-                if ($this->user_model->isSiteAdmin() || $this->uam->checkPerm($uam_key, $id, 'event')) {
+                if ($this->user_model->isSiteAdmin() 
+                    || $this->uam->checkPerm($uam_key, $id, 'event')
+                ) {
                     switch (strtolower($claim)) {
                     case 'approve':
                         // approve the claim
                         $this->uam->updatePerm(
-                         $uam_key, array('rcode' => '')
+                            $uam_key, array('rcode' => '')
                         );
                         break;
                     case 'deny':
@@ -1523,7 +1599,7 @@ class Event extends Controller
         }
 
         $claims = $this->uam->getPendingClaims('event', $id);
-        $arr = array(
+        $arr    = array(
             'claims' => $claims,
             'id' => $id
         );
@@ -1564,7 +1640,7 @@ class Event extends Controller
         $this->load->library('upload', $config);
 
         // Allow them to upload the XML or pull it from another resource
-        $rules = array();
+        $rules  = array();
         $fields = array(
             'xml_file' => 'File'
         );
@@ -1625,7 +1701,9 @@ class Event extends Controller
         $detail = $this->event_model->getEventDetail($id);
 
         $is_auth = $this->user_model->isAuth();
-        $user    = ($is_auth) ? $this->user_model->getUserByUsername($is_auth) : false;
+        $user    = ($is_auth) ? 
+            $this->user_model->getUserByUsername($is_auth) :
+            false;
         $admins  = $this->event_model->getEventAdmins($id);
 
         if ($resp && $user) {
@@ -1723,7 +1801,7 @@ class Event extends Controller
 
             // Refresh the invite list
             $invites = $this->ilm->getEventInvites($id);
-            $msg = 'Invite list changes saved!';
+            $msg     = 'Invite list changes saved!';
         }
 
         // finally, we send it out to the view....
@@ -1934,7 +2012,7 @@ class Event extends Controller
      */
     function cfp_start_mo_check()
     {
-        $cfp_st = mktime(
+        $cfp_st  = mktime(
             0, 0, 0,
             $this->validation->cfp_start_mo,
             $this->validation->cfp_start_day,
@@ -1946,7 +2024,7 @@ class Event extends Controller
             $this->validation->cfp_end_day,
             $this->validation->cfp_end_yr
         );
-        $evt_st = mktime(
+        $evt_st  = mktime(
             0, 0, 0,
             $this->validation->start_mo,
             $this->validation->start_day,
@@ -1964,7 +2042,8 @@ class Event extends Controller
 
         if ($cfp_st >= $cfp_end) {
             $this->validation->set_message(
-                'cfp_start_mo_check', 'Call for Papers end date must be later than the start date.'
+                'cfp_start_mo_check', 'Call for Papers end date must be '.
+                'later than the start date.'
             );
 
             return false;
@@ -1987,7 +2066,7 @@ class Event extends Controller
             $this->validation->cfp_end_day,
             $this->validation->cfp_end_yr
         );
-        $evt_st = mktime(
+        $evt_st  = mktime(
             0, 0, 0,
             $this->validation->start_mo,
             $this->validation->start_day,
@@ -2064,7 +2143,7 @@ class Event extends Controller
             // If the user input is not numeric, convert it to a numeric value
             $this->load->plugin('captcha');
             $digits = captcha_get_digits(true);
-            $str = array_search(strtolower($str), $digits);
+            $str    = array_search(strtolower($str), $digits);
         }
 
         if ($str != $this->session->userdata('cinput')) {
@@ -2106,7 +2185,8 @@ class Event extends Controller
             if (!preg_match('/^[A-Z0-9-_]*$/i', $str)) {
                 $this->validation->set_message(
                     'stub_check',
-                    'Event stubs may only contain letters, numbers, dashes and underscores.'
+                    'Event stubs may only contain letters, numbers, '.
+                    'dashes and underscores.'
                 );
 
                 return false;
@@ -2121,6 +2201,7 @@ class Event extends Controller
      * Only alpha-numeric tags allowed
      *
      * @param string $tagList Listing of tags, comma separated
+     *
      * @return bool
      */
     public function tagged_check($tagList)
@@ -2128,7 +2209,8 @@ class Event extends Controller
         foreach (explode(',', $tagList) as $tag) {
             if (!preg_match('/^[a-zA-Z0-9]+$/', trim($tag))) {
                 // escape the "%" since it goes to a sprintf()
-                $msg = 'Tag <b>"'.str_replace('%','%%', trim($tag)).'"</b> not valid!';
+                $msg = 'Tag <b>"' . str_replace('%', '%%', trim($tag)) .
+                    '"</b> not valid!';
                 $this->validation->set_message('tagged_check', $msg);
                 return false;
             }
@@ -2139,22 +2221,23 @@ class Event extends Controller
     /**
      * Call for Papers method
      *
-     * @param null $eventId[optional] Event ID
+     * @param null $eventId [optional] Event ID
+     *
      * @return void
      */
-    public function callforpapers($eventId=null)
+    public function callforpapers($eventId = null)
     {
-        $this->load->model('event_model','eventModel');
+        $this->load->model('event_model', 'eventModel');
         $this->load->model('user_attend_model');
 
         $this->load->helper('reqkey');
 
         $reqkey = buildReqKey();
-    $arr = array(
-                'current_cfp' => $this->eventModel->getCurrentCfp(),
-        'reqkey' => $reqkey,
-        'seckey' => buildSecFile($reqkey)
-    );
+        $arr    = array(
+            'current_cfp' => $this->eventModel->getCurrentCfp(),
+            'reqkey' => $reqkey,
+            'seckey' => buildSecFile($reqkey)
+        );
 
         // now add the attendance data
         $uid = $this->user_model->getID();
@@ -2172,13 +2255,16 @@ class Event extends Controller
      * Tag action method
      * Displays events tagged with $tagData value
      *
-     * @param null $tagData[optional] Tag to pull events for
+     * @param string $tagData [optional] Tag to pull events for
+     *
      * @return void
      */
     public function tag($tagData)
     {
-        if ($tagData == null) { redirect('/event'); }
-        $this->load->model('event_model','eventModel');
+        if ($tagData == null) { 
+            redirect('/event'); 
+        }
+        $this->load->model('event_model', 'eventModel');
 
         // get events that are tagged with data from url - single value for now
         $viewData = array(
@@ -2191,4 +2277,3 @@ class Event extends Controller
     }
 }
 
-?>

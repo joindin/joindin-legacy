@@ -59,7 +59,8 @@ class Speaker extends Controller
         $udata = $this->user_model->getUserById($this->session->userdata('ID'));
         $arr   = array(
             'pdata' => $this->sp->getProfile($udata[0]->ID),
-            'gravatar_url' => $this->gravatar->displayUserImage($this->session->userdata('ID'), null, 100)
+            'gravatar_url' => $this->gravatar
+                ->displayUserImage($this->session->userdata('ID'), null, 100)
         );
 
         $this->template->write_view('content', 'speaker/profile', $arr);
@@ -98,7 +99,7 @@ class Speaker extends Controller
             'zip'        => 'Zip',
             'country_id' => 'Country',
         );
-        $rules = array(
+        $rules  = array(
             'full_name' => 'required',
             'email'     => 'required|valid_email',
             'bio'       => 'required'
@@ -148,12 +149,13 @@ class Speaker extends Controller
                 $udata = $this->user_model->getUserById(
                     $this->session->userdata('ID')
                 );
+
                 $this->validation->email     = $udata[0]->email;
                 $this->validation->full_name = $udata[0]->full_name;
             }
         }
 
-        $msg  = $this->validation->error_string;
+        $msg = $this->validation->error_string;
 
         $countries = array();
         foreach ($this->co->getCountries() as $row) {
@@ -199,14 +201,14 @@ class Speaker extends Controller
             case 'add':
             case 'edit':
                 // adding a new token and corresponding access
-                $view  = 'speaker/access_add';
-                $rules = array(
+                $view               = 'speaker/access_add';
+                $rules              = array(
                     'fields'     => 'required',
                     'token_name' => 'required|alpha_numeric|' .
                         'callback_token_name_check',
                     'token_desc' => 'required'
                 );
-                $fields = array(
+                $fields             = array(
                     'fields'     => 'Items',
                     'token_name' => 'Token Name',
                     'token_desc' => 'Token Description',
@@ -236,7 +238,7 @@ class Speaker extends Controller
                         redirect('speaker/access');
                     }
 
-                    $token = $found;
+                    $token              = $found;
                     $arr['curr_access'] = $this->spm->getTokenAccess($p[4]);
                     $arr['token_id']    = $token->ID;
 
@@ -360,4 +362,3 @@ class Speaker extends Controller
     }
 }
 
-?>

@@ -132,12 +132,12 @@ class About extends Controller
             );
 
             //clear out the values so they know it was sent..
-            $this->validation->your_name = '';
+            $this->validation->your_name  = '';
             $this->validation->your_email = '';
-            $this->validation->your_com = '';
+            $this->validation->your_com   = '';
         }
 
-        $arr['captcha']=create_captcha();
+        $arr['captcha'] = create_captcha();
         $this->session->set_userdata(array('cinput'=>$arr['captcha']['value']));
 
         $this->template->write_view('content', 'about/contact', $arr);
@@ -191,7 +191,7 @@ class About extends Controller
             // If the user input is not numeric, convert it to a numeric value
             $this->load->plugin('captcha');
             $digits = captcha_get_digits(true);
-            $str = array_search(strtolower($str), $digits);
+            $str    = array_search(strtolower($str), $digits);
         }
 
         if ($str != $this->session->userdata('cinput')) {
@@ -217,4 +217,3 @@ class About extends Controller
 
 }
 
-?>

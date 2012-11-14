@@ -97,7 +97,7 @@ class Blog extends Controller
             'post_mi'  => 'Post Minute',
             'category' => 'Category'
         );
-        $rules = array(
+        $rules  = array(
             'title'    => 'required',
             'story'    => 'required',
             'post_mo'  => 'required',
@@ -142,11 +142,12 @@ class Blog extends Controller
         } else {
             if ($id) {
                 $det = $this->blog_posts_model->getPostDetail($id); //print_r($det);
+
                 $this->validation->title = $det[0]->title;
                 $this->validation->story = $det[0]->content;
 
-                $this->validation->post_mo = date('m', $det[0]->date_posted);
-                $this->validation->post_day = date('d', $det[0]->date_posted);
+                $this->validation->post_mo   = date('m', $det[0]->date_posted);
+                $this->validation->post_day  = date('d', $det[0]->date_posted);
                 $this->validation->post_year = date('Y', $det[0]->date_posted);
 
                 $this->validation->post_hr = date('H', $det[0]->date_posted);
@@ -154,7 +155,7 @@ class Blog extends Controller
             }
         }
         $arr['edit_id'] = ($id) ? $id : null;
-        $arr['cats'] = $this->blog_cats_model->getCategories();
+        $arr['cats']    = $this->blog_cats_model->getCategories();
 
         $this->template->write_view('content', 'blog/add', $arr);
         $this->template->render();
@@ -180,39 +181,38 @@ class Blog extends Controller
     }
 
     /**
-	 * Deletes the selected blog post
-	 * 
-	 * @param integer $id ID of the blog post to delete
-	 * 
-	 * @return void
-	 */
-	function delete($id)
-	{
-		if (!$this->user_model->isSiteAdmin()) {
-			redirect();
-		}
-		
-		$this->load->helper('form');
+     * Deletes the selected blog post
+     * 
+     * @param integer $id ID of the blog post to delete
+     * 
+     * @return void
+     */
+    function delete($id)
+    {
+        if (!$this->user_model->isSiteAdmin()) {
+            redirect();
+        }
+
+        $this->load->helper('form');
         $this->load->library('validation');
 
         $arr = array(
-		    'bid' => $id,
-		);
+            'bid' => $id,
+        );
 
         $confirm = $this->input->post('confirm');
 
         if (isset($confirm) && ($confirm == 'yes')) {
-    		$this->db->delete('blog_posts', array('ID' => $id));
-			$arr = array();
-		} 
-		elseif (isset($confirm) && ($confirm == 'no')) {
-			//Used CI's redirect function to stop 2 copies of the same page showing
-			redirect('/blog/view/' . $id, 'refresh');
-		}
+            $this->db->delete('blog_posts', array('ID' => $id));
+            $arr = array();
+        } else if (isset($confirm) && ($confirm == 'no')) {
+            // Used CI's redirect function to stop 2 copies of the same page showing
+            redirect('/blog/view/' . $id, 'refresh');
+        }
 
         $this->template->write_view('content', 'blog/delete', $arr, true);
         $this->template->render();
-	}
+    }
 
     /**
      * Displays the details of a specific blog post.
@@ -235,7 +235,7 @@ class Blog extends Controller
         $this->blogPostsModel->updatePostViews($id);
         $reqkey = buildReqKey();
 
-        $arr = array(
+        $arr        = array(
             'details'  => $this->blogPostsModel->getPostDetail($id),
             'is_admin' => $this->user_model->isSiteAdmin(),
             'reqkey'   => $reqkey, 'seckey' => buildSecFile($reqkey),
@@ -248,15 +248,19 @@ class Blog extends Controller
 
         if ($username = $this->user_model->isAuth()) {
             $udata = $this->user_model->getUserByUsername($username);
+
             $arr['full_name'] = (!empty($udata[0]->full_name))
-                              ? $udata[0]->full_name
-                              : $udata[0]->username;
+                ? $udata[0]->full_name
+                : $udata[0]->username;
         }
         $this->template->write('feedurl', '/feed/blog');
-        $this->template->write_view('sidebar2', 'blog/_other-posts', $other_data);
+        $this->template->write_view(
+            'sidebar2',
+            'blog/_other-posts',
+            $other_data
+        );
         $this->template->write_view('content', 'blog/view', $arr);
         $this->template->render();
     }
 }
 
-?>
