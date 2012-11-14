@@ -103,8 +103,7 @@ class CSRF_Protection
                 $this->CI->session->userdata(self::$token_name)
             );
 
-            if ($posted_token === false || !$token_found
-            ) {
+            if ($posted_token === false || !$token_found) {
                 // Invalid request, send error 400.
                 show_error('Request was invalid. Tokens did not match.', 400);
             }
