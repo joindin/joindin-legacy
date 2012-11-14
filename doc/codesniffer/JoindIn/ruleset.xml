@@ -9,6 +9,7 @@
  <rule ref="PEAR">
    <exclude name="PEAR.Commenting.FileComment"/>
    <exclude name="PEAR.Commenting.ClassComment"/>
+   <exclude name="PEAR.NamingConventions.ValidFunctionName.FunctionNoCaptial"/>
  </rule> 
 
 </ruleset>
