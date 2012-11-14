@@ -49,8 +49,8 @@ class CSRF_Protection
     }
 
     /**
-     * Generates a CSRF token and stores it on session. Only one token 
-     * per session is generated.
+     * Generates a CSRF token and adds it to the list in the session.
+     * Only the most recent five tokens are stored.
      * This must be tied to a post-controller hook, and before the hook
      * that calls the inject_tokens method().
      *
