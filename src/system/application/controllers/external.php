@@ -1,4 +1,22 @@
 <?php
+/**
+ * External pages controller.
+ *
+ * Controller tasked with executing externally triggered scripts, automated
+ * sending of twitter messages.
+ *
+ * @category  Joind.in
+ * @package   Controllers
+ * @copyright 2009 - 2010 Joind.in
+ * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
+ * @link      http://github.com/joindin/joind.in
+ *
+ * @property  CI_Config   $config
+ * @property  CI_Loader   $load
+ * @property  CI_Template $template
+ * @property  CI_Input    $input
+ * @property  User_model  $user_model
+ */
 
 /**
  * External pages controller.
@@ -87,6 +105,7 @@ class External extends Controller
      * Grab the pending events and send an email to the event admins 
      * with a list of things that are: 1 day away, 1 week away, etc.
      *
+     * @return null
      */
     public function send_pending_event_email()
     {
@@ -98,4 +117,3 @@ class External extends Controller
     }
 }
 
-?>

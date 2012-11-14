@@ -33,8 +33,6 @@ class Help extends Controller
 
     /**
      * Constructor, responsible for initializing the parent constructor.
-     *
-     * @return void
      */
     function Help()
     {
@@ -70,7 +68,8 @@ class Help extends Controller
      * 
      * @return void
      */
-    function event_organiser_help() {
+    function event_organiser_help() 
+    {
         $this->writeContentPage('help/event_organiser_help');
     }
 
@@ -79,7 +78,8 @@ class Help extends Controller
      * 
      * @return void
      */
-    function speaker_help() {
+    function speaker_help() 
+    {
         $this->writeContentPage('help/speaker_help');
     }
 
@@ -88,12 +88,9 @@ class Help extends Controller
      * 
      * @return void
      */
-    function user_help() {
+    function user_help() 
+    {
         $this->writeContentPage('help/user_help');
     }
-
-
-
 }
 
-?>

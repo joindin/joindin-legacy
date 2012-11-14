@@ -12,7 +12,7 @@
  */
 
 /** Required for inheritance */
-require('AuthAbstract.php');
+require 'AuthAbstract.php';
 
 /**
  * Facebook pages controller.
@@ -33,10 +33,9 @@ require('AuthAbstract.php');
  *
  * @category  Joind.in
  * @package   Controllers
+ * @author    Mike van Riel <mike.vanriel@naenius.com>
  * @copyright 2012 Joind.in
  * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
- * @link      http://github.com/joindin/joind.in
- * @author    Mike van Riel <mike.vanriel@naenius.com>
  *
  * @property CI_Config   $config
  * @property CI_Input    $input
@@ -64,12 +63,14 @@ class Facebook extends AuthAbstract
     public function request_token()
     {
         // http_build_query sanitizes the data and prevents injection attacks
-        $query = http_build_query(array(
-            'client_id'    => $this->config->item('facebook_app_id'),
-            'redirect_uri' => site_url('facebook/access_token'),
-            'state'        => $this->generateCsrfSecret(),
-            'scope'        => 'email'
-        ));
+        $query = http_build_query(
+            array(
+                'client_id'    => $this->config->item('facebook_app_id'),
+                'redirect_uri' => site_url('facebook/access_token'),
+                'state'        => $this->generateCsrfSecret(),
+                'scope'        => 'email'
+            )
+        );
 
         redirect('http://www.facebook.com/dialog/oauth?' . $query);
     }
@@ -136,7 +137,7 @@ class Facebook extends AuthAbstract
      */
     protected function generateCsrfSecret()
     {
-        $csrf_value = md5(uniqid(rand(), TRUE));
+        $csrf_value = md5(uniqid(rand(), true));
         $this->session->set_userdata('facebook_csrf', $csrf_value);
 
         return $csrf_value;
@@ -164,12 +165,14 @@ class Facebook extends AuthAbstract
         $this->load->library('curl');
 
         // http_build_query sanitizes the data and prevents injection attacks
-        $query = http_build_query(array(
-            'client_id'     => $this->config->item('facebook_app_id'),
-            'redirect_uri'  => site_url('facebook/access_token'),
-            'client_secret' => $this->config->item('facebook_app_secret'),
-            'code'          => $_REQUEST['code'] // CI cleanses $_GET
-        ));
+        $query = http_build_query(
+            array(
+                'client_id'     => $this->config->item('facebook_app_id'),
+                'redirect_uri'  => site_url('facebook/access_token'),
+                'client_secret' => $this->config->item('facebook_app_secret'),
+                'code'          => $_REQUEST['code'] // CI cleanses $_GET
+            )
+        );
 
         $response = $this->curl->simple_get(
             'https://graph.facebook.com/oauth/access_token?' . $query
@@ -178,7 +181,7 @@ class Facebook extends AuthAbstract
         if (!$response) {
             show_error(
                 'An error occurred during authentication with Facebook, no '
-                        . 'additional information has been returned'
+                . 'additional information has been returned'
             );
         }
 
@@ -190,7 +193,7 @@ class Facebook extends AuthAbstract
     /**
      * Retrieves the facebook user object.
      *
-     * @param string $access_token
+     * @param string $access_token Access token
      *
      * @todo consider moving this to a separate model class.
      *

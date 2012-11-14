@@ -131,7 +131,7 @@ class Talk extends Controller
         $cats  = $this->categories_model->getCats();
         $langs = $this->lang_model->getLangs();
 
-        $rules = array(
+        $rules  = array(
             'event_id'     => 'required',
             'talk_title'   => 'required',
             'talk_desc'    => 'required',
@@ -173,6 +173,7 @@ class Talk extends Controller
 
             $track_info = $this->talkTracks->getSessionTrackInfo($thisTalk->ID);
             $is_private = ($thisTalksEvent->private == 'Y') ? true : false;
+            
             $this->validation->session_track = (empty($track_info))
                 ? null : $track_info[0]->ID;
 
@@ -184,20 +185,20 @@ class Talk extends Controller
             $this->validation->speaker
                 = $this->talkSpeakers->getSpeakerByTalkId($id);
 
-            $this->validation->eid       = $thisTalk->eid;
-            $this->validation->given_day = $this->timezone
+            $this->validation->eid        = $thisTalk->eid;
+            $this->validation->given_day  = $this->timezone
                 ->formattedEventDatetimeFromUnixtime(
                     $thisTalk->date_given,
                     $thisTalk->event_tz_cont . '/' . $thisTalk->event_tz_place,
                     'd'
                 );
-            $this->validation->given_mo = $this->timezone
+            $this->validation->given_mo   = $this->timezone
                 ->formattedEventDatetimeFromUnixtime(
                     $thisTalk->date_given,
                     $thisTalk->event_tz_cont . '/' . $thisTalk->event_tz_place,
                     'm'
                 );
-            $this->validation->given_yr = $this->timezone
+            $this->validation->given_yr   = $this->timezone
                 ->formattedEventDatetimeFromUnixtime(
                     $thisTalk->date_given,
                     $thisTalk->event_tz_cont . '/' . $thisTalk->event_tz_place,
@@ -209,7 +210,7 @@ class Talk extends Controller
                     $thisTalk->event_tz_cont . '/' . $thisTalk->event_tz_place,
                     'H'
                 );
-            $this->validation->given_min = $this->timezone
+            $this->validation->given_min  = $this->timezone
                 ->formattedEventDatetimeFromUnixtime(
                     $thisTalk->date_given,
                     $thisTalk->event_tz_cont . '/' . $thisTalk->event_tz_place,
@@ -261,13 +262,14 @@ class Talk extends Controller
             ) {
                 $talk_timezone = new DateTimeZone(
                     $thisTalksEvent->event_tz_cont . '/' .
-                        $thisTalksEvent->event_tz_place
+                    $thisTalksEvent->event_tz_place
                 );
             } else {
                 $talk_timezone = new DateTimeZone('UTC');
             }
 
-            $talk_datetime = new DateTime($this->input->post('talkDate') . ' ' .
+            $talk_datetime = new DateTime(
+                $this->input->post('talkDate') . ' ' .
                 $this->input->post('given_hour') . ':' .
                 $this->input->post('given_min'), $talk_timezone
             );
@@ -501,7 +503,7 @@ class Talk extends Controller
         $this->load->library('timezone');
         $this->load->library('sendemail');
 
-        $msg          = '';
+        $msg = '';
 
         // filter it down to just the numeric characters
         if (preg_match('/[0-9]+/', $id, $m)) {
@@ -574,7 +576,7 @@ class Talk extends Controller
                     }
                 } else {
                     $claim_status = false;
-                    $claim_msg   = 'There was an error claiming your talk!';
+                    $claim_msg    = 'There was an error claiming your talk!';
                 }
             }
         }
@@ -582,10 +584,14 @@ class Talk extends Controller
         $cl = ($r = $this->talks_model->talkClaimDetail($id)) ? $r : array();
 
         $already_rated = false;
-        if($this->user_model->isAuth()) {
-            // Find out if there is at least 1 comment that is made by our user for this talk
-            foreach ($this->talks_model->getUserComments($this->user_model->getId()) as $comment) {
-                if ($comment->talk_id == $id) $already_rated = true;
+        if ($this->user_model->isAuth()) {
+            // Find out if there is at least 1 comment that is made by our 
+            // user for this talk
+            foreach ($this->talks_model
+                ->getUserComments($this->user_model->getId()) as $comment) {
+                if ($comment->talk_id == $id) {
+                    $already_rated = true;
+                }
             }
         }
 
@@ -595,7 +601,8 @@ class Talk extends Controller
             $claim_user_ids[] = $claim_item->userid;
         }
 
-        $rating_rule = (in_array($currentUserId, $claim_user_ids) || ($already_rated)) ? null : 'required';
+        $rating_rule = (in_array($currentUserId, $claim_user_ids) 
+            || ($already_rated)) ? null : 'required';
 
         $rules = array('rating' => $rating_rule);
 
@@ -606,8 +613,8 @@ class Talk extends Controller
 
         // this is for the CAPTACHA - it was disabled for authenticated users
         if (!$this->user_model->isAuth()) {
-            $rules['cinput']	= 'required|callback_cinput_check';
-            $fields['cinput']	= 'Captcha';
+            $rules['cinput']  = 'required|callback_cinput_check';
+            $fields['cinput'] = 'Captcha';
         }
 
         $this->validation->set_rules($rules);
@@ -617,7 +624,7 @@ class Talk extends Controller
             // vote processing code removed
         } else {
             $is_auth = $this->user_model->isAuth();
-            $arr = array(
+            $arr     = array(
                 'comment_type'    => 'comment',
                 'comment_content' => $this->input->post('your_com')
             );
@@ -663,7 +670,7 @@ class Talk extends Controller
                     'date_made' => time(), 'private' => $priv,
                     'active'    => 1,
                     'user_id'   => ($this->user_model->isAuth() && !$anonymous)
-                        ? $this->session->userdata('ID') : '0'
+                    ? $this->session->userdata('ID') : '0'
                 );
 
                 $out = '';
@@ -676,13 +683,18 @@ class Talk extends Controller
                     if (isset($com_detail[0])
                         && ($com_detail[0]->user_id == $uid)
                     ) {
-                        if (time() >= $com_detail[0]->date_made + $this->config->item('comment_edit_time')) {
-                            $out = 'This comment has passed its edit-time. You cannot edit this comment anymore.';
+                        $commentEditTime = $com_detail[0]->date_made +
+                            $this->config->item('comment_edit_time')
+                        if (time() >= $commentEditTime) {
+                            $out = 'This comment has passed its edit-time.'.
+                               ' You cannot edit this comment anymore.';
                         } else {
                             $this->db->where('ID', $cid);
                             // unset date made.
                             unset($arr['date_made']);
-                            if ($com_detail[0]->rating == 0) $arr['rating'] = 0;
+                            if ($com_detail[0]->rating == 0) {
+                                $arr['rating'] = 0;
+                            }
                             $this->db->update('talk_comments', $arr);
                             $out = 'Comment updated!';
                         }
@@ -695,7 +707,7 @@ class Talk extends Controller
                 }
 
                 //send an email when a comment's made
-                $msg = '';
+                $msg         = '';
                 $arr['spam'] = ($is_spam == 'false') ? 'spam' : 'not spam';
                 foreach ($arr as $ak => $av) {
                     $msg .= '[' . $ak . '] => ' . $av . "\n";
@@ -715,8 +727,8 @@ class Talk extends Controller
             );
         }
 
-        $captcha=create_captcha();
-        $this->session->set_userdata(array('cinput'=>$captcha['value']));
+        $captcha = create_captcha();
+        $this->session->set_userdata(array('cinput' => $captcha['value']));
 
         $reqkey      = buildReqKey();
         $talk_detail = $this->talks_model->setDisplayFields($talk_detail);
@@ -729,8 +741,12 @@ class Talk extends Controller
         $is_talk_admin = $this->user_model->isAdminTalk($id);
 
         // Retrieve ALL comments, then Reformat and filter out private comments
-        $all_talk_comments = $this->talks_model->getTalkComments($id, null, true);
-        $talk_comments = splitCommentTypes(
+        $all_talk_comments = $this->talks_model->getTalkComments(
+            $id,
+            null,
+            true
+        );
+        $talk_comments     = splitCommentTypes(
             $all_talk_comments, $is_talk_admin, $this->session->userdata('ID')
         );
 
@@ -745,39 +761,41 @@ class Talk extends Controller
             );
         }
 
-                $user_id = ($this->user_model->isAuth())
+        $user_id  = ($this->user_model->isAuth())
             ? $this->session->userdata('ID') : null;
-                $speakers = $this->talkSpeakers->getSpeakerByTalkId($id);
-                // check if current user is one of the approved speakers
-                $is_claim_approved = false;
-                foreach ( $speakers as $speaker ) {
-                    if ( $speaker->speaker_id && $speaker->speaker_id == $user_id ) {
-                        $is_claim_approved = true;
-                    }
-                }
+        $speakers = $this->talkSpeakers->getSpeakerByTalkId($id);
+        // check if current user is one of the approved speakers
+        $is_claim_approved = false;
+        foreach ( $speakers as $speaker ) {
+            if ( $speaker->speaker_id && $speaker->speaker_id == $user_id ) {
+                $is_claim_approved = true;
+            }
+        }
 
         $arr = array(
             'detail'         => $talk_detail[0],
             'comments'       => (isset($talk_comments['comment']))
-                ? $talk_comments['comment'] : array(),
-            'admin'          => ($is_talk_admin) ? true : false,
-            'site_admin'     => ($this->user_model->isSiteAdmin()) ? true : false,
-            'auth'           => $this->auth,
-            'claimed'        => $this->talks_model->talkClaimDetail($id),
-            'claim_status'   => $claim_status, 'claim_msg' => $claim_msg,
-            'is_claimed'	   => $this->talks_model->hasUserClaimed($id) || $is_claim_approved,
-            'speakers'       => $speakers,
-            'reqkey'         => $reqkey, 'seckey' => buildSecFile($reqkey),
-            'user_attending' => ($this->user_attend_model->chkAttend(
-                $currentUserId, $talk_detail[0]->event_id
-            )) ? true : false,
-            'msg'            => $msg,
-            'track_info'     => $this->talkTracks->getSessionTrackInfo($id),
-            'user_id'        => ($this->user_model->isAuth())
+            ? $talk_comments['comment'] : array(),
+                'admin'          => ($is_talk_admin) ? true : false,
+                'site_admin'     => ($this->user_model->isSiteAdmin()) 
+                    ? true : false,
+                'auth'           => $this->auth,
+                'claimed'        => $this->talks_model->talkClaimDetail($id),
+                'claim_status'   => $claim_status, 'claim_msg' => $claim_msg,
+                'is_claimed'      => $this->talks_model->hasUserClaimed($id) 
+                    || $is_claim_approved,
+                'speakers'       => $speakers,
+                'reqkey'         => $reqkey, 'seckey' => buildSecFile($reqkey),
+                'user_attending' => ($this->user_attend_model->chkAttend(
+                    $currentUserId, $talk_detail[0]->event_id
+                )) ? true : false,
+                'msg'            => $msg,
+                'track_info'     => $this->talkTracks->getSessionTrackInfo($id),
+                'user_id'        => ($this->user_model->isAuth())
                 ? $this->session->userdata('ID') : null,
-            'captcha'        => $captcha,
-            'alreadyRated'   => $already_rated,
-        );
+                    'captcha'        => $captcha,
+                    'alreadyRated'   => $already_rated,
+                );
 
         $this->template->write('feedurl', '/feed/talk/' . $id);
         if (!empty($also_given['talks'])) {
@@ -785,30 +803,35 @@ class Talk extends Controller
                 'sidebar2', 'talk/_also_given', $also_given, true
             );
         }
-        
+
         if (!isTalkClaimFull($arr['speakers'])) {
-            $this->template->write_view('sidebar3','main/_sidebar-block',
+            $this->template->write_view(
+                'sidebar3',
+                'main/_sidebar-block',
                 array(
                     'title'=>'Claiming Talks',
                     'content'=>'<p>Is this your talk? Claim it! By doing so it 
-                        lets us know you are the speaker. Once your claim is 
-                        verified by event administration it will be linked to your 
-                        account.</p>'
-                    )
-                );
+                    lets us know you are the speaker. Once your claim is 
+                    verified by event administration it will be linked to your 
+                    account.</p>'
+                )
+            );
         }
-        
-        if ($is_talk_admin)
-        {
-            $this->template->write_view('sidebar3', 'talk/modules/_talk_howto', $arr);
+
+        if ($is_talk_admin) {
+            $this->template
+                ->write_view('sidebar3', 'talk/modules/_talk_howto', $arr);
         }
-        
+
         $this->template->write_view('content', 'talk/detail', $arr, true);
         $this->template->render();
     }
 
     /**
      * Claims a talk with the currently logged in user.
+     *
+     * @param int $talkId  Talk Id to claim
+     * @param int $claimId Claim Id 
      *
      * @return void
      */
@@ -817,78 +840,87 @@ class Talk extends Controller
         if ($claimId == null) {
             $claimId = $this->input->post('claim_name_select');
         }
-    
-        $this->load->model('talk_speaker_model','talkSpeaker');
-        
-        $this->load->model('pending_talk_claims_model','pendingClaims');
-        
+
+        $this->load->model('talk_speaker_model', 'talkSpeaker');
+
+        $this->load->model('pending_talk_claims_model', 'pendingClaims');
+
         $this->pendingClaims->addClaim($talkId, $claimId);
-        
-        $this->session->set_flashdata('msg', 'Thanks for claiming this talk! You will be emailed when the claim is approved!');
+
+        $this->session->set_flashdata(
+            'msg',
+            'Thanks for claiming this talk! You will be emailed when the '.
+            'claim is approved!'
+        );
         redirect('talk/view/'.$talkId);
-        
+
         return false;
-        
+
         // OLD CODE IS BELOW......
-        
+
         if (!$this->user_model->isAuth()) {
             redirect('talk/view/'.$talkId);
         }
 
-        $userId 		= $this->session->userdata('ID');
-        $speakerName 	= $this->session->userdata('full_name');
-        
+        $userId      = $this->session->userdata('ID');
+        $speakerName = $this->session->userdata('full_name');
+
         // Ie we have no $claimId, look in post for it
         if ($claimId == null) {
             $claimId = $this->input->post('claim_name_select');
         }
-        
+
         if ($this->talkSpeaker->isTalkClaimed($talkId)) {
             $errorData = array(
-                'msg' => sprintf('
-                    This talk has already been claimed! If you believe
-                    this is in error, please contact the please <a style="color:#FFFFFF" href="/event/contact/">contact 
-                    this event\'s admins</a>.
-                ')
+                'msg' => sprintf(
+                    'This talk has already been claimed! If you believe this '.
+                    'is in error, please contact the please '.
+                    '<a style="color:#FFFFFF" href="/event/contact/">'.
+                    'contact this event\'s admins</a>.'
+                )
             );
             $this->template->write_view('content', 'msg_error', $errorData);
             $this->template->render();
         }
 
         // look at the claimId (talk_speaker.id) and talkId for a speaker
-        $where = array(
-            'ID' 		=> $claimId,
-            'talk_id' 	=> $talkId,
-            'status'	=> null
+        $where         = array(
+            'ID'       => $claimId,
+            'talk_id'    => $talkId,
+            'status'   => null
         );
-        $query = $this->db->get_where('talk_speaker', $where);
+        $query         = $this->db->get_where('talk_speaker', $where);
         $speakerRecord = $query->result();
-        
+
         // if we found a row, update it with the ID of the currently 
         // logged in user and set it to pending
         if (count($speakerRecord) == 1) {
-            
+
             $updateData = array(
-                'status'		=> 'pending',
-                'speaker_id'	=> $userId
+                'status'      => 'pending',
+                'speaker_id'   => $userId
             );
             $this->db->where('ID', $claimId);
             $this->db->update('talk_speaker', $updateData);
-            
-            $this->session->set_flashdata('msg', 'Thanks for claiming this talk! You will be emailed when the claim is approved!');
+
+            $this->session->set_flashdata(
+                'msg',
+                'Thanks for claiming this talk! You will be emailed when '.
+                'the claim is approved!'
+            );
             redirect('talk/view/'.$talkId);
-            
         } else {
             $errorData = array(
-                'msg'=>sprintf('
-                    There was an error in your attempt to claim the talk ID #%s
+                'msg'=>sprintf(
+                    'There was an error in your attempt to claim the talk ID #%s
                     <br/>
                     There might already be a pending claim for this session.
                     <br/><br/>
-                    If you would like more information on this error, please <a style="color:#FFFFFF" href="/event/contact/">contact 
-                    this event\'s admins</a>.'
-                , $talkId)
-            );
+                    If you would like more information on this error, please 
+                    <a style="color:#FFFFFF" href="/event/contact/">contact 
+                        this event\'s admins</a>.',
+                    $talkId
+                ));
             $this->template->write_view('content', 'msg_error', $errorData);
             $this->template->render();
         }
@@ -918,8 +950,9 @@ class Talk extends Controller
         }
 
         // ensure that the user is either a site admin or event admin
-        if ($this->user_model->isSiteAdmin() || $this->user_model->isAdminEvent($talk->event_id)) {
-
+        if ($this->user_model->isSiteAdmin() 
+            || $this->user_model->isAdminEvent($talk->event_id)
+        ) {
             $data = array(
                 'talkId'    => $talkId,
                 'speakerId' => $speakerId
@@ -932,7 +965,7 @@ class Talk extends Controller
                 $this->load->model('talk_speaker_model');
                 $user = $this->user_model->getUserById($speakerId);
 
-                $this->talk_speaker_model->unlinkSpeaker($talkId,$user[0]->ID);
+                $this->talk_speaker_model->unlinkSpeaker($talkId, $user[0]->ID);
                 redirect('talk/view/' . $talkId);
             }
 
@@ -961,17 +994,22 @@ class Talk extends Controller
         );
 
         //get the duration of the selected event
-        $det = $this->event_model->getEventDetail($this->validation->event_id);
+        $det      = $this->event_model
+            ->getEventDetail($this->validation->event_id);
         $thisTalk = $det[0];
 
         $day_start = mktime(
-            0, 0, 0,
+            0, 
+            0, 
+            0,
             date('m', $thisTalk->event_start),
             date('d', $thisTalk->event_start),
             date('Y', $thisTalk->event_start)
         );
-        $day_end = mktime(
-            23, 59, 59,
+        $day_end   = mktime(
+            23,
+            59, 
+            59,
             date('m', $thisTalk->event_end),
             date('d', $thisTalk->event_end),
             date('Y', $thisTalk->event_end)
@@ -1002,7 +1040,7 @@ class Talk extends Controller
             // If the user input is not numeric, convert it to a numeric value
             $this->load->plugin('captcha');
             $digits = captcha_get_digits(true);
-            $str = array_search(strtolower($str), $digits);
+            $str    = array_search(strtolower($str), $digits);
         }
 
         if ($str != $this->session->userdata('cinput')) {
@@ -1015,4 +1053,3 @@ class Talk extends Controller
     }
 }
 
-?>

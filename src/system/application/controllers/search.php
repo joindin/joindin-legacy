@@ -59,10 +59,10 @@ class Search extends Controller
         $this->load->helper('reqkey');
 
         $results = array();
-        $rules = array(
+        $rules   = array(
             'search_term' => 'required'
         );
-        $fields = array(
+        $fields  = array(
             'search_term' => 'Search Term',
             'start_mo'    => 'Start Month',
             'start_day'   => 'Start Day',
@@ -83,7 +83,7 @@ class Search extends Controller
             $start_mo = $this->input->post('start_mo');
             $end_mo   = $this->input->post('end_mo');
             if (!empty($start_mo)) {
-                $start = sprintf(
+                $start  = sprintf(
                     '%04d-%02d-%02d',
                     $this->input->post('start_yr'),
                     $this->input->post('start_mo'),
@@ -93,7 +93,7 @@ class Search extends Controller
             }
 
             if (!empty($end_mo)) {
-                $end = sprintf(
+                $end    = sprintf(
                     '%04d-%02d-%02d',
                     $this->input->post('end_yr'),
                     $this->input->post('end_mo'),
@@ -174,4 +174,3 @@ class Search extends Controller
     }
 }
 
-?>

@@ -12,7 +12,7 @@
  */
 
 /** Required for inheritance */
-require('AuthAbstract.php');
+require 'AuthAbstract.php';
 
 /**
  * User pages controller.
@@ -92,10 +92,18 @@ class User extends AuthAbstract
         if ($this->validation->run() == false) {
             // add a for-one-request-only session field
             if ($this->session->flashdata('url_after_login')) {
-                // the form submission failed, set the flashdata again so it's there for the resubmit
-                $this->session->set_flashdata('url_after_login', $this->session->flashdata('url_after_login'));
+                // the form submission failed, set the flashdata again so 
+                // it's there for the resubmit
+                $this->session
+                    ->set_flashdata(
+                        'url_after_login',
+                        $this->session->flashdata('url_after_login')
+                    );
             } else {
-                $this->session->set_flashdata('url_after_login', $this->input->server('HTTP_REFERER'));
+                $this->session->set_flashdata(
+                    'url_after_login',
+                    $this->input->server('HTTP_REFERER')
+                );
             }
 
             $this->template->write_view('content', 'user/login', $arr);
@@ -122,24 +130,26 @@ class User extends AuthAbstract
     /**
      * Check if either the email or username is set
      *
-     * @param string $str
+     * @param string $str Unused parameter - should be removed
+     *
      * @return bool
      */
     function check_forgot_user($str = '')
     {
-        if (!($this->input->post('user')) || !($this->input->post('user')))
-        {
+        if (!($this->input->post('user')) || !($this->input->post('user'))) {
             $this->validation->_error_messages['check_forgot_user']
                 = 'Please enter either a username or email address';
             return false;
-        }
-        else
-        {
+        } else {
             return true;
         }
     }
+
     /**
      * Sends an e-mail to the user when they have forgotten their password.
+     *
+     * @param int     $id           User id
+     * @param unknown $request_code Request code
      *
      * @return void
      */
@@ -164,14 +174,21 @@ class User extends AuthAbstract
         // ID and Request code are given?
         if ($id != null and $request_code != null) {
             $ret = $this->user_model->getUserById($id);
-            if (empty($ret) || strcasecmp($ret[0]->request_code, $request_code)) {
-                // Could not find the user. Maybe already used, maybe a false code
+            if (empty($ret) 
+                || strcasecmp($ret[0]->request_code, $request_code)
+            ) {
+                // Could not find the user. Maybe already used, maybe a 
+                // false code
                 $arr['msg'] = "The request code is already used or is invalid.";
             } else {
                 // Code is ok. Reset this user's password
 
                 //generate the new password...
-                $sel = array_merge(range('a', 'z'), range('A', 'Z'), range(0, 9));
+                $sel = array_merge(
+                    range('a', 'z'),
+                    range('A', 'Z'),
+                    range(0, 9)
+                );
                 shuffle($sel);
                 $pass_len = 10;
                 $pass = '';
@@ -203,10 +220,12 @@ class User extends AuthAbstract
             //reset their password and send it out to the account
             $email = $this->input->post('email');
             $login = $this->input->post('user');
-            if ($email)
+            if ($email) {
                 $ret = $this->user_model->getUserByEmail($email);
-            elseif ($login)
+            } elseif ($login) {
                 $ret = $this->user_model->getUserByUsername($login);
+            }
+
             if (! empty($ret)) {
                 $uid = $ret[0]->ID;
 
@@ -221,8 +240,9 @@ class User extends AuthAbstract
                 $this->sendemail->sendPasswordResetRequest($ret, $request_code);
             }
 
-            $arr['msg'] = 'If the entered details are correct, instructions on how to reset your password will ' .
-                'be sent to your email - open it and follow the details to reset your password';
+            $arr['msg'] = 'If the entered details are correct, instructions '.
+                'on how to reset your password will be sent to your email -'.
+                ' open it and follow the details to reset your password';
         }
 
         $this->template->write_view('content', 'user/forgot', $arr);
@@ -315,19 +335,28 @@ class User extends AuthAbstract
             //$this->load->view('talk/add', array('events'=>$events));
         } else {
             //success!
-            $this->session->set_userdata((array)$this->_addUser(
-                $this->input->post('user'), $this->input->post('pass'),
-                $this->input->post('email'), $this->input->post('full_name'),
-                $this->input->post('twitter_username')
-            ));
-            $this->session->set_flashdata('msg', 'Account successfully created!');
+            $this->session->set_userdata(
+                (array)$this->_addUser(
+                    $this->input->post('user'),
+                    $this->input->post('pass'),
+                    $this->input->post('email'),
+                    $this->input->post('full_name'),
+                    $this->input->post('twitter_username')
+                )
+            );
+            $this->session
+                ->set_flashdata('msg', 'Account successfully created!');
             redirect('user/main');
         }
 
         $captcha=create_captcha();
         $this->session->set_userdata(array('cinput'=>$captcha['value']));
 
-        $this->template->write_view('content', 'user/register', array('captcha' => $captcha));
+        $this->template->write_view(
+            'content',
+            'user/register',
+            array('captcha' => $captcha)
+        );
         $this->template->render();
     }
 
@@ -346,14 +375,17 @@ class User extends AuthAbstract
         $this->load->model('event_model');
 
         $this->load->library('gravatar');
-        $imgStr = $this->gravatar->displayUserImage($this->session->userData('ID'), null, 80);
+        $imgStr = $this->gravatar
+            ->displayUserImage($this->session->userData('ID'), null, 80);
 
         if (!$this->user_model->isAuth()) {
             redirect('user/login');
         }
 
-        $arr['talks']    = $this->talks_model->getUserTalks($this->session->userdata('ID'));
-        $arr['comments'] = $this->talks_model->getUserComments($this->session->userdata('ID'));
+        $arr['talks']    = $this->talks_model
+            ->getUserTalks($this->session->userdata('ID'));
+        $arr['comments'] = $this->talks_model
+            ->getUserComments($this->session->userdata('ID'));
         $arr['is_admin'] = $this->user_model->isSiteAdmin();
         $arr['gravatar'] = $imgStr;
 
@@ -416,9 +448,12 @@ class User extends AuthAbstract
             'is_attending'  => $this->uam->getUserAttending($uid),
             'my_attend'     => $this->uam->getUserAttending($curr_user),
             'uadmin'        => array(
-                'events'        => $this->uadmin->getUserTypes($uid, array('event')),
-                'talks'         => $this->talks_model->getSpeakerTalks($uid, true),
-                'pending_talks' => $this->pending_talk_claims_model->getTalkClaimsForUser($uid),
+                'events'        => $this->uadmin
+                    ->getUserTypes($uid, array('event')),
+                'talks'         => $this->talks_model
+                    ->getSpeakerTalks($uid, true),
+                'pending_talks' => $this->pending_talk_claims_model
+                    ->getTalkClaimsForUser($uid),
             ),
             'reqkey'        => $reqkey,
             'seckey'        => buildSecFile($reqkey),
@@ -513,12 +548,13 @@ class User extends AuthAbstract
      *
      * View users listing, enable/disable, etc.
      *
-     * @param string $start Determine if we are selecting another page of results
+     * @param string  $start  Determine if we are selecting another 
+     *                        page of results
      * @param integer $offset Starting index of records to display
      *
      * @return void
      */
-    function admin($start=null, $offset = null)
+    function admin($start = null, $offset = null)
     {
         // The $start parameter exists because we are using a hybrid system
         // of route. Specifically 'enable_query_strings' is set to true, but
@@ -526,7 +562,7 @@ class User extends AuthAbstract
         // library will try to add &offset=X to the end of a URL. As we aren't
         // using query params everywhere, we add ?start=1 to ensure that the
         // URL is valid.
-        if ($this->config->item('enable_query_strings') === TRUE) {
+        if ($this->config->item('enable_query_strings') === true) {
             $start = $this->input->get('start');
             $offset = $this->input->get('offset');
         }
@@ -595,7 +631,7 @@ class User extends AuthAbstract
 
         // The configuration of the pagination library depends on setting
         // of 'enable_query_strings'
-        if ($this->config->item('enable_query_strings') === TRUE) {
+        if ($this->config->item('enable_query_strings') === true) {
             $base_url = $this->config->item('base_url') . 'user/admin?start=1';
             $page_query_string = true;
         } else {
@@ -603,15 +639,17 @@ class User extends AuthAbstract
             $page_query_string = false;
         }
 
-        $this->pagination->initialize(array(
-            'base_url'             => $base_url,
-            'uri_segment'          => 4,
-            'total_rows'           => $total_users,
-            'per_page'             => $users_per_page,
-            'cur_page'             => $offset,
-            'page_query_string'    => $page_query_string,
-            'query_string_segment' => 'offset',
-        ));
+        $this->pagination->initialize(
+            array(
+                'base_url'             => $base_url,
+                'uri_segment'          => 4,
+                'total_rows'           => $total_users,
+                'per_page'             => $users_per_page,
+                'cur_page'             => $offset,
+                'page_query_string'    => $page_query_string,
+                'query_string_segment' => 'offset',
+            )
+        );
 
         $arr = array(
             'users'       => $users,
@@ -694,6 +732,7 @@ class User extends AuthAbstract
      * Validates whether the twitter name already exists.
      *
      * @param string $str The twitter name to check
+     * @param int    $uid User id
      *
      * @return bool
      */
@@ -704,7 +743,9 @@ class User extends AuthAbstract
             $str = substr($str, 1);
         }
         $user = $this->user_model->getUserbyTwitter($str);
-        if (empty($user)) return true;
+        if (empty($user)) {
+            return true;
+        }
 
         if ($uid == -1 || $user[0]->ID != $uid) {
             $this->validation->_error_messages['twitter_check']
@@ -811,17 +852,21 @@ class User extends AuthAbstract
         $this->validation->set_rules($rules);
         $this->validation->set_fields($fields);
 
-        $view_data['status'] = NULL;
+        $view_data['status'] = null;
         if ($this->validation->run() == false) {
-            $api_key = $this->input->get('api_key');
+            $api_key  = $this->input->get('api_key');
             $callback = urldecode($this->input->get('callback'));
-            $state = $this->input->get('state');
+            $state    = $this->input->get('state');
 
-            if(empty($api_key)) {
+            if (empty($api_key)) {
                 $view_data['status'] = 'keyfail';
-            } elseif(empty($callback)) {
+            } elseif (empty($callback)) {
                 $view_data['status'] = 'callbackfail';
-            } elseif($this->user_admin_model->oauthVerifyApiKey($api_key, $callback)) {
+            } elseif ($this->user_admin_model->oauthVerifyApiKey(
+                $api_key,
+                $callback
+            )
+            ) {
                 $this->session->set_flashdata('api_key', $api_key);
                 $this->session->set_flashdata('callback', $callback);
                 $this->session->set_flashdata('state', $state);
@@ -835,8 +880,9 @@ class User extends AuthAbstract
 
             if ($this->input->post('access') == 'allow') {
                 $view_data['status'] = "allow";
-                $access_token = $this->user_admin_model->oauthAllow($api_key, $this->session->userdata('ID'));
-                if(!empty($callback)) {
+                $access_token        = $this->user_admin_model
+                    ->oauthAllow($api_key, $this->session->userdata('ID'));
+                if (!empty($callback)) {
                     // add our parameter onto the URL
                     if (strpos($callback, '?') !== false) {
                         $url = $callback . '&';
@@ -844,8 +890,8 @@ class User extends AuthAbstract
                         $url = $callback . '?';
                     }
                     $url .= 'access_token=' . $access_token;
-                    if(!empty($state)) {
-                       $url .= "&state=" . $state;
+                    if (!empty($state)) {
+                        $url .= "&state=" . $state;
                     }
                     redirect($url);
                     exit; // we shouldn't be here
@@ -901,14 +947,18 @@ class User extends AuthAbstract
                 $this->input->post('application'),
                 $this->input->post('description'),
                 $this->input->post('callback_url')
-                );
+            );
         }
 
         // fetch all keys
-        $view_data['keys'] = $this->user_admin_model->oauthGetConsumerKeysByUser(
-                $this->session->userdata('ID'));
-        $view_data['grants'] = $this->user_admin_model->oauthGetAccessKeysByUser(
-                $this->session->userdata('ID'));
+        $view_data['keys'] 
+            = $this->user_admin_model->oauthGetConsumerKeysByUser(
+                $this->session->userdata('ID')
+            );
+        $view_data['grants'] 
+            = $this->user_admin_model->oauthGetAccessKeysByUser(
+                $this->session->userdata('ID')
+            );
         
         $this->template->write_view('content', 'user/apikey', $view_data);
         $this->template->render();
@@ -917,34 +967,41 @@ class User extends AuthAbstract
     /**
      * Remove the API key record for this user
      * 
-     * @access public
      * @return void
      */
-    public function apikey_delete() {
+    public function apikey_delete()
+    {
         if (!$this->user_model->isAuth()) {
             redirect('user/login', 'refresh');
         }
 
         $this->load->model('user_admin_model');
 
-        $this->user_admin_model->deleteApiKey($this->session->userdata('ID'), $this->input->get('id'));
+        $this->user_admin_model
+            ->deleteApiKey(
+                $this->session->userdata('ID'),
+                $this->input->get('id')
+            );
         redirect('/user/apikey');
     }
 
     /**
      * Remove this application authorisation for this user
      * 
-     * @access public
      * @return void
      */
-    public function revoke_access() {
+    public function revoke_access() 
+    {
         if (!$this->user_model->isAuth()) {
             redirect('user/login', 'refresh');
         }
 
         $this->load->model('user_admin_model');
 
-        $this->user_admin_model->deleteAccessToken($this->session->userdata('ID'), $this->input->get('id'));
+        $this->user_admin_model->deleteAccessToken(
+            $this->session->userdata('ID'),
+            $this->input->get('id')
+        );
         redirect('/user/apikey');
     }
 }
