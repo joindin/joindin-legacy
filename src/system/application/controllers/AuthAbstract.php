@@ -19,10 +19,9 @@
  *
  * @category  Joind.in
  * @package   Controllers
+ * @author    Mike van Riel <mike.vanriel@naenius.com>
  * @copyright 2012 Joind.in
  * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
- * @link      http://github.com/joindin/joind.in
- * @author    Mike van Riel <mike.vanriel@naenius.com>
  *
  * @property CI_Config   $config
  * @property CI_Input    $input
@@ -42,6 +41,13 @@ abstract class AuthAbstract extends Controller
      */
     private $non_forward_urls = array('user/login', 'user/forgot');
 
+    /**
+     * Performs login validation
+     *
+     * @param unknown $user User to login with
+     *
+     * @return null
+     */
     protected function _login($user)
     {
         $this->session->set_userdata((array)$user);
@@ -67,10 +73,8 @@ abstract class AuthAbstract extends Controller
         // List different routes we don't want to reroute to
         $bad_routes = $this->non_forward_urls;
 
-        foreach ($bad_routes as $route)
-        {
-            if (strstr($to, $route))
-            {
+        foreach ($bad_routes as $route) {
+            if (strstr($to, $route)) {
                 redirect('user/main');
             }
         }
@@ -79,6 +83,17 @@ abstract class AuthAbstract extends Controller
         redirect($to);
     }
 
+    /**
+     * Adds a user to the database
+     *
+     * @param string $username     Username to add
+     * @param string $password     Password for user
+     * @param string $email        Email address of user
+     * @param string $fullname     Full name of user
+     * @param string $twitter_name Twitter name of user
+     *
+     * @return user model
+     */
     protected function _addUser(
         $username, $password, $email, $fullname, $twitter_name
     ) {

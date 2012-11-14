@@ -66,7 +66,7 @@ class Api extends Controller
     {
         $this->load->library('service');
         $data = file_get_contents('php://input');
-        $ret = array(
+        $ret  = array(
             'out' => $this->service->handle('event', $data)
         );
         $this->output($ret);
@@ -81,7 +81,7 @@ class Api extends Controller
     {
         $this->load->library('service');
         $data = file_get_contents('php://input');
-        $ret = array(
+        $ret  = array(
             'out' => $this->service->handle('talk', $data)
         );
         $this->output($ret);
@@ -96,7 +96,7 @@ class Api extends Controller
     {
         $this->load->library('service');
         $data = file_get_contents('php://input');
-        $ret = array(
+        $ret  = array(
             'out' => $this->service->handle('comment', $data)
         );
         $this->output($ret);
@@ -111,7 +111,7 @@ class Api extends Controller
     {
         $this->load->library('service');
         $data = file_get_contents('php://input');
-        $ret = array(
+        $ret  = array(
             'out' => $this->service->handle('blog', $data)
         );
         $this->output($ret);
@@ -126,7 +126,7 @@ class Api extends Controller
     {
         $this->load->library('service');
         $data = file_get_contents('php://input');
-        $ret = array(
+        $ret  = array(
             'out' => $this->service->handle('user', $data)
         );
         $this->output($ret);
@@ -141,7 +141,7 @@ class Api extends Controller
     {
         $this->load->library('service');
         $data = file_get_contents('php://input');
-        $ret = array(
+        $ret  = array(
             'out' => $this->service->handle('site', $data)
         );
         $this->output($ret);
@@ -196,7 +196,8 @@ class Api extends Controller
      * 
      * @return void
      */
-    public function v2docs() {
+    public function v2docs() 
+    {
         $this->template->write_view('content', 'api/v2docs');
         $this->template->render();
     }
@@ -206,10 +207,10 @@ class Api extends Controller
      * 
      * @return void
      */
-    public function v1docs() {
+    public function v1docs() 
+    {
         $this->template->write_view('content', 'api/v1docs');
         $this->template->render();
     }
 }
 
-?>

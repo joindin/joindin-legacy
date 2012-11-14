@@ -12,7 +12,7 @@
  */
 
 /** Required for inheritance */
-require('AuthAbstract.php');
+require 'AuthAbstract.php';
 
 /**
  * Twitter pages controller.
@@ -50,6 +50,8 @@ class Twitter extends AuthAbstract
 
     /**
      * Log in via Twitter
+     *
+     * @return null
      */
     public function request_token()
     {
@@ -65,10 +67,19 @@ class Twitter extends AuthAbstract
                 . 'resulting key and secret in the configuration?'
             );
         }
-        $this->session->set_userdata('twitter_token_secret', $response['token_secret']);
+        $this->session->set_userdata(
+            'twitter_token_secret',
+            $response['token_secret']
+        );
         redirect($response['redirect']);
     }
 
+    /**
+     * Allows the user to provide authorization to connect to their 
+     * twitter account.
+     *
+     * @return null
+     */
     public function access_token()
     {
         $this->load->model('user_model');
@@ -78,8 +89,7 @@ class Twitter extends AuthAbstract
             false, $this->session->userdata('twitter_token_secret')
         );
 
-        if (!isset($response['screen_name']))
-        {
+        if (!isset($response['screen_name'])) {
             show_error(
                 'An error occurred during communication with Twitter, please'
                 .' try again later'
@@ -112,14 +122,28 @@ class Twitter extends AuthAbstract
         }
     }
 
+    /**
+     * Loads the twitter library
+     *
+     * @return null
+     */
     protected function loadTwitterLibrary()
     {
-        $this->load->library('twitter_oauth', array(
-            'key'    => $this->config->item('twitter_consumer_key'),
-            'secret' => $this->config->item('twitter_consumer_secret')
-        ));
+        $this->load->library(
+            'twitter_oauth', array(
+                'key'    => $this->config->item('twitter_consumer_key'),
+                'secret' => $this->config->item('twitter_consumer_secret')
+            )
+        );
     }
 
+    /**
+     * Retrieves a user's twitter information
+     *
+     * @param string $screen_name Twitter screen name
+     *
+     * @return stdClass
+     */
     protected function getTwitterUserdata($screen_name)
     {
         $this->load->library('curl');
