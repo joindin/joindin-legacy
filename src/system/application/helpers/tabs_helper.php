@@ -303,10 +303,8 @@ class joindIn_Tab
     private $_selectedContentClasses = array();
     private $_hiddenContentClasses   = array('ui-tabs-hide');
     
-    private $_headerFormat  = '<li class="%1$s">'.
-        '<a href="%2$s#%3$s-tabs" rel="%4$s">%5$s</a></li>';
-    private $_contentFormat = '<div class="%1$s" id="%2$s">' .
-        '<div class="ui-widget">%3$s</div></div>';
+    private $_headerFormat  = '<li class="%1$s"><a href="%2$s#%3$s-tabs" rel="%4$s">%5$s</a></li>';
+    private $_contentFormat = '<div class="%1$s" id="%2$s"><div class="ui-widget">%3$s</div></div>';
     
     /**
      * Constructor
