@@ -9,6 +9,20 @@
  <rule ref="PEAR">
    <exclude name="PEAR.Commenting.FileComment"/>
    <exclude name="PEAR.Commenting.ClassComment"/>
+   <exclude name="PEAR.NamingConventions.ValidFunctionName.NotCamelCaps"/>
  </rule> 
-
+ <!-- Omitting the closing php tag can prevent errors where including a file
+      causes output to happen due to whitespace after the closing tag
+   -->
+ <rule ref="Zend.Files.ClosingTag"/>
+ <!-- Aligning the = sign for groups of assignments has been brought up
+      in code reviews, but it wasn't an official coding standard. Now it
+      is
+ -->
+ <rule ref="Generic.Formatting.MultipleStatementAlignment">
+  <properties>
+   <property name="ignoreMultiLine" value="true"/>
+  </properties>
+ </rule>
+ <rule ref="Generic.Files.LineLength" />
 </ruleset>
