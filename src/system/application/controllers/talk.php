@@ -684,7 +684,7 @@ class Talk extends Controller
                         && ($com_detail[0]->user_id == $uid)
                     ) {
                         $commentEditTime = $com_detail[0]->date_made +
-                            $this->config->item('comment_edit_time')
+                            $this->config->item('comment_edit_time');
                         if (time() >= $commentEditTime) {
                             $out = 'This comment has passed its edit-time.'.
                                ' You cannot edit this comment anymore.';
