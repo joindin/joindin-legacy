@@ -206,7 +206,7 @@ class Blog extends Controller
             $this->db->delete('blog_posts', array('ID' => $id));
             $arr = array();
         } else if (isset($confirm) && ($confirm == 'no')) {
-            //Used CI's redirect function to stop 2 copies of the same page showing
+            // Used CI's redirect function to stop 2 copies of the same page showing
             redirect('/blog/view/' . $id, 'refresh');
         }
 
