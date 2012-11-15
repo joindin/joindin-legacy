@@ -104,7 +104,7 @@ class Twitter extends AuthAbstract
             $this->_login($user);
         } else {
             $user_info = $this->getTwitterUserdata($response['screen_name']);
-            $ret = $this->_addUser(
+            $ret       = $this->_addUser(
                 $this->user_model->findAvailableUsername($response['screen_name']),
                 '', '', $user_info->name, $response['screen_name']
             );
