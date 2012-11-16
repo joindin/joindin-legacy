@@ -1,4 +1,19 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php  
+/**
+ * Joindin config file
+ *
+ * PHP version 5
+ *
+ * @category  Joind.in
+ * @package   Configuration
+ * @copyright 2009 - 2012 Joind.in
+ * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
+ */
+
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
 /*
 | -------------------------------------------------------------------
 | USER AGENT TYPES
