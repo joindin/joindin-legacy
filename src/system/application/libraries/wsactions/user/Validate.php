@@ -1,11 +1,11 @@
 <?php 
 /**
- * Joindin config file
+ * Joindin webservice for validating users
  *
  * PHP version 5
  *
  * @category  Joind.in
- * @package   Configuration
+ * @package   WebServices
  * @copyright 2009 - 2012 Joind.in
  * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
  */
@@ -15,20 +15,20 @@ if (!defined('BASEPATH')) {
 }
 
 /**
- * Joindin config file
+ * Joindin webservice for validating users
  *
  * PHP version 5
  *
  * @category  Joind.in
- * @package   Configuration
+ * @package   WebServices
  * @copyright 2009 - 2012 Joind.in
  * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
  */
 class Validate extends BaseWsRequest
 {
     
-    var $CI		= null;
-    var $xml	= null;
+    public $CI  = null;
+    public $xml = null;
     
     /**
      * Constructs the Validate object and sets the xml value provided. 
@@ -81,7 +81,7 @@ class Validate extends BaseWsRequest
                 $ret = array('msg'=>'success');;
             }
         }
-        return array('output'=>'json', 'data' => array('items' => $ret));
+        return array('output' => 'json', 'data' => array('items' => $ret));
     }
     
 }
