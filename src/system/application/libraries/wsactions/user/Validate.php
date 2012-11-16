@@ -1,36 +1,90 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
+<?php 
+/**
+ * Joindin config file
+ *
+ * PHP version 5
+ *
+ * @category  Joind.in
+ * @package   Configuration
+ * @copyright 2009 - 2012 Joind.in
+ * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
+ */
 
-class Validate extends BaseWsRequest {
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed'); 
+}
+
+/**
+ * Joindin config file
+ *
+ * PHP version 5
+ *
+ * @category  Joind.in
+ * @package   Configuration
+ * @copyright 2009 - 2012 Joind.in
+ * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
+ */
+class Validate extends BaseWsRequest
+{
     
     var $CI		= null;
     var $xml	= null;
     
-    public function Validate($xml) {
-        $this->CI=&get_instance(); //print_r($this->CI);
-        $this->xml=$xml;
+    /**
+     * Sets the xml value on this object. Does not validate
+     * anything.
+     *
+     * @param mixed $xml XML to set
+     *
+     * @return null
+     */
+    public function Validate($xml) 
+    {
+        $this->CI  = &get_instance(); //print_r($this->CI);
+        $this->xml = $xml;
     }
+
     /**
     * Only site admins can use this functionality
+    *
+    * Returns true. Ignores the parameter, does nothing but
+    * returns true.
+    *
+    * @param mixed $xml Not used
+    *
+    * @return true
     */
-    public function checkSecurity($xml) {
+    public function checkSecurity($xml) 
+    {
         //public function!
         return true;
     }
     
-    public function run() {
+    /**
+     * Checks if the user of the webservice is a valid user
+     *
+     * @return array
+     */
+    public function run() 
+    {
         $this->CI->load->model('user_model');
         
         // check for a valid login
         $ret = array('msg'=>'Invalid user');;
-        if (isset($this->xml->action->uid) && isset($this->xml->action->pass)) {
+        if (isset($this->xml->action->uid) 
+            && isset($this->xml->action->pass)
+        ) {
             // check to see if they're a valid user
-            if ($this->CI->user_model->validate((string)$this->xml->action->uid, (string)$this->xml->action->pass, true)) {
+            if ($this->CI->user_model->validate(
+                (string)$this->xml->action->uid,
+                (string)$this->xml->action->pass,
+                true
+            )) {
                 $ret = array('msg'=>'success');;
             }
         }
-        return array('output'=>'json','data'=>array('items'=>$ret));
+        return array('output'=>'json', 'data' => array('items' => $ret));
     }
     
 }
 
-?>
