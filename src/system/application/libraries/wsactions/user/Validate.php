@@ -34,7 +34,7 @@ class Validate extends BaseWsRequest
      * Constructs the Validate object and sets the xml value provided. 
      * Retrieves and sets CodeIgniter instance on the object.
      *
-     * @param mixed $xml XML to set
+     * @param string $xml XML to set
      */
     public function __construct($xml) 
     {
