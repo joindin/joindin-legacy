@@ -1,6 +1,6 @@
 <?php
 /**
- * Joindin config file
+ * Joindin constants file
  *
  * PHP version 5
  *
