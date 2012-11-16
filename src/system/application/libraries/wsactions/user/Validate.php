@@ -31,14 +31,12 @@ class Validate extends BaseWsRequest
     var $xml	= null;
     
     /**
-     * Sets the xml value on this object. Does not validate
-     * anything.
+     * Constructs the Validate object and sets the xml value provided. 
+     * Retrieves and sets CodeIgniter instance on the object.
      *
      * @param mixed $xml XML to set
-     *
-     * @return null
      */
-    public function Validate($xml) 
+    public function __construct($xml) 
     {
         $this->CI  = &get_instance(); //print_r($this->CI);
         $this->xml = $xml;
