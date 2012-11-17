@@ -11,7 +11,6 @@
  * @link      http://github.com/joindin/joind.in
  */
 
-
 /**
  * Get the correct image for the rating
  *
@@ -24,10 +23,10 @@
 function rating_image($rating, $scale="normal")
 {
     if ($scale == "small") {
-        $width = 80;
+        $width  = 80;
         $height = 14;
     } else {
-        $width = 117;
+        $width  = 117;
         $height = 21;
     }
     $rating = min(5, ceil((float)$rating));

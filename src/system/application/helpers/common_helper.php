@@ -83,8 +83,8 @@ function auto_p($pee, $br = 1)
     $allblocks = '(?:table|thead|tfoot|caption|colgroup|tbody|tr|td|th|div' .
         '|dl|dd|dt|ul|ol|li|pre|select|form|map|area|blockquote|address|math' .
         '|style|input|p|h[1-6]|hr)';
-    $pee = preg_replace('!(<' . $allblocks . '[^>]*>)!', "\n$1", $pee);
-    $pee = preg_replace('!(</' . $allblocks . '>)!', "$1\n\n", $pee);
+    $pee       = preg_replace('!(<' . $allblocks . '[^>]*>)!', "\n$1", $pee);
+    $pee       = preg_replace('!(</' . $allblocks . '>)!', "$1\n\n", $pee);
 
     // cross-platform newlines
     $pee = str_replace(
@@ -104,7 +104,7 @@ function auto_p($pee, $br = 1)
 
     // make paragraphs, including one at the end
     $pees = preg_split('/\n\s*\n/', $pee, -1, PREG_SPLIT_NO_EMPTY);
-    $pee = '';
+    $pee  = '';
     foreach ($pees as $tinkle) {
         $pee .= '<p>' . trim($tinkle, "\n") . "</p>\n";
     }
