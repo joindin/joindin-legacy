@@ -1,4 +1,18 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php  
+/**
+ * Joindin config file
+ *
+ * PHP version 5
+ *
+ * @category  Joind.in
+ * @package   Configuration
+ * @copyright 2009 - 2012 Joind.in
+ * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
+ */
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
 /*
 |--------------------------------------------------------------------------
 | Active template
@@ -56,16 +70,16 @@ $template['active_template'] = 'default';
 |--------------------------------------------------------------------------
 */
 
-$default_template='template2';
-if (function_exists('getenv') && $key=strtolower(getenv('USE_KEY'))) {
-    $path=APPPATH.'views/custom_templates/'.$key.'/_template_'.$key.'.php';
+$default_template = 'template2';
+if (function_exists('getenv') && $key = strtolower(getenv('USE_KEY'))) {
+    $path = APPPATH.'views/custom_templates/'.$key.'/_template_'.$key.'.php';
     if (is_file($path)) {
-        $default_template='custom_templates/'.$key.'/_template_'.$key.'.php';
+        $default_template = 'custom_templates/'.$key.'/_template_'.$key.'.php';
     }
 }
 
 $template['default']['template'] = $default_template;
-$template['default']['regions'] = array(
+$template['default']['regions']  = array(
     'header',
     'css',
     'content',
@@ -76,9 +90,10 @@ $template['default']['regions'] = array(
     'sidebar3',
     'info_block'
 );
-$template['default']['parser'] = 'parser';
-$template['default']['parser_method'] = 'parse';
-$template['default']['parse_template'] = FALSE;
+
+$template['default']['parser']         = 'parser';
+$template['default']['parser_method']  = 'parse';
+$template['default']['parse_template'] = false;
 
 /* End of file template.php */
 /* Location: ./system/application/config/template.php */
