@@ -82,7 +82,7 @@ class User extends AuthAbstract
             'user' => 'Username',
             'pass' => 'Password'
         );
-        $rules = array(
+        $rules  = array(
             'user' => 'required',
             'pass' => 'required|callback_start_up_check'
         );
@@ -164,7 +164,7 @@ class User extends AuthAbstract
             'user'  => 'Username',
             'email' => 'Email Address'
         );
-        $rules = array(
+        $rules  = array(
             'user'  => 'trim|xss_clean|callback_check_forgot_user   ',
             'email' => 'trim|xss_clean|valid_email'
         );
@@ -191,10 +191,10 @@ class User extends AuthAbstract
                 );
                 shuffle($sel);
                 $pass_len = 10;
-                $pass = '';
-                 $uid = $ret[0]->ID;
+                $pass     = '';
+                $uid      = $ret[0]->ID;
                 for ($i = 0; $i < $pass_len; $i++) {
-                    $r = mt_rand(0, count($sel) - 1);
+                    $r     = mt_rand(0, count($sel) - 1);
                     $pass .= $sel[$r];
                 }
                  $arr = array(
@@ -231,7 +231,7 @@ class User extends AuthAbstract
 
                 // Generate request code and add to db
                 $request_code = substr(md5(uniqid(true)), 0, 8);
-                $arr = array(
+                $arr          = array(
                     'request_code' => $request_code
                 );
                 $this->user_model->updateUserInfo($uid, $arr);
@@ -320,7 +320,7 @@ class User extends AuthAbstract
             'twitter_username' => 'Twitter Username',
             'cinput'           => 'Captcha'
         );
-        $rules = array(
+        $rules  = array(
             'user'  => 'required|trim|callback_usern_check|xss_clean',
             'pass'  => 'required|trim|matches[passc]|md5',
             'passc' => 'required|trim',
@@ -349,7 +349,7 @@ class User extends AuthAbstract
             redirect('user/main');
         }
 
-        $captcha=create_captcha();
+        $captcha = create_captcha();
         $this->session->set_userdata(array('cinput'=>$captcha['value']));
 
         $this->template->write_view(
@@ -510,7 +510,7 @@ class User extends AuthAbstract
             'pass'              => 'Password',
             'pass_conf'         => 'Confirm Password'
         );
-        $rules = array(
+        $rules  = array(
             'full_name' => 'required',
             'email'     => 'required',
             'pass'      => 'trim|matches[pass_conf]|md5',
@@ -563,7 +563,7 @@ class User extends AuthAbstract
         // using query params everywhere, we add ?start=1 to ensure that the
         // URL is valid.
         if ($this->config->item('enable_query_strings') === true) {
-            $start = $this->input->get('start');
+            $start  = $this->input->get('start');
             $offset = $this->input->get('offset');
         }
 
@@ -612,7 +612,7 @@ class User extends AuthAbstract
         $users       = $this->user_model->getAllUsers($users_per_page, $offset);
         $total_users = $this->user_model->countAllUsers();
 
-        $msg         = '';
+        $msg    = '';
         $fields = array('user_search' => 'Search Term');
         $this->validation->set_fields($fields);
 
@@ -633,9 +633,11 @@ class User extends AuthAbstract
         // of 'enable_query_strings'
         if ($this->config->item('enable_query_strings') === true) {
             $base_url = $this->config->item('base_url') . 'user/admin?start=1';
+
             $page_query_string = true;
         } else {
             $base_url = $this->config->item('base_url') . 'user/admin/start';
+
             $page_query_string = false;
         }
 
@@ -696,7 +698,7 @@ class User extends AuthAbstract
             // If the user input is not numeric, convert it to a numeric value
             $this->load->plugin('captcha');
             $digits = captcha_get_digits(true);
-            $str = array_search(strtolower($str), $digits);
+            $str    = array_search(strtolower($str), $digits);
         }
 
         if ($str != $this->session->userdata('cinput')) {
@@ -846,7 +848,7 @@ class User extends AuthAbstract
         $fields = array(
             'access' => 'Permit access?'
         );
-        $rules = array(
+        $rules  = array(
             'access' => 'required'
         );
         $this->validation->set_rules($rules);
@@ -874,9 +876,9 @@ class User extends AuthAbstract
                 $view_data['status'] = 'invalid';
             }
         } else {
-            $api_key = $this->session->flashdata('api_key');
+            $api_key  = $this->session->flashdata('api_key');
             $callback = $this->session->flashdata('callback');
-            $state = $this->session->flashdata('state');
+            $state    = $this->session->flashdata('state');
 
             if ($this->input->post('access') == 'allow') {
                 $view_data['status'] = "allow";
@@ -929,7 +931,7 @@ class User extends AuthAbstract
             'callback_url' => 'callback URL'
 
         );
-        $rules = array(
+        $rules  = array(
             'application' => 'required',
             'description' => 'required|min_length[20]',
             'callback_url' => 'required',
