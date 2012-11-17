@@ -71,7 +71,7 @@ class Feed extends Controller
         $tlk = $this->talks_model->getTalks($tid);
 
         foreach ($com as $k => $v) {
-            $guid = $this->config->site_url() . 'talk/view/' . $v->talk_id;
+            $guid    = $this->config->site_url() . 'talk/view/' . $v->talk_id;
             $items[] = array(
                 'guid'        => $guid,
                 'title'       => 'Comment on: ' . $tlk[0]->talk_title,
@@ -99,7 +99,7 @@ class Feed extends Controller
         $items = array();
 
         foreach ($this->bpm->getPostDetail() as $k => $v) {
-            $guid = $this->config->site_url() . 'blog/view/' . $v->ID;
+            $guid    = $this->config->site_url() . 'blog/view/' . $v->ID;
             $items[] = array(
                 'guid'        => $guid,
                 'title'       => $v->title,
@@ -135,6 +135,7 @@ class Feed extends Controller
 
         foreach ($ret as $k => $v) { //print_r($v);
             $guid = $this->config->site_url() . 'event/view/' . $eid . '#comments';
+
             $items[] = array(
                 'guid'        => $guid,
                 'title'       => 'Comment on Event "' . $event_name . '"',
@@ -226,4 +227,3 @@ class Feed extends Controller
     }
 }
 
-?>
