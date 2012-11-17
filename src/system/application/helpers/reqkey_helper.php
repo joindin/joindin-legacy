@@ -28,11 +28,11 @@ function buildReqKey()
         $CI     = &get_instance();
         $reqkey = '';
 
-        $token   = $reqkey = $CI->config->item('token');
-        $reqkey .=date('mHdiY');
-        $reqkey .=$_SERVER['REQUEST_URI'];
-        $reqkey .=$CI->session->userdata('session_id');
-        $reqkey .=$CI->session->userdata('ip_address');
+        $reqkey  = $CI->config->item('token');
+        $reqkey .= date('mHdiY');
+        $reqkey .= $_SERVER['REQUEST_URI'];
+        $reqkey .= $CI->session->userdata('session_id');
+        $reqkey .= $CI->session->userdata('ip_address');
 
         return md5($reqkey);
 }

@@ -21,7 +21,7 @@ if (!defined('BASEPATH')) {
 class OAUTH_ALGORITHMS
 {
     const HMAC_SHA1 = 'HMAC-SHA1';
-    const RSA_SHA1 = 'RSA-SHA1';
+    const RSA_SHA1  = 'RSA-SHA1';
 }
 
 /**
@@ -54,7 +54,7 @@ function sign_hmac_sha1($method, $baseurl, $secret, array $parameters)
             $oauth .= "&{$key}={$value}";
         }
     }    
-    $data .= urlencode(substr($oauth, 1));
+    $data   .= urlencode(substr($oauth, 1));
     $secret .= '&'.$parameters['oauth_token_secret'];
     
     return base64_encode(hash_hmac('sha1', $data, $secret, true));
@@ -73,7 +73,7 @@ function sign_hmac_sha1($method, $baseurl, $secret, array $parameters)
  */
 function sign_rsa_sha1($method, $baseurl, $certfile, array $parameters)
 {
-    $fp = fopen($certfile, "r");
+    $fp      = fopen($certfile, "r");
     $private = fread($fp, 8192);
     fclose($fp);
 
@@ -139,11 +139,11 @@ function build_auth_array(
     $method = 'GET', 
     $algo = OAUTH_ALGORITHMS::RSA_SHA1
 ) {
-    $auth['oauth_consumer_key'] = $key;
+    $auth['oauth_consumer_key']     = $key;
     $auth['oauth_signature_method'] = $algo;
-    $auth['oauth_timestamp'] = time();
-    $auth['oauth_nonce'] = md5(uniqid(rand(), true));
-    $auth['oauth_version'] = '1.0';
+    $auth['oauth_timestamp']        = time();
+    $auth['oauth_nonce']            = md5(uniqid(rand(), true));
+    $auth['oauth_version']          = '1.0';
 
     $auth = array_merge($auth, $extra);
     if (strtoupper($algo) == OAUTH_ALGORITHMS::HMAC_SHA1) { 

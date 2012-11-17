@@ -22,37 +22,37 @@
  */
 function buildClaimData($talk_detail, $talk_claims,&$ftalk)
 {
-    $speaker=array();
+    $speaker = array();
     foreach ($talk_claims as $k=>$claim) {
         // Be sure we're only looking at the ones we need
-        if ($claim->rid!=$talk_detail->ID) {
+        if ($claim->rid != $talk_detail->ID) {
             continue;
         } else {
             $ftalk++;
         }
 
         // Get the claim code
-        $cd=$claim->rcode;
+        $cd = $claim->rcode;
 
         // Break up the speakers
-        $sp=explode(',', $claim->tdata['speaker']);
+        $sp = explode(',', $claim->tdata['speaker']);
 
         // Now, check to see if any of the codes match the $cd
-        $ct=0;
-        $matched=array();
+        $ct      = 0;
+        $matched = array();
         foreach ($claim->tdata['codes'] as $ck=>$claim_code) {
             // This was so that, if there's one speaker claim,
             // so ahead and link it...
             // seems to have backfired a little
             //$iscl=(count($sp)==1 && count($v->tdata['codes'])==1) ? true : false;
-            $iscl=false;
+            $iscl = false;
 
             if ($claim_code==$cd || $iscl) {
-                   $speaker[$sp[$ct]]='<a href="/user/view/'.
-                                    $claim->uid.'">'.$sp[$ct].'</a>';
+                $speaker[$sp[$ct]] = '<a href="/user/view/'.
+                    $claim->uid.'">'.$sp[$ct].'</a>';
             } else {
                 if (!isset($speaker[$sp[$ct]])) {
-                    $speaker[$sp[$ct]]=$sp[$ct];
+                    $speaker[$sp[$ct]] = $sp[$ct];
                 }
             }
             $ct++;
@@ -75,7 +75,7 @@ function buildClaimData($talk_detail, $talk_claims,&$ftalk)
  */
 function splitCommentTypes($talk_comments, $admin, $user_id)
 {
-    $comments=array();
+    $comments = array();
 
     foreach ($talk_comments as $k=>$comment) {
         // should comment be included?
@@ -97,10 +97,11 @@ function splitCommentTypes($talk_comments, $admin, $user_id)
 
         // split the comments
         if ($include_comment) {
-                $type=($comment->comment_type === null) 
+                $type = ($comment->comment_type === null) 
                             ? 'comment'
                             : $comment->comment_type;
-                $comments[$type][]=$comment;
+
+                $comments[$type][] = $comment;
         }
     }
     return $comments;
@@ -131,11 +132,11 @@ function buildClaimedLinks($speakers, $claim_detail)
     }
     
     foreach ($claim_detail as $claim) {
-        $speaker_data[$claim->full_name]=$claim->uid;
+        $speaker_data[$claim->full_name] = $claim->uid;
     }
     
     foreach ($speakers as $speaker) {
-        $name=$speaker->speaker_name;
+        $name = $speaker->speaker_name;
         if (array_key_exists($name, $speaker_data)) {
             $speaker_links[] = '<a href="/user/view/'.$speaker_data[$name].
                 '">'.$name.'</a>';
@@ -146,7 +147,7 @@ function buildClaimedLinks($speakers, $claim_detail)
     
     //Check the claim...if there's only one claim, assign no matter what
     if (count($speakers)==1 && count($claim_detail)) {
-        $speaker_links	 = array();
+        $speaker_links   = array();
         $speaker_links[] = '<a href="/user/view/'.$claim_detail[0]->uid
             .'">'.$speakers[0]->speaker_name.'</a>';
     }
@@ -164,7 +165,7 @@ function buildClaimedLinks($speakers, $claim_detail)
 function buildSpeakerImg($speakers) 
 {
     $ci = &get_instance();
-    $ci->load->library('gravatar');	
+    $ci->load->library('gravatar');    
     $user_images = array();
     
     foreach ($speakers as $speaker) {

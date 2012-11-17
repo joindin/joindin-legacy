@@ -211,7 +211,7 @@ class joindIn_TabContainer implements countable
         if (empty($this->_selectedTab) 
             || !isset($this->_tabs[$this->_selectedTab])
         ) {
-            $tmp_tab = current($this->_tabs);
+            $tmp_tab            = current($this->_tabs);
             $this->_selectedTab = $tmp_tab->getId();
             reset($this->_tabs);
         }
@@ -275,26 +275,26 @@ class joindIn_TabContainer implements countable
  */
 class joindIn_Tab
 {
-    private $_id                        = '';
-    private $_url                       = '';
-    private $_baseURL                   = '';
-    private $_selected                  = false;
-    private $_caption                   = '';
-    private $_content                   = '';
-    private $_parentId                  = '';
+    private $_id       = '';
+    private $_url      = '';
+    private $_baseURL  = '';
+    private $_selected = false;
+    private $_caption  = '';
+    private $_content  = '';
+    private $_parentId = '';
     
-    private $_headerClassses            = array(
+    private $_headerClassses = array(
         'ui-state-default',
         'ui-corner-top'
     );
     
-    private $_contentClasses            = array(
+    private $_contentClasses = array(
         'ui-tabs-panel',
         'ui-widget-content',
         'ui-corner-bottom'
     );
     
-    private $_selectedHeaderClasses     = array(
+    private $_selectedHeaderClasses = array(
         'ui-tabs-selected',
         'ui-state-active',
         'ui-state-focus'
@@ -303,8 +303,8 @@ class joindIn_Tab
     private $_selectedContentClasses = array();
     private $_hiddenContentClasses   = array('ui-tabs-hide');
     
-    private $_headerFormat  = '<li class="%1$s"><a href="%2$s#%3$s-tabs" rel="%4$s">%5$s</a></li>';
-    private $_contentFormat = '<div class="%1$s" id="%2$s"><div class="ui-widget">%3$s</div></div>';
+    private $_headerFormat;
+    private $_contentFormat;
     
     /**
      * Constructor
@@ -325,6 +325,11 @@ class joindIn_Tab
         $this->_selected = $selected;
         $this->_caption  = $caption;
         $this->_content  = $content;
+        
+        $this->_headerFormat  = '<li class="%1$s">'.
+            '<a href="%2$s#%3$s-tabs" rel="%4$s">%5$s</a></li>';
+        $this->_contentFormat = '<div class="%1$s" id="%2$s">'.
+            '<div class="ui-widget">%3$s</div></div>';
     }
 
     /**
@@ -497,13 +502,13 @@ class joindIn_Tab
      *
      * @return array
      */
-    public function render($headerFormat='', $contentFormat='') 
+    public function render($headerFormat = '', $contentFormat = '') 
     {
-        $header     = '';
+        $header = '';
         if (empty($headerFormat)) {
             $headerFormat = $this->_headerFormat;
         }
-        $content    = '';
+        $content = '';
         if (empty($contentFormat)) {
             $contentFormat = $this->_contentFormat;
         }
