@@ -89,7 +89,7 @@ class Theme extends Controller
         $this->load->library('validation');
         $this->load->library('upload', $_css_upload_config);
 
-        $rules = array(
+        $rules  = array(
             'theme_name'  => 'required',
             'theme_event' => 'required',
             'theme_desc'  => 'required'
@@ -105,7 +105,7 @@ class Theme extends Controller
         $this->validation->set_fields($fields);
 
         // get the events the user is an admin for
-        $uid = $this->session->userdata('ID');
+        $uid               = $this->session->userdata('ID');
         $this->user_events = array();
         foreach ($this->userAdmin->getUserEventAdmin($uid) as $event) {
             $this->user_events[$event->event_id] = $event->event_name;
@@ -120,7 +120,7 @@ class Theme extends Controller
                 $upload_data = $this->upload->data();
 
                 // by default, this new theme won't be active...
-                $detail = array(
+                $detail   = array(
                     'theme_name' => $this->input->post('theme_name'),
                     'theme_desc' => $this->input->post('theme_desc'),
                     'active'     => 0,
@@ -203,4 +203,3 @@ class Theme extends Controller
     }
 }
 
-?>
