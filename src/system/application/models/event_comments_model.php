@@ -32,4 +32,3 @@ class Event_comments_model extends Model {
     }
 }
 
-?>

@@ -14,4 +14,3 @@ class Countries_model extends Model {
     }
 
 }
-?>

@@ -7,4 +7,3 @@ class Talk_cat_model extends Model {
     }
     
 }
-?>

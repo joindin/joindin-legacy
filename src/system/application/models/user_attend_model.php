@@ -123,4 +123,3 @@ class User_attend_model extends Model {
     }
     
 }
-?>

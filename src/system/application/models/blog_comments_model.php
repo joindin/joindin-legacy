@@ -12,4 +12,3 @@ class Blog_comments_model extends Model {
         }
 }
 
-?>

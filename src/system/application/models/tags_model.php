@@ -48,4 +48,3 @@ class Tags_model extends Model
     }
 }
 
-?>

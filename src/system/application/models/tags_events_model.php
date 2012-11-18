@@ -131,4 +131,3 @@ class Tags_events_model extends Model
     
 }
 
-?>

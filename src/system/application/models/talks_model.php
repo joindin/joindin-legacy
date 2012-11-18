@@ -555,4 +555,3 @@ class Talks_model extends Model {
         return count($claims) > 0 ? true : false;
     }
 }
-?>
