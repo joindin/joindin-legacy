@@ -36,4 +36,3 @@ class Gettalkcomments extends BaseWsRequest {
     }
     
 }
-?>

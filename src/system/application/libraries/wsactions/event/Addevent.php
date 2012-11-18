@@ -62,4 +62,3 @@ class Addevent extends BaseWsRequest {
         }
     }
 }
-?>

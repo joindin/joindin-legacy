@@ -66,4 +66,3 @@ class Addcomment extends BaseWsRequest {
         return $ret;
     }
 }
-?>

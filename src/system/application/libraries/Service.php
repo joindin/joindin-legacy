@@ -145,4 +145,4 @@ class Service {
         return ($this->CI->user_model->isSiteAdmin()) ? true : false;
     }	
 }
-?>
+
