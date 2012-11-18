@@ -28,4 +28,3 @@ $nav=sprintf('
 </ul>', $admin_nav_lnks);
 
 menu_sidebar('Navigation', $nav);
-?>

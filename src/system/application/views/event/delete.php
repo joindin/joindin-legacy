@@ -22,4 +22,3 @@ if (isset($eid)) {
     echo '<h1 class="title">Event Removed!</h1>';
     echo '<a href="/event/pending">Return to pending event list</a>';
 }
-?>

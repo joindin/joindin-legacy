@@ -48,4 +48,4 @@
     <?php echo form_submit('sub','Upload'); ?>
 </div>
 
-<?php echo form_close(); ?>
+<?php echo form_close();

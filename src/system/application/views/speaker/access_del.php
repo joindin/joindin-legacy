@@ -16,4 +16,4 @@ $this->load->view('user/_nav_sidebar');
     </div>
 </div>
 
-<?php echo form_close(); ?>
+<?php echo form_close();

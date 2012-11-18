@@ -81,5 +81,5 @@ echo '<h2>Add/Edit Speaker Info</h2>';
     </div>
 </div>
 
-<?php echo form_close(); ?>
+<?php echo form_close(); 
 

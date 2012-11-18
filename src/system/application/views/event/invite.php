@@ -67,4 +67,4 @@ echo form_hidden('attend_list', count($invites));
     </tr>
 <?php endforeach; ?>
 </table>
-<?php echo form_close(); ?>
+<?php echo form_close();

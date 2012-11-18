@@ -79,4 +79,4 @@ if ($edit_id) {
 </tr>
 <tr><td colspan="2" align="right"><?php echo form_submit('sub', $sub); ?></td></tr>
 </table>
-<?php echo form_close(); ?>
+<?php echo form_close();

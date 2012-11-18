@@ -89,4 +89,4 @@ echo form_open($path, array('id'=>'frm_access_add'));
     </div>
     <?php if (isset($token_id)) { echo form_hidden('token_id', $token_id); } ?>
 </div>
-<?php echo form_close(); ?>
+<?php echo form_close(); 

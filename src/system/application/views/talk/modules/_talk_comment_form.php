@@ -113,4 +113,3 @@
         echo form_close(); 
         /* close if for date */
 } // close comment allowed
-?>

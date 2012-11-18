@@ -53,5 +53,4 @@ The callback URL is the location that users should be returned to after they hav
 <?php
 echo form_close();
 
-?>
 

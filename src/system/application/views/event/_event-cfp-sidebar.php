@@ -12,4 +12,3 @@ if (!empty($events)) {
         'content'	=> $cfp_data
     ));
 }
-?>
