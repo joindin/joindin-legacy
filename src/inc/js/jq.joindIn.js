@@ -28,7 +28,7 @@
             var map = new L.Map(this.attr('id'), {zoomControl: true});
             
             var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                osmAttribution = 'Map data &copy; 2012 <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+                osmAttribution = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
                 osm = new L.TileLayer(osmUrl, {maxZoom: 18, attribution: osmAttribution});
             
             map.setView(new L.LatLng(lat, lon), zoomLevel).addLayer(osm);
