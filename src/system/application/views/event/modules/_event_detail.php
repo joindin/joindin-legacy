@@ -95,9 +95,11 @@ if ($event_detail->event_cfp_start>=time()) {
             <div class="links">
                 <h2 class="h4">Event Link<?php if (count($hrefs) != 1): ?>s<?php endif; ?></h2>
                 <ul>
-                <?php foreach ($hrefs as $href): ?>
-                    <li><a href="<?php echo escape($href); ?>" rel="external"><?php echo escape($href); ?></a></li>
-                <?php endforeach; ?>
+                <?php 
+                $linkListItem = '<li><a href="%1$s" title="%1$s" rel="external">%1$s</a></li>';
+                foreach ($hrefs as $href) {
+                    printf($linkListItem, escape($href));
+                }?>
                 </ul>
             </div>
         <?php } ?>
