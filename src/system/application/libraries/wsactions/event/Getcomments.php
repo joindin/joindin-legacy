@@ -36,4 +36,3 @@ class Getcomments extends BaseWsRequest {
     }
     
 }
-?>
