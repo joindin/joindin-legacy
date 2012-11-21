@@ -97,6 +97,7 @@ or
    (use the correct username and password)
 
 7. If you are using Windows And/Or Git bash you will see an error regarding "o being an invalid option"
+
     To fix this, please visit http://gnuwin32.sourceforge.net/packages/grep.htm and get the binaries zip file for the grep package.
     extract the contents of the zip file's bin folder to the bin folder of your Git install and restart Git Bash.
 
