@@ -169,7 +169,9 @@ if ($event_detail->event_cfp_start>=time()) {
             ?>
         </div>
         <?php
-        if ((int)$event_detail->event_lat !== 0 && (int)$event_detail->event_long !== 0): ?>
+        if ((int)$event_detail->event_lat === 0 && (int)$event_detail->event_long == 0):
+            // 0,0 - don't show the map
+        else:?>
         <div id="desc-map">
             <div id="map" data-lat="<?php echo $event_detail->event_lat; ?>" data-lon="<?php echo $event_detail->event_long; ?>" data-zoom="14"></div>
             <script type="text/javascript">
