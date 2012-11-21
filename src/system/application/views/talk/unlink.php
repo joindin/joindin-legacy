@@ -27,4 +27,3 @@ if (isset($talkId)) {
     }
 }
     
-?>

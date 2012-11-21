@@ -13,4 +13,4 @@ if ($is_auth && count($admins)>0): ?>
 <p>
 Please <a href="/event/invite/<?php echo $detail[0]->ID;?>/request">click here</a> to request an invite to this event.
 </p>
-<?php endif; ?>
+<?php endif; 

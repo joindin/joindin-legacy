@@ -25,4 +25,4 @@
         <?php echo form_submit('sub','Submit Updates'); ?>
     </div>
 </div>
-<?php echo form_close(); ?>
+<?php echo form_close(); 

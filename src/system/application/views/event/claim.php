@@ -63,4 +63,4 @@ claim the session. You can then accept/deny based on any match between them.
         <?php echo form_submit('sub','Submit Updates'); ?>
     </div>
 </div>
-<?php echo form_close(); ?>
+<?php echo form_close(); 

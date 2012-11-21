@@ -25,4 +25,3 @@ foreach (array_slice($talks['recent'],0,10) as $v) {
 foreach (array_slice($talks['popular'],0,10) as $v) {
     $this->load->view('talk/_talk-row', array('talk'=>$v));	 }
 //$this->load->view('talk/_popular-speaker', array('talks'=>$talks['popular']));	
-?>

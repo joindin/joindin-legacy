@@ -10,4 +10,4 @@ foreach ($eventDetail as $event) {
     No events were found with this tag!<br/>
     <br/>
     Didn't find what you were looking for? Try our <a href="/event/all">full events list</a>!
-<?php endif; ?>
+<?php endif; 

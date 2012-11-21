@@ -84,4 +84,3 @@ if (count($events) == 0) {
 </p>
 <?php
 }
-?>
