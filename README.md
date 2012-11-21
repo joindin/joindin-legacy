@@ -98,8 +98,7 @@ or
 
 7. If you are using Windows And/Or Git bash you will see an error regarding "o being an invalid option"
 
-    To fix this, please visit http://gnuwin32.sourceforge.net/packages/grep.htm and get the binaries zip file for the grep package.
-    extract the contents of the zip file's bin folder to the bin folder of your Git install and restart Git Bash.
+    To fix this, please extract the contents of the zip file found in `/doc/gitbash` to the bin folder of your Git install and restart Git Bash.
 
 8. Create some sample data to get you started - see `/doc/dbgen/README` for information about this excellent tool
 
