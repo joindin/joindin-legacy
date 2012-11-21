@@ -1,4 +1,18 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+/**
+ * Joindin config file
+ *
+ * PHP version 5
+ *
+ * @category  Joind.in
+ * @package   Configuration
+ * @copyright 2009 - 2012 Joind.in
+ * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
+ */
+
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
 |--------------------------------------------------------------------------
@@ -8,7 +22,7 @@
 | Name of site, used in views and emails.
 |
 */
-$config['site_name']	= 'Joind.in';
+$config['site_name'] = 'Joind.in';
 
 /*
 |--------------------------------------------------------------------------
@@ -38,13 +52,13 @@ $config['api_base_url']	= 'https://api.joind.in/';
 | Various transactional emails used throughout the system.
 |
 */
-$config['email_submissions']	= 'submissions@joind.in';
-$config['email_comments']	= 'comments@joind.in';
-$config['email_feedback']	= 'feedback@joind.in';
-$config['email_events']	= 'eventmgr@joind.in';
-$config['email_iphone']	= 'iphone@joind.in';
-$config['email_info']	= 'info@joind.me';
-$config['email_admin']	= 'enygma@phpdeveloper.org';
+$config['email_submissions'] = 'submissions@joind.in';
+$config['email_comments']    = 'comments@joind.in';
+$config['email_feedback']    = 'feedback@joind.in';
+$config['email_events']      = 'eventmgr@joind.in';
+$config['email_iphone']      = 'iphone@joind.in';
+$config['email_info']        = 'info@joind.me';
+$config['email_admin']       = 'enygma@phpdeveloper.org';
 
 /*
 |--------------------------------------------------------------------------
@@ -83,14 +97,14 @@ $config['index_page'] = "";
 | URI string.  The default setting of "AUTO" works for most servers.
 | If your links do not seem to work, try one of the other delicious flavors:
 |
-| 'AUTO'			Default - auto detects
-| 'PATH_INFO'		Uses the PATH_INFO
-| 'QUERY_STRING'	Uses the QUERY_STRING
-| 'REQUEST_URI'		Uses the REQUEST_URI
-| 'ORIG_PATH_INFO'	Uses the ORIG_PATH_INFO
+| 'AUTO'            Default - auto detects
+| 'PATH_INFO'        Uses the PATH_INFO
+| 'QUERY_STRING'    Uses the QUERY_STRING
+| 'REQUEST_URI'        Uses the REQUEST_URI
+| 'ORIG_PATH_INFO'    Uses the ORIG_PATH_INFO
 |
 */
-$config['uri_protocol']	= "PATH_INFO";
+$config['uri_protocol'] = "PATH_INFO";
 
 /*
 |--------------------------------------------------------------------------
@@ -115,7 +129,7 @@ $config['url_suffix'] = "";
 | than english.
 |
 */
-$config['language']	= "english";
+$config['language'] = "english";
 
 /*
 |--------------------------------------------------------------------------
@@ -137,7 +151,7 @@ $config['charset'] = "UTF-8";
 | setting this variable to TRUE (boolean).  See the user guide for details.
 |
 */
-$config['enable_hooks'] = TRUE;
+$config['enable_hooks'] = true;
 
 
 /*
@@ -197,10 +211,10 @@ $config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-=';
 | use segment based URLs.
 |
 */
-$config['enable_query_strings'] = TRUE;
-$config['directory_trigger'] = 'd';	 // experimental not currently in use
-$config['controller_trigger'] = 'c';
-$config['function_trigger'] = 'm';
+$config['enable_query_strings'] = true;
+$config['directory_trigger']    = 'd';     // experimental not currently in use
+$config['controller_trigger']   = 'c';
+$config['function_trigger']     = 'm';
 
 /*
 |--------------------------------------------------------------------------
@@ -212,11 +226,11 @@ $config['function_trigger'] = 'm';
 | You can enable error logging by setting a threshold over zero. The
 | threshold determines what gets logged. Threshold options are:
 |
-|	0 = Disables logging, Error logging TURNED OFF
-|	1 = Error Messages (including PHP errors)
-|	2 = Debug Messages
-|	3 = Informational Messages
-|	4 = All Messages
+|    0 = Disables logging, Error logging TURNED OFF
+|    1 = Error Messages (including PHP errors)
+|    2 = Debug Messages
+|    3 = Informational Messages
+|    4 = All Messages
 |
 | For a live site you'll usually only enable Errors (1) to be logged otherwise
 | your log files will fill up very fast.
@@ -277,17 +291,18 @@ $config['encryption_key'] = "";
 | 'encrypt_sess_cookie' = TRUE/FALSE (boolean).  Whether to encrypt the cookie
 | 'session_expiration'  = the number of SECONDS you want the session to last.
 |  by default sessions last 7200 seconds (two hours).  Set to zero for no expiration.
-| 'time_to_update'		= how many seconds between CI refreshing Session Information
+| 'time_to_update'        = how many seconds between CI refreshing Session
+|                           Information
 |
 */
-$config['sess_cookie_name']		= 'ci_session';
-$config['sess_expiration']		= 7200;
-$config['sess_encrypt_cookie']	= FALSE;
-$config['sess_use_database']	= FALSE;
-$config['sess_table_name']		= 'ci_sessions';
-$config['sess_match_ip']		= FALSE;
-$config['sess_match_useragent']	= TRUE;
-$config['sess_time_to_update'] 		= 300;
+$config['sess_cookie_name']     = 'ci_session';
+$config['sess_expiration']      = 7200;
+$config['sess_encrypt_cookie']  = false;
+$config['sess_use_database']    = false;
+$config['sess_table_name']      = 'ci_sessions';
+$config['sess_match_ip']        = false;
+$config['sess_match_useragent'] = true;
+$config['sess_time_to_update']  = 300;
 
 /*
 |--------------------------------------------------------------------------
@@ -299,9 +314,9 @@ $config['sess_time_to_update'] 		= 300;
 | 'cookie_path'   =  Typically will be a forward slash
 |
 */
-$config['cookie_prefix']	= "";
-$config['cookie_domain']	= "";
-$config['cookie_path']		= "/";
+$config['cookie_prefix'] = "";
+$config['cookie_domain'] = "";
+$config['cookie_path']   = "/";
 
 /*
 |--------------------------------------------------------------------------
@@ -312,7 +327,7 @@ $config['cookie_path']		= "/";
 | COOKIE data is encountered
 |
 */
-$config['global_xss_filtering'] = FALSE;
+$config['global_xss_filtering'] = false;
 
 /*
 |--------------------------------------------------------------------------
@@ -331,7 +346,7 @@ $config['global_xss_filtering'] = FALSE;
 | by the output class.  Do not "echo" any values with compression enabled.
 |
 */
-$config['compress_output'] = FALSE;
+$config['compress_output'] = false;
 
 /*
 |--------------------------------------------------------------------------
@@ -357,7 +372,7 @@ $config['time_reference'] = 'local';
 | in your view files.  Options are TRUE or FALSE (boolean)
 |
 */
-$config['rewrite_short_tags'] = FALSE;
+$config['rewrite_short_tags'] = false;
 
 /*
 |--------------------------------------------------------------------------
@@ -367,22 +382,22 @@ $config['rewrite_short_tags'] = FALSE;
 $config['token'] = 'th1st0k3n';
 //$config['token_dir'] = '/www/htdocs/ctokens';
 $config['token_dir'] = dirname(__FILE__) . '/../../cache/ctokens';
-$config['token_rm'] = 5; //time in minutes
+$config['token_rm']  = 5; //time in minutes
 
 // Save our Twitter login information
-$config['twitter_user']		= '';
-$config['twitter_pass']		= '';
+$config['twitter_user'] = '';
+$config['twitter_pass'] = '';
 
 // For the Akismet class
-$config['akismet_key']		= '';
-$config['akismet_blog']		= '';
+$config['akismet_key']  = '';
+$config['akismet_blog'] = '';
 
 // For the Defensio class
-$config['defensio_key']		= '';
-$config['defensio_owner']	= '';
+$config['defensio_key']   = '';
+$config['defensio_owner'] = '';
 
 // If you're debugging and want all emails to go to one address, use this
-// $config['debug_email']		= '';
+// $config['debug_email']        = '';
 
 // Number of seconds a user is allowed to edit his/her comment
 $config['comment_edit_time'] = 60;
