@@ -77,4 +77,3 @@ class Rmadmin extends BaseWsRequest {
     }	
 }
 
-?>

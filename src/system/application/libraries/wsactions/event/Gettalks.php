@@ -51,4 +51,3 @@ class Gettalks extends BaseWsRequest {
     }
     
 }
-?>

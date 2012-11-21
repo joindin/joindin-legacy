@@ -58,4 +58,3 @@ class Getdetail extends BaseWsRequest {
         }
     }
 }
-?>

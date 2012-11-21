@@ -52,4 +52,3 @@ class Attend extends BaseWsRequest {
     }
     //-----------------------
 }
-?>

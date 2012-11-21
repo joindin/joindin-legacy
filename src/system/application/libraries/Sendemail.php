@@ -303,4 +303,4 @@ be logged in to get to the \"Claims\" page for the event!
 
     }
 }
-?>
+
