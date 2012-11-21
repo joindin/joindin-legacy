@@ -20,4 +20,3 @@ if (isset($bid)) {
     echo '<h1 class="title">Blog Post Removed!</h1>';
     echo '<a href="/blog">Return to blog post listing</a>';
 }
-?>

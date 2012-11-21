@@ -25,4 +25,4 @@
     </div>
 </div>
 
-<?php echo form_close(); ?>
+<?php echo form_close();

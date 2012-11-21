@@ -6,4 +6,4 @@ $uri_segments = $this->uri->segment_array();
     $style=($i==$current_page) ? 'style="font-weight:bold"' : '';
     ?>
     <a <?php echo $style?> href="/<?php echo $uri_segments[1]?>/<?php echo $uri_segments[2]?>/<?php echo $i?>"><?php echo $i?></a>
-<?php endfor; ?>
+<?php endfor; 

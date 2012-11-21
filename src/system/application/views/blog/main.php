@@ -39,4 +39,4 @@ menu_pagetitle('Blog');
     <?php endforeach; ?>
 <?php else: ?>
     <?php $this->load->view('msg_info', array('msg' => 'No posts yet! Come back soon!')); ?>
-<?php endif; ?>
+<?php endif; 

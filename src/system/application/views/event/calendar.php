@@ -20,4 +20,3 @@ foreach ($events as $event) {
     echo implode(" ", array_slice($split_by_space,0,80)).'...';
     echo '<br/><br/>';
 }
-?>

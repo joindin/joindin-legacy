@@ -42,5 +42,5 @@ foreach ($talks as $k=>$v) {
 }
 ?>
 </div>
-<?php endif; ?>
+<?php endif; 
 

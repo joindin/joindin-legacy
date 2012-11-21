@@ -38,4 +38,4 @@ foreach ($claims as $k=>$v) {
     </td>
 </tr>
 </table>
-<?php echo form_close(); ?>
+<?php echo form_close(); 

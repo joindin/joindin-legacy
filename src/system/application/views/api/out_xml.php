@@ -24,4 +24,3 @@ addArrayToXML($xml, $items);
 
 echo $xml->asXML();
 
-?>
