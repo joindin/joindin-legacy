@@ -1,4 +1,18 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php  
+/**
+ * Joindin config file
+ *
+ * PHP version 5
+ *
+ * @category  Joind.in
+ * @package   Configuration
+ * @copyright 2009 - 2012 Joind.in
+ * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
+ */
+
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 /*
 | -------------------------------------------------------------------
 | DATABASE CONNECTIVITY SETTINGS
@@ -34,8 +48,8 @@
 | the active record class
 */
 
-$active_group = "default";
-$active_record = TRUE;
+$active_group  = "default";
+$active_record = true;
 
 $db['default']['hostname'] = "localhost";
 $db['default']['username'] = "joind_in";
@@ -43,9 +57,9 @@ $db['default']['password'] = "pleasechangeme";
 $db['default']['database'] = "joindin";
 $db['default']['dbdriver'] = "mysql";
 $db['default']['dbprefix'] = "";
-$db['default']['pconnect'] = TRUE;
-$db['default']['db_debug'] = TRUE;
-$db['default']['cache_on'] = FALSE;
+$db['default']['pconnect'] = true;
+$db['default']['db_debug'] = true;
+$db['default']['cache_on'] = false;
 $db['default']['cachedir'] = "";
 $db['default']['char_set'] = "utf8";
 $db['default']['dbcollat'] = "utf8_general_ci";
@@ -56,9 +70,9 @@ $db['test']['password'] = "pleasechangemetoo";
 $db['test']['database'] = "joindin_test";
 $db['test']['dbdriver'] = "mysql";
 $db['test']['dbprefix'] = "";
-$db['test']['pconnect'] = TRUE;
-$db['test']['db_debug'] = TRUE;
-$db['test']['cache_on'] = FALSE;
+$db['test']['pconnect'] = true;
+$db['test']['db_debug'] = true;
+$db['test']['cache_on'] = false;
 $db['test']['cachedir'] = "";
 $db['test']['char_set'] = "utf8";
 $db['test']['dbcollat'] = "utf8_general_ci";
