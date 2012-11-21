@@ -96,17 +96,20 @@ or
 
    (use the correct username and password)
 
-7. If you are using Windows And/Or Git bash you will see an error regarding "o being an invalid option"
+   If you are using Windows And/Or Git bash you may see an error regarding "o being an invalid option" when running step 6.
 
-    To fix this, please extract the contents of the zip file found in `/doc/gitbash` to the bin folder of your Git install and restart Git Bash.
+   To fix this, you will need to visit http://gnuwin32.sourceforge.net/packages/grep.htm and download the binaries and dependencies zip files
+   Extract the contents of the bin folder from the zip files to the bin folder of your Git install and restart Git Bash.
 
-8. Create some sample data to get you started - see `/doc/dbgen/README` for information about this excellent tool
+    This should also work for git via the commandline (cmd.exe) but cannot be guaranteed in that environment.
 
-9. To enable useful error messages, add the following to your `.htaccess`
+7. Create some sample data to get you started - see `/doc/dbgen/README` for information about this excellent tool
+
+8. To enable useful error messages, add the following to your `.htaccess`
 
         SetEnv JOINDIN_DEBUG On
         
-10. Enjoy the site!
+9. Enjoy the site!
 
 ## Other Resources
 
