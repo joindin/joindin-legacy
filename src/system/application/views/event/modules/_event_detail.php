@@ -14,6 +14,10 @@ if ($event_detail->event_cfp_start>=time()) {
 }
 
 ?>
+<link rel="stylesheet" href="/inc/css/event_detail.css" />
+<link rel="stylesheet" href="/inc/leaflet/leaflet.css" />
+<!--[if lte IE 8]><link rel="stylesheet" href="/inc/leaflet/leaflet.ie.css" /><![endif]-->
+<script src="/inc/leaflet/leaflet.js"></script>
 
 <div class="detail">
     
@@ -23,6 +27,7 @@ if ($event_detail->event_cfp_start>=time()) {
         <div class="title">
             <div class="head">
                 <input type="hidden" name="eid" id="eid" value="<?php echo $event_detail->ID; ?>"/>
+                <div class="event-detail">
                 <h1><?php echo escape($event_detail->event_name)?> <?php echo (($event_detail->pending==1) ? '(Pending)':'')?></h1>
                 <p class="info">
                     <strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event_detail->event_start, $event_detail->event_tz_cont.'/'.$event_detail->event_tz_place, 'd.M.Y'); ?></strong>
@@ -35,7 +40,7 @@ if ($event_detail->event_cfp_start>=time()) {
                         <br/><strong>Private Event</strong>
                     <?php endif; ?>
                 </p>
-                
+                </div>
                 <p class="opts">
                 <?php 
                 /*
@@ -70,6 +75,7 @@ if ($event_detail->event_cfp_start>=time()) {
         <?php echo auto_p(auto_link(escape($event_detail->event_desc))); ?>
         <hr/>
         
+        <div class="desc-normal">
     <b>Your host(s):</b><br/>
     <table cellpadding="5" cellspacing="0" border="0">
     <tr>
@@ -89,9 +95,11 @@ if ($event_detail->event_cfp_start>=time()) {
             <div class="links">
                 <h2 class="h4">Event Link<?php if (count($hrefs) != 1): ?>s<?php endif; ?></h2>
                 <ul>
-                <?php foreach ($hrefs as $href): ?>
-                    <li><a href="<?php echo escape($href); ?>" rel="external"><?php echo escape($href); ?></a></li>
-                <?php endforeach; ?>
+                <?php 
+                $linkListItem = '<li><a href="%1$s" title="%1$s" rel="external">%1$s</a></li>';
+                foreach ($hrefs as $href) {
+                    printf($linkListItem, escape($href));
+                }?>
                 </ul>
             </div>
         <?php } ?>
@@ -117,7 +125,6 @@ if ($event_detail->event_cfp_start>=time()) {
                 </ul>
             </div>
         <?php } ?>
-            <div class="clear"></div>
         </div>
     <?php } ?>
             <?php 
@@ -146,7 +153,6 @@ if ($event_detail->event_cfp_start>=time()) {
             }
                 ?> </b> 
             </div>
-            <div class="clear"></div>
             <?php }
             if (!empty($tags)) {
                 ?>
@@ -159,8 +165,22 @@ if ($event_detail->event_cfp_start>=time()) {
                 echo 'tagged: '.implode(',', $tagList);
                 ?>
                 </div>
-                <div class="clear"></div>
             <?php }
             ?>
+        </div>
+        <?php
+        if ((int)$event_detail->event_lat === 0 && (int)$event_detail->event_long == 0):
+            // 0,0 - don't show the map
+        else:?>
+        <div id="desc-map">
+            <div id="map" data-lat="<?php echo $event_detail->event_lat; ?>" data-lon="<?php echo $event_detail->event_long; ?>" data-zoom="14"></div>
+            <script type="text/javascript">
+                jQuery(function($) {
+                    $('#map').joindIn_map();
+                });
+            </script>
+        </div>
+        <?php endif; ?>
+        <div class="clear"></div>
     </div>
 </div>

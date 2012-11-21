@@ -1,0 +1,16 @@
+#map {
+    height: 200px;
+    width: 350px;
+}
+
+div.desc-normal {
+    float: left;
+    width: 235px;
+    padding: 0;
+    overflow-x: hidden;
+    margin: 0;
+}
+
+div#desc-map {
+    float: right;
+}

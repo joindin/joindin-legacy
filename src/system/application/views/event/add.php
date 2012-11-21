@@ -136,7 +136,10 @@ echo '<h2>'.$title.'</h2>';
 
     <div class="row">
         <label for="geo">Event Location</label>
-        <script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false"></script>
+        <link rel="stylesheet" href="/inc/leaflet/leaflet.css" />
+        <!--[if lte IE 8]><link rel="stylesheet" href="/inc/leaflet/leaflet.ie.css" />< ![endif]-->
+        <script src="/inc/leaflet/leaflet.js"></script>
+
         <table cellpadding="0" cellspacing="0" border="0">
         <tr>
             <td>
@@ -154,10 +157,10 @@ echo '<h2>'.$title.'</h2>';
             <input type="hidden" name="map_latitude" id="map_latitude" value="<?php echo $lat; ?>"/>
             <input type="hidden" name="map_longitude" id="map_longitude" value="<?php echo $long; ?>"/>
             <input type="hidden" name="map_zoom" id="map_zoom" value="<?php echo $zoom; ?>"/>
-            
+
             <input type="hidden" name="event_lat" id="event_lat" value="<?php echo $lat; ?>"/>
             <input type="hidden" name="event_long" id="event_long" value="<?php echo $long; ?>"/>
-            
+
             <table cellpadding="0" cellspacing="0" border="0">
             <tr>
                 <td style="padding-right:5px">
@@ -167,16 +170,17 @@ echo '<h2>'.$title.'</h2>';
                     Address Search:<br/>
                     <?php 
                         $attr = array(
-                            'id' 	=> 'addr',
-                            'name' 	=> 'addr',
-                            'size'	=> 10,
-                            'value'	=> $this->validation->addr,
-                            'style'	=> 'width: 250px'
+                            'id'       => 'addr',
+                            'name'     => 'addr',
+                            'size'     => 10,
+                            'value'    => $this->validation->addr,
+                            'style'    => 'width: 250px'
                         );
                         echo form_input($attr); 
                     ?>
                     <button type="button" onclick="addr_search();">Search</button>
-                    <br/><br/><br/>
+                    <br/><br/>
+                    <div id="results"></div>
                     <table cellpadding="0" cellspacing="0" border="0">
                     <tr>
                         <td style="padding-right:8px"><b>Latitude</b></td>
@@ -192,7 +196,7 @@ echo '<h2>'.$title.'</h2>';
             </tr>
             </table>
             
-            <script type="text/javascript" src="/inc/js/event_google_map.js"></script>
+            <script type="text/javascript" src="/inc/js/event_osm_map.js"></script>
             </td>
         </tr>
         </table>
