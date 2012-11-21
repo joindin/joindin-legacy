@@ -36,4 +36,3 @@ class Tz_model extends Model {
     }
 }
 
-?>

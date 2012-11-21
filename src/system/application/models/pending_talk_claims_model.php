@@ -118,4 +118,3 @@ class Pending_talk_claims_model extends Model
     
 }
 
-?>

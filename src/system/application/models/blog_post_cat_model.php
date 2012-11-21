@@ -23,4 +23,3 @@ class Blog_post_cat_model extends Model {
     }
 }
 
-?>
