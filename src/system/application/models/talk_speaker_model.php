@@ -199,4 +199,3 @@ class Talk_speaker_model extends Model {
     
 }
 
-?>

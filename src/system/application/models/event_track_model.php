@@ -61,4 +61,3 @@ class Event_track_model extends Model {
     }	
 }
 
-?>

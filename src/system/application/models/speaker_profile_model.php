@@ -279,4 +279,3 @@ class Speaker_profile_model extends Model {
     }
 }
 
-?>

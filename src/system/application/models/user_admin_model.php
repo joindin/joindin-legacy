@@ -493,4 +493,3 @@ class User_admin_model extends Model {
 
 
 }
-?>

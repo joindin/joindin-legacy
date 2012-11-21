@@ -39,4 +39,3 @@ class Blog_posts_model extends Model {
     }
 }
 
-?>

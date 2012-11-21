@@ -110,4 +110,3 @@ class Event_themes_model extends Model {
     }
 }
 
-?>

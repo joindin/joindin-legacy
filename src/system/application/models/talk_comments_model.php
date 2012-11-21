@@ -83,4 +83,3 @@ class Talk_comments_model extends Model {
         return $q->result();
     }
 }
-?>

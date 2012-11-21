@@ -22,4 +22,3 @@ class Categories_model extends Model {
     }
     
 }
-?>

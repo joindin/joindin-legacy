@@ -12,4 +12,3 @@ class Blog_cats_model extends Model {
     }
 }
 
-?>

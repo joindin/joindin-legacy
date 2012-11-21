@@ -22,4 +22,3 @@ class Lang_model extends Model {
         return (empty($ret)) ? false : $ret[0]->ID;
     }
 }
-?>
