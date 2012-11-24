@@ -270,6 +270,7 @@ class EventMapper extends ApiMapper
                     $list[$key]['attending'] = false;
                 }
 
+                $list[$key]['id'] = $row['ID'];
                 $list[$key]['tags'] = $this->getTags($row['ID']);;
                 $list[$key]['uri'] = $base . '/' . $version . '/events/' 
                     . $row['ID'];
