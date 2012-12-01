@@ -17,9 +17,9 @@ read/subscribe to the following resources:
 You should work on what you want to. Our bug tracker is
 here: https://joindin.jira.com
 
-Any issues that have the "hackathon" label are ones that we think
-are a good starting point. This [JIRA filter](https://joindin.jira.com/secure/IssueNavigator.jspa?mode=hide&requestId=10510) will give you the list of all
-current issues with the "hackathon" issues.
+Any issues that have the "easypick" label are ones that we think
+are a good starting point. This [JIRA filter](https://joindin.jira.com/secure/IssueNavigator.jspa?mode=hide&requestId=10510)
+will give you the list of all current open issues with the "easypick" label.
 
 If you have any problems, ask on the IRC channel or send an email to
 the mailing list.
