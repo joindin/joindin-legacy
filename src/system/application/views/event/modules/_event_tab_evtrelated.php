@@ -16,6 +16,6 @@
         <a class="comment-count" href="/talk/view/<?php echo $iv->ID; ?>/#comments"><?php echo $iv->comment_count; ?></a>
         </td>
     </tr>
-    <?php $total_comment_ct+=$iv->comment_count; endforeach; ?>
+    <?php endforeach; ?>
     </table>
 </div>
