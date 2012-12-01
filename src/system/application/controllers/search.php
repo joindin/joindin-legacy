@@ -31,6 +31,8 @@
 class Search extends Controller
 {
 
+    const SLASH_REPLACEMENT = '_|_';
+
     /**
      * Constructor, checks whether the user is logged in and passes this to
      * the template.
@@ -77,6 +79,12 @@ class Search extends Controller
         //success! search the talks and events
         if ($this->validation->run() == true) {
             $query = 'q:' . urlencode($this->input->post('search_term'));
+
+            // Replace urlencoded / (%2F) with something that's URL safe and not
+            // likely to ever really be searched on: _|_. Apache does not allow
+            // URLs with encoded /'s for security reasons. It doesn't even get
+            // to mod_rewrite. Which is why searches with / got a 404 previously.
+            $query = str_replace('%2F', self::SLASH_REPLACEMENT, $query);
 
             $start    = 0;
             $end      = 0;
@@ -133,6 +141,14 @@ class Search extends Controller
             }
 
             if (!empty($search_term)) {
+                // Put the /'s back. If there's a _|_ in the search term, assume
+                // it was originally a /
+                $search_term = str_replace(
+                    self::SLASH_REPLACEMENT,
+                    '%2F',
+                    $search_term
+                );
+
                 $this->validation->search_term = urldecode($search_term);
 
                 if (null !== $start) {
