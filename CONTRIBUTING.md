@@ -14,12 +14,26 @@ read/subscribe to the following resources:
 
 ## What to work on
 
-You should work on what you want to. Our bug tracker is 
+You should work on what you want to. Our bug tracker is
 here: https://joindin.jira.com
 
 Any issues that have the "hackathon" label are ones that we think
 are a good starting point. This [JIRA filter](https://joindin.jira.com/secure/IssueNavigator.jspa?mode=hide&requestId=10510) will give you the list of all
-current issues with the "hackathon" issues. 
+current issues with the "hackathon" issues.
 
 If you have any problems, ask on the IRC channel or send an email to
 the mailing list.
+
+
+## Pull-Request workflow
+
+Once you have submitted the PR, people will look at it and
+provide feedback. If it cannot be applied in its current
+state, then a comment will be left and the PR will then be
+closed. This is because the PR queue represents all pull
+requests that are ready to be applied. That is, the PR queue
+is not used as a work-in-progress list.
+
+When you have time to address the comments left on your PR,
+please make the changes, push them to github and then re-open
+the pull request.
