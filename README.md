@@ -61,35 +61,55 @@ or
 
 1. Create a vhost entry for the site. The docroot should be `/src`.
 
-2. Create a MySQL database with username and password.
-   Use a database name of 'joindin'
-
-3. Initialise, patch, and populate the database.
-
-        src/scripts/patchdb.sh -t /path/to/joind.in -d joindin -u username -p password -i
-
-   (use the correct username and password)
-
-4. Create directories for user-added content.
+2. Create directories for user-added content.
 
         mkdir src/system/cache/ctokens && chown apache:apache src/system/cache/ctokens
 
    (or whatever user and group your web server runs as)
 
-5. Create configuration files for database and config (based on the .dist templates):
+3. Create a MySQL database with username and password.
+   Use a database name of 'joindin'
+
+4. Create configuration files for database and config (based on the .dist templates):
 
         cp src/system/application/config/database.php.dist src/system/application/config/database.php
         cp src/system/application/config/config.php.dist   src/system/application/config/config.php
 
    Edit these files as appropriate!
 
-6. Create some sample data to get you started - see `/doc/dbgen/README` for information about this excellent tool
+5. If you are using Fast-CGI you will need to edit the .htaccess file
+   Change lines 17 & 24 from:
 
-7. To enable useful error messages, add the following to your `.htaccess`
+        RewriteRule ^(.*)$ /index.php/$1
+
+   to
+
+        RewriteRule ^(.*)$ /index.php?/$1
+
+   Also you will need to amend the config.php so that the uri_protocol setting ends up as follows:
+
+        $config['uri_protocol']	= "QUERY_STRING";
+
+6. Initialise, patch, and populate the database.
+
+        src/scripts/patchdb.sh -t /path/to/joind.in -d joindin -u username -p password -i
+
+   (use the correct username and password)
+
+   If you are using Windows And/Or Git bash you may see an error regarding "o being an invalid option" when running step 6.
+
+   To fix this, you will need to visit http://gnuwin32.sourceforge.net/packages/grep.htm and download the binaries and dependencies zip files
+   Extract the contents of the bin folder from the zip files to the bin folder of your Git install and restart Git Bash.
+
+    This should also work for git via the commandline (cmd.exe) but cannot be guaranteed in that environment.
+
+7. Create some sample data to get you started - see `/doc/dbgen/README` for information about this excellent tool
+
+8. To enable useful error messages, add the following to your `.htaccess`
 
         SetEnv JOINDIN_DEBUG On
         
-8. Enjoy the site!
+9. Enjoy the site!
 
 ## Other Resources
 
