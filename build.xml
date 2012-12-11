@@ -49,8 +49,10 @@
  </target>
 
  <target name="phpcs" description="Generate checkstyle.xml using PHP_CodeSniffer">
-  <phpcodesniffer standard="doc/codesniffer/JoindIn/" >
-   <fileset dir="${source}" />
+     <phpcodesniffer standard="doc/codesniffer/JoindIn/" verbosity="1">
+   <fileset dir="${source}">
+       <exclude name="views/**"/>
+   </fileset>
    <formatter type="checkstyle" outfile="${basedir}/build/logs/checkstyle.xml" />
   </phpcodesniffer>
  </target>
