@@ -6,7 +6,6 @@
 
  <target name="clean" description="Clean up and create artifact directories">
   <delete dir="${basedir}/build/api"/>
-  <delete dir="${basedir}/build/code-browser"/>
   <delete dir="${basedir}/build/coverage"/>
   <delete dir="${basedir}/build/logs"/>
   <delete dir="${basedir}/build/pdepend"/>
@@ -63,13 +62,7 @@
   </phpdoc2>
  </target>
 
- <target name="phpcb" description="Aggregate tool output with PHP_CodeBrowser">
-  <exec command="phpcb --log ${basedir}/build/logs
-              --source ${source}
-              --output ${basedir}/build/code-browser" />
- </target>
-
- <target name="build" depends="clean,parallelTasks,phpunit,phpcb"/>
+ <target name="build" depends="clean,parallelTasks,phpunit"/>
 
  <target name="launch">
   <exec command="src/scripts/jenkinslaunch.sh" />
