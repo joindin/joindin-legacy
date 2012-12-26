@@ -20,9 +20,11 @@ $title[] = $this->config->item('site_name');
     <script type="text/javascript" src="/inc/js/jquery.js"></script>
     <script type="text/javascript" src="/inc/js/jquery.pause.js"></script>
     <script type="text/javascript" src="/inc/js/jquery-ui.js"></script>
+    <script type="text/javascript" src="/inc/js/tinynav.min.js"></script>
     <script type="text/javascript" src="/inc/js/site.js"></script>
     <script type="text/javascript" src="/inc/js/notifications.js" async></script>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <?php
     if (!empty($feedurl)) {
         echo '<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="'.$feedurl.'" />';
@@ -177,9 +179,11 @@ $title[] = $this->config->item('site_name');
             <a href="/about/contact">Contact</a>
         </div>
         <div class="grid_6 rgt">
+            <span class="sponsor">
             <a href="http://www.combell.com/en/servers/cloud-server" title="Cloud servers & cloud hosting">Cloud server</a> <a href="http://www.combell.com/en" title="Hosting & webhosting">hosting</a> by Combell <a href="http://www.combell.com/en" title="Cloud hosting Combell"><img src="/inc/img/LOGO-COMBELL_small.gif" border="0" style="vertical-align:text-bottom;" alt="Combell" height="22" width="80"/></a>
         &nbsp;&nbsp;&nbsp;&nbsp;
-&copy; <?php echo $this->config->item('site_name'); ?> <?php echo date('Y')?>
+            </span>
+<span class="copyright">&copy; <?php echo $this->config->item('site_name'); ?> <?php echo date('Y')?></span>
         </div>
         <div class="clear"></div>
     </div>
@@ -187,7 +191,7 @@ $title[] = $this->config->item('site_name');
 
 <div id="jQueryUImessageBox" style="display:none">
 </div>
-
+    
 <script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
 document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));

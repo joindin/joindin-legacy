@@ -540,3 +540,8 @@ function padstring (itemToPad,length,padWith)
    return (itemToPad.toString().length>length)?itemToPad:(Array(length).join(padWith)+itemToPad).slice(-length);
 
 }
+
+/* Navigation menu for mobile */
+jQuery(document).ready(function ($) {
+    $("#hd .menu ul").tinyNav();
+});
