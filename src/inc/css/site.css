@@ -1063,7 +1063,7 @@ div.star{background:transparent!important;overflow:hidden!important}
     #hd {padding: 0 3px 10px 3px !important;}
     #hd .menu, #hd .search {min-height: 1em;}
     #hd .menu {border: 0; float: left;}
-    #hd .search {float: right;}
+    #hd .search {margin-top: 3px; float: right;}
     .menu ul {display: none;}
     .tinynav {display: block;}
     .container, .container_16, .container_12, .grid_12, .grid_8, .grid_6, .grid_4 {padding: 0 !important; margin: 0 !important; width: 100% !important;}
@@ -1075,7 +1075,7 @@ div.star{background:transparent!important;overflow:hidden!important}
     .sidebar {padding: 17px 0 0 0 !important; margin: 0 !important; width: auto;}
     #ftr {padding: 10px 3px 3px 3px;}
     #ftr .rgt {text-align: left;}
-    #ctn input, #ctn textarea {width: 98% !important;}
+    #ctn input, #ctn textarea {width: 98% !important; max-width: 16em;}
     #ctn input[type=submit],
     #ctn input[type=button],
     #ctn input[type=image] {
@@ -1092,9 +1092,10 @@ div.star{background:transparent!important;overflow:hidden!important}
     #ftr .sponsor, #ftr .copyright {margin: .5em 0; display: block;}
 }
 @media screen and (max-width: 320px) {
+    #top-search-input {width: 180px; margin-left: 20px;}
     #hd .usr .wrapper {padding: 0 7px 5px 7px !important;}
     #ctn .row .text {max-width: 100%;}
-    .text-body {clear: both; padding-top: 5px !important;}
+    #ctn .row .text-body {clear: both; padding-top: 5px;}
     #ctn .row .img .rating {vertical-align: top;}
     .icon-gravatar img {float: none; margin-top: 0;}
     #ctn .main .detail .header .opts .attending {clear: both; display: block; margin: 10px 0 0 0;}
