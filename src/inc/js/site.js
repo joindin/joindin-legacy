@@ -543,8 +543,5 @@ function padstring (itemToPad,length,padWith)
 
 /* Navigation menu for mobile */
 jQuery(document).ready(function ($) {
-    $("#hd .menu ul").tinyNav({
-        active: 'selected',
-        header: 'Navigation'
-    });
+    $("#hd .menu ul").tinyNav({header: 'Navigation'});
 });
