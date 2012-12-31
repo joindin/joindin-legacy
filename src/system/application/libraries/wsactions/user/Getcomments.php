@@ -69,6 +69,18 @@ class Getcomments extends BaseWsRequest
         $this->CI->load->model('talk_comments_model');
         $this->CI->load->model('event_comments_model');
         
+        // JOINDIN-139 - Empty username will result in an empty
+        // comment structure returned instead of an error.
+        if ($this->xml->action->username == '') {
+            return array(
+                'type' => 'json',
+                'data' => array(
+                    'items' => array(),
+                    'user'  => $this->xml->action->username
+                )
+            );
+        }
+
         $rules = array(
             'username'    =>'required'
         );
