@@ -22,7 +22,6 @@ class Event_model extends Model
     /**
      * Constructor does nothing other than call parent constructor
      *
-     * @todo Should this be removed?
      */
     function Event_model()
     {
@@ -30,7 +29,7 @@ class Event_model extends Model
     }
 
     /**
-     * Match all data given against the events table to see is there's anything
+     * Match all data given against the events table to see if there's anything
      * matching
      *
      * @param mixed $data Data to be checked
@@ -39,10 +38,6 @@ class Event_model extends Model
      */
     function isUnique($data)
     {
-        /**
-         * @todo Think that this $q equates to a query result (or false), but not
-         *       100% sure
-         */
         $q = $this->db->get_where('events', $data);
         $ret = $q->result();
         return (empty($ret)) ? true : false;
@@ -67,8 +62,8 @@ class Event_model extends Model
             $this->db->where('ID !=', $eid);
         }
         
-        $q=$this->db->get();
-        $ret=$q->result();
+        $q   = $this->db->get();
+        $ret = $q->result();
         return (empty($ret)) ? true : false;
     }
 
@@ -77,19 +72,12 @@ class Event_model extends Model
     /**
      * Delete event
      *
-     * It appears that this use to mark events as inactive, but now it deletes the db
-     * record
-     *
      * @param mixed $id ID of the event to be deleted
      *
      * @return void
      */
     function deleteEvent($id)
     {
-        //we don't actually delete them...just make them inactive
-        //get the event
-        //$this->db->where('ID', $id);
-        //$this->db->update('events', array('active'=>0,'pending'=>0));
         
         // No mercy!
         $this->db->delete('events', array('ID'=>$id));
@@ -269,7 +257,7 @@ SQL
     {
         $this->load->helper("events");
         $this->load->helper("talk");
-        // Should we add "event."" before the private for clarity?
+
         $private=($includePrivate) ? '' : ' and ifnull(private,0)!=1';
         $sql='
             select
@@ -475,15 +463,11 @@ SQL
      */
     function getPastEvents($limit = null, $per_page = null, $current_page = null)
     {
-        /**
-         * @todo Review the use of 'total_count'. Think it's missleading, as the code
-         *       suggests that it's actually the total no of pages, rather than
-         *       results
-         */
         $result = $this->getEventsOfType("past", $limit);			
         if ($per_page && $current_page) {
-            $total_count = count($result)/$per_page;
-            $result      = array_slice($result, $current_page*$per_page, $per_page);
+            $total_count = count($result) / $per_page;
+            $result      = array_slice($result, ($current_page * $per_page),
+                $per_page);
             $result['total_count'] = $total_count;
         }
         
@@ -588,7 +572,7 @@ SQL
      * @param mixed $eid ID of the event to get latest talk comment from
      *
      * @todo This does not always return the latest result.  Need to add an
-     *       ORDER BY to fix this
+     *       ORDER BY to fix this - or remove
      *
      * @return object|array Returns a result object, or an empty array if no
      *                      results
@@ -646,7 +630,7 @@ SQL
     }
     
     /**
-     * Look  up an event ID base on it's event_stub
+     * Look up an event ID based on its event_stub
      *
      * @param mixed $name Value to search for in the events table event_stub
      *        field
@@ -654,19 +638,15 @@ SQL
      * @return object|array Returns a result object, or an empty array if no
      *                      results
      *
-     * @todo Review the name of this method.  The name of this method seems
-     *       misleading, as it searched in the event_stub field, rather than
-     *       the event_name field!!!  There is, however a getEventByTitle
-     *       method that searches on the event_name field!?
      */
     function getEventIdByName($name)
     {
-        $q = $this->db->get_where('events', array('event_stub'=>$name));
+        $q = $this->db->get_where('events', array('event_stub' => $name));
         return $q->result();
     }
 
     /**
-     * Fetches an event using it's title (event_name field)
+     * Fetches an event using its title (event_name field)
      *
      * Search is case insensitive
      *
@@ -692,8 +672,6 @@ SQL
      *
      * @return object|array Results object or, if no results, an empty array
      *
-     * @todo Can someone who understands the database structure & linkages
-     *       please add a meaningful comment here
      */
     function getEventClaims($event_id)
     {
@@ -780,6 +758,9 @@ SQL
     /**
      * Fetches details of talks, & their comments & ratings
      *
+     * Expect speaker field to be empty, data was restructured (not brave
+     * enough to remove)
+     *
      * @param mixed $eid      ID of the event in question
      * @param mixed $order_by Order to sort results by.  Only valid values are
      *                        'tc.date_made' || 'tc.date_made DESC'
@@ -788,9 +769,6 @@ SQL
      * @return object|array Returns a results object or, if no results, an
      *                      empty array
      *
-     * @todo Confirm the use of t.speaker in this SELECT query.  On my dev
-     *       environment this field is always NULL, but this may be different
-     *       on live
      */
     function getEventFeedback($eid, $order_by = null)
     {
@@ -842,8 +820,6 @@ SQL
      * @return object|array Returns a results object or, if not results, an
      *                      empty array
      *
-     * @todo Perhaps change the $id method parameter to $eid to be consistent
-     *       with the rest of the class method parameters
      */
     function getEventRelatedSessions($id)
     {
@@ -894,10 +870,10 @@ SQL
      */
     public function getCurrentCfp()
     {
-        $where = 'event_cfp_start <= ' . mktime(
-            0, 0, 0, date('m'), date('d'), date('Y')
-        ) . ' AND ' . 'event_cfp_end >= ' . mktime(
-            0, 0, 0, date('m'), date('d'), date('Y')
+        $where = 'event_cfp_start <= ' 
+            . mktime( 0, 0, 0, date('m'), date('d'), date('Y')) 
+            . ' AND ' . 'event_cfp_end >= ' 
+            . mktime( 0, 0, 0, date('m'), date('d'), date('Y')
         );
         $order_by = "events.event_cfp_end asc";
         $result = $this->getEvents($where, $order_by, null);
