@@ -564,40 +564,6 @@ SQL
         return $this->db->query($sql)->result();
     }
 
-    /**
-     * Fetches the date_made & ID of the latest talk for a given event
-     *
-     * It looks like there is a bug in this code (see @todo tag)
-     *
-     * @param mixed $eid ID of the event to get latest talk comment from
-     *
-     * @todo This does not always return the latest result.  Need to add an
-     *       ORDER BY to fix this - or remove
-     *
-     * @return object|array Returns a result object, or an empty array if no
-     *                      results
-     */
-    function getLatestComment($eid)
-    {
-        $sql=sprintf(
-            "
-            select
-                max(tc.date_made) max_date,
-                tc.ID
-            from
-                talks t,
-                talk_comments tc
-            where
-                t.event_id=%s and
-                tc.talk_id=t.ID
-            group by
-                t.event_id
-            ",
-            $this->db->escape($eid)
-        );
-        $q=$this->db->query($sql);
-        return $q->result();
-    }
     
     /**
      * Checks if a given user has already commented on an event
