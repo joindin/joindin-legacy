@@ -30,5 +30,12 @@ class Event_comments_model extends Model {
         $q=$this->db->get_where('event_comments', array('ID'=>$cid));
         return $q->result();	
     }
+    function getUserCommentCount($uid) {
+        $this->db->select('count(*) as "n"');
+        $this->db->from('event_comments');
+        $this->db->where('user_id', $uid);
+        $q=$this->db->get();
+        return $q->row()->n;
+    }
 }
 

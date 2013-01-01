@@ -14,7 +14,7 @@ if (!empty($msg)):
     <?php 
     foreach ($comments as $k => $comment):
         if ($comment->user_id != 0) {
-            $uname = '<strong><a href="/user/view/'.$comment->user_id.'">'.escape($comment->cname).'</a></strong>';
+            $uname = '<strong><a href="/user/view/'.$comment->user_id.'">'.escape($comment->cname).'</a> ('.$comment->user_comment_count.' comments)</strong>';
         } elseif (isset($comment->cname)) {
             $uname = '<strong>'.escape($comment->cname).'</strong>';
         } else {

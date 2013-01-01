@@ -945,6 +945,11 @@ class Event extends Controller
         }
 
         $arr['comments'] = $this->event_comments_model->getEventComments($id);
+        for ($i = 0; $i < count($arr['comments']); $i++) {
+            if ($arr['comments'][$i]->user_id != 0) {
+                $arr['comments'][$i]->user_comment_count = $this->event_comments_model->getUserCommentCount($arr['comments'][$i]->user_id);
+            }
+        }
 
         if (!$is_auth) {
             $info = array(
