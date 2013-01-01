@@ -772,6 +772,13 @@ class Talk extends Controller
             }
         }
 
+        if (isset($talk_comments['comment'])) {
+            for ($i = 0; $i < count ($talk_comments['comment']); $i++) {
+                if ($talk_comments['comment'][$i]->user_id != 0) {
+                    $talk_comments['comment'][$i]->user_comment_count = $this->tcm->getUserCommentCount($talk_comments['comment'][$i]->user_id);
+                }
+            }
+        }
         $arr = array(
             'detail'         => $talk_detail[0],
             'comments'       => (isset($talk_comments['comment']))

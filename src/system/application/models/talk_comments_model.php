@@ -41,6 +41,19 @@ class Talk_comments_model extends Model {
         $q=$this->db->get();
         return $q->result();
     }
+
+    /**
+     * Get the global comment count for a specific user ID
+     * @param integer $uid User ID
+     * @return integer Comment count
+     */
+    public function getUserCommentCount($uid) {
+        $this->db->select('count(*) as "n"');
+        $this->db->from('talk_comments');
+        $this->db->where('user_id', $uid);
+        $q=$this->db->get();
+        return $q->row()->n;
+    }
     
     /**
      * Remove a comment given its ID in the table
