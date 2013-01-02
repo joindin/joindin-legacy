@@ -91,9 +91,9 @@ class Getcomments extends BaseWsRequest
             $comments = array();
             $restrict = (isset($this->xml->action->type)) ?
                 strtolower($this->xml->action->type) : false;
-
             $udata = $this->CI
-                ->user_model->getUserByUsername($this->xml->action->username);
+                ->user_model->getUserByUsername((string)$this->xml->action->username);
+
             if (empty($udata)) {
                 return array(
                     'output'=>'json',
@@ -103,7 +103,7 @@ class Getcomments extends BaseWsRequest
                         )
                     );
             }
-            
+
             if (!$restrict || $restrict=='talk') {
                 // First, the talk comments...
                 $uc_talk = $this->CI
