@@ -487,6 +487,7 @@ class Talk extends Controller
     {
         $this->load->model('talks_model');
         $this->load->model('event_model');
+        $this->load->model('event_comments_model');
         $this->load->model('invite_list_model', 'ilm');
         $this->load->model('user_attend_model');
         $this->load->model('talk_track_model', 'talkTracks');
@@ -769,6 +770,16 @@ class Talk extends Controller
         foreach ( $speakers as $speaker ) {
             if ( $speaker->speaker_id && $speaker->speaker_id == $user_id ) {
                 $is_claim_approved = true;
+            }
+        }
+
+        if (isset($talk_comments['comment'])) {
+            for ($i = 0; $i < count($talk_comments['comment']); $i++) {
+                if ($talk_comments['comment'][$i]->user_id != 0) {
+                    $talk_comments['comment'][$i]->user_comment_count =
+                        $this->event_comments_model->getUserCommentCount($talk_comments['comment'][$i]->user_id) +
+                        $this->tcm->getUserCommentCount($talk_comments['comment'][$i]->user_id);
+                }
             }
         }
 

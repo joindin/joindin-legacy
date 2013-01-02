@@ -82,4 +82,13 @@ class Talk_comments_model extends Model {
         $q=$this->db->query($sql);
         return $q->result();
     }
+
+
+    function getUserCommentCount($uid) {
+        $this->db->select('count(*) as "n"');
+        $this->db->from('talk_comments');
+        $this->db->where('user_id', $uid);
+        $q = $this->db->get();
+        return $q->row()->n;
+    }
 }
