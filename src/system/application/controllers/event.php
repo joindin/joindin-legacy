@@ -48,6 +48,14 @@ class Event extends Controller
         // check login status and fill the 'logged' parameter in the template
         $this->user_model->logStatus();
 
+
+        // Check if we should be mobile or not
+        $this->load->library('user_agent');
+        if ($this->agent->is_mobile()) {
+            // We should be mobile. Set the layout
+            $this->template->set_template('mobile');
+        }
+
         // Check to see if they need a custom CSS layout
         $this->load->model('event_themes_model', 'eventThemes');
 

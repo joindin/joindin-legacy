@@ -43,6 +43,14 @@ class Talk extends Controller
         parent::Controller();
         $this->auth = ($this->user_model->isAuth()) ? true : false;
 
+
+        // Check if we should be mobile or not
+        $this->load->library('user_agent');
+        if ($this->agent->is_mobile()) {
+            // We should be mobile. Set the layout
+            $this->template->set_template('mobile');
+        }
+
         // check login status and fill the 'logged' parameter in the template
         $this->user_model->logStatus();
     }
