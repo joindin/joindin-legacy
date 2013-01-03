@@ -471,6 +471,14 @@ class Event extends Controller
                         $this->input->post('cfp_start_yr')
                     );
 
+                    $this->validation->cfp_start_mo  = $this->input->post('cfp_start_mo');
+                    $this->validation->cfp_start_yr  = $this->input->post('cfp_start_yr');
+                    $this->validation->cfp_start_day = $this->input->post('cfp_start_day');
+
+                    $this->validation->cfp_end_mo  = $this->input->post('cfp_end_mo');
+                    $this->validation->cfp_end_yr  = $this->input->post('cfp_end_yr');
+                    $this->validation->cfp_end_day = $this->input->post('cfp_end_day');
+
                 }
             }
 
