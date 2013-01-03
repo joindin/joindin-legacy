@@ -354,9 +354,9 @@ class Event extends Controller
             'event_tz_cont'       => 'Event Timezone (Continent)',
             'event_tz_place'      => 'Event Timezone (Place)',
             'event_lat'           => 'Event Latitude',
-            'event_long'        => 'Event Longitude',
+            'event_long'          => 'Event Longitude',
             'event_stub'          => 'Event Stub',
-            'addr'              => 'Event Address'
+            'addr'                => 'Event Address'
         );
         $this->validation->set_fields($fields);
 
