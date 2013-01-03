@@ -439,11 +439,11 @@ class Event extends Controller
                 if ($this->validation->cfp_checked) {
                     $this->validation->cfp_start_mo  = date('n', $event_detail[0]->event_cfp_start);
                     $this->validation->cfp_start_yr  = date('Y', $event_detail[0]->event_cfp_start);
-                    $this->validation->cfp_start_day = date('d', $event_detail[0]->event_cfp_start);
+                    $this->validation->cfp_start_day = date('j', $event_detail[0]->event_cfp_start);
 
                     $this->validation->cfp_end_mo  = date('n', $event_detail[0]->event_cfp_end);
                     $this->validation->cfp_end_yr  = date('Y', $event_detail[0]->event_cfp_end);
-                    $this->validation->cfp_end_day = date('d', $event_detail[0]->event_cfp_end);
+                    $this->validation->cfp_end_day = date('j', $event_detail[0]->event_cfp_end);
                 }
 
                 if ($this->input->post('is_cfp') == null && $id == null) {
