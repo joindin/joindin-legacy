@@ -17,12 +17,15 @@ class Addtrack extends BaseWsRequest {
         if ($this->CI->um->isAuth() || $this->isValidLogin($xml)) {
             // They either need to be an admin of the event or a site admin
             
-            $user= false;
+            $user = false;
             if ($this->CI->um->isAuth()) {
                 $user=$this->CI->session->userdata('username');
             } elseif (!$this->CI->um->isAuth()) {
                 $user=(string)$xml->auth->user;
             }
+
+            // user is username, but we're about to rewrite it.  Grab it quick!
+            $username = $user;
 
             $udata=$this->CI->um->getUserByUsername($user);
             if (!empty($udata)) { 
@@ -38,7 +41,7 @@ class Addtrack extends BaseWsRequest {
             if (!is_int($eid)) { return array('output'=>'json','data'=>array('items'=>array('msg'=>'Invalid Event ID!'))); }
             
             $is_evt_admin = $this->CI->uam->hasPerm($user, $eid, $rtype);
-            $is_site_admin= $this->CI->um->isSiteAdmin($user);
+            $is_site_admin= $this->CI->um->isSiteAdmin($username);
             
             if ($is_site_admin || $is_evt_admin) {
                 return true;
