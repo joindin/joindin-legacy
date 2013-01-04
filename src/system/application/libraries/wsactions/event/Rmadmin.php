@@ -1,6 +1,6 @@
 <?php 
 /**
- * Joindin webservice for removing Rid permission?
+ * Joindin webservice for removing an admin from an event
  *
  * PHP version 5
  *
@@ -15,7 +15,7 @@ if (!defined('BASEPATH')) {
 }
 
 /**
- * Joindin webservice for removing Rid permission?
+ * Joindin webservice for removing an admin from an event
  *
  * PHP version 5
  *
@@ -30,7 +30,7 @@ class Rmadmin extends BaseWsRequest
     public $xml = null;
 
     /**
-     * Instantiates web service to do whatever it is this does
+     * Instantiates web service to remove the event admin
      *
      * @param string $xml XML sent to service
      */
@@ -41,7 +41,7 @@ class Rmadmin extends BaseWsRequest
     }
 
     /**
-     * Ensures that the caller is a site admin
+     * Ensures that the caller is a site admin or event admin
      *
      * @param string $xml XML sent to service
      *
@@ -101,7 +101,7 @@ class Rmadmin extends BaseWsRequest
     }
 
     /**
-     * Does the work for whatever it is that this does.
+     * Removes the user's event admin permissions
      *
      * @return array
      */
@@ -145,7 +145,6 @@ class Rmadmin extends BaseWsRequest
             }
         }
         
-        // Check to see if they're already an admin 
         $this->CI->uam->removeRidPerm($user, $eid, $type);
         return array(
             'output'=>'json',
