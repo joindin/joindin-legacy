@@ -36,6 +36,8 @@ types & commands available:
 	* event getlist hot
 	* event gettalkcomments {event_id}
 	* event addcomment {event_id} {comment}
+	* event addtrack {event_id} {track_name} {track_desc}
+	* event updatetrack {event_id} {track_id} {track_name} {track_desc} {track_color}
 
 	* talk getdetail {talk_id}
 	* talk getcomments {talk_id}
@@ -146,6 +148,36 @@ function event($command, $args)
 					"event_id"=>$eventId, "comment"=>$comment));
 			break;
 
+		case 'addtrack':
+			$eventId = getarg($args, 0);
+			$trackName = getarg($args, 1);
+			$trackDesc = getarg($args, 2);
+
+			if (!$trackDesc) {
+				echo "ERROR: No track desc supplied\n";
+				exit(2);
+			}
+
+			$result = call_api('event', 'addtrack', array("event_id"=>$eventId,
+				'track_name'=>$trackName, 'track_desc'=>$trackDesc));
+			break;
+
+		case 'updatetrack':
+			$eventId = getarg($args, 0);
+			$trackId = getarg($args, 1);
+			$trackName = getarg($args, 2);
+			$trackDesc = getarg($args, 3);
+			$trackColor = getarg($args, 4);
+
+			if (!$trackDesc) {
+				echo "ERROR: No track color supplied\n";
+				exit(2);
+			}
+
+			$result = call_api('event', 'updatetrack', array("event_id"=>$eventId,
+				'track_id'=>$trackId,'track_name'=>$trackName,
+				'track_desc'=>$trackDesc, 'track_color'=>$trackColor));
+			break;
 
 		default:
 			echo "ERROR: invalid command\n";
