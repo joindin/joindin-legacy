@@ -40,6 +40,7 @@ types & commands available:
 	* event updatetrack {event_id} {track_id} {track_name} {track_desc} {track_color}
 	* event addadmin {event_id} {username}
 	* event rmadmin {event_id} {username}
+	* event attend {event_id}
 
 	* talk getdetail {talk_id}
 	* talk getcomments {talk_id}
@@ -205,6 +206,17 @@ function event($command, $args)
 
 			$result = call_api('event', 'rmadmin', array("eid"=>$eventId,
 				'username'=>$username));
+			break;
+
+		case 'attend':
+			$eventId = getarg($args, 0);
+
+			if (!$eventId) {
+				echo "ERROR: No event id supplied\n";
+				exit(2);
+			}
+
+			$result = call_api('event', 'attend', array("eid"=>$eventId));
 			break;
 
 		default:
