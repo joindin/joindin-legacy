@@ -23,7 +23,7 @@ class Deletecomment extends BaseWsRequest {
             $eid=$xml->action->eid;
             // Now check to see if they're a site admin or an event admin
             $is_site	= $this->CI->user_model->isSiteAdmin((string)$xml->auth->user);
-            $is_evt		= $this->CI->user_model->isAdminEvent((string)$eid, $xml->auth->user);
+            $is_evt		= $this->CI->user_model->isAdminEvent((int)$eid, (string)$xml->auth->user);
             $is_js		= $this->checkPublicKey();
             return ($is_site || $is_evt || $is_js) ? true : false;
             
