@@ -38,6 +38,7 @@ types & commands available:
 	* event addcomment {event_id} {comment}
 	* event addtrack {event_id} {track_name} {track_desc}
 	* event updatetrack {event_id} {track_id} {track_name} {track_desc} {track_color}
+	* event addadmin {event_id} {username}
 	* event rmadmin {event_id} {username}
 
 	* talk getdetail {talk_id}
@@ -178,6 +179,19 @@ function event($command, $args)
 			$result = call_api('event', 'updatetrack', array("event_id"=>$eventId,
 				'track_id'=>$trackId,'track_name'=>$trackName,
 				'track_desc'=>$trackDesc, 'track_color'=>$trackColor));
+			break;
+
+		case 'addadmin':
+			$eventId = getarg($args, 0);
+			$username = getarg($args, 1);
+
+			if (!$username) {
+				echo "ERROR: No username supplied\n";
+				exit(2);
+			}
+
+			$result = call_api('event', 'addadmin', array("eid"=>$eventId,
+				'username'=>$username));
 			break;
 
 		case 'rmadmin':
