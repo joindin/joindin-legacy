@@ -41,6 +41,7 @@ types & commands available:
 	* event deletecomment {event_id} {comment_id}
 	* event addtrack {event_id} {track_name} {track_desc}
 	* event updatetrack {event_id} {track_id} {track_name} {track_desc} {track_color}
+	* event deletetrack {event_id} {track_id}
 	* event addadmin {event_id} {username}
 	* event rmadmin {event_id} {username}
 	* event attend {event_id}
@@ -200,6 +201,19 @@ function event($command, $args)
 			$result = call_api('event', 'updatetrack', array("event_id"=>$eventId,
 				'track_id'=>$trackId,'track_name'=>$trackName,
 				'track_desc'=>$trackDesc, 'track_color'=>$trackColor));
+			break;
+
+		case 'deletetrack':
+			$eventId = getarg($args, 0);
+			$trackId = getarg($args, 1);
+
+			if (!$trackId) {
+				echo "ERROR: No track color supplied\n";
+				exit(2);
+			}
+
+			$result = call_api('event', 'deletetrack', array("event_id"=>$eventId,
+				'track_id'=>$trackId));
 			break;
 
 		case 'addadmin':
