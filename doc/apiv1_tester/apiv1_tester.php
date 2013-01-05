@@ -37,6 +37,7 @@ types & commands available:
 	* event getlist upcoming
 	* event getlist hot
 	* event gettalkcomments {event_id}
+	* event getcomments {event_id}
 	* event addcomment {event_id} {comment}
 	* event deletecomment {event_id} {comment_id}
 	* event addtrack {event_id} {track_name} {track_desc}
@@ -144,6 +145,11 @@ function event($command, $args)
 		case 'gettalkcomments':
 			$eventId = getarg($args, 0);
 			$result = call_api('event', 'gettalkcomments', array("event_id"=>$eventId));
+			break;
+
+		case 'getcomments':
+			$eventId = getarg($args, 0);
+			$result = call_api('event', 'getcomments', array("event_id"=>$eventId));
 			break;
 
 		case 'addcomment':
