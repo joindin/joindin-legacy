@@ -1,8 +1,8 @@
 <?php
 // Set these:
 define('URL', 'http://joindin.localhost/api/');
-define('USERNAME', 'imaadmin');
-define('PASSWORD', 'password');
+define('USERNAME', getenv('JIAPIV1_USERNAME') ? getenv('JIAPIV1_USERNAME') : 'imaadmin');
+define('PASSWORD', getenv('JIAPIV1_PASSWORD') ? getenv('JIAPIV1_PASSWORD') : 'password');
 
 // Some settings:
 define('OUTPUT', 'xml'); // json or xml
@@ -16,7 +16,9 @@ exit;
 // ===================================================================
 function help()
 {
-		echo <<<EOT
+	$username = USERNAME;
+
+	echo <<<EOT
 
 Joind.in API v1 simple tester
 Usage:
@@ -48,6 +50,10 @@ types & commands available:
 	* talk claim {talk_id}
 
 	* comment isspam {commend_id} {talk_id} [{rtype=talk}]
+
+Current username: $username
+(Set environment variables JIAPIV1_USERNAME and JIAPIV1_PASSWORD to change)
+
 
 EOT;
 }
