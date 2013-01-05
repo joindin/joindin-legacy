@@ -38,6 +38,7 @@ types & commands available:
 	* event getlist hot
 	* event gettalkcomments {event_id}
 	* event addcomment {event_id} {comment}
+	* event deletecomment {event_id} {comment_id}
 	* event addtrack {event_id} {track_name} {track_desc}
 	* event updatetrack {event_id} {track_id} {track_name} {track_desc} {track_color}
 	* event addadmin {event_id} {username}
@@ -155,6 +156,19 @@ function event($command, $args)
 
 			$result = call_api('event', 'addcomment', array(
 					"event_id"=>$eventId, "comment"=>$comment));
+			break;
+
+		case 'deletecomment':
+			$eventId = getarg($args, 0);
+			$commentId = getarg($args, 1);
+
+			if (!$commentId) {
+				echo "ERROR: No comment id supplied\n";
+				exit(2);
+			}
+
+			$result = call_api('event', 'deletecomment', array("eid"=>$eventId,
+				"cid"=>$commentId));
 			break;
 
 		case 'addtrack':
