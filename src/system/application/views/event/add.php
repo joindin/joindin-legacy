@@ -189,8 +189,6 @@
 </style>
 
 <h1 class="icon-event">Edit an event</h1>
-<p>Edit your event here to be included on joind.in. The site is aimed at events with sessions, where organisers are looking to use this as a tool to gather feedback.</p>
-<p>Please supply a description of your event <b>in English</b>, enduring your event fits our intended criteria (community event, clear description, intent to gather feedback); you may <a href="/about/contact">contact us</a> if you have any questions.</p>
 
 <?php if (!empty($msg)) $this->load->view('msg_info', array('msg' => $msg)); ?>
 
