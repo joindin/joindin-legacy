@@ -125,7 +125,7 @@ if ($event_detail->event_cfp_start>=time()) {
                 </ul>
             </div>
         <?php } ?>
-            <?php if (count($talks)) { ?>
+        <?php if (count($talks)) { ?>
             <div class="links">
                 <h2 class="h4">iCalendar Download</h2>
                 <ul>
