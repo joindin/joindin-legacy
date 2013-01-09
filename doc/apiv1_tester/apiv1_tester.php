@@ -1,6 +1,6 @@
 <?php
 // Set these:
-define('URL', 'http://joindin.localhost/api/');
+define('URL', getenv('JIAPIV1_URL') ? getenv('JIAPIV1_URL') : 'http://joindin.localhost/api/');
 define('USERNAME', getenv('JIAPIV1_USERNAME') ? getenv('JIAPIV1_USERNAME') : 'imaadmin');
 define('PASSWORD', getenv('JIAPIV1_PASSWORD') ? getenv('JIAPIV1_PASSWORD') : 'password');
 
