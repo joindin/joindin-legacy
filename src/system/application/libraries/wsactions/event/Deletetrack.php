@@ -60,6 +60,9 @@ class Deletetrack extends BaseWsRequest
             } elseif (!$this->CI->um->isAuth()) {
                 $user = (string)$xml->auth->user;
             }
+
+            // we need the username later, grab it
+            $username = $user;
             
             $udata = $this->CI->um->getUserByUsername($user);
             if (!empty($udata)) { 
@@ -84,7 +87,7 @@ class Deletetrack extends BaseWsRequest
             
             $is_evt_admin  = $this->CI->uam
                 ->hasPerm($user, $eid, $rtype);
-            $is_site_admin = $this->CI->um->isSiteAdmin($user);
+            $is_site_admin = $this->CI->um->isSiteAdmin($username);
             
             if ($is_site_admin || $is_evt_admin) {
                 return true;
