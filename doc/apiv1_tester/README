@@ -7,4 +7,9 @@ available, just type:
 
 $ php apiv1_test.php
 
-Edit the top of the file to set URL, username and password.
+Set these environment variables to control URL and credentials:
+
+    * JIAPIV1_URL
+    * JIAPIV1_USERNAME
+    * JIAPIV1_PASSWORD
+
