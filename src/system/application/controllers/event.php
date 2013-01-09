@@ -2283,7 +2283,9 @@ class Event extends Controller
     public function icalendar($id)
     {
         $this->load->model('event_model');
+        $event = $this->event_model->getEventDetail($id);
         $data['talks'] = $this->event_model->getEventTalks($id);
+        $data['title'] = $event[0]->event_name;
         $this->load->view('event/icalendar', $data);
     }
 }

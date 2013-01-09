@@ -1060,7 +1060,8 @@ class Talk extends Controller
     function icalendar($id)
     {
         $this->load->model('talks_model');
-        $data['talks'] = $this->talks_model->getTalks($id);;
+        $data['talks'] = $this->talks_model->getTalks($id);
+        $data['title'] = $data['talks'][0]->talk_title;
         $this->load->view('event/icalendar', $data);
     }
 }

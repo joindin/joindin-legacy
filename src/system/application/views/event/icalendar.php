@@ -1,5 +1,6 @@
 <?php
 header('content-type: text/calendar');
+header('content-disposition: attachment; filename="'.str_replace(' ', '_', $title).'.ics"');
 ?>
 BEGIN:VCALENDAR
 VERSION:2.0
