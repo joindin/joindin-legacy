@@ -61,6 +61,17 @@ or
 
 1. Create a vhost entry for the site. The docroot should be `/src`.
 
+    <VirtualHost *:80>
+        ServerName joindin.local
+
+        DocumentRoot "/home/exampleuser/www/joind.in/src"
+
+        <Directory "/home/exampleuser/www/joind.in">
+            Options FollowSymLinks
+            AllowOverride All
+        </Directory>
+    </VirtualHost>
+
 2. Create a MySQL database with username and password.
    Use a database name of 'joindin'
 
