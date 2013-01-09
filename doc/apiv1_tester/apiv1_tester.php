@@ -125,7 +125,7 @@ function event($command, $args)
 
 		case 'getlist':
 			$listType = getarg($args, 0);
-			$result = call_api('event', 'gettalks', array("event_type"=>$listType));
+			$result = call_api('event', 'getlist', array("event_type"=>$listType));
 			break;
 
 		case 'gettalkcomments':
