@@ -2274,5 +2274,12 @@ class Event extends Controller
         $this->template->write_view('content', 'event/tag', $viewData);
         $this->template->render();
     }
+
+    public function icalendar($id)
+    {
+        $this->load->model('event_model');
+        $data['talks'] = $this->event_model->getEventTalks($id);
+        $this->load->view('event/icalendar', $data);
+    }
 }
 

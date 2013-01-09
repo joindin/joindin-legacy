@@ -125,6 +125,16 @@ if ($event_detail->event_cfp_start>=time()) {
                 </ul>
             </div>
         <?php } ?>
+            <?php if (count($talks)) { ?>
+            <div class="links">
+                <h2 class="h4">iCalendar Download</h2>
+                <ul>
+                    <li>
+                        <a href="/event/icalendar/<?php echo $event_detail->ID; ?>"><?php echo $this->config->site_url(); ?>event/icalendar/<?php echo $event_detail->ID; ?></a>
+                    </li>
+                </ul>
+            </div>
+        <?php } ?>
         </div>
     <?php } ?>
             <?php 
