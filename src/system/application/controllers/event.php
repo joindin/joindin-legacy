@@ -2275,6 +2275,11 @@ class Event extends Controller
         $this->template->render();
     }
 
+    /**
+     * Generates as iCal download for all talks in an event
+     *
+     * @param integer $id The ID of the event
+     */
     public function icalendar($id)
     {
         $this->load->model('event_model');
