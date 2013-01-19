@@ -52,7 +52,8 @@ types & commands available:
 	* talk addcomment {talk_id} {rating} {comment} [{private=0}] [{user_id=2}]
 	* talk claim {talk_id}
 
-	* comment isspam {commend_id} {talk_id} [{rtype=talk}]
+	* comment isspam {comment_id} {talk_id} [{rtype=talk}]
+	* comment getdetail {comment_id} [talk|event]
 
 Current username: $username
 (Set environment variables JIAPIV1_USERNAME and JIAPIV1_PASSWORD to change)
@@ -115,6 +116,13 @@ function comment($command, $args)
 			$rtype = getarg($args, 2, 'talk');
 			$result = call_api('comment', 'isspam', array(
 				"cid"=>$commentId, "tid"=>$talkId, "rtype"=>$rtype));
+			break;
+
+		case 'getdetail':
+			$commentId = getarg($args, 0);
+			$rtype = getarg($args, 1);
+			$result = call_api('comment', 'getdetail', array(
+				"cid"=>$commentId, "rtype"=>$rtype));
 			break;
 
 		default:
