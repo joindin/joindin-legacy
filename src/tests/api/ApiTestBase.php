@@ -31,6 +31,7 @@
 
 			$req = new StdClass();
 			$req->request = new StdClass();
+			$req->request->action = new StdClass();
 
 			if (is_array($creds)) {
 				$req->request->auth = new StdClass();
@@ -154,18 +155,18 @@
 
 			if(!empty($talks)) {
 				foreach($talks as $talk) {
-					$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $talk->talk_title);
+					$this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $talk->talk_title);
 					$this->assertIsASpeaker($talk->speaker, "Expected valid speaker info for " . $talk->talk_title . " (" . $talk->ID . ")");
 					$this->assertLooksLikeAStringOrNull($talk->slides_link);
 					$this->assertTrue(is_numeric((string)$talk->date_given));
 					$this->assertTrue(is_numeric((string)$talk->event_id));
 					$this->assertTrue(is_numeric((string)$talk->ID));
-					$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $talk->talk_desc);
+					$this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $talk->talk_desc);
 					$this->assertLooksLikeAStringOrNull($talk->event_tz_cont);
 					$this->assertLooksLikeAStringOrNull($talk->event_tz_place);
 					$this->assertTrue(is_numeric((string)$talk->event_start));
 					$this->assertTrue(is_numeric((string)$talk->event_end));
-					$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $talk->lang);
+					$this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $talk->lang);
 					$this->assertTrue((isset($talk->comment_count) && is_numeric((string)$talk->comment_count)) 
 							|| (isset($talk->ccount) && is_numeric((string)$talk->ccount)));
 					$this->assertIsASessionType($talk->tcid, "Expected valid category for " . $talk->talk_title . " (" . $talk->ID . ")");
@@ -197,7 +198,7 @@
 			if ($value === null) {
 				return;
 			}
-			$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $value, $message);
+			$this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $value, $message);
 		}
 
 		/**
@@ -222,7 +223,7 @@
 		 */
 
 		protected function assertIsASpeaker($speaker, $message = null) {
-			$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $speaker, $message);
+			$this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $speaker, $message);
 		}
 
 		/**
@@ -232,9 +233,9 @@
 		 * @param string   $message The message to pass through to the PHPUnit assertion
 		 */
 		protected function assertIsATrack($track, $message = null) {
-			$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, (string)$track->track_name, $message . ' - field: track_name');
+			$this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, (string)$track->track_name, $message . ' - field: track_name');
 			$this->assertTrue(is_numeric((string)$track->ID), $message . "(field: ID) " . (string)$track->ID);
-			$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, (string)$track->track_desc, $message . ' - field: track_desc');
+			$this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, (string)$track->track_desc, $message . ' - field: track_desc');
 		}
 
 	}

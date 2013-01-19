@@ -6,16 +6,16 @@
 		
 		protected function assertExpectedEventFields($res) {
 			foreach($res as $event) {
-				$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_OBJECT, $event);
-				$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->event_name);
-				$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->event_start);
-				$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->event_end);
-				$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->ID);
-				$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->event_loc);
-				$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->event_desc);
-				$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->active);
-				$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->num_attend);
-				$this->assertType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->num_comments);
+				$this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_OBJECT, $event);
+				$this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->event_name);
+				$this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->event_start);
+				$this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->event_end);
+				$this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->ID);
+				$this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->event_loc);
+				$this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->event_desc);
+				$this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->active);
+				$this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->num_attend);
+				$this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $event->num_comments);
 
 				$this->assertLooksLikeAStringOrNull($event->event_stub);
 				$this->assertLooksLikeAStringOrNull($event->event_icon);
