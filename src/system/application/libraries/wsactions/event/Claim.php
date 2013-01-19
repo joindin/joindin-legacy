@@ -16,7 +16,7 @@ if (!defined('BASEPATH')) {
 }
 
 /**
- * Joindin webservice for claiming a talk
+ * Joindin webservice for claiming 
  * an event
  *
  * PHP version 5
@@ -56,7 +56,7 @@ class Claim extends BaseWsRequest
     }
 
     /**
-     * Does the work to claim a talk
+     * Does the work to claim the event
      *
      * @return array
      */
