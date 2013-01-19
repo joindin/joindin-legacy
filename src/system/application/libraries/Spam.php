@@ -36,7 +36,7 @@ class Spam
      * @param mixed  $val    Value to check
      * @param string $source Where to get criteria from
      *
-     * @return bool
+     * @return bool returns true if the value is NOT spam, i.e. the value is OK
      */
     public function check($chk, $val, $source = 'db')
     {
