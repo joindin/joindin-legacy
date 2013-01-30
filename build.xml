@@ -65,7 +65,11 @@
 
  <target name="phplint" description="Run php -l over the fileset">
    <phplint>
-     <fileset dir="${source}"></fileset>
+     <fileset dir="${source}">
+       <patternset>
+         <include name="**/*.php"/>
+       </patternset>
+     </fileset>
    </phplint>
  </target>
 
