@@ -21,8 +21,7 @@ if (!defined('BASEPATH')) {
  * @package   Configuration
  * @copyright 2009 - 2012 Joind.in
  * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
- *
- /
+ */
 class Spam
 {
 
