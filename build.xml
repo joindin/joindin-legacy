@@ -21,14 +21,12 @@
   <exec command="phpunit -c src/tests/phpunit.xml ./src/tests" />
  </target>
 
- <target name="parallelTasks" description="Run the phpmd, phpcs, phpdoc, lint and phploc tasks in parallel using a maximum of 2 threads.">
-  <parallel threadCount="2">
+ <target name="buildTasks" description="Run the phpmd, phpcs, phpdoc, phploc and lint tasks.">
    <phingcall target="phpmd"/>
    <phingcall target="phpcs"/>
    <phingcall target="phpdoc"/>
    <phingcall target="phploc"/>
    <phingcall target="phplint"/>
-  </parallel>
  </target>
 
  <target name="phpmd" description="Generate pmd.xml using PHPMD">
@@ -64,7 +62,7 @@
  </target>
 
  <target name="phplint" description="Run php -l over the fileset">
-   <phplint>
+   <phplint haltonfailure="true">
      <fileset dir="${source}">
        <patternset>
          <include name="**/*.php"/>
@@ -73,7 +71,7 @@
    </phplint>
  </target>
 
- <target name="build" depends="clean,parallelTasks,phpunit"/>
+ <target name="build" depends="clean,buildTasks,phpunit"/>
 
  <target name="launch">
   <exec command="src/scripts/jenkinslaunch.sh" />
