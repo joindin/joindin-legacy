@@ -21,12 +21,13 @@
   <exec command="phpunit -c src/tests/phpunit.xml ./src/tests" />
  </target>
 
- <target name="parallelTasks" description="Run the phpmd, phpcs, phpdoc and phploc tasks in parallel using a maximum of 2 threads.">
+ <target name="parallelTasks" description="Run the phpmd, phpcs, phpdoc, lint and phploc tasks in parallel using a maximum of 2 threads.">
   <parallel threadCount="2">
    <phingcall target="phpmd"/>
    <phingcall target="phpcs"/>
    <phingcall target="phpdoc"/>
    <phingcall target="phploc"/>
+   <phingcall target="phplint"/>
   </parallel>
  </target>
 
@@ -60,6 +61,16 @@
   <phpdoc2 destdir="${basedir}/build/api">
    <fileset dir="${source}" />
   </phpdoc2>
+ </target>
+
+ <target name="phplint" description="Run php -l over the fileset">
+   <phplint>
+     <fileset dir="${source}">
+       <patternset>
+         <include name="**/*.php"/>
+       </patternset>
+     </fileset>
+   </phplint>
  </target>
 
  <target name="build" depends="clean,parallelTasks,phpunit"/>
