@@ -2,6 +2,7 @@
 
 <project name="joindin" default="build" basedir=".">
  <property name="source" value="src/system/application/"/>
+ <property name="apiv1tester" value="doc/apiv1_tester" />
  <property name="basedir" value="."/>
 
  <target name="clean" description="Clean up and create artifact directories">
@@ -51,6 +52,8 @@
      <phpcodesniffer standard="doc/codesniffer/JoindIn/" verbosity="1">
    <fileset dir="${source}">
        <exclude name="views/**"/>
+   </fileset>
+   <fileset dir="${apiv1tester}">
    </fileset>
    <formatter type="checkstyle" outfile="${basedir}/build/logs/checkstyle.xml" />
   </phpcodesniffer>
