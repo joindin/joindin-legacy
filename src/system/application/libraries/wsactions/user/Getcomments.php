@@ -69,6 +69,18 @@ class Getcomments extends BaseWsRequest
         $this->CI->load->model('talk_comments_model');
         $this->CI->load->model('event_comments_model');
         
+        // JOINDIN-139 - Empty username will result in an empty
+        // comment structure returned instead of an error.
+        if ($this->xml->action->username == '') {
+            return array(
+                'type' => 'json',
+                'data' => array(
+                    'items' => array(),
+                    'user'  => $this->xml->action->username
+                )
+            );
+        }
+
         $rules = array(
             'username'    =>'required'
         );
@@ -79,9 +91,9 @@ class Getcomments extends BaseWsRequest
             $comments = array();
             $restrict = (isset($this->xml->action->type)) ?
                 strtolower($this->xml->action->type) : false;
-
             $udata = $this->CI
-                ->user_model->getUserByUsername($this->xml->action->username);
+                ->user_model->getUserByUsername((string)$this->xml->action->username);
+
             if (empty($udata)) {
                 return array(
                     'output'=>'json',
@@ -91,7 +103,7 @@ class Getcomments extends BaseWsRequest
                         )
                     );
             }
-            
+
             if (!$restrict || $restrict=='talk') {
                 // First, the talk comments...
                 $uc_talk = $this->CI
