@@ -17,23 +17,23 @@
  */
 class SendEmail
 {
-    
+
     private $_config;
     private $_CI = null;
-    
+
     /**
      * Setup reference to the central CodeIniter object & loads extracts it's config
      */
     public function __construct()
     {
-        $this->_CI=&get_instance();
+        $this->_CI     = &get_instance();
         $this->_config = $this->_CI->config;
     }
 
     /**
      * Generic function for sending emails
      *
-     * Sends a single email for each of the email addresses listed in the $to 
+     * Sends a single email for each of the email addresses listed in the $to
      * parameter
      *
      * @param mixed $send_to       Who to send the email to
@@ -45,37 +45,42 @@ class SendEmail
      * @return void
      */
     private function _sendEmail(
-        $send_to, $msg, $subj, $from=null, $extra_headers=null
+        $send_to,
+        $msg,
+        $subj,
+        $from = null,
+        $extra_headers = null
     ) {
         if (!is_array($send_to)) {
-            $send_to=array($send_to);
+            $send_to = array($send_to);
         }
         $from    = ($from) ? $from : $this->_config->item('email_feedback');
         $send_to = ($this->_config->item('debug_email')) ? array(
             $this->_config->item('debug_email')
         ) : $send_to;
 
-        $headers = array();
+        $headers   = array();
         $headers[] = 'From: ' . $from;
         if (!empty($extra_headers)) {
             foreach ($extra_headers as $header) {
-                $headers[]=$header;
+                $headers[] = $header;
             }
         }
 
         foreach ($send_to as $email) {
-            mail($email, $subj, $msg, implode("\r\n", $headers), '-f'.$from);
+            mail($email, $subj, $msg, implode("\r\n", $headers), '-f' . $from);
         }
     }
+
     //-----------------------
-    
+
     /**
      * Send a message to user who claimed the talk when its accepted
      *
      * @param mixed $send_to    Who to send the email to
-     * @param mixed $talk_title Title of the talk (used in the email subject line & 
+     * @param mixed $talk_title Title of the talk (used in the email subject line &
      *                          message body)
-     * @param mixed $talk_id    ID of the talk (used to construct the link to the 
+     * @param mixed $talk_id    ID of the talk (used to construct the link to the
      *                          talk on site
      * @param mixed $evt_name   Name of the event the talk was at
      *
@@ -83,9 +88,9 @@ class SendEmail
      */
     public function claimSuccess($send_to, $talk_title, $talk_id, $evt_name)
     {
-        $subj= $this->_config->item('site_name') . ': Claim on talk "' .
+        $subj = $this->_config->item('site_name') . ': Claim on talk "' .
             $talk_title . '"';
-        $msg=sprintf(
+        $msg  = sprintf(
             "
 You recently laid claim to a talk at the \"%s\" event on %s - \"%s\"
 Your claim has been approved. This talk will now be listed under your account.
@@ -95,7 +100,7 @@ Your claim has been approved. This talk will now be listed under your account.
 Thanks,
 The %s Crew
 ",
-            $evt_name, $this->_config->item('site_name'), $talk_title, 
+            $evt_name, $this->_config->item('site_name'), $talk_title,
             $this->_config->site_url(), $talk_id, $this->_config->item('site_name')
         );
         $this->_sendEmail($send_to, $msg, $subj);
@@ -112,8 +117,8 @@ The %s Crew
      */
     public function sendInvite($send_to, $evt_id, $evt_name)
     {
-        $subj="You've been invited to ".$evt_name;
-        $msg=sprintf(
+        $subj = "You've been invited to " . $evt_name;
+        $msg  = sprintf(
             "
 You have been invited to the event \"%s\" (a private event)
 
@@ -127,22 +132,22 @@ visit %sevent/invite/%s/respond
     }
 
     /**
-    * Send a request to the event admin from a user wanting an invite
-    *
-    * @param mixed $eid      ID of the event user would like to be invited to (I
-    *                        think).  Is used to create the link in the email
-    * @param mixed $evt_name Event name, used in message body
-    * @param array $user     User who has requested an invite.
-    *                        Needs to be the result of a user_model->getUserBy*()
-    * @param mixed $admins   Admin users to send request for invitation emails to
-    *
-    * @return void
-    */
+     * Send a request to the event admin from a user wanting an invite
+     *
+     * @param mixed $eid      ID of the event user would like to be invited to (I
+     *                        think).  Is used to create the link in the email
+     * @param mixed $evt_name Event name, used in message body
+     * @param array $user     User who has requested an invite.
+     *                        Needs to be the result of a user_model->getUserBy*()
+     * @param mixed $admins   Admin users to send request for invitation emails to
+     *
+     * @return void
+     */
     public function sendInviteRequest($eid, $evt_name, $user, $admins)
     {
-        $subj='User '.$user[0]->full_name.' ('.$user[0]->username.') is ' . 
+        $subj = 'User ' . $user[0]->full_name . ' (' . $user[0]->username . ') is ' .
             'requesting an invite!';
-        $msg=sprintf(
+        $msg  = sprintf(
             "
 The user %s (%s) has requested an invite to the event \"%s\"
 
@@ -152,15 +157,15 @@ approve or reject the invite.
             $user[0]->full_name, $user[0]->username, $evt_name,
             $this->_config->site_url(), $eid
         );
-        
+
         //$to=array($user[0]->email);
-        $send_to=array();
+        $send_to = array();
         foreach ($admins as $value) {
-            $send_to[]=$value->email;
+            $send_to[] = $value->email;
         }
         $this->_sendEmail($send_to, $msg, $subj);
     }
-    
+
     /**
      * Send en email back to the event admins from the user
      *
@@ -179,9 +184,9 @@ approve or reject the invite.
      */
     public function sendEventContact($eid, $evt_name, $user_msg, $user, $admins)
     {
-        $subj = $this->_config->item('site_name') . ': A question from ' . 
+        $subj = $this->_config->item('site_name') . ': A question from ' .
             $user[0]->username;
-        $msg=sprintf(
+        $msg  = sprintf(
             "
 %s (%s) has asked a question about the \"%s\" event:
 
@@ -191,16 +196,16 @@ You can reply directly to them by replying to this email.
 ",
             $user[0]->full_name, $user[0]->username, $evt_name, $user_msg
         );
-        
-        $send_to=array();
+
+        $send_to = array();
         foreach ($admins as $value) {
-            $send_to[]=$value->email;
+            $send_to[] = $value->email;
         }
         $this->_sendEmail($send_to, $msg, $subj, $user[0]->email);
     }
-    
+
     /**
-     * Send password reset email to the given user 
+     * Send password reset email to the given user
      *
      * (user's email address is looked up by username)
      *
@@ -213,9 +218,9 @@ You can reply directly to them by replying to this email.
      */
     public function sendPasswordReset($user, $pass)
     {
-        $send_to  = $user[0]->email;
-        $subj     = $this->_config->item('site_name') . ' - Password Reset';
-        $msg      = sprintf(
+        $send_to = $user[0]->email;
+        $subj    = $this->_config->item('site_name') . ' - Password Reset';
+        $msg     = sprintf(
             '
 %s,
 
@@ -247,8 +252,8 @@ Please log in in at %suser/login and change your password as soon as possible.
     public function sendPasswordResetRequest($user, $request_code)
     {
         $send_to = $user[0]->email;
-        $subj = $this->_config->item('site_name') . ' - Password Reset Requested';
-        $msg = sprintf(
+        $subj    = $this->_config->item('site_name') . ' - Password Reset Requested';
+        $msg     = sprintf(
             "
 %s,
 
@@ -263,7 +268,7 @@ below or copy it into your browser:
         );
         $this->_sendEmail($send_to, $msg, $subj);
     }
-    
+
     /**
      * Send an email when a user is added to the admin list for an event
      *
@@ -276,11 +281,11 @@ below or copy it into your browser:
      *
      * @return void
      */
-    public function sendAdminAdd($user, $evt, $added_by=null)
+    public function sendAdminAdd($user, $evt, $added_by = null)
     {
-        $subj='You\'re now an admin on "'.$evt[0]->event_name.'"';
-        $aby=($added_by) ? 'by '.$added_by : '';
-        $msg=sprintf(
+        $subj = 'You\'re now an admin on "' . $evt[0]->event_name . '"';
+        $aby  = ($added_by) ? 'by ' . $added_by : '';
+        $msg  = sprintf(
             "
 You have been added as an admin for the event \"%s\" %s
 
@@ -288,11 +293,11 @@ You can view the event here: %sevent/view/%s
 ",
             $evt[0]->event_name, $aby, $this->_config->site_url(), $evt[0]->ID
         );
-        
+
         $send_to = array($user[0]->email);
         $this->_sendEmail($send_to, $msg, $subj);
     }
-    
+
     /**
      * Send an email when a comment has been made on a session that's been claimed
      * Note: these emails are not sent to site admins
@@ -303,38 +308,38 @@ You can view the event here: %sevent/view/%s
      * @param array   $in_arr      User data for byline
      *
      * @return void
-    */
+     */
     public function sendTalkComment($tid, $send_to, $talk_detail, $in_arr)
     {
-        $CI =& get_instance();
-        $byline='';
-        if ($in_arr['user_id']!=0) {
+        $CI     =& get_instance();
+        $byline = '';
+        if ($in_arr['user_id'] != 0) {
             $CI->load->model('user_model');
-            $udata	= $CI->user_model->getUserById($in_arr['user_id']);
-            $byline	= 'by '.$udata[0]->full_name.' ('.$udata[0]->username.')';
+            $udata  = $CI->user_model->getUserById($in_arr['user_id']);
+            $byline = 'by ' . $udata[0]->full_name .
+                ' (' . $udata[0]->username . ')';
         }
-        
-        $subj	= 'A new comment has been posted on your talk!';
-        $msg	= sprintf(
-            "
-A comment has been posted to your talk on %s %s: \n%s\n
-%s
-\n
-Rating: %s
-\n
-Click here to view it: %stalk/view/%s
-",
+
+        $subj = 'A new comment has been posted on your talk!';
+        $msg  = sprintf(
+            "A comment has been posted to your talk on %s %s: \n%s\n
+            %s
+            \n
+            Rating: %s
+            \n
+            Click here to view it: %stalk/view/%s
+            ",
             $this->_config->item('site_name'), $byline, $talk_detail[0]->talk_title,
             trim($in_arr['comment']), $in_arr['rating'], $this->_config->site_url(),
             $tid
         );
-        
-        $send_to=array($send_to);
+
+        $send_to = array($send_to);
         $this->_sendEmail(
             $send_to, $msg, $subj, $this->_config->item('email_comments')
         );
     }
-    
+
     /**
      * Send an email when an event has successfully imported (from event/import)
      *
@@ -344,84 +349,84 @@ Click here to view it: %stalk/view/%s
      *
      * @return void
      */
-    public function sendSuccessfulImport($eid, $evt_detail, $admins=null)
+    public function sendSuccessfulImport($eid, $evt_detail, $admins = null)
     {
-        $subj='Successful Import for event '.$evt_detail[0]->event_name;
+        $subj = 'Successful Import for event ' . $evt_detail[0]->event_name;
         /**
          * @todo Remove or use this as $from not used in method currently
          */
         $from = 'From:' . $this->_config->item('email_feedback');
-        
-        if (!$admins) { 
+
+        if (!$admins) {
             $this->_CI->load->model('event_model');
-            $this->_CI->event_model->getEventAdmins($eid); 
+            $this->_CI->event_model->getEventAdmins($eid);
         }
-        
-        $msg=sprintf(
+
+        $msg = sprintf(
             "
 An import for the event %s has been successful.\n\n
 You can view the event here: %sevent/view/%s
 ",
             $evt_detail[0]->event_name, $this->_config->site_url(), $eid
         );
-        
-        $send_to=array();
+
+        $send_to = array();
         foreach ($admins as $value) {
-            $send_to[]=$value->email;
+            $send_to[] = $value->email;
         }
         $this->_sendEmail(
             $send_to, $msg, $subj, $this->_config->item('email_comments')
         );
     }
-    
+
     /**
      * Send an email to the site admins about the currently pending events
      *
      * @param mixed $pending_events Events to include details of in the email.
-     *                              Uses event_start property to categorise event 
+     *                              Uses event_start property to categorise event
      *                              within email, and event_name property
      *
-     * @return void 
+     * @return void
      */
     public function sendPendingEvents($pending_events)
     {
         $this->_CI->load->model('user_model');
-                
-        $subj   = 'Pending Events on '.$this->_config->item('site_name');
+
+        $subj = 'Pending Events on ' . $this->_config->item('site_name');
         /**
          * @todo Remove or use this as $from not used in method currently
          */
-        $from   = 'From:' . $this->_config->item('email_feedback');
-        $admin 	= $this->_CI->user_model->getSiteAdminEmail();
+        $from  = 'From:' . $this->_config->item('email_feedback');
+        $admin = $this->_CI->user_model->getSiteAdminEmail();
         foreach ($admin as $value) {
-            $to[]=$value->email;
+            $to[] = $value->email;
         }
 
-        $msg		= "This is a list of pending events and their start dates. " .
+        $msg        = "This is a list of pending events and their start dates. " .
             "Don't miss one!\n\n";
         $event_list = array();
-        $one_week 	= strtotime('+1 week');
-        
+        $one_week   = strtotime('+1 week');
+
         foreach ($pending_events as $event) {
-            if ($event->event_start>time() && $event->event_start<=$one_week) {
-                $event_list['One_Week'][]=$event;
-            } elseif ($event->event_start<=time()) {
-                $event_list['Past'][]=$event;
+            if ($event->event_start > time() && $event->event_start <= $one_week) {
+                $event_list['One_Week'][] = $event;
+            } elseif ($event->event_start <= time()) {
+                $event_list['Past'][] = $event;
             } else {
-                $event_list['Other'][]=$event;
+                $event_list['Other'][] = $event;
             }
         }
         foreach ($event_list as $list_category => $list_item) {
             $msg .= str_replace('_', ' ', $list_category) . "\n";
             foreach ($list_item as $list_item_detail) {
-                $msg.="\t".date('m.d.Y', $list_item_detail->event_start).': ' . 
-                    $list_item_detail->event_name."\n";
+                $msg .= "\t" . date('m.d.Y', $list_item_detail->event_start) . ': ' .
+                    $list_item_detail->event_name . "\n";
             }
         }
-        
+
         $this->_sendEmail($to, $msg, $subj, $this->_config->item('email_comments'));
     }
-    
+
     /**
      * Send the email when someone submits a claim on a talk
      *
@@ -433,9 +438,9 @@ You can view the event here: %sevent/view/%s
     public function sendPendingClaim($talk_detail, $send_to)
     {
         error_log('sending pending');
-        
-        $subject	= 'Talk claim submitted! Go check!';
-        $message	= sprintf(
+
+        $subject = 'Talk claim submitted! Go check!';
+        $message = sprintf(
             "
 Talk claim has been submitted for talk \"%s\"
 
@@ -450,28 +455,28 @@ be logged in to get to the \"Claims\" page for the event!
         /**
          * @todo This line below looks like debuggin code that might need removing
          */
-        error_log('inside: '.$message);
-    
+        error_log('inside: ' . $message);
+
         $this->_sendEmail($send_to, $message, $subject);
     }
-    
+
     /**
-     * Method to 
+     * Method to
      *
      * @param mixed $event_detail Event details.
      *                            Uses event_name & ID properties
-     * @param mixed $admin_list   People to send the email(s) to 
+     * @param mixed $admin_list   People to send the email(s) to
      *
      * @return void
      */
     public function sendEventApproved($event_detail, $admin_list)
     {
-        $subject 	= 'The event "'.$event_detail->event_name.'" has been approved!';
-        $event_url 	= $this->_config->site_url().'event/view/'.$event_detail->ID;
-        
+        $subject   = 'The event "' . $event_detail->event_name .
+            '" has been approved!';
+        $event_url = $this->_config->site_url() . 'event/view/' . $event_detail->ID;
+
         $msg = sprintf(
-            '
-            <img src="%s/inc/img/logo.png" width="150"/>
+            '<img src="%s/inc/img/logo.png" width="150"/>
             <br/>
             <b>%s</b> has been submitted to Joind.in and has been approved! You ' .
             'can see the event listing here: <a href="%s">%s</a>.
@@ -492,10 +497,10 @@ be logged in to get to the \"Claims\" page for the event!
             ', $this->_config->site_url(), $event_detail->event_name, $event_url,
             $event_url
         );
-        
+
         $headers = array(
             'Content-Type: text/html; charset=ISO-8859-1',
-            'From: '.$this->_config->item('email_feedback')
+            'From: ' . $this->_config->item('email_feedback')
         );
 
         // Send to each event admin...
