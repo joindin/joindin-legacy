@@ -99,7 +99,6 @@ Below are the request types that you can make to the API including input and out
 <li>Events
     <ul>
         <li><a href="#get_evt_detail">Get Event Detail</a>
-        <li><a href="#add_evt">Add Event</a>
         <li><a href="#get_evt_talks">Get Talks</a>
         <li><a href="#get_evt_list">Get Event Listing</a>
         <li><a href="#evt_attend">Attend Event</a>
@@ -172,28 +171,6 @@ Below are the request types that you can make to the API including input and out
         <li>user_attending: integer, whether the current user is attending this event
         <li>now: string, either "now" if the event is now on or "" if it isn't (not present in event/getlist)
         <li>tracks: array, List of track objects associated with this session.  Track properties are track_name, ID, track_color used (1 or 0, whether there are sessions in it or not), event_id and track_desc (description) (not present in event/getlist)
-    </ul>
-    <a href="#top">[top]</a><br/><br/>
-</div>
-
-<a name="add_evt"></a>
-<b class="req_name" style="color:#5181C1;font-size:14px">Add Event</b>
-<div style="padding-left:10px">
-<b class="req_title">Action Type:</b> addevent<br/>
-<b class="req_title">Description:</b> Adds an active event<br/>
-<b class="req_title">Authentication:</b> required<br />
-<b class="req_title">Input:</b>
-    <ul>
-        <li>event_name: string, Full name of event
-        <li>event_start: integer, Unix timestamp of event start time
-        <li>event_end: integer, Unix timestamp of event end time
-        <li>event_loc: string, Location of event
-        <li>event_tz: integer, Offset of event timezone from GMT
-        <li>event_desc: string, Description of event
-    </ul>
-<b class="req_title">Output:</b>
-    <ul>
-        <li>msg: string, Response mesage concerning addition of event
     </ul>
     <a href="#top">[top]</a><br/><br/>
 </div>
