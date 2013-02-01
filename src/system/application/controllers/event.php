@@ -834,7 +834,6 @@ class Event extends Controller
                 'attend_ct'      => count($attend),
                 'reqkey'         => $reqkey, 'seckey' => buildSecFile($reqkey),
                 'attending'      => $attend,
-                'latest_comment' => $this->event_model->getLatestComment($id),
                 'admins'         => $evt_admins,
                 'tracks'         => $this->etm->getEventTracks($id),
                 'talk_stats'     => $talk_stats,
