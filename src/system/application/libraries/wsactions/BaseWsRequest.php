@@ -23,7 +23,7 @@ if (!defined('BASEPATH')) {
 */
 class BaseWsRequest
 {
-    protected $CI = null;
+    private $CI = null;
     
     /**
      * Instantiates the base object and attached the CodeIgniter instance

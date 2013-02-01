@@ -1,8 +1,8 @@
 <?php
 // Set these:
-define('URL', 'http://joindin.localhost/api/');
-define('USERNAME', 'imaadmin');
-define('PASSWORD', 'password');
+define('URL', getenv('JIAPIV1_URL') ? getenv('JIAPIV1_URL') : 'http://joindin.localhost/api/');
+define('USERNAME', getenv('JIAPIV1_USERNAME') ? getenv('JIAPIV1_USERNAME') : 'imaadmin');
+define('PASSWORD', getenv('JIAPIV1_PASSWORD') ? getenv('JIAPIV1_PASSWORD') : 'password');
 
 // Some settings:
 define('OUTPUT', 'xml'); // json or xml
@@ -16,7 +16,9 @@ exit;
 // ===================================================================
 function help()
 {
-		echo <<<EOT
+	$username = USERNAME;
+
+	echo <<<EOT
 
 Joind.in API v1 simple tester
 Usage:
@@ -35,14 +37,27 @@ types & commands available:
 	* event getlist upcoming
 	* event getlist hot
 	* event gettalkcomments {event_id}
+	* event getcomments {event_id}
 	* event addcomment {event_id} {comment}
+	* event deletecomment {event_id} {comment_id}
+	* event addtrack {event_id} {track_name} {track_desc}
+	* event updatetrack {event_id} {track_id} {track_name} {track_desc} {track_color}
+	* event deletetrack {event_id} {track_id}
+	* event addadmin {event_id} {username}
+	* event rmadmin {event_id} {username}
+	* event attend {event_id}
 
 	* talk getdetail {talk_id}
 	* talk getcomments {talk_id}
 	* talk addcomment {talk_id} {rating} {comment} [{private=0}] [{user_id=2}]
 	* talk claim {talk_id}
 
-	* comment isspam {commend_id} {talk_id} [{rtype=talk}]
+	* comment isspam {comment_id} {talk_id} [{rtype=talk}]
+	* comment getdetail {comment_id} [talk|event]
+
+Current username: $username
+(Set environment variables JIAPIV1_USERNAME and JIAPIV1_PASSWORD to change)
+
 
 EOT;
 }
@@ -103,6 +118,13 @@ function comment($command, $args)
 				"cid"=>$commentId, "tid"=>$talkId, "rtype"=>$rtype));
 			break;
 
+		case 'getdetail':
+			$commentId = getarg($args, 0);
+			$rtype = getarg($args, 1);
+			$result = call_api('comment', 'getdetail', array(
+				"cid"=>$commentId, "rtype"=>$rtype));
+			break;
+
 		default:
 			echo "ERROR: invalid command\n";
 			return;
@@ -125,12 +147,17 @@ function event($command, $args)
 
 		case 'getlist':
 			$listType = getarg($args, 0);
-			$result = call_api('event', 'gettalks', array("event_type"=>$listType));
+			$result = call_api('event', 'getlist', array("event_type"=>$listType));
 			break;
 
 		case 'gettalkcomments':
 			$eventId = getarg($args, 0);
 			$result = call_api('event', 'gettalkcomments', array("event_id"=>$eventId));
+			break;
+
+		case 'getcomments':
+			$eventId = getarg($args, 0);
+			$result = call_api('event', 'getcomments', array("event_id"=>$eventId));
 			break;
 
 		case 'addcomment':
@@ -146,6 +173,99 @@ function event($command, $args)
 					"event_id"=>$eventId, "comment"=>$comment));
 			break;
 
+		case 'deletecomment':
+			$eventId = getarg($args, 0);
+			$commentId = getarg($args, 1);
+
+			if (!$commentId) {
+				echo "ERROR: No comment id supplied\n";
+				exit(2);
+			}
+
+			$result = call_api('event', 'deletecomment', array("eid"=>$eventId,
+				"cid"=>$commentId));
+			break;
+
+		case 'addtrack':
+			$eventId = getarg($args, 0);
+			$trackName = getarg($args, 1);
+			$trackDesc = getarg($args, 2);
+
+			if (!$trackDesc) {
+				echo "ERROR: No track desc supplied\n";
+				exit(2);
+			}
+
+			$result = call_api('event', 'addtrack', array("event_id"=>$eventId,
+				'track_name'=>$trackName, 'track_desc'=>$trackDesc));
+			break;
+
+		case 'updatetrack':
+			$eventId = getarg($args, 0);
+			$trackId = getarg($args, 1);
+			$trackName = getarg($args, 2);
+			$trackDesc = getarg($args, 3);
+			$trackColor = getarg($args, 4);
+
+			if (!$trackDesc) {
+				echo "ERROR: No track color supplied\n";
+				exit(2);
+			}
+
+			$result = call_api('event', 'updatetrack', array("event_id"=>$eventId,
+				'track_id'=>$trackId,'track_name'=>$trackName,
+				'track_desc'=>$trackDesc, 'track_color'=>$trackColor));
+			break;
+
+		case 'deletetrack':
+			$eventId = getarg($args, 0);
+			$trackId = getarg($args, 1);
+
+			if (!$trackId) {
+				echo "ERROR: No track color supplied\n";
+				exit(2);
+			}
+
+			$result = call_api('event', 'deletetrack', array("event_id"=>$eventId,
+				'track_id'=>$trackId));
+			break;
+
+		case 'addadmin':
+			$eventId = getarg($args, 0);
+			$username = getarg($args, 1);
+
+			if (!$username) {
+				echo "ERROR: No username supplied\n";
+				exit(2);
+			}
+
+			$result = call_api('event', 'addadmin', array("eid"=>$eventId,
+				'username'=>$username));
+			break;
+
+		case 'rmadmin':
+			$eventId = getarg($args, 0);
+			$username = getarg($args, 1);
+
+			if (!$username) {
+				echo "ERROR: No username supplied\n";
+				exit(2);
+			}
+
+			$result = call_api('event', 'rmadmin', array("eid"=>$eventId,
+				'username'=>$username));
+			break;
+
+		case 'attend':
+			$eventId = getarg($args, 0);
+
+			if (!$eventId) {
+				echo "ERROR: No event id supplied\n";
+				exit(2);
+			}
+
+			$result = call_api('event', 'attend', array("eid"=>$eventId));
+			break;
 
 		default:
 			echo "ERROR: invalid command\n";

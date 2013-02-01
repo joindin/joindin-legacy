@@ -27,6 +27,13 @@ the mailing list.
 
 ## Pull-Request workflow
 
+When you open a PR, ensure that you enter the issue code from
+JIRA into your PR description, where applicable. This helps
+the systems to link what code goes with which issue and makes
+it easier for us to know what has changed for the issue.
+For example: JOINDIN-123. This JIRA code can be found above
+the issue title on the issue view screen in JIRA.
+
 Once you have submitted the PR, people will look at it and
 provide feedback. If it cannot be applied in its current
 state, then a comment will be left and the PR will then be
