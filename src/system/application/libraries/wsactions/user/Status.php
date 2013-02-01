@@ -1,6 +1,6 @@
 <?php 
 /**
- * Joindin webservice for retrieving user status
+ * Joindin webservice for toggling a user's status
  *
  * PHP version 5
  *
@@ -14,8 +14,9 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed'); 
 }
 
+
 /**
- * Joindin webservice for retrieving user status
+ * Joindin webservice for toggling a user's status
  *
  * PHP version 5
  *
@@ -26,6 +27,7 @@ if (!defined('BASEPATH')) {
  */
 class Status
 {
+    
     public $CI  = null;
     public $xml = null;
     
@@ -54,10 +56,10 @@ class Status
             if ($this->CI->user_model->isSiteAdmin((string)$xml->auth->user)) {
                 return true;
             } else {
-                return false; 
+                return false;
             }
         } else {
-            return false; 
+            return false;
         }
     }
 
@@ -74,5 +76,5 @@ class Status
         $this->CI->um->toggleUserStatus($uid);
         return array('output' => 'json', 'items' => array('msg' => 'Success'));
     }
-    
 }
+
