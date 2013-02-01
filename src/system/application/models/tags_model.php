@@ -1,9 +1,24 @@
 <?php
+/**
+ * Tags model
+ *
+ * PHP version 5
+ *
+ * @category  Joind.in
+ * @package   Configuration
+ * @copyright 2009 - 2012 Joind.in
+ * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
+ */
 
 /**
- * Model for handling the "tags" table for tagging events and talks
+ * Tags model
  *
- * @package Joind.in
+ * PHP version 5
+ *
+ * @category  Joind.in
+ * @package   Configuration
+ * @copyright 2009 - 2012 Joind.in
+ * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
  */
 class Tags_model extends Model
 {
@@ -11,13 +26,17 @@ class Tags_model extends Model
      * Check to see if tag exists in the table
      *
      * @param string $tagValue Tag value
-     * @return mixed $tagDetail If tag found, return details. Otherwise, false.
+     *
+     * @return mixed If tag found, return details. Otherwise, false.
      */
     public function tagExists($tagValue)
     {
-        $result = $this->db->get_where('tags', array(
-            'tag_value' => $tagValue
-        ))->result();
+        $result = $this->db->get_where(
+            'tags',
+            array(
+                'tag_value' => $tagValue
+            )
+        )->result();
         
         return (empty($result)) ? false : $result;
     }
@@ -27,6 +46,7 @@ class Tags_model extends Model
      * Duplicate check done prior to insert
      *
      * @param string $tagValue Tag value
+     *
      * @return integer $insertId Last insert ID (or found ID)
      */
     public function addTag($tagValue)
@@ -35,13 +55,21 @@ class Tags_model extends Model
         if ($result) {
             return $result->id;
         } else {
-            $this->db->insert('tags', array(
-                'tag_value' => $tagValue
-            ));
+            $this->db->insert(
+                'tags',
+                array(
+                    'tag_value' => $tagValue
+                )
+            );
             return $this->db->insert_id();
         }
     }
-    
+
+    /**
+     * Does nothing. Not implemented
+     *
+     * @return void
+     */
     public function removeTag()
     {
         
