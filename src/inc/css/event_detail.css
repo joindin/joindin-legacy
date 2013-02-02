@@ -3,7 +3,7 @@
     width: 350px;
 }
 
-div.desc-normal {
+.desc-normal {
     float: left;
     width: 235px;
     padding: 0;
@@ -11,6 +11,13 @@ div.desc-normal {
     margin: 0;
 }
 
-div#desc-map {
+#desc-map {
     float: right;
+}
+
+/* Mobile */
+@media screen and (max-width: 600px) {
+    #map {width: auto;}
+    .desc-normal {float: none; width: auto;}
+    #desc-map {float: none;}
 }
