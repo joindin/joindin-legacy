@@ -4,13 +4,15 @@ $this->load->library('timezone');
 ?>
 <div class="row row-event">
     <?php $this->load->view('event/_event-icon', array('event'=>$event, 'showlink' => true)); ?>
-    <div class="text">
+    <div class="text text-head">
         <h3><a href="/event/view/<?php echo $event->ID; ?>"><?php echo escape($event->event_name); ?></a></h3>
         <p class="info"><strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event->event_start, $event->event_tz_cont.'/'.$event->event_tz_place, 'd.M.Y'); ?></strong>
         <?php if ($event->event_start+86399 != $event->event_end) { ?>
         - <strong><?php echo $this->timezone->formattedEventDatetimeFromUnixtime($event->event_end, $event->event_tz_cont.'/'.$event->event_tz_place, 'd.M.Y'); ?></strong> at <strong><?php echo escape($event->event_loc); ?></strong>
         <?php } ?>
         </p>
+    </div>
+    <div class="text text-body">
         <div class="desc">
         <?php echo auto_p(escape(word_limiter($event->event_desc, 20))); ?>
         <?php
