@@ -4,7 +4,7 @@ function addArrayToXML($xml, $data) {
         if (is_numeric($key)) {
             $key = "item";
         }
-        if (is_string($item) or empty($item)) {
+        if (is_string($item) || empty($item) || is_bool($item)) {
             // we might have an empty array, this is expected
             if (is_array($item) AND count($item) == 0) {
                 $item = '';
