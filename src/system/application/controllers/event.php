@@ -911,27 +911,41 @@ class Event extends Controller
                     $ec['def_resp_spamr'] = (string) $def_ret->spam;
                 }
 
+                // Create email subject and body
+                $subject = 'Joind.in event feedback for ' . $events[0]->event_name;
+                $content = 'A new ';
+                if (!array_key_exists('cname', $ec)) {
+                    $content .= 'anonymous ';
+                }
+                $content .= 'comment has been added to the ' .
+                    $events[0]->event_name . " event";
+                if (array_key_exists('cname', $ec)) {
+                    $content .= " by " . $ec['cname'];
+                }
+                if (array_key_exists('date_made', $ec)) {
+                    $content .= ' on ' . date('jS M Y \a\t H:i', $ec['date_made']);
+                }
+                if (array_key_exists('comment', $ec)) {
+                    $content .= ":\n\n" .$ec['comment'];
+                }
+                $content .= "\n\n\nView on website: " . $this->config->site_url() .
+                    "event/view/$id#comments\n\n";
+
+                // Create list of email addresses to send feedback to
                 $to           = array();
                 $admin_emails = $this->user_model->getSiteAdminEmail();
                 foreach ($admin_emails as $user) {
                     $to[] = $user->email;
                 }
-
-                // get whatever email addresses there are for the event
                 $admins = $this->event_model->getEventAdmins($id);
                 foreach ($admins as $ak => $av) {
                     $to[] = $av->email;
                 }
 
-                $content = '';
-                $subj    = $this->config->site_url() . ': Event feedback - ' . $id;
-                foreach ($ec as $k => $v) {
-                    $content .= '[' . $k . '] => ' . $v . "\n\n";
-                }
-
+                // Send feedback email
                 foreach ($to as $tk => $tv) {
                     $from = 'From: ' . $this->config->item('email_feedback');
-                    @mail($tv, $subj, $content, $from);
+                    @mail($tv, $subject, $content, $from);
                 }
 
                 $this->session->set_flashdata(
