@@ -389,7 +389,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      * @return void
      *
      * @test
-     * @expectedException \Exception
+     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Invalid Authorization Header
      * @expectedExceptionCode 400
      */
@@ -406,7 +406,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      * @return void
      *
      * @test
-     * @expectedException \Exception
+     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Unknown Authorization Header Received
      * @expectedExceptionCode 400
      */
