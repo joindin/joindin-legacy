@@ -55,6 +55,7 @@ class TalkMapper extends ApiMapper {
                 // add speakers
                 $list[$key]['speakers'] = $this->getSpeakers($row['ID']);
                 $list[$key]['tracks'] = $this->getTracks($row['ID']);
+                $list[$key]['category'] = $this->getCategory($row['ID']);
                 $list[$key]['uri'] = $base . '/' . $version . '/talks/' . $row['ID'];
                 $list[$key]['verbose_uri'] = $base . '/' . $version . '/talks/' . $row['ID'] . '?verbose=yes';
                 $list[$key]['website_uri'] = 'http://joind.in/talk/view/' . $row['ID'];
@@ -145,6 +146,23 @@ class TalkMapper extends ApiMapper {
            foreach($tracks as $track) {
                $retval[] = $track;
            }
+        }
+        return $retval;
+    }
+
+    protected function getCategory($talk_id) {
+        $host = $this->_request->host;
+        $category_sql = 'select categories.* '
+            . 'from categories '
+            . 'inner join talk_cat tc on categories.ID = tc.cat_id '
+            . 'where tc.talk_id = :talk_id';
+        $category_stmt = $this->_db->prepare($category_sql);
+        $category_stmt->execute(array("talk_id" => $talk_id));
+        $category = $category_stmt->fetch(PDO::FETCH_ASSOC);
+        $retval = array();
+        if(is_array($category)) {
+           $retval['category_title'] = $category['cat_title'];
+           $retval['category_description'] = $category['cat_desc'];
         }
         return $retval;
     }
