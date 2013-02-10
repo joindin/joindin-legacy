@@ -50,6 +50,7 @@
      <phpcodesniffer standard="doc/codesniffer/JoindIn/" verbosity="1">
    <fileset dir="${source}">
        <exclude name="views/**"/>
+       <exclude name="libraries/Template.php" />
    </fileset>
    <formatter type="checkstyle" outfile="${basedir}/build/logs/checkstyle.xml" />
   </phpcodesniffer>
