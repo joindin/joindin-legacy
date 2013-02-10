@@ -20,7 +20,7 @@ class Request
     /**
      * Builds the request object
      *
-     * @param bool $parseParams Should parsing be skipped on construction
+     * @param bool $parseParams Set to false to skip parsing parameters on construction
      */
     public function __construct($parseParams = true)
     {
@@ -120,6 +120,8 @@ class Request
      *
      * @param array $formats Formats that we want to serve
      *
+     * @todo need some real accept header parsing here
+     *
      * @return string
      */
     public function preferredContentTypeOutOf($formats)
@@ -141,17 +143,17 @@ class Request
      * @param string $auth_header Authorization header to send into model
      *
      * @return bool
-     * @throws Exception
+     * @throws InvalidArgumentException
      */
     public function identifyUser($db, $auth_header)
     {
         // identify the user
         $oauth_pieces = explode(' ', $auth_header);
         if (count($oauth_pieces) <> 2) {
-            throw new Exception('Invalid Authorization Header', '400');
+            throw new InvalidArgumentException('Invalid Authorization Header', '400');
         }
         if (strtolower($oauth_pieces[0]) != "oauth") {
-            throw new Exception('Unknown Authorization Header Received', '400');
+            throw new InvalidArgumentException('Unknown Authorization Header Received', '400');
         }
         $oauth_model   = $this->getOauthModel($db);
         $user_id       = $oauth_model->verifyAccessToken($oauth_pieces[1]);
