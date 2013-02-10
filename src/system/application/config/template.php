@@ -1,4 +1,4 @@
-<?php  
+<?php
 /**
  * Joindin config file
  *
@@ -94,6 +94,8 @@ $template['default']['regions']  = array(
 $template['default']['parser']         = 'parser';
 $template['default']['parser_method']  = 'parse';
 $template['default']['parse_template'] = false;
+
+$template['mobile']['template'] = 'mobile';
 
 /* End of file template.php */
 /* Location: ./system/application/config/template.php */

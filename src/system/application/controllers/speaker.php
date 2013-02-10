@@ -39,6 +39,14 @@ class Speaker extends Controller
     public function Speaker()
     {
         parent::Controller();
+
+
+        // Check if we should be mobile or not
+        $this->load->library('user_agent');
+        if ($this->agent->is_mobile()) {
+            // We should be mobile. Set the layout
+            $this->template->set_template('mobile');
+        }
     }
 
     /**

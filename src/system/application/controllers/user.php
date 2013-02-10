@@ -43,6 +43,13 @@ class User extends AuthAbstract
     {
         parent::Controller();
 
+        // Check if we should be mobile or not
+        $this->load->library('user_agent');
+        if ($this->agent->is_mobile()) {
+            // We should be mobile. Set the layout
+            $this->template->set_template('mobile');
+        }
+
         // check login status and fill the 'logged' parameter in the template
         $this->user_model->logStatus();
     }
@@ -96,9 +103,9 @@ class User extends AuthAbstract
                 // it's there for the resubmit
                 $this->session
                     ->set_flashdata(
-                        'url_after_login',
-                        $this->session->flashdata('url_after_login')
-                    );
+                    'url_after_login',
+                    $this->session->flashdata('url_after_login')
+                );
             } else {
                 $this->session->set_flashdata(
                     'url_after_login',
@@ -174,7 +181,7 @@ class User extends AuthAbstract
         // ID and Request code are given?
         if ($id != null and $request_code != null) {
             $ret = $this->user_model->getUserById($id);
-            if (empty($ret) 
+            if (empty($ret)
                 || strcasecmp($ret[0]->request_code, $request_code)
             ) {
                 // Could not find the user. Maybe already used, maybe a 
@@ -197,12 +204,12 @@ class User extends AuthAbstract
                     $r     = mt_rand(0, count($sel) - 1);
                     $pass .= $sel[$r];
                 }
-                 $arr = array(
+                $arr = array(
                     'password' => md5($pass),
                     'request_code' => null
 
-                 );
-                 $this->user_model->updateUserInfo($uid, $arr);
+                );
+                $this->user_model->updateUserInfo($uid, $arr);
 
                 // Send the email...
                 $this->sendemail->sendPasswordReset($ret, $pass);
@@ -548,7 +555,7 @@ class User extends AuthAbstract
      *
      * View users listing, enable/disable, etc.
      *
-     * @param string  $start  Determine if we are selecting another 
+     * @param string  $start  Determine if we are selecting another
      *                        page of results
      * @param integer $offset Starting index of records to display
      *
@@ -605,7 +612,7 @@ class User extends AuthAbstract
         // Save back to session
         $this->session->set_userdata('user-admin-offset', $offset);
         $this->session->set_userdata('user-admin-users_per_page', $users_per_page);
-        
+
         $this->validation->users_per_page = $users_per_page;
 
         // Retreive this page's list of users along with total count of users
@@ -908,7 +915,7 @@ class User extends AuthAbstract
 
     /**
      * Show this user's API keys, generating them if they don't exist
-     * 
+     *
      * @access public
      * @return void
      */
@@ -953,22 +960,22 @@ class User extends AuthAbstract
         }
 
         // fetch all keys
-        $view_data['keys'] 
+        $view_data['keys']
             = $this->user_admin_model->oauthGetConsumerKeysByUser(
-                $this->session->userdata('ID')
-            );
-        $view_data['grants'] 
+            $this->session->userdata('ID')
+        );
+        $view_data['grants']
             = $this->user_admin_model->oauthGetAccessKeysByUser(
-                $this->session->userdata('ID')
-            );
-        
+            $this->session->userdata('ID')
+        );
+
         $this->template->write_view('content', 'user/apikey', $view_data);
         $this->template->render();
     }
 
     /**
      * Remove the API key record for this user
-     * 
+     *
      * @return void
      */
     public function apikey_delete()
@@ -981,18 +988,18 @@ class User extends AuthAbstract
 
         $this->user_admin_model
             ->deleteApiKey(
-                $this->session->userdata('ID'),
-                $this->input->get('id')
-            );
+            $this->session->userdata('ID'),
+            $this->input->get('id')
+        );
         redirect('/user/apikey');
     }
 
     /**
      * Remove this application authorisation for this user
-     * 
+     *
      * @return void
      */
-    public function revoke_access() 
+    public function revoke_access()
     {
         if (!$this->user_model->isAuth()) {
             redirect('user/login', 'refresh');
