@@ -9,6 +9,9 @@
   <testsuite name="Joind.in Test Suite">
     <directory>./</directory>
   </testsuite>
+  <testsuite name="Joind.in API V2 Test Suite">
+      <directory>./../../src/api-v2/tests</directory>
+  </testsuite>
   <logging>
     <log type="coverage-html" target="../../build/coverage" title="joindin"
          charset="UTF-8" yui="true" highlight="true"
@@ -20,6 +23,7 @@
   <filter>
     <whitelist addUncoveredFilesFromWhitelist="true">
       <directory suffix=".php">src/system/application/</directory>
+      <directory suffix=".php">src/api-v2</directory>
     </whitelist>
   </filter>
 </phpunit>
