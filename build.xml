@@ -18,7 +18,7 @@
  </target>
 
  <target name="phpunit" description="Run unit tests using PHPUnit and generates junit.xml and clover.xml">
-  <exec command="phpunit -c src/tests/phpunit.xml ./src/tests" />
+  <exec command="phpunit -c src/tests/phpunit.xml" />
  </target>
 
  <target name="buildTasks" description="Run the phpmd, phpcs, phpdoc, phploc and lint tasks.">
