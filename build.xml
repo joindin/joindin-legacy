@@ -56,6 +56,16 @@
   </phpcodesniffer>
  </target>
 
+ <target name="phpcs-local" description="Generate human-readable Codesniffer output">
+     <phpcodesniffer standard="doc/codesniffer/JoindIn/">
+   <fileset dir="${source}">
+       <exclude name="views/**"/>
+       <exclude name="libraries/Template.php" />
+   </fileset>
+   <formatter type="summary" usefile="false" />
+  </phpcodesniffer>
+ </target>
+
  <target name="phpdoc" description="Generate API documentation using PHPDocumentor">
   <phpdoc2 destdir="${basedir}/build/api">
    <fileset dir="${source}" />
