@@ -294,5 +294,7 @@ function checkTalk(talk) {
   expect(typeof talk.comments_enabled).toBe('number');
   expect(talk.comment_count).toBeDefined();
   expect(typeof talk.comment_count).toBe('number');
+  expect(talk.type).toBeDefined();
+  expect(typeof talk.type).toBe('string');
 }
 
