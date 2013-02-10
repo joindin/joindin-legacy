@@ -5,6 +5,7 @@ class TalkMapper extends ApiMapper {
         $fields = array(
             'talk_title' => 'talk_title',
             'talk_description' => 'talk_desc',
+            'type' => 'category',
             'start_date' => 'date_given',
             'average_rating' => 'avg_rating',
             'comments_enabled' => 'comments_enabled',
@@ -17,6 +18,7 @@ class TalkMapper extends ApiMapper {
         $fields = array(
             'talk_title' => 'talk_title',
             'talk_description' => 'talk_desc',
+            'type' => 'category',
             'slides_link' => 'slides_link',
             'language' => 'lang_name',
             'start_date' => 'date_given',
@@ -93,10 +95,13 @@ class TalkMapper extends ApiMapper {
             . 'CASE 
                 WHEN (((t.date_given - 3600*24) < '.mktime(0,0,0).') and (t.date_given + (3*30*3600*24)) > '.mktime(0,0,0).') THEN 1
                 ELSE 0
-               END as comments_enabled '
+               END as comments_enabled, '
+            . 'c.cat_title as category '
             . 'from talks t '
             . 'inner join events e on e.ID = t.event_id '
             . 'inner join lang l on l.ID = t.lang '
+            . 'join talk_cat tc on tc.talk_id = t.ID '
+            . 'join categories c on c.ID = tc.cat_id '
             . 'where t.active = 1 and '
             . 'e.active = 1 and '
             . '(e.pending = 0 or e.pending is NULL) and '
