@@ -56,7 +56,7 @@
   </phpcodesniffer>
  </target>
 
- <target name="phpcs-local" description="Generate human-readable Codesniffer output">
+ <target name="phpcs-human-summary" description="Generate human-readable Codesniffer output">
      <phpcodesniffer standard="doc/codesniffer/JoindIn/">
    <fileset dir="${source}">
        <exclude name="views/**"/>
