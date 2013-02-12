@@ -2,6 +2,7 @@
 
 <project name="joindin" default="build" basedir=".">
  <property name="source" value="src/system/application/"/>
+ <property name="apiv2source" value="src/api-v2/" />
  <property name="basedir" value="."/>
 
  <target name="clean" description="Clean up and create artifact directories">
@@ -65,6 +66,23 @@
    <formatter type="summary" usefile="false" />
   </phpcodesniffer>
  </target>
+ 
+<target name="phpcs-human" description="Check codes style with PHP_CodeSniffer">
+    <phpcodesniffer standard="doc/codesniffer/JoindIn/">
+        <fileset dir="${source}">
+            <patternset>
+                <include name="**/${filename}" />
+            </patternset>
+            <exclude name="views/**"></exclude>
+            <exclude name="libraries/Template.php" />
+        </fileset>
+        <fileset dir="${apiv2source}">
+            <patternset>
+                <include name="**/${filename}" />
+            </patternset>
+        </fileset>
+    </phpcodesniffer>
+</target>
 
  <target name="phpdoc" description="Generate API documentation using PHPDocumentor">
   <phpdoc2 destdir="${basedir}/build/api">

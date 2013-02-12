@@ -145,6 +145,34 @@ Then run the tests by going to `/src/tests/api_tests` and running:
 ### Unit Tests
 
 There are some tests set up, which use PHPUnit; these can be found in the
-src/tests directory.  There is a phing task configured to run them - from the
-root directory simply run "phing phpunit" to run the tests.
+src/tests directory and the src/api-v2/tests directory.  There is a phing task
+configured to run them - from the root directory simply run "phing phpunit" to run
+the tests. Unfortunately, there will be no output about whether the tests passed
+or failed from the phing target. A better way to test when you are developing is
+to run the tests from within the respective tests directory by just typing
+phpunit. The phpunit.xml in each directory will configure the bootstrap as well
+as any files that should not be included.
+
+The phpunit.xml file in the src/tests directory will run all of the PHPUnit tests.
+The phpunit.xml file in src/api-v2/tests will run only the API v2 unit tests.
+
+### CODE STYLE
+
+Please do your best to ensure that any code you contributed adheres to the
+Joind.in coding style. This is roughly equivalent to the PEAR coding standard with
+a couple of rules added or taken out. You can run php codesniffer using phing on an
+individual file like so:
+
+phing phpcs-human -Dfilename.php
+
+This will run codesniffer on any file within the regular source for Joind.in or the
+API-v2 source. Wildcards work as does specifying part of the path in case the
+filename alone results in sniffing more files than you wanted.
+
+To see a summary of the codesniff errors and warnings across the entire project, run
+
+phing phpcs-human-summary
+
+This will show the files that still need some attention.
+
 
