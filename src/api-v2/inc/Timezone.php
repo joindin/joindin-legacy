@@ -1,15 +1,37 @@
 <?php
 /**
+ * Contains Timezone class for use in API v2
+ *
+ * PHP version 5
+ *
+ * @category  Joind.in
+ * @package   Controllers
+ * @copyright 2009 - 2013 Joind.in
+ * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
+ * @link      http://github.com/joindin/joind.in
+ */
+
+/**
  * Class library to work with data/time issues for events/talks
+ *
+ * PHP version 5
+ *
+ * @category  Joind.in
+ * @package   Controllers
+ * @copyright 2009 - 2013 Joind.in
+ * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
+ * @link      http://github.com/joindin/joind.in
  */
 class Timezone
 {
     /**
-     * Gets a DateTime object for the given Unix timestamp $unixtime and timezone offset $timezone, taking
-     * into account that DST may have changed between now and then
+     * Gets a DateTime object for the given Unix timestamp $unixtime and timezone
+     * offset $timezone, taking into account that DST may have changed between now
+     * and then
      *
      * @param integer $unixtime Unix timestamp to get DateTime object from
-     * @param string  $timezone Timezone for DateTime object - if blank, it will be UTC
+     * @param string  $timezone Timezone for DateTime object - if blank, it will be
+     *                          UTC
      *
      * @return DateTime
      */
@@ -64,8 +86,11 @@ class Timezone
      *
      * @return string
      */
-    public static function formattedEventDatetimeFromUnixtime($unixtime, $timezone, $format)
-    {
+    public static function formattedEventDatetimeFromUnixtime(
+        $unixtime,
+        $timezone,
+        $format
+    ) {
         $datetime = static::getDatetimeFromUnixtime($unixtime, $timezone);
         $retval   = $datetime->format($format);
 
@@ -85,8 +110,15 @@ class Timezone
      *
      * @return integer
      */
-    public static function UnixtimeForTimeInTimezone($timezone, $year, $month, $day, $hour, $minute, $second)
-    {
+    public static function UnixtimeForTimeInTimezone(
+        $timezone,
+        $year,
+        $month,
+        $day,
+        $hour,
+        $minute,
+        $second
+    ) {
         $tz = new DateTimeZone($timezone);
 
         // Get offset unix timestamp for start of event
@@ -105,6 +137,5 @@ class Timezone
 
         return $unixTimestamp;
     }
-
 }
 
