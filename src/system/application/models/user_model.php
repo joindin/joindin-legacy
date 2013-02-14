@@ -1,18 +1,36 @@
 <?php
+/**
+ * User model
+ *
+ * PHP version 5
+ *
+ * @category  Joind.in
+ * @package   Configuration
+ * @copyright 2009 - 2012 Joind.in
+ * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
+ */
 
-class User_model extends Model {
-
-    function User_model() {
-        parent::Model();
-    }
-
+/**
+ * User model
+ *
+ * PHP version 5
+ *
+ * @category  Joind.in
+ * @package   Configuration
+ * @copyright 2009 - 2012 Joind.in
+ * @license   http://github.com/joindin/joind.in/blob/master/doc/LICENSE JoindIn
+ */
+class User_model extends Model
+{
     /**
      * Check to see if the user is authenticated
+     *
      * @return mixed Return value is either the username or false
      */
-    function isAuth()
+    public function isAuth()
     {
-        if ($u = $this->session->userdata('username')) {
+        $u = $this->session->userdata('username');
+        if ($u) {
             return $u;
         }
 
@@ -21,82 +39,112 @@ class User_model extends Model {
 
     /**
      * Get the user's ID from the session
+     *
      * @return integer User ID
      */
-    function getID() {
+    public function getID()
+    {
         // this only works for web users!
         return $this->session->userdata('ID');
     }
 
     /**
      * Validate that the given username and password are valid
-     * @param $user string Username
-     * @param $pass string Password
-     * @param $plaintxt boolean Flag to treat incoming password as plaintext or md5
+     *
+     * @param string  $user     Username
+     * @param string  $pass     Password
+     * @param boolean $plaintxt Flag to treat incoming password as plaintext or md5
+     *
+     * @return boolean
      */
-    function validate($user, $pass, $plaintxt=false) {
-        $ret=$this->getUserByUsername($user);
-        $pass=($plaintxt) ? $pass : md5($pass);
-        $valid = (isset($ret[0]) && $ret[0]->password==$pass) ? true : false;
+    public function validate($user, $pass, $plaintxt = false)
+    {
+        $ret   = $this->getUserByUsername($user);
+        $pass  = ($plaintxt) ? $pass : md5($pass);
+        $valid = (isset($ret[0]) && $ret[0]->password == $pass) ? true : false;
+
         return $valid;
     }
 
     /**
-     * Output the "logged in"/"logged out" HTML for the template based on login status
+     * Output the "logged in"/"logged out" HTML for the template
+     * based on login status
+     *
      * Directly writes out the HTML to the template
      *
-     * @return null
+     * @return void
      */
-    function logStatus() {
+    public function logStatus()
+    {
         //piece to handle the login/logout
-        $u=$this->isAuth();
-        $lstr=($u) ? '<a href="/user/main">'.$u.'</a> <a href="/user/logout">[logout]</a>':'<a href="/user/login">login</a>';
+        $u    = $this->isAuth();
+        $lstr = ($u) ? '<a href="/user/main">' . $u .
+            '</a> <a href="/user/logout">[logout]</a>' :
+            '<a href="/user/login">login</a>';
         $this->template->write('logged', $lstr);
     }
 
     /**
      * Check to see if the given user is a site admin
-     *      Check the passed user is an admin, 
+     *      Check the passed user is an admin,
      *      if no username is passed check for logged in user
      *
-     * @param $user User username (WARNING this accepted user_id once upon a time)
+     * @param User_model $user User object
+     *                         (WARNING this accepted user_id once upon a time)
+     *
      * @return boolean User's admin status
      */
-    function isSiteAdmin($user=null) {
+    public function isSiteAdmin($user = null)
+    {
         if ($user !== null) {
-            $udata=$this->getUserByUsername($user);
-            return (isset($udata[0]) && $udata[0]->admin==1) ? true : false;
+            $udata = $this->getUserByUsername($user);
+
+            return (isset($udata[0]) && $udata[0]->admin == 1) ? true : false;
         } elseif (!$this->isAuth()) {
             return false;
         } else {
-            return ($this->session->userdata('admin')==1) ? true : false;
+            return ($this->session->userdata('admin') == 1) ? true : false;
         }
     }
 
     /**
      * Check to see if the given user is an admin for the event
      *
-     * @param $eid integer Event ID
-     * @param $uid integer User ID/username
+     * @param integer $eid Event ID
+     * @param integer $uid User ID/username
+     *
      * @return boolean User's site admin status
      */
-    function isAdminEvent($eid, $uid=null) {
-        
+    public function isAdminEvent($eid, $uid = null)
+    {
+
         if ($this->isAuth()) {
-            $uid=$this->session->userdata('ID');
+            $uid = $this->session->userdata('ID');
         } elseif (!$this->isAuth() && $uid) {
-            $udata=$this->getUserByUsername($uid);
+            $udata = $this->getUserByUsername($uid);
             if ($udata) {
-                $uid=$udata[0]->ID;
-            } else { return false; }
-        } else { return false; }
+                $uid = $udata[0]->ID;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
 
         $this->db->select('*');
         $this->db->from('user_admin');
-        $this->db->where(array('uid'=>$uid,'rid'=>$eid,'rtype'=>'event','IFNULL(rcode,0) !='=>'pending'));
+        $this->db->where(
+            array(
+                 'uid'                => $uid,
+                 'rid'                => $eid,
+                 'rtype'              => 'event',
+                 'IFNULL(rcode,0) !=' => 'pending'
+            )
+        );
         $q = $this->db->get();
 
-        $ret=$q->result();
+        $ret = $q->result();
+
         return (isset($ret[0]->ID) || $this->isSiteAdmin()) ? true : false;
     }
 
@@ -104,61 +152,86 @@ class User_model extends Model {
      * Check to see if the logged in user is an admin for the given talk
      * Looks to see if the user has claimed the talk and if they're an event admin
      *
-     * @param $tid integer Talk ID
+     * @param integer $tid Talk ID
+     *
      * @return boolean User's admin status related to the talk
      */
-    function isAdminTalk($tid) {
+    public function isAdminTalk($tid)
+    {
         if (!$this->isAuth()) {
             return false;
         }
-        
-        $ad     = false;
-        $uid    = $this->session->userdata('ID');
+
+        $ad  = false;
+        $uid = $this->session->userdata('ID');
 
         $this->db->select('*');
         $this->db->from('talk_speaker');
-        $this->db->where(array('speaker_id'=>$uid,'talk_id'=>$tid,'IFNULL(status,0) !='=>'pending'));
+        $this->db->where(
+            array(
+                 'speaker_id'          => $uid,
+                 'talk_id'             => $tid,
+                 'IFNULL(status,0) !=' => 'pending'
+            )
+        );
         $query = $this->db->get();
-        $talk    = $query->result();
-        if (isset($talk[0]->ID)) { $ad=true; }
+        $talk  = $query->result();
+        if (isset($talk[0]->ID)) {
+            $ad = true;
+        }
 
         //also check to see if the user is an admin of the talk's event
         $talkDetail = $this->talks_model->getTalks($tid); //print_r($ret);
-        if (isset($talkDetail[0]->event_id) && $this->isAdminEvent($talkDetail[0]->event_id)) { $ad=true; }
+        if (isset($talkDetail[0]->event_id)
+            && $this->isAdminEvent($talkDetail[0]->event_id)
+        ) {
+            $ad = true;
+        }
+
         return $ad;
-        
+
     }
 
     /**
      * Toggle the user's status - active/inactive
-     * @param $uid integer User ID
+     *
+     * @param integer $uid User ID
+     *
      * @return null
      */
-    public function toggleUserStatus($uid) {
-        $udata    = $this->getUserById((int)$uid);
-        $up        = ($udata[0]->active==1) ? array('active'=>'0') : array('active'=>'1');
+    public function toggleUserStatus($uid)
+    {
+        $udata = $this->getUserById((int)$uid);
+        $up    = ($udata[0]->active == 1) ?
+            array('active' => '0') : array('active' => '1');
         $this->updateUserinfo($uid, $up);
     }
 
     /**
      * Toggle the user's admin status
      *
-     * @param $uid integer User ID
+     * @param integer $uid User ID
+     *
      * @return null
      */
-    function toggleUserAdminStatus($uid) {
-        $udata=$this->getUserById((int)$uid);
-        $up=($udata[0]->admin==1) ? array('admin'=>null) : array('admin'=>'1');
+    public function toggleUserAdminStatus($uid)
+    {
+        $udata = $this->getUserById((int)$uid);
+        $up    = ($udata[0]->admin == 1) ?
+            array('admin' => null) : array('admin' => '1');
         $this->updateUserinfo($uid, $up);
     }
 
     /**
      * Update a user's information with given array values
      *
-     * @param $uid integer User ID
-     * @param $arr array Details to update on user account
+     * @param integer $uid User ID
+     * @param array   $arr Details to update on user account
+     *
+     * @return void
      */
-    function updateUserInfo($uid, $arr) {
+    public function updateUserInfo($uid, $arr)
+    {
         $this->db->where('ID', $uid);
         $this->db->update('user', $arr);
     }
@@ -166,17 +239,19 @@ class User_model extends Model {
     /**
      * Search for user information based on a twitter screen name
      *
-     * @param $screenName integer/string User ID or Username
+     * @param string|integer $screenName User ID or Username
+     *
      * @return array User details
      */
-    function getUserByTwitter($screenName) {
+    public function getUserByTwitter($screenName)
+    {
         // Strip @ sign if needed
         if ($screenName[0] == '@') {
             $screenName = substr($screenName, 1);
         }
         $this->db->where('twitter_username', (string)$screenName);
-        $this->db->orwhere('twitter_username', (string)'@'.$screenName);
-        $q = $this->db->get('user');
+        $this->db->orwhere('twitter_username', (string)'@' . $screenName);
+        $q      = $this->db->get('user');
         $result = $q->result();
 
         return $result ? $result : false;
@@ -185,7 +260,8 @@ class User_model extends Model {
     /**
      * Delete a user with the given ID
      *
-     * @param $userId
+     * @param integer $userId User id
+     *
      * @return void
      */
     public function deleteUser($userId)
@@ -199,104 +275,146 @@ class User_model extends Model {
     /**
      * Search for publicly-available user information based on a user ID or username
      *
-     * A reduced version of the getUser() method so we can safely return these results to the service.
+     * A reduced version of the getUser() method so we can safely return these
+     * results to the service.
+     *
      * Should be used in preference to getUser wherever possible
      *
-     * @param $in integer/string User ID or Username
+     * @param integer|string $in User ID or Username
+     *
      * @return array User details
      */
-    function getUserDetail($in) {
+    public function getUserDetail($in)
+    {
         $this->db->select('username, full_name, ID, last_login');
         if (is_numeric($in)) {
-            $q=$this->db->get_where('user', array('ID'=>$in));
+            $q = $this->db->get_where('user', array('ID' => $in));
         } else {
-            $q = $this->db->get_where('user', array('username'=>(string)$in));
+            $q = $this->db->get_where('user', array('username' => (string)$in));
         }
+
         return $q->result();
     }
 
     /**
      * Search for a user by their email address
-     * @param $email string User email address
+     *
+     * @param string $email User email address
+     *
      * @return array User detail information
      */
-    function getUserByEmail($email) {
-        $q=$this->db->get_where('user', array('email'=>$email));
+    public function getUserByEmail($email)
+    {
+        $q = $this->db->get_where('user', array('email' => $email));
+
         return $q->result();
     }
 
-    function getUserByUsername($username)
+    /**
+     * Retrieves a user by username
+     *
+     * @param string $username Username to lookup
+     *
+     * @return bool
+     */
+    public function getUserByUsername($username)
     {
-        if(!empty($username)) {
-            $query = $this->db->get_where('user', array('username' => $username));
+        if (!empty($username)) {
+            $query  = $this->db->get_where('user', array('username' => $username));
             $result = $query->result();
+
             return $result;
         }
 
         return false;
     }
 
-    function getUserById($userId)
+    /**
+     * Retrieves a user by id
+     *
+     * @param integer $userId User id
+     *
+     * @return mixed
+     */
+    public function getUserById($userId)
     {
-        $query = $this->db->get_where('user', array('ID' => $userId));
+        $query  = $this->db->get_where('user', array('ID' => $userId));
         $result = $query->result();
+
         return $result;
     }
 
     /**
      * Find email addresses for all users marked as site admins
+     *
      * @return array Set of email addresses
      */
-    function getSiteAdminEmail() {
+    public function getSiteAdminEmail()
+    {
         $this->db->select('email')
-            ->where('admin',1);
-        $q=$this->db->get('user');
+            ->where('admin', 1);
+        $q = $this->db->get('user');
+
         return $q->result();
     }
 
     /**
      * Pull a complete list of all users of the system
      *
-     * @param int $limit Limit number of users returned
+     * @param integer $limit  Limit number of users returned
+     * @param integer $offset Offset to fetch from
+     *
      * @return array User details
      */
-    function getAllUsers($limit=null, $offset=null) {
-        $this->db->order_by('username','asc');
+    public function getAllUsers($limit = null, $offset = null)
+    {
+        $this->db->order_by('username', 'asc');
         if ($limit != null) {
             $this->db->limit($limit);
         }
         if ($offset != null) {
             $this->db->offset($offset);
         }
-        $q=$this->db->get('user');
+        $q = $this->db->get('user');
+
         return $q->result();
     }
 
     /**
      * Count all users
-     * 
+     *
      * @return int
      */
-    function countAllUsers()
+    public function countAllUsers()
     {
         return $this->db->count_all_results('user');
     }
 
     /**
-     * Find other users of the system that were speakers at events the given user was a speaker at too
+     * Find other users of the system that were speakers at events the given user
+     * was a speaker at too
      *
      * @param integer $uid   User ID
      * @param integer $limit [optional] integer Limit the number of results returned
-     * @return array         Return array of user's information (user_id, event_id, username, full_name)
+     *
+     * @return array Return array of user's information
+     *               (user_id, event_id, username, full_name)
+     *
+     * @throws Exception
      */
-    function getOtherUserAtEvt($uid, $limit=15) {
+    public function getOtherUserAtEvt($uid, $limit = 15)
+    {
         if (!ctype_digit((string)$limit)) {
-            throw new Exception('Expected $limit to be a number but received '.$limit);
+            throw new Exception(
+                'Expected $limit to be a number but received ' . $limit
+            );
         }
 
-        //find speakers (users attending too?) that have spoken at conferences this speaker did too
-        $other_speakers=array();
-        $sql=sprintf("
+        // find speakers (users attending too?) that have spoken at
+        // conferences this speaker did too
+        $other_speakers = array();
+        $sql            = sprintf(
+            "
             select
                 distinct u.ID as user_id,
                 t.event_id,
@@ -324,28 +442,36 @@ class User_model extends Model {
                 )
             order by rand()
             limit %s
-        ", $uid, $uid, $limit);
-        $query         = $this->db->query($sql);
-        $speakers    = $query->result();
+        ", $uid, $uid, $limit
+        );
+        $query          = $this->db->query($sql);
+        $speakers       = $query->result();
 
-        foreach ($speakers as $speaker) { $other_speakers[$speaker->user_id]=$speaker; }
+        foreach ($speakers as $speaker) {
+            $other_speakers[$speaker->user_id] = $speaker;
+        }
+
         return $other_speakers;
     }
 
     /**
      * Search the user information by a string on username and full name fields
      *
-     * @param $term string Search string
-     * @param $start[optional] Starting point for search (not currently used)
-     * @param $end[optional] Ending point for search (not currently used)
+     * @param string $term  string Search string
+     * @param void   $start [optional] Starting point for search (not currently used)
+     * @param void   $end   [optional] Ending point for search (not currently used)
+     *
+     * @return array
      */
-    function search($term, $start=null, $end=null) {
-        $ci = &get_instance();
-        $ci->load->model('talks_model','talksModel');
-        $ci->load->model('user_attend_model','userAttend');
+    public function search($term, $start = null, $end = null)
+    {
+        $ci = & get_instance();
+        $ci->load->model('talks_model', 'talksModel');
+        $ci->load->model('user_attend_model', 'userAttend');
 
-        $term = mysql_real_escape_string(strtolower($term));
-        $sql=sprintf("
+        $term    = mysql_real_escape_string(strtolower($term));
+        $sql     = sprintf(
+            "
             select
                 u.username,
                 u.full_name,
@@ -359,13 +485,19 @@ class User_model extends Model {
             where
                 lower(username) like '%%%s%%' or
                 lower(full_name) like '%%%s%%'
-        ", $term, $term);
-        $query    = $this->db->query($sql);
+        ", $term, $term
+        );
+        $query   = $this->db->query($sql);
         $results = $query->result();
         foreach ($results as $key => $user) {
-            $results[$key]->talk_count     = count($ci->talksModel->getSpeakerTalks($user->ID));
-            $results[$key]->event_count    = count($ci->userAttend->getUserAttending($user->ID));
+            $results[$key]->talk_count  = count(
+                $ci->talksModel->getSpeakerTalks($user->ID)
+            );
+            $results[$key]->event_count = count(
+                $ci->userAttend->getUserAttending($user->ID)
+            );
         }
+
         return $results;
     }
 
@@ -377,7 +509,7 @@ class User_model extends Model {
      * derived username will the number be increased until the username is
      * available.
      *
-     * @param string $username
+     * @param string $username Username to look up
      *
      * @return string
      */
