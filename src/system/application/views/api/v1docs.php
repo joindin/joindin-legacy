@@ -479,18 +479,18 @@ results are returned in date order with newest first.<br/>
 <b class="req_name" style="color:#5181C1;font-size:14px">Get User Detail</b>
 <div style="padding-left:10px">
 <b class="req_title">Action Type:</b> getdetail<br/>
-<b class="req_title">Description:</b> Get detail of a user, given either user ID or username<br/>
+<b class="req_title">Description:</b> Get detail of a user, given the user ID<br/>
 <b class="req_title">Authentication:</b> required<br />
 <b class="req_title">Input:</b>
     <ul>
-        <li>uid: string, Username/user ID
+        <li>uid: string, user ID
     </ul>
 <b class="req_title">Output:</b>
     <ul>
         <li>username: string, <?php echo $this->config->item('site_name'); ?> username
         <li>last_login: string, User's last login time (unix timestamp)
-        <li>ID: integer, user's ID'
-        <li>full_name: string, User's full name'
+        <li>ID: integer, user ID
+        <li>full_name: string, User's full name
     </ul>
     <a href="#top">[top]</a><br/><br/>
 </div>

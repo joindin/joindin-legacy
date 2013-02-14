@@ -89,15 +89,15 @@ class User_model extends Model
      *      Check the passed user is an admin,
      *      if no username is passed check for logged in user
      *
-     * @param User_model $user User object
+     * @param string $username username
      *                         (WARNING this accepted user_id once upon a time)
      *
      * @return boolean User's admin status
      */
-    public function isSiteAdmin($user = null)
+    public function isSiteAdmin($username = null)
     {
-        if ($user !== null) {
-            $udata = $this->getUserByUsername($user);
+        if ($username !== null) {
+            $udata = $this->getUserByUsername($username);
 
             return (isset($udata[0]) && $udata[0]->admin == 1) ? true : false;
         } elseif (!$this->isAuth()) {
@@ -275,23 +275,19 @@ class User_model extends Model
     /**
      * Search for publicly-available user information based on a user ID or username
      *
-     * A reduced version of the getUser() method so we can safely return these
+     * A reduced version of the getUserBy*() methods so we can safely return these
      * results to the service.
      *
      * Should be used in preference to getUser wherever possible
      *
-     * @param integer|string $in User ID or Username
+     * @param integer $in User ID
      *
      * @return array User details
      */
     public function getUserDetail($in)
     {
         $this->db->select('username, full_name, ID, last_login');
-        if (is_numeric($in)) {
-            $q = $this->db->get_where('user', array('ID' => $in));
-        } else {
-            $q = $this->db->get_where('user', array('username' => (string)$in));
-        }
+        $q = $this->db->get_where('user', array('ID' => $in));
 
         return $q->result();
     }
