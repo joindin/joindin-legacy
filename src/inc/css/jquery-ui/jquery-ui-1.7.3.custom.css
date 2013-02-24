@@ -46,8 +46,8 @@
 
 /* Component containers
 ----------------------------------*/
-.ui-widget { font-family: Arial,Helvetica,\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'Liberation Sans\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\',FreeSans,sans-serif; font-size: 11px; }
-.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { font-family: Arial,Helvetica,\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'Liberation Sans\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\',FreeSans,sans-serif; font-size: 1em; }
+.ui-widget { font-family: Arial,Helvetica,'Liberation Sans',FreeSans,sans-serif; font-size: 11px; }
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { font-family: Arial,Helvetica,'Liberation Sans',FreeSans,sans-serif; font-size: 1em; }
 .ui-widget-content { border: 1px solid #d7dcdf; background: #ffffff url(images/ui-bg_flat_100_ffffff_40x100.png) 50% 50% repeat-x; color: #2368af; }
 .ui-widget-content a { color: #2368af; }
 .ui-widget-header { border: 1px solid #d7dcdf; background: #f0f4f8 url(images/ui-bg_inset-soft_0_f0f4f8_1x100.png) 50% 50% repeat-x; color: #2368af; font-weight: bold; }

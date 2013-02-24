@@ -43,8 +43,8 @@ switch ($sort_type) {
         $talk_cdate = array();
         $tmp_talk   = array();
         foreach ($talks as $k=>$v) {
-            $talk_cdate[$v->ID]	= $v->last_comment_date;
-            $tmp_talk[$v->ID]	= $v;
+            $talk_cdate[$v->ID] = $v->last_comment_date;
+            $tmp_talk[$v->ID]   = $v;
         }
         arsort($talk_cdate);
         // Resort our talks
@@ -53,11 +53,11 @@ switch ($sort_type) {
         $talks=$tmp;
         $title = 'Talks (By Latest Comment)'; break;
     case 'bycomment':
-        $talk_ccount	= array();
-        $tmp_talk	= array();
+        $talk_ccount    = array();
+        $tmp_talk   = array();
         foreach ($talks as $k=>$v) {
             $talk_ccount[$v->ID]= $v->ccount;
-            $tmp_talk[$v->ID]	= $v;
+            $tmp_talk[$v->ID]   = $v;
         }
         arsort($talk_ccount);
         foreach ($talk_ccount as $k=>$v) { $tmp[]=$tmp_talk[$k]; }
@@ -94,8 +94,8 @@ switch ($sort_type) {
                 echo '<div style="padding-left:15px">';
                 foreach ($talks as $talk) {
                     $this->load->view('talk/_talk-row', array(
-                        'talk'		=> $talk,
-                        'override'	=> array($details[0]->ID=>$details[0]->full_name)
+                        'talk'      => $talk,
+                        'override'  => array($details[0]->ID=>$details[0]->full_name)
                     ));
                 }
                 echo '</div>';
@@ -103,8 +103,8 @@ switch ($sort_type) {
         } else {
             foreach ($talks as $talk) {
                 $this->load->view('talk/_talk-row', array(
-                    'talk'		=> $talk,
-                    'override'	=> array($details[0]->ID=>$details[0]->full_name)
+                    'talk'      => $talk,
+                    'override'  => array($details[0]->ID=>$details[0]->full_name)
                 ));
             }
         }
@@ -141,9 +141,9 @@ foreach ($my_attend as $k=>$v) { $my[]=$v->ID; }
 //check the date and, if they have talks in their list, be sure that its in the list
 foreach ($talks as $k=>$v) {
     $d=array(
-        'event_name'	=> $v->event_name,
-        'event_start'	=> $v->date_given,
-        'ID'			=> $v->eid
+        'event_name'    => $v->event_name,
+        'event_start'   => $v->date_given,
+        'ID'            => $v->eid
     );
     $d=(object)$d;
     if ($v->date_given<time()) {
@@ -168,7 +168,7 @@ foreach ($talks as $k=>$v) {
             <div class="row">
                 <strong><a href="/event/view/<?php echo $v->ID; ?>"><?php echo escape($v->event_name); ?></a></strong>
                 <?php echo date('M d, Y', $v->event_start); ?>
-                <?php if (in_array($v->ID, $my)) { echo "<br/><span style=\"color:#92C53E;font-size:11px\">you'll be there!</span>"; } ?>
+                <?php if (in_array($v->ID, $my)) { echo "<br/><span style=\"color:#92C53E;\">you'll be there!</span>"; } ?>
                 <div class="clear"></div>
             </div>
             <?php } ?>
