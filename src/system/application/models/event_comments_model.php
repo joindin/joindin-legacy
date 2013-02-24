@@ -94,5 +94,12 @@ class Event_comments_model extends Model
 
         return $q->result();
     }
+    function getUserCommentCount($uid) {
+        $this->db->select('count(*) as "n"');
+        $this->db->from('event_comments');
+        $this->db->where('user_id', $uid);
+        $q = $this->db->get();
+        return $q->row()->n;
+    }
 }
 
