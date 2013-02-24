@@ -14,13 +14,7 @@ class UserHelperTest extends PHPUnit_Framework_TestCase
 		$this->ci->load->helper('user_helper');
 		$this->ci->load->library('session');
 	}
-	protected function tearDown()
-	{
-		
-	}
-	
-	//--------------------
-	
+
 	/**
 	 * Check to ensure user logged in check works
 	 */
@@ -58,19 +52,4 @@ class UserHelperTest extends PHPUnit_Framework_TestCase
 		$this->assertTrue(user_is_admin());
 	
 	}
-
-	public function testIsEventAdmin()
-	{
-		$this->markTestIncomplete('Half-written');
-		$this->ci->db->select('*');
-		$this->ci->db->from('user_admin');
-		$this->ci->db->where(array('rcode !=','pending'));
-		$query = $this->ci->db->get();
-
-		print_r($query);
-
-		//$eventUser = $this->ci->db->get_where('user_admin',array('rcode !=','pending'))->result();
-		var_dump($eventUser);
-	}
-	
 }

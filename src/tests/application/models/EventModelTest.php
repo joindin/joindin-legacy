@@ -102,23 +102,7 @@ class EventModelTest extends PHPUnit_Framework_TestCase
 			$this->markTestSkipped('Private event not found.');
 		}	
 	}
-	
-	/**
-	 * Ensure that the "hot", "Upcoming" and "past" events are all working
-	 */
-	public function testEventsOfType ()
-	{
-		$hotEvents 		= $this->ci->event_model->getEventsOfType('hot');
-		$upcomingEvents = $this->ci->event_model->getEventsOfType('upcoming');
-		$pastEvents 	= $this->ci->event_model->getEventsOfType('past');
-		
-		$this->assertTrue(
-			(count($hotEvents)>0 && isset($hotEvents[0]->ID)) &&
-			(count($upcomingEvents)>0 && isset($upcomingEvents[0]->ID)) &&
-			(count($pastEvents)>0 && isset($pastEvents[0]->ID))
-		);
-	}
-	
+
 	public function testGetHotEvents()
 	{
 		$this->assertEquals(
