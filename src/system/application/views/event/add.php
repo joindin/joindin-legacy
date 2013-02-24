@@ -201,7 +201,7 @@
 
 <h2 class="first">General</h2>
 
-    <?php if ($is_site_admin): ?>
+    <?php if (isset($is_site_admin) && $is_site_admin): ?>
 <div class="row">
     <label for="bypass_spam_filter">Bypass Spam Filter</label>
     <?php echo form_checkbox('bypass_spam_filter', 1); ?> Check to bypass spam filtering
@@ -331,11 +331,11 @@
     <div>(In <em>English</em>, with optional alternative translation)</div>
     <?php
     echo form_textarea(array(
-        'name'	=> 'event_desc',
-        'id'	=> 'event_desc',
-        'cols'	=> 50,
-        'rows'	=> 10,
-        'value'	=> $this->validation->event_desc
+        'name'  => 'event_desc',
+        'id'    => 'event_desc',
+        'cols'  => 50,
+        'rows'  => 10,
+        'value' => $this->validation->event_desc
     ));
     ?>
     <div class="clear"></div>
