@@ -61,7 +61,7 @@ class Updatetrack extends BaseWsRequest
 
             if ($this->CI->um->isAuth()) {
                 $user = $this->CI->session->userdata('username');
-            } elseif (!$this->CI->um->isAuth()) {
+            } else {
                 $user = (string)$xml->auth->user;
             }
 
