@@ -201,7 +201,7 @@
 
 <h2 class="first">General</h2>
 
-    <?php if ($is_site_admin): ?>
+    <?php if (isset($is_site_admin) && $is_site_admin): ?>
 <div class="row">
     <label for="bypass_spam_filter">Bypass Spam Filter</label>
     <?php echo form_checkbox('bypass_spam_filter', 1); ?> Check to bypass spam filtering
@@ -269,7 +269,7 @@
     <div class="clear"></div>
 </div>
 
-    <?php if ($is_auth): ?>
+    <?php if (isset($is_auth) && $is_auth): ?>
 <div class="row last">
     <?php
     echo form_checkbox('is_admin','1', ($this->validation->is_admin == '1')); ?> I'm an event admin!<br/>
@@ -331,11 +331,11 @@
     <div>(In <em>English</em>, with optional alternative translation)</div>
     <?php
     echo form_textarea(array(
-        'name'	=> 'event_desc',
-        'id'	=> 'event_desc',
-        'cols'	=> 50,
-        'rows'	=> 10,
-        'value'	=> $this->validation->event_desc
+        'name'  => 'event_desc',
+        'id'    => 'event_desc',
+        'cols'  => 50,
+        'rows'  => 10,
+        'value' => $this->validation->event_desc
     ));
     ?>
     <div class="clear"></div>
@@ -361,7 +361,17 @@
 
                 foreach (range(1,12) as $v) { $cfp_start_mo[$v]=strftime('%B', strtotime('2000-' . $v . '-01')); }
                 foreach (range(1,31) as $v) { $cfp_start_day[$v]=sprintf('%02d', $v); }
+
                 foreach (range(date('Y'), date('Y')+5) as $v) { $cfp_start_yr[$v]=$v; }
+                
+                if($this->validation->cfp_start_yr < date('Y')) {
+                    $difference = date('Y') - $this->validation->cfp_start_yr;
+                    $add_year = $this->validation->cfp_start_yr;
+                    do {
+                        array_unshift($cfp_start_yr, $add_year);
+                        $add_year++;
+                    } while(date('Y') != $add_year);
+                }
 
                 echo form_dropdown('cfp_start_mo', $cfp_start_mo, $this->validation->cfp_start_mo, 'id="cfp_start_mo" ' . $js);
                 echo form_dropdown('cfp_start_day', $cfp_start_day, $this->validation->cfp_start_day, 'id="cfp_start_day" ' . $js);
@@ -374,6 +384,15 @@
                 foreach (range(1,12) as $v) { $cfp_end_mo[$v]=strftime('%B', strtotime('2000-' . $v . '-01')); }
                 foreach (range(1,31) as $v) { $cfp_end_day[$v]=sprintf('%02d', $v); }
                 foreach (range(date('Y'), date('Y')+5) as $v) { $cfp_end_yr[$v]=$v; }
+
+                if($this->validation->cfp_end_yr < date('Y')) {
+                    $difference = date('Y') - $this->validation->cfp_end_yr;
+                    $add_year = $this->validation->cfp_end_yr;
+                    do {
+                        array_unshift($cfp_end_yr, $add_year);
+                        $add_year++;
+                    } while(date('Y') != $add_year);
+                }
 
                 echo form_dropdown('cfp_end_mo', $cfp_end_mo, $this->validation->cfp_end_mo, 'id="cfp_end_mo" ' . $js);
                 echo form_dropdown('cfp_end_day', $cfp_end_day, $this->validation->cfp_end_day, 'id="cfp_end_day" ' . $js);
