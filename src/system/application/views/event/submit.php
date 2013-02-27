@@ -51,6 +51,15 @@ $(document).ready(function(){
         var $clicked = $(e.currentTarget);
         $('#map').joindIn_map('moveMap', {lat: $clicked.attr('data-lat'),lon: $clicked.attr('data-lon')});
     });
+    
+    // Initialise the OSM Map
+    $('#map').joindIn_map({
+        draggable: true,
+        moveMapCallback: function(elem, options){
+            $('#event_lat').val(options.lat);
+            $('#event_long').val(options.lon);
+        }
+    });
 });
 
 </script>
@@ -214,20 +223,7 @@ $(document).ready(function(){
                     <ul id="addr_selection"></ul>
                 </td>
                 <td align="right">
-                    <div id="desc-map">
-                        <div id="map" class="osmMap" data-lat="53.8000" data-lon="-1.5833" data-zoom="5"></div>
-                        <script type="text/javascript">
-                            jQuery(function($) {
-                                $('#map').joindIn_map({
-                                    draggable: true,
-                                    moveMapCallback: function(elem, options){
-                                        $('#event_lat').val(options.lat);
-                                        $('#event_long').val(options.lon);
-                                    }
-                                });
-                            });
-                        </script>
-                    </div>
+                    <div id="map" class="osmMap" data-lat="53.8000" data-lon="-1.5833" data-zoom="5"></div>
                 </td>
             </tr>
         </table>
