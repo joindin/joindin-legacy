@@ -13,6 +13,12 @@
  * These plugins are being used as a way to organise code for the joindIn site, they
  * are not intended to be stand alone jQuery plugins that could be distributed for 
  * wider consumption.
+ * 
+ * References:
+ *      http://learn.jquery.com/plugins/basic-plugin-creation/
+ *      http://docs.jquery.com/Plugins/Authoring
+ *      http://jqueryboilerplate.com/
+ *      
  */
 
 /**
