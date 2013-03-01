@@ -17,8 +17,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     {
         $queryString = http_build_query(
             array(
-                'foo' => 'bar',
-                'baz' => 'samoflange',
+                 'foo' => 'bar',
+                 'baz' => 'samoflange',
             )
         );
 
@@ -159,7 +159,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function acceptsHeadersAreParsedCorrectly()
     {
-        $_SERVER['HTTP_ACCEPT'] = 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8';
+        $_SERVER['HTTP_ACCEPT'] =
+            'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8';
         $request                = new \Request();
 
         $this->assertFalse($request->accepts('image/png'));
@@ -179,7 +180,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function preferredContentTypeOfReturnsADesiredFormatIfItIsAccepted()
     {
-        $_SERVER['HTTP_ACCEPT'] = 'text/text,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8';
+        $_SERVER['HTTP_ACCEPT'] =
+            'text/text,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8';
         $request                = new \Request();
 
         $result = $request->preferredContentTypeOutOf(
@@ -199,7 +201,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function ifPreferredFormatIsNotAcceptedReturnJson()
     {
-        $_SERVER['HTTP_ACCEPT'] = 'text/text,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8';
+        $_SERVER['HTTP_ACCEPT'] =
+            'text/text,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8';
         $request                = new \Request();
 
         $result = $request->preferredContentTypeOutOf(
@@ -270,8 +273,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     {
         $body = json_encode(
             array(
-                'a'     => 'b',
-                'array' => array('joind' => 'in')
+                 'a'     => 'b',
+                 'array' => array('joind' => 'in')
             )
         );
 
@@ -428,7 +431,10 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     {
         // Please see below for explanation of why we're mocking a "mock" PDO
         // class
-        $db      = $this->getMock('\JoindinTest\Inc\mockPDO', array());
+        $db      = $this->getMock(
+            '\JoindinTest\Inc\mockPDO',
+            array('getAvailableDrivers')
+        );
         $request = new \Request();
         $result  = $request->getOAuthModel($db);
 
@@ -533,10 +539,108 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function setUserIdAllowsForSettingOfUserId()
     {
         $request = new \Request();
-        $user = uniqid();
+        $user    = uniqid();
 
         $request->setUserId($user);
         $this->assertEquals($user, $request->getUserId());
+    }
+
+    /**
+     * Ensures the setPathInfo method allows setting of a path
+     *
+     * @return void
+     *
+     * @test
+     */
+    public function setPathInfoAllowsSettingOfPathInfo()
+    {
+        $path    = uniqid() . '/' . uniqid() . '/' . uniqid();
+        $parts   = explode('/', $path);
+        $request = new \Request();
+        $request->setPathInfo($path);
+
+        $this->assertEquals($path, $request->getPathInfo());
+        $this->assertEquals($path, $request->path_info);
+
+        $this->assertEquals($parts[0], $request->getUrlElement(0));
+        $this->assertEquals($parts[1], $request->getUrlElement(1));
+        $this->assertEquals($parts[2], $request->getUrlElement(2));
+    }
+
+    /**
+     * Ensures the setPath method is fluent
+     *
+     * @return void
+     *
+     * @test
+     */
+    public function setPathIsFluent()
+    {
+        $request = new \Request();
+        $this->assertSame($request, $request->setPathInfo(uniqid()));
+    }
+
+    /**
+     * Ensures the setAccept header sets the accept variable
+     *
+     * @return void
+     *
+     * @test
+     */
+    public function setAcceptSetsTheAcceptVariable()
+    {
+        $accept      = uniqid() . ',' . uniqid() . ',' . uniqid();
+        $acceptParts = explode(',', $accept);
+
+        $request = new \Request();
+        $request->setAccept($accept);
+        $this->assertEquals($acceptParts, $request->accept);
+
+        foreach ($acceptParts as $thing) {
+            $this->assertTrue($request->accepts($thing));
+        }
+    }
+
+    /**
+     * Ensures that the setAccept method is fluent
+     *
+     * @return void
+     *
+     * @test
+     */
+    public function setAcceptsIsFluent()
+    {
+        $request = new \Request();
+        $this->assertSame($request, $request->setAccept(uniqid()));
+    }
+
+    /**
+     * Ensures the setBase method allows setting of the base variable
+     *
+     * @return void
+     *
+     * @test
+     */
+    public function setBaseAllowsSettingOfBase()
+    {
+        $request = new \Request();
+        $base = uniqid();
+        $request->setBase($base);
+        $this->assertEquals($base, $request->getBase());
+        $this->assertEquals($base, $request->base);
+    }
+
+    /**
+     * Ensures the setBase method is fluent
+     *
+     * @return void
+     *
+     * @test
+     */
+    public function setBaseIsFluent()
+    {
+        $request = new \Request();
+        $this->assertSame($request, $request->setBase(uniqid()));
     }
 }
 
