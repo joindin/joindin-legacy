@@ -147,6 +147,7 @@ class Talk extends Controller
             'given_yr'     => 'Given Year',
             'given_hour'   => 'Given Hour',
             'given_min'    => 'Given Minute',
+            'duration'     => 'Session Length',
             'slides_link'  => 'Slides Link',
             'talk_desc'    => 'Talk Description',
             'session_type' => 'Session Type',
@@ -274,18 +275,13 @@ class Talk extends Controller
                 $this->input->post('given_min'), $talk_timezone
             );
 
-            // how much wrong will ->format("U") be if I do it now,
-            // due to DST changes?
-            // only needed until PHP Bug #51051 delivers a better method
-            $unix_offset1    = $talk_timezone->getOffset($talk_datetime);
-            $unix_offset2    = $talk_timezone->getOffset(new DateTime());
-            $unix_correction = $unix_offset1 - $unix_offset2;
-            $unix_timestamp  = $talk_datetime->format("U") - $unix_correction;
+            $unix_timestamp  = $talk_datetime->format("U");
 
             $arr = array(
                 'talk_title'  => $this->input->post('talk_title'),
                 'slides_link' => $this->input->post('slides_link'),
                 'date_given'  => $unix_timestamp,
+                'duration'    => $this->input->post('duration'),
                 'event_id'    => $this->input->post('event_id'),
                 'talk_desc'   => $this->input->post('talk_desc'),
                 'active'      => '1',

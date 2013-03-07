@@ -20,7 +20,7 @@
             }
             ?>
             <?php endforeach; echo implode(', ', $speaker_names); ?>
-        </strong> (<?php echo $detail->display_datetime; ?>)
+        </strong> (<?php echo $detail->display_datetime; if ($detail->duration > 0) echo ", $detail->display_duration"; ?>)
         <br/> 
         <?php echo escape($detail->tcid); ?> at <strong><a href="/event/view/<?php echo $detail->event_id; ?>"><?php echo escape($detail->event_name); ?></a></strong> (<?php echo escape($detail->lang_name);?>)
     </p>

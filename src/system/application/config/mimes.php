@@ -31,6 +31,7 @@ $mimes = array(	'hqx'	=>	'application/mac-binhex40',
                     'text/csv',
                     'application/csv',
                     'application/excel',
+                    'application/x-excel',
                     'application/vnd.msexcel'
                 ),
                 'bin'	=>	'application/macbinary',
