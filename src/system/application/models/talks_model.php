@@ -393,6 +393,7 @@ class Talks_model extends Model
               DISTINCT t.ID,
               t.talk_title,
               t.date_given,
+              t.duration,
               count(tc.ID) as ccount,
               get_talk_rating(t.ID) as tavg,
               e.ID eid,
@@ -709,6 +710,15 @@ class Talks_model extends Model
             $talk->display_date     = $talk_datetime->format('d.m.Y');
             $talk->display_datetime = $talk_datetime->format($date_string);
             $talk->display_time     = $talk_datetime->format('H:i');
+            
+            // set duration display
+            $talk->display_duration = "";
+            if ($talk->duration > 0) {
+                $hr = floor($talk->duration / 60);
+                $min = $talk->duration % 60;
+                if ($hr > 0) $talk->display_duration .= "${hr}h ";
+                $talk->display_duration .= "${min}m";
+            }
 
             $retval[] = $talk;
         }
