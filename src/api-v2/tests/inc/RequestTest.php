@@ -12,6 +12,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      * @return void
      *
      * @test
+     * @backupGlobals
      */
     public function getParameterReturnsValueOfRequestedParameter()
     {
@@ -56,6 +57,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      *
      * @test
      * @dataProvider methodProvider
+     * @backupGlobals
      */
     public function requestMethodIsProperlyLoaded($method)
     {
@@ -140,6 +142,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      * @return void
      *
      * @test
+     * @backupGlobals
      */
     public function getUrlElementReturnsRequestedElementFromPath()
     {
@@ -156,6 +159,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      * @return void
      *
      * @test
+     * @backupGlobals
      */
     public function acceptsHeadersAreParsedCorrectly()
     {
@@ -177,6 +181,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      * @return void
      *
      * @test
+     * @backupGlobals
      */
     public function preferredContentTypeOfReturnsADesiredFormatIfItIsAccepted()
     {
@@ -198,6 +203,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      * @return void
      *
      * @test
+     * @backupGlobals
      */
     public function ifPreferredFormatIsNotAcceptedReturnJson()
     {
@@ -219,6 +225,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      * @return void
      *
      * @test
+     * @backupGlobals
      */
     public function hostIsSetCorrectlyFromTheHeaders()
     {
@@ -268,6 +275,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      *
      * @test
      * @dataProvider postPutProvider
+     * @backupGlobals
      */
     public function jsonBodyIsParsedAsParameters($method)
     {
@@ -331,6 +339,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      * @return void
      *
      * @test
+     * @backupGlobals
      */
     public function schemeIsHttpsIfHttpsValueIsOn()
     {
