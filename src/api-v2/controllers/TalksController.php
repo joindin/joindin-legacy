@@ -72,7 +72,7 @@ class TalksController extends ApiController {
                 $data['rating'] = $rating;
 
                 $comment_mapper->save($data);
-                header("Location: " . $request->base . $request->path_info);
+                header("Location: " . $request->base . $request->path_info, true, 201);
                 exit;
             }
         } else {
