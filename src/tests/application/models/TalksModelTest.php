@@ -41,18 +41,6 @@ class TalksModelTest extends PHPUnit_Framework_TestCase
 		$this->assertContains($result[0]->speaker_name,$claims[0]->speakers);
 	}
 	
-	public function testTalkDataDuplicateFailure()
-	{
-		$result 	= $this->ci->db->get_where('talks',array('ID >'=>10))->result();
-		if (!is_array($result) || count($result) == 0) {
-			$this->markTestSkipped("No suitable talk in the DB");
-		}
-		$talkDetail = $result[0];
-		
-		$speakers = array('Nonesuch User');
-		$this->assertTrue($this->ci->talks_model->isTalkDataUnique($talkDetail,$speakers));
-	}
-	
 }
 
 ?>
