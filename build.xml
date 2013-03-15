@@ -20,7 +20,7 @@
  </target>
 
  <target name="phpunit" description="Run unit tests using PHPUnit and generates junit.xml and clover.xml">
-  <exec command="phpunit -c src/tests/phpunit.xml" />
+  <exec command="phpunit -c src/tests/phpunit.xml" logoutput="/dev/stdout" />
  </target>
 
  <target name="buildTasks" description="Run the phpmd, phpcs, phpdoc, phploc and lint tasks.">
@@ -49,7 +49,7 @@
  </target>
 
  <target name="phpcs" description="Generate checkstyle.xml using PHP_CodeSniffer">
-     <phpcodesniffer standard="doc/codesniffer/JoindIn/" verbosity="1">
+     <phpcodesniffer standard="doc/codesniffer/JoindIn/" verbosity="0">
    <fileset dir="${source}">
        <exclude name="views/**"/>
        <exclude name="libraries/Template.php" />
