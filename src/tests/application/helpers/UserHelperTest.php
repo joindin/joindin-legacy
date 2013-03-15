@@ -4,8 +4,6 @@ require_once dirname(__FILE__) . '/../../bootstrap/CITestBase.php';
 
 class UserHelperTest extends PHPUnit_Framework_TestCase
 {
-	private $_username	= 'johndoe';
-	
 	protected function setUp()
 	{
 		parent::setUp();
@@ -22,24 +20,12 @@ class UserHelperTest extends PHPUnit_Framework_TestCase
 	{
 		$this->ci->load->model('user_model');
 		
-		$userDetail = $this->ci->user_model->getUserByUsername($this->_username);
+		$userDetail = $this->ci->user_model->getUserByID(1);
 		$this->ci->session->set_userdata((array)$userDetail[0]);
 
 		$this->assertTrue(user_is_auth());
 	}
 
-	/**
-	 * Check the return value of the user_get_id()
-	 */
-	public function testGetValidUserId()
-	{
-		$this->ci->load->model('user_model');
-
-		$userDetail = $this->ci->user_model->getUserByUsername($this->_username);
-                $this->ci->session->set_userdata((array)$userDetail[0]);	
-
-		$this->assertEquals($userDetail[0]->ID,user_get_id());
-	}
 
 	/**
 	 * Check the return of user_is_admin for a valid admin user
