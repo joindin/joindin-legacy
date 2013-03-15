@@ -47,7 +47,7 @@ class Request
             $this->setScheme('http://');
         }
 
-        $this->setBase($this->getScheme() . $this->getPathInfo());
+        $this->setBase($this->getScheme() . $this->getHost());
 
         if ($parseParams) {
             $this->parseParameters();
