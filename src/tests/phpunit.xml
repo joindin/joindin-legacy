@@ -4,7 +4,7 @@
          backupStaticAttributes="false"
          strict="true"
          bootstrap="./bootstrap/CITestBase.php"
-         colors="true"
+         colors="false"
          verbose="true">
   <testsuite name="Joind.in Test Suite">
     <directory>./</directory>
