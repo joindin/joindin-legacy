@@ -7,7 +7,7 @@ class joindin::test::test {
 
     # Install required PEAR modules for test suite
     package { 'php-pear':
-      #require => Notify['running'],
+      #require => Package['php'],
     }
 
     # Discover the phpunit pear channel first - must do this separately because 
@@ -17,11 +17,19 @@ class joindin::test::test {
         require => Package['php-pear'],
     }
 
+    # PHP DOM extension required by PHPUnit on CentOS
+    package { 'php-xml':
+      require => Package['php-pear'],
+    }
+
     # Install test-suite tools
-    exec { 'php-unit':
+    exec { 'phpunit':
       creates => '/usr/bin/phpunit',
       command => 'pear install phpunit/PHPUnit',
-      require => Exec['phpunit-channel'],
+      require => [
+        Exec['phpunit-channel'],
+        Package['php-xml'],
+      ],
       before  => Notify['test'],
     }
 
@@ -40,10 +48,6 @@ class joindin::test::test {
       command => 'pear install phpunit/phpcpd',
       require => Exec['phpunit-channel'],
       before  => Notify['test'],
-    }
-
-    package { 'php-xml':
-      require => Package['php-pear'],
     }
 
     exec { 'pdepend':
