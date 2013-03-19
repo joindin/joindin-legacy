@@ -47,16 +47,7 @@ class Timezone
         }
         $datetime->setTimezone($tz);
 
-        // How much wrong will ->format("U") be if I do it now, due to DST changes?
-        // Only needed until PHP Bug #51051 delivers a better method
-        $unix_offset1    = $tz->getOffset($datetime);
-        $unix_offset2    = $tz->getOffset(new DateTime());
-        $unix_correction = $unix_offset1 - $unix_offset2;
-
-        // create datetime object corrected for DST offset
-        $timestamp = $unixtime + $unix_correction;
-
-        $datetime = new DateTime("@{$timestamp}");
+        $datetime = new DateTime("@{$unixtime}");
         $datetime->setTimezone($tz);
         return $datetime;
     }
@@ -127,13 +118,7 @@ class Timezone
         $dateObj->setDate($year, $month, $day);
         $dateObj->setTime($hour, $minute, $second);
 
-        // How much wrong will ->format("U") be if I do it now, due to DST changes?
-        // Only needed until PHP Bug #51051 delivers a better method
-        $unix_offset1    = $tz->getOffset($dateObj);
-        $unix_offset2    = $tz->getOffset(new DateTime());
-        $unix_correction = $unix_offset1 - $unix_offset2;
-
-        $unixTimestamp = $dateObj->format("U") - $unix_correction;
+        $unixTimestamp = $dateObj->format("U");
 
         return $unixTimestamp;
     }
