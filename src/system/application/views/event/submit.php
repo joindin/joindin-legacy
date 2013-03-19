@@ -271,14 +271,6 @@
         <div class="clear"></div>
     </div>
 
-    <?php if ($is_auth): ?>
-    <div class="row last">
-        <?php
-        echo form_checkbox('is_admin','1', ($this->validation->is_admin == '1')); ?> I'm an event admin!<br/>
-        <div class="clear"></div>
-    </div>
-    <?php endif; ?>
-
     <h2>Event Details</h2>
     <div class="row">
         <label for="event_stub">Event Stub</label>
@@ -417,4 +409,4 @@
 
     <?php echo form_close(); ?>
 </div>
-<?php endif; 
+<?php endif;
