@@ -62,6 +62,8 @@ or
 
         vagrant provision
 
+- The VM has a network interface that use the host only networking. This allow the responsive VM to communicate with this one if needed. The IP of this interface is 192.168.57.5.
+
 ## Quick Start - Existing Platforms
 
 1. Create a vhost entry for the site. The docroot should be `/src`.
