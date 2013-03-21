@@ -13,7 +13,7 @@ class joindin::test::test {
     # Discover the phpunit pear channel first - must do this separately because 
     # there is no guarantee of which tool will install first
     exec { 'phpunit-channel':
-        command => 'pear channel-discover pear.phpunit.de',
+        command => 'pear channel-discover pear.phpunit.de; true',
         require => Package['php-pear'],
     }
 
@@ -35,9 +35,9 @@ class joindin::test::test {
 
     exec { 'phploc':
       creates => '/usr/bin/phploc',
-      command => 'pear channel-discover components.ez.no && /
-                  pear channel-discover pear.netpirates.net && /
-                  pear channel-discover pear.symfony.com && /
+      command => 'pear channel-discover components.ez.no; true && /
+                  pear channel-discover pear.netpirates.net; true && /
+                  pear channel-discover pear.symfony.com; true && /
                   pear install phpunit/phploc',
       require => Exec['phpunit-channel'],
       before  => Notify['test'],
@@ -52,7 +52,7 @@ class joindin::test::test {
 
     exec { 'pdepend':
       creates => '/usr/bin/pdepend',
-      command => 'pear channel-discover pear.pdepend.org && \
+      command => 'pear channel-discover pear.pdepend.org; true && \
                   pear install pdepend/PHP_Depend-beta',
       require => [
         Package['php-xml'],
@@ -62,7 +62,7 @@ class joindin::test::test {
 
     exec { 'phpmd':
       creates => '/usr/bin/phpmd',
-      command => 'pear channel-discover pear.phpmd.org && \
+      command => 'pear channel-discover pear.phpmd.org; true && \
                   pear install phpmd/PHP_PMD',
       require => Exec['pdepend'],
       before  => Notify['test'],
@@ -70,7 +70,7 @@ class joindin::test::test {
 
     exec { 'phing':
       creates => '/usr/bin/phing',
-      command => 'pear channel-discover pear.phing.info && \
+      command => 'pear channel-discover pear.phing.info; true && \
                   pear install phing/phing',
       require => Package['php-pear'],
       before  => Notify['test'],
@@ -80,7 +80,7 @@ class joindin::test::test {
 
     exec { 'phpdoc':
       creates => '/usr/bin/phpdoc',
-      command => 'pear channel-discover pear.phpdoc.org && \
+      command => 'pear channel-discover pear.phpdoc.org; true && \
                   pear install phpdoc/phpDocumentor-alpha',
       require => [
         Package['php-pear'],
