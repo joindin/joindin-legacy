@@ -31,8 +31,13 @@ or
         vagrant up
 
 4. Add hostname to /etc/hosts.
+   If you are on Linux, run this:
 
-        echo "127.0.0.1 dev.joind.in api.dev.joind.in" | sudo tee -a /etc/hosts
+        echo "\n127.0.0.1 dev.joind.in api.dev.joind.in" | sudo tee -a /etc/hosts
+        
+   If you are on Windows, run this on the cmd line
+   
+        echo 127.0.0.1 dev.joind.in api.dev.joind.in >> %SYSTEMDRIVE%\Windows\System32\Drivers\Etc\Hosts
 
 5. Browse to the newly provisioned development copy of joind.in.
 

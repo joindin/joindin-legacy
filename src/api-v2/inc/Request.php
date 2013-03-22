@@ -20,34 +20,34 @@ class Request
     /**
      * Builds the request object
      *
-     * @param bool $parseParams Set to false to skip parsing parameters on construction
+     * @param bool $parseParams Set to false to skip parsing parameters on
+     *                          construction
      */
     public function __construct($parseParams = true)
     {
         if (isset($_SERVER['REQUEST_METHOD'])) {
-            $this->verb = $_SERVER['REQUEST_METHOD'];
+            $this->setVerb($_SERVER['REQUEST_METHOD']);
         }
 
         if (isset($_SERVER['PATH_INFO'])) {
-            $this->url_elements = explode('/', $_SERVER['PATH_INFO']);
-            $this->path_info    = $_SERVER['PATH_INFO'];
+            $this->setPathInfo($_SERVER['PATH_INFO']);
         }
 
         if (isset($_SERVER['HTTP_ACCEPT'])) {
-            $this->accept = explode(',', $_SERVER['HTTP_ACCEPT']);
+            $this->setAccept($_SERVER['HTTP_ACCEPT']);
         }
 
         if (isset($_SERVER['HTTP_HOST'])) {
-            $this->host = $_SERVER['HTTP_HOST'];
+            $this->setHost($_SERVER['HTTP_HOST']);
         }
 
         if (isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == "on")) {
-            $this->scheme = "https://";
+            $this->setScheme('https://');
         } else {
-            $this->scheme = "http://";
+            $this->setScheme('http://');
         }
 
-        $this->base = $this->scheme . $this->host;
+        $this->setBase($this->getScheme() . $this->getHost());
 
         if ($parseParams) {
             $this->parseParameters();
@@ -59,7 +59,7 @@ class Request
      * is provided and the parameter doesn't exist, the default value
      * will be returned instead
      *
-     * @param string $param Parameter to retrieve
+     * @param string $param   Parameter to retrieve
      * @param string $default Default to return if parameter doesn't exist
      *
      * @return string
@@ -70,6 +70,7 @@ class Request
         if (isset($this->parameters[$param])) {
             $value = $this->parameters[$param];
         }
+
         return $value;
     }
 
@@ -78,7 +79,7 @@ class Request
      * a default is provided, the default value will be returned.
      *
      * @param integer $index Index to retrieve
-     * @param string $default
+     * @param string  $default
      *
      * @return string
      */
@@ -139,7 +140,7 @@ class Request
      * Finds the authorized user from the oauth header and sets it into a
      * variable on the request.
      *
-     * @param PDO $db Database adapter (needed to put into OAuthModel if it's not set already)
+     * @param PDO    $db          Database adapter (needed to put into OAuthModel if it's not set already)
      * @param string $auth_header Authorization header to send into model
      *
      * @return bool
@@ -158,6 +159,7 @@ class Request
         $oauth_model   = $this->getOauthModel($db);
         $user_id       = $oauth_model->verifyAccessToken($oauth_pieces[1]);
         $this->user_id = $user_id;
+
         return true;
     }
 
@@ -199,6 +201,7 @@ class Request
                 // we could parse other supported formats here
             }
         }
+
         return true;
     }
 
@@ -317,6 +320,7 @@ class Request
     public function setOauthModel(OAuthModel $model)
     {
         $this->oauthModel = $model;
+
         return $this;
     }
 
@@ -342,5 +346,68 @@ class Request
     public function getUserId()
     {
         return $this->user_id;
+    }
+
+    /**
+     * Sets the path info variable. Also explodes the path into url elements
+     *
+     * @param string $pathInfo Path info to set
+     *
+     * @return self
+     */
+    public function setPathInfo($pathInfo)
+    {
+        $this->path_info    = $pathInfo;
+        $this->url_elements = explode('/', $pathInfo);
+
+        return $this;
+    }
+
+    /**
+     * Retrieves the original path info variable
+     *
+     * @return string
+     */
+    public function getPathInfo()
+    {
+        return $this->path_info;
+    }
+
+    /**
+     * Sets the accepts variable from the accept header
+     *
+     * @param string $accepts Accepts header string
+     *
+     * @return self
+     */
+    public function setAccept($accepts)
+    {
+        $this->accept = explode(',', $accepts);
+
+        return $this;
+    }
+
+    /**
+     * Sets the URI base
+     *
+     * @param string $base Base to set
+     *
+     * @return Request
+     */
+    public function setBase($base)
+    {
+        $this->base = $base;
+
+        return $this;
+    }
+
+    /**
+     * Returns the url base
+     *
+     * @return string
+     */
+    public function getBase()
+    {
+        return $this->base;
     }
 }
