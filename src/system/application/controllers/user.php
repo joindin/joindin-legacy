@@ -469,16 +469,6 @@ class User extends AuthAbstract
             $arr['pending_evt'] = array();
         }
 
-        $block = array(
-            'title'     => 'Other Speakers',
-            'content'   => $this->user_model->getOtherUserAtEvt($uid),
-            'udata'     => $arr['details'],
-            'has_talks' => (count($arr['talks']) == 0) ? false : true
-        );
-
-        if (!empty($block['content'])) {
-            $this->template->write_view('sidebar2', 'user/_other-speakers', $block);
-        }
         $this->template->write_view('content', 'user/view', $arr);
         $this->template->render();
     }
