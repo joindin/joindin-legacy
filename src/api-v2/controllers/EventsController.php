@@ -1,11 +1,11 @@
 <?php
 
 class EventsController extends ApiController {
-    public function handle($request, $db) {
+    public function handle(Request $request, $db) {
         // only GET is implemented so far
-        if($request->verb == 'GET') {
+        if($request->getVerb() == 'GET') {
             return $this->getAction($request, $db);
-        } elseif ($request->verb == 'POST') {
+        } elseif ($request->getVerb() == 'POST') {
             return $this->postAction($request, $db);
         }
         return false;

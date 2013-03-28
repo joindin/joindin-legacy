@@ -64,7 +64,6 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $_SERVER['REQUEST_METHOD'] = $method;
         $request                   = new \Request();
 
-        $this->assertEquals($method, $request->verb);
         $this->assertEquals($method, $request->getVerb());
     }
 
