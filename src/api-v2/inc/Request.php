@@ -6,7 +6,10 @@
 
 class Request
 {
-    public $verb;
+    /**
+     * @var string HTTP verb
+     */
+    protected $verb;
     public $url_elements;
     public $path_info;
     public $accept = array();
@@ -188,7 +191,7 @@ class Request
         }
 
         // now how about PUT/POST bodies? These override what we already had
-        if ($this->verb == 'POST' || $this->verb == 'PUT') {
+        if ($this->getVerb() == 'POST' || $this->getVerb() == 'PUT') {
             $body = $this->getRawBody();
             if (isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] == "application/json") {
                 $body_params = json_decode($body);
