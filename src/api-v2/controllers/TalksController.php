@@ -1,10 +1,10 @@
 <?php
 
 class TalksController extends ApiController {
-    public function handle($request, $db) {
-        if($request->verb == 'GET') {
+    public function handle(Request $request, $db) {
+        if($request->getVerb() == 'GET') {
             return $this->getAction($request, $db);
-        } elseif($request->verb == 'POST') {
+        } elseif($request->getVerb() == 'POST') {
             return $this->postAction($request, $db);
         } else {
             throw new Exception("method not supported");
