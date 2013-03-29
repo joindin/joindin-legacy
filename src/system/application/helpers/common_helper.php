@@ -186,13 +186,14 @@ if (! function_exists('form_datepicker')) {
     /**
      * Returns the javascript required for a datepicker for a form
      *
-     * @param string $day   Day to select initially in datepicker
-     * @param string $month Month to select initially in datepicker
-     * @param string $year  Year to select initially in datepicker
+     * @param string $day             Day to select initially in datepicker
+     * @param string $month           Month to select initially in datepicker
+     * @param string $year            Year to select initially in datepicker
+     * @param int    $monthFirstIndex Index of January in the dropdow.
      *
      * @return string
      **/
-    function form_datepicker($day, $month, $year)
+    function form_datepicker($day, $month, $year, $monthFirstIndex = 0)
     {
         $javascript = <<< JSCRIPT
         <input type='hidden' id='{$day}_{$month}_{$year}' />
@@ -210,7 +211,7 @@ if (! function_exists('form_datepicker')) {
             var selectdte = function(dateText, inst) {
                 var vals = dateText.split('-');
                 yr.val(vals[2]);
-                mo.get(0).selectedIndex = (vals[0]-1);
+                mo.get(0).selectedIndex = (vals[0]-1 + {$monthFirstIndex});
                 da.val(vals[1].replace(/^0/, ""));
             };
             $('#{$day}_{$month}_{$year}').datepicker({
@@ -233,7 +234,7 @@ JSCRIPT;
  * Remove htmlspecialchars from a string, used for comments
  * Because CI has decided to embed htmlspecialchars in the form helper...
  *
- * @param string $comment Comment to decode 
+ * @param string $comment Comment to decode
  *
  * @return string
  */
