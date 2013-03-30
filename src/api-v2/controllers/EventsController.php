@@ -42,8 +42,14 @@ class EventsController extends ApiController {
             }
         } else {
             $mapper = new EventMapper($db, $request);
+
+            $user_id = -1;
+            if(isset($request->user_id)) {
+                $user_id = $request->user_id;
+            }
+
             if($event_id) {
-                $list = $mapper->getEventById($event_id, $verbose);
+                $list = $mapper->getEventById($event_id, $verbose, $user_id);
                 if(false === $list) {
                     throw new Exception('Event not found', 404);
                 }
@@ -52,16 +58,16 @@ class EventsController extends ApiController {
                 if(isset($request->parameters['filter'])) {
                     switch($request->parameters['filter']) {
                         case "hot":
-                            $list = $mapper->getHotEventList($resultsperpage, $start, $verbose);
+                            $list = $mapper->getHotEventList($resultsperpage, $start, $verbose, $user_id);
                             break;
                         case "upcoming":
-                            $list = $mapper->getUpcomingEventList($resultsperpage, $start, $verbose);
+                            $list = $mapper->getUpcomingEventList($resultsperpage, $start, $verbose, $user_id);
                             break;
                         case "past":
-                            $list = $mapper->getPastEventList($resultsperpage, $start, $verbose);
+                            $list = $mapper->getPastEventList($resultsperpage, $start, $verbose, $user_id);
                             break;
                         case "cfp":
-                            $list = $mapper->getOpenCfPEventList($resultsperpage, $start, $verbose);
+                            $list = $mapper->getOpenCfPEventList($resultsperpage, $start, $verbose, $user_id);
                             break;
                         default:
                             throw new InvalidArgumentException('Unknown event filter', 404);
@@ -86,7 +92,7 @@ class EventsController extends ApiController {
                     $talk['event_id'] = $this->getItemId($request);
                     if(empty($talk['event_id'])) {
                         throw new Exception(
-                            "POST expects a talk representation sent to a specific event URL", 
+                            "POST expects a talk representation sent to a specific event URL",
                             400
                         );
                     }
@@ -97,14 +103,14 @@ class EventsController extends ApiController {
                     }
 
                     $talk['title'] = filter_var(
-                        $request->getParameter('talk_title'), 
+                        $request->getParameter('talk_title'),
                         FILTER_SANITIZE_STRING
                     );
                     if(empty($talk['title'])) {
                         throw new Exception("The talk title field is required", 400);
                     }
                     $talk['description'] = filter_var(
-                        $request->getParameter('talk_description'), 
+                        $request->getParameter('talk_description'),
                         FILTER_SANITIZE_STRING
                     );
                     if(empty($talk['description'])) {
@@ -125,7 +131,7 @@ class EventsController extends ApiController {
                             $talk['speakers'][] = filter_var($speaker, FILTER_SANITIZE_STRING);
                         }
                     }
-                        
+
                     $talk_mapper = new TalkMapper($db, $request);
                     $new_id = $talk_mapper->save($talk);
 
