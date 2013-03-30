@@ -68,15 +68,15 @@ class EventMapper extends ApiMapper
     /**
      * Fetch the details for a single event
      *
-     * @param int $event_id events.ID value
-     * @param boolean $verbose used to determine how many fields are needed
-     * @param int $connectedUserId Connected user
+     * @param int     $event_id        events.ID value
+     * @param boolean $verbose         used to determine how many fields are needed
+     * @param int     $connectedUserId Connected user
      *
      * @return array the event detail
      */
     public function getEventById($event_id, $verbose = false, $connectedUserId = -1)
     {
-        $order = 'events.event_start desc';
+        $order   = 'events.event_start desc';
         $results = $this->getEvents(1, 0, 'events.ID=' . (int)$event_id, null, $connectedUserId);
         if ($results) {
             $retval = $this->transformResults($results, $verbose);
@@ -89,20 +89,20 @@ class EventMapper extends ApiMapper
     /**
      * Internal function called by other event-fetching code, with changeable SQL
      *
-     * @param int $resultsperpage how many records to return
-     * @param int $start offset to start returning records from
-     * @param string $where one final thing to add to the where after an "AND"
-     * @param string $order what goes after "ORDER BY"
-     * @param int $connectedUserId Connected user
+     * @param int    $resultsperpage  how many records to return
+     * @param int    $start           offset to start returning records from
+     * @param string $where           one final thing to add to the where after an "AND"
+     * @param string $order           what goes after "ORDER BY"
+     * @param int    $connectedUserId Connected user
      *
      * @return array the raw database results
      */
-    protected function getEvents($resultsperpage, $start, $where = null, $order = null,
-        $connectedUserId = -1)
-    {
+    protected function getEvents($resultsperpage, $start, $where = null,
+        $order = null, $connectedUserId = -1
+    ) {
         $this->getEventDataInTemporaryTables();
 
-        $data = array('userId' => $connectedUserId);
+        $data         = array('userId' => $connectedUserId);
         $attendingSql = '';
         if (false !== strpos($where, 'current_ua')) {
             $attendingSql = 'Left Outer Join user_attend As current_ua On current_ua.eid = events.ID';
@@ -160,6 +160,8 @@ class EventMapper extends ApiMapper
     /**
      * Copy some of the data needed for events into
      * temporary tables to speed up the extraction.
+     *
+     * @return void
      */
     protected function getEventDataInTemporaryTables()
     {
@@ -196,10 +198,10 @@ class EventMapper extends ApiMapper
     /**
      * getEventList
      *
-     * @param int $resultsperpage how many records to return
-     * @param int $start offset to start returning records from
-     * @param boolean $verbose used to determine how many fields are needed
-     * @param int $connectedUserId Connected user
+     * @param int     $resultsperpage  how many records to return
+     * @param int     $start           offset to start returning records from
+     * @param boolean $verbose         used to determine how many fields are needed
+     * @param int     $connectedUserId Connected user
      *
      * @return array the data, or false if something went wrong
      */
@@ -220,10 +222,10 @@ class EventMapper extends ApiMapper
      * formula taken from original joindin codebase, uses number of people
      * attending and how soon/recent something is to calculate it's "hotness"
      *
-     * @param int $resultsperpage how many records to return
-     * @param int $start offset to start returning records from
-     * @param boolean $verbose used to determine how many fields are needed
-     * @param int $connectedUserId Connected user
+     * @param int     $resultsperpage  how many records to return
+     * @param int     $start           offset to start returning records from
+     * @param boolean $verbose         used to determine how many fields are needed
+     * @param int     $connectedUserId Connected user
      *
      * @return array the data, or false if something went wrong
      */
@@ -241,10 +243,10 @@ class EventMapper extends ApiMapper
     /**
      * Future events, soonest first
      *
-     * @param int $resultsperpage how many records to return
-     * @param int $start offset to start returning records from
-     * @param boolean $verbose used to determine how many fields are needed
-     * @param int $connectedUserId Connected user
+     * @param int     $resultsperpage  how many records to return
+     * @param int     $start           offset to start returning records from
+     * @param boolean $verbose         used to determine how many fields are needed
+     * @param int     $connectedUserId Connected user
      *
      * @return array the data, or false if something went wrong
      */
@@ -263,10 +265,10 @@ class EventMapper extends ApiMapper
     /**
      * Past events, most recent first
      *
-     * @param int $resultsperpage how many records to return
-     * @param int $start offset to start returning records from
-     * @param boolean $verbose used to determine how many fields are needed
-     * @param int $connectedUserId Connected user
+     * @param int     $resultsperpage  how many records to return
+     * @param int     $start           offset to start returning records from
+     * @param boolean $verbose         used to determine how many fields are needed
+     * @param int     $connectedUserId Connected user
      *
      * @return array the data, or false if something went wrong
      */
@@ -285,10 +287,10 @@ class EventMapper extends ApiMapper
     /**
      * Events with CfPs that close in the future and a cfp_url
      *
-     * @param int $resultsperpage how many records to return
-     * @param int $start offset to start returning records from
-     * @param boolean $verbose used to determine how many fields are needed
-     * @param int $connectedUserId Connected user
+     * @param int     $resultsperpage  how many records to return
+     * @param int     $start           offset to start returning records from
+     * @param boolean $verbose         used to determine how many fields are needed
+     * @param int     $connectedUserId Connected user
      *
      * @return array the data, or false if something went wrong
      */
@@ -307,7 +309,7 @@ class EventMapper extends ApiMapper
     /**
      * Turn results into arrays with correct fields, add hypermedia
      *
-     * @param array $results Results of the database query
+     * @param array   $results Results of the database query
      * @param boolean $verbose whether to return detailed information
      * @return array A dataset now with each record having its links,
      *     and pagination if appropriate
@@ -424,10 +426,10 @@ class EventMapper extends ApiMapper
     /**
      * Events that the currently logged-in user is marked as attending
      *
-     * @param int $resultsperpage how many records to return
-     * @param int $start offset to start returning records from
-     * @param boolean $verbose used to determine how many fields are needed
-     * @param int $connectedUserId Connected user
+     * @param int     $resultsperpage  how many records to return
+     * @param int     $start           offset to start returning records from
+     * @param boolean $verbose         used to determine how many fields are needed
+     * @param int     $connectedUserId Connected user
      *
      * @return array the data, or false if something went wrong
      */
