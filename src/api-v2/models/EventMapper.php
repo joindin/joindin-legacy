@@ -100,7 +100,6 @@ class EventMapper extends ApiMapper
     protected function getEvents($resultsperpage, $start, $where = null, $order = null,
         $connectedUserId = -1)
     {
-        $st = microtime(true);
         $this->getEventDataInTemporaryTables();
 
         $data = array('userId' => $connectedUserId);
@@ -151,7 +150,6 @@ class EventMapper extends ApiMapper
 
         $stmt = $this->_db->prepare($sql);
         $response = $stmt->execute($data);
-        echo 'Done: ' . (microtime(true) - $st);
         if ($response) {
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return $results;
