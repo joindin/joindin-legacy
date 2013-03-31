@@ -1056,5 +1056,18 @@ class Talk extends Controller
 
         return true;
     }
+
+    /**
+     * Generates an iCal download for the talk
+     *
+     * @param integer $id The ID of the talk
+     */
+    function icalendar($id)
+    {
+        $this->load->model('talks_model');
+        $data['talks'] = $this->talks_model->getTalks($id);
+        $data['title'] = $data['talks'][0]->talk_title;
+        $this->load->view('event/icalendar', $data);
+    }
 }
 

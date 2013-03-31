@@ -63,5 +63,9 @@
     </p>
     <?php endif; ?>
 
+    <p class="quicklink">
+        iCalendar Download: <strong><a href="<?php echo $this->config->site_url(); ?>talk/icalendar/<?php echo $detail->tid; ?>"><?php echo $this->config->site_url(); ?>talks/icalendar/<?php echo $detail->tid; ?></a></strong>
+    </p>
+
     <div class="clear"></div>
 </div>
