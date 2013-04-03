@@ -398,6 +398,10 @@ a {
 	*top:1px;
 }
 
+.ui-datepicker-title {
+    color: #666;
+}
+
 /***/
 
 #splash {
