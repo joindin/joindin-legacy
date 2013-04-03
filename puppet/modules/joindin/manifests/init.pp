@@ -4,4 +4,5 @@ class joindin {
     include joindin::sql
     include joindin::web
     include joindin::app
+    include joindin::test
 }

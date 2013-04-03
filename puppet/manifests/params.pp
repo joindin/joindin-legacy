@@ -14,5 +14,8 @@ class params {
     # True if phpmyadmin needs to be installed, false if not.
     $phpmyadmin = true
 
+    # True if the test suite needs to be installed, false for faster provisioning with no tests
+    $tests = true
+
     #$debug  = 'on'
 }
