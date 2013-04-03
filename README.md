@@ -1,7 +1,7 @@
 # Joind.in (http://joind.in)
 
 This is the source code for the Joind.in website - a resource set up to allow
-events to get real-time feedback from those attending. It also gives speakers a 
+events to get real-time feedback from those attending. It also gives speakers a
 way to claim and track their presentations over time.
 
 You can either install joind.in on an existing PHP platform, or use our vagrant setup.
@@ -20,7 +20,7 @@ You can set up a development virtual machine running joind.in by following these
         git clone https://github.com/joindin/joind.in --recursive
         cd joind.in
 
-or 
+or
 
         git clone https://github.com/joindin/joind.in && cd joind.in
         git submodule init
@@ -34,9 +34,9 @@ or
    If you are on Linux, run this:
 
         echo "\n127.0.0.1 dev.joind.in api.dev.joind.in" | sudo tee -a /etc/hosts
-        
+
    If you are on Windows, run this on the cmd line
-   
+
         echo 127.0.0.1 dev.joind.in api.dev.joind.in >> %SYSTEMDRIVE%\Windows\System32\Drivers\Etc\Hosts
 
 5. Browse to the newly provisioned development copy of joind.in.
@@ -48,6 +48,11 @@ or
 - HTTP and SSH ports on the VM are forwarded to localhost (22 -> 2222, 80 -> 8080)
 - The joind.in directory you cloned will be mounted inside the VM at `/vagrant`
 - You can develop by editing the files you cloned in the IDE of you choice.
+- You need to amend src/system/application/config/config.php to set
+
+        $config['base_url']	= 'http://dev.joind.in:8080/';
+        $config['api_base_url']	= 'http://api.dev.joind.in:8080/';
+
 - The database is running inside the VM. You can get to it by doing the following:
 
         you@you> vagrant ssh
@@ -113,7 +118,7 @@ or
 8. To enable useful error messages, add the following to your `.htaccess`
 
         SetEnv JOINDIN_DEBUG On
-        
+
 9. Enjoy the site!
 
 ## Other Resources
