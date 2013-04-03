@@ -7,6 +7,7 @@ class TalkMapper extends ApiMapper {
             'talk_description' => 'talk_desc',
             'type' => 'category',
             'start_date' => 'date_given',
+			'duration' => 'duration',
             'average_rating' => 'avg_rating',
             'comments_enabled' => 'comments_enabled',
             'comment_count' => 'comment_count'
@@ -22,6 +23,7 @@ class TalkMapper extends ApiMapper {
             'slides_link' => 'slides_link',
             'language' => 'lang_name',
             'start_date' => 'date_given',
+			'duration' => 'duration',
             'average_rating' => 'avg_rating',
             'comments_enabled' => 'comments_enabled',
             'comment_count' => 'comment_count'

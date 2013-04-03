@@ -1,6 +1,7 @@
 <script type="text/javascript" src="/inc/js/talk.js"></script>
 <?php
 $event_list	= array(); 
+$dur_list	= array("" => "Not specified");
 $cat_list	= array();
 $lang_list	= array();
 
@@ -10,6 +11,15 @@ $lang_list	= array();
 $ev=$events[0];
 foreach ($cats as $k=>$v) { $cat_list[$v->ID]=$v->cat_title; }
 foreach ($langs as $k=>$v) { $lang_list[$v->ID]=$v->lang_name; }
+
+for ($i = 5; $i <= 600; $i += 5) {
+    $hr = floor($i / 60);
+    $min = $i % 60;
+    $txt = "";
+    if ($hr > 0) $txt .= "${hr}h ";
+    $txt .= "${min}m";
+    $dur_list[$i] = $txt;
+}
 
 if (!empty($this->validation->error_string)) {
     $this->load->view('msg_info', array('msg' => $this->validation->error_string));
@@ -129,6 +139,15 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
     ?>
     <div class="clear"></div>
     </div>
+    
+    <div class="row">
+    <label for="duration">Session Length</label>
+    <?php
+        echo form_dropdown('duration', $dur_list, $this->validation->duration); 
+    ?>
+    <div class="clear"></div>
+    </div>
+
     <div class="row">
     <label for="session_type">Session Type</label>
     <?php

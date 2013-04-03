@@ -131,8 +131,8 @@ class Event_model extends Model
     function approvePendingEvent($id)
     {
         $arr=array(
-            'active'	=> 1,
-            'pending'	=> 0
+            'active'    => 1,
+            'pending'    => 0
         );
         $this->db->where('ID', $id);
         $this->db->update('events', $arr);
@@ -265,6 +265,7 @@ SQL
                 talks.speaker,
                 talks.slides_link,
                 talks.date_given,
+                talks.duration,
                 talks.event_id,
                 talks.ID,
                 talks.talk_desc,
@@ -463,7 +464,7 @@ SQL
      */
     function getPastEvents($limit = null, $per_page = null, $current_page = null)
     {
-        $result = $this->getEventsOfType("past", $limit);			
+        $result = $this->getEventsOfType("past", $limit);            
         if ($per_page && $current_page) {
             $total_count = count($result) / $per_page;
             $result      = array_slice($result, ($current_page * $per_page),
@@ -753,6 +754,7 @@ SQL
                 t.talk_title,
                 t.speaker,
                 t.date_given,
+                t.duration,
                 tc.date_made,
                 tc.rating,
                 tc.comment,
@@ -796,6 +798,7 @@ SQL
                 talks.speaker,
                 talks.slides_link,
                 talks.date_given,
+                talks.duration,
                 talks.event_id,
                 talks.ID,
                 talks.talk_desc,
