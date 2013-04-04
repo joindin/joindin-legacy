@@ -413,7 +413,6 @@ class User extends AuthAbstract
         $this->load->model('pending_talk_claims_model');
         $this->load->model('user_attend_model', 'uam');
         $this->load->model('user_admin_model', 'uadmin');
-        $this->load->model('speaker_profile_model', 'spm');
         $this->load->helper('reqkey');
         $this->load->helper('url');
         $this->load->library('gravatar');
@@ -458,7 +457,6 @@ class User extends AuthAbstract
             'reqkey'        => $reqkey,
             'seckey'        => buildSecFile($reqkey),
             'sort_type'     => $sort_type,
-            'pub_profile'   => $this->spm->getUserPublicProfile($uid, true),
             'gravatar'      => $imgStr
         );
         if ($curr_user) {
