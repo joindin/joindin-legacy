@@ -13,7 +13,7 @@ $base_url = $this->config->config['base_url'];
 
 <p>We use <a href="https://github.com/mashery/iodocs">IODocs from Mashery</a> to give an interactive way of viewing the API and testing it out.  To use this, you'll need a valid access token which you enter at the top of the page.</p>
 
-<p><a href="http://test.joind.in/user/oauth_allow?api_key=5d3a1d71c8b5a42aa6fec6e577a633&callback=http://joind.in/api/v2docs">Click here to generate your access token</a> <?php if(isset($_GET['access_token']) && $_GET['access_token']) echo " access token: " . $_GET['access_token']; ?></p>
+<p><a href="http://test.joind.in/user/oauth_allow?api_key=05348fd4f886a0785d69f1e8ec4ff4&callback=http://joind.in/api/v2docs">Click here to generate your access token</a> <?php if(isset($_GET['access_token']) && $_GET['access_token']) echo " access token: " . $_GET['access_token']; ?></p>
 
 <p>Copy the token, and <a href="http://lornajane-iodocs.heroku.com/joindinv2">try the interactive docs</a>/  Or, keep reading for more detailed information.</p>
 
