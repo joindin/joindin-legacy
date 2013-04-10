@@ -49,7 +49,7 @@ types & commands available:
 
 	* site status [{test string}]
 
-	* user getdetail {uid}  where {uid} may be a username or user id
+	* user getdetail {uid} where {uid} is user id
 	* user validate {uid} {password} where {uid} may be a username or user id
 	* user getcomments {username}
 

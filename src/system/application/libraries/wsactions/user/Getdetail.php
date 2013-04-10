@@ -63,7 +63,7 @@ class Getdetail extends BaseWsRequest
         $this->CI->load->model('user_model');
         $this->CI->load->library('wsvalidate');
 
-        // uid can be either numeric user id or username
+        // uid must be numeric user id 
         $uid = $this->xml->action->uid;
 
         $rules = array(
