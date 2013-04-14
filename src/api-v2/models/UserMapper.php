@@ -36,8 +36,7 @@ class UserMapper extends ApiMapper
         $fields = array(
             "username" => "username",
             "full_name" => "full_name",
-            "twitter_username" => "twitter_username",
-            "last_login" => "last_login"
+            "twitter_username" => "twitter_username"
             );
         return $fields;
     }
