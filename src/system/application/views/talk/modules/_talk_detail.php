@@ -59,7 +59,7 @@
     
     <?php if (!empty($detail->slides_link)): ?>
     <p class="quicklink">
-        Slides: <strong><a href="<?php echo $detail->slides_link; ?>"><?php echo $detail->talk_title; ?></a></strong>
+        Slides: <strong><a href="<?php echo $detail->slides_link; ?>" target="_blank"><?php echo $detail->talk_title; ?></a></strong>
     </p>
     <?php endif; ?>
 
