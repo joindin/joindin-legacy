@@ -1,97 +1,69 @@
 <?php menu_pagetitle('Submit an event'); ?>
-<script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false"></script>
-<script type="text/javascript">
-    var map;
-    var marker;
-    var geocoder;
-    var infowindow = new google.maps.InfoWindow();
+<script type="text/javascript" src="/inc/js/jq.joindIn.js"></script>
+<link rel="stylesheet" href="/inc/leaflet/leaflet.css" />
+<!--[if lte IE 8]><link rel="stylesheet" href="/inc/leaflet/leaflet.ie.css" /><![endif]-->
+<script src="/inc/leaflet/leaflet.js"></script>
+<script>
+function toggleCfpDates(){
 
-    function load_map() {
-        geocoder = new google.maps.Geocoder();
-        var myOptions = {
-          zoom: 5,
-          center: new google.maps.LatLng(53.8000, -1.5833), // UK
-          mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-        map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-        google.maps.event.addListener(map, 'click', function(event) {
-          placeMarker(event.latLng);
+    var sel_fields = new Array(
+        'cfp_start_mo','cfp_start_day','cfp_start_yr',
+        'cfp_end_mo','cfp_end_day','cfp_end_yr','cfp_url'
+    );
+
+    // Get the current status of the first one...
+    stat = $('input[name="is_cfp"]').is(':checked');
+    if(stat){
+        $('div.cfp').show();
+        $.each(sel_fields,function(){
+            $('#'+this).removeAttr("disabled");
+        });
+    }else{
+        $('div.cfp').hide();
+        $.each(sel_fields,function(){
+            $('#'+this).attr("disabled","disabled");
         });
     }
+}
+    
+$(document).ready(function(){
+    // Initialise the Cfp Toggle.
+    toggleCfpDates();
 
-    function placeMarker(location) {
-        var clickedLocation = new google.maps.LatLng(location);
-        if (!marker) {
-            marker = new google.maps.Marker({
-                position: location,
-                map: map
+    // Setup the click handler for the search button.
+    $('#addr_search_button').click(function(){
+        console.log('Searching for: ', $('#addr').val());
+        $.getJSON('http://nominatim.openstreetmap.org/search?format=json&limit=5&q=' + $('#addr').val(), function(data) {
+            var items = [];
+
+            var $addrSelector = $('#addr_selection');
+            $addrSelector.empty();
+            $.each(data, function(key, val) {
+                var newLI = $('<li><a href="#" data-lat="'+ val.lat +'" data-lon="'+ val.lon +'">' + val.display_name + '</a></li>');
+                $addrSelector.append(newLI);
             });
-        } else {
-            marker.setPosition(location);
-        }
-
-        //map.setCenter(location);
-
-        $('#event_lat').val(location.lat());
-        $('#event_long').val(location.lng());
-    }
-
-    function chooseAddr(lat, lng) {
-        var location = new google.maps.LatLng(lat, lng);
-        map.setCenter(location);
-        placeMarker(location);
-    }
-
-    function addr_search() {
-        var inp = document.getElementById("addr");
-        if (geocoder) {
-            geocoder.geocode( { 'address': inp.value}, function(results, status) {
-                if (status == google.maps.GeocoderStatus.OK) {
-                    $('#addr_selection').empty();
-                    if (results.length > 1) {
-                        $(results).each(function(result) {
-                            var newLI = $('<li><a href="#" onclick="chooseAddr(' + this.geometry.location.lat() + ', ' + this.geometry.location.lng() + ');return false;">' + this.formatted_address + '</a></li>');
-                            newLI.appendTo($('#addr_selection'));
-                            //console.log(result.geometry.location);
-                        });
-                    }
-                    //map.setCenter(results[0].geometry.location);
-                    map.fitBounds(results[0].geometry.viewport);
-                    placeMarker(results[0].geometry.location);
-                } else {
-                    notifications.alert("Geocode was not successful for the following reason: " + status);
-                }
-            });
-        }
-    }
-
-    function toggleCfpDates(){
-
-        var sel_fields = new Array(
-            'cfp_start_mo','cfp_start_day','cfp_start_yr',
-            'cfp_end_mo','cfp_end_day','cfp_end_yr','cfp_url'
-        );
-
-        // Get the current status of the first one...
-        stat = $('input[name="is_cfp"]').is(':checked');
-        if(stat){
-            $('div.cfp').show();
-            $.each(sel_fields,function(){
-                $('#'+this).removeAttr("disabled");
-            });
-        }else{
-            $('div.cfp').hide();
-            $.each(sel_fields,function(){
-                $('#'+this).attr("disabled","disabled");
-            });
-        }
-    }
-
-    $('document').ready(function(){
-        load_map();
-        toggleCfpDates();
+        });
     });
+    
+    // Setup the click handler for clicking on items in the results list.
+    $('#addr_selection li a').live('click', function(e){
+        e.preventDefault();
+        var $clicked = $(e.currentTarget);
+        $('#map').joindIn_map('moveMap', {lat: $clicked.attr('data-lat'),lon: $clicked.attr('data-lon')});
+    });
+    
+    // Initialise the OSM Map
+    $('#map').joindIn_map({
+        draggable: true,
+        moveMapCallback: function(elem, options){
+            $('#event_lat').val(options.lat);
+            $('#event_long').val(options.lon);
+        }
+    });
+});
+
 </script>
+
 <style type="text/css">
     h2.first
     {
@@ -181,7 +153,7 @@
         display: inline;
     }
 
-    #map_canvas
+    #map
     {
         width:  250px;
         height: 300px;
@@ -232,7 +204,7 @@
                         <tr>
                             <td colspan="2">
                                 <input type="text" name="addr" id="addr" value="<?php echo $this->validation->addr; ?>" />
-                                <input type="button" id="addr_search_button" onclick="addr_search()" value="Search" />
+                                <input type="button" id="addr_search_button" onclick="" value="Search" />
                             </td>
                         </tr>
                         <tr>
@@ -251,10 +223,11 @@
                     <ul id="addr_selection"></ul>
                 </td>
                 <td align="right">
-                    <div id="map_canvas"></div>
+                    <div id="map" class="osmMap" data-lat="53.8000" data-lon="-1.5833" data-zoom="5"></div>
                 </td>
             </tr>
         </table>
+        
       <div class="clear"></div>
     </div>
 
