@@ -1,7 +1,7 @@
 <?php
 
 abstract class ApiController {
-	abstract public function handle($request, $db);
+	abstract public function handle(Request $request, $db);
 
     public function getItemId($request) {
         // item ID
