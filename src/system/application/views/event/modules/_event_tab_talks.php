@@ -11,7 +11,7 @@
     <table summary="" cellpadding="0" cellspacing="0" border="0" width="100%" class="list">
     <?php
     $total_comment_ct   = 0;
-    $session_rate	    = 0;
+    $session_rate        = 0;
     foreach ($by_day as $talk_section_date=>$talk_section_talks): // was $k=>$v
         $ct = 0;
     ?>
@@ -48,7 +48,12 @@
             <td>
                 <a href="/talk/view/<?php echo $talk->ID; ?>"><?php echo escape($talk->talk_title); ?></a>
                 <?php
-                    if ($talk->display_time != '00:00') {echo '(' . $talk->display_time . ')';}
+                    if ($talk->display_time != '00:00') {
+                        echo "(";
+                        echo $talk->display_time;
+                        if ($talk->duration > 0) echo ", $talk->display_duration";
+                        echo ")";
+                    }
                 ?>
                 <div class="speakers">
                 <?php
