@@ -5,21 +5,9 @@ $dur_list	= array("" => "Not specified");
 $cat_list	= array();
 $lang_list	= array();
 
-//echo '<pre>'; print_r($cats); echo '</pre>';
-//echo '<pre>'; print_r($tracks); echo '</pre>';
-
 $ev=$events[0];
 foreach ($cats as $k=>$v) { $cat_list[$v->ID]=$v->cat_title; }
 foreach ($langs as $k=>$v) { $lang_list[$v->ID]=$v->lang_name; }
-
-for ($i = 5; $i <= 600; $i += 5) {
-    $hr = floor($i / 60);
-    $min = $i % 60;
-    $txt = "";
-    if ($hr > 0) $txt .= "${hr}h ";
-    $txt .= "${min}m";
-    $dur_list[$i] = $txt;
-}
 
 if (!empty($this->validation->error_string)) {
     $this->load->view('msg_info', array('msg' => $this->validation->error_string));
@@ -36,6 +24,15 @@ if (isset($this->edit_id)) {
     $title	= 'Add Session';
     menu_pagetitle('Add Session');
 }
+
+$default_duration = 60;
+if($this->validation->duration) {
+    $default_duration = $this->validation->duration;
+} elseif($this->session->userdata('duration')) {
+    $default_duration = $this->session->userdata('duration');
+}
+
+// now the form begins
 echo '<h2>'.$title.'</h2>';
 
 if (isset($msg) && !empty($msg)) { $this->load->view('msg_info', array('msg' => $msg)); }
@@ -112,14 +109,6 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
     <div class="row">
     <label for="session_date">Date and Time of Session</label>
     <?php
-    /*foreach (range(1,12) as $v) {
-        $m=date('M', mktime(0,0,0, $v,1, date('Y')));
-        $given_mo[$v]=$m; }
-    foreach (range(1,32) as $v) { $given_day[$v]=$v; }
-    foreach (range(2007, date('Y')+5) as $v) { $given_yr[$v]=$v; }
-    echo form_dropdown('given_mo', $given_mo, $this->validation->given_mo);
-    echo form_dropdown('given_day', $given_day, $this->validation->given_day);
-    echo form_dropdown('given_yr', $given_yr, $this->validation->given_yr);*/
     $eventStart = $this->timezone->getDatetimeFromUnixtime($thisTalksEvent->event_start, $thisTalksEvent->timezoneString);
     $eventEnd = $this->timezone->getDatetimeFromUnixtime($thisTalksEvent->event_end, $thisTalksEvent->timezoneString);
     $listData = array();
@@ -143,7 +132,8 @@ $priv=($evt_priv===true) ? ', Private Event' : '';
     <div class="row">
     <label for="duration">Session Length</label>
     <?php
-        echo form_dropdown('duration', $dur_list, $this->validation->duration); 
+        echo form_input('duration', $default_duration); 
+        echo "in minutes";
     ?>
     <div class="clear"></div>
     </div>

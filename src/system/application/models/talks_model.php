@@ -716,8 +716,8 @@ class Talks_model extends Model
             if ($talk->duration > 0) {
                 $hr = floor($talk->duration / 60);
                 $min = $talk->duration % 60;
-                if ($hr > 0) $talk->display_duration .= "${hr}h ";
-                $talk->display_duration .= "${min}m";
+                if ($hr > 0) $talk->display_duration .= "${hr} hr ";
+                $talk->display_duration .= "${min} min";
             }
 
             $retval[] = $talk;

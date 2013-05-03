@@ -258,6 +258,9 @@ class Talk extends Controller
         }
 
         if ($this->validation->run() != false) {
+            // store the session length in the session, as a handy shortcut
+            $this->session->set_userdata('duration', (int)$this->input->post('duration'));
+
             if (!empty($thisTalksEvent->event_tz_cont)
                 && !empty($thisTalksEvent->event_tz_place)
             ) {
@@ -281,7 +284,7 @@ class Talk extends Controller
                 'talk_title'  => $this->input->post('talk_title'),
                 'slides_link' => $this->input->post('slides_link'),
                 'date_given'  => $unix_timestamp,
-                'duration'    => $this->input->post('duration'),
+                'duration'    => (int)$this->input->post('duration'),
                 'event_id'    => $this->input->post('event_id'),
                 'talk_desc'   => $this->input->post('talk_desc'),
                 'active'      => '1',

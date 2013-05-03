@@ -51,7 +51,6 @@
                     if ($talk->display_time != '00:00') {
                         echo "(";
                         echo $talk->display_time;
-                        if ($talk->duration > 0) echo ", $talk->display_duration";
                         echo ")";
                     }
                 ?>
