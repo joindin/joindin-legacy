@@ -1,7 +1,7 @@
 <?php
 
-class DefaultController {
-	public function handle($request, $db) {
+class DefaultController extends ApiController {
+	public function handle(Request $request, $db) {
         $retval = array();
 
         // just add the available methods, with links
