@@ -2,7 +2,6 @@
 
 <project name="joindin" default="build" basedir=".">
  <property name="source" value="src/system/application/"/>
- <property name="apiv2source" value="src/api-v2/" />
  <property name="apiv1tester" value="doc/apiv1_tester" />
  <property name="basedir" value="."/>
 
@@ -42,12 +41,6 @@
   <exec command="phploc --log-csv ${basedir}/build/logs/phploc.csv ${source}" />
  </target>
 
- <target name="frisby" description="Run new API tests in Frisby">
-     <exec command="jasmine-node --nocolor --junitreport --output ../../../build/logs/frisby/ ." 
-         dir="${basedir}/src/tests/api_tests">
-  </exec>
- </target>
-
  <target name="phpcs" description="Generate checkstyle.xml using PHP_CodeSniffer">
      <phpcodesniffer standard="doc/codesniffer/JoindIn/" verbosity="0">
    <fileset dir="${source}">
@@ -78,11 +71,6 @@
             </patternset>
             <exclude name="views/**"></exclude>
             <exclude name="libraries/Template.php" />
-        </fileset>
-        <fileset dir="${apiv2source}">
-            <patternset>
-                <include name="**/${filename}" />
-            </patternset>
         </fileset>
     </phpcodesniffer>
 </target>
