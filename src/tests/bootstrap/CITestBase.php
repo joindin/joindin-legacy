@@ -211,9 +211,6 @@ else
 	require(BASEPATH.'codeigniter/Base5'.EXT);
 }
 
-// Load the api-v2 autoloader
-require_once __DIR__ . '/../../api-v2/inc/Autoloader.php';
-
 // Load the base controller class
 //load_class('Controller', FALSE);
 load_class('Controller');
