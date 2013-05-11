@@ -8,6 +8,8 @@ You can either install joind.in on an existing PHP platform, or use our vagrant 
 
 ## Quick Start - Using Vagrant
 
+** WARNING: there have been some repo changes (mostly moving the API and db patches to https://github.com/joindin/joindin-api) which may mean you need to adapt the following instructions.  Pull requests against this README are greatly appreciated **
+
 You can set up a development virtual machine running joind.in by following these simple instructions.
 
 1. Install requirements. (Note: these are not required by joind.in itself, but are required for this quick start guide.)
@@ -100,11 +102,9 @@ or
 
         $config['uri_protocol']	= "QUERY_STRING";
 
-6. Initialise, patch, and populate the database.
+6. Initialise, patch, and populate the database.  The database files are no longer part of this repository; they live in the API repo https://github.com/joindin/joindin-api which you will also need to fork and clone.  Within that codebase, you can run the following command to populate your database, using the credentials you created in the previous step.
 
-        src/scripts/patchdb.sh -t /path/to/joind.in -d joindin -u username -p password -i
-
-   (use the correct username and password)
+        scripts/patchdb.sh -t /path/to/joindin-api -d joindin -u username -p password -i
 
    If you are using Windows And/Or Git bash you may see an error regarding "o being an invalid option" when running step 6.
 
@@ -113,7 +113,7 @@ or
 
     This should also work for git via the commandline (cmd.exe) but cannot be guaranteed in that environment.
 
-7. Create some sample data to get you started - see `/doc/dbgen/README` for information about this excellent tool
+7. Create some sample data to get you started, this tool is also under the API repo.   Look at `tools/dbgen/README` for information about this excellent tool
 
 8. To enable useful error messages, add the following to your `.htaccess`
 
@@ -124,7 +124,8 @@ or
 ## Other Resources
 
 * The main website http://joind.in
-* Issues list: http://joindin.jira.com/ (good bug reports ALWAYS welcome!)
+* Issues list: http://joindin.jira.com/ (good bug reports ALWAYS welcome!  To get started, try an issue labelled "easy-pick")
+* The API repo, which much of the website also depends on: https://github.com/joindin/joindin-api
 * CI Environment: lots of output and information about tests, deploys etc: http://jenkins.joind.in
 * Community: We hang out on IRC, pop in with questions or comments! #joind.in on Freenode
 
@@ -132,25 +133,6 @@ See LICENSE file for license information for this software
 (located in /doc/LICENSE)
 
 ## Extensions
-
-### API Tests
-
-To run the frisby tests (frisby.js), you will first need to install node.js and
-npm.  Then run:
-
-        npm install -g frisby jasmine-node
-
-I also found that I needed:
-
-        export NODE_PATH=/usr/local/lib/node_modules
-
-You should set the URL that the tests run against to be your local installation:
-
-        export JOINDIN_API_BASE_URL=http://api.joindin.localhost
-
-Then run the tests by going to `/src/tests/api_tests` and running:
-
-        jasmine-node newapi_spec.js
 
 ### Unit Tests
 
