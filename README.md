@@ -113,7 +113,7 @@ or
 
     This should also work for git via the commandline (cmd.exe) but cannot be guaranteed in that environment.
 
-7. Create some sample data to get you started, this tool is also under the API repo.   Look at `tools/dbgen/README` for information about this excellent tool
+7. Create some sample data to get you started, this tool is also under the API repo.   Look at `tools/dbgen/README.md` for information about this excellent tool
 
 8. To enable useful error messages, add the following to your `.htaccess`
 
