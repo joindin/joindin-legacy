@@ -101,8 +101,8 @@ or
 
 5. Amend the file src/system/application/config/config.php as follows:
 
-    $config['base_url']	= 'http://dev.joind.in:8080/';
-    $config['api_base_url']	= 'http://api.dev.joind.in:8080/';
+        $config['base_url']	= 'http://dev.joind.in:8080/';
+        $config['api_base_url']	= 'http://api.dev.joind.in:8080/';
 
 6. Browse to the newly provisioned development copy of joind.in at:
 
@@ -115,17 +115,17 @@ or
 - You can develop by editing the files you cloned in the IDE of you choice.
 - The database is running inside the VM. You can get to it by doing the following:
 
-    you@you> vagrant ssh
-    vagrant@vm> sudo -i
-    root@vm> mysql joindin
+         you@you> vagrant ssh
+         vagrant@vm> sudo -i
+         root@vm> mysql joindin
 
 - To stop the VM do one of the following:
-    `vagrant halt` if you want to shutdown the VM and work on it later
-    `vagrant destroy` if you wish to delete the VM completely
+         `vagrant halt` if you want to shutdown the VM and work on it later
+         `vagrant destroy` if you wish to delete the VM completely
 
 - Testing packages are disabled by default to improve boot time for vagrant. If you 
   wish to enable tests, modify the file puppet/manifests/params.pp as follows:
-    $tests = true
+         $tests = true
 
 ## Other Resources
 
