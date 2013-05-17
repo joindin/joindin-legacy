@@ -4,7 +4,61 @@ This is the source code for the Joind.in website - a resource set up to allow
 events to get real-time feedback from those attending. It also gives speakers a
 way to claim and track their presentations over time.
 
-You can either install joind.in on an existing PHP platform, or use our vagrant setup.
+This README includes instructions for setting up joind.in. You can either install 
+joind.in on an existing PHP platform, or use our vagrant setup. Note: contributors 
+should start at the Contributor readme (CONTRIBUTING.md).
+
+## Quick Start - Existing Platforms
+
+1. Create a vhost entry for the site. The docroot should be `/src`.
+
+2. Create directories for user-added content.
+
+        mkdir src/system/cache/ctokens && chown apache:apache src/system/cache/ctokens
+
+   (or whatever user and group your web server runs as)
+
+3. Create a MySQL database with username and password.
+   Use a database name of 'joindin'
+
+4. Create configuration files for database and config (based on the .dist templates):
+
+        cp src/system/application/config/database.php.dist src/system/application/config/database.php
+        cp src/system/application/config/config.php.dist   src/system/application/config/config.php
+
+   Edit these files as appropriate!
+
+5. If you are using Fast-CGI you will need to edit the .htaccess file
+   Change lines 17 & 24 from:
+
+        RewriteRule ^(.*)$ /index.php/$1
+
+   to
+
+        RewriteRule ^(.*)$ /index.php?/$1
+
+   Also you will need to amend the config.php so that the uri_protocol setting ends up as follows:
+
+        $config['uri_protocol']	= "QUERY_STRING";
+
+6. Initialise, patch, and populate the database.  The database files are no longer part of this repository; they live in the API repo https://github.com/joindin/joindin-api which you will also need to fork and clone.  Within that codebase, you can run the following command to populate your database, using the credentials you created in the previous step.
+
+        scripts/patchdb.sh -t /path/to/joindin-api -d joindin -u username -p password -i
+
+   If you are using Windows And/Or Git bash you may see an error regarding "o being an invalid option" when running step 6.
+
+   To fix this, you will need to visit http://gnuwin32.sourceforge.net/packages/grep.htm and download the binaries and dependencies zip files
+   Extract the contents of the bin folder from the zip files to the bin folder of your Git install and restart Git Bash.
+
+    This should also work for git via the commandline (cmd.exe) but cannot be guaranteed in that environment.
+
+7. Create some sample data to get you started, this tool is also under the API repo.   Look at `tools/dbgen/README.md` for information about this excellent tool
+
+8. To enable useful error messages, add the following to your `.htaccess`
+
+        SetEnv JOINDIN_DEBUG on
+
+9. Enjoy the site!
 
 ## Quick Start - Using Vagrant
 
@@ -69,57 +123,6 @@ or
 
         vagrant provision
 
-## Quick Start - Existing Platforms
-
-1. Create a vhost entry for the site. The docroot should be `/src`.
-
-2. Create directories for user-added content.
-
-        mkdir src/system/cache/ctokens && chown apache:apache src/system/cache/ctokens
-
-   (or whatever user and group your web server runs as)
-
-3. Create a MySQL database with username and password.
-   Use a database name of 'joindin'
-
-4. Create configuration files for database and config (based on the .dist templates):
-
-        cp src/system/application/config/database.php.dist src/system/application/config/database.php
-        cp src/system/application/config/config.php.dist   src/system/application/config/config.php
-
-   Edit these files as appropriate!
-
-5. If you are using Fast-CGI you will need to edit the .htaccess file
-   Change lines 17 & 24 from:
-
-        RewriteRule ^(.*)$ /index.php/$1
-
-   to
-
-        RewriteRule ^(.*)$ /index.php?/$1
-
-   Also you will need to amend the config.php so that the uri_protocol setting ends up as follows:
-
-        $config['uri_protocol']	= "QUERY_STRING";
-
-6. Initialise, patch, and populate the database.  The database files are no longer part of this repository; they live in the API repo https://github.com/joindin/joindin-api which you will also need to fork and clone.  Within that codebase, you can run the following command to populate your database, using the credentials you created in the previous step.
-
-        scripts/patchdb.sh -t /path/to/joindin-api -d joindin -u username -p password -i
-
-   If you are using Windows And/Or Git bash you may see an error regarding "o being an invalid option" when running step 6.
-
-   To fix this, you will need to visit http://gnuwin32.sourceforge.net/packages/grep.htm and download the binaries and dependencies zip files
-   Extract the contents of the bin folder from the zip files to the bin folder of your Git install and restart Git Bash.
-
-    This should also work for git via the commandline (cmd.exe) but cannot be guaranteed in that environment.
-
-7. Create some sample data to get you started, this tool is also under the API repo.   Look at `tools/dbgen/README.md` for information about this excellent tool
-
-8. To enable useful error messages, add the following to your `.htaccess`
-
-        SetEnv JOINDIN_DEBUG On
-
-9. Enjoy the site!
 
 ## Other Resources
 
