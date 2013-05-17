@@ -94,7 +94,7 @@ fi
 # Init DB, Apply patches & Seed as required.
 #
 ###
-PATCH_DIR=$TARGET/doc/db
+PATCH_DIR=$TARGET/db
 MAX_PATCH_LEVEL=$(ls $PATCH_DIR/patch*.sql | egrep -o 'patch[0-9]*.sql' | egrep -o '[0-9]+' | sort -n | tail -n 1)
 
 # Init
