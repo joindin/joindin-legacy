@@ -119,7 +119,7 @@ or
 
 8. To enable useful error messages, add the following to your `.htaccess`
 
-        SetEnv JOINDIN_DEBUG On
+        SetEnv JOINDIN_DEBUG on
 
 9. Enjoy the site!
 
