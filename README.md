@@ -90,6 +90,10 @@ or
    If you are on Linux, run this:
 
         echo "\n127.0.0.1 dev.joind.in api.dev.joind.in" | sudo tee -a /etc/hosts
+   
+   If you are on OSX, run this:
+
+        echo "127.0.0.1 dev.joind.in api.dev.joind.in" | sudo tee -a /etc/hosts
 
    If you are on Windows, run this on the cmd line
 
