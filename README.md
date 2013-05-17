@@ -113,15 +113,18 @@ or
 - HTTP and SSH ports on the VM are forwarded to localhost (22 -> 2222, 80 -> 8080)
 - The joind.in directory you cloned will be mounted inside the VM at `/vagrant`
 - You can develop by editing the files you cloned in the IDE of you choice.
-- The database is running inside the VM. You can get to it by doing the following:
+- The database is running inside the VM. You can get to with the following commands:
 
          you@you> vagrant ssh
          vagrant@vm> sudo -i
          root@vm> mysql joindin
 
-- To stop the VM do one of the following:
-         `vagrant halt` if you want to shutdown the VM and work on it later
-         `vagrant destroy` if you wish to delete the VM completely
+- To stop the VM so that you can work on it later, issue the following command 
+  from the host machine:
+         vagrant halt
+
+- To delete the VM completely, issue the following command from the host machine:
+         vagrant destroy 
 
 - Testing packages are disabled by default to improve boot time for vagrant. If you 
   wish to enable tests, modify the file puppet/manifests/params.pp as follows:
