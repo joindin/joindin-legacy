@@ -121,13 +121,16 @@ or
 
 - To stop the VM so that you can work on it later, issue the following command 
   from the host machine:
+
          vagrant halt
 
 - To delete the VM completely, issue the following command from the host machine:
+
          vagrant destroy 
 
 - Testing packages are disabled by default to improve boot time for vagrant. If you 
   wish to enable tests, modify the file puppet/manifests/params.pp as follows:
+
          $tests = true
 
 ## Other Resources
