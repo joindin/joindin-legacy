@@ -7,3 +7,6 @@
 [submodule "puppet/modules/mysql"]
     path = puppet/modules/mysql
     url = https://github.com/example42/puppet-mysql
+[submodule "joindin-api"]
+	path = joindin-api
+	url = https://github.com/joindin/joindin-api.git
