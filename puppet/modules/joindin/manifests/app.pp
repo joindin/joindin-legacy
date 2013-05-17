@@ -2,18 +2,19 @@ class joindin::app {
 
     # Initialize database structure
     exec { 'patch-db':
-        creates => '/tmp/.patched',
         command => "/vagrant/src/scripts/patchdb.sh \
-                    -t /vagrant -d ${params::dbname} -u ${params::dbuser} -p ${params::dbpass} -i -p \
-                    && touch /tmp/.patched",
+                    -t /vagrant/joindin-api -d ${params::dbname} -u ${params::dbuser} -p ${params::dbpass} -i",
         require => Exec['create-db'],
     }
 
     # Generate seed data
     exec { 'seed-data':
         creates => '/tmp/seed.sql',
-        command => 'php /vagrant/doc/dbgen/generate.php > /tmp/seed.sql',
-        require => Package['php'],
+        command => 'php /vagrant/joindin-api/tools/dbgen/generate.php > /tmp/seed.sql',
+        require => [
+	    Package['php'],
+	    Exec['patch-db'],
+	]
     }
 
     # Seed database
@@ -34,7 +35,7 @@ class joindin::app {
 
     # Set database config for application
     file { 'api-database-config':
-        path    => '/vagrant/src/api-v2/database.php',
+        path    => '/vagrant/joindin-api/src/database.php',
         content => template('joindin/database.php.erb'),
     }
 
