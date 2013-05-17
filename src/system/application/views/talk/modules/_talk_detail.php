@@ -1,6 +1,6 @@
 
 <div class="detail">
-    <h1><?php echo $detail->talk_title?></h1>
+    <h1><?php echo escape($detail->talk_title)?></h1>
 
     <p class="info">
         <strong>
