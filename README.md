@@ -95,34 +95,33 @@ or
 
         echo 127.0.0.1 dev.joind.in api.dev.joind.in >> %SYSTEMDRIVE%\Windows\System32\Drivers\Etc\Hosts
 
-5. Browse to the newly provisioned development copy of joind.in.
+5. Amend the file src/system/application/config/config.php as follows:
 
-        open http://dev.joind.in:8080
+    $config['base_url']	= 'http://dev.joind.in:8080/';
+    $config['api_base_url']	= 'http://api.dev.joind.in:8080/';
+
+6. Browse to the newly provisioned development copy of joind.in at:
+
+    http://dev.joind.in:8080
 
 *Notes:*
 
 - HTTP and SSH ports on the VM are forwarded to localhost (22 -> 2222, 80 -> 8080)
 - The joind.in directory you cloned will be mounted inside the VM at `/vagrant`
 - You can develop by editing the files you cloned in the IDE of you choice.
-- You need to amend src/system/application/config/config.php to set
-
-        $config['base_url']	= 'http://dev.joind.in:8080/';
-        $config['api_base_url']	= 'http://api.dev.joind.in:8080/';
-
 - The database is running inside the VM. You can get to it by doing the following:
 
-        you@you> vagrant ssh
-        vagrant@vm> sudo su
-        root@vm> mysql joindin
+    you@you> vagrant ssh
+    vagrant@vm> sudo -i
+    root@vm> mysql joindin
 
 - To stop the VM do one of the following:
-  `vagrant suspend` if you plan on running it later
-  `vagrant destroy` if you wish to delete the VM completely
+    `vagrant halt` if you want to shutdown the VM and work on it later
+    `vagrant destroy` if you wish to delete the VM completely
 
-- Also, when any of of the Puppet manifests change, it is a good idea to rerun them:
-
-        vagrant provision
-
+- Testing packages are disabled by default to improve boot time for vagrant. If you 
+  wish to enable tests, modify the file puppet/manifests/params.pp as follows:
+    $tests = true
 
 ## Other Resources
 
