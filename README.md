@@ -4,7 +4,9 @@ This is the source code for the Joind.in website - a resource set up to allow
 events to get real-time feedback from those attending. It also gives speakers a
 way to claim and track their presentations over time.
 
-You can either install joind.in on an existing PHP platform, or use our vagrant setup.
+This README includes instructions for setting up joind.in. You can either install 
+joind.in on an existing PHP platform, or use our vagrant setup. Note: contributors 
+should start at the Contributor readme (CONTRIBUTING.md).
 
 ## Quick Start - Using Vagrant
 
