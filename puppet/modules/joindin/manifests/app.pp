@@ -2,8 +2,10 @@ class joindin::app {
 
     # Initialize database structure
     exec { 'patch-db':
+        creates => '/tmp/.patched',
         command => "/vagrant/src/scripts/patchdb.sh \
-                    -t /vagrant/joindin-api -d ${params::dbname} -u ${params::dbuser} -p ${params::dbpass} -i",
+                    -t /vagrant/joindin-api -d ${params::dbname} -u ${params::dbuser} \
+                    -p ${params::dbpass} -i && touch /tmp/.patched",
         require => Exec['create-db'],
     }
 
