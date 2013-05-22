@@ -41,6 +41,26 @@ margin: 			0 0 4px 0;
 <?php
 if (isset($_SERVER['JOINDIN_DEBUG']) && $_SERVER['JOINDIN_DEBUG'] == 'on') {
     echo "<h1>$heading</h1>\n$message\n";
+    
+    echo '<table>';
+    $cnt = 0;
+    foreach (debug_backtrace() as $bt) {
+        if (!empty($bt['function'])) {
+            $fn = $bt['function'];
+        }
+        if (!empty($bt['class'])) {
+            $fn = $bt['class'] . ($bt['type']) . $fn;
+        }
+
+        $file = (empty($bt['file']) ? '' : $bt['file']);
+        $file = str_replace($_SERVER['DOCUMENT_ROOT'], '...', $file);
+        $line = (empty($bt['line']) ? '' : $bt['line']);
+        
+        echo "<tr><td>#$cnt</td><td>$fn</td><td>$file</td><td>$line</td></tr>";
+        $cnt++;
+    }
+    echo '</table>';
+    
 } else {
     echo "<h1>Ooops!</h1>\n
     We're very sorry, something went wrong!  Please try again or drop us a
