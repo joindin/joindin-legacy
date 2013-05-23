@@ -70,9 +70,10 @@ class Tags_model extends Model
      *
      * @return void
      */
-    public function removeTag()
+    public function removeTag($eventId, $tagId)
     {
-        
+        $where = array('event_id'=>$eventId,'tag_id'=>$tagId);
+        $this->db->delete('tags_events',$where); 
     }
 }
 
