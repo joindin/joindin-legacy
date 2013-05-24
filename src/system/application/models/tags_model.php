@@ -66,14 +66,17 @@ class Tags_model extends Model
     }
 
     /**
-     * Does nothing. Not implemented
+     * Deletes the association of a tag to an event.
+     *
+     * @param integer $eventId Event ID
+     * @param integer $tagId   Tag ID
      *
      * @return void
      */
     public function removeTag($eventId, $tagId)
     {
-        $where = array('event_id'=>$eventId,'tag_id'=>$tagId);
-        $this->db->delete('tags_events',$where); 
+        $where = array('event_id'=>$eventId, 'tag_id'=>$tagId);
+        $this->db->delete('tags_events', $where);
     }
 }
 
