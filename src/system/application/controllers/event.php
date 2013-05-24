@@ -671,7 +671,6 @@ class Event extends Controller
                 $this->tagsEvents->addTag($id, $tag);
                 $tagList[] = $tag;
             }
-
             // see if we have any left overs
             $this->tagsEvents->removeUnusedTags($id, $ctags);
 
