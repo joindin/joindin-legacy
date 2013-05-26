@@ -43,18 +43,20 @@ claim the session. You can then accept/deny based on any match between them.
                 'id'	=> 'talkid-'.$claim->talk_id.'-'.$claim->ID.'-deny'
             )); ?></td>
             <td>
-                <a href="/talk/view/<?php echo $claim->talk_id; ?>"><?php echo $claim->talk_title; ?></a>
+                <a href="/talk/view/<?php echo $claim->talk_id; ?>"><?php echo
+                    escape($claim->talk_title); ?></a>
             </td>
             <td>
                 <?php
                 $speakers = array();
                 foreach ($claim->claim_detail as $detail) {
-                    $speakers[] = $detail->speaker_name;
+                    $speakers[] = escape($detail->speaker_name);
                 }
                 echo implode(', ', $speakers);
                 ?>
             </td>
-            <td><?php echo '<a href="/user/view/'.$claim->speaker_id.'">'.$claim->full_name.'</a>'; ?></td>
+            <td><?php echo '<a href="/user/view/'.$claim->speaker_id.'">'
+                    .escape($claim->full_name).'</a>'; ?></td>
         </tr>
         <?php endforeach; ?>
     </table>

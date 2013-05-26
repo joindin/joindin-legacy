@@ -3,9 +3,10 @@
     <?php foreach ($slides_list as $sk=>$sv): ?>
         <tr class="<?php echo ($ct%2==0) ? 'row1' : 'row2'; ?>">
         <td>
-        <a href="/talk/view/<?php echo $sk; ?>"><?php echo $sv['title']; ?></a>
+        <a href="/talk/view/<?php echo $sk; ?>"><?php echo escape($sv['title']);
+            ?></a>
         </td>
-        <td><?php echo $sv['speaker']; ?>
+        <td><?php echo escape($sv['speaker']); ?>
         <td>
         <a href="<?php echo $sv['link']; ?>">Slides</a>
         </td>
