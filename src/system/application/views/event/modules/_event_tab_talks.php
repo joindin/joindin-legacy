@@ -60,9 +60,10 @@
                 foreach ($talk->speaker as $speaker) {
                     if (isset($claimed[$talk->ID][$speaker->speaker_id])) {
                         $claim_data = $claimed[$talk->ID][$speaker->speaker_id];
-                        $speaker_list[]='<a href="/user/view/'.$claim_data->speaker_id.'">'.$claim_data->full_name.'</a>';
+                        $speaker_list[]='<a href="/user/view/'.$claim_data->speaker_id.'">'.
+                            escape($claim_data->full_name).'</a>';
                     } else {
-                        $speaker_list[]=$speaker->speaker_name; 
+                        $speaker_list[]=escape($speaker->speaker_name);
                     }
                     
                 }

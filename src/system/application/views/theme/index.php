@@ -16,8 +16,9 @@
 $bg=($theme->active==1) ? '#E9E9E9' : '#FFFFFF';
 ?>
 <tr style="background-color:<?php echo $bg; ?>">
-    <td><?php echo $theme->theme_name; ?></td>
-    <td><a href="/event/view/<?php echo $theme->event_id; ?>"><?php echo $theme->event_name; ?></a></td>
+    <td><?php echo escape($theme->theme_name); ?></td>
+    <td><a href="/event/view/<?php echo $theme->event_id; ?>"><?php echo
+            escape($theme->event_name); ?></a></td>
     <td>
         <?php echo ($theme->active==1) ? 'active' : 'inactive'; ?>
     </td>
