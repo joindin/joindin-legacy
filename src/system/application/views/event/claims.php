@@ -14,9 +14,11 @@
             <td align="center"><?php echo form_radio('claim['.$claim->ua_id.']','approve'); ?></td>
             <td align="center"><?php echo form_radio('claim['.$claim->ua_id.']','deny'); ?></td>
             <td>
-                <?php echo '<a href="/event/view/'.$claim->eid.'">'.$claim->event_name.'</a>'; ?><br/>
+                <?php echo '<a href="/event/view/'.$claim->eid.'">'
+                    .escape($claim->event_name).'</a>'; ?><br/>
             </td>
-            <td><?php echo '<a href="/user/view/'.$claim->uid.'">'.$claim->claiming_name.'</a>'; ?></td>
+            <td><?php echo '<a href="/user/view/'.$claim->uid.'">'
+                    .escape($claim->claiming_name).'</a>'; ?></td>
         </tr>
         <?php endforeach; ?>
     </table>

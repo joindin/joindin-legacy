@@ -5,7 +5,7 @@
     $speaker_list = array();
     foreach ($speakers as $speaker) {
         if (empty($speaker->speaker_id)) {
-            $speaker_list[$speaker->ID]=$speaker->speaker_name;
+            $speaker_list[$speaker->ID]=escape($speaker->speaker_name);
         }
     }
     echo form_dropdown('claim_name_select', $speaker_list, null,'id="claim_name_select"');
