@@ -137,7 +137,8 @@ class Talk extends Controller
             'talk_desc'    => 'required',
             'session_type' => 'required',
             'session_lang' => 'required',
-            'given_mo'     => 'callback_given_mo_check'
+            'given_mo'     => 'callback_given_mo_check',
+            'slides_link'  => 'callback_slides_link_check'
         );
         $fields = array(
             'event_id'     => 'Event Name',
@@ -174,7 +175,7 @@ class Talk extends Controller
 
             $track_info = $this->talkTracks->getSessionTrackInfo($thisTalk->ID);
             $is_private = ($thisTalksEvent->private == 'Y') ? true : false;
-            
+
             $this->validation->session_track = (empty($track_info))
                 ? null : $track_info[0]->ID;
 
@@ -390,7 +391,7 @@ class Talk extends Controller
                     redirect('talk/view/' . $tc_id);
                 }
             }
-        } 
+        }
 
         $det = $this->talks_model->setDisplayFields($det);
         $out = array(
@@ -585,7 +586,7 @@ class Talk extends Controller
 
         $already_rated = false;
         if ($this->user_model->isAuth()) {
-            // Find out if there is at least 1 comment that is made by our 
+            // Find out if there is at least 1 comment that is made by our
             // user for this talk
             foreach ($this->talks_model
                 ->getUserComments($this->user_model->getId()) as $comment) {
@@ -601,7 +602,7 @@ class Talk extends Controller
             $claim_user_ids[] = $claim_item->userid;
         }
 
-        $rating_rule = (in_array($currentUserId, $claim_user_ids) 
+        $rating_rule = (in_array($currentUserId, $claim_user_ids)
             || ($already_rated)) ? null : 'required';
 
         $rules = array('rating' => $rating_rule);
@@ -787,12 +788,12 @@ class Talk extends Controller
             'comments'       => (isset($talk_comments['comment']))
             ? $talk_comments['comment'] : array(),
                 'admin'          => ($is_talk_admin) ? true : false,
-                'site_admin'     => ($this->user_model->isSiteAdmin()) 
+                'site_admin'     => ($this->user_model->isSiteAdmin())
                     ? true : false,
                 'auth'           => $this->auth,
                 'claimed'        => $this->talks_model->talkClaimDetail($id),
                 'claim_status'   => $claim_status, 'claim_msg' => $claim_msg,
-                'is_claimed'      => $this->talks_model->hasUserClaimed($id) 
+                'is_claimed'      => $this->talks_model->hasUserClaimed($id)
                     || $is_claim_approved,
                 'speakers'       => $speakers,
                 'reqkey'         => $reqkey, 'seckey' => buildSecFile($reqkey),
@@ -820,9 +821,9 @@ class Talk extends Controller
                 'main/_sidebar-block',
                 array(
                     'title'=>'Claiming Talks',
-                    'content'=>'<p>Is this your talk? Claim it! By doing so it 
-                    lets us know you are the speaker. Once your claim is 
-                    verified by event administration it will be linked to your 
+                    'content'=>'<p>Is this your talk? Claim it! By doing so it
+                    lets us know you are the speaker. Once your claim is
+                    verified by event administration it will be linked to your
                     account.</p>'
                 )
             );
@@ -841,7 +842,7 @@ class Talk extends Controller
      * Claims a talk with the currently logged in user.
      *
      * @param int $talkId  Talk Id to claim
-     * @param int $claimId Claim Id 
+     * @param int $claimId Claim Id
      *
      * @return void
      */
@@ -902,7 +903,7 @@ class Talk extends Controller
         $query         = $this->db->get_where('talk_speaker', $where);
         $speakerRecord = $query->result();
 
-        // if we found a row, update it with the ID of the currently 
+        // if we found a row, update it with the ID of the currently
         // logged in user and set it to pending
         if (count($speakerRecord) == 1) {
 
@@ -926,8 +927,8 @@ class Talk extends Controller
                     <br/>
                     There might already be a pending claim for this session.
                     <br/><br/>
-                    If you would like more information on this error, please 
-                    <a style="color:#FFFFFF" href="/event/contact/">contact 
+                    If you would like more information on this error, please
+                    <a style="color:#FFFFFF" href="/event/contact/">contact
                         this event\'s admins</a>.',
                     $talkId
                 ));
@@ -938,10 +939,10 @@ class Talk extends Controller
 
     /**
      * Unlink a talk claim from a speaker
-     * 
+     *
      * @param int $talkId    Talk ID
      * @param int $speakerId Speaker ID
-     * 
+     *
      * @return null
      */
     public function unlink($talkId, $speakerId)
@@ -960,7 +961,7 @@ class Talk extends Controller
         }
 
         // ensure that the user is either a site admin or event admin
-        if ($this->user_model->isSiteAdmin() 
+        if ($this->user_model->isSiteAdmin()
             || $this->user_model->isAdminEvent($talk->event_id)
         ) {
             $data = array(
@@ -1009,8 +1010,8 @@ class Talk extends Controller
         $thisTalk = $det[0];
 
         $day_start = mktime(
-            0, 
-            0, 
+            0,
+            0,
             0,
             date('m', $thisTalk->event_start),
             date('d', $thisTalk->event_start),
@@ -1018,7 +1019,7 @@ class Talk extends Controller
         );
         $day_end   = mktime(
             23,
-            59, 
+            59,
             59,
             date('m', $thisTalk->event_end),
             date('d', $thisTalk->event_end),
@@ -1035,6 +1036,36 @@ class Talk extends Controller
             return false;
         }
     }
+
+    /**
+     * Slide link is not required but if one is provided we need to make sure it has
+     * a valid url including the scheme (http|https|etc).
+     *
+     * @param string $str The slides url to validate.
+     *
+     * @return bool
+     */
+    public function slides_link_check($str)
+    {
+        // having a value is not required so we just return true if they didn't
+        // give a slide link
+        if (!empty($str)) {
+            $parts = parse_url($str);
+
+            //make sure that the link provided has a scheme in it.
+            if (!array_key_exists('scheme', $parts)) {
+                $this->validation->set_message(
+                    'slides_link_check',
+                    'Your slide link url must be a full url (http://foo.bar).'
+                );
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 
     /**
      * Validates whether the captcha is correct.
