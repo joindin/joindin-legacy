@@ -1038,26 +1038,25 @@ class Talk extends Controller
     }
 
     /**
-     * Slide link is not required but if one is provided we need to make sure it has a valid url including the
-     * scheme (http|https|etc).
+     * Slide link is not required but if one is provided we need to make sure it has
+     * a valid url including the scheme (http|https|etc).
      *
      * @param string $str The slides url to validate.
      *
      * @return bool
      */
-    function slides_link_check( $str )
+    public function slides_link_check($str)
     {
-
-        //having a value is not required so we just return true if they didn't give a slide link
-        if( !empty( $str ) ){
-
-            $parts = parse_url( $str );
+        // having a value is not required so we just return true if they didn't
+        // give a slide link
+        if (!empty($str)) {
+            $parts = parse_url($str);
 
             //make sure that the link provided has a scheme in it.
-            if( !array_key_exists( 'scheme', $parts ) ){
-
+            if (!array_key_exists('scheme', $parts)) {
                 $this->validation->set_message(
-                    'slides_link_check', 'Your slide link url must be a full url (http://foo.bar).'
+                    'slides_link_check',
+                    'Your slide link url must be a full url (http://foo.bar).'
                 );
 
                 return false;
