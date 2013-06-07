@@ -16,7 +16,7 @@ if (!empty($this->validation->error_string)) {
 if (isset($this->edit_id)) {
     $actionUrl = 'talk/edit/'.$this->edit_id;
     $sub	= 'Save Edits';
-    $title	= 'Edit Session: '.$detail[0]->talk_title;
+    $title	= 'Edit Session: '.escape($detail[0]->talk_title);
     menu_pagetitle('Edit Session: '.$detail[0]->talk_title);
 } else { 
     $actionUrl =  'talk/add/event/'.$ev->ID;

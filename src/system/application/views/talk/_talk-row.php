@@ -23,9 +23,10 @@
                     if (isset($override) && array_key_exists($speaker->speaker_id, $override)) {
                         $speaker->speaker_name = $override[$speaker->speaker_id];
                     }
-                    $speaker_list[]='<a href="/user/view/'.$speaker->speaker_id.'">'.$speaker->speaker_name.'</a>';
+                    $speaker_list[]='<a href="/user/view/'.$speaker->speaker_id
+                        .'">'.escape($speaker->speaker_name).'</a>';
                 } else {
-                    $speaker_list[]=$speaker->speaker_name;
+                    $speaker_list[]=escape($speaker->speaker_name);
                 }
             }
         }

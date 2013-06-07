@@ -268,7 +268,8 @@ foreach ($talks as $k=>$v) {
                         </td>
                         <td style="padding:3px">[<a href="javascript:" onClick="unlinkSpeaker(%s, %s, \'%s\');return false;" title="Unlink this speaker">X</a>]</td>
                     </tr>
-                ', $row_id, $url, $title, $event_url, $event_name, $event_date, $v->ID, $v->speaker_id, $row_id);
+                ', $row_id, $url, $title, $event_url, escape($event_name),
+                $event_date, $v->ID, $v->speaker_id, $row_id);
             }
 
             ?>

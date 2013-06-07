@@ -10,13 +10,14 @@
             <?php 
             if (!empty($speaker->speaker_id) && $speaker->status!='pending') {
                 if (empty($speaker->full_name)) { $speaker->full_name = 'N/A'; }
-                $speaker_link = '<a href="/user/view/'.$speaker->speaker_id.'">'.$speaker->full_name.'</a> ';
+                $speaker_link = '<a href="/user/view/'.$speaker->speaker_id.'">'
+                    .escape($speaker->full_name).'</a> ';
                 if ($admin) {
                     $speaker_link .= '<a class="btn-small" href="/talk/unlink/'.$speaker->talk_id.'/'.$speaker->speaker_id.'">< unlink</a>';
                 }
                 $speaker_names[] = $speaker_link;
             } else {
-                $speaker_names[] = $speaker->speaker_name;
+                $speaker_names[] = escape($speaker->speaker_name);
             }
             ?>
             <?php endforeach; echo implode(', ', $speaker_names); ?>
@@ -59,7 +60,9 @@
     
     <?php if (!empty($detail->slides_link)): ?>
     <p class="quicklink">
-        Slides: <strong><a href="<?php echo $detail->slides_link; ?>" target="_blank"><?php echo $detail->talk_title; ?></a></strong>
+        Slides: <strong><a href="<?php echo $detail->slides_link; ?>"
+                           target="_blank"><?php echo escape($detail->talk_title);
+                ?></a></strong>
     </p>
     <?php endif; ?>
 
