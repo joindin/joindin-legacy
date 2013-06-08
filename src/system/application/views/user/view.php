@@ -206,7 +206,7 @@ foreach ($talks as $k=>$v) {
             <?php
             foreach ($uadmin['events'] as $k=>$v) {
                 if (!isset($v->detail[0])) { continue; }
-                $title=$v->detail[0]->event_name;
+                $title=escape($v->detail[0]->event_name);
                 $url='/event/view/'.$v->detail[0]->ID;
                 $pend=($v->rcode=='pending') ? ' (pending)':'';
                 echo sprintf('
@@ -255,7 +255,7 @@ foreach ($talks as $k=>$v) {
             foreach ($uadmin['talks'] as $k=>$v) {
                 $count++;
                 $row_id = 't'. $count;
-                $title=$v->talk_title;
+                $title=escape($v->talk_title);
                 $url='/talk/view/'.$v->ID;
                 $event_url = '/event/view/'.$v->event_id;
                 $event_name = $v->event_name;
