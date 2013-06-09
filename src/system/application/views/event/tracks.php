@@ -16,7 +16,7 @@ div.track_color {
 }
 </style>
 
-<h2>Tracks for <?php echo $evt_detail->event_name; ?></h2>
+<h2>Tracks for <?php echo escape($evt_detail->event_name); ?></h2>
 <a href="/event/view/<?php echo $evt_detail->ID; ?>">Return to event</a>
 <br/><br/>
 <?php $ct=0; ?>
