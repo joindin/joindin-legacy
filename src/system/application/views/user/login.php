@@ -44,6 +44,6 @@
     <p>
     If you were just on another page and clicked a link or tried to access something else, 
     there's a good chance you'll need to log in to get there. Don't have an account? Well 
-    <a href="/user/register">'go ahead and make one</a> and see what you're missing!
+    <a href="/user/register">go ahead and make one</a> and see what you're missing!
     </p>
 </div>
