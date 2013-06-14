@@ -62,76 +62,10 @@ should start at the Contributor readme (CONTRIBUTING.md).
 
 ## Quick Start - Using Vagrant
 
-** WARNING: there have been some repo changes (mostly moving the API and db patches to https://github.com/joindin/joindin-api) which may mean you need to adapt the following instructions.  Pull requests against this README are greatly appreciated **
+The virtual machine has been moved to a different repo. To use it [fork the joindin-vm](https://github.com/joindin/joindin-vm) reposiroty and follow the instructions in there.
 
-You can set up a development virtual machine running joind.in by following these simple instructions.
+This VM will load all three Joind.in projects (joind.in, joindin-vm and joindin-web2). 
 
-1. Install requirements. (Note: these are not required by joind.in itself, but are required for this quick start guide.)
-   - VirtualBox (https://www.virtualbox.org/) (versions 4.0 and 4.1 are currently supported)
-   - Ruby (http://www.ruby-lang.org/)
-   - Vagrant (http://vagrantup.com/)
-
-2. Clone repository to any location and fetch required submodules (containing Puppet manifests).
-
-        git clone https://github.com/joindin/joind.in --recursive
-        cd joind.in
-
-or
-
-        git clone https://github.com/joindin/joind.in && cd joind.in
-        git submodule init
-        git submodule update
-
-3. Start the process by running Vagrant.
-
-        vagrant up
-
-4. Add hostname to /etc/hosts.
-   If you are on Linux, run this:
-
-        echo "\n127.0.0.1 dev.joind.in api.dev.joind.in" | sudo tee -a /etc/hosts
-   
-   If you are on OSX, run this:
-
-        echo "127.0.0.1 dev.joind.in api.dev.joind.in" | sudo tee -a /etc/hosts
-
-   If you are on Windows, run this on the cmd line
-
-        echo 127.0.0.1 dev.joind.in api.dev.joind.in >> %SYSTEMDRIVE%\Windows\System32\Drivers\Etc\Hosts
-
-5. Amend the file src/system/application/config/config.php as follows:
-
-        $config['base_url']	= 'http://dev.joind.in:8080/';
-        $config['api_base_url']	= 'http://api.dev.joind.in:8080/';
-
-6. Browse to the newly provisioned development copy of joind.in at:
-
-    http://dev.joind.in:8080
-
-*Notes:*
-
-- HTTP and SSH ports on the VM are forwarded to localhost (22 -> 2222, 80 -> 8080)
-- The joind.in directory you cloned will be mounted inside the VM at `/vagrant`
-- You can develop by editing the files you cloned in the IDE of you choice.
-- The database is running inside the VM. You can get to with the following commands:
-
-         you@you> vagrant ssh
-         vagrant@vm> sudo -i
-         root@vm> mysql joindin
-
-- To stop the VM so that you can work on it later, issue the following command 
-  from the host machine:
-
-         vagrant halt
-
-- To delete the VM completely, issue the following command from the host machine:
-
-         vagrant destroy 
-
-- Testing packages are disabled by default to improve boot time for vagrant. If you 
-  wish to enable tests, modify the file puppet/manifests/params.pp as follows:
-
-         $tests = true
 
 ## Other Resources
 
