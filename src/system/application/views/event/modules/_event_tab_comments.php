@@ -21,11 +21,16 @@ if (!empty($msg)):
             $uname = "<span class=\"anonymous\">Anonymous</span>";
         }
         $type	= ($event_detail->event_start>time()) ? 'Suggestion' : 'Feedback';
+
+	$this->load->helper('date');
+
+	$event_timezone = ($event->event_tz_cont && $event->event_tz_place) ? $event->event_tz_cont . '/' . $event->event_tz_place : 'Europe/London';
+	$comment_made = gmt_to_local_2($comment->date_made, $event_timezone);
     ?>
     <div id="comment-<?php echo $comment->ID ?>" class="row row-event-comment">
         <div class="text">
             <p class="info">
-                <strong><?php echo date('d.M.Y \a\t H:i', $comment->date_made); ?></strong> by <strong><?php echo $uname; ?></strong>
+                <strong><?php echo date('d.M.Y \a\t H:i', $comment_made); ?></strong> by <strong><?php echo $uname; ?></strong>
                 <?php echo !empty($comment->source)?"via ".escape($comment->source) : "" ?>
                 (<?php echo escape($type); ?>)
             </p>

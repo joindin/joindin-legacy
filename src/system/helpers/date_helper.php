@@ -343,6 +343,49 @@ if ( ! function_exists('gmt_to_local'))
 		return $time;
 	}
 }
+
+// ------------------------------------------------------------------------
+
+/**
+ * Converts GMT time to a localized value
+ *
+ * Takes a Unix timestamp (in GMT) as input, and returns
+ * at the local value based on the timezone and DST setting
+ * submitted
+ *
+ * @access	public
+ * @param	integer Unix timestamp
+ * @param	string	timezone
+ * @param	bool	whether DST is active
+ * @return	integer
+ */	
+if ( ! function_exists('gmt_to_local_2'))
+{
+	function gmt_to_local_2($time = '', $timezone = 'Europe/London', $dst = FALSE)
+	{			
+		if ($time == '')
+		{
+			return now();
+		}
+	
+		$timezone_orig = new DateTimeZone('Europe/London');
+		$timezone_offset = new DateTimeZone($timezone);
+
+		$timenow_london = new DateTime('now', $timezone_orig);
+		$timenow_offset = new DateTime('now', $timezone_offset);
+
+		$offset = $timezone_offset->getOffset($timenow_london);
+
+		$time += $offset;
+
+		if ($dst == TRUE)
+		{
+			$time += 3600;
+		}
+	
+		return $time;
+	}
+}
 	
 // ------------------------------------------------------------------------
 
