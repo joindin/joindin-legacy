@@ -486,9 +486,15 @@ class User extends AuthAbstract
 
         $this->load->helper('form');
         $this->load->library('validation');
+        $this->load->model('user_admin_model', 'uam');
+        $this->load->model('event_model');
         $uid = $this->session->userdata('ID');
         $arr = array(
-            'curr_data' => $this->user_model->getUserById($uid)
+            'curr_data'      => $this->user_model->getUserById($uid),
+            'event_claims'   => $this->uam->getPendingClaims('event'),
+            'pending_events' => $this->event_model->getEventDetail(
+                null, null, null, true
+            ),
         );
 
         $fields = array(
