@@ -367,6 +367,7 @@ class Event extends Controller
         $this->validation->cfp_checked = false;
 
         if ($this->validation->run() == false) {
+
             if ($id) {
                 $event_detail = $this->event_model->getEventDetail($id);
 
@@ -381,7 +382,7 @@ class Event extends Controller
                     = $event_detail[0]->event_cfp_start;
                 $this->validation->event_cfp_end
                     = $event_detail[0]->event_cfp_end;
-                $this->validation->event_cfp_url
+                $this->validation->cfp_url
                     = $event_detail[0]->event_cfp_url;
 
                 foreach ($event_detail[0] as $k => $v) {
