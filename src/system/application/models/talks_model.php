@@ -286,6 +286,7 @@ class Talks_model extends Model
     public function getTalkComments($tid, $cid = null, $private = false)
     {
         $this->load->library('gravatar');
+        $this->load->library('timezone');
 
         $c_addl   = ($cid) ? ' and tc.ID=' . $this->db->escape($cid) : '';
         $priv     = (!$private) ? ' and tc.private=0' : '';
@@ -304,11 +305,17 @@ class Talks_model extends Model
                 u.full_name,
                 u.twitter_username twitter_username,
                 tc.comment_type,
-                tc.source
+                tc.source,
+                e.event_tz_cont,
+                e.event_tz_place
             from
                 talk_comments tc
             left join
                 user u on u.ID = tc.user_id
+            inner join
+                talks t on t.ID = tc.talk_id
+            inner join
+                events e on e.ID = t.event_id
             where
                 tc.active=1 and
                 tc.talk_id=%s %s %s
@@ -317,9 +324,25 @@ class Talks_model extends Model
         );
         $q        = $this->db->query($sql);
         $comments = $q->result();
+
+        // calculate the timezone once, use repeatedly
+        $tz = 'UTC'; // default
+        if(is_array($comments)) {
+            $pick_one = current($comments);
+            if (!empty($pick_one->event_tz_cont) && !empty($pick_one->event_tz_place)) {
+                $tz = $pick_one->event_tz_cont . '/' . $pick_one->event_tz_place;
+            }
+        }
+
         foreach ($comments as $k => $comment) {
+            // add in the gravatar image
             $comments[$k]->gravatar
                 = $this->gravatar->displayUserImage($comment->user_id, null, 45);
+
+            // give a displayable date correct for event timezone
+            $comment_datetime = $this->timezone
+                    ->getDatetimeFromUnixtime($comment->date_made, $tz);
+            $comments[$k]->display_datetime = $comment_datetime->format('d.M.Y \a\t H:i');
         }
 
         return $comments;
