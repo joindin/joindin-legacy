@@ -17,7 +17,7 @@
         <li style="padding-top:10px"><a href="/event/delete/<?php echo $eid; ?>" style="color:#D3000E;font-weight:bold">Delete event</a>
         </ul>
     </div>
-    <h4>Admins</h4>
+    <h4>Hosts</h4>
     <div class="ctn">
         <ul id="evt_admin_list">
         <?php foreach ($evt_admin as $k=>$user) {
