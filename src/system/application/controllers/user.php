@@ -828,6 +828,9 @@ class User extends AuthAbstract
     function oauth_allow()
     {
         if (!$this->user_model->isAuth()) {
+            // Explicitly set the URL to return to
+            // Relying on the referrer being present can cause issues when it isn't present
+            $this->session->set_flashdata("url_after_login", $this->input->server("REQUEST_URI"));
             redirect('user/login', 'refresh');
         }
 
