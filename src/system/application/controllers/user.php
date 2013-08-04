@@ -889,7 +889,11 @@ class User extends AuthAbstract
                     if (!empty($state)) {
                         $url .= "&state=" . $state;
                     }
-                    redirect($url);
+
+                    // Don't use the CodeIgniter redirect() call here
+                    // as it always prepends the site URL
+                    // which is no good for custom URL schemes
+                    header('Location: ' . $url);
                     exit; // we shouldn't be here
                 }
             } else {
