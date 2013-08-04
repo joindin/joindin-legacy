@@ -1,10 +1,23 @@
 class joindin::app {
 
     # Initialize database structure
+    exec { 'init-db':
+        creates => '/tmp/.patched',
+        command => "/vagrant/src/scripts/patchdb.sh \
+                    -t /vagrant/joindin-api -d ${params::dbname} -u ${params::dbuser} \
+                    -p ${params::dbpass} -i && touch /tmp/.patched",
+        require => Exec['create-db'],
+    }
+
+    # Patch database structure
     exec { 'patch-db':
         command => "/vagrant/src/scripts/patchdb.sh \
-                    -t /vagrant/joindin-api -d ${params::dbname} -u ${params::dbuser} -p ${params::dbpass} -i",
-        require => Exec['create-db'],
+                    -t /vagrant/joindin-api -d ${params::dbname} -u ${params::dbuser} \
+                    -p ${params::dbpass}",
+        require => [
+            Exec['create-db'],
+            Exec['init-db'],
+        ],
     }
 
     # Generate seed data
@@ -13,7 +26,7 @@ class joindin::app {
         command => 'php /vagrant/joindin-api/tools/dbgen/generate.php > /tmp/seed.sql',
         require => [
 	    Package['php'],
-	    Exec['patch-db'],
+	    Exec['init-db'],
 	]
     }
 
@@ -22,7 +35,7 @@ class joindin::app {
         creates => '/tmp/.seeded',
         command => "mysql ${params::dbname} < /tmp/seed.sql && touch /tmp/.seeded",
         require => [
-                       Exec['patch-db'],
+                       Exec['init-db'],
                        Exec['seed-data'],
                    ],
     }
