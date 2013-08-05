@@ -882,16 +882,8 @@ class User extends AuthAbstract
                 $access_token        = $this->user_admin_model
                     ->oauthAllow($api_key, $this->session->userdata('ID'));
                 if (!empty($callback)) {
+                    $url = $this->makeOAuthCallbackURL($callback, true, $access_token, $state);
                     // add our parameter onto the URL
-                    if (strpos($callback, '?') !== false) {
-                        $url = $callback . '&';
-                    } else {
-                        $url = $callback . '?';
-                    }
-                    $url .= 'access_token=' . $access_token;
-                    if (!empty($state)) {
-                        $url .= "&state=" . $state;
-                    }
 
                     // Don't use the CodeIgniter redirect() call here
                     // as it always prepends the site URL
@@ -901,10 +893,46 @@ class User extends AuthAbstract
                 }
             } else {
                 $view_data['status'] = "deny";
+                if (!empty($callback)) {
+                    $url = $this->makeOAuthCallbackURL($callback, false);
+                    header('Location: ' . $url);
+                    exit;
+                }
             }
         }
         $this->template->write_view('content', 'user/oauth_allow', $view_data);
         $this->template->render();
+    }
+
+    /**
+     * Generate a callback URL including access tokens etc
+     * for OAuth rqeuests
+     *
+     * @param string $callback Supplied callback URL
+     * @param bool $oauth_success Whether the authentication was successful
+     * @param string $access_token A valid OAuth access token
+     * @param string $state
+     * @return string The full URL to redirect the user to
+     */
+    function makeOAuthCallbackURL($callback, $oauth_success, $access_token = "", $state = "")
+    {
+        if (strpos($callback, '?') !== false) {
+            $url = $callback . '&';
+        } else {
+            $url = $callback . '?';
+        }
+
+        if ($oauth_success) {
+            $url .= 'access_token=' . $access_token;
+            if (!empty($state)) {
+                $url .= "&state=" . $state;
+            }
+        }
+        else {
+            $url .= 'denied=1';
+        }
+
+        return $url;
     }
 
     /**
