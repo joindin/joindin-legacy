@@ -882,7 +882,7 @@ class User extends AuthAbstract
                 $access_token        = $this->user_admin_model
                     ->oauthAllow($api_key, $this->session->userdata('ID'));
                 if (!empty($callback)) {
-                    $url = $this->makeOAuthCallbackURL($callback, true, $access_token, $state);
+                    $url = $this->makeOAuthCallbackURL($callback, true, $state, $access_token);
                     // add our parameter onto the URL
 
                     // Don't use the CodeIgniter redirect() call here
@@ -894,7 +894,7 @@ class User extends AuthAbstract
             } else {
                 $view_data['status'] = "deny";
                 if (!empty($callback)) {
-                    $url = $this->makeOAuthCallbackURL($callback, false);
+                    $url = $this->makeOAuthCallbackURL($callback, false, $state);
                     header('Location: ' . $url);
                     exit;
                 }
@@ -910,11 +910,11 @@ class User extends AuthAbstract
      *
      * @param string $callback Supplied callback URL
      * @param bool $oauth_success Whether the authentication was successful
+     * @param string $state Any user-supplied data to send back to the caller
      * @param string $access_token A valid OAuth access token
-     * @param string $state
      * @return string The full URL to redirect the user to
      */
-    function makeOAuthCallbackURL($callback, $oauth_success, $access_token = "", $state = "")
+    function makeOAuthCallbackURL($callback, $oauth_success, $state, $access_token = "")
     {
         if (strpos($callback, '?') !== false) {
             $url = $callback . '&';
@@ -924,12 +924,12 @@ class User extends AuthAbstract
 
         if ($oauth_success) {
             $url .= 'access_token=' . $access_token;
-            if (!empty($state)) {
-                $url .= "&state=" . $state;
-            }
         }
         else {
             $url .= 'denied=1';
+        }
+        if (!empty($state)) {
+            $url .= "&state=" . $state;
         }
 
         return $url;
