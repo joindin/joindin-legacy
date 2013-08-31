@@ -486,9 +486,15 @@ class User extends AuthAbstract
 
         $this->load->helper('form');
         $this->load->library('validation');
+        $this->load->model('user_admin_model', 'uam');
+        $this->load->model('event_model');
         $uid = $this->session->userdata('ID');
         $arr = array(
-            'curr_data' => $this->user_model->getUserById($uid)
+            'curr_data'      => $this->user_model->getUserById($uid),
+            'event_claims'   => $this->uam->getPendingClaims('event'),
+            'pending_events' => $this->event_model->getEventDetail(
+                null, null, null, true
+            ),
         );
 
         $fields = array(
@@ -822,6 +828,9 @@ class User extends AuthAbstract
     function oauth_allow()
     {
         if (!$this->user_model->isAuth()) {
+            // Explicitly set the URL to return to
+            // Relying on the referrer being present can cause issues when it isn't present
+            $this->session->set_flashdata("url_after_login", $this->input->server("REQUEST_URI"));
             redirect('user/login', 'refresh');
         }
 
@@ -883,7 +892,11 @@ class User extends AuthAbstract
                     if (!empty($state)) {
                         $url .= "&state=" . $state;
                     }
-                    redirect($url);
+
+                    // Don't use the CodeIgniter redirect() call here
+                    // as it always prepends the site URL
+                    // which is no good for custom URL schemes
+                    header('Location: ' . $url);
                     exit; // we shouldn't be here
                 }
             } else {
