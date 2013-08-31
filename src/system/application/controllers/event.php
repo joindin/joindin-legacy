@@ -1007,12 +1007,22 @@ class Event extends Controller
         }
 
         $arr['comments'] = $this->event_comments_model->getEventComments($id);
+        $event = $events[0];
+        $tz = "UTC"; // default
+        if(!empty($event->event_tz_cont) && !empty($event->event_tz_place)) {
+            $tz = $event->event_tz_cont . '/' . $event->event_tz_place;
+        }
         for ($i = 0; $i < count($arr['comments']); $i++) {
             if ($arr['comments'][$i]->user_id != 0) {
                 $arr['comments'][$i]->user_comment_count =
                     $this->event_comments_model->getUserCommentCount($arr['comments'][$i]->user_id) +
                     $this->tcm->getUserCommentCount($arr['comments'][$i]->user_id);
             }
+
+            // sort out timezones
+            $comment_datetime = $this->timezone->getDateTimeFromUnixtime(
+                $arr['comments'][$i]->date_made, $tz);
+            $arr['comments'][$i]->display_datetime = $comment_datetime->format('d.M.Y \a\t H:i');
         }
 
         if (!$is_auth) {
