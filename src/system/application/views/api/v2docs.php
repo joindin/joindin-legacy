@@ -63,7 +63,7 @@ $base_url = $this->config->config['base_url'];
     <ul><li><code>api_key</code> The key you registered for in step 1 (the secret isn't currently used)</li>
     <li><code>callback</code> The callback URL to send the user to afterwards.  This can be a device URL and it <b>must match the URL you registered</b> in step 1 (exactly match)</li>
     <li><code>state</code> (optional) Whatever you pass in here will be passed back with the user when we redirect them back to you.  Use it however you like</li></ul></li>
-    <li>When the user is sent to the redirect URL, it will contain one additional parameter: <code>access_token</code>.  Capture this and store it - this is a per-user token. If authorisation is denied, you will receive <code>denied=1</code> in the parameters to indicate failure.</li>
+    <li>When the user is sent to the redirect URL, it will contain one additional parameter: <code>access_token</code>.  Capture this and store it - this is a per-user token. If authorisation is denied, the <code>access_token</code> parameter will not be present on the callback.</li>
     <li>To make requests with access to that user's data, add the access token into an authorisation header.  The format should be: <br />
 <code>Authorization: OAuth [access_code]</code></li></ul><br />
 

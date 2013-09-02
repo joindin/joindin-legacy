@@ -882,7 +882,7 @@ class User extends AuthAbstract
                 $access_token        = $this->user_admin_model
                     ->oauthAllow($api_key, $this->session->userdata('ID'));
                 if (!empty($callback)) {
-                    $url = $this->makeOAuthCallbackURL($callback, true, $state, $access_token);
+                    $url = $this->makeOAuthCallbackURL($callback, $state, $access_token);
                     // add our parameter onto the URL
 
                     // Don't use the CodeIgniter redirect() call here
@@ -894,7 +894,7 @@ class User extends AuthAbstract
             } else {
                 $view_data['status'] = "deny";
                 if (!empty($callback)) {
-                    $url = $this->makeOAuthCallbackURL($callback, false, $state);
+                    $url = $this->makeOAuthCallbackURL($callback, $state);
                     header('Location: ' . $url);
                     exit;
                 }
@@ -909,12 +909,11 @@ class User extends AuthAbstract
      * for OAuth rqeuests
      *
      * @param string $callback Supplied callback URL
-     * @param bool $oauth_success Whether the authentication was successful
      * @param string $state Any user-supplied data to send back to the caller
      * @param string $access_token A valid OAuth access token
      * @return string The full URL to redirect the user to
      */
-    function makeOAuthCallbackURL($callback, $oauth_success, $state, $access_token = "")
+    function makeOAuthCallbackURL($callback, $state, $access_token = "")
     {
         if (strpos($callback, '?') !== false) {
             $url = $callback . '&';
@@ -922,11 +921,8 @@ class User extends AuthAbstract
             $url = $callback . '?';
         }
 
-        if ($oauth_success) {
+        if (strlen($access_token)) {
             $url .= 'access_token=' . $access_token;
-        }
-        else {
-            $url .= 'denied=1';
         }
         if (!empty($state)) {
             $url .= "&state=" . $state;
