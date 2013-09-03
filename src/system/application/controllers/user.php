@@ -893,10 +893,10 @@ class User extends AuthAbstract
                 }
             } else {
                 $view_data['status'] = "deny";
+                $view_data['callback_url'] = '';
                 if (!empty($callback)) {
                     $url = $this->makeOAuthCallbackURL($callback, $state);
-                    header('Location: ' . $url);
-                    exit;
+                    $view_data['callback_url'] = $url;
                 }
             }
         }
