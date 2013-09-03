@@ -882,16 +882,8 @@ class User extends AuthAbstract
                 $access_token        = $this->user_admin_model
                     ->oauthAllow($api_key, $this->session->userdata('ID'));
                 if (!empty($callback)) {
+                    $url = $this->makeOAuthCallbackURL($callback, $state, $access_token);
                     // add our parameter onto the URL
-                    if (strpos($callback, '?') !== false) {
-                        $url = $callback . '&';
-                    } else {
-                        $url = $callback . '?';
-                    }
-                    $url .= 'access_token=' . $access_token;
-                    if (!empty($state)) {
-                        $url .= "&state=" . $state;
-                    }
 
                     // Don't use the CodeIgniter redirect() call here
                     // as it always prepends the site URL
@@ -901,10 +893,42 @@ class User extends AuthAbstract
                 }
             } else {
                 $view_data['status'] = "deny";
+                $view_data['callback_url'] = '';
+                if (!empty($callback)) {
+                    $url = $this->makeOAuthCallbackURL($callback, $state);
+                    $view_data['callback_url'] = $url;
+                }
             }
         }
         $this->template->write_view('content', 'user/oauth_allow', $view_data);
         $this->template->render();
+    }
+
+    /**
+     * Generate a callback URL including access tokens etc
+     * for OAuth rqeuests
+     *
+     * @param string $callback Supplied callback URL
+     * @param string $state Any user-supplied data to send back to the caller
+     * @param string $access_token A valid OAuth access token
+     * @return string The full URL to redirect the user to
+     */
+    function makeOAuthCallbackURL($callback, $state, $access_token = "")
+    {
+        if (strpos($callback, '?') !== false) {
+            $url = $callback . '&';
+        } else {
+            $url = $callback . '?';
+        }
+
+        if (strlen($access_token)) {
+            $url .= 'access_token=' . $access_token;
+        }
+        if (!empty($state)) {
+            $url .= "&state=" . $state;
+        }
+
+        return $url;
     }
 
     /**

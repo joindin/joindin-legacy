@@ -34,6 +34,11 @@
     ?>
     <div class="row">
         <p>Access was not granted.  We hope you enjoy joind.in</p>
+        <?php if (!empty($callback_url)): ?>
+            <p>
+                <a href="<?php echo $callback_url; ?>">Return to application</a>
+            </p>
+        <?php endif; ?>
         <div class="clear"></div>
     </div>
     <?php else: ?>
