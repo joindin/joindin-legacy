@@ -110,7 +110,7 @@ class User_attend_model extends Model
         $sql = sprintf(
             '
             select
-                usr.ID,
+                distinct(usr.ID),
                 usr.username,
                 usr.full_name,
                 (select
