@@ -68,7 +68,7 @@ switch ($sort_type) {
             $talks_by_name[trim($talk->talk_title)][]=$talk;
         }
         ksort($talks_by_name);
-        break;
+        $title = 'Talks (By Name)'; break;
     default:
         $title = 'Talks'; break;
 }
