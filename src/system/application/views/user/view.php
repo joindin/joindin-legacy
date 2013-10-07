@@ -74,16 +74,16 @@ switch ($sort_type) {
 }
 ?>
 <h2><?php echo $title; ?></h2>
-<p class="filter">
-    <a href="/user/view/<?php echo $uid; ?>">Date Presented</a> |
-    <a href="/user/view/<?php echo $uid; ?>/lastcomment">Last Commented</a> |
-    <a href="/user/view/<?php echo $uid; ?>/bycomment">By Comment</a> |
-    <a href="/user/view/<?php echo $uid; ?>/byname">By Name</a>
-</p>
 
 <?php if (count($talks) == 0): ?>
     <p>No talks so far</p>
 <?php else: ?>
+    <p class="filter">
+        <a href="/user/view/<?php echo $uid; ?>">Date Presented</a> |
+        <a href="/user/view/<?php echo $uid; ?>/lastcomment">Last Commented</a> |
+        <a href="/user/view/<?php echo $uid; ?>/bycomment">By Comment</a> |
+        <a href="/user/view/<?php echo $uid; ?>/byname">By Name</a>
+    </p>
     <?php
         if ($sort_type=='byname') {
             foreach ($talks_by_name as $talk_title => $talks) {
