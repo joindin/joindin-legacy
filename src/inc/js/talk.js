@@ -1,3 +1,4 @@
+
 if(!talk){ var talk = {} }
 
 talk = function (){
