@@ -653,6 +653,14 @@ class User extends AuthAbstract
             'msg'         => $msg
         );
 
+        $this->load->model('event_model');
+        $arr['pending_events'] = $this->event_model->getEventDetail(
+            null, null, null, true
+        );
+
+        $this->load->model('user_admin_model');
+        $arr['event_claims'] = $this->user_admin_model->getPendingClaims('event');
+
         $this->template->write_view('content', 'user/admin', $arr);
         $this->template->render();
     }
