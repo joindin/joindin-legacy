@@ -978,10 +978,6 @@ class Event extends Controller
 
                 // Create list of email addresses to send feedback to
                 $to           = array();
-                $admin_emails = $this->user_model->getSiteAdminEmail();
-                foreach ($admin_emails as $user) {
-                    $to[] = $user->email;
-                }
                 $admins = $this->event_model->getEventAdmins($id);
                 foreach ($admins as $ak => $av) {
                     $to[] = $av->email;
