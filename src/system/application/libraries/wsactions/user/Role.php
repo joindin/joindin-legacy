@@ -34,17 +34,19 @@ class Role extends BaseWsRequest
      *
      * @param string $xml XML to set
      */
-    public function __constructu($xml) 
+    public function __construct($xml)
     {
         $this->CI  = &get_instance(); //print_r($this->CI);
         $this->xml = $xml;
     }
 
     /**
-    * Only site admins can use this functionality
-    *
-    * @return boolean
-    */
+     * Only site admins can use this functionality
+     *
+     * @param string $xml Not used
+     *
+     * @return boolean
+     */
     public function checkSecurity($xml) 
     {
         $this->CI->load->model('user_model');
@@ -71,7 +73,7 @@ class Role extends BaseWsRequest
      */
     public function run() 
     {
-        $this->CI->load->model('user_admin_model','uam');
+        $this->CI->load->model('user_admin_model', 'uam');
         $type = $this->xml->action->type;
         
         $result = array();
@@ -84,13 +86,13 @@ class Role extends BaseWsRequest
             $rid           = $this->xml->action->rid;
             $result['uid'] = (int)$uid;
             $result['rid'] = (int)$rid;
-            $this->CI->uam->addPerm($uid, $rid,'event');
+            $this->CI->uam->addPerm($uid, $rid, 'event');
         } elseif ($type == 'addtalk') {
             $uid           = $this->xml->action->uid;
             $rid           = $this->xml->action->rid;
             $result['uid'] = (int)$uid;
             $result['rid'] = (int)$rid;
-            $this->CI->uam->addPerm($uid, $rid,'talk');
+            $this->CI->uam->addPerm($uid, $rid, 'talk');
         }
 
         $result['msg'] = 'Success';
