@@ -91,8 +91,9 @@ class Getcomments extends BaseWsRequest
             $comments = array();
             $restrict = (isset($this->xml->action->type)) ?
                 strtolower($this->xml->action->type) : false;
-            $udata = $this->CI
-                ->user_model->getUserByUsername((string)$this->xml->action->username);
+            $udata    = $this->CI
+                ->user_model
+                ->getUserByUsername((string)$this->xml->action->username);
 
             if (empty($udata)) {
                 return array(
