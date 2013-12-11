@@ -392,7 +392,7 @@ SQL
         }
 
         // by default, don't show private events
-        $sql.= " AND private!='Y'";
+        $sql .= " AND private!='Y'";
 
         if ($order_by) {
             $sql .= ' ORDER BY ' . $order_by;
