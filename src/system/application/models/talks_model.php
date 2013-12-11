@@ -327,9 +327,11 @@ class Talks_model extends Model
 
         // calculate the timezone once, use repeatedly
         $tz = 'UTC'; // default
-        if(is_array($comments)) {
+        if (is_array($comments)) {
             $pick_one = current($comments);
-            if (!empty($pick_one->event_tz_cont) && !empty($pick_one->event_tz_place)) {
+            if (   !empty($pick_one->event_tz_cont)
+                && !empty($pick_one->event_tz_place)
+            ) {
                 $tz = $pick_one->event_tz_cont . '/' . $pick_one->event_tz_place;
             }
         }
@@ -341,8 +343,9 @@ class Talks_model extends Model
 
             // give a displayable date correct for event timezone
             $comment_datetime = $this->timezone
-                    ->getDatetimeFromUnixtime($comment->date_made, $tz);
-            $comments[$k]->display_datetime = $comment_datetime->format('d.M.Y \a\t H:i');
+                ->getDatetimeFromUnixtime($comment->date_made, $tz);
+            $comments[$k]->display_datetime
+                = $comment_datetime->format('d.M.Y \a\t H:i');
         }
 
         return $comments;
@@ -737,7 +740,7 @@ class Talks_model extends Model
             // set duration display
             $talk->display_duration = "";
             if ($talk->duration > 0) {
-                $hr = floor($talk->duration / 60);
+                $hr  = floor($talk->duration / 60);
                 $min = $talk->duration % 60;
                 if ($hr > 0) {
                     $talk->display_duration .= "${hr} hr ";
