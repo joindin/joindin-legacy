@@ -132,8 +132,11 @@ class twitter_oauth
      *
      * @return array access token and token secret
      */
-    public function get_access_token($token = false, $secret = false, $verifier = false)
-    {
+    public function get_access_token(
+        $token = false,
+        $secret = false,
+        $verifier = false
+    ) {
         //If no request token was specified then attempt to get one from the url
         if ($token === false && isset($_GET['oauth_token'])) {
             $token = $_GET['oauth_token'];
