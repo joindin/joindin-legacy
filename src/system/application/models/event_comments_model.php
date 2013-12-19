@@ -94,7 +94,16 @@ class Event_comments_model extends Model
 
         return $q->result();
     }
-    function getUserCommentCount($uid) {
+
+    /**
+     * Retrieves the number of comments on an event from a given user id
+     *
+     * @param integer $uid User id
+     *
+     * @return mixed
+     */
+    public function getUserCommentCount($uid)
+    {
         $this->db->select('count(*) as "n"');
         $this->db->from('event_comments');
         $this->db->where('user_id', $uid);
