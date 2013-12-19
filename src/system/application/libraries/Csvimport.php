@@ -200,7 +200,9 @@ class Csvimport
         // handle duration, optional per row
         if (isset($this->_duration_index) && isset($row[$this->_duration_index])) {
             $dur = intval($row[$this->_duration_index]);
-            if ($dur > 0 && $dur <= 600 && $dur % 5 == 0) $talk_data['duration'] = $dur;
+            if ($dur > 0 && $dur <= 600 && $dur % 5 == 0) {
+                $talk_data['duration'] = $dur;
+            }
         }
 
         // handle date and time, this requires event tz to be set correctly
