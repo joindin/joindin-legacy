@@ -40,7 +40,7 @@ class Spam
     public function check($chk, $val, $source = 'db')
     {
         $this->CI = & get_instance();
-        $pass = $this->{'chk_' . $chk}($val);
+        $pass     = $this->{'chk_' . $chk}($val);
 
         return $pass;
     }
