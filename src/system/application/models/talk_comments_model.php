@@ -125,7 +125,15 @@ class Talk_comments_model extends Model
     }
 
 
-    function getUserCommentCount($uid) {
+    /**
+     * Retrieves the number of comments on a talk given a user id
+     *
+     * @param integer $uid User id
+     *
+     * @return integer
+     */
+    public function getUserCommentCount($uid)
+    {
         $this->db->select('count(*) as "n"');
         $this->db->from('talk_comments');
         $this->db->where('user_id', $uid);
