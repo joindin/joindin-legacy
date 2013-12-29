@@ -9,13 +9,6 @@ $base_url = $this->config->config['base_url'];
 
 <p>Joind.in is offering a HTTP web service to give clean, robust access to the data contained in the application to consuming devices.  It follows a RESTful style, is available in HTML and JSON formats, and uses OAuth v2 for authentication where this is needed (all data publicly visible on the site is available via the API without authentication). We also have an HTML output handler and hypermedia links, so you can click around the API in your browser: <a href="http://api.joind.in">http://api.joind.in</a>.</p>
 
-<h2>Interactive Documentation</h2>
-
-<p>We use <a href="https://github.com/mashery/iodocs">IODocs from Mashery</a> to give an interactive way of viewing the API and testing it out.  To use this, you'll need a valid access token which you enter at the top of the page.</p>
-
-<p><a href="http://test.joind.in/user/oauth_allow?api_key=05348fd4f886a0785d69f1e8ec4ff4&callback=http://joind.in/api/v2docs">Click here to generate your access token</a> <?php if(isset($_GET['access_token']) && $_GET['access_token']) echo " access token: " . $_GET['access_token']; ?></p>
-
-<p>Copy the token, and <a href="http://lornajane-iodocs.heroku.com/joindinv2">try the interactive docs</a>/  Or, keep reading for more detailed information.</p>
 
 
 <h2>Global Parameters</h2>
@@ -55,7 +48,7 @@ $base_url = $this->config->config['base_url'];
 
 <h2>Authentication</h2>
 
-<p>You only need to authenticate if you're adding or editing data (including comments) or want to access private data.  For most operations, particularly just retrieving information, authentication is not required.</p>
+<p>You only need to authenticate if you're adding or editing data (including comments) or want to access private data.  For most operations, particularly just retrieving information, authentication is not required.  If you do want to authenticate, you must make all requests over SSL (i.e. to <a href="https://api.joind.in">https://api.joind.in</a>)</p>
 
 <p>This API uses OAuth2.  To authenticate you will need the following:
 <ol><li>Every app must first register for an API key and give the callback that they will use to send users to.  To register an API key, sign in to joind.in and visit: <a href="<?php echo $base_url; ?>user/apikey"><?php echo $base_url; ?>user/apikey</a>.  These are associated with your user account, you can have as many as you like and you can delete them at any time.</li>
@@ -67,7 +60,9 @@ $base_url = $this->config->config['base_url'];
     <li>To make requests with access to that user's data, add the access token into an authorisation header.  The format should be: <br />
 <code>Authorization: OAuth [access_code]</code></li></ul><br />
 
-<p>If you have any questions or problems, just <a href="http://joind.in/about/contact">let us know</a>, this is new functionality and feedback is more than welcome.</p>
+<p>To get you started quickly <a href="http://test.joind.in/user/oauth_allow?api_key=05348fd4f886a0785d69f1e8ec4ff4&callback=http://joind.in/api/v2docs">Click here to generate an access token for http://test.api.joind.in</a> <?php if(isset($_GET['access_token']) && $_GET['access_token']) echo " access token: " . $_GET['access_token']; ?></p>
+
+<p>If you have any questions or problems, just <a href="http://joind.in/about/contact">let us know</a>, feedback is more than welcome.</p>
 
 <h2>Service Detail</h2>
 
