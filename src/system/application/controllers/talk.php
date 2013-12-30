@@ -260,7 +260,10 @@ class Talk extends Controller
 
         if ($this->validation->run() != false) {
             // store the session length in the session, as a handy shortcut
-            $this->session->set_userdata('duration', (int)$this->input->post('duration'));
+            $this->session->set_userdata(
+                'duration',
+                (int)$this->input->post('duration')
+            );
 
             if (!empty($thisTalksEvent->event_tz_cont)
                 && !empty($thisTalksEvent->event_tz_place)
@@ -279,7 +282,7 @@ class Talk extends Controller
                 $this->input->post('given_min'), $talk_timezone
             );
 
-            $unix_timestamp  = $talk_datetime->format("U");
+            $unix_timestamp = $talk_datetime->format("U");
 
             $arr = array(
                 'talk_title'  => $this->input->post('talk_title'),
@@ -777,8 +780,12 @@ class Talk extends Controller
             for ($i = 0; $i < count($talk_comments['comment']); $i++) {
                 if ($talk_comments['comment'][$i]->user_id != 0) {
                     $talk_comments['comment'][$i]->user_comment_count =
-                        $this->event_comments_model->getUserCommentCount($talk_comments['comment'][$i]->user_id) +
-                        $this->tcm->getUserCommentCount($talk_comments['comment'][$i]->user_id);
+                        $this->event_comments_model->getUserCommentCount(
+                            $talk_comments['comment'][$i]->user_id
+                        ) +
+                        $this->tcm->getUserCommentCount(
+                            $talk_comments['comment'][$i]->user_id
+                        );
                 }
             }
         }
