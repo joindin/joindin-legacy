@@ -837,8 +837,12 @@ class User extends AuthAbstract
     {
         if (!$this->user_model->isAuth()) {
             // Explicitly set the URL to return to
-            // Relying on the referrer being present can cause issues when it isn't present
-            $this->session->set_flashdata("url_after_login", $this->input->server("REQUEST_URI"));
+            // Relying on the referrer being present can cause issues when it
+            // isn't present
+            $this->session->set_flashdata(
+                "url_after_login",
+                $this->input->server("REQUEST_URI")
+            );
             redirect('user/login', 'refresh');
         }
 
@@ -890,7 +894,11 @@ class User extends AuthAbstract
                 $access_token        = $this->user_admin_model
                     ->oauthAllow($api_key, $this->session->userdata('ID'));
                 if (!empty($callback)) {
-                    $url = $this->makeOAuthCallbackURL($callback, $state, $access_token);
+                    $url = $this->makeOAuthCallbackURL(
+                        $callback,
+                        $state,
+                        $access_token
+                    );
                     // add our parameter onto the URL
 
                     // Don't use the CodeIgniter redirect() call here
@@ -900,10 +908,11 @@ class User extends AuthAbstract
                     exit; // we shouldn't be here
                 }
             } else {
-                $view_data['status'] = "deny";
+                $view_data['status']       = "deny";
                 $view_data['callback_url'] = '';
                 if (!empty($callback)) {
                     $url = $this->makeOAuthCallbackURL($callback, $state);
+
                     $view_data['callback_url'] = $url;
                 }
             }
@@ -916,9 +925,10 @@ class User extends AuthAbstract
      * Generate a callback URL including access tokens etc
      * for OAuth rqeuests
      *
-     * @param string $callback Supplied callback URL
-     * @param string $state Any user-supplied data to send back to the caller
+     * @param string $callback     Supplied callback URL
+     * @param string $state        Any user-supplied data to send back to the caller
      * @param string $access_token A valid OAuth access token
+     *
      * @return string The full URL to redirect the user to
      */
     function makeOAuthCallbackURL($callback, $state, $access_token = "")
