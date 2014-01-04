@@ -223,7 +223,7 @@ $(document).ready(function(){
                     <ul id="addr_selection"></ul>
                 </td>
                 <td align="right">
-                    <div id="map" class="osmMap" data-lat="53.8000" data-lon="-1.5833" data-zoom="5"></div>
+                    <div id="map" class="osmMap" data-lat="0.0" data-lon="0.0" data-zoom="1"></div>
                 </td>
             </tr>
         </table>
