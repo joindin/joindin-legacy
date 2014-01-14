@@ -19,7 +19,7 @@
  </target>
 
  <target name="phpunit" description="Run unit tests using PHPUnit and generates junit.xml and clover.xml">
-  <exec command="phpunit -c src/tests/phpunit.xml" logoutput="/dev/stdout" />
+  <exec command="phpunit -c src/tests/phpunit.xml" logoutput="/dev/stdout" checkreturn="true" />
  </target>
 
  <target name="buildTasks" description="Run the phpmd, phpcs, phpdoc, phploc and lint tasks.">
@@ -94,7 +94,7 @@
  <target name="build" depends="clean,buildTasks,phpunit"/>
 
  <target name="launch">
-  <exec command="src/scripts/jenkinslaunch.sh" />
+  <exec command="src/scripts/jenkinslaunch.sh" checkreturn="true"/>
  </target>
 
 </project>
