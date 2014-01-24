@@ -603,6 +603,12 @@ class Event extends Controller
                 'event_cfp_url'       => $this->input->post('cfp_url')
             );
 
+			// The database has a unique constraint on event_stub, and empty strings
+			// break that constraint to they have to be null'd
+			if ($arr['event_stub'] == '') {
+				$arr['event_stub'] = null;
+			}
+
             $is_cfp = $this->input->post('is_cfp');
             if ($is_cfp) {
 
@@ -1337,6 +1343,12 @@ class Event extends Controller
                 'event_contact_email' =>
                 $this->input->post('event_contact_email'),
             );
+			
+			// The database has a unique constraint on event_stub, and empty strings
+			// break that constraint to they have to be null'd
+			if ($sub_arr['event_stub'] == '') {
+				$sub_arr['event_stub'] = null;
+			}
 
             // check to see if our Call for Papers dates are set...
             $cfp_check = $this->input->post('cfp_start_mo');
