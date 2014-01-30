@@ -58,7 +58,6 @@ class Main extends Controller
         $this->load->model('talks_model');
         $this->load->model('event_model');
         $this->load->model('user_attend_model');
-        $this->load->model('blog_posts_model', 'bpm');
         $this->load->helper('reqkey');
 
         $reqkey = buildReqKey();
@@ -67,7 +66,6 @@ class Main extends Controller
             'talks'           => $this->talks_model->getPopularTalks(),
             'hot_events'      => $this->event_model->getHotEvents(7),
             'logged'          => $this->user_model->isAuth(),
-            'latest_blog'     => $this->bpm->getLatestPost(),
             'reqkey'          => $reqkey,
             'seckey'          => buildSecFile($reqkey)
         );

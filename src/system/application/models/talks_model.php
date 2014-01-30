@@ -365,36 +365,24 @@ class Talks_model extends Model
             throw new Exception('Expected length to be a number, received ' . $len);
         }
 
-        $sql   = sprintf(
-            '
+        $sql = "
             select
                 t.talk_title,
                 t.ID,
-                count(tc.ID) as ccount,
-                e.ID eid,
+                tc.c as ccount,
+                e.ID as eid,
                 e.event_name
-            from
-                talks t
-            JOIN talk_comments tc
-            ON tc.talk_id=t.ID AND tc.private = 0
-            JOIN events e
-            ON e.ID=t.event_id
-            where
-                t.active=1
-                and (tc.user_id != 0 and tc.rating != 0)
-            group by
-                t.ID
-            order by
-                ccount desc
-            limit ' . $len . '
-        '
-        );
-        $query = $this->db->query($sql);
-        $talks = $query->result();
+            from (select count(1) c, talk_id from talk_comments group by talk_id having c > 30) tc 
+            INNER JOIN talks t ON tc.talk_id = t.ID
+            INNER JOIN events e on e.ID = t.event_id
+            ORDER BY t.date_given desc limit " . $len;
 
-        $CI =& get_instance();
-        $CI->load->model('talk_speaker_model', 'tsm');
-        foreach ($talks as $k => $talk) {
+    $query = $this->db->query($sql);
+    $talks = $query->result();
+
+    $CI =& get_instance();
+    $CI->load->model('talk_speaker_model', 'tsm');
+    foreach ($talks as $k => $talk) {
             $sql             = "select get_talk_rating(" . $talk->ID . ") as tavg";
             $rating_result   = $this->db->query($sql)->result();
             $rating          = $rating_result[0];
