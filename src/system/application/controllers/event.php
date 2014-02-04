@@ -1670,61 +1670,6 @@ class Event extends Controller
     }
 
     /**
-     * Manage the claims that have been made on events.
-     *
-     * Not the same as the claims on talks in an event.
-     *
-     * @param int $id [optional] ID of claim for event
-     *
-     * @return void
-     */
-    function claims($id = null)
-    {
-        if (!$this->user_model->isSiteAdmin()
-            && !$this->user_model->isAdminEvent($id)
-        ) {
-            redirect('event/view/' . $id);
-        }
-
-        $this->load->model('user_admin_model', 'uam');
-
-        $claims        = $this->uam->getPendingClaims('event');
-        $posted_claims = $this->input->post('claim');
-        $sub           = $this->input->post('sub');
-
-        if (isset($sub) && !empty($posted_claims)) {
-            foreach ($posted_claims as $uam_key => $claim) {
-                if ($this->user_model->isSiteAdmin()
-                    || $this->uam->checkPerm($uam_key, $id, 'event')
-                ) {
-                    switch (strtolower($claim)) {
-                    case 'approve':
-                        // approve the claim
-                        $this->uam->updatePerm(
-                            $uam_key,
-                            array('rcode' => '')
-                        );
-                        break;
-                    case 'deny':
-                        // deny the claim - delete it!
-                        $this->uam->removePerm($uam_key);
-                        break;
-                    }
-                }
-            }
-        }
-
-        $claims = $this->uam->getPendingClaims('event', $id);
-        $arr    = array(
-            'claims' => $claims,
-            'id'     => $id
-        );
-
-        $this->template->write_view('content', 'event/claims', $arr);
-        $this->template->render();
-    }
-
-    /**
      * Import an XML file and push the test information into the table.
      *
      * XML is validated against a document structure in the /inc/xml directory.

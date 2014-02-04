@@ -205,8 +205,6 @@ class User_admin_model extends Model
         }
 
         return $ret;
-        //$q=$this->db->get_where('user_admin', array('uid'=>$uid));
-        //return $q->result(); //print_r($ret);
     }
 
     /**
@@ -282,24 +280,16 @@ class User_admin_model extends Model
     }
 
     /**
-     * Get the pending claims for either a talk or an even
+     * Get the pending claims for a talk
      *
      * @param string  $type Type to get claims for
-     * @param integer $rid  [optional] Resource ID (could be talk ID or event ID)
+     * @param integer $rid  [optional] Talk ID
      *
      * @return array Claim data
      */
     public function getPendingClaims($type = 'talk', $rid = null)
     {
-        switch ($type) {
-            //case 'talk':    return $this->getPendingClaims_Talks($rid); break;
-        case 'talk':
-            return $this->getPendingClaim_TalkSpeaker($rid);
-            break;
-        case 'event':
-            return $this->getPendingClaims_Events($rid);
-            break;
-        }
+        return $this->getPendingClaim_TalkSpeaker($rid);
     }
 
     /**
@@ -387,44 +377,6 @@ class User_admin_model extends Model
                 t.id=ua.rid and
                 u.id=ua.uid and %s
                 e.id=t.event_id
-        ", $addl
-        );
-        $q    = $this->db->query($sql);
-
-        return $q->result();
-    }
-
-    /**
-     * Retrieves pending claims on an event
-     *
-     * @param integer $eid Event id
-     *
-     * @return mixed
-     */
-    public function getPendingClaims_Events($eid = null)
-    {
-        $addl = ($eid) ? ' e.ID=' . $this->db->escape($eid) . ' and ' : '';
-        $sql  = sprintf(
-            "
-            select
-                u.ID,
-                u.username claiming_user,
-                u.full_name claiming_name,
-                u.email,
-                e.event_name,
-                e.ID eid,
-                ua.ID ua_id,
-                ua.uid,
-                ua.rid
-            from
-                events e,
-                user_admin ua,
-                user u
-            where
-                ua.rtype='event' and
-                ua.rcode='pending' and
-                ua.rid=e.ID and %s
-                ua.uid=u.ID
         ", $addl
         );
         $q    = $this->db->query($sql);
