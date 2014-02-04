@@ -17,15 +17,6 @@ JI_event = function (){
 		return false;
 	}
 	
-	var _claimEvent = function(){
-		$('#claim-event-btn').click(function(){
-			var obj={ "eid": $('#eid').val() };
-			apiRequest('event','claim',obj,function(obj){
-				notifications.alert(obj.msg);
-			});
-		});
-	}
-	
 	var _toggleAttendees = function(){
 		var el = this;
 		$('#toggle-attendees').click(function(){
@@ -104,7 +95,6 @@ JI_event = function (){
 			$(document).ready(function(){
 				_deleteEventComment();
 				_toggleAttendees();
-				_claimEvent();
 				_toggleEventFieldsets();
 				_updateStub();
 			});
