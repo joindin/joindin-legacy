@@ -86,7 +86,7 @@ class Getlist extends BaseWsRequest
             }
 
             // retrieve the events
-            $events = $this->CI->event_model->getEventsOfType($type);
+            $events = $this->CI->event_model->getEventsOfType($type, 50);
             
             // identify user so we can do the attending (or not if they're not 
             // identified)

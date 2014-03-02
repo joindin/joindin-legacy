@@ -138,7 +138,7 @@ class Event extends Controller
         case 'hot':
             // hot is the default case
         default:
-            $events = $this->event_model->getHotEvents(null);
+            $events = $this->event_model->getHotEvents(100);
             break;
         }
         if (isset($events['total_count'])) {
