@@ -25,7 +25,7 @@ if (!empty($msg)):
     <div id="comment-<?php echo $comment->ID ?>" class="row row-event-comment">
         <div class="text">
             <p class="info">
-                <strong><?=$comment->display_datetime; ?></strong> by <strong><?php echo $uname; ?></strong>
+                <strong><?php echo $comment->display_datetime; ?></strong> by <strong><?php echo $uname; ?></strong>
                 <?php echo !empty($comment->source)?"via ".escape($comment->source) : "" ?>
                 (<?php echo escape($type); ?>)
             </p>
