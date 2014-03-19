@@ -393,9 +393,6 @@ class User extends AuthAbstract
             null, null, null, true
         );
 
-        $this->load->model('user_admin_model', 'uam');
-        $arr['event_claims'] = $this->uam->getPendingClaims('event');
-
         $this->template->write_view('content', 'user/main', $arr);
         $this->template->render();
     }
@@ -491,7 +488,6 @@ class User extends AuthAbstract
         $uid = $this->session->userdata('ID');
         $arr = array(
             'curr_data'      => $this->user_model->getUserById($uid),
-            'event_claims'   => $this->uam->getPendingClaims('event'),
             'pending_events' => $this->event_model->getEventDetail(
                 null, null, null, true
             ),
@@ -657,9 +653,6 @@ class User extends AuthAbstract
         $arr['pending_events'] = $this->event_model->getEventDetail(
             null, null, null, true
         );
-
-        $this->load->model('user_admin_model');
-        $arr['event_claims'] = $this->user_admin_model->getPendingClaims('event');
 
         $this->template->write_view('content', 'user/admin', $arr);
         $this->template->render();
