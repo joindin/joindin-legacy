@@ -352,6 +352,8 @@ class Talk extends Controller
                     $this->db->insert('talks', $arr);
                     $tc_id = $this->db->insert_id();
 
+                    $this->event_model->cacheTalkCount($thisTalksEvent->ID);
+
                     // Add the new speakers
                     $this->talkSpeakers->handleSpeakerData(
                         $tc_id, $this->input->post('speaker_row')

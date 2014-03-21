@@ -929,5 +929,17 @@ SQL
 
         return $this->db->query($sql);
     }
+
+    /**
+     * Update the cached count of talks for a specific event
+     *
+     * @param $event_id
+     * @return bool
+     */
+    function cacheTalkCount($event_id) {
+        $sql = sprintf("UPDATE events e SET talk_count = (SELECT COUNT(*) FROM talks t WHERE t.event_id = e.ID) WHERE e.ID = %s", $this->db->escape($event_id));
+
+        return $this->db->query($sql);
+    }
 }
 
