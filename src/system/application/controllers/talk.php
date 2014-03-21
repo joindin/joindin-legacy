@@ -441,6 +441,7 @@ class Talk extends Controller
     function delete($id)
     {
         $this->load->model('talks_model');
+        $this->load->model('event_model');
         $this->load->model('user_model');
         $this->load->model('talk_track_model', 'talkTracks');
 
@@ -466,6 +467,8 @@ class Talk extends Controller
             $arr['tid'] = $id;
             if (isset($_POST['answer']) && ($_POST['answer'] == 'yes')) {
                 $this->talks_model->deleteTalk($id);
+
+                $this->event_model->cacheTalkCount($talk_detail[0]->eid);
 
                 // delete any records in the tracks table too
                 $this->talkTracks->deleteSessionTrack($id);
