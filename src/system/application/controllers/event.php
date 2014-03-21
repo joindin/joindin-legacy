@@ -957,6 +957,8 @@ class Event extends Controller
                 $this->db->insert('event_comments', $ec);
                 $arr['msg'] = 'Comment inserted successfully!';
 
+                $this->event_model->cacheCommentCount($id);
+
                 if (isset($def_ret)) {
                     $ec['def_resp_spamn'] = (string)$def_ret->spaminess;
                     $ec['def_resp_spamr'] = (string)$def_ret->spam;

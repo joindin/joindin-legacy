@@ -926,5 +926,17 @@ SQL
         $q = $this->db->get();
         return $q->result();
     }
+
+    /**
+     * Update the cached count of comments for a specific event
+     *
+     * @param $event_id
+     * @return bool
+     */
+    function cacheCommentCount($event_id) {
+        $sql = sprintf("UPDATE events e SET comment_count = (SELECT COUNT(*) FROM event_comments ec WHERE ec.event_id = e.ID) WHERE e.ID = %s", $this->db->escape($event_id));
+
+        return $this->db->query($sql);
+    }
 }
 
