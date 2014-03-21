@@ -941,5 +941,17 @@ SQL
 
         return $this->db->query($sql);
     }
+
+    /**
+     * Update the cached count of tracks for a specific event
+     *
+     * @param $event_id
+     * @return bool
+     */
+    function cacheTrackCount($event_id) {
+        $sql = sprintf("UPDATE events e SET track_count = (SELECT COUNT(*) FROM event_track et WHERE et.event_id = e.ID) WHERE e.ID = %s", $this->db->escape($event_id));
+
+        return $this->db->query($sql);
+    }
 }
 
