@@ -64,7 +64,6 @@ $title[] = $this->config->item('site_name');
                 <li id="menu-talk"><a href="/talk">Talks</a>
                 <li id="menu-about" class="sep"><a href="/about">About</a>
                 <li id="menu-help"><a href="/help">Help</a>
-                <li id="menu-blog"><a href="/blog">Blog</a>
             </ul>
             <div class="clear"></div>
         </div>
