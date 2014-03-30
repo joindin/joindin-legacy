@@ -32,7 +32,6 @@ $(document).ready(function(){
 
     // Setup the click handler for the search button.
     $('#addr_search_button').click(function(){
-        console.log('Searching for: ', $('#addr').val());
         $.getJSON('http://nominatim.openstreetmap.org/search?format=json&limit=5&q=' + $('#addr').val(), function(data) {
             var items = [];
 

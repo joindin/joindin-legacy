@@ -111,7 +111,6 @@ talk = function (){
 	
 	var _changeAnonymous = function(){
 		$('input[name="anonymous"]').click(function(){
-			console.debug(this.checked);
 			if (this.checked) {
 				$('#comment_as_user, #comment_as_user a').css({
 					'text-decoration':  'line-through',
