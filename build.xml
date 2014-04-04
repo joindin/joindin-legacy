@@ -73,7 +73,7 @@
 </target>
 
  <target name="phpdoc" description="Generate API documentation using PHPDocumentor">
-     <exec command="phpdoc -d ${source} -t ${basedir}build/api/" />
+     <exec command="phpdoc -d ${source} -t ${basedir}/build/api/" />
  </target>
 
  <target name="phplint" description="Run php -l over the fileset">
