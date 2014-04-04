@@ -31,10 +31,7 @@
  </target>
 
  <target name="phpmd" description="Generate pmd.xml using PHPMD">
-  <phpmd rulesets="codesize,design,naming,unusedcode">
-   <fileset dir="${source}" />
-   <formatter type="xml" outfile="${basedir}/build/logs/pmd.xml" />
-  </phpmd>
+     <exec command="phpmd ${source} xml codesize,design,naming,unusedcode --reportfile ${basedir}/build/logs/pmd.xml" />
  </target>
 
  <target name="phploc" description="Generate phploc.csv">
@@ -76,9 +73,7 @@
 </target>
 
  <target name="phpdoc" description="Generate API documentation using PHPDocumentor">
-  <phpdoc2 destdir="${basedir}/build/api">
-   <fileset dir="${source}" />
-  </phpdoc2>
+     <exec command="phpdoc -d ${source} -t ${basedir}build/api/" />
  </target>
 
  <target name="phplint" description="Run php -l over the fileset">
