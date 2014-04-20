@@ -111,6 +111,7 @@ class Addcomment extends BaseWsRequest
             }
 
             $this->CI->db->insert('event_comments', $arr);
+            $this->CI->event_model->cacheCommentCount($in['event_id']);
 
             return $this->throwError('Comments added');
         } else { 

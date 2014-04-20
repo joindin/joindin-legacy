@@ -170,6 +170,7 @@ class Event_model extends Model
         $db->select(
             <<<SQL
             events.*,
+            events.comment_count AS num_comments,
             if (
                 (
                     ((events.event_start - $day_in_seconds) < $now)
@@ -177,13 +178,11 @@ class Event_model extends Model
                 ),
             1, 0) AS allow_comments,
             COUNT(DISTINCT user_attend.ID) AS num_attend,
-            COUNT(DISTINCT event_comments.ID) AS num_comments
 SQL
             , false
         )
             ->from('events')
             ->join('user_attend', 'user_attend.eid=events.ID', 'left')
-            ->join('event_comments', 'event_comments.event_id=events.ID', 'left')
             ->group_by('events.ID');
 
         // for a specific event, site admins always see it - for everyone else, or
@@ -334,7 +333,7 @@ SQL
 
         if ($type == "hot") {
             // if you change this, change the API too please
-            $order_by = "score - ((num_comments + num_attend + 1) / 5)";
+            $order_by = "score - ((comment_count + num_attend + 1) / 5)";
         }
 
         if ($type == "upcoming") {
@@ -363,13 +362,12 @@ SQL
     public function getEvents($where=null, $order_by = null, $limit = null)
     {
         $sql = 'SELECT * ,
-            (select if (event_cfp_start IS NOT NULL AND event_cfp_start > 0 AND ' . 
-                mktime(0, 0, 0) . ' BETWEEN event_cfp_start 
+            events.comment_count AS num_comments,
+            (select if (event_cfp_start IS NOT NULL AND event_cfp_start > 0 AND ' .
+                mktime(0, 0, 0) . ' BETWEEN event_cfp_start
                 AND event_cfp_end, 1, 0)) as is_cfp,
-            (select count(*) from user_attend where user_attend.eid = events.ID) 
+            (select count(*) from user_attend where user_attend.eid = events.ID)
                 as num_attend,
-            (select count(*) from event_comments 
-                where event_comments.event_id = events.ID) as num_comments,
             abs(0) as user_attending,
             abs(
                 datediff(
@@ -495,10 +493,9 @@ SQL
         $CI->load->model('tags_events_model', 'eventTags');
         
         $sql = 'SELECT events.* ,
-            (select count(*) from user_attend 
+            events.comment_count AS num_comments,
+            (select count(*) from user_attend
                 where user_attend.eid = events.ID) as num_attend,
-            (select count(*) from event_comments 
-                where event_comments.event_id = events.ID) as num_comments,
             abs(0) as user_attending,
             abs(
                 datediff(
@@ -892,18 +889,12 @@ SQL
 
         $this->db->select(
             'events.*,
-            COUNT(DISTINCT user_attend.ID) AS num_attend,
-            COUNT(DISTINCT event_comments.ID) AS num_comments,' .
+            COUNT(DISTINCT user_attend.ID) AS num_attend,' .
             $attend
         );
         $this->db->from('events');
         $this->db->join('user_attend', 'user_attend.eid = events.ID', 'left');
-        $this->db->join(
-            'event_comments', 
-            'event_comments.event_id = events.ID', 
-            'left'
-        );
-        
+
         //if we have the dates, limit by them
         if ($start>0) { 
             $this->db->where('event_start >=', $start); 
@@ -925,6 +916,42 @@ SQL
 
         $q = $this->db->get();
         return $q->result();
+    }
+
+    /**
+     * Update the cached count of comments for a specific event
+     *
+     * @param $event_id
+     * @return bool
+     */
+    function cacheCommentCount($event_id) {
+        $sql = sprintf("UPDATE events e SET comment_count = (SELECT COUNT(*) FROM event_comments ec WHERE ec.event_id = e.ID) WHERE e.ID = %s", $this->db->escape($event_id));
+
+        return $this->db->query($sql);
+    }
+
+    /**
+     * Update the cached count of talks for a specific event
+     *
+     * @param $event_id
+     * @return bool
+     */
+    function cacheTalkCount($event_id) {
+        $sql = sprintf("UPDATE events e SET talk_count = (SELECT COUNT(*) FROM talks t WHERE t.event_id = e.ID) WHERE e.ID = %s", $this->db->escape($event_id));
+
+        return $this->db->query($sql);
+    }
+
+    /**
+     * Update the cached count of tracks for a specific event
+     *
+     * @param $event_id
+     * @return bool
+     */
+    function cacheTrackCount($event_id) {
+        $sql = sprintf("UPDATE events e SET track_count = (SELECT COUNT(*) FROM event_track et WHERE et.event_id = e.ID) WHERE e.ID = %s", $this->db->escape($event_id));
+
+        return $this->db->query($sql);
     }
 }
 
