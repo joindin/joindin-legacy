@@ -1381,23 +1381,28 @@ class Event extends Controller
                 $sub_arr['event_cfp_url'] = $this->input->post('cfp_url');
             }
 
-            $is_auth  = $this->user_model->isAuth();
-            $cname    = $this->input->post('event_contact_name');
-            $ccomment = $this->input->post('event_desc');
-            $def      = $this->defensio->check(
-                $cname,
-                $ccomment,
-                $is_auth,
-                '/event/submit'
-            );
-            $is_spam  = (string)$def->spam;
-
-            $bypassSpamFilter = $this->input->post('bypass_spam_filter');
-            if ($bypassSpamFilter == 1) {
-                $is_spam = false;
+            // Only do the Defensio check if the user isn't an event admin
+            // on another event and an admin user hasn't checked the
+            // 'bypass spam filter' checkbox.
+            $isAdmin = (bool)$this->user_admin_model->getUserEventAdmin($this->session->userdata('ID'));
+            $bypassSpamFilter = $this->input->post('bypass_spam_filter') && $this->user_model->isSiteAdmin();
+            $is_spam = false;
+            if ($isAdmin == false && $bypassSpamFilter == false) {
+                $is_auth  = $this->user_model->isAuth();
+                $cname    = $this->input->post('event_contact_name');
+                $ccomment = $this->input->post('event_desc');
+                $def      = $this->defensio->check(
+                    $cname,
+                    $ccomment,
+                    $is_auth,
+                    '/event/submit'
+                );
+                if ($def->spam == 'true') {
+                    $is_spam = true;
+                }
             }
 
-            if ($is_spam != 'true') {
+            if ($is_spam == false) {
                 //send the information via email...
                 $subj = 'Event submission from ' .
                     $this->config->item('site_name');
