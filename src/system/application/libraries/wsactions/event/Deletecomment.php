@@ -83,9 +83,11 @@ class Deletecomment extends BaseWsRequest
     {
         $this->CI->load->library('wsvalidate');
         $this->CI->load->model('event_comments_model', 'ecm');
-        
+        $this->CI->load->model('event_model', 'em');
+
         $com_id = $this->xml->action->cid;
         $this->CI->ecm->deleteComment($com_id);
+        $this->CI->em->cacheCommentCount($this->xml->action->eid);
 
         return array(
             'output'=>'json',

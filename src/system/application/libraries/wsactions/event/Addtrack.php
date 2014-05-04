@@ -113,13 +113,15 @@ class Addtrack extends BaseWsRequest
     public function run() 
     {
         $this->CI->load->model('event_track_model', 'etm');
-        
+        $this->CI->load->model('event_model', 'em');
+
         $eid  = (int)$this->xml->action->event_id;
         $name = (string)$this->xml->action->track_name;
         $desc = (string)$this->xml->action->track_desc;
         
         // Add the track to the event
         $this->CI->etm->addEventTrack($eid, $name, $desc);
+        $this->CI->em->cacheTrackCount($eid);
         return array(
             'output'=>'json',
             'data'=>array(

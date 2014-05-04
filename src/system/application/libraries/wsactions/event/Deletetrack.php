@@ -109,10 +109,12 @@ class Deletetrack extends BaseWsRequest
     {
         $this->CI->load->model('event_track_model', 'etm');
         $this->CI->load->model('talks_model', 'tm');
-        
+        $this->CI->load->model('event_model', 'em');
+
         $tid = (int)$this->xml->action->track_id;
-        
-        // Add the track to the event
+        $event_id = (int)$this->xml->event_id;
+
+        // Delete the track from the event
         $ret = $this->CI->etm->deleteEventTrack($tid);
         if (!$ret) {
             return array(
@@ -123,6 +125,7 @@ class Deletetrack extends BaseWsRequest
                     )
                 );
         } else {
+            $this->CI->em->cacheTrackCount($event_id);
             return array(
                 'output'=>'json',
                 'data'=>array(
