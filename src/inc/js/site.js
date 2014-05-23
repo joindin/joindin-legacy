@@ -250,8 +250,11 @@ function cancelTrackEdit(rid){
 	//Switch back to display
 	switchTrackDisplay(rid);
 
+	var tid = $('#rid_' + rid).attr('data-trackid');
+
 	$('#ctrl_cell_'+rid).html('\
 		<a href="#" class="btn-small" onClick="editTrack('+rid+')">edit</a>\
+		<a href="#" class="btn-small" onClick="deleteTrack('+rid+','+ tid +')">delete</a>\
 	');
 }
 function saveTrackAdd(rid){
