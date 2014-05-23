@@ -481,14 +481,6 @@ be logged in to get to the \"Claims\" page for the event!
             <b>%s</b> has been submitted to Joind.in and has been approved! You ' .
             'can see the event listing here: <a href="%s">%s</a>.
             <br/><br/>
-            If you\'re not the one that submitted the event, it was probably a ' .
-            'fan of the event who wanted it to be listed. Either way, thanks for ' .
-            'having the event and we\'re glad to have it on Joind.in!
-            <br/><br/>
-            If you are the contact for the event and would like to be added as an ' .
-            'event administrator, please visit the event listing and click the ' .
-            '"Claim Event" button.
-            <br/><br/>
             Please let us know if you have any questions about Joind.in, please ' .
             'don\'t hesitate to let us know!
             <br/><br/>
