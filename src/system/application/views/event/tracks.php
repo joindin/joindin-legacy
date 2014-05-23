@@ -31,7 +31,7 @@ div.track_color {
 </tr>
 <tbody id="track_tbl_body">
 <?php foreach ($tracks as $tr): ?>
-<tr class="<?php echo ($ct%2==0) ? 'row1' : 'row2'; ?>" id="rid_<?php echo $ct; ?>">
+<tr class="<?php echo ($ct%2==0) ? 'row1' : 'row2'; ?>" id="rid_<?php echo $ct; ?>" data-trackid="<?php echo $tr->ID; ?>">
     <?php $color=(!empty($tr->track_color)) ? 'style="background-color:#'.$tr->track_color.'"' : ''; ?>
     <td style="vertical-align:top">
         <!--
