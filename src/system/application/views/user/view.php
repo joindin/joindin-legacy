@@ -110,7 +110,9 @@ switch ($sort_type) {
 </div>
 
 <div class="box">
-    <h2>Comments</h2> <div class="UserViewCommentDetailsControl" onclick="$('.UserViewCommentDetails').css('display', 'block'); $('.UserViewCommentDetailsControl').css('display', 'none');">(Show Details)</div><div class="UserViewCommentDetails" onclick="$('.UserViewCommentDetails').css('display', 'none'); $('.UserViewCommentDetailsControl').css('display', 'block');">(Hide Details)</div>
+    <h2>Comments</h2>
+    <div class="UserViewCommentDetailsControl" onclick="$('.UserViewCommentDetails').css('display', 'block'); $('.UserViewCommentDetailsControl').css('display', 'none');">(Show Details)</div>
+    <div class="UserViewCommentDetails" onclick="$('.UserViewCommentDetails').css('display', 'none'); $('.UserViewCommentDetailsControl').css('display', 'block');">(Hide Details)</div>
 <?php if (count($comments) == 0): ?>
     <p>No comments so far</p>
 <?php else: ?>

@@ -1111,8 +1111,13 @@ div.star{background:transparent!important;overflow:hidden!important}
 .UserViewCommentDetails
 {
     display: none;
+    cursor: pointer;
 }
 .UserViewCommentDetailsHideControl
 {
     display: block;
+    cursor: pointer;
+}
+.UserViewCommentDetailsControl{
+    cursor: pointer;
 }
