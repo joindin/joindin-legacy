@@ -1107,3 +1107,17 @@ div.star{background:transparent!important;overflow:hidden!important}
     .ui-tabs .ui-tabs-nav li a {padding: .5em .7em;}
     #ctn .row .text-head {min-width: 120px; max-width: 180px;}
 }
+
+.UserViewCommentDetails
+{
+    display: none;
+    cursor: pointer;
+}
+.UserViewCommentDetailsHideControl
+{
+    display: block;
+    cursor: pointer;
+}
+.UserViewCommentDetailsControl{
+    cursor: pointer;
+}

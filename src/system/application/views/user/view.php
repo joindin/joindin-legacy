@@ -111,13 +111,15 @@ switch ($sort_type) {
 
 <div class="box">
     <h2>Comments</h2>
+    <div class="UserViewCommentDetailsControl" onclick="$('.UserViewCommentDetails').css('display', 'block'); $('.UserViewCommentDetailsControl').css('display', 'none');">(Show Details)</div>
+    <div class="UserViewCommentDetails" onclick="$('.UserViewCommentDetails').css('display', 'none'); $('.UserViewCommentDetailsControl').css('display', 'block');">(Hide Details)</div>
 <?php if (count($comments) == 0): ?>
     <p>No comments so far</p>
 <?php else: ?>
     <?php foreach ($comments as $k=>$v): ?>
     <div class="row">
-        <strong><a href="/talk/view/<?php echo $v->talk_id; ?>#comment-<?php echo $v->ID; ?>"><?php echo escape($v->talk_title); ?></a></strong>
-        <div class="clear"></div>
+        <?php echo rating_image($v->rating, "small");?>&nbsp;<div class="UserViewCommentDetails">(<?php echo date('d.M.Y', $talk->date_given)?>)</div><strong><a href="/talk/view/<?php echo $v->talk_id; ?>#comment-<?php echo $v->ID; ?>"><?php echo escape($v->talk_title); ?></a></strong>
+        <div class="clear UserViewCommentDetails"><?php echo escape($v->comment) ?></div>
     </div>
     <?php endforeach; ?>
 <?php endif; ?>
