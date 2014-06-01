@@ -48,7 +48,7 @@ database.
 --------------------
 Go to the directory `/src/tests` and issue the following command:
 
-```php
+```shell
 $ phpunit
 ```
 
