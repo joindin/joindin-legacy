@@ -674,7 +674,8 @@ class Talk extends Controller
 
                 $arr = array(
                     'talk_id'   => $id,
-                    'rating'    => $this->input->post('rating'),
+                    'content_rating'    => $this->input->post('rating'),
+                    'speaker_rating'    => null,
                     'comment'   => $this->input->post('comment'),
                     'date_made' => time(), 'private' => $priv,
                     'active'    => 1,
@@ -702,7 +703,7 @@ class Talk extends Controller
                             // unset date made.
                             unset($arr['date_made']);
                             if ($com_detail[0]->rating == 0) {
-                                $arr['rating'] = 0;
+                                $arr['content_rating'] = 0;
                             }
                             $this->db->update('talk_comments', $arr);
                             $out = 'Comment updated!';
