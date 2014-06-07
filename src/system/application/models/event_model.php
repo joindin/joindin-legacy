@@ -274,7 +274,7 @@ SQL
                 events.event_end,
                 (select l.lang_abbr from lang l where talks.lang=l.ID) lang,
                 get_talk_rating(talks.ID) as rank,
-                (select count(rating) from talk_comments where talk_id=talks.ID ' .
+                (select count(content_rating) from talk_comments where talk_id=talks.ID ' .
                     $private . ') comment_count,
                 ifnull(categories.cat_title, \'Talk\') tcid
             from
@@ -763,7 +763,7 @@ SQL
                 t.date_given,
                 t.duration,
                 tc.date_made,
-                tc.rating,
+                get_comment_rating(t.id, tc.id) AS rating,
                 tc.comment,
                 u.full_name
             from
@@ -815,7 +815,7 @@ SQL
                 (select l.lang_abbr from lang l where talks.lang=l.ID) lang,
                 get_talk_rating(talks.ID) rank,
                 (
-                    select count(rating) from talk_comments
+                    select count(content_rating) from talk_comments
                     where talk_id=talks.ID
                 ) comment_count,
                 ifnull(categories.cat_title, \'Talk\') tcid

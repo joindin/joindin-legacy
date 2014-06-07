@@ -110,7 +110,7 @@ class Talk_comments_model extends Model
             select
                 t.ID as talk_id,
                 tc.ID as comment_id,
-                tc.rating
+                get_comment_rating(t.ID, tc.ID) AS rating
             from
                 talks t,
                 talk_comments tc

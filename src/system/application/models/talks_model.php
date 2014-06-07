@@ -294,7 +294,7 @@ class Talks_model extends Model
             '
             select
                 tc.talk_id,
-                tc.rating,
+                get_comment_rating(tc.talk_id, tc.ID) AS rating,
                 tc.comment,
                 tc.date_made,
                 tc.ID,
@@ -425,7 +425,7 @@ class Talks_model extends Model
                 e.event_start > %s
               and
                 (ts.status != 'pending' OR ts.status is null)
-              and (tc.user_id != 0 and tc.rating != 0)
+              and (tc.user_id != 0 and tc.content_rating != 0)
             group by
               t.ID
             having
@@ -520,7 +520,7 @@ class Talks_model extends Model
             '
             select
                 tc.talk_id,
-                tc.rating,
+                get_comment_rating(tc.talk_id, tc.ID) AS rating,
                 tc.comment,
                 tc.date_made,
                 tc.active,
