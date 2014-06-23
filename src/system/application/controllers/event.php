@@ -897,7 +897,8 @@ class Event extends Controller
             'statistics',
             'evt_related',
             'slides',
-            'tracks'
+            'tracks',
+            'talk_comments'
         );
         if ($opt == 'track') {
             $arr['track_filter'] = $opt_id;
@@ -1149,6 +1150,42 @@ class Event extends Controller
         );
 
         $this->template->write_view('content', 'event/attendees', $arr, true);
+        echo $this->template->render('content');
+    }
+
+    /**
+     * Displays the list of talk comments for the given event.
+     *
+     * @param integer $id The id of the event
+     *
+     * @return void
+     */
+    function talk_comments($id)
+    {
+        $this->load->model('talk_comments_model');
+        $this->load->model('event_comments_model');
+
+        $comments = $this->talk_comments_model->getEventTalkComments($id);
+
+        if (isset($comments)) {
+            for ($i = 0; $i < count($comments); $i++) {
+                if ($comments[$i]->user_id != 0) {
+                    $comments[$i]->user_comment_count =
+                        $this->event_comments_model->getUserCommentCount(
+                            $comments[$i]->user_id
+                        ) +
+                        $this->talk_comments_model->getUserCommentCount(
+                            $comments[$i]->user_id
+                        );
+                }
+            }
+        }
+
+        $arr = array(
+            'comments' => $comments
+        );
+
+        $this->template->write_view('content', 'event/talk_comments', $arr, true);
         echo $this->template->render('content');
     }
 
