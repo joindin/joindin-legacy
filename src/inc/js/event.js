@@ -89,6 +89,14 @@ JI_event = function (){
 			$('#stub_display').html('http://joind.in/event/'+$(this).val());
 		});
 	}
+
+    var _loadTalkComments = function(){
+        var el = $('#talk-comments');
+        var eid = $('#eid').val();
+
+        el.html('Loading...');
+        el.load('/event/talk_comments/' + eid).data('loaded', true);
+    }
 	
 	return {
 		init: function(){
@@ -97,6 +105,7 @@ JI_event = function (){
 				_toggleAttendees();
 				_toggleEventFieldsets();
 				_updateStub();
+                _loadTalkComments();
 			});
 		},
 		hideFieldsets: function(fieldsToHide){
