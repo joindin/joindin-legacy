@@ -103,6 +103,9 @@ class EventModelTest extends PHPUnit_Framework_TestCase
 		}	
 	}
 
+	/**
+	 * @medium
+	 */
 	public function testGetHotEvents()
 	{
 		$this->assertEquals(
