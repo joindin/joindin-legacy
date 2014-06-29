@@ -128,14 +128,20 @@ class Talk_comments_model extends Model
      * Fetch comments (with all details) for all talks for a given event
      *
      * @param integer $event_id Event ID
+     * @param integer $limit    Limit number of comments to fetch
+     * @param integer $offset   Offset to fetch from
      *
      * @return array The comments, from database
      */
-    public function getEventTalkComments($event_id)
+    public function getEventTalkComments($event_id, $limit = null, $offset = null)
     {
         $this->load->library('gravatar');
         $this->load->library('timezone');
 
+        $limit_sql = 'limit ' . (int)$limit;
+        if (!empty($offset)) {
+            $limit_sql .= ' offset ' . (int)$offset;
+        }
         $sql      = sprintf(
             '
             select
@@ -171,7 +177,8 @@ class Talk_comments_model extends Model
                 tc.private=0 and
                 t.event_id=%s
             order by tc.date_made desc
-        ', $this->db->escape($event_id)
+            %s
+        ', $this->db->escape($event_id), $limit_sql
         );
         $q        = $this->db->query($sql);
         $comments = $q->result();

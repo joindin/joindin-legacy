@@ -102,7 +102,7 @@ $route['event/blog/(:any)/(:any)']       = 'event/blog/$1/$2';
 $route['event/blog/feed']                = 'event/blog/feed';
 $route['event/callforpapers']            = 'event/callforpapers';
 $route['event/tag/(:any)']               = 'event/tag/$1';
-$route['event/talk_comments/(:num)']     = 'event/talk_comments/$1';
+$route['event/talk_comments/(:num)/?(:num)?'] = 'event/talk_comments/$1/$2';
 //now our catch all...
 $route['event/(:any)'] = 'event/cust/$1';
 $route['(:num)']       = 'talk/view/$1';

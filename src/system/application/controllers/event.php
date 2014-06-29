@@ -1156,18 +1156,37 @@ class Event extends Controller
     /**
      * Displays the list of talk comments for the given event.
      *
-     * @param integer $id The id of the event
+     * @param integer $id   The id of the event
+     * @param integer $page Page num
      *
      * @return void
      */
-    function talk_comments($id)
+    function talk_comments($id, $page = 1)
     {
         $this->load->model('talk_comments_model');
         $this->load->model('event_comments_model');
 
-        $comments = $this->talk_comments_model->getEventTalkComments($id);
+        $commentsPerPage = 20;
+        $offset = null;
 
+        if (!empty($page) && $page > 1) {
+            $offset = ($page - 1) * $commentsPerPage;
+        }
+
+        // Load one extra record, so we know if there are more
+        $comments = $this->talk_comments_model->getEventTalkComments(
+            $id,
+            ($commentsPerPage + 1),
+            $offset
+        );
+
+        $moreComments = false;
         if (isset($comments)) {
+            if (count($comments) > $commentsPerPage) {
+                array_pop($comments);
+                $moreComments = true;
+            }
+
             for ($i = 0; $i < count($comments); $i++) {
                 if ($comments[$i]->user_id != 0) {
                     $comments[$i]->user_comment_count =
@@ -1182,7 +1201,9 @@ class Event extends Controller
         }
 
         $arr = array(
-            'comments' => $comments
+            'comments' => $comments,
+            'page' => $page,
+            'moreComments' => $moreComments
         );
 
         $this->template->write_view('content', 'event/talk_comments', $arr, true);
