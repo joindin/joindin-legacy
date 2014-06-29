@@ -1,9 +1,7 @@
 <?php
-if (empty($comments)) {
+if (empty($comments) && $page == 1) {
     $this->load->view('msg_info', array('msg' => 'No comments yet.'));
 } else {
-    echo '<h2 id="comments">Talk Comments</h2>';
-
     foreach ($comments as $k => $v) {
         $class = '';
         if (isset($v->user_id) && $v->user_id != 0) {
@@ -42,6 +40,12 @@ if (empty($comments)) {
     </div>
     <div class="clear"></div>
 </div>
+<?php
+    }
+
+    if ($moreComments) {
+?>
+    <a id="more-talk-comments" href="#" onclick="JI_event.loadMoreTalkComments(); return false;">Load more comments</a>
 <?php
     }
 }
