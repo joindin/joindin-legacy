@@ -77,6 +77,10 @@ $talk_comment_count = array_reduce(
     $talks,
     function($sum, $talk) { return $sum + $talk->comment_count; }
 );
+$talk_comment_count += array_reduce(
+    $evt_sessions,
+    function($sum, $session) { return $sum + $session->comment_count; }
+);
 if (count($talk_comment_count) > 0):
     $talkCommentsTab = new joindIn_Tab(
         'talk_comments',
