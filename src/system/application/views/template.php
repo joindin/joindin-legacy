@@ -45,7 +45,7 @@
    <div id="content">
       <h1>Template Library</h1>
       <p>The Template library, written for the <a href="http://www.codeigniter.com">CodeIgniter PHP
-         framework</a>, is a wrapper for CI’s View 
+         framework</a>, is a wrapper for CIï¿½s View 
          implementation. Template is a reaction to the numerous questions from the CI community 
          regarding how one would display multiple views for one controller, and how to embed "views 
          within views" in a standardized fashion.</p>

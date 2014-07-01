@@ -1,6 +1,6 @@
 <?php
 menu_pagetitle('User: ' . escape($details[0]->full_name));
-if ($gravatar) { echo '<img src="'.$gravatar.'" height="80" width="80" alt="" /><br/><br/>'; } ?>
+if ($gravatar) { echo '<div style="position :relative"><div style="float :left"><img src="'.$gravatar.'" height="80" width="80" alt="" /></div><div style="float :left"><ul><li><a href="#scc" class="scroll">Events They&acute;ll Be At</a></li><li><a href="#sc_" class="scroll">Events They Were At</a></li></ul></div></div><div style="clear:both"></div><br/><br/>'; } ?>
 <h1><?php 
     echo (!empty($details[0]->full_name)) ? $details[0]->full_name : $details[0]->username;
 ?></h1>
@@ -154,7 +154,7 @@ foreach ($talks as $k=>$v) {
 <table cellpadding="0" cellspacing="0" border="0" width="100%">
 <tr>
     <td>
-        <div class="box">
+        <div href="#scc" id="scc" class="box">
             <h2>Events They'll Be At</h2>
         <?php if (count($ev['attending']) == 0): ?>
             <p>No events so far</p>
@@ -172,10 +172,11 @@ foreach ($talks as $k=>$v) {
             </div>
             <?php } ?>
         <?php endif; ?>
+            <a href="#" >top of page</a>
         </div>
     </td>
     <td>
-        <div class="box">
+        <div href="#sc_" id="sc_" class="box">
             <h2>Events They Were At</h2>
         <?php if (count($ev['attended']) == 0): ?>
             <p>No events so far</p>
