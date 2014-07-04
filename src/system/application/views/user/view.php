@@ -1,6 +1,19 @@
 <?php
 menu_pagetitle('User: ' . escape($details[0]->full_name));
-if ($gravatar) { echo '<div style="position :relative"><div style="float :left"><img src="'.$gravatar.'" height="80" width="80" alt="" /></div><div style="float :left"><ul><li><a href="#scc" class="scroll">Events They&acute;ll Be At</a></li><li><a href="#sc_" class="scroll">Events They Were At</a></li></ul></div></div><div style="clear:both"></div><br/><br/>'; } ?>
+// The users Avatar
+if ($gravatar) { echo '<div style="position :relative"><div style="float :left"><img src="'.$gravatar.'" height="80" width="80" alt="" />';
+
+//If User is not Admin then display internal links
+    echo (!$is_admin) ? '</div><div style="float :left">
+    <ul>
+    <li><a href="#scc" class="scroll">Events They&acute;ll Be At</a></li>
+    <li><a href="#sc_" class="scroll">Events They Were At</a></li>
+    </ul>
+    </div></div>
+    <div style="clear:both"></div>
+    <br/><br/>' : '';
+}
+?>
 <h1><?php 
     echo (!empty($details[0]->full_name)) ? $details[0]->full_name : $details[0]->username;
 ?></h1>
