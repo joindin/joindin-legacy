@@ -84,7 +84,7 @@ $talk_comment_count += array_reduce(
 if (count($talk_comment_count) > 0):
     $talkCommentsTab = new joindIn_Tab(
         'talk_comments',
-        'Talk comments ('.$talk_comment_count.')',
+        'Recent comments ('.$talk_comment_count.')',
         $this->load->view('event/modules/_event_tab_talk_comments', array(), true)
     );
     $tabs->addTab($talkCommentsTab);
