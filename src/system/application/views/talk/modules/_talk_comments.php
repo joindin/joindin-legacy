@@ -56,13 +56,23 @@ if (empty($comments)) {
     <?php if ($is_speaker_comment): ?>
         <span class="speaker">Speaker comment:</span>
     <?php else: ?>
-        <?php if ($v->rating > 0) echo rating_image($v->rating); ?><br/>
+        <?php if ($v->rating > 0) {
+            echo rating_image($v->rating);
+        } ?><br/>
         <?php if (!empty($v->twitter_username)): ?>
-        <a href="http://twitter.com/<?php echo $v->twitter_username; ?>"><img src="/inc/img/twitter_share_icon.gif" style="margin-top:10px" width="20"/></a>
+            <a href="http://twitter.com/<?php echo $v->twitter_username; ?>">
+                <img src="/inc/img/twitter_share_icon.gif" style="margin-top:10px" width="20"/>
+            </a>
         <?php endif; ?>
-        <?php if (!empty($v->gravatar)) { 
-        echo '<a href="/user/view/'.$v->user_id.'"><img src="'.$v->gravatar.'" height="45" align="right" style="margin:10px"/></a>'; } 
-        ?>
+        <?php if (!empty($v->gravatar)): ?>
+            <a href="/user/view/<?php echo $v->user_id; ?>">
+                <img src="<?php echo $v->gravatar; ?>" height="45" align="right" style="margin:10px"/>
+            </a>
+        <?php else: ?>
+            <a href="/user/view/<?php echo $v->user_id; ?>">
+                <img src="/inc/img/anonymous_avatar.jpg" height="45" border="1" align="right" style="margin:10px"/>
+            </a>
+        <?php endif; ?>
     <?php endif; ?>
     </div>
     <div class="text">
