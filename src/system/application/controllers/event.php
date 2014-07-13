@@ -1454,6 +1454,17 @@ class Event extends Controller
                     $this->config->item('email_submissions') .
                     '">send us an email</a> with all the details!';
             }
+        } else {
+            /**
+             * The escaping on some fields is done twice in:
+             * - $this->validation->run().
+             * - views\event\submit.php
+             * Undoing the escaping when the validation fails.
+             */
+            $escaped_fields = array('event_title', 'event_desc', 'event_loc', 'event_contact_name', 'event_contact_email', 'event_stub');
+            foreach ($escaped_fields as $field_name) {
+                $this->validation->$field_name = html_entity_decode($this->validation->$field_name);
+            }
         }
         $arr['is_auth']       = $this->user_model->isAuth();
         $arr['is_site_admin'] = $this->user_model->isSiteAdmin();
