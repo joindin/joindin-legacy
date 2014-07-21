@@ -94,7 +94,7 @@ class EventModelTest extends PHPUnit_Framework_TestCase
 		$result 	= $query->result();
 		
 		if(isset($result[0])){
-			$eventId 	= $result[0]->event_id;
+			$eventId 	= $result[0]->ID;
 			$talks 		= $this->ci->event_model->getEventTalks($eventId,true,false);
 			
 			$this->markTestIncomplete('Not finished');
@@ -103,9 +103,9 @@ class EventModelTest extends PHPUnit_Framework_TestCase
 		}	
 	}
 
-    /**
-     * @medium
-     */
+	/**
+	 * @medium
+	 */
 	public function testGetHotEvents()
 	{
 		$this->assertEquals(
