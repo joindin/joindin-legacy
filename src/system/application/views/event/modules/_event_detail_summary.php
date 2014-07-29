@@ -70,7 +70,7 @@ here's what we need
                 <h2 class="h4">Event Link<?php if (count($hrefs) != 1): ?>s<?php endif; ?></h2>
                 <ul>
                 <?php foreach ($hrefs as $href): ?>
-                    <li><a href="<?php echo escape($href); ?>" rel="external"><?php echo escape($href); ?></a></li>
+                    <li><a href="<?php echo escape($href); ?>" rel="external nofollow"><?php echo escape($href); ?></a></li>
                 <?php endforeach; ?>
                 </ul>
             </div>
