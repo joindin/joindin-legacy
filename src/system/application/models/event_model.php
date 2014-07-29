@@ -846,12 +846,20 @@ SQL
      *
      * @uses Event_model::getEvents()
      */
-    public function getCurrentCfp()
+    public function getCurrentCfp($soon = false)
     {
         $where    = 'event_cfp_start <= '
             . mktime(0, 0, 0, date('m'), date('d'), date('Y'))
             . ' AND ' . 'event_cfp_end >= ' 
             . mktime(0, 0, 0, date('m'), date('d'), date('Y'));
+
+        if($soon) {
+            // only show CfPs finishing soon; some are open for ages
+            $cutoff = new DateTime();
+            $cutoff->add(new DateInterval('P6W'));
+            $where .= ' AND event_cfp_end < ' . $cutoff->format('U');
+        }
+
         $order_by = "events.event_cfp_end asc";
         $result   = $this->getEvents($where, $order_by, null);
         return $result;
