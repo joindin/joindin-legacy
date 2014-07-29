@@ -96,7 +96,7 @@ if ($event_detail->event_cfp_start>=time()) {
                 <h2 class="h4">Event Link<?php if (count($hrefs) != 1): ?>s<?php endif; ?></h2>
                 <ul>
                 <?php 
-                $linkListItem = '<li><a href="%1$s" title="%1$s" rel="external">%1$s</a></li>';
+                $linkListItem = '<li><a href="%1$s" title="%1$s" rel="external nofollow">%1$s</a></li>';
                 foreach ($hrefs as $href) {
                     printf($linkListItem, escape($href));
                 }?>
