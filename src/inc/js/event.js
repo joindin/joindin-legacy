@@ -89,6 +89,20 @@ JI_event = function (){
 			$('#stub_display').html('http://joind.in/event/'+$(this).val());
 		});
 	}
+
+	var talkCommentsPage = 0;
+	var _loadTalkComments = function(){
+		var el = $('#talk-comments');
+ 		var eid = $('#eid').val();
+		talkCommentsPage++;
+
+		$('#more-talk-comments').remove();
+
+ 		el.append(
+			$('<div>Loading...</div>')
+				.load('/event/talk_comments/' + eid + '/' + talkCommentsPage)
+		);
+	}
 	
 	return {
 		init: function(){
@@ -97,12 +111,14 @@ JI_event = function (){
 				_toggleAttendees();
 				_toggleEventFieldsets();
 				_updateStub();
+				_loadTalkComments();
 			});
 		},
 		hideFieldsets: function(fieldsToHide){
 			$(document).ready(function(){
 				_hideFieldsets(fieldsToHide);
 			});
-		}
+		},
+		loadMoreTalkComments: _loadTalkComments
 	}
 }();

@@ -72,6 +72,23 @@ if (count($tracks)>0):
     );
 $tabs->addTab($tracksTab);
 endif;
+
+$talk_comment_count = array_reduce(
+    $talks,
+    function($sum, $talk) { return $sum + $talk->comment_count; }
+);
+$talk_comment_count += array_reduce(
+    $evt_sessions,
+    function($sum, $session) { return $sum + $session->comment_count; }
+);
+if (count($talk_comment_count) > 0):
+    $talkCommentsTab = new joindIn_Tab(
+        'talk_comments',
+        'Recent comments ('.$talk_comment_count.')',
+        $this->load->view('event/modules/_event_tab_talk_comments', array(), true)
+    );
+    $tabs->addTab($talkCommentsTab);
+endif;
 //$tabs->addTab('hello', 'hi', 'Tab Content', '#hi');
 //$tabs->addTab('hello', 'hi', 'Tab Content 2', '#hi2s');
 
