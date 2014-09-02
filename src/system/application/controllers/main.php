@@ -78,7 +78,7 @@ class Main extends Controller
                 : false;
         }
 
-        $events = $this->event_model->getCurrentCfp();
+        $events = $this->event_model->getCurrentCfp(true);
         $this->template->parse_view(
             'sidebar2',
             'event/_event-cfp-sidebar',
