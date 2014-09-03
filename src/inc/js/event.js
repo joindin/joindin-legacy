@@ -93,6 +93,10 @@ JI_event = function (){
 	var talkCommentsPage = 0;
 	var _loadTalkComments = function(){
 		var el = $('#talk-comments');
+		if (el.length === 0) {
+			// we're on the edit page return early
+			return;
+		}
  		var eid = $('#eid').val();
 		talkCommentsPage++;
 
