@@ -548,3 +548,12 @@ function padstring (itemToPad,length,padWith)
 jQuery(document).ready(function ($) {
     $("#hd .menu ul").tinyNav({header: 'Navigation'});
 });
+
+/* Scroll js for user page */
+jQuery(document).ready(function($) {
+
+    $(".scroll").click(function(event){
+        event.preventDefault();
+        $('html,body').animate({scrollTop:$(this.hash).offset().top}, 500);
+});
+});
