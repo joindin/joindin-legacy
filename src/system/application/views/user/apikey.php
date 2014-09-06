@@ -24,7 +24,7 @@ if(isset($keys) && is_array($keys)) {
 
 <p>You can obtain a <b>key</b> and <b>secret</b> to use with the Joind.in web API if you wish to create a client to consume the data.  Many activities are publicly accessible, however to post comments or perform other actions which change our data, you will need to identify yourself using OAuth.  Please note that the secret should never be shared in any way (e.g. included in a public code repository).</p>
 
-<p>You can find out more by <a href="/api/v2docs">reading the API documentation</a></p><br />
+<p>You can find out more by <a href="http://joindin.github.io/joindin-api/">reading the API documentation</a></p><br />
 
 <?php
     echo "<ul>";
