@@ -198,7 +198,7 @@ class User extends AuthAbstract
                     $pass .= $sel[$r];
                 }
                  $arr = array(
-                    'password' => md5($pass),
+                    'password' => password_hash(md5($pass), PASSWORD_DEFAULT),
                     'request_code' => null
 
                  );
