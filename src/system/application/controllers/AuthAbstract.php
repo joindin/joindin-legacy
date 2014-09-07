@@ -99,7 +99,7 @@ abstract class AuthAbstract extends Controller
     ) {
         $arr = array(
             'username'         => $username,
-            'password'         => $password,
+            'password'         => password_hash($password, PASSWORD_DEFAULT),
             'email'            => $email,
             'full_name'        => $fullname,
             'twitter_username' => $twitter_name,
