@@ -61,10 +61,17 @@ class User_model extends Model
     public function validate($user, $pass, $isMd5 = false)
     {
         $ret   = $this->getUserByUsername($user);
+        // make sure we're using an md5 format, passwords are hashed md5s (yes, really)
         $pass  = ($isMd5) ? $pass : md5($pass);
-        $valid = (isset($ret[0]) && $ret[0]->password == $pass) ? true : false;
 
-        return $valid;
+        // did we get a row and do the passwords match?
+        if(isset($ret[0])) {
+            if(password_verify($pass, $ret[0]->password)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
