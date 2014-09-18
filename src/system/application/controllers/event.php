@@ -152,6 +152,10 @@ class Event extends Controller
             $e->user_attending = ($uid)
                 ? $this->user_attend_model->chkAttend($uid, $e->ID)
                 : false;
+
+            if ($type == 'pending') {
+                $e->admins = $this->event_model->getEventAdmins($e->ID);
+            }
         }
 
         $reqkey = buildReqKey();
