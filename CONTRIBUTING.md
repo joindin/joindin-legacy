@@ -1,12 +1,14 @@
 # CONTRIBUTING
 
+PLEASE NOTE: This project is now in maintenance mode.  Bug fixes are welcome, new features will not be accepted.
+
+Please go to http://github.com/joindin/joindin-web2 to contribute to the next generation joind.in site: http://m.joind.in
+
 ## RESOURCES
 
 If you wish to contribute to joind.in, please be sure to
 read/subscribe to the following resources:
 
- -  Contributor's Guide:
-    https://github.com/joindin/joind.in/wiki/How-to-Contribute-Code
  -  Contributor's mailing list:
     http://groups.google.com/group/joindin-developers
  -  Contributor's IRC channel:
