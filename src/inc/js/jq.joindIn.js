@@ -70,7 +70,7 @@
                     
                     // Initialise the map
                     var map = new L.Map(mapDiv.attr('id'), {zoomControl: true});
-                    var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                         osmAttribution = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
                         osm = new L.TileLayer(osmUrl, {maxZoom: 18, attribution: osmAttribution});
                     
