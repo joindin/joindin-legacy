@@ -49,6 +49,16 @@ $this->load->library('timezone');
         <?php endif ?>
         </div>
         <?php if (isset($view_type) && $view_type=='pending'): ?>
+        <p class="info"><b>Host<?php echo (count($event->admins) == 1) ? '' : 's' ?>:</b>
+                <?php
+                foreach ($event->admins as $key => $admin_user) {
+                    if ($key > 0) {
+                        echo ", ";
+                    }
+                    echo '<a href="/user/view/'.$admin_user->ID.'">'.$admin_user->full_name.'</a>';
+                }
+                ?>
+        </p>
         <a style="color:#00C934;text-decoration:none;font-weight:bold;font-size:11px" href="/event/approve/<?php echo $event->ID ?>">APPROVE</a> -
         <a style="color:#D6000E;text-decoration:none;font-weight:bold;font-size:11px" href="/event/delete/<?php echo $event->ID ?>">DENY</a>
         <?php endif; ?>
