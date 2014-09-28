@@ -53,17 +53,25 @@ class User_model extends Model
      *
      * @param string  $user     Username
      * @param string  $pass     Password
-     * @param boolean $plaintxt Flag to treat incoming password as plaintext or md5
+     * @param boolean $isMd5    Flag to indicate whether incoming password 
+     *                          is plaintext or md5
      *
      * @return boolean
      */
-    public function validate($user, $pass, $plaintxt = false)
+    public function validate($user, $pass, $isMd5 = false)
     {
         $ret   = $this->getUserByUsername($user);
-        $pass  = ($plaintxt) ? $pass : md5($pass);
-        $valid = (isset($ret[0]) && $ret[0]->password == $pass) ? true : false;
+        // make sure we're using an md5 format, passwords are hashed md5s (yes, really)
+        $pass  = ($isMd5) ? $pass : md5($pass);
 
-        return $valid;
+        // did we get a row and do the passwords match?
+        if(isset($ret[0])) {
+            if(password_verify($pass, $ret[0]->password)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

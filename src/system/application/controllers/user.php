@@ -198,7 +198,7 @@ class User extends AuthAbstract
                     $pass .= $sel[$r];
                 }
                  $arr = array(
-                    'password' => md5($pass),
+                    'password' => password_hash(md5($pass), PASSWORD_DEFAULT),
                     'request_code' => null
 
                  );
@@ -519,7 +519,7 @@ class User extends AuthAbstract
 
             $pass = $this->input->post('pass');
             if (!empty($pass)) {
-                $data['password'] = $this->validation->pass;
+                $data['password'] = password_hash($this->validation->pass, PASSWORD_DEFAULT);
             }
 
             $this->db->where('ID', $uid);
