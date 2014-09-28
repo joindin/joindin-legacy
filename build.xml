@@ -25,7 +25,6 @@
  <target name="buildTasks" description="Run the phpmd, phpcs, phpdoc, phploc and lint tasks.">
    <phingcall target="phpmd"/>
    <phingcall target="phpcs"/>
-   <phingcall target="phpdoc"/>
    <phingcall target="phploc"/>
    <phingcall target="phplint"/>
  </target>
@@ -71,10 +70,6 @@
         </fileset>
     </phpcodesniffer>
 </target>
-
- <target name="phpdoc" description="Generate API documentation using PHPDocumentor">
-     <exec command="phpdoc -d ${source} -t ${basedir}/build/api/" />
- </target>
 
  <target name="phplint" description="Run php -l over the fileset">
    <phplint haltonfailure="true">
