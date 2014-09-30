@@ -746,7 +746,7 @@ class Event extends Controller
         $this->load->helper('events');
         $this->load->helper('tabs');
         $this->load->library('validation');
-        $this->load->library('defensio');
+        $this->load->library('spamcheckservice', array('api_key' => $this->config->item('akismet_key')));
         $this->load->library('spam');
         $this->load->library('timezone');
         $this->load->library('gravatar');
@@ -945,20 +945,14 @@ class Event extends Controller
 
             // If they're logged in, dont bother with the spam check
             if (!$is_auth) {
-                $def_ret = $this->defensio->check(
-                    'Anonymous',
-                    $ec['comment'],
-                    $is_auth,
-                    '/event/view/' . $id
-                );
-                $is_spam = (string)$def_ret->spam;
+                $acceptable_comment = $this->spamcheckservice->isCommentAcceptable(array(
+                    'comment' => $ec['comment'],
+                ));
             } else {
-                $is_spam = 'false';
+                $$acceptable_comment = true;
             }
 
-            // $this->spam->check('regex', $ec['comment']);
-
-            if ($is_spam == 'false') {
+            if ($acceptable_comment) {
                 $this->db->insert('event_comments', $ec);
                 $arr['msg'] = 'Comment inserted successfully!';
 
@@ -1268,7 +1262,7 @@ class Event extends Controller
         $this->load->library('validation');
         $this->load->plugin('captcha');
         $this->load->helper('custom_timezone');
-        $this->load->library('defensio');
+        $this->load->library('spamcheckservice', array('api_key' => $this->config->item('akismet_key')));
         $this->load->library('timezone');
         $this->load->model('user_admin_model');
 
@@ -1443,7 +1437,7 @@ class Event extends Controller
                 $sub_arr['event_cfp_url'] = $this->input->post('cfp_url');
             }
 
-            // Only do the Defensio check if the user isn't an event admin
+            // Only do the spam check if the user isn't an event admin
             // on another event and an admin user hasn't checked the
             // 'bypass spam filter' checkbox.
             $isAdmin = (bool)$this->user_admin_model->getUserEventAdmin($this->session->userdata('ID'));
@@ -1453,15 +1447,11 @@ class Event extends Controller
                 $is_auth  = $this->user_model->isAuth();
                 $cname    = $this->input->post('event_contact_name');
                 $ccomment = $this->input->post('event_desc');
-                $def      = $this->defensio->check(
-                    $cname,
-                    $ccomment,
-                    $is_auth,
-                    '/event/submit'
-                );
-                if ($def->spam == 'true') {
-                    $is_spam = true;
-                }
+
+                $acceptable_comment = $this->spamcheckservice->isCommentAcceptable(array(
+                    'comment' => $ccomment,
+                ));
+                $is_spam = !$acceptable_comment;
             }
 
             if ($is_spam == false) {

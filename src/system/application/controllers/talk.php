@@ -506,7 +506,7 @@ class Talk extends Controller
         $this->load->helper('talk');
         $this->load->helper('reqkey');
         $this->load->plugin('captcha');
-        $this->load->library('defensio');
+        $this->load->library('spamcheckservice', array('api_key' => $this->config->item('akismet_key')));
         $this->load->library('spam');
         $this->load->library('validation');
         $this->load->library('timezone');
@@ -658,19 +658,17 @@ class Talk extends Controller
                     $ec['cname']   = $this->input->post('cname');
                 }
 
-                $ec['comment'] = $this->input->post('comment');
-                $def_ret       = $this->defensio->check(
-                    $ec['cname'], $ec['comment'], $is_auth, '/talk/view/' . $id
-                );
-
-                $is_spam = (string) $def_ret->spam;
+                $ec['comment']      = $this->input->post('comment');
+                $acceptable_comment = $this->spamcheckservice->isCommentAcceptable(array(
+                    'comment' => $ec['comment'],
+                ));
             } else {
                 // They're logged in, let their comments through
                 $is_spam = false;
                 $sp_ret  = true;
             }
 
-            if ($is_spam != 'true' && $sp_ret == true) {
+            if ($acceptable_comment && $sp_ret == true) {
 
                 $arr = array(
                     'talk_id'   => $id,
