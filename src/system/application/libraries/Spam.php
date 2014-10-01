@@ -68,6 +68,9 @@ class Spam
     public function fetch_txt($type = 'regex')
     {
         $txt_list = $this->CI->config->item('blacklist_' . $type);
+        if (!$txt_list) {
+            return array();
+        }
         return file($txt_list);
     }
 
