@@ -949,7 +949,7 @@ class Event extends Controller
                     'comment' => $ec['comment'],
                 ));
             } else {
-                $$acceptable_comment = true;
+                $acceptable_comment = true;
             }
 
             if ($acceptable_comment) {

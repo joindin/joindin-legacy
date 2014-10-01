@@ -664,8 +664,9 @@ class Talk extends Controller
                 ));
             } else {
                 // They're logged in, let their comments through
-                $is_spam = false;
-                $sp_ret  = true;
+                $acceptable_comment = true;
+                $is_spam             = false;
+                $sp_ret              = true;
             }
 
             if ($acceptable_comment && $sp_ret == true) {
