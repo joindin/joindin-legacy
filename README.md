@@ -115,17 +115,18 @@ This will show the files that still need some attention.
 
 ## Global .gitignore
 
-git has the capability to define a global gitignore, which means you can set a local file to ignore everything you don't 
-want to be commited by accident. This is not only recommended for this project, but for all your projects.
+git has the capability to define a global gitignore file , which means you can 
+set up rules on your machine to ignore everything you don't want to include in 
+your commits. This works not only for this project, but for all your other
+projects too.
 
-You can define this gitignore file with the following command. The gitignore is expected to be in `~/.gitignore_global`.
-Of course you can use every filename you want.  
+You can define the gitignore file with a command that looks like this, where the 
+last argument is the file that holds the patterns to ignore: 
 
     $ git config --global core.excludesfile ~/.gitignore_global
 
-Octocat gives [a good starting point](https://gist.github.com/octocat/9257657) to what to put in.
-
-Beside this, we recommend to add meta data to all the IDEs:
+Octocat gives [a good starting point](https://gist.github.com/octocat/9257657) for 
+what to include, but you can also ignore the files used by your editor:
 
     # Eclipse
     .classpath
@@ -144,4 +145,4 @@ Beside this, we recommend to add meta data to all the IDEs:
     # Netbeans
     nbproject/private/
 
-More on ignoring files, [can be find on github](https://help.github.com/articles/ignoring-files/).
+For more info on ignoring files, [github has an excellent help page](https://help.github.com/articles/ignoring-files/).
