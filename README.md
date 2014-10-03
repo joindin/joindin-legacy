@@ -113,4 +113,36 @@ phing phpcs-human-summary
 
 This will show the files that still need some attention.
 
+## Global .gitignore
 
+git has the capability to define a global gitignore file , which means you can 
+set up rules on your machine to ignore everything you don't want to include in 
+your commits. This works not only for this project, but for all your other
+projects too.
+
+You can define the gitignore file with a command that looks like this, where the 
+last argument is the file that holds the patterns to ignore: 
+
+    $ git config --global core.excludesfile ~/.gitignore_global
+
+Octocat gives [a good starting point](https://gist.github.com/octocat/9257657) for 
+what to include, but you can also ignore the files used by your editor:
+
+    # Eclipse
+    .classpath
+    .project
+    .settings/
+    
+    # Intellij
+    .idea/
+    *.iml
+    *.iws
+        
+    # Maven
+    log/
+    target/
+
+    # Netbeans
+    nbproject/private/
+
+For more info on ignoring files, [github has an excellent help page](https://help.github.com/articles/ignoring-files/).
