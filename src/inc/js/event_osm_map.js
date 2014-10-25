@@ -41,7 +41,7 @@ function chooseAddr(lat, lng) {
 function addr_search() {
 	var inp = document.getElementById("addr");
 
-    $.getJSON('http://nominatim.openstreetmap.org/search?format=json&limit=5&q=' + inp.value, function(data) {
+    $.getJSON('//nominatim.openstreetmap.org/search?format=json&limit=5&q=' + inp.value, function(data) {
         var items = [];
 
         $.each(data, function(key, val) {
