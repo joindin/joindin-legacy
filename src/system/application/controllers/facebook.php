@@ -106,7 +106,7 @@ class Facebook extends AuthAbstract
             $this->authenticateAppWithFacebook()
         );
 
-        if(empty($facebook_user->email)) {
+        if(!$facebook_user || empty($facebook_user->email)) {
             show_error('Sorry, something went wrong.  Please try another login method or contact us for help');
         }
 
