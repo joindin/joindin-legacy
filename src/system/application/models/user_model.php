@@ -58,16 +58,32 @@ class User_model extends Model
      *
      * @return boolean
      */
-    public function validate($user, $pass, $isMd5 = false)
+    public function validate($user, $userPass, $isMd5 = false, CI_Input $input = null)
     {
         $ret   = $this->getUserByUsername($user);
         // make sure we're using an md5 format, passwords are hashed md5s (yes, really)
-        $pass  = ($isMd5) ? $pass : md5($pass);
+        $pass  = ($isMd5) ? $userPass : md5($userPass);
 
         // did we get a row and do the passwords match?
         if(isset($ret[0])) {
             if(password_verify($pass, $ret[0]->password)) {
                 return true;
+            } else {
+                // may be the password in the database was stored when CI's
+                // global_xss_filtering was set to true. We can only test for
+                // this if the password passed in was not md5'd.
+                if (false === $isMd5) {
+                    $pass = $input->xss_clean($userPass);
+                    $pass = md5($pass);
+                    if (password_verify($pass, $ret[0]->password)) {
+                        // it was! Let's store the actually $userPass
+                        $password = password_hash(md5($userPass), PASSWORD_DEFAULT);
+
+                        $this->db->where('username', $user);
+                        $this->db->update('user', array('password' => $password));
+                        return true;
+                    }
+                }
             }
         }
 
