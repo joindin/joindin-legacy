@@ -8,6 +8,10 @@ This README includes instructions for setting up joind.in. You can either instal
 joind.in on an existing PHP platform, or use our vagrant setup. Note: contributors 
 should start at the Contributor readme (CONTRIBUTING.md).
 
+PLEASE NOTE: This project is now in maintenance mode.  Bug fixes are welcome, new features will not be accepted.
+
+Please go to http://github.com/joindin/joindin-web2 to contribute to the next generation joind.in site: http://m.joind.in
+
 ## Quick Start - Existing Platforms
 
 1. Create a vhost entry for the site. The docroot should be `/src`.
