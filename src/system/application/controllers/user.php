@@ -668,7 +668,7 @@ class User extends AuthAbstract
     function start_up_check($p)
     {
         $u   = $this->input->post('user');
-        $ret = $this->user_model->validate($u, $p);
+        $ret = $this->user_model->validate($u, $p, false, $this->input);
 
         if (!$ret) {
             $this->validation->set_message(
