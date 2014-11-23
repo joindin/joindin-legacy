@@ -104,6 +104,7 @@ abstract class AuthAbstract extends Controller
             'full_name'        => $fullname,
             'twitter_username' => $twitter_name,
             'active'           => 1,
+            'verified'         => 1,
             'last_login'       => time()
         );
         $this->db->insert('user', $arr);
