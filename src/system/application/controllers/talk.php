@@ -681,9 +681,12 @@ class Talk extends Controller
 
             if ($acceptable_comment && $sp_ret == true) {
 
+                // if the user has already rated, then the rating for this comment is zero
+                $rating = $already_rated ? 0 : $this->input->post('rating');
+
                 $arr = array(
                     'talk_id'   => $id,
-                    'rating'    => $this->input->post('rating'),
+                    'rating'    => $rating,
                     'comment'   => $this->input->post('comment'),
                     'date_made' => time(), 'private' => $priv,
                     'active'    => 1,
