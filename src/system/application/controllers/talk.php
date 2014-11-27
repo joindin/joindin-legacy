@@ -610,10 +610,20 @@ class Talk extends Controller
             $claim_user_ids[] = $claim_item->userid;
         }
 
-        $rating_rule = (in_array($currentUserId, $claim_user_ids)
-            || ($already_rated)) ? null : 'required';
+        // comment form validation rules:
+        // rating:
+        //      1. rating_check to ensure between 0 and 5
+        //      2. required field if not already commented
+        // comment:
+        //      1. duplicate_comment_check to ensure exact comment isn't posted twice
+        $rating_rule = 'callback_rating_check';
+        $rating_rule .= (in_array($currentUserId, $claim_user_ids)
+            || ($already_rated)) ? '' : 'required';
 
-        $rules = array('rating' => $rating_rule);
+        $rules = array(
+            'rating' => $rating_rule,
+            'comment' => "callback_duplicate_comment_check[$id]",
+        );
 
         $fields = array(
             'comment' => 'Comment',
@@ -1101,6 +1111,61 @@ class Talk extends Controller
             return false;
         }
 
+        return true;
+    }
+
+    /**
+     * Validates whether the given rating is between 0 and 5
+     *
+     * @param string $str The string to validate.
+     *
+     * @return bool
+     */
+    function rating_check($str)
+    {
+        if (is_numeric($str)) {
+            if ($str >= 0 && $str <= 5) {
+                return true;
+            }
+        }
+        
+        $this->validation->set_message(
+            'rating_check',
+            'Rating is out of bounds.'
+        );
+
+        return false;
+    }
+
+    /**
+     * Validates whether the given comment is identical to one that this user
+     * has given before for this talk
+     *
+     * @param string $str    The string to validate.
+     * @param number $talkId The current talk id
+     *
+     * @return bool
+     */
+    function duplicate_comment_check($str, $talkId)
+    {
+        $newComment = trim($str);
+        if ($this->user_model->isAuth()) {
+            // Find out if there is at least 1 comment that is made by our
+            // user for this talk
+            $userId = $this->user_model->getId();
+            foreach ($this->talks_model->getUserComments($userId) as $comment) {
+                if ($comment->talk_id == $talkId) {
+                    $thisComment = trim($comment->comment);
+                    if ($thisComment == $newComment) {
+                        $this->validation->set_message(
+                            'duplicate_comment_check',
+                            'Duplicate comment.'
+                        );
+                        return false;
+                    }
+                }
+            }
+        }
         return true;
     }
 }
