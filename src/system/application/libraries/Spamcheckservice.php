@@ -10,7 +10,7 @@ class Spamcheckservice
 
     public function __construct($params = null)
     {
-        if (isset($params['api_key'])) {
+        if (isset($params['api_key']) && $params['api_key']) {
             $this->akismetUrl = 'http://' . $params['api_key'] . '.rest.akismet.com';
         }
     }
