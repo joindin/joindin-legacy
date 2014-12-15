@@ -10,7 +10,6 @@
         <li><a href="/event/claim/<?php echo $eid; ?>">Pending Claims</a> (<?php echo $claim_count; ?>)
         <li><a href="/event/tracks/<?php echo $eid; ?>">Event Tracks</a>
         <li><a href="/event/import/<?php echo $eid; ?>">Import Event Info</a>
-        <li><a href="/theme">Event Themes</a>
         <?php
         if ($is_private=='Y') { echo '<br/><br/><li><a href="/event/invite/'.$eid.'">Invite list</a>'; }
         ?>
