@@ -268,7 +268,7 @@ echo '<h2>'.$title.'</h2>';
 
                     foreach (range(1,12) as $v) { $cfp_start_mo[$v]=strftime('%B', strtotime('2000-' . $v . '-01')); }
                     foreach (range(1,31) as $v) { $cfp_start_day[$v]=sprintf('%02d', $v); }
-                    foreach (range(date('Y'), date('Y')+5) as $v) { $cfp_start_yr[$v]=$v; }
+                    foreach (range($min_start_yr - 1, date('Y')+5) as $v) { $cfp_start_yr[$v]=$v; }
 
                     echo form_dropdown('cfp_start_mo', $cfp_start_mo, $this->validation->cfp_start_mo, 'id="cfp_start_mo" ' . $js);
                     echo form_dropdown('cfp_start_day', $cfp_start_day, $this->validation->cfp_start_day, 'id="cfp_start_day" ' . $js);
@@ -280,7 +280,7 @@ echo '<h2>'.$title.'</h2>';
                     <?php
                     foreach (range(1,12) as $v) { $cfp_end_mo[$v]=strftime('%B', strtotime('2000-' . $v . '-01')); }
                     foreach (range(1,31) as $v) { $cfp_end_day[$v]=sprintf('%02d', $v); }
-                    foreach (range(date('Y'), date('Y')+5) as $v) { $cfp_end_yr[$v]=$v; }
+                    foreach (range($min_start_yr - 1, date('Y')+5) as $v) { $cfp_end_yr[$v]=$v; }
 
                     echo form_dropdown('cfp_end_mo', $cfp_end_mo, $this->validation->cfp_end_mo, 'id="cfp_end_mo" ' . $js);
                     echo form_dropdown('cfp_end_day', $cfp_end_day, $this->validation->cfp_end_day, 'id="cfp_end_day" ' . $js);
