@@ -619,7 +619,7 @@ class Talk extends Controller
         //      1. duplicate_comment_check to ensure exact comment isn't posted twice
         $rating_rule = 'callback_rating_check';
         $rating_rule .= (in_array($currentUserId, $claim_user_ids)
-            || ($already_rated)) ? '' : 'required';
+            || ($already_rated)) ? '' : '|required';
 
         $rules = array(
             'rating' => $rating_rule,
