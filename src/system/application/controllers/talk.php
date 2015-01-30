@@ -599,7 +599,8 @@ class Talk extends Controller
             foreach ($this->talks_model
                 ->getUserComments($this->user_model->getId()) as $comment) {
                 if ($comment->talk_id == $id) {
-                    $already_rated = true;
+                    $already_rated = $comment->ID;
+                    break;
                 }
             }
         }
@@ -681,12 +682,9 @@ class Talk extends Controller
 
             if ($acceptable_comment && $sp_ret == true) {
 
-                // if the user has already rated, then the rating for this comment is zero
-                $rating = $already_rated ? 0 : $this->input->post('rating');
-
                 $arr = array(
                     'talk_id'   => $id,
-                    'rating'    => $rating,
+                    'rating'    => $this->input->post('rating'),
                     'comment'   => $this->input->post('comment'),
                     'date_made' => time(), 'private' => $priv,
                     'active'    => 1,
@@ -704,6 +702,13 @@ class Talk extends Controller
                     if (isset($com_detail[0])
                         && ($com_detail[0]->user_id == $uid)
                     ) {
+
+                        // if the user has already rated and we're not editing that comment,
+                        // then the rating for this comment is zero
+                        if ($already_rated && $already_rated != $cid) {
+                            $arr['rating'] = 0;
+                        }
+
                         $commentEditTime = $com_detail[0]->date_made +
                             $this->config->item('comment_edit_time');
                         if (time() >= $commentEditTime) {
