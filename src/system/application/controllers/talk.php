@@ -1139,7 +1139,7 @@ class Talk extends Controller
         
         $this->validation->set_message(
             'rating_check',
-            'Rating is out of bounds.'
+            'Please choose a rating.'
         );
 
         return false;
