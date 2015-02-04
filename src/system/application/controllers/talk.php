@@ -611,6 +611,11 @@ class Talk extends Controller
             $claim_user_ids[] = $claim_item->userid;
         }
 
+        $current_comment_id = 0;
+        if ($this->input->post('edit_comment')) {
+            $current_comment_id = $this->input->post('edit_comment');
+        }
+
         // comment form validation rules:
         // rating:
         //      1. rating_check to ensure between 0 and 5
@@ -623,7 +628,7 @@ class Talk extends Controller
 
         $rules = array(
             'rating' => $rating_rule,
-            'comment' => "callback_duplicate_comment_check[$id]",
+            'comment' => "callback_duplicate_comment_check[$id!$current_comment_id]",
         );
 
         $fields = array(
@@ -1154,17 +1159,20 @@ class Talk extends Controller
      *
      * @return bool
      */
-    function duplicate_comment_check($str, $talkId)
+    function duplicate_comment_check($str, $params)
     {
         $newComment = trim($str);
+        list($talkId, $currentCommentId) = explode('!', $params);
+        
         if ($this->user_model->isAuth()) {
             // Find out if there is at least 1 comment that is made by our
             // user for this talk
             $userId = $this->user_model->getId();
             foreach ($this->talks_model->getUserComments($userId) as $comment) {
                 if ($comment->talk_id == $talkId) {
+                    $thisCommentId = $comment->ID;
                     $thisComment = trim($comment->comment);
-                    if ($thisComment == $newComment) {
+                    if ($thisComment == $newComment && $thisCommentId != $currentCommentId) {
                         $this->validation->set_message(
                             'duplicate_comment_check',
                             'Duplicate comment.'
