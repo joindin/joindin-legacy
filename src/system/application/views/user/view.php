@@ -116,9 +116,14 @@ switch ($sort_type) {
 <?php if (count($comments) == 0): ?>
     <p>No comments so far</p>
 <?php else: ?>
-    <?php foreach ($comments as $k=>$v): ?>
+    <?php foreach ($comments as $k=>$v):
+        if ($v->private && user_get_id() != $details[0]->ID) {
+            continue;
+        }
+    ?>
     <div class="row">
-        <?php echo rating_image($v->rating, "small");?>&nbsp;<div class="UserViewCommentDetails">(<?php echo date('d.M.Y', $talk->date_given)?>)</div><strong><a href="/talk/view/<?php echo $v->talk_id; ?>#comment-<?php echo $v->ID; ?>"><?php echo escape($v->talk_title); ?></a></strong>
+        <?php echo rating_image($v->rating, "small");?>&nbsp;<div class="UserViewCommentDetails">(<?php echo date('d.M.Y', $v->date_made)?>)</div><strong><a href="/talk/view/<?php echo $v->talk_id; ?>#comment-<?php echo $v->ID; ?>"><?php echo escape($v->talk_title); ?></a></strong>
+        <?php if ($v->private) { echo ' (private)'; } ?>
         <div class="clear UserViewCommentDetails"><?php echo escape($v->comment) ?></div>
     </div>
     <?php endforeach; ?>
