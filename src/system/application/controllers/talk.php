@@ -599,7 +599,8 @@ class Talk extends Controller
             foreach ($this->talks_model
                 ->getUserComments($this->user_model->getId()) as $comment) {
                 if ($comment->talk_id == $id) {
-                    $already_rated = true;
+                    $already_rated = $comment->ID;
+                    break;
                 }
             }
         }
@@ -610,6 +611,11 @@ class Talk extends Controller
             $claim_user_ids[] = $claim_item->userid;
         }
 
+        $current_comment_id = 0;
+        if ($this->input->post('edit_comment')) {
+            $current_comment_id = $this->input->post('edit_comment');
+        }
+
         // comment form validation rules:
         // rating:
         //      1. rating_check to ensure between 0 and 5
@@ -618,11 +624,11 @@ class Talk extends Controller
         //      1. duplicate_comment_check to ensure exact comment isn't posted twice
         $rating_rule = 'callback_rating_check';
         $rating_rule .= (in_array($currentUserId, $claim_user_ids)
-            || ($already_rated)) ? '' : 'required';
+            || ($already_rated)) ? '' : '|required';
 
         $rules = array(
             'rating' => $rating_rule,
-            'comment' => "callback_duplicate_comment_check[$id]",
+            'comment' => "callback_duplicate_comment_check[$id!$current_comment_id]",
         );
 
         $fields = array(
@@ -681,12 +687,9 @@ class Talk extends Controller
 
             if ($acceptable_comment && $sp_ret == true) {
 
-                // if the user has already rated, then the rating for this comment is zero
-                $rating = $already_rated ? 0 : $this->input->post('rating');
-
                 $arr = array(
                     'talk_id'   => $id,
-                    'rating'    => $rating,
+                    'rating'    => $this->input->post('rating'),
                     'comment'   => $this->input->post('comment'),
                     'date_made' => time(), 'private' => $priv,
                     'active'    => 1,
@@ -704,6 +707,13 @@ class Talk extends Controller
                     if (isset($com_detail[0])
                         && ($com_detail[0]->user_id == $uid)
                     ) {
+
+                        // if the user has already rated and we're not editing that comment,
+                        // then the rating for this comment is zero
+                        if ($already_rated && $already_rated != $cid) {
+                            $arr['rating'] = 0;
+                        }
+
                         $commentEditTime = $com_detail[0]->date_made +
                             $this->config->item('comment_edit_time');
                         if (time() >= $commentEditTime) {
@@ -1134,7 +1144,7 @@ class Talk extends Controller
         
         $this->validation->set_message(
             'rating_check',
-            'Rating is out of bounds.'
+            'Please choose a rating.'
         );
 
         return false;
@@ -1149,17 +1159,20 @@ class Talk extends Controller
      *
      * @return bool
      */
-    function duplicate_comment_check($str, $talkId)
+    function duplicate_comment_check($str, $params)
     {
         $newComment = trim($str);
+        list($talkId, $currentCommentId) = explode('!', $params);
+        
         if ($this->user_model->isAuth()) {
             // Find out if there is at least 1 comment that is made by our
             // user for this talk
             $userId = $this->user_model->getId();
             foreach ($this->talks_model->getUserComments($userId) as $comment) {
                 if ($comment->talk_id == $talkId) {
+                    $thisCommentId = $comment->ID;
                     $thisComment = trim($comment->comment);
-                    if ($thisComment == $newComment) {
+                    if ($thisComment == $newComment && $thisCommentId != $currentCommentId) {
                         $this->validation->set_message(
                             'duplicate_comment_check',
                             'Duplicate comment.'
