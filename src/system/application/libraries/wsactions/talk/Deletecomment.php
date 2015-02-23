@@ -54,22 +54,19 @@ class Deletecomment extends BaseWsRequest
         $this->CI->load->model('user_model');
         
         // Check for a valid login
-        if ($this->isValidLogin($xml)) {
-            $udata = $this->CI->user_model
-                ->getUserByUsername((string)$xml->auth->user);
+        if ($this->isValidLogin($xml) || $this->checkPublicKey()) {
+            if (!isset($xml->action->eid) || !isset($xml->action->cid)) {
+                return false;
+            }
 
-            // Now check to see if they're a site admin
+            $eid = $xml->action->eid;
+            // Now check to see if they're a site admin or an event admin
             $is_site = $this->CI->user_model
                 ->isSiteAdmin((string)$xml->auth->user);
-            $is_talk = $this->CI->uam 
-                ->hasPerm($udata[0]->ID, $xml->action->tid, 'talk');
-           
-            return ($is_site || $is_talk) ? true : false;
-        }
-
-        // check for valid site js codes
-        if ($this->checkPublicKey()) {
-            return true;
+            $is_evt  = $this->CI->user_model
+                ->isAdminEvent((int)$eid, (string)$xml->auth->user);
+ 
+            return ($is_site || $is_evt) ? true : false;
         }
         return false; 
     }

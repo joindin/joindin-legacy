@@ -81,7 +81,7 @@ if (empty($comments)) {
                 <a class="btn-small edit-talk-comment-btn" href="#" id="<?php echo $v->ID; ?>">Edit</a>
             <?php endif; ?>
             <?php if (user_is_admin() || user_is_admin_event($detail->eid)): ?>
-                <a class="btn-small" href="#" onClick="delTalkComment(<?php echo $v->ID?>);return false;">Delete</a>
+                <a class="btn-small" href="#" onClick="delTalkComment(<?php echo $v->ID?>, <?php echo $detail->eid; ?>);return false;">Delete</a>
             <?php endif; ?>
             <?php if ($is_speaker || $admin): ?>
                 <a class="btn-small" href="#" onClick="commentIsSpam(<?php echo $v->ID?>,<?php echo $v->talk_id?>,'talk');return false;">Is Spam</a>

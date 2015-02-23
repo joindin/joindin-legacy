@@ -35,13 +35,16 @@ function apiRequest(rtype,raction,data,callback){
 }
 //-------------------------
 function delEventComment(cid){ deleteComment(cid,'event'); }
-function delTalkComment(cid){
-	deleteComment(cid,'talk');
+function delTalkComment(cid, eid){
+	deleteComment(cid,'talk',eid);
 	$('#comment-'+cid).remove();
 }
-function deleteComment(cid,rtype){
+function deleteComment(cid,rtype,eid){
 	var obj=new Object();
 	obj.cid=cid;
+	if (eid) {
+		obj.eid = eid;
+	}
 	apiRequest(rtype,'deletecomment',obj, function(obj) {
 		notifications.alert('Comment removed!'); return false;
 	});
