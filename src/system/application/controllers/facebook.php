@@ -111,26 +111,18 @@ class Facebook extends AuthAbstract
         }
 
         // return the first user with the given e-mail address
-        $user = current($this->user_model->getUserByEmail($facebook_user->email));
+        $user = $this->user_model->getUserByEmail($facebook_user->email);
 
         if (!$user) {
-            $username = $facebook_user->username;
-            if (!$username) {
-                // url_title acts as slugify method and filters unwanted characters
-                $username = url_title(strtolower($facebook_user->name));
-            }
-
-            $user = $this->_addUser(
-                $this->user_model->findAvailableUsername($username),
-                '', $facebook_user->email, $facebook_user->name, ''
-            );
-
-            // overwrite user and url to re-use the _login method
             $this->session->set_flashdata(
-                'url_after_login', site_url('user/manage')
+                'error_msg',
+                'You need to register with Joind.in and with the same email address'
+                .' as your Facebook account in order to sign in with Facebook'
             );
+            redirect(site_url('user/register'));
         }
 
+        $user = current($user);
         $this->_login($user);
     }
 
