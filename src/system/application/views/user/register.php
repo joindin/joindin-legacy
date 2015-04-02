@@ -5,6 +5,12 @@ $msg=$this->session->flashdata('msg');
 if (!empty($msg)): 
 ?>
 <?php $this->load->view('msg_info', array('msg' => $msg)); ?>
+<?php endif;
+
+$error_msg=$this->session->flashdata('error_msg');
+if (!empty($error_msg)) :
+?>
+<?php $this->load->view('msg_error', array('msg' => $error_msg)); ?>
 <?php endif; ?>
 
 <div class="box">

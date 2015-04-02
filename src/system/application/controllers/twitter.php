@@ -96,29 +96,17 @@ class Twitter extends AuthAbstract
             );
         }
 
-        $user = current(
-            $this->user_model->getUserByTwitter($response['screen_name'])
-        );
-
+        $user = $this->user_model->getUserByTwitter($response['screen_name']);
         if ($user) {
+            $user = current($user);
             $this->_login($user);
         } else {
-            $user_info = $this->getTwitterUserdata($response['screen_name']);
-            $ret       = $this->_addUser(
-                $this->user_model->findAvailableUsername($response['screen_name']),
-                '', '', $user_info->name, $response['screen_name']
-            );
-
-            // now, since they're set up, log them in a push them to the account
-            // management page
-            $this->session->set_userdata((array)$ret);
             $this->session->set_flashdata(
-                'msg',
-                'To receive notifications; please enter your e-mail address.'
-                .'<br />Without a password you can only log in using your '
-                .'twitter account.'
+                'error_msg',
+                'You need to register with Joind.in and and set your Twitter'
+                .' Username in your profile in order to sign in with Twitter'
             );
-            redirect('user/manage');
+            redirect(site_url('user/register'));
         }
     }
 
