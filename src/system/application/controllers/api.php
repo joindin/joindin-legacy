@@ -46,18 +46,6 @@ class Api extends Controller
     }
 
     /**
-     * Displays the API documentation as a web page.
-     *
-     * @return void
-     */
-    function index()
-    {
-        //show our docs
-        $this->template->write_view('content', 'api/doc');
-        $this->template->render();
-    }
-
-    /**
      * Redirects the API calls to the 'event' service handler.
      *
      * @return void
@@ -103,21 +91,6 @@ class Api extends Controller
     }
 
     /**
-     * Redirects the API calls to the 'blog' service handler.
-     *
-     * @return void
-     */
-    function blog()
-    {
-        $this->load->library('service');
-        $data = file_get_contents('php://input');
-        $ret  = array(
-            'out' => $this->service->handle('blog', $data)
-        );
-        $this->output($ret);
-    }
-
-    /**
      * Redirects the API calls to the 'user' service handler.
      *
      * @return void
@@ -128,21 +101,6 @@ class Api extends Controller
         $data = file_get_contents('php://input');
         $ret  = array(
             'out' => $this->service->handle('user', $data)
-        );
-        $this->output($ret);
-    }
-
-    /**
-     * Redirects the API calls to the 'site' service handler.
-     *
-     * @return void
-     */
-    function site()
-    {
-        $this->load->library('service');
-        $data = file_get_contents('php://input');
-        $ret  = array(
-            'out' => $this->service->handle('site', $data)
         );
         $this->output($ret);
     }
@@ -189,28 +147,6 @@ class Api extends Controller
 
         $out = $this->tz_model->getOffsetInfo();
         echo json_encode($out);
-    }
-
-    /**
-     * Documentation for the v2 API
-     * 
-     * @return void
-     */
-    public function v2docs() 
-    {
-        $this->template->write_view('content', 'api/v2docs');
-        $this->template->render();
-    }
-
-    /**
-     * Documentation for the v1 API
-     * 
-     * @return void
-     */
-    public function v1docs() 
-    {
-        $this->template->write_view('content', 'api/v1docs');
-        $this->template->render();
     }
 }
 
