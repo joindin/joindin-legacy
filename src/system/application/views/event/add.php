@@ -110,7 +110,7 @@ echo '<h2>'.$title.'</h2>';
         echo form_input('tagged', $this->validation->tagged);
     ?>
         <span style="color:#3567AC;font-size:11px">
-            Seperate tags with commas, limit <b>5 tags</b>, alpha-numeric only
+            Separate tags with commas, limit <b>5 tags</b>, alpha-numeric only
         </span>
     </div>
     <div class="clear"></div>
@@ -236,7 +236,7 @@ echo '<h2>'.$title.'</h2>';
     <div class="row">
         <label for="event_hashtag">Event Hashtag(s):</label>
     <?php echo form_input('event_hashtag', $this->validation->event_hashtag); ?>
-    <span style="color:#3567AC;font-size:11px">Seperate tags with commas</span>
+    <span style="color:#3567AC;font-size:11px">Separate tags with commas</span>
     </div>
     <div class="clear"></div>
     
