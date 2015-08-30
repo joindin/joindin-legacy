@@ -4,15 +4,13 @@
  */
 $admin_nav_lnks='';
 if (user_is_admin()) {
-    $admin_nav_lnks=sprintf('
+    $admin_nav_lnks='
     <li><b>Admin Links</b>
     <ul>
     <li><a href="/user/admin">User Admin</a>
-    <li><a href="/event/pending">Pending Events</a> (%s)
     <li><a href="/talk/claim">Talk Claims</a>
     </ul>
-    ', count($pending_events)
-    );
+    ';
 }
 $nav=sprintf('
 <ul>
