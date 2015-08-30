@@ -10,13 +10,6 @@ $data=array(
     'admins'		=> $admins
 );
 $this->load->view('event/modules/_event_detail', $data);
-
-// These are our buttons below the event detail
-$data=array(
-    'admin'			=> $admin,
-    'event_detail'	=> $event_detail
-);
-$this->load->view('event/modules/_event_buttons', $data);
 ?>
 
 <?php
