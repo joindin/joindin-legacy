@@ -92,8 +92,6 @@ class Event extends Controller
      * @param string $type         Type of list to show, may be either hot,
      *                             upcoming, past. Anything else will result
      *                             in all events being shown.
-     * @param bool   $pending      Flag indicating whether to show pending
-     *                             or active events.
      * @param int    $per_page     Number of events per page
      * @param int    $current_page Current page to display
      *
@@ -101,7 +99,6 @@ class Event extends Controller
      */
     function _runList(
         $type,
-        $pending = false,
         $per_page = null,
         $current_page = null
     ) {
@@ -127,14 +124,6 @@ class Event extends Controller
             $events = $this->event_model
                 ->getPastEvents(null, $per_page, $current_page);
             break;
-        case 'pending':
-            $events = $this->event_model->getEventDetail(
-                null,
-                null,
-                null,
-                $pending
-            );
-            break;
         case 'hot':
             // hot is the default case
         default:
@@ -152,10 +141,6 @@ class Event extends Controller
             $e->user_attending = ($uid)
                 ? $this->user_attend_model->chkAttend($uid, $e->ID)
                 : false;
-
-            if ($type == 'pending') {
-                $e->admins = $this->event_model->getEventAdmins($e->ID);
-            }
         }
 
         $reqkey = buildReqKey();
@@ -187,56 +172,43 @@ class Event extends Controller
     }
 
     /**
-     * Displays a list of all pending or upcoming events.
+     * Displays a list of all hot events.
      *
-     * @param bool $pending Flag indicating whether to show pending or upcoming
-     *                      events
-     *
-     * @return bool
+     * @return void
      */
-    function index($pending = false)
+    function index()
     {
-        $type = ($pending) ? 'pending' : 'hot';
-        $this->_runList($type, $pending);
+        $this->_runList('hot');
     }
 
     /**
      * Displays an overview of all events.
      *
-     * @param bool $pending Flag indicating whether to show active or
-     *                      pending events.
-     *
      * @return void
      */
-    function all($pending = false)
+    function all()
     {
-        $this->_runList('index', $pending);
+        $this->_runList('index');
     }
 
     /**
      * Displays an overview of all hot events.
      *
-     * @param bool $pending Flag indicating whether to show active or
-     *                      pending events.
-     *
      * @return void
      */
-    function hot($pending = false)
+    function hot()
     {
-        $this->_runList('hot', $pending);
+        $this->_runList('hot');
     }
 
     /**
      * Displays an overview of all upcoming events.
      *
-     * @param bool $pending Flag indicating whether to show active or
-     *                      pending events.
-     *
      * @return void
      */
-    function upcoming($pending = false)
+    function upcoming()
     {
-        $this->_runList('upcoming', $pending);
+        $this->_runList('upcoming');
     }
 
     /**
@@ -248,27 +220,7 @@ class Event extends Controller
      */
     function past($current_page = null)
     {
-        // Don't display pending "past" events
-        $pending = false;
-        $this->_runList('past', $pending, 10, $current_page);
-    }
-
-    /**
-     * Displays an overview of all pending events.
-     *
-     * @return void
-     */
-    function pending()
-    {
-
-        if (!$this->user_model->isAuth()) {
-            redirect('/user/login', 'refresh');
-        }
-        if (!$this->user_model->isSiteAdmin()) {
-            redirect();
-        }
-
-        $this->index(true);
+        $this->_runList('past', 10, $current_page);
     }
 
     /**
