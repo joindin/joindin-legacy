@@ -148,12 +148,10 @@ class Event_model extends Model
      * @param integer $end_dt   If requesting events in a date range, this is the
      *                          upper date value (events earlier or equal to this
      *                          date will be returned)
-     * @param bool    $pending  Show only pending events, or only active
      *
      * @return stdClass[]
      */
-    function getEventDetail($id = null, $start_dt = null, $end_dt = null,
-        $pending = false
+    function getEventDetail($id = null, $start_dt = null, $end_dt = null
     ) {
         $this->load->helper("events");
 
@@ -190,17 +188,11 @@ SQL
         if ($this->user_model->isSiteAdmin() && isset($id)) {
             // just show it, no more filtering
         } else {
-            if ($pending) {
-                // pending events only
-                $db->where('(events.active', 0)
-                    ->where('events.pending', 1)
-                    ->ar_where[] = ')';
-            } else {
-                $db->where('(events.active', 1)
-                    ->where('(events.pending', null)
-                    ->or_where('events.pending', 0)
-                    ->ar_where[] = '))';
-            }
+            // active events only
+            $db->where('(events.active', 1)
+                ->where('(events.pending', null)
+                ->or_where('events.pending', 0)
+                ->ar_where[] = '))';
         }
 
         // determine the selection criteria, if $id is a number use that, otherwise
