@@ -1527,43 +1527,6 @@ class Event extends Controller
     }
 
     /**
-     * Approve a pending event and send emails to the admins (if there are any).
-     *
-     * @param integer $id The id of the event
-     *
-     * @return void
-     */
-    function approve($id)
-    {
-        if (!$this->user_model->isSiteAdmin()) {
-            redirect();
-        }
-
-        $this->load->model('event_model');
-        $this->load->library('sendemail');
-        $this->event_model->approvePendingEvent($id);
-
-        // If we have admins for the event, send them an email to let them know
-        $admin_list = $this->event_model->getEventAdmins($id);
-        if ($admin_list && count($admin_list) > 0) {
-            $evt_detail = $this->event_model->getEventDetail($id);
-
-            // if the admin list is empty, use the contact info on the event
-            if (empty($admin_list)) {
-                $admin_list[] = array(
-                    'full_name' => $evt_detail->event_contact_name,
-                    'email'     => $evt_detail->event_contact_email
-                );
-            }
-
-            $this->sendemail->sendEventApproved($evt_detail[0], $admin_list);
-        }
-
-        // Finally, redirect back to the event!
-        redirect('event/view/' . $id);
-    }
-
-    /**
      * Allows a user to claim an event.
      *
      * Adds a pending row to the admin table for the site admins to go in
