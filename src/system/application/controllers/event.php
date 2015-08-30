@@ -1468,8 +1468,7 @@ class Event extends Controller
                     $this->input->post('event_contact_name') . "\n\n";
                 $msg .= 'Event Contact Email: ' .
                     $this->input->post('event_contact_email') . "\n\n";
-                $msg .= 'View Pending Submissions: ' . $this->config->site_url()
-                    . 'event/pending' . "\n\n";
+                $msg .= "View Pending Submissions: https://m.joind.in/event/pending\n\n";
                 $msg .= 'Spam check: ' . ($is_spam == 'false')
                     ? 'not spam' : 'spam';
 
