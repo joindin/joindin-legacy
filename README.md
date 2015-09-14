@@ -12,6 +12,14 @@ PLEASE NOTE: **This project is now in maintenance mode.**  Bug fixes are welcome
 
 Please go to http://github.com/joindin/joindin-web2 to contribute to the next generation joind.in site: http://m.joind.in
 
+### Welcome
+
+Joind.in welcomes all contributors regardless of your ability or experience. We especially welcome
+you if you are new to Open Source development and will provide a helping hand. To ensure that
+everyone understands what we expect from our community, our projects have a [Contributor Code of
+Conduct](CODE_OF_CONDUCT.md) and by participating in the development of joind.in you agree to abide
+by its terms.
+
 ## Quick Start - Using Vagrant
 
 The virtual machine has been moved to a different repo. To use it [fork the joindin-vm](https://github.com/joindin/joindin-vm) repository and follow the instructions in there.
