@@ -175,7 +175,7 @@ $title[] = $this->config->item('site_name');
             <a href="/about">About</a> |
             <a href="/help">Help</a> |
             <a href="/blog">Blog</a> |
-            <a href="/api">API</a> |
+            <a href="http://joindin.github.io/joindin-api/">API</a> |
             <a href="/about/contact">Contact</a>
         </div>
         <div class="grid_6 rgt">
