@@ -23,6 +23,6 @@
 <li><a href="https://market.android.com/search?q=joind.in&c=apps">Get the Android App</a>
 </ul>
 
-<p>We have two APIs - an older one and a new <b>RESTful API</b> as well.  If you want to use the data from joind.in elsewhere, then take a look at the <a href="/api">API Documentation</a>.  For easy inclusion of talk ratings on your event site, we have some <a href="/about/widgets">javascript widgets</a> ready for you to drop in.</p>
+<p>We have two APIs - an older one and a new <b>RESTful API</b> as well.  If you want to use the data from joind.in elsewhere, then take a look at the <a href="http://joindin.github.io/joindin-api/">API Documentation</a>.  For easy inclusion of talk ratings on your event site, we have some <a href="/about/widgets">javascript widgets</a> ready for you to drop in.</p>
 
 <p>If you still have questions or comments, then please do <a href="/about/contact">contact us</a></p>
