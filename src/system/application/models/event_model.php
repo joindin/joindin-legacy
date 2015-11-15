@@ -261,7 +261,6 @@ SQL
         $sql     = '
             select
                 talks.talk_title,
-                talks.speaker,
                 talks.slides_link,
                 talks.date_given,
                 talks.duration,
@@ -294,7 +293,7 @@ SQL
                 event_id=%s and
                 talks.active=1
             order by
-                talks.date_given asc, talks.speaker asc
+                talks.date_given asc, talks.ID asc
             ', $this->db->escape($id)
         );
 
@@ -787,7 +786,7 @@ SQL
     /**
      * Fetches active talks that are in the 'Event Related' category
      *
-     * Results are ordered by date & then speaker
+     * Results are ordered by date
      *
      * @param mixed $id ID of the event in question
      *                   Must be either a string, or able to cast as a
@@ -803,7 +802,6 @@ SQL
             '
             select
                 talks.talk_title,
-                talks.speaker,
                 talks.slides_link,
                 talks.date_given,
                 talks.duration,
@@ -830,7 +828,7 @@ SQL
                 event_id=%s and
                 talks.active=1
             order by
-                talks.date_given asc, talks.speaker asc
+                talks.date_given asc, talks.ID asc
             ',
             $this->db->escape($id)
         );
