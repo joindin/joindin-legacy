@@ -541,35 +541,6 @@ class Talks_model extends Model
     }
 
     /**
-     * Find the other events where the session was given
-     *
-     * @param integer $tid Talk ID
-     * @param integer $eid Event id
-     *
-     * @return array Details on the events (event ID, talk ID, event name)
-     */
-    public function talkAlsoGiven($tid, $eid)
-    {
-        $ret         = array();
-        $talk_detail = $this->getTalks($tid);
-
-        $speakers = array();
-        foreach ($talk_detail[0]->speaker as $speaker) {
-            $speakers[] = strtolower($speaker->speaker_name);
-        }
-
-        $this->db->select('event_id eid, talks.ID as tid, talk_title, event_name');
-        $this->db->from('talks');
-        $this->db->join('events', 'events.id=talks.event_id', 'left');
-        $this->db->where('talk_title', $talk_detail[0]->talk_title);
-        $this->db->where_in('lower(speaker)', $speakers);
-        $this->db->where('event_id !=', $eid);
-        $q = $this->db->get();
-
-        return $q->result();
-    }
-
-    /**
      * Retrieves a talk by its code
      *
      * @param string $code Code

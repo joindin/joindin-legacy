@@ -781,17 +781,6 @@ class Talk extends Controller
             $all_talk_comments, $is_talk_admin, $this->session->userdata('ID')
         );
 
-        // also given only makes sense if there's a speaker set
-        if (!empty($talk_detail[0]->speaker)) {
-            $also_given = $this->talks_model->talkAlsoGiven(
-                $id, $talk_detail[0]->event_id
-            );
-            $also_given = array(
-                'talks' => $also_given,
-                'title' => 'Talk Also Given At...'
-            );
-        }
-
         $user_id  = ($this->user_model->isAuth())
             ? $this->session->userdata('ID') : null;
         $speakers = $this->talkSpeakers->getSpeakerByTalkId($id);
