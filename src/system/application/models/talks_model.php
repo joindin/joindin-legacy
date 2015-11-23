@@ -619,11 +619,13 @@ class Talks_model extends Model
 
         $this->db->select(
             'talks.*, count(talk_comments.ID) as ccount,
-            get_talk_rating(talks.ID) as tavg, events.ID eid, events.event_name'
+            get_talk_rating(talks.ID) as tavg, events.ID eid, events.event_name,
+            talk_speaker.speaker_name'
         );
         $this->db->from('talks');
 
         $this->db->join('talk_comments', 'talk_comments.talk_id=talks.ID', 'left');
+        $this->db->join('talk_speaker', 'talk_speaker.talk_id=talks.ID', 'left');
         $this->db->join('events', 'events.ID=talks.event_id', 'left');
 
         if ($start > 0) {
@@ -636,7 +638,7 @@ class Talks_model extends Model
         $term = '%' . $term . '%';
         $this->db->where(
             sprintf(
-                '(talk_title LIKE %1$s OR talk_desc LIKE %1$s OR speaker LIKE %1$s)',
+                '(talk_title LIKE %1$s OR talk_desc LIKE %1$s OR speaker_name LIKE %1$s)',
                 $this->db->escape($term)
             )
         );
