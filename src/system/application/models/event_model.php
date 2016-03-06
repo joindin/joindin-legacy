@@ -875,8 +875,6 @@ SQL
      */
     function search($term, $start, $end)
     {
-        $term = mysql_real_escape_string($term);
-
         $attend = '
             (
                 SELECT COUNT(*) FROM user_attend
