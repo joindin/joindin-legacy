@@ -11,7 +11,24 @@
         <td>
         <a href="/talk/view/<?php echo $iv->ID; ?>"><?php echo escape($iv->talk_title); ?></a>
         </td>
-        <td><?php echo $iv->speaker; ?></td>
+        <td>
+            <?php
+            if (isset($iv->speaker) && is_array($iv->speaker)) {
+                $speaker_list = array();
+                foreach ($iv->speaker as $speaker) {
+                    if (isset($claimed[$iv->ID][$speaker->speaker_id])) {
+                        $claim_data = $claimed[$iv->ID][$speaker->speaker_id];
+                        $speaker_list[]='<a href="/user/view/'.$claim_data->speaker_id.'">'.
+                            escape($claim_data->full_name).'</a>';
+                    } else {
+                        $speaker_list[]=escape($speaker->speaker_name);
+                    }
+                    
+                }
+                echo implode(', ', $speaker_list);
+            }
+            ?>
+        </td>
         <td>
         <a class="comment-count" href="/talk/view/<?php echo $iv->ID; ?>/#comments"><?php echo $iv->comment_count; ?></a>
         </td>
