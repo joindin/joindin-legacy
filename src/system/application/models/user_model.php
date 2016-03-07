@@ -425,7 +425,6 @@ class User_model extends Model
         $ci->load->model('talks_model', 'talksModel');
         $ci->load->model('user_attend_model', 'userAttend');
 
-        $term    = mysql_real_escape_string(strtolower($term));
         $sql     = sprintf(
             "
             select
@@ -439,9 +438,9 @@ class User_model extends Model
             from
                 user u
             where
-                lower(username) like '%%%s%%' or
-                lower(full_name) like '%%%s%%'
-        ", $term, $term
+                lower(username) like %s or
+                lower(full_name) like %s
+        ", $this->db->escape('%' . $term . '%'), $this->db->escape('%' . $term . '%')
         );
         $query   = $this->db->query($sql);
         $results = $query->result();

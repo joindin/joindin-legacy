@@ -615,7 +615,6 @@ class Talks_model extends Model
     {
         $ci = & get_instance();
         $ci->load->model('talk_speaker_model', 'talkSpeaker');
-        $term = mysql_real_escape_string($term);
 
         $this->db->select(
             'talks.*, count(talk_comments.ID) as ccount,
