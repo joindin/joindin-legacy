@@ -826,7 +826,17 @@ SQL
         );
 
         $q = $this->db->query($sql);
-        return $q->result();
+        $res = $q->result();
+
+        // get the speakers from the talk_speaker_model
+        $CI = &get_instance();
+        $CI->load->model('talk_speaker_model', 'tsm');
+        foreach ($res as $k => $talk) {
+            $res[$k]->speaker = $CI->tsm->getTalkSpeakers($talk->ID);
+        }
+
+
+        return $res;
     }
     
     /**
