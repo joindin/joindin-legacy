@@ -33,10 +33,6 @@ talk = function (){
 					resizable: false,
 					modal: true,
 					buttons: {
-						"Yes, Proceed": function() {
-							window.location.href = $('#claim_btn').attr('href');
-							$( this ).dialog( "close" );
-						},
 						Cancel: function() {
 							$( this ).dialog( "close" );
 						}
