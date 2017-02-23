@@ -873,7 +873,7 @@ class Talk extends Controller
     {
             $errorData = array(
                 'msg' => 'Talk claims have moved to the new Joind.in site! ' .
-                    'Please <a href="https://joind.in/">login to the new site</a> to claim';
+                    'Please <a href="https://joind.in/">login to the new site</a> to claim'
             );
             $this->template->write_view('content', 'msg_error', $errorData);
             $this->template->render();
