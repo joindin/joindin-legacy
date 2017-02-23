@@ -36,10 +36,8 @@
 </p>
 
 <div id="claim-dialog">
-    <p>By clicking this button you are declaring that you are the speaker responsible for it and a claim request will be sent to the administrator of the event.</p>
-    <p>If the claim is approved you will be able to edit the information for this talk.</p>
-    <p>Are you sure?</p>
-    
+    <p>Talk claims have been moved to the new <a href="https://joind.in">Joind.in site</a>.</p>
+    <p>Please login to the new site to claim your talk</p>    
 </div>
 <script type="text/javascript">
 $('#claim_select_div').css('display','none');
